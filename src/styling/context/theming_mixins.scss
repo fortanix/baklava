@@ -1,0 +1,79 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use 'sass:string';
+@use '../variables.scss' as bk;
+
+/*
+Note: `light-dark()` is not dynamic, it is computed once at the definition site. That means that we cannot capture
+a `light-dark()` expression in a variable and reuse that in a different theme. Mixins are needed for that purpose.
+- Ref: https://github.com/web-platform-tests/wpt/blob/master/css/css-color/light-dark-inheritance.html
+*/
+
+@mixin theme-variables {
+  --bk-page-color-text: #{bk.$theme-text-body-default};
+  --bk-page-color-background: #{bk.$theme-page-default};
+  --bk-focus-outline-color: #81bcec;
+}
+
+/* This mixin should be used after every usage of `color-scheme` */
+@mixin theme-root {
+  @include theme-variables;
+  color: var(--bk-page-color-text);
+}
+
+@mixin color-scheme($scheme) {
+  color-scheme: string.unquote($scheme);
+  
+  // XXX this should be done by lightningcss automatically, but for some reason these variables are not being injected.
+  // https://github.com/parcel-bundler/lightningcss/releases/tag/v1.24.0
+  @if $scheme == 'light' or $scheme == 'only light' {
+    --lightningcss-light: initial;
+    --lightningcss-dark: ;
+  } @else if $scheme == dark or $scheme == 'only dark' {
+    --lightningcss-light: ;
+    --lightningcss-dark: initial;
+  }
+}
+
+@mixin theme($theme) {
+  @include color-scheme($theme);
+  @include theme-root;
+}
+
+@mixin theme-invert($selector: &) {
+  @include theme-root;
+  
+  /* Fallback: if no `bk-theme` class is applied, invert based on the user's preferred scheme. */
+  /* Note: this should have lower precedence than the rules below */
+  @media (prefers-color-scheme: light) {
+    @at-root #{$selector} {
+      @include color-scheme('only dark');
+    }
+  }
+  @media (prefers-color-scheme: dark) {
+    @at-root #{$selector} {
+      @include color-scheme('only light');
+    }
+  }
+  
+  /* Invert if overridden by a `bk-theme` class */
+  /*
+  NOTE: this will not work for additional `bk-theme-invert` mixins deeper inside the current, because this mixin does
+  not produce a `bk-theme` class.
+  */
+  @at-root :global(.bk-theme--dark) #{$selector} {
+    @include color-scheme('only light');
+  }
+  @at-root :global(.bk-theme--light) #{$selector} {
+    @include color-scheme('only dark');
+  }
+  /* Once `@scope` is available, convert the above selectors to use `@scope` to prevent the second overring the first */
+  
+  /* Possible solution using `--color-scheme` variables rather than `bk-theme` classes. Downside: this will not allow
+    us to style the container itself.
+  @container style(--color-scheme: light) { * { color-scheme: only dark; }
+  @container style(--color-scheme: dark) { * { color-scheme: only light; }
+  */
+}

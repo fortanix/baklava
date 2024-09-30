@@ -1,0 +1,24 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-input-field {
+    @include bk.component-base(bk-input-field);
+    
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    
+    .bk-input-field__label {
+      @include bk.font(bk.$font-family-body, bk.$font-weight-semibold);
+      cursor: default;
+    }
+    
+    .bk-input-field__control {
+      --empty: ; // Prevent empty class from being removed
+    }
+  }
+}

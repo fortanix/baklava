@@ -1,0 +1,6 @@
+{
+  "onlyChanged": true,
+  "projectId": "Project:FIXME",
+  "zip": true,
+  "buildScriptName": "storybook:build"
+}

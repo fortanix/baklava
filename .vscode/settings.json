@@ -1,0 +1,5 @@
+{
+  // https://github.com/Microsoft/vscode-css-languageservice/blob/main/docs/customData.md
+  // https://stackoverflow.com/questions/42520229/vs-code-and-intellisense-for-css-grid-and-css-modules
+  "css.customData": [".vscode/custom.css-data.json"]
+}

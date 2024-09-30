@@ -1,0 +1,47 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-breadcrumbs {
+    @include bk.component-base(bk-breadcrumbs);
+    
+    .bk-breadcrumb {
+      display: flex;
+      flex-wrap: wrap;
+      gap: bk.$spacing-1;
+    }
+    
+    .bk-breadcrumb-item {
+      @include bk.font(bk.$font-family-display, bk.$font-weight-regular, bk.$font-size-s);
+      color: bk.$theme-breadcrumb-text-default;
+      
+      &:last-child:not(.bk-breadcrumb-item--with-trailing-slash) {
+        &::after {
+          content: '';
+          margin-left: 0;
+        }
+      }
+      
+      &::after {
+        content: '/';
+        font-size: bk.$font-size-s;
+        margin-left: bk.$spacing-1;
+      }
+      
+      .bk-breadcrumb-link {
+        font-size: bk.$font-size-s;
+        text-decoration: none;
+        color: bk.$theme-breadcrumb-text-link;
+      }
+      
+      :is(.bk-breadcrumb-link:focus-visible, :global(.pseudo-focus-visible) .bk-breadcrumb-link) {
+        --bk-focus-outline-color: #{bk.$theme-breadcrumb-border-focus};
+        @include bk.focus-outline-close;
+        border-radius: 2px;
+      }
+    }
+  }
+}

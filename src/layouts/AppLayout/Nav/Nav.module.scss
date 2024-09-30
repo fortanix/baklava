@@ -1,0 +1,73 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+// https://ryanmulligan.dev/blog/layout-breakouts/
+// https://cloudfour.com/thinks/breaking-out-with-css-grid-layout/
+@mixin grid-breakout($inset-content: bk.$spacing-2) {
+  --gap-content: #{$inset-content};
+  --size-content: calc(100% - var(--gap) * 2);
+  
+  display: grid;
+  grid-template-columns:
+    [full-start] var(--gap-content)
+    [content-start] var(--size-content) [content-end]
+    var(--gap-content) [full-end];
+}
+
+@layer baklava.components {
+  .bk-nav {
+    @include bk.component-base(bk-nav);
+    
+    --bk-nav-inset-content: #{bk.$spacing-3};
+    //padding-block: var(--bk-nav-inset-content);
+    
+    @include grid-breakout($inset-content: var(--bk-nav-inset-content));
+    
+    menu {
+      display: flex;
+      flex-direction: column;
+      //row-gap: var(--bk-sizing-2);
+      
+      .bk-nav__item {
+        @include bk.font(bk.$font-family-display);
+        
+        .bk-nav__item__link {
+          cursor: pointer;
+          
+          /* Focus outline */
+          &:focus-visible {
+            outline: none !important;
+            box-shadow: inset 5px 0 var(--bk-focus-outline-color);
+          }
+          
+          padding-block: bk.$spacing-2;
+          
+          &:hover {
+            background: bk.$theme-side-nav-menu-background-hover;
+          }
+          
+          grid-column: full;
+          
+          display: flex;
+          flex-direction: row;
+          gap: bk.$spacing-2;
+          
+          .bk-nav__item__link__icon {
+            // ignore
+          }
+          .bk-nav__item__link__label {
+            // ignore
+          }
+        }
+        
+        &[aria-current] {
+          border-left-width: 4px;
+          border-left-color: bk.$theme-side-nav-menu-tab-default;
+        }
+      }
+    }
+  }
+}

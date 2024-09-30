@@ -1,0 +1,70 @@
+
+import cx from 'classnames/dedupe';
+import { Meta, Unstyled, IconGallery, IconItem } from '@storybook/blocks';
+
+import { TooltipProvider } from '../components/overlays/Tooltip/TooltipProvider.tsx';
+import { icons } from '../assets/icons/_icons.ts';
+import { Icon } from '../components/graphics/Icon/Icon.tsx';
+
+import cl from './Iconography.module.scss';
+
+
+<Meta title="Docs/Iconography"/>
+
+# Iconography
+
+Baklava comes with an icon pack using SVG sprite images. The `Icon` component is used to render a given icon by name:
+
+```tsx
+<Icon icon="assessment"/>
+```
+
+This will render:
+
+<Icon icon="assessment" style={{ fontSize: '2rem' }}/>
+
+Icons by default will adapt to the current text styling. To resize an icon, change the `font-size` in CSS. Similarly, you can change the CSS `color` property to update the icon's color.
+
+
+## Overview
+
+<IconGallery>
+  {Object.keys(icons).map(iconName =>
+    <IconItem key={iconName} name={iconName}>
+      <Icon icon={iconName} className="icon"/>
+    </IconItem>
+  )}
+</IconGallery>
+
+{/*
+<Unstyled>
+  <ul className={cl['icons-overview']}>
+    {Object.entries(icons).map(([iconName, iconDef]) =>
+      <TooltipProvider key={iconName} tooltip={iconName}>
+        <li><Icon icon={iconName} className="icon"/></li>
+      </TooltipProvider>
+    )}
+  </ul>
+</Unstyled>
+*/}
+
+## Details
+
+<table className={cl['icons-table']}>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Icon</th>
+      <th>Code</th>
+    </tr>
+  </thead>
+  <tbody>
+    {Object.entries(icons).map(([iconName, iconDef]) =>
+      <tr key={iconName}>
+        <td className={cx(cl['cell'], cl['cell-name'])}>{iconName}</td>
+        <td className={cx(cl['cell'], cl['cell-icon'])}><Icon icon={iconName}/></td>
+        <td className={cx(cl['cell'], cl['cell-code'])}><code>{`<Icon icon=${JSON.stringify(iconName)}/>`}</code></td>
+      </tr>
+    )}
+  </tbody>
+</table>

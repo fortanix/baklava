@@ -1,0 +1,28 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../styling/defs.scss' as bk;
+@use './BodyText.mixins.scss' as bodytext;
+
+/* Use a separate layer for body-text so that we can `revert-layer` */
+@layer baklava.body-text {
+  /*
+  XXX `@scope` does not yet have browser support
+  @scope (.bk-body-text) to (.bk, .isolate) { /* Do not leak .bk-body-text styling into components * /
+    :scope {
+      @include bk.component-base(bk-body-text);
+      @mixin bk-body-text;
+    }
+  }
+  */
+  
+  .bk-body-text {
+    @include bk.component-base(bk-body-text);
+    @include bodytext.bk-body-text;
+  }
+  
+  .bk-body-text .bk {
+    all: revert-layer;
+  }
+}

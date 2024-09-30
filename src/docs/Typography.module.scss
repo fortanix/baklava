@@ -1,0 +1,22 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@layer storybook {
+  .font-family-list {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 1rem;
+    align-items: start;
+    
+    > * {
+      min-width: fit-content;
+    }
+  }
+  
+  .font-size-list {
+    tr {
+      line-height: 1.6; /* Override Storybook's fixed line-height */
+    }
+  }
+}

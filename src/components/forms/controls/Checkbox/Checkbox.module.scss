@@ -1,0 +1,46 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-checkbox {
+    @include bk.component-base(bk-checkbox);
+    
+    --bk-checkbox-background-color: transparent;
+    --bk-checkbox-border-color: #{bk.$theme-checkbox-border-default};
+    
+    cursor: pointer;
+    
+    appearance: none;
+    width: 18px;
+    aspect-ratio: 1;
+    border-radius: 3px;
+    
+    background: var(--bk-checkbox-background-color);
+    background-position: top; /* Transition background-image from top */
+    border: 1px solid var(--bk-checkbox-border-color);
+    
+    &:checked {
+      --bk-checkbox-background-color: #{bk.$theme-checkbox-background-default};
+      --bk-checkbox-border-color: var(--bk-checkbox-background-color);
+      background:
+        center url('data:image/svg+xml;utf8,<svg width="14" height="10" viewBox="0 0 14 10" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 10L0 5.19231L1.4 3.84615L5 7.30769L12.6 0L14 1.34615L5 10Z" fill="white"/></svg>') no-repeat,
+        var(--bk-checkbox-background-color);
+    }
+    &:disabled {
+      --bk-checkbox-border-color: #{bk.$theme-checkbox-border-disabled};
+      --bk-checkbox-background-color: transparent;
+      
+      &:checked {
+        --bk-checkbox-background-color: bk.$theme-checkbox-background-non-active;
+      }
+    }
+    
+    @media (prefers-reduced-motion: no-preference) {
+      transition: none 100ms ease-out;
+      transition-property: background-color, background-position, border-color;
+    }
+  }
+}

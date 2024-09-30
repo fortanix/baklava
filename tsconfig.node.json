@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    // "plugins": [{
+    //   "name": "typescript-plugin-css-modules",
+    //   "options": {
+    //     //"classnameTransform": "camelCase",
+    //     //"goToDefinition": true,
+    //   },
+    // }],
+    
+    "emitDeclarationOnly": true,
+    "composite": true,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true
+  },
+  "include": [
+    "vite.config.ts",
+  ],
+}

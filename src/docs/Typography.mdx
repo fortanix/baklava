@@ -1,0 +1,109 @@
+
+import { Meta, Unstyled } from '@storybook/blocks';
+import { linkTo } from '@storybook/addon-links';
+
+import { fontSizes } from '../styling/variables.ts';
+
+import * as Heading from '../typography/Heading/Heading.tsx';
+import { ButtonAsLink } from '../components/actions/ButtonAsLink/ButtonAsLink.tsx';
+
+import cl from './Typography.module.scss';
+
+<Meta title="Docs/Typography"/>
+
+
+# Typography
+
+## Font families
+
+<div className={cl['font-family-list']}>
+  <table>
+    <thead>
+      <tr>
+        <th>Font: <code>body</code></th>
+      </tr>
+    </thead>
+    <tbody>
+      {[400, 600,700].map(weight =>
+        <tr key={weight} style={{ fontFamily: 'Open Sans', fontWeight: weight, fontSize: fontSizes.m }}>
+          <td>Open Sans {weight}</td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>Font: <code>display</code></th>
+      </tr>
+    </thead>
+    <tbody>
+      {[100, 200, 300, 400, 500, 600, 700].map(weight =>
+        <tr key={weight} style={{ fontFamily: 'Montserrat', fontWeight: weight, fontSize: fontSizes.m }}>
+          <td>Montserrat {weight}</td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+  <table>
+    <thead>
+      <tr>
+        <th>Font: <code>code</code></th>
+      </tr>
+    </thead>
+    <tbody>
+      {[400].map(weight =>
+        <tr key={weight} style={{ fontFamily: 'Source Code Pro', fontWeight: weight, fontSize: fontSizes.m }}>
+          <td>Source Code Pro {weight}</td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
+
+
+## Font sizes
+
+Font sizes are defined in units of `rem`. The exact pixel value of `rem` varies, the table below lists an approximation
+based on 1rem = 16px. Baklava sets a dynamic font size such that the actual font size changes slightly depending on the
+width of the viewport: on smaller devices (e.g. mobile), font sizes will be smaller.
+
+<div className={cl['font-size-list']}>
+  <table>
+    <thead>
+      <tr>
+        <th>Font size</th>
+        <th>Example text</th>
+        <th>rem</th>
+        <th>px (approximate)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {Object.entries(fontSizes).map(([fontSizeName, fontSize]) =>
+        <tr key={fontSizeName}>
+          <td><code>bk.${fontSizeName}</code></td>
+          <td style={{ fontSize: `${fontSize.sizeInRem}rem` }}>This text has font size {fontSize.sizeQualifier}</td>
+          <td>{fontSize.sizeInRem}rem</td>
+          <td>~{(fontSize.sizeInRem * 16).toFixed(2)}px</td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
+
+
+## Headings
+
+<Unstyled>
+  <Heading.H1>Heading 1</Heading.H1>
+  <Heading.H2>Heading 2</Heading.H2>
+  <Heading.H3>Heading 3</Heading.H3>
+  <Heading.H4>Heading 4</Heading.H4>
+  <Heading.H5>Heading 5</Heading.H5>
+  <Heading.H6>Heading 6</Heading.H6>
+</Unstyled>
+
+## See also
+
+- <ButtonAsLink onClick={linkTo(`typography/BodyText`)}>Body text</ButtonAsLink>

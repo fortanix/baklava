@@ -1,0 +1,224 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../Heading/Heading.mixins.scss' as Heading;
+
+
+/* Match either the current context (&), or a descendent of it */
+/* Note: only use this on single-element selectors (e.g. `p`), not on descendent selectors like `p a`. */
+@mixin self-or-descendent($selector) {
+  #{$selector}#{&}, & #{$selector} {
+    @content;
+  }
+}
+
+@mixin bk-body-text {
+  --bk-body-text-line-height: 1.6;
+  --bk-body-block-spacing: 0.8lh;
+  
+  font-family: var(--bk-font-family-body);
+  font-size: 1rem;
+  
+  overflow-wrap: break-word; /* Prevent long words causing overflow */
+  text-wrap: pretty; /* Favor better typography for text wrapping (e.g. prevent orphans */
+  hyphens: auto;
+  line-height: var(--bk-body-text-line-height);
+  
+  @include self-or-descendent(h1) { @include Heading.h1; }
+  @include self-or-descendent(h2) { @include Heading.h2; }
+  @include self-or-descendent(h3) { @include Heading.h3; }
+  @include self-or-descendent(h4) { @include Heading.h4; }
+  @include self-or-descendent(h5) { @include Heading.h5; }
+  @include self-or-descendent(h6) { @include Heading.h6; }
+  
+  @include self-or-descendent(p) { margin-block-start: var(--bk-body-block-spacing); }
+  
+  @include self-or-descendent(hr) {
+    margin-block: var(--bk-sizing-3);
+    border: none;
+    border-top: 1px solid #dbdbdb;
+  }
+  
+  @include self-or-descendent(":is(button, input, textarea)") {
+    transition:
+      background-color 0.1s linear,
+      border-color 0.1s linear,
+      color 0.1s linear,
+      box-shadow 0.1s linear,
+      transform 0.1s ease;
+  }
+  @include self-or-descendent(":is(b, strong, th)") {
+    font-weight: 600;
+  }
+  @include self-or-descendent(":is(u)") {
+    text-decoration: underline;
+  }
+  @include self-or-descendent(":is(i, em)") {
+    font-style: italic;
+  }
+  
+  @include self-or-descendent(blockquote) {
+    border-left: 4px solid #0096bfab;
+    margin: 1.5em 0;
+    padding: 0.5em 1em;
+    font-style: italic;
+    
+    & > footer, & cite {
+      font-style: normal;
+    }
+  }
+  
+  @include self-or-descendent(#{address}) {
+    font-style: normal;
+  }
+  
+  @include self-or-descendent(':is(button, input[type=submit], input[type=button], input[type=checkbox])') {
+    cursor: pointer;
+  }
+  
+  @include self-or-descendent(':is(input:not([type=checkbox]):not([type=radio]), select)') {
+    display: block;
+  }
+  
+  @include self-or-descendent(':is(input, select, button, textarea)') {
+    color: #000000;
+    background-color: #efefef;
+    font-family: inherit;
+    font-size: inherit;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+  }
+  
+  /* @include self-or-descendent :is(
+    input:not([type=checkbox]):not([type=radio]),
+    select,
+    button,
+    textarea,
+  ) {
+    -webkit-appearance: none;
+  } */
+  
+  @include self-or-descendent(textarea) {
+    margin-right: 0;
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+  }
+  
+  @include self-or-descendent(':is(button, input[type=submit], input[type=button])') {
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+  
+  @include self-or-descendent(':is(button:hover, input[type=submit]:hover, input[type=button]:hover)') {
+    background: #dddddd;
+  }
+  
+  @include self-or-descendent(':is(input:disabled, select:disabled, button:disabled, textarea:disabled)') {
+    cursor: not-allowed;
+    opacity: .5;
+  }
+  
+  & ::-webkit-input-placeholder {
+    color: #949494;
+  }
+  
+  & ::placeholder {
+    color: #949494;
+  }
+  
+  @include self-or-descendent(a) {
+    text-decoration: none;
+    color: #0076d1;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  
+  @include self-or-descendent(':is(code, kbd)') {
+    background: light-dark(#ccc, #333);
+    padding: 5px;
+    border-radius: 3px;
+    font-family: var(--bk-font-family-code, monospace);
+  }
+  
+  @include self-or-descendent(':is(pre)') {
+    > code {
+      padding: 10px;
+      display: block;
+      overflow-x: auto;
+    }
+  }
+  
+  @include self-or-descendent(img) {
+    max-width: 100%;
+  }
+  
+  @include self-or-descendent(':is(ul, ol, dl)') {
+    --list-indent: 1.5ch;
+    margin-block-start: var(--bk-body-block-spacing);
+  }
+  @include self-or-descendent(':is(li)') {
+    /* Nested lists */
+    > :is(ul, ol, dl) {
+      margin-left: var(--list-indent);
+    }
+  }
+  @include self-or-descendent(ul) {
+    display: block;
+    /* Note: do not use list-style: none, this causes accessibility issues:
+    https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists */
+    list-style: disc inside;
+    
+    > li::marker {
+      /* Override the marker style so we customize the gap size */
+      /* https://css-tricks.com/everything-you-need-to-know-about-the-gap-after-the-list-marker/ */
+      content: '\2022' ' ';
+      margin: 0; /* Margin and padding are not supported by `::marker` currently */
+    }
+    > li:not(:first-of-type) { /* Note: in the future we could use `margin-trim` instead */
+      margin-block-start: calc(var(--bk-body-block-spacing) / 4);
+    }
+  }
+  @include self-or-descendent(ol) {
+    display: block;
+    /* Note: do not use list-style: none, this causes accessibility issues:
+    https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists */
+    list-style: decimal inside;
+    
+    > li:not(:first-of-type) {
+      margin-block-start: calc(var(--bk-body-block-spacing) / 4);
+    }
+  }
+  
+  @include self-or-descendent(table) {
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+  
+  @include self-or-descendent(':is(td, th)') {
+    padding: 6px;
+    text-align: left;
+  }
+  
+  @include self-or-descendent(th) {
+    border-bottom: 1px solid #dbdbdb;
+  }
+  
+  @include self-or-descendent(tbody) {
+    tr:nth-child(even) {
+      background-color: #efefef;
+    }
+  }
+  
+  > :first-child {
+    margin-block-start: 0;
+  }
+}

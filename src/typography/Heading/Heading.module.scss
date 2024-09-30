@@ -1,0 +1,15 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../styling/defs.scss' as bk;
+@use './Heading.mixins.scss' as Heading;
+
+@layer baklava.components {
+  .bk-h1 { @include bk.component-base(bk-h1); @include Heading.h1; }
+  .bk-h2 { @include bk.component-base(bk-h2); @include Heading.h2; }
+  .bk-h3 { @include bk.component-base(bk-h3); @include Heading.h3; }
+  .bk-h4 { @include bk.component-base(bk-h4); @include Heading.h4; }
+  .bk-h5 { @include bk.component-base(bk-h5); @include Heading.h5; }
+  .bk-h6 { @include bk.component-base(bk-h6); @include Heading.h6; }
+}

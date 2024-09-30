@@ -1,0 +1,26 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use './theming_mixins.scss' as theming;
+
+@layer baklava.base {
+  :root {
+    /* Indicates that we support both light and dark themes (in no particular order) */
+    @include theming.theme('light dark');
+    
+    // XXX this should be done by lightningcss automatically, but for some reason these variables are not being injected
+    // https://github.com/parcel-bundler/lightningcss/releases/tag/v1.24.0
+    --lightningcss-light: initial;
+    --lightningcss-dark: ;
+    @media (prefers-color-scheme: dark) {
+      --lightningcss-light: ;
+      --lightningcss-dark: initial;
+    }
+  }
+  
+  /* Theme overrides */
+  .bk-theme--light { @include theming.theme('only light'); }
+  .bk-theme--dark { @include theming.theme('only dark'); }
+  .bk-theme--invert { @include theming.theme-invert; }
+}

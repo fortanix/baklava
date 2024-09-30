@@ -1,0 +1,41 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-alert {
+    @include bk.component-base(bk-alert);
+    
+    @include bk.theme('only light'); /* TEMP: no dark mode styling yet in Figma */
+    
+    &.bk-alert--info {
+      --bk-panel-background-color: #{bk.$theme-notifcation-informational-background-default};
+      --bk-panel-border-color: #{bk.$theme-notifcation-informational-border-default};
+    }
+    &.bk-alert--warning {
+      /* FIXME */
+      --bk-panel-background-color: light-dark(#FFFAEB, #FFFAEB);
+      --bk-panel-border-color: light-dark(#FEC84B, #FEC84B);
+    }
+    &.bk-alert--error {
+      --bk-panel-background-color: #{bk.$theme-notifcation-informational-background-default};
+      --bk-panel-border-color: #{bk.$theme-notifcation-informational-background-default};
+    }
+    &.bk-alert--success {
+      --bk-panel-background-color: #{bk.$theme-notifcation-informational-background-default};
+      --bk-panel-border-color: #{bk.$theme-notifcation-informational-background-default};
+    }
+    
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 1rem;
+    
+    > .bk-alert__icon {
+      color: var(--bk-panel-border-color);
+      font-size: 1.4em;
+    }
+    //> .bk-alert__message {}
+  }
+}

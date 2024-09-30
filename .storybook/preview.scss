@@ -1,0 +1,69 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../src/styling/defs.scss' as bk;
+
+/* Cascade layer ordering */
+/*
+Note: this ordering must be injected before any other CSS rules.
+*/
+@layer normalize, reset, baklava, app, accessibility, storybook;
+@layer baklava.base, baklava.body-text, baklava.theming, baklava.components;
+
+@import '../src/styling/lib/normalize.css' layer(normalize);
+@import '../src/styling/lib/reset.css' layer(reset);
+@import '../src/styling/lib/reset-custom.css' layer(reset);
+
+@import '../src/styling/variables.css';
+@import '../src/styling/fonts.css';
+@import '../src/styling/context/theming.scss';
+@import '../src/styling/global.scss' layer(baklava.base);
+@import '../src/typography/BodyText/BodyText.module.scss';
+
+@import '../src/styling/accessibility.css' layer(accessibility);
+
+
+/* Storybook-specific style overrides */
+
+@layer reset {
+  /*
+  Do not apply our aggressive reset to Storybook docs pages. The docs pages rely on some standard user agent styling
+  to be present. For example, lists like `<ol>` will break in docs pages.
+  */
+  @scope (#storybook-docs) to (.sb-story, .sb-unstyled, .bk) {
+    :scope, :scope * {
+      all: revert-layer;
+    }
+  }
+}
+
+/* Storybook Preview styling */
+@layer storybook {
+  :root, body {
+    min-height: 100%;
+  }
+  
+  .sb-main-fullscreen #storybook-root {
+    width: 100%;
+    min-height: 100%;
+    
+    // In fullscreen mode, make the storybook root a container so that we can use `cq` units rather than `vw/vh`.
+    // Note: don't do this for centered/padding mode, because then the width of the component will no longer be dynamic.
+    container: sb-root / inline-size;
+  }
+  
+  :is(
+    .docs-story, /* Stories within docs page pages */
+    .sb-main-centered, /* Stories with layout=centered */
+    .sb-main-padded, /* Stories with layout=padded */
+    .sb-main-fullscreen:not(:has(.docs-story)) /*  Stories with layout=fullscreen (note: docs pages also have this) */
+   ) {
+    background: var(--bk-page-color-background);
+  }
+  
+  .docs-story {
+    container-name: sb-docs-story;
+    /* container-type: inline-size; XXX this may break some stories due to containment rules */
+  }
+}

@@ -1,0 +1,81 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-button {
+    @include bk.component-base(bk-button);
+    
+    --bk-button-color-accent: #{bk.$theme-button-primary-background-default};
+    --bk-button-color-contrast: #{bk.$theme-button-primary-text-default};
+    
+    align-self: flex-start;
+    
+    cursor: pointer;
+    
+    margin: 0;
+    padding: calc(bk.$spacing-2 - 0.125lh) bk.$spacing-3; /* Note: compensate for line-height difference with Figma */
+    
+    /* Transparent border for consistency with other variants that have a border */
+    border: bk.$size-1 solid transparent;
+    border-radius: bk.$radius-s;
+    background: transparent;
+    
+    display: inline-flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 0.3ch;
+    
+    @include bk.font(bk.$font-family-display, bk.$font-weight-medium);
+    /* letter-spacing: 0.1ch; */
+    text-transform: uppercase;
+    
+    @media (prefers-reduced-motion: no-preference) {
+      transition: none 150ms ease-in-out;
+      transition-property: border, background, color;
+    }
+    
+    /* Tertiary (default) */
+    border-color: transparent;
+    background-color: transparent;
+    color: var(--bk-button-color-accent);
+    
+    &.bk-button--secondary {
+      border-color: var(--bk-button-color-accent);
+      background-color: transparent;
+      color: var(--bk-button-color-accent);
+    }
+    &.bk-button--primary {
+      border-color: var(--bk-button-color-accent);
+      background-color: var(--bk-button-color-accent);
+      color: var(--bk-button-color-contrast);
+    }
+    
+    /* States */
+    /* NOTE: the ordering here is important, more important rules must come later (in case of multiple states) */
+    &:is(:focus-visible, :global(.pseudo-focus-visible)) {
+      --bk-button-color-accent: #{bk.$theme-button-primary-background-focused};
+      @include bk.focus-outline-close;
+    }
+    &:is(:hover, :global(.pseudo-hover)) {
+      --bk-button-color-accent: #{bk.$theme-button-primary-background-hover};
+    }
+    &:is(:disabled, .bk-button--disabled) {
+      --bk-button-color-accent: #{bk.$theme-button-primary-background-disabled};
+      --bk-button-color-contrast: #{bk.$theme-button-primary-text-disabled};
+      cursor: not-allowed;
+    }
+    &.bk-button--nonactive {
+      --bk-button-color-accent: #{bk.$theme-button-primary-background-non-active};
+      --bk-button-color-contrast: #{bk.$theme-button-primary-text-non-active};
+      cursor: not-allowed;
+    }
+    
+    /* & > :global(.icon) { font-size: 1.2rem; } */
+    
+    /* https://css-tricks.com/css-cascade-layers/#aa-reverting-important-layers */
+    /* &:is(:global(.unstyled), #specificity#hack) { all: revert-layer; } */
+  }
+}

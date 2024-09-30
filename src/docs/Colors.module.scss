@@ -1,0 +1,56 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../styling/context/theming_mixins.scss' as theming;
+
+@layer storybook {
+  .primitive-colors {
+    display: flex;
+    flex-direction: column;
+    gap: 1lh;
+    
+    .color-category {
+      .colors-list {
+        --item-size: 5rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(min(var(--item-size), 100%), 1fr));
+        gap: 2ch;
+        
+        .color {
+          min-height: 4rem;
+          padding: 0.5rem;
+          background: var(--color);
+          border: 1px solid color-mix(in srgb, var(--color) 90%, black);
+          box-shadow: 1px 1px 3px color-mix(in srgb, var(--color) 90%, black);
+          
+          display: flex;
+          flex-direction: column;
+          justify-content: end;
+          
+          color: black;
+          font-size: 0.8rem;
+          
+          dt, dd {
+            all: unset;
+            /* color: color-contrast(var(--color) vs black, white); // Insufficient browser support */
+            /* color: white; mix-blend-mode: difference; */
+            
+            color: var(--contrast);
+          }
+          dt {
+            font-weight: 600;
+          }
+        }
+        
+        &.color-spectrum .color {
+          background: color-mix(in srgb, var(--color) calc(var(--lightness) / 9 * 100%), black);
+        }
+      }
+    }
+  }
+  
+  .theme-demo {
+    @include theming.theme-invert;
+  }
+}

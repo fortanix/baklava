@@ -1,0 +1,71 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-tabs {
+    @include bk.component-base(bk-tabs);
+    
+    .bk-tabs__switcher {
+      display: flex;
+      list-style: none;
+      border-bottom: 1px solid #{bk.$theme-tab-rule-default};
+      
+      .bk-tabs__switcher__tab {
+        position: relative;
+        user-select: none;
+        padding: bk.$spacing-3 bk.$spacing-8;
+        color: #{bk.$theme-tab-text-default};
+        @include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-m);
+        text-transform: uppercase;
+        cursor: pointer;
+        white-space: nowrap;
+        
+        // The active tab underline (zero height by default)
+        &::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          left: 0;
+          bottom: 0;
+          height: 0;
+          transition: .3s;
+        }
+        
+        &:is(:hover, :global(.pseudo-hover)) {
+          font-weight: bk.$font-weight-bold;
+          
+          &::after {
+            background-color: #{bk.$theme-tab-tabs-hover};
+            height: 5px;
+          }
+        }
+        
+        &:is(:focus-visible, :global(.pseudo-focus-visible)) {
+          font-weight: bk.$font-weight-bold;
+          
+          &::after {
+            background-color: #{bk.$theme-tab-tabs-focused};
+            height: 5px;
+          }
+        }
+        
+        &[aria-selected="true"] {
+          font-weight: bk.$font-weight-bold;
+          
+          &::after {
+            cursor: default;
+            background-color: #{bk.$theme-tab-tabs-focused};
+            height: 5px;
+          }
+        }
+      }
+    }
+    
+    .bk-tabs__tab-content {
+      padding-top: bk.$spacing-7;
+    }
+  }
+}

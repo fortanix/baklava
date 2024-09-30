@@ -1,0 +1,40 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-input {
+    @include bk.component-base(bk-input);
+    
+    --bk-input-accent-color: #{bk.$theme-form-rule-default};
+    
+    border: 0 solid var(--bk-input-accent-color);
+    border-bottom-width: 1px;
+    
+    line-height: 1.6;
+    
+    &::placeholder {
+      color: color-mix(in sRGB, currentColor 60%, transparent);
+    }
+    
+    &:focus {
+      outline: none !important;
+      
+      --bk-input-accent-color: #{bk.$theme-form-rule-focused};
+    }
+    
+    @media (prefers-reduced-motion: no-preference) {
+      transition: none 150ms;
+      transition-property: background, border;
+    }
+    
+    &:not(:focus-within) {
+      /* Note: allow `.invalid` to explicitly control invalid state in addition to `:user-invalid` */
+      &:is(&:user-invalid, &:global(.invalid)) {
+        --bk-input-accent-color: #{bk.$theme-form-rule-error};
+      }
+    }
+  }
+}

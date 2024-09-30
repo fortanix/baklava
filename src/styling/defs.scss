@@ -1,0 +1,60 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@forward './variables.scss';
+@forward './fonts_mixins.scss';
+@forward './context/theming_mixins.scss';
+
+@use './variables.scss' as vars;
+
+@mixin component-base($name) {
+  container-name: $name;
+  /* Enable content containment. This enforces that the component's content is isolated from its parents. */
+  /* https://css-tricks.com/lets-take-a-deep-dive-into-the-css-contain-property */
+  contain: layout style;
+  
+  // The following both disallow anything painted outside of the element boundaries, except from things like outlines
+  // or `border-image` on the outer element. However, enabling these by default is not a good idea, because it may cut
+  // off things like focus outlines on child elements. We cannot guaranteed that there there is a padding on every `.bk`
+  // element to prevent this kind of thing.
+  //overflow: hidden;
+  //contain: paint;
+}
+
+@mixin font($family: vars.$font-family-display, $weight: vars.$font-weight-regular, $size: null) {
+  font-family: $family;
+  font-weight: $weight;
+  @if $size {
+    font-size: $size;
+  }
+}
+
+@mixin text-layout {
+  /* https://blog.logrocket.com/guide-css-word-wrap-overflow-wrap-word-break/ */
+  /* https://stackoverflow.com/questions/12699800/smarter-word-break-in-css */
+  overflow-wrap: break-word; /* Prevent long words causing overflow */
+  text-wrap: pretty; /* Favor better typography for text wrapping (e.g. prevent orphans */
+  hyphens: auto;
+}
+
+@mixin flex-center() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin rounded($rounding: bkl.$sizing-xs) {
+  border-radius: $rounding;
+  overflow: hidden; // Prevent child items from "bleeding through" the rounded borders
+}
+
+@mixin focus-outline-close() {
+  /* Override accessibility layer */
+  outline: 2px solid var(--bk-focus-outline-color) !important;
+  outline-offset: 0 !important;
+}
+@mixin focus-inset() {
+  outline: none !important; /* Override accessibility layer */
+  box-shadow: inset 2px 2px var(--bk-focus-outline-color), inset -2px -2px var(--bk-focus-outline-color);
+}

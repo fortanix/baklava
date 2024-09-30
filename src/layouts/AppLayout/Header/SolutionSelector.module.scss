@@ -1,0 +1,24 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-solution-selector {
+    @include bk.component-base(bk-solution-selector);
+    
+    // Allow the element to shrink down to just the icon
+    overflow: hidden;
+    flex-shrink: 4; // Shrink relatively fast (since there is no important information besides the icon)
+    min-width: 3rem;
+    
+    display: flex;
+    gap: bk.$spacing-2;
+    align-items: center;
+    
+    .bk-solution-selector__icon {
+      --bk-icon-accent-color: #{bk.$theme-header-icon-background-default};
+    }
+  }
+}

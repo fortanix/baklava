@@ -1,0 +1,78 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+/* stylelint-disable no-duplicate-selectors */
+/* stylelint-disable selector-class-pattern */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-app-logo {
+    @include bk.component-base(bk-app-logo);
+    container-type: inline-size;
+    width: 200px;
+    aspect-ratio: 1 / 0.2;
+    
+    --icon-size: 0.16fr;
+    
+    place-self: center start;
+    
+    // overflow: clip;
+    // user-select: none;
+    
+    margin: 13px 10px;
+    margin-bottom: 7px;
+    
+    > :global(._logo) {
+      display: grid;
+      grid:
+        'icon title' max-content
+        'icon subtitle' 1fr
+        / var(--icon-size) 1fr;
+      column-gap: 4cqi;
+      
+      > :global(._icon) { grid-area: icon; }
+      > :global(._title) { grid-area: title; }
+      > :global(._subtitle) { grid-area: subtitle; }
+      
+      color: bk.$theme-text-logo-default;
+      
+      > :global(._icon) {
+        align-self: center;
+      }
+      > :global(._title), > :global(._subtitle) {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      > :global(._title) {
+        align-self: end;
+        font-size: 9.4cqi;
+      }
+      > :global(._subtitle) {
+        align-self: start;
+        font-size: 7cqi;
+      }
+      
+      
+      /* Fortanix logo styling */
+      > :global(._title) {
+        @include bk.font(bk.$font-family-display, bk.$font-weight-bold);
+        line-height: 1;
+        align-self: start;
+        
+        &::after {
+          display: inline-block;
+          content: '®';
+          margin-left: 0.5ch;
+          
+          vertical-align: 1.8cap;
+          font-size: 0.3em;
+        }
+      }
+      > :global(._subtitle) {
+        @include bk.font(bk.$font-family-display, bk.$font-weight-medium);
+      }
+    }
+  }
+}

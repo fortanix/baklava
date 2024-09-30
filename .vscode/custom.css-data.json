@@ -1,0 +1,16 @@
+{
+  "version": 1.1,
+  "properties": [
+    { "name": "container" }, // https://github.com/microsoft/vscode-css-languageservice/issues/329
+    { "name": "container-name" },
+    { "name": "container-type" },
+    { "name": "position-try-options" }
+  ],
+  "atDirectives": [
+    { "name": "@scope" }, // https://github.com/microsoft/vscode-css-languageservice/issues/406
+    { "name": "@starting-style" }, // https://github.com/microsoft/vscode-css-languageservice/issues/403
+    { "name": "@position-try" }
+  ],
+  "pseudoClasses": [],
+  "pseudoElements": []
+}

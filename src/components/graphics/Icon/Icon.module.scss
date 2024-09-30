@@ -1,0 +1,42 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-icon {
+    @include bk.component-base(bk-icon);
+    
+    --bk-icon-accent-color: color-mix(in sRGB, currentColor 30%, transparent);
+    --bk-icon-size: 1em; /* TEMP: keep old size for now, until components are properly migrated */
+    
+    box-sizing: content-box; /* Use content-box so that we can set a padding on an icon without it shrinking the width */
+    
+    vertical-align: -25%; /* In inline flow, position the icon on the baseline, shifted downwards by 20% */
+    align-self: center;
+    flex: none; /* Prevent icons from shrinking or growing in flexbox */
+    
+    display: inline-flex;
+    width: var(--bk-icon-size);
+    aspect-ratio: 1 / 1.2;
+    fill: currentColor; /* Use the current font color by default */
+    
+    /* By default, use a stroke width of `0`. Most icons rely on `fill` instead, because apps like IcoMoon rely on
+    `fill` to generate fonts from SVG. If we do have an icon with stroke then we at least want to set the color to
+    current. */
+    stroke: currentColor;
+    stroke-width: 0;
+    
+    &.bk-icon--background-circle {
+      align-items: center;
+      justify-content: center;
+      
+      background: var(--bk-icon-accent-color);
+      padding: 12px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      overflow: visible; /* Prevent the border-radius from cutting off part of the icon */
+    }
+  }
+}

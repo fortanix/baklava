@@ -1,0 +1,113 @@
+
+import cx from 'classnames/dedupe';
+import { Meta, Unstyled } from '@storybook/blocks';
+
+import colorContrast from 'postcss-color-contrast/js';
+import { colorsByCategory } from '../styling/variables.ts';
+
+import { H4, H5 } from '../typography/Heading/Heading.tsx';
+import { TooltipProvider } from '../components/overlays/Tooltip/TooltipProvider.tsx';
+import { Panel } from '../components/containers/Panel/Panel.tsx';
+
+import cl from './Colors.module.scss';
+
+
+<Meta title="Docs/Colors"/>
+
+# Colors
+
+## Usage
+
+All color tokens are available as static variables of the form `bk.$color-<token>`.
+
+```css
+.my-component {
+  color: bk.$color-neutral-500;
+}
+```
+
+## Primitive Color Tokens
+
+Primitive color tokens are the basic color definitions which are not dependent on any particular theme or semantics. Other color tokens may be defined in terms of these.
+
+<Unstyled>
+  <div className={cl['primitive-colors']}>
+    {Object.entries(colorsByCategory).map(([colorCategoryName, colorCategory]) =>
+      <section key={colorCategoryName} className={cl['color-category']}>
+        <H4>{colorCategoryName}</H4>
+        <dl className={cl['colors-list']}>
+          {Object.entries(colorCategory).map(([colorName, { weight, color }]) =>
+            <TooltipProvider key={colorName} tooltip={<code className="bk-body-text">{`bk.$color-${colorName}`}</code>}>
+              <div className={cl['color']} tabIndex="1"
+                style={{ '--color': color, '--contrast': colorContrast(color, ['#e5e5e5', '#171717']) }}
+              >
+                <dt>{weight}</dt>
+                <dd>{color}</dd>
+              </div>
+            </TooltipProvider>
+          )}
+        </dl>
+      </section>
+    )}
+  </div>
+</Unstyled>
+
+{/*
+## Spectrum (experiment)
+
+{/* https://evilmartians.com/chronicles/oklch-in-css-why-quit-rgb-hsl * /}
+[/* https://www.youtube.com/watch?v=gPacarD9NuA * /}
+<section className={cl['color-category']}>
+  <dl className={cx(cl['colors-list'], cl['color-spectrum'])} style={{ '--item-size': '4rem', gap: 0 }}>
+    {Array.from({ length: 10 }).map((_, i) =>
+      <div key={i} className={cl['color']} style={{ background: `oklab(calc(20% + ${i/9} * 60%) -50% 0)` }}>
+        <dt></dt>
+        <dd></dd>
+      </div>
+    )}
+  </dl>
+  <dl className={cx(cl['colors-list'], cl['color-spectrum'])} style={{ '--item-size': '4rem', gap: 0 }}>
+    {Array.from({ length: 10 }).map((_, i) =>
+      <div key={i} className={cl['color']} style={{ background: `oklab(calc(20% + ${i/9} * 60%) 0% -60%)` }}>
+        <dt></dt>
+        <dd></dd>
+      </div>
+    )}
+  </dl>
+    <dl className={cx(cl['colors-list'], cl['color-spectrum'])} style={{ '--item-size': '4rem', gap: 0 }}>
+    {Array.from({ length: 10 }).map((_, i) =>
+      <div key={i} className={cl['color']} style={{ background: `oklab(calc(20% + ${i/9} * 60%) 0% 0%)` }}>
+        <dt></dt>
+        <dd></dd>
+      </div>
+    )}
+  </dl>
+</section>
+*/}
+
+
+## Theming
+
+Baklava supports both light and dark themes. By default, the user's preferred color scheme is chosen.
+
+<Unstyled>
+  <div className={cl['theme-demo']}>
+    <Panel className="bk-theme--dark">
+      <Panel.Heading>
+        This is a panel in dark theme: <code className="bk-body-text">.bk-theme--dark</code>
+      </Panel.Heading>
+      
+      <Panel className="bk-theme--light">
+        <Panel.Heading>
+          This is a panel in light theme: <code className="bk-body-text">.bk-theme--light</code>
+        </Panel.Heading>
+        
+        {/* XXX this doesn't work without `@scope`, light wins over dark due to the order in which they were defined
+        <Panel className="bk-theme--invert">
+          <Panel.Heading>This panel inverts the theme of the parent.</Panel.Heading>
+        </Panel>
+        */}
+      </Panel>
+    </Panel>
+  </div>
+</Unstyled>

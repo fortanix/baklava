@@ -1,0 +1,110 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+/* stylelint-disable no-duplicate-selectors */
+
+@use '../../styling/defs.scss' as bk;
+
+@layer baklava.base {
+  :root {
+    /* Height of the header needs to be known at root level so we can use it for things like `scroll-padding-top` */
+    --bk-app-layout-header-height: var(--bk-sizing-5);
+  }
+}
+
+@layer baklava.components {
+  .bk-app-layout {
+    @include bk.component-base(bk-app-layout);
+    container-type: inline-size;
+    
+    --bk-app-layout-sidebar-width-open: 220px;
+    --bk-app-layout-sidebar-width: var(--bk-app-layout-sidebar-width-open);
+    
+    //&:has([slot='sidebar']:hover) { --bk-app-layout-sidebar-width: 80px; } // TEST
+    @media (prefers-reduced-motion: no-preference) {
+      transition: grid 300ms;
+    }
+    
+    /* Note: do not use vw/vh, because we may want to show the layout in a container (e.g. story) */
+    min-width: 100cqw;
+    min-height: 100cqh;
+    
+    display: grid;
+    // Note: use `minmax(0, 1fr)` to prevent blowout: https://css-tricks.com/preventing-a-grid-blowout
+    grid:
+      'header  header' var(--bk-app-layout-header-height)
+      'sidebar content' 1fr
+      'sidebar footer' max-content
+      / var(--bk-app-layout-sidebar-width) minmax(0, 1fr);
+    
+    > [slot='header'] { grid-area: header; }
+    > [slot='sidebar'] { grid-area: sidebar; }
+    > [slot='content'] { grid-area: content; }
+    > [slot='footer'] { grid-area: footer; }
+    
+    > [slot='header'] {
+      container: bk-app-layout__header / inline-size;
+      overflow: hidden;
+      
+      background: bk.$theme-header-background-default;
+      
+      position: sticky;
+      top: 0;
+      z-index: 1; /* Higher than content */
+      
+      display: grid;
+      grid:
+        'logo account-actions user-actions' 1fr
+        / var(--bk-app-layout-sidebar-width-open) max-content 1fr;
+      
+      > [slot='logo'] { grid-area: logo; }
+      > [slot='actions'] { grid-column: account-actions-start / user-actions-end; }
+      
+      > [slot='logo'] {
+        &:focus-visible {
+          @include bk.focus-inset;
+        }
+      }
+    }
+    
+    > [slot='sidebar'] {
+      container: bk-app-layout__sidebar / inline-size;
+      
+      background: bk.$theme-side-nav-background-default;
+      
+      > aside {
+        position: sticky;
+        top: var(--bk-app-layout-header-height);
+        /*
+        Note: if the sidebar itself overflows (in height), then we might want to make this scrollable, but this is hard:
+          - https://stackoverflow.com/questions/16094785/fixed-position-div-that-needs-to-scroll-if-content-overflows
+        However, the user can still scroll the fixed sidebar by just scrolling to the bottom of the content.
+        */
+      }
+    }
+    
+    > [slot='content'] {
+      container: bk-app-layout__content / inline-size;
+      padding: var(--bk-sizing-4);
+    }
+    
+    > [slot='footer'] {
+      container: bk-app-layout__footer / inline-size;
+      
+      // overflow: clip;
+      padding: var(--bk-sizing-2) var(--bk-sizing-4);
+      
+      display: flex;
+      font-size: 0.8rem;
+    }
+    
+    @container (width <= 768px) { /* Tablet size */
+      grid:
+        'header' max-content
+        'sidebar' max-content
+        'content' 1fr
+        'footer' max-content
+        / 1fr;
+    }
+  }
+}

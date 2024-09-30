@@ -1,0 +1,17 @@
+
+# Tool support
+/node_modules/
+
+# Environment-specific
+/.env
+
+# Build files
+/dist/
+/typings/
+/lib-cjs/
+/lib-esm/
+
+# Project
+/dist/storybook
+/storybook-static
+/build-storybook.log

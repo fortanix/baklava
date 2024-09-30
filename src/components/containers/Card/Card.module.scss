@@ -1,0 +1,32 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@mixin bk-card($name: bk-card) {
+  --bk-card-background-color: #{bk.$theme-card-background-default};
+  --bk-card-border-color: #{bk.$theme-card-border-default};
+  
+  overflow: hidden;
+  
+  min-height: bk.$spacing-16;
+  padding: bk.$spacing-4;
+  
+  background: var(--bk-card-background-color);
+  border: bk.$size-1 solid var(--bk-card-border-color);
+  border-radius: bk.$radius-m;
+  
+  .#{$name}__heading {
+    margin-bottom: bk.$spacing-5;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+@layer baklava.components {
+  .bk-card {
+    @include bk.component-base(bk-card);
+    @include bk-card;
+  }
+}

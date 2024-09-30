@@ -1,0 +1,37 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@layer storybook {
+  .icons-overview {
+    max-width: 40rem;
+    margin-block: 1.2rem;
+    
+    display: flex;
+    flex-flow: row wrap;
+    gap: 0.8rem;
+    
+    :global(.icon) {
+      font-size: 1.8em;
+      
+      outline: 1px solid transparent;
+      @media (prefers-reduced-motion: no-preference) {
+        transition: outline-color 200ms ease-in-out;
+      }
+    }
+    
+    &:hover {
+      :global(.icon) {
+        outline-color: color-mix(in srgb, currentColor 10%, transparent);
+      }
+    }
+  }
+  
+  .icons-table {
+    .cell {}
+    
+    .cell-icon {
+      font-size: 1.4em;
+    }
+  }
+}

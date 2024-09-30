@@ -1,0 +1,100 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-banner {
+    @include bk.component-base(bk-banner);
+
+    display: flex;
+    flex-direction: row;
+    
+    border-radius: bk.$spacing-1;
+    border-style: solid;
+    border-width: 1px;
+
+    padding: bk.$spacing-2;
+
+    color: bk.$theme-banner-text-default;
+    line-height: 22px; // non-standard sizing
+
+    .bk-banner__icon {
+      font-size: 18px;
+      margin-right: bk.$spacing-3;
+      margin-left: bk.$spacing-2;
+      position: relative;
+      top: -1px;
+    }
+
+    .bk-banner__title {
+      font-weight: bk.$font-weight-semibold;
+    }
+
+    .bk-banner__subtitle {
+      margin-left: bk.$spacing-1;
+    }
+    
+    &:has(> .bk-banner__subtitle) .bk-banner__subtitle {
+      margin-right: auto;
+    }
+    &:not(:has(> .bk-banner__subtitle)) .bk-banner__title {
+      margin-right: auto;
+    }
+    
+    .bk-banner__button {
+      padding: 0;
+      margin-right: bk.$spacing-5;
+    }
+
+    .bk-banner__action {
+      height: bk.$spacing-5;
+
+      button {
+        border: 0;
+        font-weight: bk.$font-weight-semibold;
+        padding-bottom: 0;
+        padding-top: 0;
+      }
+    }
+
+    .bk-banner__close-button {
+      color: bk.$theme-banner-icon-default;
+      font-size: bk.$font-size-xs;
+      padding: bk.$spacing-1;
+    }
+
+    &.bk-banner--informational {
+      background-color: bk.$theme-banner-informational-background-default;
+      border-color: bk.$theme-banner-informational-border-default;
+      .bk-banner__icon {
+        color: bk.$color-blueberry-400;
+      }
+    }
+
+    &.bk-banner--success {
+      background-color: bk.$theme-banner-success-background-default;
+      border-color: bk.$theme-banner-success-border-default;
+      .bk-banner__icon {
+        color: bk.$color-apple-400;
+      }
+    }
+
+    &.bk-banner--warning {
+      background-color: bk.$theme-banner-warning-background-default;
+      border-color: bk.$theme-banner-warning-border-default;
+      .bk-banner__icon {
+        color: bk.$color-orange-400;
+      }
+    }
+
+    &.bk-banner--alert {
+      background-color: bk.$theme-banner-alert-background-default;
+      border-color: bk.$theme-banner-alert-border-default;
+      .bk-banner__icon {
+        color: bk.$color-cherry-400;
+      }
+    }
+  }
+}

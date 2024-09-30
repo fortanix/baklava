@@ -1,0 +1,42 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../styling/defs.scss' as bk;
+
+@mixin heading {
+  @include bk.font(bk.$font-family-display);
+  text-wrap: balance;
+  line-height: 1.6;
+}
+
+@mixin h1 {
+  @include heading;
+  font-size: 42px;
+  font-weight: 300;
+}
+@mixin h2 {
+  @include heading;
+  font-size: 30px;
+  font-weight: 400;
+}
+@mixin h3 {
+  @include heading;
+  font-size: 24px;
+  font-weight: 400;
+}
+@mixin h4 {
+  @include heading;
+  font-size: 20px;
+  font-weight: 400;
+}
+@mixin h5 {
+  @include heading;
+  font-size: 16px;
+  font-weight: 600;
+}
+@mixin h6 {
+  @include heading;
+  font-size: 16px;
+  font-weight: 500;
+}
