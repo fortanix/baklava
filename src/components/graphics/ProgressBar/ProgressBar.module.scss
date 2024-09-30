@@ -1,0 +1,40 @@
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-progress-bar {
+    @include bk.component-base(bk-progress-bar);
+
+    appearance: none; // undo default browser appearance
+
+    background: bk.$theme-progress-bar-track;
+    border: none;
+    border-radius: bk.$border-radius-m;
+    width: 100%;
+    height: 10px; // sizing not present on bk variables
+  }
+  // for now <progress> needs to be styled with browser-prefixes on Blink and Webkit
+  .bk-progress-bar::-moz-progress-bar {
+    background: bk.$theme-progress-bar-fill;
+    border-radius: bk.$border-radius-m;
+  }
+  .bk-progress-bar::-webkit-progress-bar {
+    background: bk.$theme-progress-bar-track;
+    border-radius: bk.$border-radius-m;
+  }
+  .bk-progress-bar::-webkit-progress-value {
+    background: bk.$theme-progress-bar-fill;
+    border-radius: bk.$border-radius-m;
+  }
+
+  .bk-progress-bar--label {
+    font-size: bk.$font-size-m;
+    font-weight: bk.$font-weight-semibold;
+    margin-bottom: bk.$sizing-2;
+  }
+
+  .bk-progress-bar--hint-text {
+    font-size: bk.$font-size-s;
+    margin-top: -(bk.$sizing-1);
+  }
+}
