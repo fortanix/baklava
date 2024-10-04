@@ -20,7 +20,7 @@ const packageConfig = {
   scripts: {
     // Utilities
     'gen-package': 'node package.json.js', // Update `package.json`
-    'install-package': 'npm run gen-package && npm install --force',
+    'install-project': 'npm run gen-package && npm install --force',
     
     // CLI
     'node': 'node --import=tsx',
@@ -64,8 +64,8 @@ const packageConfig = {
     
     // Build
     'vite': '^5.4.8',
-    '@vitejs/plugin-react': '^4.3.1',
-    'vite-plugin-dts': '^4.2.2',
+    '@vitejs/plugin-react': '^4.3.2',
+    'vite-plugin-dts': '^4.2.3',
     'vite-plugin-lib-inject-css': '^2.1.1',
     'vite-plugin-svg-icons': '^2.0.1',
     
@@ -73,23 +73,23 @@ const packageConfig = {
     'typescript': '^5.6.2',
     'stylelint': '^16.9.0',
     'stylelint-config-standard-scss': '^13.1.0',
-    '@biomejs/biome': '^1.9.1',
+    '@biomejs/biome': '^1.9.3',
     
     // Testing
-    'vitest': '^2.1.1',
-    '@vitest/ui': '^2.1.1',
+    'vitest': '^2.1.2',
+    '@vitest/ui': '^2.1.2',
     
     // Storybook
-    'storybook': '^8.3.4',
-    '@storybook/react': '^8.3.4',
-    '@storybook/react-vite': '^8.3.4',
-    '@storybook/blocks': '^8.3.4',
-    '@storybook/test': '^8.3.4',
-    '@storybook/addon-essentials': '^8.3.4',
-    '@storybook/addon-a11y': '^8.3.4',
-    '@storybook/addon-interactions': '^8.3.4',
-    '@storybook/addon-links': '^8.3.4',
-    '@storybook/addon-storysource': '^8.3.4',
+    'storybook': '^8.3.5',
+    '@storybook/react': '^8.3.5',
+    '@storybook/react-vite': '^8.3.5',
+    '@storybook/blocks': '^8.3.5',
+    '@storybook/test': '^8.3.5',
+    '@storybook/addon-essentials': '^8.3.5',
+    '@storybook/addon-a11y': '^8.3.5',
+    '@storybook/addon-interactions': '^8.3.5',
+    '@storybook/addon-links': '^8.3.5',
+    '@storybook/addon-storysource': '^8.3.5',
     '@storybook/addon-designs': '^8.0.3',
     '@chromatic-com/storybook': '^2.0.2', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
@@ -124,8 +124,8 @@ const packageConfig = {
     
     // React
     'classnames': '^2.5.1',
-    'react': '^19.0.0-rc-3edc000d-20240926',
-    'react-dom': '^19.0.0-rc-3edc000d-20240926',
+    'react': '^19.0.0-rc-0751fac7-20241002',
+    'react-dom': '^19.0.0-rc-0751fac7-20241002',
     'react-error-boundary': '^4.0.13',
     
     '@floating-ui/react': '^0.26.24',
