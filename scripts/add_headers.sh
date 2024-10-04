@@ -4,5 +4,5 @@
 
 #for ext in js ts tsx css scss
 #do
-#  find src -type f -name "*.${ext}" -exec gsed -i '1i /* Copyright (c) Fortanix, Inc.\n|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not\n|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */' {} \;
+#  find src -type f -name "*.${ext}" -exec gsed -i '1i /* Copyright (c) Fortanix, Inc.\n|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of\n|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */' {} \;
 #done

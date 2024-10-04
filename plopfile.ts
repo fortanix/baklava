@@ -1,6 +1,6 @@
 /* Copyright (c) Fortanix, Inc.
-|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
-|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { dedent } from 'ts-dedent';
 import * as path from 'node:path';
@@ -50,8 +50,8 @@ const componentTemplate = {
   */
   'Component.tsx': '\n' + dedent`
     /* Copyright (c) Fortanix, Inc.
-    |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
-    |* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+    |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+    |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
     
     import * as React from 'react';
     import { classNames as cx, type ComponentProps } from '{{{relative-path "src/util/componentUtil.ts"}}}';
@@ -114,8 +114,8 @@ const componentTemplate = {
   */
   'Component.module.scss': '\n' + dedent`
     /* Copyright (c) Fortanix, Inc.
-    |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
-    |* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+    |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+    |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
     
     @use '{{{relative-path "src/styling/defs.scss"}}}' as bk;
     
@@ -160,8 +160,8 @@ const componentTemplate = {
   */
   'Component.stories.tsx': '\n' + dedent`
     /* Copyright (c) Fortanix, Inc.
-    |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
-    |* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+    |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+    |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
     
     import type { Meta, StoryObj } from '@storybook/react';
     

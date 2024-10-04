@@ -1,6 +1,6 @@
 /* Copyright (c) Fortanix, Inc.
-|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
-|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 // Note: use the `dedupe` variant so that the consumer of a component can overwrite classes from the component using
 // `<MyComponent className={{ foo: false }}/>`
