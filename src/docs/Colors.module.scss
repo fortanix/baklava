@@ -21,8 +21,8 @@
           min-height: 4rem;
           padding: 0.5rem;
           background: var(--color);
-          border: 1px solid color-mix(in srgb, var(--color) 90%, black);
-          box-shadow: 1px 1px 3px color-mix(in srgb, var(--color) 90%, black);
+          border: 1px solid color-mix(in sRGB, var(--color) 90%, black);
+          box-shadow: 1px 1px 3px color-mix(in sRGB, var(--color) 90%, black);
           
           display: flex;
           flex-direction: column;
@@ -44,7 +44,7 @@
         }
         
         &.color-spectrum .color {
-          background: color-mix(in srgb, var(--color) calc(var(--lightness) / 9 * 100%), black);
+          background: color-mix(in sRGB, var(--color) calc(var(--lightness) / 9 * 100%), black);
         }
       }
     }

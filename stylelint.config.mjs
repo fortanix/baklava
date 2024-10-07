@@ -1,6 +1,12 @@
 
+/** @type {import('stylelint').Config} */
 export default {
   'extends': 'stylelint-config-standard-scss',
+  
+  'ignoreFiles': [
+    'node_modules/**/*',
+    'dist/**/*',
+  ],
   
   'rules': {
     // Override `stylelint-config-standard-scss` rules

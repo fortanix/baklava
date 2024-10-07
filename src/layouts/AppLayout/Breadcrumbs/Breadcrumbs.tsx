@@ -43,6 +43,7 @@ export const Breadcrumbs = (props: BreadcrumbsProps) => {
           const isLast = index === items.length - 1;
           return (
             <li
+              key={index}
               className={cx({
                 [cl['bk-breadcrumb-item']]: true,
                 [cl['bk-breadcrumb-item--with-trailing-slash']]: hasTrailingSlash,

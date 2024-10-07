@@ -218,8 +218,8 @@ $radius-l: math.div(9, 14) * 1rem !default;
 // in certain cases (seems to be any file loaded through `@use`? Or through `preview.scss`?)
 // https://github.com/parcel-bundler/lightningcss/releases/tag/v1.24.0
 @function ld($light-color, $dark-color) {
-  //@return #{light-dark($light-color, $dark-color)};
-  @return #{var(--lightningcss-light, $light-color) var(--lightningcss-dark, $dark-color)};
+  @return #{light-dark($light-color, $dark-color)};
+  //@return #{var(--lightningcss-light, $light-color) var(--lightningcss-dark, $dark-color)};
 }
 
 // Light theme

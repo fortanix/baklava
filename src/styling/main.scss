@@ -20,7 +20,7 @@ style ordering, so we also inject this list at the top of `preview-head.html`.
 @import './fonts.css';
 @import './context/theming.scss';
 @import './global.scss' layer(baklava.base);
-@import '../src/components/typography/BodyText/BodyText.module.scss';
+@import '../typography/BodyText/BodyText.module.scss';
 
 /*
 Some styles (e.g. focus outline) need to override any existing styles. If for some reason a selector in a lower

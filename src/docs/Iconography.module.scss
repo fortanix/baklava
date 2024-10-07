@@ -22,13 +22,13 @@
     
     &:hover {
       :global(.icon) {
-        outline-color: color-mix(in srgb, currentColor 10%, transparent);
+        outline-color: color-mix(in sRGB, currentColor 10%, transparent);
       }
     }
   }
   
   .icons-table {
-    .cell {}
+    //.cell {}
     
     .cell-icon {
       font-size: 1.4em;
