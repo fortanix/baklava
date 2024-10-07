@@ -1,3 +1,6 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
 
 @use '../../../styling/defs.scss' as bk;
 
@@ -27,14 +30,14 @@
     border-radius: bk.$border-radius-m;
   }
 
-  .bk-progress-bar--label {
+  .bk-progress-bar__label {
     font-size: bk.$font-size-m;
     font-weight: bk.$font-weight-semibold;
     margin-bottom: bk.$sizing-2;
   }
 
-  .bk-progress-bar--hint-text {
+  .bk-progress-bar__hint-text {
     font-size: bk.$font-size-s;
-    margin-top: -(bk.$sizing-1);
+    margin-top: -1 * bk.$sizing-1;
   }
 }

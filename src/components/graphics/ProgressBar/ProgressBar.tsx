@@ -1,3 +1,6 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
@@ -15,10 +18,10 @@ export type ProgressBarProps = React.PropsWithChildren<ComponentProps<'div'> & {
   progress: number,
 
   /** An optional label, displayed as the progress bar title. */
-  label?: string | undefined,
+  label?: undefined | string,
 
   /** An optional hint text, displayed after the progress bar. */
-  hintText?: string | undefined,
+  hintText?: undefined | string,
 }>;
 /**
  * A way to display progress to complete a task or the time remaining.
@@ -34,7 +37,7 @@ export const ProgressBar = (props: ProgressBarProps) => {
   return (
     <div>
       {label && (
-        <div className={cl['bk-progress-bar--label']}>{label}</div>
+        <div className={cl['bk-progress-bar__label']}>{label}</div>
       )}
       <progress
         {...propsRest}
@@ -48,7 +51,7 @@ export const ProgressBar = (props: ProgressBarProps) => {
         {progress}%
       </progress>
       {hintText && (
-        <div className={cl['bk-progress-bar--hint-text']}>{hintText}</div>
+        <div className={cl['bk-progress-bar__hint-text']}>{hintText}</div>
       )}
     </div>
   );
