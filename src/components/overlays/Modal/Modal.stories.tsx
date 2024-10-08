@@ -5,6 +5,7 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
+import { userEvent, within } from '@storybook/test';
 
 import { ModalClassNames as cl } from './Modal.tsx';
 import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
@@ -45,9 +46,11 @@ export const Interactive: Story = {
   render: () => (
     <ModalWithTrigger>
       <div className="body-text">
+      <h1 slot="header">Title</h1>
         <p>This is a modal</p>
         
         <ModalWithTrigger>
+          <h1 slot="header">Title</h1>
           <div className="body-text">
             <p>This is a submodal</p>
             <OverflowTester/>
@@ -76,7 +79,7 @@ const ModalWithSpinnerTrigger = ({ triggerLabel = 'Open modal with spinner (it w
   return (
     <>
       <Button variant="primary" onPress={onPress}>{triggerLabel}</Button>
-      <Modal {...modalProps} active={active} onClose={onClose} closeable={false} className={cl['bk-modal-spinner']}/>
+      <Modal {...modalProps} unstyled active={active} onClose={onClose} closeable={false} className={cl['bk-modal-spinner']}/>
     </>
   );
 };

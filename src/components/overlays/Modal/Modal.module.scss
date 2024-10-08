@@ -13,28 +13,41 @@
     
     /* --bk-modal-background-color: color-mix(in srgb, var(--bk-panel-background-color) 80%, transparent); */
     --bk-modal-background-color:  var(--bk-panel-background-color);
-    
-    --bk-modal-inset: calc(var(--bk-sizing-3) + var(--bk-sizing-2));
-    
+        
     margin: auto;
     padding: 0;
-    width: var(--bk-sizing-9);
-    max-width: calc(100% - 6px - 2em);
     height: fit-content;
-    min-height: 60%;
-    max-height: calc(100% - 6px - 2em);
+    min-height: bk.$spacing-16;
+    max-width: calc(100% - bk.$spacing-6);
+    max-height: calc(100% - bk.$spacing-6);
     
     box-shadow: 0 8px 10px 1px rgba(0 0 0 / 14%), 0 3px 14px 2px rgba(0 0 0 / 12%), 0 5px 5px -3px rgba(0 0 0 / 3%);
     background-color: var(--bk-modal-background-color);
-    border-radius: var(--bk-sizing-2);
-    
+    border-radius: bk.$sizing-2;
+
     display: none; /* flex */
     flex-direction: column;
-    
+    &.bk-modal-small {
+      width: 34.5rem;
+    }
+    &.bk-modal-medium {
+      width: 48.8rem;
+      
+    }
+    &.bk-modal-large {
+      width: 56rem;
+    }
+    &.bk-modal-x-large {
+      width: 64.7rem;
+    }
+    &.bk-modal-fullscreen {
+      width: calc(100% - bk.$spacing-6);
+      height: calc(100% - bk.$spacing-6);
+    }
     .bk-modal__header {
       position: sticky;
       top: 0;
-      padding: var(--bk-sizing-2) var(--bk-modal-inset);
+      padding: 0;
       
       background: var(--bk-modal-background-color);
       
@@ -56,15 +69,23 @@
       :nth-child(1 of :global(.action)) {
         margin-left: auto;
       }
-      :global(.action) {
-        align-self: center;
-      }
+      
     }
-    
+    .bk-modal__close {
+      position: absolute;
+      right: bk.$spacing-4;
+      top: bk.$spacing-4;
+    }
+    .bk-modal__container {
+      padding: bk.$spacing-4 bk.$spacing-4 bk.$spacing-7 bk.$spacing-4;
+      flex-direction: column;
+      overflow: hidden;
+      display: flex;
+      flex: 1;
+    }
     .bk-modal__content {
       flex: 1; /* Make sure we cover all available space */
-      padding: var(--bk-modal-inset);
-      padding-top: var(--bk-sizing-3);
+      overflow: auto;
     }
     
     
@@ -161,6 +182,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      overflow: hidden;
     }
   }
 }
