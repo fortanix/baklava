@@ -5,11 +5,10 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, within } from '@storybook/test';
 
 import { ModalClassNames as cl } from './Modal.tsx';
 import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
-import { Modal } from './Modal.tsx';
+import { Modal, ModalHeader, ModalContent } from './Modal.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
 
@@ -42,26 +41,67 @@ const ModalWithTrigger = ({ triggerLabel = 'Open modal', ...modalProps }: ModalW
   );
 };
 
-export const Interactive: Story = {
+const reusableModalChildren: React.JSX.Element = (
+  <>
+    <ModalHeader>
+      <h1>Modal title</h1>
+    </ModalHeader>
+    <ModalContent>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do iusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+      <ModalWithTrigger triggerLabel="Open Submodal">
+        <ModalHeader>
+          <h1>Submodal title</h1>
+        </ModalHeader>
+        <ModalContent>
+          <p>This is a submodal</p>
+          <OverflowTester/>
+        </ModalContent>
+      </ModalWithTrigger>
+
+      <OverflowTester/>
+    </ModalContent>
+  </>
+);
+
+export const ModalSizeSmall: Story = {
   render: () => (
-    <ModalWithTrigger>
-      <div className="body-text">
-      <h1 slot="header">Title</h1>
-        <p>This is a modal</p>
-        
-        <ModalWithTrigger>
-          <h1 slot="header">Title</h1>
-          <div className="body-text">
-            <p>This is a submodal</p>
-            <OverflowTester/>
-          </div>
-        </ModalWithTrigger>
-        
-        <OverflowTester/>
-      </div>
+    <ModalWithTrigger size="small">
+      {reusableModalChildren}
     </ModalWithTrigger>
   ),
-  play: async ({ canvasElement }) => {},
+};
+
+export const ModalSizeMedium: Story = {
+  render: () => (
+    <ModalWithTrigger size="medium">
+      {reusableModalChildren}
+    </ModalWithTrigger>
+  ),
+};
+
+export const ModalSizeLarge: Story = {
+  render: () => (
+    <ModalWithTrigger size="large">
+      {reusableModalChildren}
+    </ModalWithTrigger>
+  ),
+};
+
+export const ModalSizeXLarge: Story = {
+  render: () => (
+    <ModalWithTrigger size="x-large">
+      {reusableModalChildren}
+    </ModalWithTrigger>
+  ),
+};
+
+export const ModalSizeFullScreen: Story = {
+  render: () => (
+    <ModalWithTrigger size="fullscreen">
+      {reusableModalChildren}
+    </ModalWithTrigger>
+  ),
 };
 
 type ModalWithSpinnerTriggerProps = Omit<React.ComponentProps<typeof Modal>, 'active' | 'onClose'> & {
@@ -79,15 +119,17 @@ const ModalWithSpinnerTrigger = ({ triggerLabel = 'Open modal with spinner (it w
   return (
     <>
       <Button variant="primary" onPress={onPress}>{triggerLabel}</Button>
-      <Modal {...modalProps} unstyled active={active} onClose={onClose} closeable={false} className={cl['bk-modal-spinner']}/>
+      <Modal {...modalProps} active={active} onClose={onClose} closeable={false} className={cl['bk-modal-spinner']}/>
     </>
   );
 };
 
 export const ModalWithSpinner: Story = {
   render: () => (
-    <ModalWithSpinnerTrigger>
-      <Spinner size="large" />
+    <ModalWithSpinnerTrigger size="fullscreen">
+      <ModalContent>
+        <Spinner size="large" />
+      </ModalContent>
     </ModalWithSpinnerTrigger>
   ),
   play: async ({ canvasElement }) => {},

@@ -8,19 +8,19 @@
 @layer baklava.components {
   .bk-modal {
     @include bk.component-base(bk-modal);
-    
+
     @include Panel.bk-panel;
-    
+
     /* --bk-modal-background-color: color-mix(in srgb, var(--bk-panel-background-color) 80%, transparent); */
     --bk-modal-background-color:  var(--bk-panel-background-color);
-        
+
     margin: auto;
     padding: 0;
     height: fit-content;
     min-height: bk.$spacing-16;
     max-width: calc(100% - bk.$spacing-6);
     max-height: calc(100% - bk.$spacing-6);
-    
+
     box-shadow: 0 8px 10px 1px rgba(0 0 0 / 14%), 0 3px 14px 2px rgba(0 0 0 / 12%), 0 5px 5px -3px rgba(0 0 0 / 3%);
     background-color: var(--bk-modal-background-color);
     border-radius: bk.$sizing-2;
@@ -28,56 +28,55 @@
     display: none; /* flex */
     flex-direction: column;
     &.bk-modal-small {
-      width: 34.5rem;
+      // 484px
+      width: calc(484 * bk.$size-1);
     }
     &.bk-modal-medium {
-      width: 48.8rem;
-      
+      // 684px
+      width: calc(684 * bk.$size-1);
     }
     &.bk-modal-large {
-      width: 56rem;
+      // 784px
+      width: calc(784 * bk.$size-1);
     }
     &.bk-modal-x-large {
-      width: 64.7rem;
+      // 906px
+      width: calc(906 * bk.$size-1);
     }
     &.bk-modal-fullscreen {
-      width: calc(100% - bk.$spacing-6);
-      height: calc(100% - bk.$spacing-6);
+      width: calc(100% - bk.$spacing-3);
+      height: calc(100% - bk.$spacing-3);
     }
     .bk-modal__header {
       position: sticky;
       top: 0;
       padding: 0;
-      
+
       background: var(--bk-modal-background-color);
-      
-      --header-shadow-size: calc(var(--bk-sizing-1) / 2);
-      box-shadow: 0 var(--header-shadow-size) 0 0 rgba(0 0 0 / 12%);
-      /* Clip everything except the bottom shadow (-1px for weird clipping behavior with scroll) */
-      clip-path: inset(-1px -1px calc(-1 * var(--header-shadow-size)) -1px);
-      
+
       display: flex;
       flex-direction: row;
       align-items: baseline;
-      
+      margin-bottom: bk.$spacing-7;
+
       h1 {
-        font-size: 1.4rem;
-        font-weight: 300;
-        text-transform: uppercase;
+        font-size: 16px; // do not match bk variable sizes
+        font-weight: bk.$font-weight-semibold;
       }
-      
+
       :nth-child(1 of :global(.action)) {
         margin-left: auto;
       }
-      
     }
     .bk-modal__close {
       position: absolute;
-      right: bk.$spacing-4;
-      top: bk.$spacing-4;
+      right: bk.$spacing-8;
+      top: bk.$spacing-8;
+      z-index: 1;
     }
     .bk-modal__container {
-      padding: bk.$spacing-4 bk.$spacing-4 bk.$spacing-7 bk.$spacing-4;
+      padding: bk.$spacing-8;
+      padding-bottom: bk.$spacing-9;
       flex-direction: column;
       overflow: hidden;
       display: flex;
@@ -87,8 +86,7 @@
       flex: 1; /* Make sure we cover all available space */
       overflow: auto;
     }
-    
-    
+
     /* Variant: slide out */
     --modal-slide-out-inset: var(--bk-sizing-3);
     &:is(.bk-modal--slide-out-left, .bk-modal--slide-out-right) {
@@ -98,7 +96,7 @@
       width: 60vw;
       height: auto;
       max-height: 100%;
-      
+
       &.bk-modal--slide-out-left {
         right: auto;
         transform-origin: center left;
@@ -111,26 +109,25 @@
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
       }
-      
+
       opacity: 1;
       transform: scaleX(0);
       &:modal {
         transform: scaleX(1);
-        
+
         @starting-style {
           opacity: 1;
           transform: scaleX(0);
         }
       }
-      
+
       .bk-modal__content {
         overflow: auto;
       }
     }
-    
-    
+
     /* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#animating_dialogs */
-    
+
     opacity: 0;
     scale: 0.98 0.98;
     transition:
@@ -139,21 +136,21 @@
       overlay 1ms ease-out allow-discrete,
       display 1ms ease-out allow-discrete;
     transition-duration: 200ms; /* Exit transition duration */
-    
+
     &:modal {
       display: flex;
       opacity: 1;
       scale: 1 1;
       transition-duration: 120ms; /* Enter transition duration */
       transition-timing-function: ease-in;
-      
+
       @starting-style {
         opacity: 0;
         scale: 1.05 1.05;
       }
     }
   }
-  
+
   /* Note: `::backdrop` cannot be nested/scoped (at least in Chrome v120) */
   .bk-modal::backdrop {
     --transition-time: 200ms;
@@ -172,12 +169,12 @@
       background-color: rgb(0 0 0 / 0%);
     }
   }
-  
+
   .bk-modal-spinner {
     .bk-modal__header {
       display: none;
     }
-    
+
     .bk-modal__content {
       display: flex;
       justify-content: center;

@@ -1,3 +1,6 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import {
 	classNames as cx,
@@ -22,12 +25,12 @@ const useClickOutside = <E extends HTMLElement>(ref: React.RefObject<E>, callbac
       }
     }
   }, [ref]);
-  
+
   React.useEffect(() => {
     if (!window.PointerEvent) { return; }
-    
+
     document.addEventListener('pointerdown', handleEvent);
-    
+
     return () => {
       if (window.PointerEvent) {
         document.removeEventListener('pointerdown', handleEvent);
@@ -41,6 +44,55 @@ const useClickOutside = <E extends HTMLElement>(ref: React.RefObject<E>, callbac
   return [ref, hasClickedOutside];
 };
 */
+
+export type ModalHeaderProps = React.PropsWithChildren<{
+	unstyled?: boolean,
+	className?: ClassNameArgument,
+}>;
+
+/* Modal Header component */
+export const ModalHeader = ({
+	children,
+	unstyled,
+	className,
+}: ModalHeaderProps) => (
+	<header
+		className={cx(
+			{
+				bk: true,
+				[cl["bk-modal__header"] as string]: !unstyled,
+			},
+			className,
+		)}
+	>
+		{children}
+	</header>
+);
+
+export type ModalContentProps = React.PropsWithChildren<{
+	unstyled?: boolean,
+	className?: ClassNameArgument,
+}>;
+
+/* Modal Content component */
+export const ModalContent = ({
+	children,
+	unstyled,
+	className,
+}: ModalContentProps) => (
+	<section
+		className={cx(
+			{
+				bk: true,
+				'body-text': true,
+				[cl["bk-modal__content"] as string]: !unstyled,
+			},
+			className,
+		)}
+	>
+		{children}
+	</section>
+);
 
 export type ModalProps = React.PropsWithChildren<{
 	unstyled?: boolean,
@@ -151,9 +203,7 @@ export const Modal = ({
 				</button>
 			)}
 			<div className={cx(cl["bk-modal__container"])}>
-				<section className={cx(cl["bk-modal__content"], "body-text")}>
-					{children}
-				</section>
+				{children}
 			</div>
 		</dialog>
 	);
