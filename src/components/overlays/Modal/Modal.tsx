@@ -14,44 +14,14 @@ import cl from "./Modal.module.scss";
 
 export { cl as ModalClassNames };
 
-/*
-const useClickOutside = <E extends HTMLElement>(ref: React.RefObject<E>, callback: () => void) => {
-  const handleEvent = React.useCallback((event: React.PointerEvent<E>) => {
-    if (ref && ref.current) {
-      if (ref.current.contains(event.target as Node)) {
-        React.setState({ hasClickedOutside: false });
-      } else {
-        React.setState({ hasClickedOutside: true });
-      }
-    }
-  }, [ref]);
 
-  React.useEffect(() => {
-    if (!window.PointerEvent) { return; }
-
-    document.addEventListener('pointerdown', handleEvent);
-
-    return () => {
-      if (window.PointerEvent) {
-        document.removeEventListener('pointerdown', handleEvent);
-      } else {
-        document.removeEventListener('mousedown', handleEvent);
-        document.removeEventListener('touchstart', handleEvent);
-      }
-    }
-  }, []);
-
-  return [ref, hasClickedOutside];
-};
-*/
-
-export type ModalHeaderProps = React.PropsWithChildren<{
+type ModalHeaderProps = React.PropsWithChildren<{
   unstyled?: boolean,
   className?: ClassNameArgument,
 }>;
 
 /* Modal Header component */
-export const ModalHeader = ({
+const ModalHeader = ({
   children,
   unstyled,
   className,
@@ -69,13 +39,13 @@ export const ModalHeader = ({
   </header>
 );
 
-export type ModalContentProps = React.PropsWithChildren<{
+type ModalContentProps = React.PropsWithChildren<{
   unstyled?: boolean,
   className?: ClassNameArgument,
 }>;
 
 /* Modal Content component */
-export const ModalContent = ({
+const ModalContent = ({
   children,
   unstyled,
   className,
@@ -94,13 +64,13 @@ export const ModalContent = ({
   </section>
 );
 
-export type ModalFooterProps = React.PropsWithChildren<{
+type ModalFooterProps = React.PropsWithChildren<{
   unstyled?: boolean,
   className?: ClassNameArgument,
 }>;
 
 /* Modal Footer component */
-export const ModalFooter = ({
+const ModalFooter = ({
   children,
   unstyled,
   className,
@@ -118,7 +88,7 @@ export const ModalFooter = ({
   </footer>
 );
 
-export type ModalProps = React.PropsWithChildren<{
+type ModalProps = React.PropsWithChildren<{
   unstyled?: boolean,
   size?: "small" | "medium" | "large" | "x-large" | "fullscreen",
   active: boolean,
@@ -130,7 +100,7 @@ export type ModalProps = React.PropsWithChildren<{
 /**
  * Modal component.
  */
-export const Modal = ({
+const Modal = ({
   children,
   unstyled,
   className,
@@ -232,3 +202,9 @@ export const Modal = ({
     </dialog>
   );
 };
+
+Modal.Content = ModalContent;
+Modal.Header = ModalHeader;
+Modal.Footer = ModalFooter;
+
+export { Modal };

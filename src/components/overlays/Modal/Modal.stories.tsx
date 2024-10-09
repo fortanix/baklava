@@ -8,7 +8,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { ModalClassNames as cl } from './Modal.tsx';
 import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
-import { Modal, ModalHeader, ModalContent, ModalFooter } from './Modal.tsx';
+import { Modal } from './Modal.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
 
@@ -43,25 +43,25 @@ const ModalWithTrigger = ({ triggerLabel = 'Open modal', ...modalProps }: ModalW
 
 const reusableModalChildren: React.JSX.Element = (
   <>
-    <ModalHeader>
+    <Modal.Header>
       <h1>Modal title</h1>
-    </ModalHeader>
-    <ModalContent>
+    </Modal.Header>
+    <Modal.Content>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do iusmod tempor incididunt ut labore et dolore magna aliqua.</p>
 
       <ModalWithTrigger triggerLabel="Open Submodal">
-        <ModalHeader>
+        <Modal.Header>
           <h1>Submodal title</h1>
-        </ModalHeader>
-        <ModalContent>
+        </Modal.Header>
+        <Modal.Content>
           <p>This is a submodal</p>
           <OverflowTester/>
-        </ModalContent>
+        </Modal.Content>
       </ModalWithTrigger>
 
       <OverflowTester/>
-    </ModalContent>
-    <ModalFooter>This is a modal footer with eventual action buttons</ModalFooter>
+    </Modal.Content>
+    <Modal.Footer>This is a modal footer with eventual action buttons</Modal.Footer>
   </>
 );
 
@@ -136,9 +136,9 @@ const ModalWithSpinnerTrigger = ({ triggerLabel = 'Open modal with spinner (it w
 export const ModalWithSpinner: Story = {
   render: () => (
     <ModalWithSpinnerTrigger unstyled={true}>
-      <ModalContent>
+      <Modal.Content>
         <Spinner size="large" />
-      </ModalContent>
+      </Modal.Content>
     </ModalWithSpinnerTrigger>
   ),
 };
