@@ -128,18 +128,17 @@ const ModalWithSpinnerTrigger = ({ triggerLabel = 'Open modal with spinner (it w
   return (
     <>
       <Button variant="primary" onPress={onPress}>{triggerLabel}</Button>
-      <Modal {...modalProps} active={active} onClose={onClose} closeable={false} className={cl['bk-modal-spinner']}/>
+      <Modal {...modalProps} active={active} onClose={onClose} closeable={false} className={cl['bk-modal-spinner']} size="fullscreen"/>
     </>
   );
 };
 
 export const ModalWithSpinner: Story = {
   render: () => (
-    <ModalWithSpinnerTrigger size="fullscreen">
+    <ModalWithSpinnerTrigger unstyled={true}>
       <ModalContent>
         <Spinner size="large" />
       </ModalContent>
     </ModalWithSpinnerTrigger>
   ),
-  play: async ({ canvasElement }) => {},
 };

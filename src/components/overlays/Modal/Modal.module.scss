@@ -160,7 +160,8 @@
       overlay var(--transition-time) allow-discrete,
       background-color var(--transition-time);
   }
-  .bk-modal:modal::backdrop {
+  .bk-modal:modal::backdrop,
+  .bk-modal-spinner::backdrop {
     background-color: rgb(0 0 0 / 20%);
     backdrop-filter: blur(5px); /* Should be in px, not rem (blur effect should be constant) */
   }
@@ -171,10 +172,6 @@
   }
 
   .bk-modal-spinner {
-    .bk-modal__header {
-      display: none;
-    }
-
     .bk-modal__content {
       display: flex;
       justify-content: center;
