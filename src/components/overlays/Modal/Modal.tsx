@@ -188,7 +188,7 @@ export const Modal = ({
   const handleDialogClick = React.useCallback(
     (event: React.MouseEvent) => {
       const dialog = dialogRef.current;
-      if (dialog !== null && event.target === dialog) {
+      if (dialog !== null && event.target === dialog && closeable) {
         // Note: clicking the backdrop just results in an event where the target is the `<dialog>` element. In order to
         // distinguish between the backdrop and the modal content, we assume that the `<dialog>` is fully covered by
         // another element. In our case, `bk-modal__content` must cover the whole `<dialog>` otherwise this will not work.

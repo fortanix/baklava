@@ -105,6 +105,14 @@ export const ModalSizeFullScreen: Story = {
   ),
 };
 
+export const ModalUncloseable: Story = {
+  render: () => (
+    <ModalWithTrigger closeable={false}>
+      {reusableModalChildren}
+    </ModalWithTrigger>
+  ),
+};
+
 type ModalWithSpinnerTriggerProps = Omit<React.ComponentProps<typeof Modal>, 'active' | 'onClose'> & {
   triggerLabel?: string,
 };
