@@ -94,6 +94,30 @@ export const ModalContent = ({
   </section>
 );
 
+export type ModalFooterProps = React.PropsWithChildren<{
+  unstyled?: boolean,
+  className?: ClassNameArgument,
+}>;
+
+/* Modal Footer component */
+export const ModalFooter = ({
+  children,
+  unstyled,
+  className,
+}: ModalFooterProps) => (
+  <footer
+    className={cx(
+      {
+        bk: true,
+        [cl["bk-modal__footer"] as string]: !unstyled,
+      },
+      className,
+    )}
+  >
+    {children}
+  </footer>
+);
+
 export type ModalProps = React.PropsWithChildren<{
   unstyled?: boolean,
   size?: "small" | "medium" | "large" | "x-large" | "fullscreen",

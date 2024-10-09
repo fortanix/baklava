@@ -8,7 +8,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { ModalClassNames as cl } from './Modal.tsx';
 import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
-import { Modal, ModalHeader, ModalContent } from './Modal.tsx';
+import { Modal, ModalHeader, ModalContent, ModalFooter } from './Modal.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
 
@@ -61,6 +61,7 @@ const reusableModalChildren: React.JSX.Element = (
 
       <OverflowTester/>
     </ModalContent>
+    <ModalFooter>This is a modal footer with eventual action buttons</ModalFooter>
   </>
 );
 
