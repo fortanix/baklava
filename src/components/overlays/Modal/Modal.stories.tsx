@@ -32,7 +32,7 @@ type ModalWithTriggerProps = Omit<React.ComponentProps<typeof Modal>, 'active' |
 };
 const ModalWithTrigger = ({ triggerLabel = 'Open modal', ...modalProps }: ModalWithTriggerProps) => {
   const [active, setActive] = React.useState(false);
-  const onClose = React.useCallback(() => { setActive(false); }, [setActive]);
+  const onClose = React.useCallback(() => { setActive(false); }, []);
   return (
     <>
       <Button variant="primary" onPress={() => { setActive(true); }}>{triggerLabel}</Button>
@@ -124,7 +124,7 @@ const ModalWithSpinnerTrigger = ({ triggerLabel = 'Open modal with spinner (it w
       setActive(false);
     }, 5000);
   }
-  const onClose = React.useCallback(() => { setActive(false); }, [setActive]);
+  const onClose = React.useCallback(() => { setActive(false); }, []);
   return (
     <>
       <Button variant="primary" onPress={onPress}>{triggerLabel}</Button>
