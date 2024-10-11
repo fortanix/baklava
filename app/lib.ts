@@ -13,6 +13,7 @@ export { Alert } from '../src/components/containers/Alert/Alert.tsx';
 export { Card } from '../src/components/containers/Card/Card.tsx';
 export { Dialog } from '../src/components/containers/Dialog/Dialog.tsx';
 export { Panel } from '../src/components/containers/Panel/Panel.tsx';
+export { Banner } from '../src/components/containers/Banner/Banner.tsx';
 
 export { Form } from '../src/components/forms/context/Form/Form.tsx';
 export { SubmitButton } from '../src/components/forms/context/SubmitButton/SubmitButton.tsx';
@@ -30,7 +31,6 @@ export { PropertyList } from '../src/components/lists/PropertyList/PropertyList.
 
 export { Tabs } from '../src/components/navigations/Tabs/Tabs.tsx';
 
-export { Banner } from '../src/components/overlays/Banner/Banner.tsx';
 export { DropdownMenu } from '../src/components/overlays/DropdownMenu/DropdownMenu.tsx';
 export { Modal } from '../src/components/overlays/Modal/Modal.tsx';
 export { type ToastContent, ToastContainer, ToastMessage } from '../src/components/overlays/Toast/Toast.tsx';
