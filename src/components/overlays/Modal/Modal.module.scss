@@ -27,6 +27,7 @@
 
     display: none; /* flex */
     flex-direction: column;
+
     &.bk-modal-small {
       // 484px
       width: calc(484 * bk.$size-1);
@@ -172,6 +173,8 @@
   }
 
   .bk-modal-spinner {
+    outline: none !important; // prevent blue border on Esc pressing
+
     .bk-modal__content {
       display: flex;
       justify-content: center;
