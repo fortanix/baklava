@@ -3,6 +3,8 @@
 
 This repository contains the Baklava design system used to build [Fortanix](https://fortanix.com) products.
 
+You can find the latest Storybook documentation [here](https://fortanix.github.io/baklava).
+
 
 ## Contributing
 
