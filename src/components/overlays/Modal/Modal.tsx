@@ -89,7 +89,7 @@ const Modal = ({
   children,
   unstyled,
   className,
-  size = "medium",
+  size = 'medium',
   closeable = true,
   active,
   onClose,
@@ -150,24 +150,24 @@ const Modal = ({
         close();
       }
     },
-    [close],
+    [close, closeable],
   );
 
   // prevent closing dialog with Esc key
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key !== 'Escape') {
+  const handleKeyDown = React.useCallback((event: KeyboardEvent) => {
+    if (event.key !== 'Escape') {
       return;
     }
     if (closeable) {
-      e.preventDefault();
+      event.preventDefault();
     }
-  };
+  }, [closeable]);
   React.useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [closeable]);
+  }, [handleKeyDown]);
 
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
