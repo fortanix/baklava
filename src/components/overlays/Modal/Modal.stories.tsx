@@ -32,7 +32,7 @@ type ModalWithTriggerProps = Omit<React.ComponentProps<typeof Modal>, 'active' |
 };
 const ModalWithTrigger = ({ triggerLabel = 'Open modal', ...modalProps }: ModalWithTriggerProps) => {
   const [active, setActive] = React.useState(false);
-  const onClose = React.useCallback(() => { setActive(false); }, [setActive]);
+  const onClose = React.useCallback(() => { setActive(false); }, []);
   return (
     <>
       <Button variant="primary" onPress={() => { setActive(true); }}>{triggerLabel}</Button>
@@ -41,24 +41,76 @@ const ModalWithTrigger = ({ triggerLabel = 'Open modal', ...modalProps }: ModalW
   );
 };
 
-export const Interactive: Story = {
+const reusableModalChildren: React.JSX.Element = (
+  <>
+    <Modal.Header>
+      <h1>Modal title</h1>
+    </Modal.Header>
+    <Modal.Content>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do iusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+      
+      <ModalWithTrigger triggerLabel="Open Submodal">
+        <Modal.Header>
+          <h1>Submodal title</h1>
+        </Modal.Header>
+        <Modal.Content>
+          <p>This is a submodal</p>
+          <OverflowTester/>
+        </Modal.Content>
+      </ModalWithTrigger>
+      
+      <OverflowTester/>
+    </Modal.Content>
+    <Modal.Footer>This is a modal footer with eventual action buttons</Modal.Footer>
+  </>
+);
+
+export const ModalSizeSmall: Story = {
   render: () => (
-    <ModalWithTrigger>
-      <div className="body-text">
-        <p>This is a modal</p>
-        
-        <ModalWithTrigger>
-          <div className="body-text">
-            <p>This is a submodal</p>
-            <OverflowTester/>
-          </div>
-        </ModalWithTrigger>
-        
-        <OverflowTester/>
-      </div>
+    <ModalWithTrigger size="small">
+      {reusableModalChildren}
     </ModalWithTrigger>
   ),
-  play: async ({ canvasElement }) => {},
+};
+
+export const ModalSizeMedium: Story = {
+  render: () => (
+    <ModalWithTrigger size="medium">
+      {reusableModalChildren}
+    </ModalWithTrigger>
+  ),
+};
+
+export const ModalSizeLarge: Story = {
+  render: () => (
+    <ModalWithTrigger size="large">
+      {reusableModalChildren}
+    </ModalWithTrigger>
+  ),
+};
+
+export const ModalSizeXLarge: Story = {
+  render: () => (
+    <ModalWithTrigger size="x-large">
+      {reusableModalChildren}
+    </ModalWithTrigger>
+  ),
+};
+
+export const ModalSizeFullScreen: Story = {
+  render: () => (
+    <ModalWithTrigger size="fullscreen">
+      {reusableModalChildren}
+    </ModalWithTrigger>
+  ),
+};
+
+export const ModalUncloseable: Story = {
+  render: () => (
+    <ModalWithTrigger closeable={false}>
+      {reusableModalChildren}
+    </ModalWithTrigger>
+  ),
 };
 
 type ModalWithSpinnerTriggerProps = Omit<React.ComponentProps<typeof Modal>, 'active' | 'onClose'> & {
@@ -72,20 +124,21 @@ const ModalWithSpinnerTrigger = ({ triggerLabel = 'Open modal with spinner (it w
       setActive(false);
     }, 5000);
   }
-  const onClose = React.useCallback(() => { setActive(false); }, [setActive]);
+  const onClose = React.useCallback(() => { setActive(false); }, []);
   return (
     <>
       <Button variant="primary" onPress={onPress}>{triggerLabel}</Button>
-      <Modal {...modalProps} active={active} onClose={onClose} closeable={false} className={cl['bk-modal-spinner']}/>
+      <Modal {...modalProps} active={active} onClose={onClose} closeable={false} className={cl['bk-modal-spinner']} size="fullscreen"/>
     </>
   );
 };
 
 export const ModalWithSpinner: Story = {
   render: () => (
-    <ModalWithSpinnerTrigger>
-      <Spinner size="large" />
+    <ModalWithSpinnerTrigger unstyled={true}>
+      <Modal.Content>
+        <Spinner size="large" />
+      </Modal.Content>
     </ModalWithSpinnerTrigger>
   ),
-  play: async ({ canvasElement }) => {},
 };
