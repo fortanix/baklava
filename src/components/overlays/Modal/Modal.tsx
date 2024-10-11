@@ -2,35 +2,28 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import {
-  classNames as cx,
-  type ClassNameArgument,
-} from "../../../util/componentUtil.ts";
-import * as React from "react";
+import { type ClassNameArgument, classNames as cx } from '../../../util/componentUtil.ts';
+import * as React from 'react';
 
-import { Icon } from "../../graphics/Icon/Icon.tsx";
+import { Icon } from '../../graphics/Icon/Icon.tsx';
 
-import cl from "./Modal.module.scss";
+import cl from './Modal.module.scss';
 
 export { cl as ModalClassNames };
 
 
 type ModalHeaderProps = React.PropsWithChildren<{
-  unstyled?: boolean,
-  className?: ClassNameArgument,
+  unstyled?: boolean;
+  className?: ClassNameArgument;
 }>;
 
 /* Modal Header component */
-const ModalHeader = ({
-  children,
-  unstyled,
-  className,
-}: ModalHeaderProps) => (
+const ModalHeader = ({ children, unstyled, className }: ModalHeaderProps) => (
   <header
     className={cx(
       {
         bk: true,
-        [cl["bk-modal__header"] as string]: !unstyled,
+        [cl['bk-modal__header'] as string]: !unstyled,
       },
       className,
     )}
@@ -40,22 +33,18 @@ const ModalHeader = ({
 );
 
 type ModalContentProps = React.PropsWithChildren<{
-  unstyled?: boolean,
-  className?: ClassNameArgument,
+  unstyled?: boolean;
+  className?: ClassNameArgument;
 }>;
 
 /* Modal Content component */
-const ModalContent = ({
-  children,
-  unstyled,
-  className,
-}: ModalContentProps) => (
+const ModalContent = ({ children, unstyled, className }: ModalContentProps) => (
   <section
     className={cx(
       {
         bk: true,
         'body-text': true,
-        [cl["bk-modal__content"] as string]: !unstyled,
+        [cl['bk-modal__content'] as string]: !unstyled,
       },
       className,
     )}
@@ -65,21 +54,17 @@ const ModalContent = ({
 );
 
 type ModalFooterProps = React.PropsWithChildren<{
-  unstyled?: boolean,
-  className?: ClassNameArgument,
+  unstyled?: boolean;
+  className?: ClassNameArgument;
 }>;
 
 /* Modal Footer component */
-const ModalFooter = ({
-  children,
-  unstyled,
-  className,
-}: ModalFooterProps) => (
+const ModalFooter = ({ children, unstyled, className }: ModalFooterProps) => (
   <footer
     className={cx(
       {
         bk: true,
-        [cl["bk-modal__footer"] as string]: !unstyled,
+        [cl['bk-modal__footer'] as string]: !unstyled,
       },
       className,
     )}
@@ -89,12 +74,12 @@ const ModalFooter = ({
 );
 
 type ModalProps = React.PropsWithChildren<{
-  unstyled?: boolean,
-  size?: "small" | "medium" | "large" | "x-large" | "fullscreen",
-  active: boolean,
-  className?: ClassNameArgument,
-  onClose: () => void,
-  closeable?: boolean,
+  unstyled?: boolean;
+  size?: 'small' | 'medium' | 'large' | 'x-large' | 'fullscreen';
+  active: boolean;
+  className?: ClassNameArgument;
+  onClose: () => void;
+  closeable?: boolean;
 }>;
 
 /**
@@ -145,9 +130,9 @@ const Modal = ({
       return;
     }
 
-    dialog.addEventListener("close", handleCloseEvent);
+    dialog.addEventListener('close', handleCloseEvent);
     return () => {
-      dialog.removeEventListener("close", handleCloseEvent);
+      dialog.removeEventListener('close', handleCloseEvent);
     };
   }, [handleCloseEvent]);
 
@@ -191,12 +176,12 @@ const Modal = ({
       className={cx(
         {
           bk: true,
-          [cl["bk-modal-small"] as string]: size === "small",
-          [cl["bk-modal-medium"] as string]: size === "medium",
-          [cl["bk-modal-large"] as string]: size === "large",
-          [cl["bk-modal-x-large"] as string]: size === "x-large",
-          [cl["bk-modal-fullscreen"] as string]: size === "fullscreen",
-          [cl["bk-modal"] as string]: !unstyled,
+          [cl['bk-modal-small'] as string]: size === 'small',
+          [cl['bk-modal-medium'] as string]: size === 'medium',
+          [cl['bk-modal-large'] as string]: size === 'large',
+          [cl['bk-modal-x-large'] as string]: size === 'x-large',
+          [cl['bk-modal-fullscreen'] as string]: size === 'fullscreen',
+          [cl['bk-modal'] as string]: !unstyled,
         },
         className,
       )}
@@ -205,14 +190,14 @@ const Modal = ({
       {closeable && (
         <button
           type="button"
-          className={cx(cl["bk-modal__close"])}
+          className={cx(cl['bk-modal__close'])}
           onClick={close}
           onKeyUp={close}
         >
           <Icon icon="close-x" />
         </button>
       )}
-      <div className={cx(cl["bk-modal__container"])}>
+      <div className={cx(cl['bk-modal__container'])}>
         {children}
       </div>
     </dialog>
