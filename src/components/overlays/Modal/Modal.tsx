@@ -117,7 +117,7 @@ const Modal = ({
       if (dialog === null) {
         return;
       }
-
+      
       if (active && event.target === dialog) {
         onClose();
       }
@@ -129,7 +129,7 @@ const Modal = ({
     if (dialog === null) {
       return;
     }
-
+    
     dialog.addEventListener('close', handleCloseEvent);
     return () => {
       dialog.removeEventListener('close', handleCloseEvent);

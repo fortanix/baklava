@@ -48,7 +48,7 @@ const reusableModalChildren: React.JSX.Element = (
     </Modal.Header>
     <Modal.Content>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do iusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-
+      
       <ModalWithTrigger triggerLabel="Open Submodal">
         <Modal.Header>
           <h1>Submodal title</h1>
@@ -58,7 +58,7 @@ const reusableModalChildren: React.JSX.Element = (
           <OverflowTester/>
         </Modal.Content>
       </ModalWithTrigger>
-
+      
       <OverflowTester/>
     </Modal.Content>
     <Modal.Footer>This is a modal footer with eventual action buttons</Modal.Footer>
