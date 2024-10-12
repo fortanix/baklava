@@ -50,5 +50,4 @@ export const icons = {
   'user': {},
   'warning': {},
   'workflows': {},
-  'close-x': {},
 } as const satisfies Record<string, IconDef>;

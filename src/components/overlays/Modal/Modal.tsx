@@ -194,7 +194,7 @@ const Modal = ({
           onClick={close}
           onKeyUp={close}
         >
-          <Icon icon="close-x" />
+          <Icon icon="cross" />
         </button>
       )}
       <div className={cx(cl['bk-modal__container'])}>
