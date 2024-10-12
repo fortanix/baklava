@@ -10,7 +10,7 @@ import cl from './ProgressBar.module.scss';
 
 export { cl as ProgressBarClassNames };
 
-export type ProgressBarProps = React.PropsWithChildren<ComponentProps<'div'> & {
+export type ProgressBarProps = React.PropsWithChildren<ComponentProps<'progress'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
