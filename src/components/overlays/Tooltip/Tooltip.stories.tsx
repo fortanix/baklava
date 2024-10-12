@@ -47,7 +47,7 @@ export const TooltipScroll: StoryObj<typeof Tooltip> = {
   render: () => (
     <Tooltip>
       <p>
-        Lorem ipsum dolor sit amet, <a href="#">consectetur</a> adipiscing elit. Pellentesque eget sem ut neque lobortis pharetra nec vel quam. Etiam sem neque, gravida sed pharetra ut, vehicula quis lectus. Donec ac rhoncus purus. Proin ultricies augue vitae purus feugiat, in ultrices lorem aliquet. Donec eleifend ac dolor a auctor.
+        Lorem ipsum dolor sit amet, <a href="/" onClick={event => { event.preventDefault(); }}>consectetur</a> adipiscing elit. Pellentesque eget sem ut neque lobortis pharetra nec vel quam. Etiam sem neque, gravida sed pharetra ut, vehicula quis lectus. Donec ac rhoncus purus. Proin ultricies augue vitae purus feugiat, in ultrices lorem aliquet. Donec eleifend ac dolor a auctor.
       </p>
       <p>
         Cras ac suscipit nibh. Fusce tincidunt iaculis dapibus. Vivamus sit amet neque eu velit tincidunt semper. Donec at magna aliquam mi consectetur imperdiet. Donec pretium placerat quam, in sodales purus porta vitae. Phasellus nisl justo, luctus vel mi vel, sollicitudin.
@@ -67,7 +67,7 @@ const TooltipNativeAnchoringControlled = () => {
   // https://www.w3.org/TR/css-anchor-position-1/#implicit
   const id = React.useId();
   const anchorName = `--bk-tooltip-anchor-${CSS.escape(id)}`;
-  const refTooltip = React.useRef<React.ElementRef<typeof Tooltip>>(null);
+  const refTooltip = React.useRef<React.ComponentRef<typeof Tooltip>>(null);
   
   return (
     <>
@@ -76,7 +76,7 @@ const TooltipNativeAnchoringControlled = () => {
       {/* @ts-ignore Anchor Positioning not yet supported. */}
       <Tooltip ref={refTooltip} id={id} popover="manual" style={{ positionAnchor: anchorName }}>
         This is a tooltip with a lot of text that gives more information about the element.
-        It has a <a href="#">link</a> you can focus.
+        It has a <a href="/" onClick={event => { event.preventDefault(); }}>link</a> you can focus.
       </Tooltip>
       <Button type="button" popoverTarget={id} variant="primary" label="Hover over me"
         // @ts-ignore Anchor Positioning not yet supported.

@@ -85,11 +85,11 @@ export const DropdownMenuProvider = Object.assign(
         selectedRef.current?.focus(); // Return focus
       },
       close: () => { setIsOpen(false); },
-    }), [selected, selectedRef]);
+    }), [selected, setIsOpen, getItemProps]);
     
     const renderAnchor = () => {
       const anchorProps: AnchorRenderArgs['props'] = (userProps?: undefined | React.HTMLProps<Element>) => {
-        const userPropsRef: undefined | string | React.Ref<any> = userProps?.ref ?? undefined;
+        const userPropsRef: undefined | string | React.Ref<Element> = userProps?.ref ?? undefined;
         if (typeof userPropsRef === 'string') {
           // We can't merge refs if one of the refs is a string
           console.error(`Failed to render DropdownMenuProvider, due to use of legacy string ref`);
@@ -112,7 +112,7 @@ export const DropdownMenuProvider = Object.assign(
         return <span {...anchorProps()}>{children}</span>;
       }
       if (React.Children.count(children) === 1) {
-        return React.cloneElement(children, anchorProps(children.props));
+        return React.cloneElement(children, anchorProps(children.props as React.HTMLProps<Element>));
       }
       
       console.error(`Invalid children passed to DropdownMenuProvider, expected a render prop or single child element.`);
@@ -132,7 +132,7 @@ export const DropdownMenuProvider = Object.assign(
             className: cx(propsRest.className),
           })}
           tabIndex={undefined}
-          ref={mergeRefs(refs.setFloating as any, propsRest.ref)}
+          ref={mergeRefs<HTMLUListElement>(refs.setFloating, propsRest.ref)}
           data-placement={placementEffective}
         >
           {items}

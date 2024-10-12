@@ -40,7 +40,7 @@ export const Form = (props: FormProps) => {
   const { unstyled = false, nestable, children, className, ...propsRest } = props;
   
   const formId = React.useId();
-  const [wrapperRef, setWrapperRef] = React.useState<null | React.ElementRef<'div'>>(null);
+  const [wrapperRef, setWrapperRef] = React.useState<null | React.ComponentRef<'div'>>(null);
   
   // Memoize to keep a stable reference
   const context: FormContext = React.useMemo(() => ({ formId }), [formId]);

@@ -62,17 +62,17 @@ export const TooltipWithFocus: Story = {
 };
 
 const TooltipWithDrag = () => {
-  const boundaryRef = React.useRef<React.ElementRef<'div'>>(null);
+  const boundaryRef = React.useRef<React.ComponentRef<'div'>>(null);
   const [boundaryRendered, setBoundaryRendered] = React.useState(false);
   
   React.useEffect(() => {
     if (boundaryRef.current && !boundaryRendered) { setBoundaryRendered(true); }
-  }, [boundaryRef.current]);
+  }, [boundaryRendered]);
   
   return (
     <div ref={boundaryRef} style={{ minHeight: 400, display: 'grid', placeContent: 'center' }}>
       {boundaryRef.current &&
-        <Draggable>
+        <Draggable<HTMLButtonElement>>
           {({ targetRef }) =>
             <TooltipProvider
               tooltip="The position of this tooltip will update to stay in view as it gets dragged towards

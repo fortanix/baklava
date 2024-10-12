@@ -54,11 +54,10 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     ...tooltipProps
   } = props;
   
-  const arrowRef = React.useRef(null);
+  const arrowRef = React.useRef<HTMLElement>(null);
   
   const {
     context,
-    isOpen,
     isMounted,
     refs,
     floatingStyles,
@@ -70,7 +69,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     offset: 6,
     enablePreciseTracking,
     boundary,
-    arrowRef,
+    ...(arrowRef.current ? { arrowRef:  arrowRef as React.RefObject<HTMLElement> } : {}),
   });
   const arrow = usePopoverArrow({ context });
   
@@ -81,7 +80,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     } else {
       onTooltipDeactivated?.();
     }
-  }, [isMounted]);
+  }, [isMounted, onTooltipActivated, onTooltipDeactivated]);
   
   const renderTooltip = () => {
     if (!isMounted) { return null; }
@@ -93,7 +92,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     return (
       <Tooltip
         {...floatingProps}
-        ref={mergeRefs(refs.setFloating as any, tooltipProps.ref)}
+        ref={mergeRefs<HTMLDivElement>(refs.setFloating, tooltipProps.ref)}
         className={cx(
           floatingProps.className as ClassNameArgument,
           { [TooltipClassNames['bk-tooltip--arrow-top']]: arrow?.side === 'top' },
@@ -120,7 +119,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
   
   const renderAnchor = () => {
     const renderPropArg: GetReferenceProps = (userProps?: undefined | React.HTMLProps<Element>) => {
-      const userPropsRef: undefined | string | React.Ref<any> = userProps?.ref ?? undefined;
+      const userPropsRef: undefined | string | React.Ref<Element> = userProps?.ref ?? undefined;
       if (typeof userPropsRef === 'string') {
         // We can't merge refs if one of the refs is a string
         console.error(`Failed to render Tooltip, due to use of legacy string ref`);
@@ -143,7 +142,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
       return <span {...renderPropArg()}>{children}</span>;
     }
     if (React.Children.count(children) === 1) {
-      return React.cloneElement(children, renderPropArg(children.props));
+      return React.cloneElement(children, renderPropArg(children.props as React.HTMLProps<Element>));
     }
     
     console.error(`Invalid children passed to TooltipContainer, expected a render prop or single child element.`);

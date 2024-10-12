@@ -34,23 +34,25 @@ export type UseDraggableProps = {
   viewport?: boolean,
   rectLimits?: { left: number, right: number, top: number, bottom: number },
 };
-export type UseDraggableResult = {
-  targetRef: React.Ref<null | HTMLElement>,
-  handleRef: React.Ref<null | HTMLElement>,
+export type UseDraggableResult<T extends HTMLElement, H extends HTMLElement> = {
+  targetRef: React.Ref<T>,
+  handleRef: React.Ref<H>,
   getTargetProps: () => Record<string, unknown>,
   dragging: boolean,
   delta: Delta,
   resetState: () => void,
 };
-export const useDraggable = (props: UseDraggableProps): UseDraggableResult => {
+export const useDraggable = <T extends HTMLElement = HTMLElement, H extends HTMLElement = HTMLElement>(
+  props: UseDraggableProps,
+): UseDraggableResult<T, H> => {
   const {
     controlStyle = true,
     viewport = false,
     rectLimits,
   } = props;
   
-  const targetRef = React.useRef<HTMLElement>(null);
-  const handleRef = React.useRef<HTMLElement>(null);
+  const targetRef = React.useRef<T>(null);
+  const handleRef = React.useRef<H>(null);
   const [dragging, setDragging] = React.useState<boolean>(false);
   const [prev, setPrev] = React.useState({ x: 0, y: 0 });
   const [delta, setDelta] = React.useState({ x: 0, y: 0 });
@@ -184,9 +186,12 @@ export const useDraggable = (props: UseDraggableProps): UseDraggableResult => {
   return { targetRef, handleRef, getTargetProps, dragging, delta, resetState };
 };
 
-export type DraggableProps = {
-  children: (result: UseDraggableResult) => React.ReactNode,
+export type DraggableProps<T extends HTMLElement, H extends HTMLElement> = {
+  children: (result: UseDraggableResult<T, H>) => React.ReactNode,
 };
-export const Draggable = ({ children, ...rest }: DraggableProps) => {
+export const Draggable = <T extends HTMLElement = HTMLElement, H extends HTMLElement = HTMLElement>({
+  children,
+  ...rest
+}: DraggableProps<T, H>) => {
   return children(useDraggable(rest));
 };

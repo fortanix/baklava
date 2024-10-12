@@ -89,7 +89,7 @@ export const Select = Object.assign(
   (props: SelectProps) => {
     const { children, unstyled = false, searchable, ...propsRest } = props;
     
-    const selectedRef = React.useRef<React.ElementRef<'button'>>(null);
+    const selectedRef = React.useRef<React.ComponentRef<'button'>>(null);
     const [selected, setSelected] = React.useState<null | OptionDef>(null);
     
     const listRef = React.useRef([]);
