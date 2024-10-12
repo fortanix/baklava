@@ -9,6 +9,7 @@
 import * as React from 'react';
 
 
+type Delta = { x: number, y: number };
 type Limits = { minX: number, maxX: number, minY: number, maxY: number };
 type CalcDeltaArgs = {
   x: number,
@@ -34,14 +35,14 @@ export type UseDraggableProps = {
   rectLimits?: { left: number, right: number, top: number, bottom: number },
 };
 export type UseDraggableResult = {
-  targetRef: any,
-  handleRef: any,
-  getTargetProps: any,
-  dragging: any,
-  delta: any,
-  resetState: any,
+  targetRef: React.Ref<null | HTMLElement>,
+  handleRef: React.Ref<null | HTMLElement>,
+  getTargetProps: () => Record<string, unknown>,
+  dragging: boolean,
+  delta: Delta,
+  resetState: () => void,
 };
-export const useDraggable = (props: UseDraggableProps) => {
+export const useDraggable = (props: UseDraggableProps): UseDraggableResult => {
   const {
     controlStyle = true,
     viewport = false,
@@ -49,14 +50,14 @@ export const useDraggable = (props: UseDraggableProps) => {
   } = props;
   
   const targetRef = React.useRef<HTMLElement>(null);
-  const handleRef = React.useRef(null);
-  const [dragging, setDragging] = React.useState(false);
+  const handleRef = React.useRef<HTMLElement>(null);
+  const [dragging, setDragging] = React.useState<boolean>(false);
   const [prev, setPrev] = React.useState({ x: 0, y: 0 });
   const [delta, setDelta] = React.useState({ x: 0, y: 0 });
   const initial = React.useRef({ x: 0, y: 0 });
-  const limits = React.useRef<Limits>();
+  const limits = React.useRef<undefined | Limits>(undefined);
   
-  const stopDragging = (event: MouseEvent | TouchEvent) => {
+  const stopDragging = React.useCallback((event: MouseEvent | TouchEvent) => {
     event.preventDefault();
     setDragging(false);
     const newDelta = reposition(event);
@@ -64,9 +65,9 @@ export const useDraggable = (props: UseDraggableProps) => {
     if (controlStyle && targetRef.current) {
       targetRef.current.style.willChange = '';
     }
-  };
+  }, [controlStyle]);
   
-  const reposition = (event: MouseEvent | TouchEvent) => {
+  const reposition = React.useCallback((event: MouseEvent | TouchEvent) => {
     const source =
       ('changedTouches' in event && event.changedTouches[0])
       || ('touches' in event && event.touches[0])
@@ -80,7 +81,7 @@ export const useDraggable = (props: UseDraggableProps) => {
     setDelta(newDelta);
     
     return newDelta;
-  };
+  }, [prev]);
   
   React.useEffect(() => {
     const startDragging = (event: MouseEvent | TouchEvent): void => {
@@ -95,7 +96,7 @@ export const useDraggable = (props: UseDraggableProps) => {
       if (!target) { return; }
       
       if (controlStyle) {
-        targetRef.current.style.willChange = 'transform';
+        target.style.willChange = 'transform';
       }
       if (viewport || rectLimits) {
         const {
@@ -103,7 +104,7 @@ export const useDraggable = (props: UseDraggableProps) => {
           top,
           width,
           height
-        } = targetRef.current.getBoundingClientRect();
+        } = target.getBoundingClientRect();
         
         if (viewport) {
           limits.current = {
@@ -160,7 +161,7 @@ export const useDraggable = (props: UseDraggableProps) => {
       document.removeEventListener('touchmove', reposition);
       document.removeEventListener('touchend', stopDragging);
     };
-  }, [dragging, prev, controlStyle, viewport, rectLimits]);
+  }, [stopDragging, dragging, controlStyle, reposition]);
   
   React.useEffect(() => {
     if (controlStyle && targetRef.current) {
@@ -178,10 +179,10 @@ export const useDraggable = (props: UseDraggableProps) => {
   const resetState = React.useCallback(() => {
     setDelta({ x: 0, y: 0 });
     setPrev({ x: 0, y: 0 });
-  }, [setDelta, setPrev]);
+  }, []);
   
   return { targetRef, handleRef, getTargetProps, dragging, delta, resetState };
-}
+};
 
 export type DraggableProps = {
   children: (result: UseDraggableResult) => React.ReactNode,
