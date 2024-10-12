@@ -28,6 +28,10 @@
 :root {
   @include isolate;
   
+  /* stylelint-disable */
+  interpolate-size: allow-keywords;
+  /* stylelint-enable */
+  
   /* Whether to inflate text on small devices */
   text-size-adjust: none;
   
