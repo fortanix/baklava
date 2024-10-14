@@ -153,21 +153,12 @@ const Modal = ({
     [close, closeable],
   );
 
-  // prevent closing dialog with Esc key
-  const handleKeyDown = React.useCallback((event: KeyboardEvent) => {
-    if (event.key !== 'Escape') {
-      return;
-    }
-    if (closeable) {
+  // "onKeyDown" instead of "onCancel" as the latter is only fired after the cancel already initiated
+  const handleDialogKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape' && !closeable) {
       event.preventDefault();
     }
-  }, [closeable]);
-  React.useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [handleKeyDown]);
+  };
 
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
@@ -186,13 +177,13 @@ const Modal = ({
         className,
       )}
       onClick={handleDialogClick}
+      onKeyDown={handleDialogKeyDown}
     >
       {closeable && (
         <button
           type="button"
           className={cx(cl['bk-modal__close'])}
           onClick={close}
-          onKeyUp={close}
         >
           <Icon icon="cross" />
         </button>
