@@ -3,7 +3,6 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, within } from '@storybook/test';
 
 import * as React from 'react';
 import { Draggable } from '../../../util/drag.ts';
@@ -33,6 +32,18 @@ export default {
 
 
 export const Standard: Story = {};
+
+export const PlacementTop: Story = {
+  args: {
+    placement: 'top',
+  },
+};
+
+export const PlacementBottom: Story = {
+  args: {
+    placement: 'bottom',
+  },
+};
 
 /**
  * When a tooltip hits the viewport during scroll, it will automatically reposition to be visible.
