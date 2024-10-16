@@ -11,6 +11,7 @@ export const icons = {
   'authentication': {},
   'calendar': {},
   'caret-down': {},
+  'check': {},
   'cloud-accounts': {},
   'copy': {},
   'cross': {},
