@@ -31,8 +31,6 @@ export default {
 } satisfies Meta<TooltipProviderArgs>;
 
 
-export const Standard: Story = {};
-
 export const PlacementTop: Story = {
   args: {
     placement: 'top',
@@ -54,6 +52,29 @@ export const PlacementLeft: Story = {
 export const PlacementRight: Story = {
   args: {
     placement: 'right',
+  },
+};
+
+export const TooltipSmall: Story = {
+  args: {
+    size: 'small',
+    tooltip: 'A small tooltip will have a fixed size, breaking line automatically if the content is too wide.',
+  },
+};
+
+export const TooltipMedium: Story = {
+  args: {
+    placement: 'right',
+    size: 'medium',
+    tooltip: 'A medium tooltip will have a fixed size, breaking line automatically if the content is too wide.',
+  },
+};
+
+export const TooltipLarge: Story = {
+  args: {
+    placement: 'left',
+    size: 'large',
+    tooltip: <>A large tooltip will have a fixed size,<br />even if the content is small.</>,
   },
 };
 

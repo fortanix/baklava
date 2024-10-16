@@ -47,6 +47,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     children,
     tooltip,
     placement,
+    size,
     enablePreciseTracking = false,
     boundary,
     onTooltipActivated,
@@ -109,6 +110,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
           '--arrow-x': arrow?.arrowX,
           '--arrow-y': arrow?.arrowY,
         } as React.CSSProperties}
+        size={size}
       >
         {tooltip}
         {/*
