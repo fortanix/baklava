@@ -45,6 +45,18 @@ export const PlacementBottom: Story = {
   },
 };
 
+export const PlacementLeft: Story = {
+  args: {
+    placement: 'left',
+  },
+};
+
+export const PlacementRight: Story = {
+  args: {
+    placement: 'right',
+  },
+};
+
 /**
  * When a tooltip hits the viewport during scroll, it will automatically reposition to be visible.
  */

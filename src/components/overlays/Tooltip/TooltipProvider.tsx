@@ -96,8 +96,11 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
         ref={mergeRefs(refs.setFloating as any, tooltipProps.ref)}
         className={cx(
           floatingProps.className as ClassNameArgument,
+          { [TooltipClassNames['bk-tooltip--arrow']]: !!arrow?.side },
           { [TooltipClassNames['bk-tooltip--arrow-top']]: arrow?.side === 'top' },
           { [TooltipClassNames['bk-tooltip--arrow-bottom']]: arrow?.side === 'bottom' },
+          { [TooltipClassNames['bk-tooltip--arrow-left']]: arrow?.side === 'left' },
+          { [TooltipClassNames['bk-tooltip--arrow-right']]: arrow?.side === 'right' },
           tooltipProps.className,
         )}
         style={{

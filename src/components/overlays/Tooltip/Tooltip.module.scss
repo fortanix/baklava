@@ -47,8 +47,8 @@
     font-size: 12px;
 
     --arrow-size: 7px;
-    
-    &:is(.bk-tooltip--arrow-top, .bk-tooltip--arrow-bottom):before {
+
+    &.bk-tooltip--arrow:before {
       content: '';
       border-bottom: 1px solid bk.$theme-tooltip-border-default;
       border-right: 1px solid bk.$theme-tooltip-border-default;
@@ -57,15 +57,27 @@
       width: calc(2 * var(--arrow-size));
       height: calc(2 * var(--arrow-size));
     }
-    &.bk-tooltip--arrow-bottom:before {
+    &:is(.bk-tooltip--arrow-bottom, .bk-tooltip--arrow-top):before {
       left: calc(50% - var(--arrow-size));
+    }
+    &.bk-tooltip--arrow-bottom:before {
       bottom: calc(-1 * (calc(var(--arrow-size) + 1px)));
       transform: rotate(45deg);
     }
     &.bk-tooltip--arrow-top:before {
-      left: calc(50% - var(--arrow-size));
       top: calc(-1 * (calc(var(--arrow-size) + 1px)));
       transform: rotate(-135deg);
+    }
+    &:is(.bk-tooltip--arrow-left, .bk-tooltip--arrow-right):before {
+      top: calc(50% - var(--arrow-size));
+    }
+    &.bk-tooltip--arrow-left:before {
+      left: calc(-1 * (calc(var(--arrow-size) + 1px)));
+      transform: rotate(135deg);
+    }
+    &.bk-tooltip--arrow-right:before {
+      right: calc(-1 * (calc(var(--arrow-size) + 1px)));
+      transform: rotate(-45deg);
     }
   }
   
@@ -82,13 +94,21 @@
     justify-self: anchor-center;
     top: anchor(bottom);
   }
+  @position-try --bk-tooltip-position-left {
+    justify-self: anchor-center;
+    right: anchor(left);
+  }
+  @position-try --bk-tooltip-position-right {
+    justify-self: anchor-center;
+    left: anchor(right);
+  }
   
   .bk-tooltip[popover] {
     inset: auto; /* Note: future versions of Chrome should have this by default */
     position: fixed;
     /*position-anchor: --anchor-1;*/ /* Needs to be set dynamically */
     
-    position-try-fallbacks: --bk-tooltip-position-top, --bk-tooltip-position-bottom;
+    position-try-fallbacks: --bk-tooltip-position-top, --bk-tooltip-position-bottom, --bk-tooltip-position-left, --bk-tooltip-position-right;
     
     filter: drop-shadow(4px 4px 4px rgba(50 50 50 / 30%));
     
