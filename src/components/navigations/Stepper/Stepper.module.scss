@@ -1,0 +1,88 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-stepper {
+    @include bk.component-base(bk-stepper);
+    
+    &.bk-stepper--horizontal {
+      display: flex;
+      gap: bk.$spacing-9;
+    }
+    
+    &.bk-stepper--vertical {
+      .bk-stepper__item {
+        &:not(:first-child):not(:first-child) {
+          margin-top: bk.$spacing-9;
+      
+          .bk-stepper__item__circle {
+            &::before {
+              position: absolute;
+              content: '';
+              width: 0;
+              height: bk.$spacing-9;
+              top: -42px;
+              left: 50%;
+              border: 0.5px solid #{bk.$theme-stepper-border-disabled};
+            }
+          }
+        }
+      }
+    }
+    
+    .bk-stepper__item {
+      display: flex;
+      align-items: center;
+      color: #{bk.$theme-stepper-text-disabled};
+      cursor: pointer;
+      
+      .bk-stepper__item__circle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin-right: bk.$spacing-3;
+        border: 2px solid #{bk.$theme-stepper-border-disabled};
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        font-weight: bk.$font-weight-bold;
+        font-size: bk.$font-size-m;
+      }
+      
+      .bk-stepper__item__circle__icon {
+        font-size: bk.$font-size-xs;
+      }
+      
+      .bk-stepper__item__title {
+        font-size: bk.$font-size-m;
+      }
+      
+      .bk-stepper__item__optional {
+        margin-left: bk.$spacing-2;
+        font-size: bk.$font-size-xs;
+      }
+             
+      &[aria-selected="true"] {
+        color: #{bk.$theme-stepper-text-selected};
+        
+        .bk-stepper__item__circle {
+          border-color: #{bk.$theme-stepper-border-default};
+          background-color: #{bk.$theme-stepper-background-default};
+          color: #{bk.$theme-stepper-text-selected-number};
+        }
+      }
+      
+      &.bk-stepper__item--checked {
+        color: #{bk.$theme-stepper-text-selected};
+        
+        .bk-stepper__item__circle {
+          border-color: #{bk.$theme-stepper-border-default};
+        }
+      }
+    }
+  }
+}
