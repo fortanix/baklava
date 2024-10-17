@@ -33,6 +33,24 @@ export const TooltipStandard: Story = {
   name: 'Tooltip',
 };
 
+export const TooltipSmall: Story = {
+  args: {
+    size: 'small',
+  },
+};
+
+export const TooltipMedium: Story = {
+  args: {
+    size: 'medium',
+  },
+};
+
+export const TooltipLarge: Story = {
+  args: {
+    size: 'large',
+  },
+};
+
 export const TooltipWordBreak: StoryObj<typeof Tooltip> = {
   name: 'Tooltip (word break)',
   render: () => (
