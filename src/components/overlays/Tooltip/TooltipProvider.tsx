@@ -6,7 +6,7 @@ import { classNames as cx, type ClassNameArgument } from '../../../util/componen
 import { mergeRefs } from '../../../util/reactUtil.ts';
 import * as React from 'react';
 
-import { type Placement, usePopover, usePopoverArrow } from '../../util/Popover/Popover.tsx';
+import { usePopover, usePopoverArrow } from '../../util/Popover/Popover.tsx';
 import { type TooltipProps, TooltipClassNames, Tooltip } from './Tooltip.tsx';
 
 
@@ -25,7 +25,8 @@ export type TooltipProviderProps = Omit<TooltipProps, 'children'> & {
   tooltip?: null | React.ReactNode,
 
   /** Where to show the tooltip relative to the anchor. */
-  placement?: undefined | Placement,
+  // here we are not using Placement as exposed from Popover because Tooltip only supports a subset of Popover's default placements.
+  placement?: undefined | 'top' | 'bottom' | 'left' | 'right',
   
   /** Enable more precise tracking of the anchor, at the cost of performance. */
   enablePreciseTracking?: undefined | boolean,

@@ -35,13 +35,14 @@
     max-height: calc(100svh - var(--bk-sizing-2));
     */
     
-    padding: 7px 12px;
+    padding: bk.$spacing-4;
+    padding-bottom: bk.$spacing-7;
     border-radius: bk.$radius-s;
     background: bk.$theme-tooltip-background-default;
     border: 1px solid bk.$theme-tooltip-border-default;
 
     @include bk.text-layout;
-    text-align: center;
+    text-align: left;
     color: bk.$theme-tooltip-text-default;
     @include bk.font(bk.$font-family-body);
     font-size: 12px;
@@ -88,6 +89,20 @@
     &.bk-tooltip--arrow-right:before {
       right: calc(-1 * (calc(var(--arrow-size) + 1px)));
       transform: rotate(-45deg);
+    }
+
+    .bk-tooltip--title {
+      font-size: bk.$font-size-l;
+      font-weight: bk.$font-weight-semibold;
+    }
+
+    .bk-tooltip--icon {
+      font-size: 18px;
+      margin-right: 10px;
+    }
+
+    .bk-tooltip--alert {
+      color: bk.$theme-tooltip-text-error;
     }
   }
   

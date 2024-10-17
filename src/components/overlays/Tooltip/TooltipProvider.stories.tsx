@@ -7,9 +7,11 @@ import type { Meta, StoryObj } from '@storybook/react';
 import * as React from 'react';
 import { Draggable } from '../../../util/drag.ts';
 
-import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
-import { Button } from '../../actions/Button/Button.tsx';
 import { TooltipProvider } from './TooltipProvider.tsx';
+import { TooltipIcon, TooltipItem, TooltipTitle } from './Tooltip.tsx';
+import { Button } from '../../actions/Button/Button.tsx';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
+import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
 
 
 type TooltipProviderArgs = React.ComponentProps<typeof TooltipProvider>;
@@ -58,7 +60,11 @@ export const PlacementRight: Story = {
 export const TooltipSmall: Story = {
   args: {
     size: 'small',
-    tooltip: 'A small tooltip will have a fixed size, breaking line automatically if the content is too wide.',
+    tooltip: <>
+      <TooltipTitle>Title</TooltipTitle>
+      <TooltipItem>Lorem ipsum</TooltipItem>
+      <TooltipItem>Lorem ipsum</TooltipItem>
+    </>,
   },
 };
 
@@ -66,7 +72,17 @@ export const TooltipMedium: Story = {
   args: {
     placement: 'right',
     size: 'medium',
-    tooltip: 'A medium tooltip will have a fixed size, breaking line automatically if the content is too wide.',
+    tooltip: <>
+      <TooltipTitle>Title</TooltipTitle>
+      <TooltipItem alert={true}>
+        <TooltipIcon icon="alert" />
+        Lorem ipsum
+      </TooltipItem>
+      <TooltipItem>
+        <TooltipIcon icon="copy" />
+        Lorem ipsum
+      </TooltipItem>
+    </>,
   },
 };
 

@@ -5,6 +5,8 @@
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import * as React from 'react';
 
+import { Icon, IconProps } from '../../graphics/Icon/Icon.tsx';
+
 import cl from './Tooltip.module.scss';
 
 
@@ -37,3 +39,37 @@ export const Tooltip = ({ unstyled = false, size = undefined, ...propsRest }: To
     />
   );
 };
+
+export type TooltipTitleProps = React.PropsWithChildren<ComponentProps<'h1'>>;
+
+/**
+ * Tooltip title. Can be optionally used as tooltip children.
+ */
+export const TooltipTitle = ({ children }: TooltipTitleProps) => (
+  <h1 className={cl['bk-tooltip--title']}>{children}</h1>
+);
+
+export type TooltipItemProps = React.PropsWithChildren<ComponentProps<'h1'> & {
+  /** Whether the item is an alert */
+  alert?: undefined | boolean;
+}>;
+
+/**
+ * Tooltip item. Can be optionally used as tooltip children.
+ */
+export const TooltipItem = ({ alert = false, children }: TooltipItemProps) => (
+  <p
+    className={cx({
+      [cl['bk-tooltip--alert']]: alert,
+    })}
+  >
+    {children}
+  </p>
+);
+
+/**
+ * Tooltip icon. Can be optionally used as tooltip children.
+ */
+export const TooltipIcon = (props: IconProps) => (
+  <Icon className={cl['bk-tooltip--icon']} {...props} />
+);
