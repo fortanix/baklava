@@ -1,0 +1,76 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not
+|* distributed with this file, you can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-placeholder-empty {
+    @include bk.component-base(bk-placeholder-empty);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  
+    &.bk-placeholder-empty--large {
+      gap: bk.$spacing-6;
+      
+      .bk-placeholder-empty__icon {
+        --bk-icon-size: 6rem;
+        max-height: 5rem;
+      }
+      
+      .bk-placeholder-empty__content {
+        gap: bk.$spacing-4;
+      }
+      
+      .bk-placeholder-empty__content__title {
+        font-size: 20px;
+        line-height: 20px;
+      }
+    }
+    
+    &.bk-placeholder-empty--small {
+      gap: bk.$spacing-4;
+            
+      .bk-placeholder-empty__icon {
+        --bk-icon-size: 4rem;
+        max-height: 3rem;
+      }
+      
+      .bk-placeholder-empty__content {
+        gap: bk.$spacing-2;
+      }
+      
+      .bk-placeholder-empty__content__title {
+        font-size: 14px;
+        line-height: 14px;
+      }
+    }
+  
+    .bk-placeholder-empty__icon {
+      color: bk.$theme-empty-state-stoke-default;
+    }
+    
+    .bk-placeholder-empty__content {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+    
+    .bk-placeholder-empty__content__title {
+      color: bk.$theme-text-heading-default;
+      font-family: bk.$font-family-display;
+    }
+    
+    .bk-placeholder-empty__content__subtitle {
+      max-width: 50%;
+      text-align: center;
+    }
+    
+    .bk-placeholder-empty__content__action {
+      display: flex;
+      align-items: center;
+      gap: bk.$spacing-4;
+    }
+  }
+} 
