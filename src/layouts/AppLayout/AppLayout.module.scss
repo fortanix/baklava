@@ -19,12 +19,7 @@
     
     --bk-app-layout-sidebar-width-open: 220px;
     --bk-app-layout-sidebar-width: var(--bk-app-layout-sidebar-width-open);
-    
-    //&:has([slot='sidebar']:hover) { --bk-app-layout-sidebar-width: 80px; } // TEST
-    @media (prefers-reduced-motion: no-preference) {
-      transition: grid 300ms;
-    }
-    
+
     /* Note: do not use vw/vh, because we may want to show the layout in a container (e.g. story) */
     min-width: 100cqw;
     min-height: 100cqh;
@@ -105,6 +100,11 @@
         'content' 1fr
         'footer' max-content
         / 1fr;
+    }
+
+    //&:has([slot='sidebar']:hover) { --bk-app-layout-sidebar-width: 80px; } // TEST
+    @media (prefers-reduced-motion: no-preference) {
+      transition: grid 300ms;
     }
   }
 }
