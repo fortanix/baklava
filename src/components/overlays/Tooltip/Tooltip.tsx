@@ -32,9 +32,9 @@ export const Tooltip = ({ unstyled = false, size = undefined, ...propsRest }: To
         bk: true,
         [cl['bk-tooltip']]: !unstyled,
         'bk-body-text': !unstyled,
-        [cl['bk-tooltip--size-small']]: size === 'small',
-        [cl['bk-tooltip--size-medium']]: size === 'medium',
-        [cl['bk-tooltip--size-large']]: size === 'large',
+        [cl['bk-tooltip--small']]: size === 'small',
+        [cl['bk-tooltip--medium']]: size === 'medium',
+        [cl['bk-tooltip--large']]: size === 'large',
       }, propsRest.className)}
     />
   );
@@ -46,10 +46,10 @@ export type TooltipTitleProps = React.PropsWithChildren<ComponentProps<'h1'>>;
  * Tooltip title. Can be optionally used as tooltip children.
  */
 export const TooltipTitle = ({ children }: TooltipTitleProps) => (
-  <h1 className={cl['bk-tooltip--title']}>{children}</h1>
+  <h1 className={cl['bk-tooltip__title']}>{children}</h1>
 );
 
-export type TooltipItemProps = React.PropsWithChildren<ComponentProps<'h1'> & {
+export type TooltipItemProps = React.PropsWithChildren<ComponentProps<'p'> & {
   /** Whether the item is an alert */
   alert?: undefined | boolean;
 }>;
@@ -60,7 +60,7 @@ export type TooltipItemProps = React.PropsWithChildren<ComponentProps<'h1'> & {
 export const TooltipItem = ({ alert = false, children }: TooltipItemProps) => (
   <p
     className={cx({
-      [cl['bk-tooltip--alert']]: alert,
+      [cl['bk-tooltip__alert']]: alert,
     })}
   >
     {children}
@@ -71,5 +71,5 @@ export const TooltipItem = ({ alert = false, children }: TooltipItemProps) => (
  * Tooltip icon. Can be optionally used as tooltip children.
  */
 export const TooltipIcon = (props: IconProps) => (
-  <Icon className={cl['bk-tooltip--icon']} {...props} />
+  <Icon className={cl['bk-tooltip__icon']} {...props} />
 );
