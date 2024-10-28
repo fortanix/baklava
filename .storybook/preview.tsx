@@ -13,7 +13,6 @@ import { addons } from '@storybook/preview-api';
 import { DARK_MODE_EVENT_NAME, UPDATE_DARK_MODE_EVENT_NAME } from 'storybook-dark-mode';
 import { DocsContainer, Title, Subtitle, Description, Primary, Controls, Stories } from '@storybook/blocks';
 
-import { ToastContainer } from '../src/components/overlays/Toast/Toast.tsx';
 
 
 const channel = addons.getChannel();
@@ -139,10 +138,7 @@ const preview = {
         
         const theme = React.useMemo(() => isDark ? themes.dark : themes.light, [isDark]);
         return (
-          <>
-            <ToastContainer/>
-            <DocsContainer {...props} theme={theme}/>
-          </>
+          <DocsContainer {...props} theme={theme}/>
         );
       },
       // page: () => (

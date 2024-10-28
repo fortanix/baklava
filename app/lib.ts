@@ -33,7 +33,7 @@ export { Tabs } from '../src/components/navigations/Tabs/Tabs.tsx';
 
 export { DropdownMenu } from '../src/components/overlays/DropdownMenu/DropdownMenu.tsx';
 export { Modal } from '../src/components/overlays/Modal/Modal.tsx';
-export { type ToastContent, ToastContainer, ToastMessage } from '../src/components/overlays/Toast/Toast.tsx';
+export { type ToastContent, ToastProvider, ToastMessage } from '../src/components/overlays/Toast/Toast.tsx';
 export { Tooltip } from '../src/components/overlays/Tooltip/Tooltip.tsx';
 
 // Layouts

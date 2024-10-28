@@ -11,8 +11,8 @@
     @include bk.theme('only light'); /* TEMP: no dark mode styling yet in Figma */
     
     &.bk-alert--info {
-      --bk-panel-background-color: #{bk.$theme-notifcation-informational-background-default};
-      --bk-panel-border-color: #{bk.$theme-notifcation-informational-border-default};
+      --bk-panel-background-color: #{bk.$theme-notification-informational-background-default};
+      --bk-panel-border-color: #{bk.$theme-notification-informational-border-default};
     }
     &.bk-alert--warning {
       /* FIXME */
@@ -20,12 +20,12 @@
       --bk-panel-border-color: light-dark(#FEC84B, #FEC84B);
     }
     &.bk-alert--error {
-      --bk-panel-background-color: #{bk.$theme-notifcation-informational-background-default};
-      --bk-panel-border-color: #{bk.$theme-notifcation-informational-background-default};
+      --bk-panel-background-color: #{bk.$theme-notification-informational-background-default};
+      --bk-panel-border-color: #{bk.$theme-notification-informational-background-default};
     }
     &.bk-alert--success {
-      --bk-panel-background-color: #{bk.$theme-notifcation-informational-background-default};
-      --bk-panel-border-color: #{bk.$theme-notifcation-informational-background-default};
+      --bk-panel-background-color: #{bk.$theme-notification-informational-background-default};
+      --bk-panel-border-color: #{bk.$theme-notification-informational-background-default};
     }
     
     display: grid;

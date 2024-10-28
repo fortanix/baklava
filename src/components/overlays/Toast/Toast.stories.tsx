@@ -5,14 +5,18 @@
 import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Icon } from '../../graphics/Icon/Icon.tsx';
-import { Tooltip } from '../Tooltip/Tooltip.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
+import {
+  notify,
+  ToastButton,
+  CopyActionButton,
+  ToastLink,
+  ToastMessage,
+  ToastProvider,
+  type NotifyProps,
+} from './Toast.tsx';
 
-import { notify, CopyActionButton, ToastMessage, ToastContainer } from './Toast.tsx';
-
-
-type ToastArg = React.ComponentProps<typeof ToastMessage>;
+type ToastArg = NotifyProps;
 type Story = StoryObj<ToastArg>;
 
 export default {
@@ -21,160 +25,183 @@ export default {
     layout: 'centered',
   },
   tags: ['autodocs'],
+  argTypes: {},
+  args: {
+    title: 'Title',
+  },
+  decorators: [
+    Story => (
+      <ToastProvider>
+        <Story/>
+      </ToastProvider>
+    ),
+  ],
 } satisfies Meta<ToastArg>;
 
-const notificationText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris 
-nisi ut aliquip ex ea commodo consequat.`;
+const notificationText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, magna aliqua.`;
 
 const Actions = () => {
-  const onClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
   return (
     <>
-      <div className="bkl-notification__buttons">
-        {/* TODO: replace a element with Link component later */}
-        <a href="/" target="_blank" rel="noopener noreferrer" onClick={onClick}>
-          Go to settings
-        </a>
-        <a href="/" target="_blank" rel="noopener noreferrer" onClick={onClick}>
-          Learn more
-        </a>
-      </div>
       <CopyActionButton message={notificationText} />
+      <ToastButton>Share</ToastButton>
     </>
-  );
-};
-
-const ActionsInline = () => {
-  return (
-    <Tooltip placement="top" content="Send email" className="bkl-notification__tooltip">
-      <Icon icon="email" onClick={() => window.open('mailto:test@fortanix.com')} />
-    </Tooltip>
   );
 };
 
 export const Success: Story = {
-  render:  (args) => (
-    <>
-      <Button onClick={() => notify.success(notificationText)}>
-        Notify Success
-      </Button>
-      <ToastContainer {...args}/>
-    </>
+  args: {
+    options: {},
+  },
+  render: (args) => (
+    <Button onClick={() => notify.success(args)}>
+      Notify Success
+    </Button>
   ),
 };
 
 export const Info: Story = {
-  render:  (args) => (
-    <>
-      <Button onClick={() => notify.info(notificationText)}>
-        Notify Info
-      </Button>
-      <ToastContainer {...args}/>
-    </>
+  args: {
+    options: {},
+  },
+  render: (args) => (
+    <Button onClick={() => notify.info(args)}>
+      Notify Info
+    </Button>
   ),
 };
 
 export const Error: Story = {
+  args: {
+    options: {},
+  },
   render:  (args) => (
-    <>
-      <Button onClick={() => notify.error(notificationText)}>
-        Notify Error
-      </Button>
-      <ToastContainer {...args}/>
-    </>
+    <Button onClick={() => notify.error(args)}>
+      Notify Error
+    </Button>
   ),
 };
 
-export const WithActions: Story = {
+export const SuccessWithMessageAndLink: Story = {
+  args: {
+    message: (
+      <>
+        {`${notificationText} `}
+        <ToastLink href="/">Link</ToastLink>
+      </>
+    ),
+    options: {
+      autoClose: false,
+    },
+  },
   render:  (args) => (
-    <>
-      <Button onClick={() => notify.info(notificationText, { actions: <Actions />, autoClose: false })}>
-        Notify Info with actions
-      </Button>
-      <ToastContainer {...args}/>
-    </>
+    <Button onClick={() => notify.success(args)}>
+      Notify success with message and link
+    </Button>
   ),
 };
 
-export const WithActionsInline: Story = {
+export const SuccessWithCloseButton: Story = {
+  args: {
+    message: notificationText,
+    options: {
+      closeButton: true,
+      autoClose: false,
+    },
+  },
   render:  (args) => (
-    <>
-      <Button onClick={() => notify.info(notificationText, { actionsInline: <ActionsInline />, autoClose: false })}>
-        Notify Info with actions inline
-      </Button>
-      <ToastContainer {...args}/>
-    </>
+    <Button onClick={() => notify.success(args)}>
+      Notify success with close button
+    </Button>
   ),
 };
 
-export const WithActionsAndActionsInline: Story = {
+export const SuccessWithActions: Story = {
+  args: {
+    message: notificationText,
+    options: {
+      closeButton: true,
+      autoClose: false,
+      actions: <Actions />,
+    },
+  },
   render:  (args) => (
-    <>
-      <Button onClick={() => notify.info(notificationText, { actions: <Actions />, actionsInline: <ActionsInline />, autoClose: false })}>
-        Notify Info with actions and actions inline
-      </Button>
-      <ToastContainer {...args}/>
-    </>
+    <Button onClick={() => notify.success(args)}>
+      Notify success with actions
+    </Button>
   ),
 };
 
 export const PreventDuplicate: Story = {
+  args: {
+    options: {
+      toastId: 'uniqueId',
+    },
+  },
   render:  (args) => (
-    <>
-      <Button onClick={() => notify.success(notificationText, { toastId: 'uniqueId' })}>
-        Notify
-      </Button>
-      <ToastContainer {...args}/>
-    </>
+    <Button onClick={() => notify.success(args)}>
+      Notify
+    </Button>
   ),
 };
 
 export const AddProgressBarToAllToasts: Story = {
+  args: {
+    message: notificationText,
+    options: {
+      closeButton: true,
+      actions: <Actions />,
+      hideProgressBar: false,
+    }
+  },
   render: (args) => (
     <>
       <div style={{ marginBottom: '20px' }}>
-        <Button onClick={() => { notify.success(notificationText); }}>
-          Notify success
-        </Button>
-      </div>
-      <div style={{ marginBottom: '20px' }}>
-        <Button onClick={() => { notify.info(notificationText); }}>
-          Notify info
-        </Button>
-      </div>
-      <div style={{ marginBottom: '20px' }}>
-        <Button onClick={() => { notify.error(notificationText); }}>
-          Notify error
-        </Button>
-      </div>
-      <ToastContainer showProgressBar  {...args}/>
-    </>
-  ),
-};
-
-export const AddProgressBarToSelectedToasts: Story = {
-  render: (args) => (
-    <>
-      <div style={{ marginBottom: '20px' }}>
-        <Button onClick={() => { notify.success(notificationText, { hideProgressBar: false }); }}>
+        <Button onClick={() => notify.success(args)}>
           Notify success with progress bar
         </Button>
       </div>
       <div style={{ marginBottom: '20px' }}>
-        <Button onClick={() => { notify.info(notificationText); }}>
-          Notify info
+        <Button onClick={() => notify.info(args)}>
+          Notify info with progress bar
         </Button>
       </div>
       <div style={{ marginBottom: '20px' }}>
-        <Button onClick={() => { notify.error(notificationText, { hideProgressBar: false }); }}>
+        <Button onClick={() => notify.error(args)}>
           Notify error with progress bar
         </Button>
       </div>
-      <ToastContainer {...args}/>
+    </>
+  ),
+};
+
+export const AddProgressBarToAllToastsWithAutoDelay: Story = {
+  args: {
+    message: notificationText,
+    options: {
+      delay: 3000,
+      closeButton: true,
+      actions: <Actions />,
+      hideProgressBar: false,
+    }
+  },
+  render: (args) => (
+    <>
+      <div style={{ marginBottom: '20px' }}>
+        <Button onClick={() => notify.success(args)}>
+          Notify success with progress bar after 3 seconds
+        </Button>
+      </div>
+      <div style={{ marginBottom: '20px' }}>
+        <Button onClick={() => notify.info(args)}>
+          Notify info with progress bar after 3 seconds
+        </Button>
+      </div>
+      <div style={{ marginBottom: '20px' }}>
+        <Button onClick={() => notify.error(args)}>
+          Notify error with progress bar after 3 seconds
+        </Button>
+      </div>
     </>
   ),
 };
