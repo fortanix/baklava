@@ -29,8 +29,7 @@ export { Spinner } from '../src/components/graphics/Spinner/Spinner.tsx';
 
 export { PropertyList } from '../src/components/lists/PropertyList/PropertyList.tsx';
 
-export { Tabs } from '../src/components/navigations/Tabs/Tabs.tsx';
-export { Tab } from '../src/components/navigations/Tabs/Tabs.tsx';
+export { Tab, Tabs } from '../src/components/navigations/Tabs/Tabs.tsx';
 export { Stepper } from '../src/components/navigations/Stepper/Stepper.tsx';
 
 export { DropdownMenu } from '../src/components/overlays/DropdownMenu/DropdownMenu.tsx';
