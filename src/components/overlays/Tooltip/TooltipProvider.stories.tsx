@@ -3,14 +3,15 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, within } from '@storybook/test';
 
 import * as React from 'react';
 import { Draggable } from '../../../util/drag.ts';
 
-import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
-import { Button } from '../../actions/Button/Button.tsx';
 import { TooltipProvider } from './TooltipProvider.tsx';
+import { TooltipIcon, TooltipItem, TooltipTitle } from './Tooltip.tsx';
+import { Button } from '../../actions/Button/Button.tsx';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
+import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
 
 
 type TooltipProviderArgs = React.ComponentProps<typeof TooltipProvider>;
@@ -32,7 +33,66 @@ export default {
 } satisfies Meta<TooltipProviderArgs>;
 
 
-export const Standard: Story = {};
+export const PlacementTop: Story = {
+  args: {
+    placement: 'top',
+  },
+};
+
+export const PlacementBottom: Story = {
+  args: {
+    placement: 'bottom',
+  },
+};
+
+export const PlacementLeft: Story = {
+  args: {
+    placement: 'left',
+  },
+};
+
+export const PlacementRight: Story = {
+  args: {
+    placement: 'right',
+  },
+};
+
+export const TooltipSmall: Story = {
+  args: {
+    size: 'small',
+    tooltip: <>
+      <TooltipTitle>Title</TooltipTitle>
+      <TooltipItem>Lorem ipsum</TooltipItem>
+      <TooltipItem>Lorem ipsum</TooltipItem>
+    </>,
+  },
+};
+
+export const TooltipMedium: Story = {
+  args: {
+    placement: 'right',
+    size: 'medium',
+    tooltip: <>
+      <TooltipTitle>Title</TooltipTitle>
+      <TooltipItem alert={true}>
+        <TooltipIcon icon="alert" />
+        Lorem ipsum
+      </TooltipItem>
+      <TooltipItem>
+        <TooltipIcon icon="copy" />
+        Lorem ipsum
+      </TooltipItem>
+    </>,
+  },
+};
+
+export const TooltipLarge: Story = {
+  args: {
+    placement: 'left',
+    size: 'large',
+    tooltip: <>A large tooltip will have a fixed size,<br />even if the content is small.</>,
+  },
+};
 
 /**
  * When a tooltip hits the viewport during scroll, it will automatically reposition to be visible.
