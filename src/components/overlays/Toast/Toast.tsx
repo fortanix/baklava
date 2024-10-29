@@ -48,7 +48,8 @@ export type CopyActionButton = {
   className?: ClassNameArgument,
 };
 export const CopyActionButton = ({ message = null, className }: CopyActionButton): React.ReactElement | null => {
-  const [tooltipMessage, setTooltipMessage] = React.useState<string>('');
+  const defaultTooltipMessage = 'Copy message';
+  const [tooltipMessage, setTooltipMessage] = React.useState<string>(defaultTooltipMessage);
   const isStringMessage = typeof message === 'string';
   
   const handleCopy = async (event: React.MouseEvent) => {
@@ -61,7 +62,7 @@ export const CopyActionButton = ({ message = null, className }: CopyActionButton
         setTooltipMessage('Failed to copy');
       } finally {
         setTimeout(() => {
-          setTooltipMessage('');
+          setTooltipMessage(defaultTooltipMessage);
         }, 2000);
       }
     }
@@ -70,7 +71,7 @@ export const CopyActionButton = ({ message = null, className }: CopyActionButton
   return (
     <>
       {isStringMessage &&
-        <TooltipProvider placement="top" tooltip={tooltipMessage} className="bk-toast__tooltip">
+        <TooltipProvider placement="bottom" tooltip={tooltipMessage} className="bk-toast__tooltip">
           <Button
             className={cx(cl['bk-toast__copy-button'], className)}
             onClick={handleCopy}
