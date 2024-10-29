@@ -21,10 +21,10 @@ export type PlaceholderEmptyProps = React.PropsWithChildren<ComponentProps<'div'
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
-  /** A size of this component. */
+  /** A size of this component. Defaults to "large". */
   size?: undefined | PlaceholderEmptySize,
 
-  /** An icon type of this component. */
+  /** An icon type of this component. Defaults to "graph". */
   iconType?: undefined | PlaceholderEmptyIconType,
   
   /** A custom icon of this component. */
