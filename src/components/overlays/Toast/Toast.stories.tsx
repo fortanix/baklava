@@ -82,6 +82,18 @@ export const Error: Story = {
   ),
 };
 
+export const ErrorWithMessage: Story = {
+  args: {
+    message: notificationText,
+    options: {},
+  },
+  render:  (args) => (
+    <Button onClick={() => notify.error(args)}>
+      Notify Error with message (includes a default copy button)
+    </Button>
+  ),
+};
+
 export const SuccessWithMessageAndLink: Story = {
   args: {
     message: (
