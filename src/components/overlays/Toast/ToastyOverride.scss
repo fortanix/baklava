@@ -4,7 +4,7 @@
 
 @use '../../../styling/defs.scss' as bk;
 
-// Define styling to override react-toastify's styles, as overriding directly from .Toast.module.scss is not possible.
+// Define styling to override react-toastify's styles, as overriding directly from Toast.module.scss is not possible.
 .Toastify {
   .Toastify__toast {
     &:has(.Toastify__progress-bar--wrp) {
