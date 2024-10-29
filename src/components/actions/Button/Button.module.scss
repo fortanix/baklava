@@ -32,11 +32,6 @@
     /* letter-spacing: 0.1ch; */
     text-transform: uppercase;
     
-    @media (prefers-reduced-motion: no-preference) {
-      transition: none 150ms ease-in-out;
-      transition-property: border, background, color;
-    }
-    
     /* Tertiary (default) */
     border-color: transparent;
     background-color: transparent;
@@ -71,6 +66,11 @@
       --bk-button-color-accent: #{bk.$theme-button-primary-background-non-active};
       --bk-button-color-contrast: #{bk.$theme-button-primary-text-non-active};
       cursor: not-allowed;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: none 150ms ease-in-out;
+      transition-property: border, background, color;
     }
     
     /* & > :global(.icon) { font-size: 1.2rem; } */

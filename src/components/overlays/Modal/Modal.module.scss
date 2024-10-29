@@ -87,6 +87,15 @@
       flex: 1; /* Make sure we cover all available space */
       overflow: auto;
     }
+
+    transition:
+      opacity 1ms ease-out,
+      scale 1ms ease-out,
+      overlay 1ms ease-out allow-discrete,
+      display 1ms ease-out allow-discrete;
+    opacity: 0;
+    scale: 0.98 0.98;
+    transition-duration: 200ms; /* Exit transition duration */
     
     /* Variant: slide out */
     --modal-slide-out-inset: var(--bk-sizing-3);
@@ -128,15 +137,6 @@
     }
     
     /* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#animating_dialogs */
-    
-    opacity: 0;
-    scale: 0.98 0.98;
-    transition:
-      opacity 1ms ease-out,
-      scale 1ms ease-out,
-      overlay 1ms ease-out allow-discrete,
-      display 1ms ease-out allow-discrete;
-    transition-duration: 200ms; /* Exit transition duration */
     
     &:modal {
       display: flex;
