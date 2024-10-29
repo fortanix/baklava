@@ -155,3 +155,15 @@ export const TooltipDraggable: Story = {
   name: 'Tooltip (draggable anchor)',
   render: () => <TooltipWithDrag/>,
 };
+
+export const TooltipEmpty: Story = {
+  args: {
+    tooltip: '',
+  },
+};
+
+export const TooltipNull: Story = {
+  args: {
+    tooltip: null,
+  },
+};
