@@ -80,7 +80,7 @@ export const SmallWithFolderIcon: Story = {
   name: 'Small with folder icon',
   args: {
     size: 'small',
-    iconType: 'folder',
+    icon: 'folder',
   },
 };
 
@@ -88,7 +88,7 @@ export const SmallWithFileIcon: Story = {
   name: 'Small with file icon',
   args: {
     size: 'small',
-    iconType: 'file',
+    icon: 'file',
   },
 };
 
@@ -96,6 +96,6 @@ export const SmallWithFileErrorIcon: Story = {
   name: 'Small with file error icon',
   args: {
     size: 'small',
-    iconType: 'file-error',
+    icon: 'file-error',
   },
 };

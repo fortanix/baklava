@@ -5,15 +5,12 @@
 
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
-import { assertUnreachable } from '../../../util/types.ts';
 
-import { Icon } from '../Icon/Icon.tsx';
+import { Icon, type IconName } from '../Icon/Icon.tsx';
 
 import cl from './PlaceholderEmpty.module.scss';
 
 export { cl as PlaceholderEmptyClassNames };
-
-export type PlaceholderEmptyIconType = 'graph' | 'folder' | 'file' | 'file-error';
 
 export type PlaceholderEmptySize = 'large' | 'small';
 
@@ -25,7 +22,7 @@ export type PlaceholderEmptyProps = React.PropsWithChildren<ComponentProps<'div'
   size?: undefined | PlaceholderEmptySize,
 
   /** An icon type of this component. Defaults to "graph". */
-  iconType?: undefined | PlaceholderEmptyIconType,
+  icon?: undefined | IconName,
   
   /** A custom icon of this component. */
   customIcon?: undefined | React.ReactNode,
@@ -46,7 +43,7 @@ export const PlaceholderEmpty = (props: PlaceholderEmptyProps) => {
   const {
     unstyled = false,
     size = 'large',
-    iconType = 'graph',
+    icon = 'graph',
     customIcon = null,
     title = '',
     subtitle = '',
@@ -54,16 +51,6 @@ export const PlaceholderEmpty = (props: PlaceholderEmptyProps) => {
     children,
     ...propsRest
   } = props;
-  
-  const icon = ((): PlaceholderEmptyIconType => {
-    switch (iconType) {
-      case 'graph': return 'graph';
-      case 'folder': return 'folder';
-      case 'file': return 'file';
-      case 'file-error': return 'file-error';
-      default: throw assertUnreachable(iconType);
-    }
-  })();
   
   return (
     <div
