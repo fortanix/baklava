@@ -85,7 +85,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
   }, [isMounted, onTooltipActivated, onTooltipDeactivated]);
   
   const renderTooltip = () => {
-    if (!isMounted) { return null; }
+    if (!isMounted || !tooltip) { return null; }
     
     const floatingProps = getFloatingProps({
       popover: 'manual',
