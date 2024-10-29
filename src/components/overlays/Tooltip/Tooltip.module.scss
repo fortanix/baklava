@@ -5,55 +5,28 @@
 @use '../../../styling/defs.scss' as bk;
 
 /* https://css-tricks.com/books/greatest-css-tricks/scroll-shadows */
-/*
 @define-mixin scroll-shadows {
   --bgRGB: 73, 89, 99;
   --bg: rgb(var(--bgRGB));
   --bgTrans: rgba(var(--bgRGB), 0);
   --shadow: rgba(41, 50, 56, 0.5);
   background:
-    linear-gradient(var(--bg) 30%, var(--bgTrans)) center top, /* Shadow Cover TOP * /
-    linear-gradient(var(--bgTrans), var(--bg) 70%) center bottom, /* Shadow Cover BOTTOM * /
-    radial-gradient(farthest-side at 50% 0, var(--shadow), rgba(0, 0, 0, 0)) center top, /* Shadow TOP * /
-    radial-gradient(farthest-side at 50% 100%, var(--shadow), rgba(0, 0, 0, 0)) center bottom; /* Shadow BOTTOM * /
+    linear-gradient(var(--bg) 30%, var(--bgTrans)) center top, // Shadow Cover TOP
+    linear-gradient(var(--bgTrans), var(--bg) 70%) center bottom, // Shadow Cover BOTTOM
+    radial-gradient(farthest-side at 50% 0, var(--shadow), rgba(0, 0, 0, 0)) center top, // Shadow TOP
+    radial-gradient(farthest-side at 50% 100%, var(--shadow), rgba(0, 0, 0, 0)) center bottom; // Shadow BOTTOM
   background-repeat: no-repeat;
   background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
   background-attachment: local, local, scroll, scroll;
-}
-*/
-
-/* https://css-generators.com/tooltip-speech-bubble */
-@mixin bk-tooltip-arrow-top {
-  --arrow-x: 50%; /* Arrow position (0% = left 100% = right) */
-  
-  clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 0,
-    min(100%, var(--arrow-x) + var(--b) / 2) 0,
-    var(--arrow-x) calc(-1 * var(--h)),
-    max(0%, var(--arrow-x) - var(--b) / 2) 0);
-  border-image: fill 0 / 1 / var(--h)
-    conic-gradient(var(--bk-tooltip-background-color) 0 0);
-}
-@mixin bk-tooltip-arrow-bottom {
-  --arrow-x: 50%; /* Arrow position (0% = left 100% = right) */
-  
-  clip-path: polygon(0 100%, 0 0, 100% 0, 100% 100%,
-    min(100%, var(--arrow-x) + var(--b) / 2) 100%,
-    var(--arrow-x) calc(100% + var(--h)),
-    max(0%, var(--arrow-x) - var(--b) / 2) 100%);
-  border-image: fill 0 / 1 / var(--h)
-    conic-gradient(var(--bk-tooltip-background-color) 0 0);
 }
 
 @layer baklava.components {
   .bk-tooltip {
     @include bk.component-base(bk-tooltip);
     
-    --bk-tooltip-background-color: bk.$theme-tooltip-background-default;
-    --bk-tooltip-text-color: bk.$theme-tooltip-text-default;
-    
     cursor: default;
     
-    overflow-y: auto;
+    // overflow-y: auto;
     
     max-width: 30rem;
     max-height: 8lh; /* Show about 8 lines of text before scrolling */
@@ -62,28 +35,76 @@
     max-height: calc(100svh - var(--bk-sizing-2));
     */
     
-    padding: 7px 12px;
-    border-radius: 2px;
-    background: var(--bk-tooltip-background-color);
-    
+    padding: bk.$spacing-4;
+    padding-bottom: bk.$spacing-7;
+    border-radius: bk.$radius-s;
+    background: bk.$theme-tooltip-background-default;
+    border: 1px solid bk.$theme-tooltip-border-default;
+
     @include bk.text-layout;
-    text-align: center;
-    color: var(--bk-tooltip-text-color);
+    text-align: left;
+    color: bk.$theme-tooltip-text-default;
     @include bk.font(bk.$font-family-body);
     font-size: 12px;
-    
-    &:is(.bk-tooltip--arrow-top, .bk-tooltip--arrow-bottom) {
-      --h: 6px; /* Height of the triangle. Note: must match the `offset` in `useFloating()`. */
-      --b: calc(var(--h) * 2); /* Base of the triangle */
+
+    &.bk-tooltip--small {
+      width: 140px;
     }
-    &.bk-tooltip--arrow-top {
-      @include bk-tooltip-arrow-top;
+    &.bk-tooltip--medium {
+      width: 225px;
     }
-    &.bk-tooltip--arrow-bottom {
-      @include bk-tooltip-arrow-bottom;
+    &.bk-tooltip--large {
+      width: 345px;
+    }
+
+    --arrow-size: 7px;
+
+    &.bk-tooltip--arrow:before {
+      content: '';
+      border-bottom: 1px solid bk.$theme-tooltip-border-default;
+      border-right: 1px solid bk.$theme-tooltip-border-default;
+      background-color: bk.$theme-tooltip-background-default;
+      position: absolute;
+      width: calc(2 * var(--arrow-size));
+      height: calc(2 * var(--arrow-size));
+    }
+    &:is(.bk-tooltip--arrow-bottom, .bk-tooltip--arrow-top):before {
+      left: calc(50% - var(--arrow-size));
+    }
+    &.bk-tooltip--arrow-bottom:before {
+      bottom: calc(-1 * (calc(var(--arrow-size) + 1px)));
+      transform: rotate(45deg);
+    }
+    &.bk-tooltip--arrow-top:before {
+      top: calc(-1 * (calc(var(--arrow-size) + 1px)));
+      transform: rotate(-135deg);
+    }
+    &:is(.bk-tooltip--arrow-left, .bk-tooltip--arrow-right):before {
+      top: calc(50% - var(--arrow-size));
+    }
+    &.bk-tooltip--arrow-left:before {
+      left: calc(-1 * (calc(var(--arrow-size) + 1px)));
+      transform: rotate(135deg);
+    }
+    &.bk-tooltip--arrow-right:before {
+      right: calc(-1 * (calc(var(--arrow-size) + 1px)));
+      transform: rotate(-45deg);
+    }
+
+    .bk-tooltip__title {
+      font-size: bk.$font-size-l;
+      font-weight: bk.$font-weight-semibold;
+    }
+
+    .bk-tooltip__icon {
+      font-size: 18px;
+      margin-right: 10px;
+    }
+
+    .bk-tooltip__alert {
+      color: bk.$theme-tooltip-text-error;
     }
   }
-  
   
   @position-try --bk-tooltip-position-top {
     margin-top: var(--bk-layout-header-height); /* Compensate for layout header */
@@ -98,13 +119,21 @@
     justify-self: anchor-center;
     top: anchor(bottom);
   }
+  @position-try --bk-tooltip-position-left {
+    justify-self: anchor-center;
+    right: anchor(left);
+  }
+  @position-try --bk-tooltip-position-right {
+    justify-self: anchor-center;
+    left: anchor(right);
+  }
   
   .bk-tooltip[popover] {
     inset: auto; /* Note: future versions of Chrome should have this by default */
     position: fixed;
     /*position-anchor: --anchor-1;*/ /* Needs to be set dynamically */
     
-    position-try-fallbacks: --bk-tooltip-position-top, --bk-tooltip-position-bottom;
+    position-try-fallbacks: --bk-tooltip-position-top, --bk-tooltip-position-bottom, --bk-tooltip-position-left, --bk-tooltip-position-right;
     
     filter: drop-shadow(4px 4px 4px rgba(50 50 50 / 30%));
     
