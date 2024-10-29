@@ -12,11 +12,11 @@ import { Button } from '../../actions/Button/Button.tsx';
 import { notify, CopyActionButton, ToastMessage, ToastContainer } from './Toast.tsx';
 
 
-type ToastArg = React.ComponentProps<typeof ToastMessage>;
+type ToastArg = React.ComponentProps<typeof ToastContainer>;
 type Story = StoryObj<ToastArg>;
 
 export default {
-  component: ToastMessage,
+  component: ToastContainer,
   parameters: {
     layout: 'centered',
   },
