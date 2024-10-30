@@ -1,0 +1,40 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-checkbox-field {
+    @include bk.component-base(bk-checkbox-field);
+
+    .bk-checkbox-field__label {
+      color: bk.$theme-text-label-default;
+      position: relative;
+      margin-left: bk.$spacing-2;
+      top: -4px;
+
+      .bk-checkbox-field__label__sublabel {
+        font-size: bk.$font-size-xs;
+        padding-left: 26px;
+      }
+    }
+
+    .bk-checkbox-field__title {
+      color: bk.$theme-text-label-default;
+      font-weight: bk.$font-weight-semibold;
+      margin-bottom: bk.$spacing-1;
+
+      .bk-checkbox-field__title__icon {
+        font-size: 18px;
+        margin-left: bk.$spacing-1;
+      }
+
+      .bk-checkbox-field__title__optional {
+        font-size: bk.$font-size-xs;
+        font-weight: bk.$font-weight-regular;
+        margin-left: bk.$spacing-1;
+      }
+    }
+  }
+}

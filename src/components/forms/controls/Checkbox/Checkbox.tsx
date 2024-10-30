@@ -15,7 +15,7 @@ export type CheckboxProps = ComponentProps<'input'> & {
   unstyled?: undefined | boolean,
 };
 /**
- * Checkbox control.
+ * A simple Checkbox control, just the &lt;input type="checkbox"&gt; and nothing else.
  */
 export const Checkbox = (props: CheckboxProps) => {
   const {
