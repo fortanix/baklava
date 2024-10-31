@@ -7,37 +7,45 @@
 @layer baklava.components {
   .bk-checkbox {
     @include bk.component-base(bk-checkbox);
-    
-    --bk-checkbox-background-color: transparent;
-    --bk-checkbox-border-color: #{bk.$theme-checkbox-border-default};
-    
+
     cursor: pointer;
-    
+
     appearance: none;
     width: 18px;
     aspect-ratio: 1;
     border-radius: 3px;
-    
-    background: var(--bk-checkbox-background-color);
+
+    background: transparent;
     background-position: top; /* Transition background-image from top */
-    border: 1px solid var(--bk-checkbox-border-color);
-    
+    border: 1px solid bk.$theme-checkbox-border-default;
+
+    &:checked, &:indeterminate {
+      background-color: bk.$theme-checkbox-background-default;
+      background-position: center;
+      background-repeat: no-repeat;
+      border: none;
+    }
     &:checked {
-      --bk-checkbox-background-color: #{bk.$theme-checkbox-background-default};
-      --bk-checkbox-border-color: var(--bk-checkbox-background-color);
-      background:
-        center url('data:image/svg+xml;utf8,<svg width="14" height="10" viewBox="0 0 14 10" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 10L0 5.19231L1.4 3.84615L5 7.30769L12.6 0L14 1.34615L5 10Z" fill="white"/></svg>') no-repeat,
-        var(--bk-checkbox-background-color);
+      background-image: url('data:image/svg+xml;utf8,<svg width="14" height="10" viewBox="0 0 14 10" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 10L0 5.19231L1.4 3.84615L5 7.30769L12.6 0L14 1.34615L5 10Z" fill="white"/></svg>');
+    }
+    &:indeterminate {
+      background-image: url('data:image/svg+xml;utf8,<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.97165 9.94239L2.97165 8.00003L2.97266 8.00103L14.9717 7.99997L14.9719 9.94239L2.97165 9.94239Z" fill="white"/></svg>');
     }
     &:disabled {
-      --bk-checkbox-border-color: #{bk.$theme-checkbox-border-disabled};
-      --bk-checkbox-background-color: transparent;
-      
+      border-color: bk.$theme-checkbox-border-disabled;
+      background-color: transparent;
+
+      &:checked, &:indeterminate {
+        background-color: bk.$theme-checkbox-background-non-active;
+      }
       &:checked {
-        --bk-checkbox-background-color: bk.$theme-checkbox-background-non-active;
+        background-image: url('data:image/svg+xml;utf8,<svg width="14" height="10" viewBox="0 0 14 10" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 10L0 5.19231L1.4 3.84615L5 7.30769L12.6 0L14 1.34615L5 10Z" fill="white"/></svg>');
+      }
+      &:indeterminate {
+        background-image: url('data:image/svg+xml;utf8,<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.97165 9.94239L2.97165 8.00003L2.97266 8.00103L14.9717 7.99997L14.9719 9.94239L2.97165 9.94239Z" fill="white"/></svg>');
       }
     }
-    
+
     @media (prefers-reduced-motion: no-preference) {
       transition: none 100ms ease-out;
       transition-property: background-color, background-position, border-color;

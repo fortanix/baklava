@@ -20,9 +20,7 @@ export default {
   tags: ['autodocs'],
   argTypes: {
   },
-  args: {
-    defaultChecked: true,
-  },
+  args: {},
   decorators: [
     Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
   ],
@@ -30,10 +28,16 @@ export default {
 } satisfies Meta<CheckboxArgs>;
 
 
-export const Checked: Story = {};
+export const Checked: Story = {
+  args: { defaultChecked: true },
+};
 
 export const Unchecked: Story = {
-  args: { defaultChecked: false },
+  args: {},
+};
+
+export const Indeterminate: Story = {
+  args: { defaultChecked: false, indeterminate: true },
 };
 
 export const DisabledChecked: Story = {
@@ -43,5 +47,9 @@ export const DisabledChecked: Story = {
 
 export const DisabledUnchecked: Story = {
   name: 'Disabled (unchecked)',
-  args: { disabled: true, defaultChecked: false },
+  args: { disabled: true },
+};
+
+export const DisabledIndeterminate: Story = {
+  args: { defaultChecked: false, disabled: true, indeterminate: true },
 };
