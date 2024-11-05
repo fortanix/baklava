@@ -65,6 +65,12 @@ export type CheckboxFieldProps = ComponentProps<'div'> & {
 
   /** Whether the checkbox is disabled. Passed down to Checkbox component. */
   disabled?: undefined | boolean,
+
+  /** The value of the checkbox. Passed down to Checkbox component. */
+  value: string,
+
+  /** onChange function, passed down to Checkbox component */
+  onChange?: any, // TODO
 };
 
 /**
@@ -91,9 +97,12 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
       {title && <CheckboxFieldTitle titleOptional={titleOptional} titleTooltip={titleTooltip}>{title}</CheckboxFieldTitle>}
       <label>
         <Checkbox
+          // passing down Checkbox fields manually
           checked={props.checked}
           defaultChecked={props.defaultChecked}
           disabled={props.disabled}
+          value={props.value}
+          onChange={props.onChange}
         />
         <span className={cl['bk-checkbox-field__label']}>
           {label}

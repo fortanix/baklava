@@ -7,7 +7,6 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { CheckboxGroup } from './CheckboxGroup.tsx';
-import { CheckboxField } from '../CheckboxField/CheckboxField.tsx';
 
 
 type CheckboxGroupArgs = React.ComponentProps<typeof CheckboxGroup>;
@@ -19,13 +18,29 @@ export default {
     layout: 'centered',
   },
   tags: ['autodocs'],
+  args: {
+    items: [
+      {
+        label: 'Label 1',
+        checked: true,
+        value: 'label1',
+      },
+      {
+        label: 'Label 2',
+        checked: false,
+        value: 'label2',
+      },
+      {
+        label: 'Label 3',
+        checked: false,
+        value: 'label3',
+      },
+    ],
+    handleChange: (options: boolean[]) => console.log(options),
+  },
   argTypes: {
   },
-  render: (args) => <CheckboxGroup {...args}>
-    <CheckboxField label='Label'/>
-    <CheckboxField label='Label'/>
-    <CheckboxField label='Label'/>
-  </CheckboxGroup>,
+  render: (args) => <CheckboxGroup {...args} />,
 } satisfies Meta<CheckboxGroupArgs>;
 
 export const CheckboxGroupVertical: Story = {};
