@@ -8,6 +8,8 @@ import * as React from 'react';
 
 import { Checkbox } from './Checkbox.tsx';
 
+import cl from './Checkbox.module.scss';
+
 
 type CheckboxArgs = React.ComponentProps<typeof Checkbox>;
 type Story = StoryObj<CheckboxArgs>;
@@ -28,21 +30,19 @@ export default {
 } satisfies Meta<CheckboxArgs>;
 
 
-export const Checked: Story = {
-  args: { defaultChecked: true },
-};
-
 export const Unchecked: Story = {
   args: {},
 };
 
-export const Indeterminate: Story = {
-  args: { defaultChecked: false, indeterminate: true },
+export const Checked: Story = {
+  args: { defaultChecked: true },
 };
 
-export const DisabledChecked: Story = {
-  name: 'Disabled (checked)',
-  args: { disabled: true, defaultChecked: true },
+export const Indeterminate: Story = {
+  args: {
+    defaultChecked: false,
+    indeterminate: true,
+  },
 };
 
 export const DisabledUnchecked: Story = {
@@ -50,6 +50,70 @@ export const DisabledUnchecked: Story = {
   args: { disabled: true },
 };
 
+export const DisabledChecked: Story = {
+  name: 'Disabled (checked)',
+  args: {
+    defaultChecked: true,
+    disabled: true,
+  },
+};
+
 export const DisabledIndeterminate: Story = {
-  args: { defaultChecked: false, disabled: true, indeterminate: true },
+  name: 'Disabled (indeterminate)',
+  args: {
+    defaultChecked: false,
+    disabled: true,
+    indeterminate: true,
+  },
+};
+
+export const FocusedUnchecked: Story = {
+  name: 'Focused (unchecked)',
+  args: {
+    className: cl['pseudo-focused'],
+  },
+};
+
+export const FocusedChecked: Story = {
+  name: 'Focused (checked)',
+  args: {
+    className: cl['pseudo-focused'],
+    defaultChecked: true,
+  },
+};
+
+export const FocusedIndeterminate: Story = {
+  name: 'Focused (indeterminate)',
+  args: {
+    className: cl['pseudo-focused'],
+    defaultChecked: false,
+    indeterminate: true,
+  },
+};
+
+export const FocusedDisabledUnchecked: Story = {
+  name: 'Focused & Disabled (unchecked)',
+  args: {
+    className: cl['pseudo-focused'],
+    disabled: true,
+  },
+};
+
+export const FocusedDisabledChecked: Story = {
+  name: 'Focused & Disabled (checked)',
+  args: {
+    className: cl['pseudo-focused'],
+    defaultChecked: true,
+    disabled: true,
+  },
+};
+
+export const FocusedDisabledIndeterminate: Story = {
+  name: 'Focused & Disabled (indeterminate)',
+  args: {
+    className: cl['pseudo-focused'],
+    defaultChecked: false,
+    disabled: true,
+    indeterminate: true,
+  },
 };
