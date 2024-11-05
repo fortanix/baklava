@@ -8,6 +8,8 @@ import * as React from 'react';
 
 import { RadioButton } from './RadioButton.tsx';
 
+import cl from './RadioButton.module.scss';
+
 
 type RadioButtonArgs = React.ComponentProps<typeof RadioButton>;
 type Story = StoryObj<RadioButtonArgs>;
@@ -38,10 +40,37 @@ export const Unchecked: Story = {
 
 export const DisabledSelected: Story = {
   name: 'Disabled (selected)',
-  args: { disabled: true, defaultChecked: true },
+  args: {
+    defaultChecked: true,
+    disabled: true,
+  },
 };
 
 export const DisabledUnselected: Story = {
   name: 'Disabled (unselected)',
   args: { disabled: true },
+};
+
+export const FocusedSelected: Story = {
+  name: 'Focused (selected)',
+  args: {
+    className: cl['pseudo-focused'],
+    defaultChecked: true,
+  },
+};
+
+export const FocusedUnselected: Story = {
+  name: 'Focused (unselected)',
+  args: {
+    className: cl['pseudo-focused'],
+  },
+};
+
+export const FocusedDisabledSelected: Story = {
+  name: 'Focused & Disabled (selected)',
+  args: {
+    className: cl['pseudo-focused'],
+    defaultChecked: true,
+    disabled: true,
+  },
 };

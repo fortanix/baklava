@@ -36,6 +36,10 @@
         background-color: bk.$theme-radio-non-active;
       }
     }
+    &:focus-visible, &.pseudo-focused {
+      outline: 2px solid bk.$theme-radio-focus !important;
+      outline-offset: 0 !important;
+    }
 
     // @media (prefers-reduced-motion: no-preference) {
     //   transition: none 100ms ease-out;
