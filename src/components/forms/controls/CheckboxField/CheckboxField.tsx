@@ -14,7 +14,6 @@ import cl from './CheckboxField.module.scss';
 
 export { cl as CheckboxFieldClassNames };
 
-
 export type CheckboxFieldTitleProps = React.PropsWithChildren<{
   className?: ClassNameArgument;
 

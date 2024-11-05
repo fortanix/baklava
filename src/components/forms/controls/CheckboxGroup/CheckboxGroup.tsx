@@ -10,7 +10,6 @@ import cl from './CheckboxGroup.module.scss';
 
 export { cl as CheckboxGroupClassNames };
 
-
 export type CheckboxGroupProps = React.PropsWithChildren<{
   alignment?: undefined | "vertical" | "horizontal";
 }>;
