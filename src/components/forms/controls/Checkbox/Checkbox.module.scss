@@ -42,6 +42,7 @@
     &:disabled {
       border-color: bk.$theme-checkbox-border-disabled;
       background-color: transparent;
+      cursor: not-allowed;
 
       &:checked, &:indeterminate {
         background-color: bk.$theme-checkbox-background-non-active;

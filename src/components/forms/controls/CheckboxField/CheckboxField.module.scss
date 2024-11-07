@@ -10,6 +10,7 @@
 
     .bk-checkbox-field__label {
       color: bk.$theme-text-label-default;
+      cursor: pointer;
       position: relative;
       margin-left: bk.$spacing-2;
       top: -4px;
