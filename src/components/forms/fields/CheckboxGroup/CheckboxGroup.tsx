@@ -7,6 +7,8 @@ import * as React from 'react';
 
 import cl from './CheckboxGroup.module.scss';
 
+import { CheckboxField } from '../CheckboxField/CheckboxField.tsx';
+
 
 export { cl as CheckboxGroupClassNames };
 
@@ -15,15 +17,21 @@ export type CheckboxGroupProps = React.PropsWithChildren<{
 }>;
 
 /**
- * Checkbox component.
+ * Checkbox group component, wrapping multiple CheckboxField components vertically or horizontally.
  */
-export const CheckboxGroup = ({children, direction = 'vertical'}: CheckboxGroupProps) => (
-  <div className={cx(
-    'bk',
-    cl['bk-checkbox-group'],
-    { [cl['bk-checkbox-group--horizontal']]: direction === 'horizontal' },
-    { [cl['bk-checkbox-group--vertical']]: direction === 'vertical' },
-  )}>
-    {children}
-  </div>
+export const CheckboxGroup = Object.assign(
+  (props: CheckboxGroupProps) => {
+    const { children, direction = 'vertical' } = props;
+    return (
+      <div className={cx(
+        'bk',
+        cl['bk-checkbox-group'],
+        { [cl['bk-checkbox-group--horizontal']]: direction === 'horizontal' },
+        { [cl['bk-checkbox-group--vertical']]: direction === 'vertical' },
+      )}>
+        {children}
+      </div>
+    );
+  },
+  { CheckboxField },
 );
