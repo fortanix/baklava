@@ -5,7 +5,7 @@
 import { classNames as cx, type ComponentProps, type ClassNameArgument } from '../../../../util/componentUtil.ts';
 import * as React from 'react';
 
-import { Checkbox } from '../Checkbox/Checkbox.tsx';
+import { Checkbox } from '../../controls/Checkbox/Checkbox.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { TooltipProvider } from '../../../overlays/Tooltip/TooltipProvider.tsx';
 
