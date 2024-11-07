@@ -1,0 +1,63 @@
+
+@use '../../../../styling/defs.scss' as bk;
+
+/* Note: `light-dark()` does not seem to be animatable in Chrome 125, even with `@property` */
+// @property --bk-switch-track-color { syntax: '<color>'; inherits: true; initial-value: bk.$color-grey-600; }
+// @property --bk-switch-thumb-color { syntax: '<color>'; inherits: true; initial-value: bk.$color-grey-400; }
+@property --bk-switch-pos { syntax: '<length-percentage>'; inherits: true; initial-value: 50%; }
+
+@layer baklava.components {
+  .bk-switch {
+    @include bk.component-base(bk-switch);
+    
+    --bk-switch-track-color: #{bk.$theme-switch-slider-off};
+    --bk-switch-thumb-color: #{bk.$theme-switch-knob-off};
+    
+    --w: 34px; // Track width
+    --h: 14px; // Track height
+    --r: 10px; // Thumb radius
+    --pos-start: var(--r);
+    --pos-end: calc(100% - var(--r));
+    --bk-switch-pos: var(--pos-start);
+    
+    cursor: pointer;
+    
+    appearance: none;
+    height: calc(var(--r) * 2);
+    width: calc(var(--w) + 6px); // Add a little bit of extra width so that the thumb overflows the track
+    border-radius: var(--r);
+    
+    // Render the track (using circles to emulate a capsule shape)
+    // Note: add `1px` difference between the stops so that we have a subtle antialiasing
+    $col: var(--bk-switch-track-color);
+    $a: 1px; // Antialias
+    background:
+      // https://css-tricks.com/drawing-images-with-css-gradients
+      linear-gradient($col, $col) 50% 50% / calc(var(--w) - var(--h)) calc(var(--h)) no-repeat,
+      radial-gradient(circle at var(--r), $col calc(var(--h) / 2 - $a), transparent calc(var(--h) / 2)),
+      radial-gradient(circle at calc(100% - var(--r)), $col calc(var(--h) / 2 - $a), transparent calc(var(--h) / 2));
+    // Render the thumb
+    border-image:
+      radial-gradient(circle at var(--bk-switch-pos),
+        var(--bk-switch-thumb-color) calc(var(--r) - $a),
+        transparent var(--r)
+      ) fill 0 / 1 / 0;
+    
+    &:checked {
+      --bk-switch-track-color: #{bk.$theme-switch-slider-default};
+      --bk-switch-thumb-color: #{bk.$theme-switch-knob-default};
+      --bk-switch-pos: var(--pos-end);
+    }
+    &:disabled {
+      --bk-switch-thumb-color: #{bk.$theme-switch-knob-disabled};
+    }
+    &.bk-switch--nonactive {
+      --bk-switch-thumb-color: #{bk.$theme-switch-knob-non-active};
+    }
+    
+    @media (prefers-reduced-motion: no-preference) {
+      transition: none 200ms ease-out;
+      transition-property: --bk-switch-pos, --bk-switch-track-color, --bk-switch-thumb-color;
+    }
+  }
+}
