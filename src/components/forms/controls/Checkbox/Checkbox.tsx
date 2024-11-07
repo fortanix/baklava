@@ -30,13 +30,13 @@ export const Checkbox = (props: CheckboxProps) => {
   const checkboxRef = React.useRef<React.ComponentRef<'input'>>(null);
 
   React.useEffect(() => {
-    if (checkboxRef && checkboxRef.current) {
+    if (checkboxRef?.current) {
       if (indeterminate) {
         checkboxRef.current.checked = false;
       }
       checkboxRef.current.indeterminate = indeterminate;
     }
-  }, [checkboxRef, indeterminate]);
+  }, [indeterminate]);
   
   return (
     <input

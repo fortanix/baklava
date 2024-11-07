@@ -32,6 +32,6 @@ export const CheckboxGroupVertical: Story = {};
 
 export const CheckboxGroupHorizontal: Story = {
   args: {
-    alignment: 'horizontal',
+    direction: 'horizontal',
   },
 };

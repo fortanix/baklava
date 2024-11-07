@@ -25,7 +25,11 @@ export type CheckboxFieldTitleProps = React.PropsWithChildren<{
 }>;
 
 export const CheckboxFieldTitle = ({ className, children, titleOptional, titleTooltip }: CheckboxFieldTitleProps) => (
-  <h1 className={cl['bk-checkbox-field__title']}>
+  <h1 className={cx(
+    'bk',
+    cl['bk-checkbox-field__title'],
+    className,
+  )}>
     {children}
     {titleTooltip && (
       <TooltipProvider tooltip={titleTooltip}>
@@ -81,14 +85,22 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
     className,
     ...propsRest
   } = props;
-  
+
   return (
     <div className={cx(
       'bk',
       { [cl['bk-checkbox-field']]: !unstyled },
       className,
     )}>
-      {title && <CheckboxFieldTitle titleOptional={titleOptional} titleTooltip={titleTooltip}>{title}</CheckboxFieldTitle>}
+      {title && (
+        <CheckboxFieldTitle
+          titleOptional={titleOptional}
+          titleTooltip={titleTooltip}
+        >
+          {title}
+        </CheckboxFieldTitle>
+      )}
+      {/* biome ignore lint/a11y/noLabelWithoutControl: the `<Checkbox>` will resolve to an `<input>` */}
       <label>
         <Checkbox
           checked={props.checked}
@@ -98,10 +110,7 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
         <span className={cl['bk-checkbox-field__label']}>
           {label}
           {sublabel && (
-            <>
-              <br/>
-              <span className={cl['bk-checkbox-field__label__sublabel']}>{sublabel}</span>
-            </>
+            <div className={cl['bk-checkbox-field__label__sublabel']}>{sublabel}</div>
           )}
         </span>
       </label>
