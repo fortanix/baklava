@@ -106,13 +106,13 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
           defaultChecked={props.defaultChecked}
           disabled={props.disabled}
         />
-        <div className={cl['bk-checkbox-field__label__content']}>
+        <span className={cl['bk-checkbox-field__label__content']}>
           {label}
-          {sublabel && (
-            <div className={cl['bk-checkbox-field__label__sublabel']}>{sublabel}</div>
-          )}
-        </div>
+        </span>
       </label>
+      {sublabel && (
+        <div className={cl['bk-checkbox-field__sublabel']}>{sublabel}</div>
+      )}
     </div>
   );
 };

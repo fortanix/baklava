@@ -36,10 +36,11 @@
       position: relative;
       margin-left: bk.$spacing-2;
       top: -2px;
+    }
 
-      .bk-checkbox-field__label__sublabel {
-        font-size: bk.$font-size-xs;
-      }
+    .bk-checkbox-field__sublabel {
+      font-size: bk.$font-size-xs;
+      padding-left: 26px;
     }
   }
 }
