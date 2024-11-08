@@ -83,7 +83,6 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
     titleOptional,
     titleTooltip,
     className,
-    ...propsRest
   } = props;
 
   return (
@@ -101,18 +100,18 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
         </CheckboxFieldTitle>
       )}
       {/* biome ignore lint/a11y/noLabelWithoutControl: the `<Checkbox>` will resolve to an `<input>` */}
-      <label>
+      <label className={cl['bk-checkbox-field__label']}>
         <Checkbox
           checked={props.checked}
           defaultChecked={props.defaultChecked}
           disabled={props.disabled}
         />
-        <span className={cl['bk-checkbox-field__label']}>
+        <div className={cl['bk-checkbox-field__label__content']}>
           {label}
           {sublabel && (
             <div className={cl['bk-checkbox-field__label__sublabel']}>{sublabel}</div>
           )}
-        </span>
+        </div>
       </label>
     </div>
   );
