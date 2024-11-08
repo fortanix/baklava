@@ -26,6 +26,7 @@ export { InputField } from '../src/components/forms/fields/InputField/InputField
 
 export { Icon } from '../src/components/graphics/Icon/Icon.tsx';
 export { Spinner } from '../src/components/graphics/Spinner/Spinner.tsx';
+export { ProgressBar } from '../src/components/graphics/ProgressBar/ProgressBar.tsx';
 
 export { PropertyList } from '../src/components/lists/PropertyList/PropertyList.tsx';
 
