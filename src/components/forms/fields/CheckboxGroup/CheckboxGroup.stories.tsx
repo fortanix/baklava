@@ -7,7 +7,6 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { CheckboxGroup } from './CheckboxGroup.tsx';
-import { CheckboxField } from '../CheckboxField/CheckboxField.tsx';
 
 
 type CheckboxGroupArgs = React.ComponentProps<typeof CheckboxGroup>;
@@ -22,9 +21,9 @@ export default {
   argTypes: {
   },
   render: (args) => <CheckboxGroup {...args}>
-    <CheckboxField label='Label'/>
-    <CheckboxField label='Label'/>
-    <CheckboxField label='Label'/>
+    <CheckboxGroup.CheckboxField label='Label'/>
+    <CheckboxGroup.CheckboxField label='Label'/>
+    <CheckboxGroup.CheckboxField label='Label'/>
   </CheckboxGroup>,
 } satisfies Meta<CheckboxGroupArgs>;
 
@@ -32,6 +31,6 @@ export const CheckboxGroupVertical: Story = {};
 
 export const CheckboxGroupHorizontal: Story = {
   args: {
-    alignment: 'horizontal',
+    direction: 'horizontal',
   },
 };

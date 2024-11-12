@@ -8,18 +8,6 @@
   .bk-checkbox-field {
     @include bk.component-base(bk-checkbox-field);
 
-    .bk-checkbox-field__label {
-      color: bk.$theme-text-label-default;
-      position: relative;
-      margin-left: bk.$spacing-2;
-      top: -4px;
-
-      .bk-checkbox-field__label__sublabel {
-        font-size: bk.$font-size-xs;
-        padding-left: 26px;
-      }
-    }
-
     .bk-checkbox-field__title {
       color: bk.$theme-text-label-default;
       font-weight: bk.$font-weight-semibold;
@@ -35,6 +23,24 @@
         font-weight: bk.$font-weight-regular;
         margin-left: bk.$spacing-1;
       }
+    }
+
+    .bk-checkbox-field__label {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .bk-checkbox-field__label__content {
+      color: bk.$theme-text-label-default;
+      cursor: pointer;
+      position: relative;
+      margin-left: bk.$spacing-2;
+      top: -2px;
+    }
+
+    .bk-checkbox-field__sublabel {
+      font-size: bk.$font-size-xs;
+      padding-left: 26px;
     }
   }
 }

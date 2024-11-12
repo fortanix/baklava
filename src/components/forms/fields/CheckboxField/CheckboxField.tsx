@@ -5,7 +5,7 @@
 import { classNames as cx, type ComponentProps, type ClassNameArgument } from '../../../../util/componentUtil.ts';
 import * as React from 'react';
 
-import { Checkbox } from '../Checkbox/Checkbox.tsx';
+import { Checkbox } from '../../controls/Checkbox/Checkbox.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { TooltipProvider } from '../../../overlays/Tooltip/TooltipProvider.tsx';
 
@@ -25,7 +25,11 @@ export type CheckboxFieldTitleProps = React.PropsWithChildren<{
 }>;
 
 export const CheckboxFieldTitle = ({ className, children, titleOptional, titleTooltip }: CheckboxFieldTitleProps) => (
-  <h1 className={cl['bk-checkbox-field__title']}>
+  <h1 className={cx(
+    'bk',
+    cl['bk-checkbox-field__title'],
+    className,
+  )}>
     {children}
     {titleTooltip && (
       <TooltipProvider tooltip={titleTooltip}>
@@ -79,32 +83,36 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
     titleOptional,
     titleTooltip,
     className,
-    ...propsRest
   } = props;
-  
+
   return (
     <div className={cx(
       'bk',
       { [cl['bk-checkbox-field']]: !unstyled },
       className,
     )}>
-      {title && <CheckboxFieldTitle titleOptional={titleOptional} titleTooltip={titleTooltip}>{title}</CheckboxFieldTitle>}
-      <label>
+      {title && (
+        <CheckboxFieldTitle
+          titleOptional={titleOptional}
+          titleTooltip={titleTooltip}
+        >
+          {title}
+        </CheckboxFieldTitle>
+      )}
+      {/* biome ignore lint/a11y/noLabelWithoutControl: the `<Checkbox>` will resolve to an `<input>` */}
+      <label className={cl['bk-checkbox-field__label']}>
         <Checkbox
           checked={props.checked}
           defaultChecked={props.defaultChecked}
           disabled={props.disabled}
         />
-        <span className={cl['bk-checkbox-field__label']}>
+        <span className={cl['bk-checkbox-field__label__content']}>
           {label}
-          {sublabel && (
-            <>
-              <br/>
-              <span className={cl['bk-checkbox-field__label__sublabel']}>{sublabel}</span>
-            </>
-          )}
         </span>
       </label>
+      {sublabel && (
+        <div className={cl['bk-checkbox-field__sublabel']}>{sublabel}</div>
+      )}
     </div>
   );
 };
