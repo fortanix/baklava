@@ -1,0 +1,22 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-radio-button-group {
+    @include bk.component-base(bk-radio-button-group);
+    display: flex;
+
+    &.bk-radio-button-group--vertical {
+      flex-direction: column;
+      row-gap: 20px;
+    }
+  
+    &.bk-radio-button-group--horizontal {
+      flex-direction: row;
+      column-gap: bk.$spacing-7;
+    }
+  }
+}
