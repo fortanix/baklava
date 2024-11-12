@@ -12,6 +12,9 @@ import { RadioButtonGroup } from './RadioButtonGroup.tsx';
 type RadioButtonGroupArgs = React.ComponentProps<typeof RadioButtonGroup>;
 type Story = StoryObj<RadioButtonGroupArgs>;
 
+const Color = ['Red', 'Green', 'Blue'] as const;
+type Color = (typeof Color)[number];
+
 export default {
   component: RadioButtonGroup,
   parameters: {
@@ -20,11 +23,23 @@ export default {
   tags: ['autodocs'],
   argTypes: {
   },
-  render: (args) => <RadioButtonGroup {...args}>
-    <RadioButtonGroup.RadioButtonField label='Label'/>
-    <RadioButtonGroup.RadioButtonField label='Label'/>
-    <RadioButtonGroup.RadioButtonField label='Label'/>
-  </RadioButtonGroup>,
+  render: (args) => {
+    const [selectedColor, setSelectedColor] = React.useState<Color>(Color[0]);
+    // TODO: how to make a typed element? such as <RadioButtonGroup<Color> {...args}>
+    return (
+      <RadioButtonGroup {...args}
+      >
+        {Color.map(color =>
+          <RadioButtonGroup.RadioButtonField
+            key={color}
+            label={color}
+            checked={color === selectedColor}
+            onChange={() => setSelectedColor(color)}
+          />
+        )}
+      </RadioButtonGroup>
+    );
+  },
 } satisfies Meta<RadioButtonGroupArgs>;
 
 export const RadioButtonGroupVertical: Story = {};

@@ -105,6 +105,7 @@ export const RadioButtonField = (props: RadioButtonFieldProps) => {
           checked={props.checked}
           defaultChecked={props.defaultChecked}
           disabled={props.disabled}
+          onChange={props.onChange}
         />
         <span className={cl['bk-radio-button-field__label__content']}>
           {label}
