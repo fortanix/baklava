@@ -12,6 +12,9 @@ import { CheckboxGroup } from './CheckboxGroup.tsx';
 type CheckboxGroupArgs = React.ComponentProps<typeof CheckboxGroup>;
 type Story = StoryObj<CheckboxGroupArgs>;
 
+const Color = ['Red', 'Green', 'Blue'] as const;
+type Color = (typeof Color)[number];
+
 export default {
   component: CheckboxGroup,
   parameters: {
@@ -20,11 +23,26 @@ export default {
   tags: ['autodocs'],
   argTypes: {
   },
-  render: (args) => <CheckboxGroup {...args}>
-    <CheckboxGroup.CheckboxField label='Label'/>
-    <CheckboxGroup.CheckboxField label='Label'/>
-    <CheckboxGroup.CheckboxField label='Label'/>
-  </CheckboxGroup>,
+  render: (args) => {
+    const [selectedColors, setSelectedColors] = React.useState<Array<Color>>([]);
+    const handleCheckboxChange = (color: Color) => {
+      selectedColors.includes(color) ?
+        setSelectedColors(selectedColors.filter(c => c !== color)) :
+        setSelectedColors([...selectedColors, color]);
+    };
+    return (
+      <CheckboxGroup {...args}>
+        {Color.map(color =>
+          <CheckboxGroup.CheckboxField
+            key={color}
+            label={color}
+            checked={selectedColors.includes(color)}
+            onChange={() => handleCheckboxChange(color as Color)}
+          />
+        )}
+      </CheckboxGroup>
+    );
+  },
 } satisfies Meta<CheckboxGroupArgs>;
 
 export const CheckboxGroupVertical: Story = {};
