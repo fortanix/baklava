@@ -69,6 +69,9 @@ export type RadioButtonFieldProps = ComponentProps<'div'> & {
 
   /** Whether the radio button is disabled. Passed down to Radio Button component. */
   disabled?: undefined | boolean,
+
+  /** The onChange event for the radio button. Passed down to Radio Button component. */
+  onChange?: (e: React.FormEvent) => void,
 };
 
 /**
