@@ -26,9 +26,11 @@ export default {
   render: (args) => {
     const [selectedColors, setSelectedColors] = React.useState<Array<Color>>([]);
     const handleCheckboxChange = (color: Color) => {
-      selectedColors.includes(color) ?
-        setSelectedColors(selectedColors.filter(c => c !== color)) :
+      if (selectedColors.includes(color)) {
+        setSelectedColors(selectedColors.filter(c => c !== color));
+      } else {
         setSelectedColors([...selectedColors, color]);
+      }
     };
     return (
       <CheckboxGroup {...args}>
@@ -37,7 +39,7 @@ export default {
             key={color}
             label={color}
             checked={selectedColors.includes(color)}
-            onChange={() => handleCheckboxChange(color as Color)}
+            onChange={() => { handleCheckboxChange(color as Color); }}
           />
         )}
       </CheckboxGroup>
