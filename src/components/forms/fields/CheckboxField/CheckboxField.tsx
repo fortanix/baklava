@@ -69,6 +69,9 @@ export type CheckboxFieldProps = ComponentProps<'div'> & {
 
   /** Whether the checkbox is disabled. Passed down to Checkbox component. */
   disabled?: undefined | boolean,
+
+  /** The onChange event for the checkbox. Passed down to Checkbox component. */
+  onChange?: (e: React.FormEvent) => void,
 };
 
 /**
@@ -105,6 +108,7 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
           checked={props.checked}
           defaultChecked={props.defaultChecked}
           disabled={props.disabled}
+          onChange={props.onChange}
         />
         <span className={cl['bk-checkbox-field__label__content']}>
           {label}
