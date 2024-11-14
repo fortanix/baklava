@@ -12,11 +12,20 @@ const packageConfig = {
   license: 'MPL-2.0',
   author: 'Fortanix',
   description: 'Fortanix Baklava design system',
-  repository: 'https://github.com/fortanix/baklava',
+  repository: { type: 'git', url: 'git+https://github.com/fortanix/baklava.git' },
   
   sideEffects: ['*.css'],
   
   type: 'module',
+  files: [
+    'src',
+    'app',
+    'dist',
+    'LICENSE',
+    'CHANGELOG.md',
+    'README.md',
+  ],
+  
   scripts: {
     // Utilities
     'gen-package': 'node package.json.js', // Update `package.json`
@@ -33,7 +42,8 @@ const packageConfig = {
     
     // App
     'serve:dev': 'vite --config=./vite.config.ts serve',
-    'build:prod': 'vite --config=./vite.config.ts --emptyOutDir build && cp src/types/vite-env.d.ts dist && echo \'{"name": "@fortanix/baklava","main": "./baklava.js"}\' > dist/package.json',
+    //'build': 'vite --config=./vite.config.ts --emptyOutDir build && cp src/types/vite-env.d.ts dist && echo \'{"name": "@fortanix/baklava","main": "./baklava.js"}\' > dist/package.json',
+    'build': 'vite --config=./vite.config.ts --emptyOutDir build',
     
     // Storybook
     'storybook:serve': 'storybook dev -p 6006',
@@ -53,6 +63,9 @@ const packageConfig = {
     
     // Shorthands
     'start': 'npm run storybook:serve',
+    
+    // Hooks
+    'prepare': 'npm run build',
   },
   
   // Dev dependencies (only needed when building, or making changes to the code)
