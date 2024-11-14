@@ -13,7 +13,7 @@ import { RadioButtonField } from '../RadioButtonField/RadioButtonField.tsx';
 export { cl as RadioButtonGroupClassNames };
 
 export type RadioButtonGroupProps = React.PropsWithChildren<{
-  direction?: undefined | "vertical" | "horizontal";
+  direction?: undefined | "vertical" | "horizontal",
 }>;
 
 /**

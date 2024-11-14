@@ -15,16 +15,16 @@ import cl from './RadioButtonField.module.scss';
 export { cl as RadioButtonFieldClassNames };
 
 export type RadioButtonFieldTitleProps = React.PropsWithChildren<{
-  className?: ClassNameArgument;
+  className?: ClassNameArgument,
 
   /** Whether to display the optional observation on title. */
-  titleOptional?: undefined | boolean,
+  optional?: undefined | boolean,
 
   /** An optional tooltip to be displayed on an info icon next to the title. */
   titleTooltip?: undefined | string,
 }>;
 
-export const RadioButtonFieldTitle = ({ className, children, titleOptional, titleTooltip }: RadioButtonFieldTitleProps) => (
+export const RadioButtonFieldTitle = ({ className, children, optional, titleTooltip }: RadioButtonFieldTitleProps) => (
   <h1 className={cx(
     'bk',
     cl['bk-radio-button-field__title'],
@@ -36,7 +36,7 @@ export const RadioButtonFieldTitle = ({ className, children, titleOptional, titl
         <Icon icon="info" className={cl['bk-radio-button-field__title__icon']}/>
       </TooltipProvider>
     )}
-    {titleOptional && (
+    {optional && (
       <small className={cl['bk-radio-button-field__title__optional']}>(Optional)</small>
     )}
   </h1>
@@ -59,7 +59,7 @@ export type RadioButtonFieldProps = ComponentProps<'div'> & {
   titleTooltip?: undefined | string,
 
   /** Whether to display the optional observation on title. */
-  titleOptional?: undefined | boolean,
+  optional?: undefined | boolean,
 
   /** Whether the radio button is selected by default. Passed down to Radio Button component. */
   defaultChecked?: undefined | boolean,
@@ -83,7 +83,7 @@ export const RadioButtonField = (props: RadioButtonFieldProps) => {
     label = '',
     sublabel,
     title,
-    titleOptional,
+    optional,
     titleTooltip,
     className,
   } = props;
@@ -96,7 +96,7 @@ export const RadioButtonField = (props: RadioButtonFieldProps) => {
     )}>
       {title && (
         <RadioButtonFieldTitle
-          titleOptional={titleOptional}
+          optional={optional}
           titleTooltip={titleTooltip}
         >
           {title}

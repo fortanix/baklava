@@ -53,7 +53,7 @@ export const RadioButtonFieldWithLabelWithTitleWithOptional: Story = {
   args: {
     title: 'Title',
     label: 'Label',
-    titleOptional: true,
+    optional: true,
   },
 };
 
@@ -62,7 +62,7 @@ export const RadioButtonFieldWithLabelWithTitleWithTooltipWithOptional: Story = 
     title: 'Title',
     label: 'Label',
     titleTooltip: 'This is a tooltip',
-    titleOptional: true,
+    optional: true,
   },
 };
 
