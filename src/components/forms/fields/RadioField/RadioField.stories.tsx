@@ -6,14 +6,14 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { RadioButtonField } from './RadioButtonField.tsx';
+import { RadioField } from './RadioField.tsx';
 
 
-type RadioButtonFieldArgs = React.ComponentProps<typeof RadioButtonField>;
-type Story = StoryObj<RadioButtonFieldArgs>;
+type RadioFieldArgs = React.ComponentProps<typeof RadioField>;
+type Story = StoryObj<RadioFieldArgs>;
 
 export default {
-  component: RadioButtonField,
+  component: RadioField,
   parameters: {
     layout: 'centered',
   },
@@ -24,24 +24,24 @@ export default {
   decorators: [
     Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
   ],
-  render: (args) => <RadioButtonField {...args}/>,
-} satisfies Meta<RadioButtonFieldArgs>;
+  render: (args) => <RadioField {...args}/>,
+} satisfies Meta<RadioFieldArgs>;
 
 
-export const RadioButtonFieldWithLabel: Story = {
+export const RadioFieldWithLabel: Story = {
   args: {
     label: 'Label',
   },
 };
 
-export const RadioButtonFieldWithLabelAndTitle: Story = {
+export const RadioFieldWithLabelAndTitle: Story = {
   args: {
     title: 'Title',
     label: 'Label',
   },
 };
 
-export const RadioButtonFieldWithLabelWithTitleWithTooltip: Story = {
+export const RadioFieldWithLabelWithTitleWithTooltip: Story = {
   args: {
     title: 'Title',
     label: 'Label',
@@ -49,7 +49,7 @@ export const RadioButtonFieldWithLabelWithTitleWithTooltip: Story = {
   }
 };
 
-export const RadioButtonFieldWithLabelWithTitleWithOptional: Story = {
+export const RadioFieldWithLabelWithTitleWithOptional: Story = {
   args: {
     title: 'Title',
     label: 'Label',
@@ -57,7 +57,7 @@ export const RadioButtonFieldWithLabelWithTitleWithOptional: Story = {
   },
 };
 
-export const RadioButtonFieldWithLabelWithTitleWithTooltipWithOptional: Story = {
+export const RadioFieldWithLabelWithTitleWithTooltipWithOptional: Story = {
   args: {
     title: 'Title',
     label: 'Label',
@@ -66,7 +66,7 @@ export const RadioButtonFieldWithLabelWithTitleWithTooltipWithOptional: Story = 
   },
 };
 
-export const RadioButtonFieldWithLabelAndSublabel: Story = {
+export const RadioFieldWithLabelAndSublabel: Story = {
   args: {
     label: 'Label',
     sublabel: 'Supporting copy',

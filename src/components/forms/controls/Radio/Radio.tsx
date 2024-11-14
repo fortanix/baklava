@@ -5,19 +5,19 @@
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import * as React from 'react';
 
-import cl from './RadioButton.module.scss';
+import cl from './Radio.module.scss';
 
 
-export { cl as RadioButtonClassNames };
+export { cl as RadioClassNames };
 
-export type RadioButtonProps = ComponentProps<'input'> & {
+export type RadioProps = ComponentProps<'input'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 };
 /**
- * A simple RadioButton control, just the &lt;input type="radio"&gt; and nothing else..
+ * A simple Radio control, just the &lt;input type="radio"&gt; and nothing else..
  */
-export const RadioButton = (props: RadioButtonProps) => {
+export const Radio = (props: RadioProps) => {
   const {
     unstyled = false,
     ...propsRest
@@ -29,7 +29,7 @@ export const RadioButton = (props: RadioButtonProps) => {
       {...propsRest}
       className={cx(
         'bk',
-        { [cl['bk-radio-button']]: !unstyled },
+        { [cl['bk-radio']]: !unstyled },
         propsRest.className,
       )}
     />

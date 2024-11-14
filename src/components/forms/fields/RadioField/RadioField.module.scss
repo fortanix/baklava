@@ -5,40 +5,40 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-radio-button-field {
-    @include bk.component-base(bk-radio-button-field);
+  .bk-radio-field {
+    @include bk.component-base(bk-radio-field);
 
-    .bk-radio-button-field__title {
+    .bk-radio-field__title {
       color: bk.$theme-text-label-default;
       font-weight: bk.$font-weight-semibold;
       margin-bottom: bk.$spacing-1;
 
-      .bk-radio-button-field__title__icon {
+      .bk-radio-field__title__icon {
         font-size: 18px;
         margin-left: bk.$spacing-1;
       }
 
-      .bk-radio-button-field__title__optional {
+      .bk-radio-field__title__optional {
         font-size: bk.$font-size-xs;
         font-weight: bk.$font-weight-regular;
         margin-left: bk.$spacing-1;
       }
     }
 
-    .bk-radio-button-field__label {
+    .bk-radio-field__label {
       display: flex;
       align-items: flex-start;
     }
 
-    .bk-radio-button-field__label__content {
+    .bk-radio-field__label__content {
       color: bk.$theme-text-label-default;
       cursor: pointer;
       position: relative;
-      margin-left: bk.$spacing-2;
+      padding-left: bk.$spacing-2;
       top: -2px;
     }
 
-    .bk-radio-button-field__sublabel {
+    .bk-radio-field__sublabel {
       font-size: bk.$font-size-xs;
       padding-left: 26px;
     }

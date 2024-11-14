@@ -6,16 +6,16 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { RadioButton } from './RadioButton.tsx';
+import { Radio } from './Radio.tsx';
 
-import cl from './RadioButton.module.scss';
+import cl from './Radio.module.scss';
 
 
-type RadioButtonArgs = React.ComponentProps<typeof RadioButton>;
-type Story = StoryObj<RadioButtonArgs>;
+type RadioArgs = React.ComponentProps<typeof Radio>;
+type Story = StoryObj<RadioArgs>;
 
 export default {
-  component: RadioButton,
+  component: Radio,
   parameters: {
     layout: 'centered',
   },
@@ -26,8 +26,8 @@ export default {
   decorators: [
     Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
   ],
-  render: (args) => <RadioButton {...args}/>,
-} satisfies Meta<RadioButtonArgs>;
+  render: (args) => <Radio {...args}/>,
+} satisfies Meta<RadioArgs>;
 
 
 export const Checked: Story = {

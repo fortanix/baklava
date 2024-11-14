@@ -5,16 +5,16 @@
 import { classNames as cx, type ComponentProps, type ClassNameArgument } from '../../../../util/componentUtil.ts';
 import * as React from 'react';
 
-import { RadioButton } from '../../controls/RadioButton/RadioButton.tsx';
+import { Radio } from '../../controls/Radio/Radio.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { TooltipProvider } from '../../../overlays/Tooltip/TooltipProvider.tsx';
 
-import cl from './RadioButtonField.module.scss';
+import cl from './RadioField.module.scss';
 
 
-export { cl as RadioButtonFieldClassNames };
+export { cl as RadioFieldClassNames };
 
-export type RadioButtonFieldTitleProps = React.PropsWithChildren<{
+export type RadioTitleProps = React.PropsWithChildren<{
   className?: ClassNameArgument,
 
   /** Whether to display the optional observation on title. */
@@ -24,25 +24,25 @@ export type RadioButtonFieldTitleProps = React.PropsWithChildren<{
   titleTooltip?: undefined | string,
 }>;
 
-export const RadioButtonFieldTitle = ({ className, children, optional, titleTooltip }: RadioButtonFieldTitleProps) => (
+export const RadioFieldTitle = ({ className, children, optional, titleTooltip }: RadioTitleProps) => (
   <h1 className={cx(
     'bk',
-    cl['bk-radio-button-field__title'],
+    cl['bk-radio-field__title'],
     className,
   )}>
     {children}
     {titleTooltip && (
       <TooltipProvider tooltip={titleTooltip}>
-        <Icon icon="info" className={cl['bk-radio-button-field__title__icon']}/>
+        <Icon icon="info" className={cl['bk-radio-field__title__icon']}/>
       </TooltipProvider>
     )}
     {optional && (
-      <small className={cl['bk-radio-button-field__title__optional']}>(Optional)</small>
+      <small className={cl['bk-radio-field__title__optional']}>(Optional)</small>
     )}
   </h1>
 );
 
-export type RadioButtonFieldProps = ComponentProps<'div'> & {
+export type RadioFieldProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
@@ -61,23 +61,23 @@ export type RadioButtonFieldProps = ComponentProps<'div'> & {
   /** Whether to display the optional observation on title. */
   optional?: undefined | boolean,
 
-  /** Whether the radio button is selected by default. Passed down to Radio Button component. */
+  /** Whether the radio is selected by default. Passed down to Radio component. */
   defaultChecked?: undefined | boolean,
 
-  /** Whether the radio button is selected. Passed down to Radio Button component. */
+  /** Whether the radio is selected. Passed down to Radio component. */
   checked?: undefined | boolean,
 
-  /** Whether the radio button is disabled. Passed down to Radio Button component. */
+  /** Whether the radio is disabled. Passed down to Radio component. */
   disabled?: undefined | boolean,
 
-  /** The onChange event for the radio button. Passed down to Radio Button component. */
+  /** The onChange event for the radio. Passed down to Radio component. */
   onChange?: (e: React.FormEvent) => void,
 };
 
 /**
- * A full-fledged Radio Button field, with optional label, title, icon etc.
+ * A full-fledged Radio field, with optional label, title, icon etc.
  */
-export const RadioButtonField = (props: RadioButtonFieldProps) => {
+export const RadioField = (props: RadioFieldProps) => {
   const {
     unstyled = false,
     label = '',
@@ -91,31 +91,31 @@ export const RadioButtonField = (props: RadioButtonFieldProps) => {
   return (
     <div className={cx(
       'bk',
-      { [cl['bk-radio-button-field']]: !unstyled },
+      { [cl['bk-radio-field']]: !unstyled },
       className,
     )}>
       {title && (
-        <RadioButtonFieldTitle
+        <RadioFieldTitle
           optional={optional}
           titleTooltip={titleTooltip}
         >
           {title}
-        </RadioButtonFieldTitle>
+        </RadioFieldTitle>
       )}
       {/* biome ignore lint/a11y/noLabelWithoutControl: the `<Checkbox>` will resolve to an `<input>` */}
-      <label className={cl['bk-radio-button-field__label']}>
-        <RadioButton
+      <label className={cl['bk-radio-field__label']}>
+        <Radio
           checked={props.checked}
           defaultChecked={props.defaultChecked}
           disabled={props.disabled}
           onChange={props.onChange}
         />
-        <span className={cl['bk-radio-button-field__label__content']}>
+        <span className={cl['bk-radio-field__label__content']}>
           {label}
         </span>
       </label>
       {sublabel && (
-        <div className={cl['bk-radio-button-field__sublabel']}>{sublabel}</div>
+        <div className={cl['bk-radio-field__sublabel']}>{sublabel}</div>
       )}
     </div>
   );

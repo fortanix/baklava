@@ -5,8 +5,8 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-radio-button {
-    @include bk.component-base(bk-radio-button);
+  .bk-radio {
+    @include bk.component-base(bk-radio);
 
     cursor: pointer;
 
@@ -37,13 +37,14 @@
       }
     }
     &:focus-visible, &.pseudo-focused {
+      // those have !important to override CSS rules on layer accessibility
       outline: 2px solid bk.$theme-radio-focus !important;
       outline-offset: 0 !important;
     }
 
-    // @media (prefers-reduced-motion: no-preference) {
-    //   transition: none 100ms ease-out;
-    //   transition-property: background-color, background-position, border-color;
-    // }
+    @media (prefers-reduced-motion: no-preference) {
+      transition: none 100ms ease-out;
+      transition-property: background-color, background-position, border-color;
+    }
   }
 }
