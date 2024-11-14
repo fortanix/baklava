@@ -1,0 +1,50 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-radio {
+    @include bk.component-base(bk-radio);
+
+    cursor: pointer;
+
+    appearance: none;
+    width: 18px;
+    aspect-ratio: 1;
+
+    border-radius: bk.$border-radius-circle;
+    background: transparent;
+    border: 1px solid bk.$theme-radio-default;
+
+    // doing the inner cicle on checked / disabled+checked options without SVG.
+    background-clip: content-box;
+    padding: 3px; // distance between background filling and the center of border
+    // since the border is 2px when checked, it's center is 1px, thus for a distance of 2px we need to have 1 + 2 = 3px.
+
+    &:checked {
+      background-color: bk.$theme-radio-selected;
+      border: 2px solid bk.$theme-radio-selected;
+    }
+    &:disabled {
+      border: 1px solid bk.$theme-radio-disabled;
+      background-color: transparent;
+
+      &:checked {
+        border: 2px solid bk.$theme-radio-non-active;
+        background-color: bk.$theme-radio-non-active;
+      }
+    }
+    &:focus-visible, &.pseudo-focused {
+      // those have !important to override CSS rules on layer accessibility
+      outline: 2px solid bk.$theme-radio-focus !important;
+      outline-offset: 0 !important;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: none 100ms ease-out;
+      transition-property: background-color, background-position, border-color;
+    }
+  }
+}
