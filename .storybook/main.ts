@@ -3,6 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { type StorybookConfig } from '@storybook/react-vite';
+import { withoutVitePlugins } from '@storybook/builder-vite';
 
 
 const config: StorybookConfig = {
@@ -42,5 +43,12 @@ const config: StorybookConfig = {
   },
   // https://storybook.js.org/docs/configure/images-and-assets#referencing-fonts-in-stories
   staticDirs: ['../src/assets'],
+  
+  async viteFinal(config) {
+    // Remove `vite-dts` plugin since it can cause some issues on storybook builds (and isn't necessary)
+    // https://github.com/qmhc/vite-plugin-dts/issues/275
+    config.plugins = await withoutVitePlugins(config.plugins, ['vite:dts']);
+    return config;
+  },
 };
 export default config;
