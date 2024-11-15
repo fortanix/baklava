@@ -23,8 +23,11 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "dist/baklava.d.ts",
-      "default": "dist/baklava.js"
+      "types": "./dist/baklava.d.ts",
+      "default": "./dist/baklava.js"
+    },
+    "./styling/variables.scss": {
+      "default": "./src/styling/variables.scss"
     }
   },
   "scripts": {

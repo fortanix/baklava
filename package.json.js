@@ -26,10 +26,13 @@ const packageConfig = {
   type: 'module',
   exports: {
     '.': {
-      'types': 'dist/baklava.d.ts',
-      //'require': 'dist/baklava.cjs',
-      'default': 'dist/baklava.js',
-    }
+      'types': './dist/baklava.d.ts',
+      //'require': './dist/baklava.cjs',
+      'default': './dist/baklava.js',
+    },
+    './styling/variables.scss': {
+      'default': './src/styling/variables.scss',
+    },
   },
   
   scripts: {
