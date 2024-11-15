@@ -9,10 +9,6 @@
     "type": "git",
     "url": "git+https://github.com/fortanix/baklava.git"
   },
-  "sideEffects": [
-    "*.css"
-  ],
-  "type": "module",
   "files": [
     "src",
     "app",
@@ -21,6 +17,16 @@
     "CHANGELOG.md",
     "README.md"
   ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "dist/baklava.d.ts",
+      "default": "dist/baklava.js"
+    }
+  },
   "scripts": {
     "gen-package": "node package.json.js",
     "install-project": "npm run gen-package && npm install --force",
@@ -84,8 +90,8 @@
     "date-fns": "^4.1.0",
     "message-tag": "^0.10.0",
     "classnames": "^2.5.1",
-    "react": "^19.0.0-rc-0751fac7-20241002",
-    "react-dom": "^19.0.0-rc-0751fac7-20241002",
+    "react": "^19.0.0-rc.1",
+    "react-dom": "^19.0.0-rc.1",
     "react-error-boundary": "^4.0.13",
     "@floating-ui/react": "^0.26.24",
     "react-toastify": "^10.0.5",
