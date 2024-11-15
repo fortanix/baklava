@@ -8,15 +8,12 @@ import * as fs from 'node:fs';
 
 const packageConfig = {
   name: '@fortanix/baklava',
-  version: '1.0.0-beta-20241114',
+  version: '1.0.0-beta-20241115',
   license: 'MPL-2.0',
   author: 'Fortanix',
   description: 'Fortanix Baklava design system',
   repository: { type: 'git', url: 'git+https://github.com/fortanix/baklava.git' },
   
-  sideEffects: ['*.css'],
-  
-  type: 'module',
   files: [
     'src',
     'app',
@@ -25,6 +22,15 @@ const packageConfig = {
     'CHANGELOG.md',
     'README.md',
   ],
+  sideEffects: ['*.css'],
+  type: 'module',
+  exports: {
+    '.': {
+      'types': 'dist/baklava.d.ts',
+      //'require': 'dist/baklava.cjs',
+      'default': 'dist/baklava.js',
+    }
+  },
   
   scripts: {
     // Utilities
@@ -137,8 +143,8 @@ const packageConfig = {
     
     // React
     'classnames': '^2.5.1',
-    'react': '^19.0.0-rc-0751fac7-20241002',
-    'react-dom': '^19.0.0-rc-0751fac7-20241002',
+    'react': '^19.0.0-rc.1',
+    'react-dom': '^19.0.0-rc.1',
     'react-error-boundary': '^4.0.13',
     
     '@floating-ui/react': '^0.26.24',
