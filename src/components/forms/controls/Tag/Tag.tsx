@@ -5,33 +5,42 @@
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import * as React from 'react';
 
-import cl from './Radio.module.scss';
+import { Icon } from '../../../graphics/Icon/Icon.tsx';
+
+import cl from './Tag.module.scss';
 
 
-export { cl as RadioClassNames };
+export { cl as TagClassNames };
 
-export type RadioProps = ComponentProps<'input'> & {
+export type TagProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
+
+  /** The text displayed inside the tag. */
+  value: string,
 };
+
 /**
- * A simple Radio control, just the &lt;input type="radio"&gt; and nothing else.
+ * A tag component, meant to be used within Input fields.
  */
-export const Radio = (props: RadioProps) => {
+export const Tag = (props: TagProps) => {
   const {
     unstyled = false,
+    value = '',
     ...propsRest
   } = props;
   
   return (
-    <input
-      type="radio"
+    <div
       {...propsRest}
       className={cx(
         'bk',
-        { [cl['bk-radio']]: !unstyled },
+        { [cl['bk-tag']]: !unstyled },
         propsRest.className,
       )}
-    />
+    >
+      {value}
+      <Icon icon="cross" className={cl['bk-tag__icon']} />
+    </div>
   );
 };
