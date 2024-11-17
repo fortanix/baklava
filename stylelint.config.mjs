@@ -44,6 +44,10 @@ export default {
     ],
     'scss/dollar-variable-empty-line-before': null,
     
+    'property-no-unknown': [
+      true,
+      { ignoreProperties: ['position-try-fallbacks'] },
+    ],
     'scss/at-rule-no-unknown': [
       true,
       { ignoreAtRules: ['scope', 'position-try'] },
