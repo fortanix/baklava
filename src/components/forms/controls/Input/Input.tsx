@@ -5,8 +5,6 @@
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import * as React from 'react';
 
-import { Icon } from '../../../graphics/Icon/Icon.tsx';
-
 import cl from './Input.module.scss';
 
 
@@ -38,7 +36,6 @@ export const Input = ({ unstyled = false, type = 'text', ...propsRest }: InputPr
           [cl['bk-input']]: !unstyled,
         }, propsRest.className)}
       />
-      <Icon icon="caret-down"/>
     </div>
   );
 };

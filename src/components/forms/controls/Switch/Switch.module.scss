@@ -1,10 +1,10 @@
 
 @use '../../../../styling/defs.scss' as bk;
 
-/* Note: `light-dark()` does not seem to be animatable in Chrome 125, even with `@property` */
-// @property --bk-switch-track-color { syntax: '<color>'; inherits: true; initial-value: bk.$color-grey-600; }
-// @property --bk-switch-thumb-color { syntax: '<color>'; inherits: true; initial-value: bk.$color-grey-400; }
+/* Give these custom properties types to allow them to be animated */
 @property --bk-switch-pos { syntax: '<length-percentage>'; inherits: true; initial-value: 50%; }
+@property --bk-switch-track-color { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --bk-switch-thumb-color { syntax: '<color>'; inherits: true; initial-value: transparent; }
 
 @layer baklava.components {
   .bk-switch {
