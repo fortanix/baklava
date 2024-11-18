@@ -81,55 +81,55 @@ const packageConfig = {
   devDependencies: {
     // CLI
     'plop': '^4.0.1',
-    'tsx': '^4.19.1',
+    'tsx': '^4.19.2',
     'glob': '^11.0.0',
     
     // Build
-    'vite': '^5.4.8',
-    '@vitejs/plugin-react': '^4.3.2',
-    'vite-plugin-dts': '^4.2.3',
+    'vite': '^5.4.11',
+    '@vitejs/plugin-react': '^4.3.3',
+    'vite-plugin-dts': '^4.3.0',
     'vite-plugin-lib-inject-css': '^2.1.1',
     'vite-plugin-svg-icons': '^2.0.1',
     
     // Static analysis
-    'typescript': '^5.6.2',
-    'stylelint': '^16.9.0',
+    'typescript': '^5.6.3',
+    'stylelint': '^16.10.0',
     'stylelint-config-standard-scss': '^13.1.0',
-    '@biomejs/biome': '^1.9.3',
+    '@biomejs/biome': '^1.9.4',
     
     // Testing
-    'vitest': '^2.1.2',
-    '@vitest/ui': '^2.1.2',
+    'vitest': '^2.1.5',
+    '@vitest/ui': '^2.1.5',
     
     // Storybook
-    'storybook': '^8.3.5',
-    '@storybook/react': '^8.3.5',
-    '@storybook/react-vite': '^8.3.5',
-    '@storybook/blocks': '^8.3.5',
-    '@storybook/test': '^8.3.5',
-    '@storybook/addon-essentials': '^8.3.5',
-    '@storybook/addon-a11y': '^8.3.5',
-    '@storybook/addon-interactions': '^8.3.5',
-    '@storybook/addon-links': '^8.3.5',
-    '@storybook/addon-storysource': '^8.3.5',
-    '@storybook/addon-designs': '^8.0.3',
-    '@chromatic-com/storybook': '^2.0.2', // Chromatic integration for Storybook
+    'storybook': '^8.4.4',
+    '@storybook/react': '^8.4.4',
+    '@storybook/react-vite': '^8.4.4',
+    '@storybook/blocks': '^8.4.4',
+    '@storybook/test': '^8.4.4',
+    '@storybook/addon-essentials': '^8.4.4',
+    '@storybook/addon-a11y': '^8.4.4',
+    '@storybook/addon-interactions': '^8.4.4',
+    '@storybook/addon-links': '^8.4.4',
+    '@storybook/addon-storysource': '^8.4.4',
+    '@storybook/addon-designs': '^8.0.4',
+    '@chromatic-com/storybook': '^3.2.2', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     'storybook-dark-mode': '^4.0.2',
-    '@percy/cli': '^1.29.4',
+    '@percy/cli': '^1.30.2',
     '@percy/storybook': '^6.0.2',
     
     // Styling
-    'vite-css-modules': '^1.4.2',
+    'vite-css-modules': '^1.6.0',
     'typescript-plugin-css-modules': '^5.0.1',
-    'sass': '^1.79.4',
+    'sass': '^1.81.0',
     //'postcss': '^8.4.34',
     //'@types/postcss-mixins': '^9.0.5',
     //'postcss-simple-vars': '^7.0.1',
     //'postcss-mixins': '^10.0.1',
     //'@csstools/postcss-light-dark-function': '^1.0.5',
     'postcss-color-contrast': '^1.1.0',
-    'lightningcss': '^1.27.0',
+    'lightningcss': '^1.28.1',
     
     // React
     //'@types/react': '^18.3.7',
@@ -148,15 +148,13 @@ const packageConfig = {
     'classnames': '^2.5.1',
     'react': '^19.0.0-rc.1',
     'react-dom': '^19.0.0-rc.1',
-    'react-error-boundary': '^4.0.13',
+    'react-error-boundary': '^4.1.2',
     
-    '@floating-ui/react': '^0.26.24',
-    'react-toastify': '^10.0.5',
+    '@floating-ui/react': '^0.26.28',
+    'react-toastify': '^10.0.6',
     
-    'fast-check': '^3.13.2',
-    'effect': '^3.8.2',
-    '@effect/schema': '^0.74.1',
-    'react-hook-form': '^7.53.0',
+    'effect': '^3.10.15',
+    'react-hook-form': '^7.53.2',
     
     'optics-ts': '^2.4.1',
   },

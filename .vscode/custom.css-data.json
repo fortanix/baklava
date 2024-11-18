@@ -5,7 +5,7 @@
     { "name": "container" }, // https://github.com/microsoft/vscode-css-languageservice/issues/329
     { "name": "container-name" },
     { "name": "container-type" },
-    { "name": "position-try-options" }
+    { "name": "position-try-fallbacks" }
   ],
   "atDirectives": [
     { "name": "@scope" }, // https://github.com/microsoft/vscode-css-languageservice/issues/406
