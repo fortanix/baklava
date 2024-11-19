@@ -64,7 +64,7 @@ const packageConfig = {
     'check:types': 'tsc --noEmit',
     'lint:style': `stylelint 'src/**/*.scss'`,
     'lint:script': 'biome',
-    'lint': 'npm run list:style && npm run lint:script',
+    'lint': 'npm run lint:style && npm run lint:script',
     
     // Test
     // Note: use `vitest run --root=. src/...` to run a single test file
