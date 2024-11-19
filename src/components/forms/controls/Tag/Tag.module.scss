@@ -8,15 +8,13 @@
   .bk-tag {
     @include bk.component-base(bk-tag);
 
-    --small-padding: 2px; // currently missing from Figma
-
     background: bk.$theme-tag-background-default;
-    border-radius: 2px;
+    border-radius: bk.$size-2;
     color: bk.$theme-tag-text-default;
     display: flex;
     align-items: center;
     font-size: bk.$font-size-xs;
-    padding: var(--small-padding) 0 3px bk.$spacing-2;
+    padding: bk.$size-2 0 bk.$size-3 bk.$spacing-2;
 
     .bk-tag__icon {
       --icon-size: 7px;
@@ -25,7 +23,7 @@
       height: var(--icon-size);
       color: bk.$theme-tag-icon-default;
       cursor: pointer;
-      padding: var(--small-padding) bk.$spacing-2 var(--small-padding) bk.$spacing-2;
+      padding: bk.$size-2 bk.$spacing-2 bk.$size-2 bk.$spacing-2;
     }
   }
 }
