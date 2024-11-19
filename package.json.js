@@ -63,13 +63,13 @@ const packageConfig = {
     // Static analysis
     'check:types': 'tsc --noEmit',
     'lint:style': `stylelint 'src/**/*.scss'`,
-    'lint:script': 'biome',
+    'lint:script': 'biome lint',
     'lint': 'npm run lint:style && npm run lint:script',
     
     // Test
     // Note: use `vitest run --root=. src/...` to run a single test file
     //'test': 'vitest run --root=.', // Need to specify `--root=.` since the vite root is set to `./app`
-    'test': 'npm run check:types',
+    'test': 'npm run check:types && npm run lint:style',
     'test-ui': 'vitest --ui',
     'coverage': 'vitest run --coverage',
     

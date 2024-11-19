@@ -6,10 +6,9 @@
 
 @layer baklava.components {
   .bk-toast {
-    width: auto !important; // Override style for .Toastify__toast-container
     padding: 0 !important; // Override style for .Toastify__toast-container
     width: 400px !important; // Override style for .Toastify__toast-container
-
+    
     &:has(.bk-close--dark) {
       .bk-toast__body {
         margin-right: bk.$spacing-4 !important; // Override style for .Toastify__toast-body

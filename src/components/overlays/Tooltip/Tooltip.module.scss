@@ -39,7 +39,7 @@
   background: var(--c1);
   
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     z-index: -1;
     inset: 0;
@@ -72,16 +72,16 @@
     100% min(100%,var(--p) + var(--h)*tan(var(--a)/2)),
     calc(100% + var(--h)) var(--p),
     100% max(0%  ,var(--p) - var(--h)*tan(var(--a)/2)));
-  border-image: conic-gradient(var(--c1) 0 0) fill 0/
-    max(0%,var(--p) - var(--h)*tan(var(--a)/2)) 0 max(0%,100% - var(--p) - var(--h)*tan(var(--a)/2)) var(--r)/0 var(--h) 0 0;
+  border-image: conic-gradient(var(--c1) 0 0) fill 0
+    / max(0%,var(--p) - var(--h)*tan(var(--a)/2)) 0 max(0%,100% - var(--p) - var(--h)*tan(var(--a)/2)) var(--r)/0 var(--h) 0 0;
   
   &::before {
     clip-path: polygon(100% 0,0 0,0 100%,100% 100%,
       calc(100% - var(--b)) min(100% - var(--b),var(--p) + var(--h)*tan(var(--a)/2) - var(--b)*tan(45deg - var(--a)/4)),
       calc(100% + var(--h) - var(--b)/sin(var(--a)/2)) var(--p),
       calc(100% - var(--b)) max(       var(--b),var(--p) - var(--h)*tan(var(--a)/2) + var(--b)*tan(45deg - var(--a)/4)));
-    border-image: conic-gradient(var(--c2) 0 0) fill 0/
-      max(var(--b),var(--p) - var(--h)*tan(var(--a)/2)) 0 max(var(--b),100% - var(--p) - var(--h)*tan(var(--a)/2)) var(--r)/0 var(--h) 0 0;
+    border-image: conic-gradient(var(--c2) 0 0) fill 0
+      / max(var(--b),var(--p) - var(--h)*tan(var(--a)/2)) 0 max(var(--b),100% - var(--p) - var(--h)*tan(var(--a)/2)) var(--r)/0 var(--h) 0 0;
   }
 }
 @mixin bk-tooltip-arrow-bottom {
@@ -108,16 +108,16 @@
     0 min(100%,var(--p) + var(--h)*tan(var(--a)/2)),
     calc(-1*var(--h)) var(--p),
     0 max(0%  ,var(--p) - var(--h)*tan(var(--a)/2)));
-  border-image: conic-gradient(var(--c1) 0 0) fill 0/
-    max(0%,var(--p) - var(--h)*tan(var(--a)/2)) var(--r) max(0%,100% - var(--p) - var(--h)*tan(var(--a)/2)) 0/0 0 0 var(--h);
+  border-image: conic-gradient(var(--c1) 0 0) fill 0
+    / max(0%,var(--p) - var(--h)*tan(var(--a)/2)) var(--r) max(0%,100% - var(--p) - var(--h)*tan(var(--a)/2)) 0/0 0 0 var(--h);
   
   &::before {
     clip-path: polygon(0 0,100% 0,100% 100%,0 100%,
       var(--b) min(100% - var(--b),var(--p) + var(--h)*tan(var(--a)/2) - var(--b)*tan(45deg - var(--a)/4)),
       calc(var(--b)/sin(var(--a)/2) - var(--h)) var(--p),
       var(--b) max(       var(--b),var(--p) - var(--h)*tan(var(--a)/2) + var(--b)*tan(45deg - var(--a)/4)));
-    border-image: conic-gradient(var(--c2) 0 0) fill 0/
-      max(var(--b),var(--p) - var(--h)*tan(var(--a)/2)) var(--r) max(var(--b),100% - var(--p) - var(--h)*tan(var(--a)/2)) 0/0 0 0 var(--h);
+    border-image: conic-gradient(var(--c2) 0 0) fill 0
+      / max(var(--b),var(--p) - var(--h)*tan(var(--a)/2)) var(--r) max(var(--b),100% - var(--p) - var(--h)*tan(var(--a)/2)) 0/0 0 0 var(--h);
   }
 }
 
