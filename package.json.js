@@ -38,7 +38,9 @@ const packageConfig = {
   scripts: {
     // Utilities
     'gen-package': 'node package.json.js', // Update `package.json`
+    // Use --force currently since we're using React v19 rc. Once peer deps are updated remove this.
     'install-project': 'npm run gen-package && npm install --force',
+    'ci-project': 'npm ci --force',
     
     // CLI
     'node': 'node --import=tsx',
@@ -59,14 +61,15 @@ const packageConfig = {
     'storybook:build': 'storybook build --docs',
     
     // Static analysis
-    'check-types': 'tsc --noEmit',
+    'check:types': 'tsc --noEmit',
     'lint:style': `stylelint 'src/**/*.scss'`,
     'lint:script': 'biome',
     'lint': 'npm run list:style && npm run lint:script',
     
     // Test
     // Note: use `vitest run --root=. src/...` to run a single test file
-    'test': 'vitest run --root=.', // Need to specify `--root=.` since the vite root is set to `./app`
+    //'test': 'vitest run --root=.', // Need to specify `--root=.` since the vite root is set to `./app`
+    'test': 'npm run check:types',
     'test-ui': 'vitest --ui',
     'coverage': 'vitest run --coverage',
     
