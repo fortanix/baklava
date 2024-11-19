@@ -72,7 +72,7 @@ export const InputField = (props: InputFieldProps) => {
       }
       <div className={cl['bk-input-field__tags-and-input']}>
         {tags && (
-          tags.map((tag, idx) => <Tag key={idx} value={tag}/>)
+          tags.map((tag, idx) => <Tag key={idx} content={tag}/>)
         )}
         <Input
           {...injectedInputProps}

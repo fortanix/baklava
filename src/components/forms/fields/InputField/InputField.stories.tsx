@@ -81,7 +81,7 @@ export const InputWithTags: Story = {
         value={inputText}
         onKeyUp={onKeyUp}
         onChange={onChange}
-        placeholder={''}
+        placeholder=""
       />
     );
   }

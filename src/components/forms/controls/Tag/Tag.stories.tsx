@@ -21,7 +21,7 @@ export default {
   argTypes: {
   },
   args: {
-    value: 'Tag Title',
+    content: 'Tag Title',
   },
   render: (args) => <Tag {...args}/>,
 } satisfies Meta<TagArgs>;

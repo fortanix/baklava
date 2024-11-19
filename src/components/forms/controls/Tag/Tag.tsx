@@ -16,17 +16,17 @@ export type TagProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
-  /** The text displayed inside the tag. */
-  value: string,
+  /** Some content to be displayed inside the tag, either as string or JSX. */
+  content: string | React.ReactNode,
 };
 
 /**
- * A tag component, meant to be used within Input fields.
+ * A tag component.
  */
 export const Tag = (props: TagProps) => {
   const {
     unstyled = false,
-    value = '',
+    content = '',
     ...propsRest
   } = props;
   
@@ -39,7 +39,7 @@ export const Tag = (props: TagProps) => {
         propsRest.className,
       )}
     >
-      {value}
+      {content}
       <Icon icon="cross" className={cl['bk-tag__icon']} />
     </div>
   );
