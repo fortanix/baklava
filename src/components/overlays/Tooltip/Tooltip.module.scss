@@ -4,7 +4,7 @@
 
 @use '../../../styling/defs.scss' as bk;
 
-/* https://css-tricks.com/books/greatest-css-tricks/scroll-shadows */
+/* https://css-tricks.com/books/greatest-css-tricks/scroll-shadows * /
 @define-mixin scroll-shadows {
   --bgRGB: 73, 89, 99;
   --bg: rgb(var(--bgRGB));
@@ -18,15 +18,118 @@
   background-repeat: no-repeat;
   background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
   background-attachment: local, local, scroll, scroll;
+}*/
+
+@property --bk-tooltip-background-color { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --bk-tooltip-border-color { syntax: '<color>'; inherits: true; initial-value: transparent; }
+
+/* https://css-generators.com/tooltip-speech-bubble (#21) */
+@mixin bk-tooltip-arrow {
+  --arrow-pos: 50%; /* Arrow position (0% = left 100% = right) */
+
+  --a: 90deg; // Triangle angle (how "sharp" is the arrow)
+  --h: 1em; // Triangle height
+  --p: var(--arrow-pos); // Triangle position (0% = left, 100% = right)
+  --r: var(--bk-tooltip-border-radius); // Border radius
+  --b: 1px; // Border width
+  --c1: var(--bk-tooltip-border-color); // Border color
+  --c2: var(--bk-tooltip-background-color); // Background color
+  
+  position: relative;
+  background: var(--c1);
+  
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    padding: var(--b);
+    border-radius: inherit;
+    background: var(--c2) content-box;
+  }
+}
+@mixin bk-tooltip-arrow-top {
+  border-radius: min(var(--r),var(--p) - var(--h)*tan(var(--a)/2)) min(var(--r),100% - var(--p) - var(--h)*tan(var(--a)/2)) var(--r) var(--r)/var(--r);
+  clip-path: polygon(0 0,0 100%,100% 100%,100% 0,
+    min(100%,var(--p) + var(--h)*tan(var(--a)/2)) 0,
+    var(--p) calc(-1*var(--h)),
+    max(0%  ,var(--p) - var(--h)*tan(var(--a)/2)) 0);
+  border-image: conic-gradient(var(--c1) 0 0) fill 0/
+    0 max(0%,100% - var(--p) - var(--h)*tan(var(--a)/2)) var(--r) max(0%,var(--p) - var(--h)*tan(var(--a)/2))/var(--h) 0 0 0;
+  
+  &::before {
+    clip-path: polygon(0 0,0 100%,100% 100%,100% 0,
+      min(100% - var(--b),var(--p) + var(--h)*tan(var(--a)/2) - var(--b)*tan(45deg - var(--a)/4)) var(--b),
+      var(--p) calc(var(--b)/sin(var(--a)/2) - var(--h)),
+      max(       var(--b),var(--p) - var(--h)*tan(var(--a)/2) + var(--b)*tan(45deg - var(--a)/4)) var(--b));
+    border-image: conic-gradient(var(--c2) 0 0) fill 0/
+      0 max(var(--b),100% - var(--p) - var(--h)*tan(var(--a)/2)) var(--r) max(var(--b),var(--p) - var(--h)*tan(var(--a)/2))/var(--h) 0 0 0;
+  }
+}
+@mixin bk-tooltip-arrow-right {
+  border-radius: var(--r)/var(--r) min(var(--r),var(--p) - var(--h)*tan(var(--a)/2)) min(var(--r),100% - var(--p) - var(--h)*tan(var(--a)/2)) var(--r);
+  clip-path: polygon(100% 0,0 0,0 100%,100% 100%,
+    100% min(100%,var(--p) + var(--h)*tan(var(--a)/2)),
+    calc(100% + var(--h)) var(--p),
+    100% max(0%  ,var(--p) - var(--h)*tan(var(--a)/2)));
+  border-image: conic-gradient(var(--c1) 0 0) fill 0/
+    max(0%,var(--p) - var(--h)*tan(var(--a)/2)) 0 max(0%,100% - var(--p) - var(--h)*tan(var(--a)/2)) var(--r)/0 var(--h) 0 0;
+  
+  &::before {
+    clip-path: polygon(100% 0,0 0,0 100%,100% 100%,
+      calc(100% - var(--b)) min(100% - var(--b),var(--p) + var(--h)*tan(var(--a)/2) - var(--b)*tan(45deg - var(--a)/4)),
+      calc(100% + var(--h) - var(--b)/sin(var(--a)/2)) var(--p),
+      calc(100% - var(--b)) max(       var(--b),var(--p) - var(--h)*tan(var(--a)/2) + var(--b)*tan(45deg - var(--a)/4)));
+    border-image: conic-gradient(var(--c2) 0 0) fill 0/
+      max(var(--b),var(--p) - var(--h)*tan(var(--a)/2)) 0 max(var(--b),100% - var(--p) - var(--h)*tan(var(--a)/2)) var(--r)/0 var(--h) 0 0;
+  }
+}
+@mixin bk-tooltip-arrow-bottom {
+  border-radius: var(--r) var(--r) min(var(--r),100% - var(--p) - var(--h)*tan(var(--a)/2)) min(var(--r),var(--p) - var(--h)*tan(var(--a)/2))/var(--r);
+  clip-path: polygon(0 100%,0 0,100% 0,100% 100%,
+    min(100%,var(--p) + var(--h)*tan(var(--a)/2)) 100%,
+    var(--p) calc(100% + var(--h)),
+    max(0%  ,var(--p) - var(--h)*tan(var(--a)/2)) 100%);
+  border-image: conic-gradient(var(--c1) 0 0) fill 0
+    / var(--r) max(0%,100% - var(--p) - var(--h)*tan(var(--a)/2)) 0 max(0%,var(--p) - var(--h)*tan(var(--a)/2))/0 0 var(--h) 0;
+  
+  &::before {
+    clip-path: polygon(0 100%,0 0,100% 0,100% 100%,
+      min(100% - var(--b),var(--p) + var(--h)*tan(var(--a)/2) - var(--b)*tan(45deg - var(--a)/4)) calc(100% - var(--b)),
+      var(--p) calc(100% + var(--h) - var(--b)/sin(var(--a)/2)),
+      max(       var(--b),var(--p) - var(--h)*tan(var(--a)/2) + var(--b)*tan(45deg - var(--a)/4)) calc(100% - var(--b)));
+    border-image: conic-gradient(var(--c2) 0 0) fill 0
+      / var(--r) max(var(--b),100% - var(--p) - var(--h)*tan(var(--a)/2)) 0 max(var(--b),var(--p) - var(--h)*tan(var(--a)/2))/0 0 var(--h) 0;
+  }
+}
+@mixin bk-tooltip-arrow-left {
+  border-radius: var(--r)/min(var(--r),var(--p) - var(--h)*tan(var(--a)/2)) var(--r) var(--r) min(var(--r),100% - var(--p) - var(--h)*tan(var(--a)/2));
+  clip-path: polygon(0 0,100% 0,100% 100%,0 100%,
+    0 min(100%,var(--p) + var(--h)*tan(var(--a)/2)),
+    calc(-1*var(--h)) var(--p),
+    0 max(0%  ,var(--p) - var(--h)*tan(var(--a)/2)));
+  border-image: conic-gradient(var(--c1) 0 0) fill 0/
+    max(0%,var(--p) - var(--h)*tan(var(--a)/2)) var(--r) max(0%,100% - var(--p) - var(--h)*tan(var(--a)/2)) 0/0 0 0 var(--h);
+  
+  &::before {
+    clip-path: polygon(0 0,100% 0,100% 100%,0 100%,
+      var(--b) min(100% - var(--b),var(--p) + var(--h)*tan(var(--a)/2) - var(--b)*tan(45deg - var(--a)/4)),
+      calc(var(--b)/sin(var(--a)/2) - var(--h)) var(--p),
+      var(--b) max(       var(--b),var(--p) - var(--h)*tan(var(--a)/2) + var(--b)*tan(45deg - var(--a)/4)));
+    border-image: conic-gradient(var(--c2) 0 0) fill 0/
+      max(var(--b),var(--p) - var(--h)*tan(var(--a)/2)) var(--r) max(var(--b),100% - var(--p) - var(--h)*tan(var(--a)/2)) 0/0 0 0 var(--h);
+  }
 }
 
 @layer baklava.components {
   .bk-tooltip {
     @include bk.component-base(bk-tooltip);
     
-    cursor: default;
+    --bk-tooltip-background-color: #{bk.$theme-tooltip-background-default};
+    --bk-tooltip-border-color: #{bk.$theme-tooltip-border-default};
+    --bk-tooltip-border-radius: #{bk.$radius-s};
     
-    // overflow-y: auto;
+    cursor: default;
     
     max-width: 30rem;
     max-height: 8lh; /* Show about 8 lines of text before scrolling */
@@ -38,15 +141,9 @@
     padding: bk.$spacing-4;
     padding-bottom: bk.$spacing-7;
     border-radius: bk.$radius-s;
-    background: bk.$theme-tooltip-background-default;
-    border: 1px solid bk.$theme-tooltip-border-default;
-
-    @include bk.text-layout;
-    text-align: left;
-    color: bk.$theme-tooltip-text-default;
-    @include bk.font(bk.$font-family-body);
-    font-size: 12px;
-
+    background: var(--bk-tooltip-background-color);
+    border: 1px solid var(--bk-tooltip-border-color);
+    
     &.bk-tooltip--small {
       width: 140px;
     }
@@ -56,10 +153,22 @@
     &.bk-tooltip--large {
       width: 345px;
     }
-
+    
+    
+    /* Tooltip arrow */
+    
     --arrow-size: 7px;
-
-    &.bk-tooltip--arrow:before {
+    
+    --h: 6px; /* Height of the triangle. Note: must match the `offset` in `useFloating()`. */
+    --b: calc(var(--h) * 2); /* Base of the triangle */
+    @include bk-tooltip-arrow;
+    &.bk-tooltip--arrow-top { @include bk-tooltip-arrow-top; }
+    &.bk-tooltip--arrow-right { @include bk-tooltip-arrow-right; }
+    &.bk-tooltip--arrow-bottom { @include bk-tooltip-arrow-bottom; }
+    &.bk-tooltip--arrow-left { @include bk-tooltip-arrow-left; }
+    
+    /*
+    &.bk-tooltip--arrow::before {
       content: '';
       border-bottom: 1px solid bk.$theme-tooltip-border-default;
       border-right: 1px solid bk.$theme-tooltip-border-default;
@@ -68,43 +177,63 @@
       width: calc(2 * var(--arrow-size));
       height: calc(2 * var(--arrow-size));
     }
-    &:is(.bk-tooltip--arrow-bottom, .bk-tooltip--arrow-top):before {
+    &:is(.bk-tooltip--arrow-bottom, .bk-tooltip--arrow-top)::before {
       left: calc(50% - var(--arrow-size));
     }
-    &.bk-tooltip--arrow-bottom:before {
+    &.bk-tooltip--arrow-bottom::before {
       bottom: calc(-1 * (calc(var(--arrow-size) + 1px)));
       transform: rotate(45deg);
     }
-    &.bk-tooltip--arrow-top:before {
+    &.bk-tooltip--arrow-top::before {
       top: calc(-1 * (calc(var(--arrow-size) + 1px)));
       transform: rotate(-135deg);
     }
-    &:is(.bk-tooltip--arrow-left, .bk-tooltip--arrow-right):before {
+    &:is(.bk-tooltip--arrow-left, .bk-tooltip--arrow-right)::before {
       top: calc(50% - var(--arrow-size));
     }
-    &.bk-tooltip--arrow-left:before {
+    &.bk-tooltip--arrow-left::before {
       left: calc(-1 * (calc(var(--arrow-size) + 1px)));
       transform: rotate(135deg);
     }
-    &.bk-tooltip--arrow-right:before {
+    &.bk-tooltip--arrow-right::before {
       right: calc(-1 * (calc(var(--arrow-size) + 1px)));
       transform: rotate(-45deg);
     }
-
+    */
+    
+    
+    /* Content */
+    
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    @include bk.text-layout;
+    text-align: left;
+    color: bk.$theme-tooltip-text-default;
+    @include bk.font(bk.$font-family-body);
+    font-size: bk.$font-size-s;
+    
+    .bk-tooltip__content {
+      overflow-y: auto;
+    }
+    
     .bk-tooltip__title {
       font-size: bk.$font-size-l;
       font-weight: bk.$font-weight-semibold;
     }
-
+    
     .bk-tooltip__icon {
       font-size: 18px;
       margin-right: 10px;
     }
-
+    
     .bk-tooltip__alert {
       color: bk.$theme-tooltip-text-error;
     }
   }
+  
+  
+  /* Anchor positioning */
   
   @position-try --bk-tooltip-position-top {
     margin-top: var(--bk-layout-header-height); /* Compensate for layout header */

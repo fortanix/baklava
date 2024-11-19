@@ -18,7 +18,7 @@ export type CheckboxProps = ComponentProps<'input'> & {
   indeterminate?: undefined | boolean,
 };
 /**
- * A simple Checkbox control, just the &lt;input type="checkbox"&gt; and nothing else..
+ * A simple Checkbox control, just the &lt;input type="checkbox"&gt; and nothing else.
  */
 export const Checkbox = (props: CheckboxProps) => {
   const {
@@ -26,9 +26,9 @@ export const Checkbox = (props: CheckboxProps) => {
     indeterminate = false,
     ...propsRest
   } = props;
-
+  
   const checkboxRef = React.useRef<React.ComponentRef<'input'>>(null);
-
+  
   React.useEffect(() => {
     if (checkboxRef?.current) {
       if (indeterminate) {

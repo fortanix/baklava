@@ -4,11 +4,12 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { classNames as cx } from '../../../util/componentUtil.ts';
 import * as React from 'react';
 
 import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
-import { Tooltip } from './Tooltip.tsx';
+import { TooltipClassNames, Tooltip } from './Tooltip.tsx';
 
 
 type TooltipArgs = React.ComponentProps<typeof Tooltip>;
@@ -31,6 +32,15 @@ export default {
 
 export const TooltipStandard: Story = {
   name: 'Tooltip',
+  args: {
+    style: {},
+  },
+};
+
+export const TooltipWithArrow: Story = {
+  args: {
+    arrow: 'bottom',
+  },
 };
 
 export const TooltipSmall: Story = {

@@ -2,14 +2,23 @@
   "version": 1.1,
   "properties": [
     { "name": "interpolate-size" },
-    { "name": "container" }, // https://github.com/microsoft/vscode-css-languageservice/issues/329
+    {
+      "name": "container",
+      "references": [{ "name": "", "url": "https://github.com/microsoft/vscode-css-languageservice/issues/329" }]
+    },
     { "name": "container-name" },
     { "name": "container-type" },
     { "name": "position-try-fallbacks" }
   ],
   "atDirectives": [
-    { "name": "@scope" }, // https://github.com/microsoft/vscode-css-languageservice/issues/406
-    { "name": "@starting-style" }, // https://github.com/microsoft/vscode-css-languageservice/issues/403
+    {
+      "name": "@scope",
+      "references": [{ "name": "", "url": "https://github.com/microsoft/vscode-css-languageservice/issues/406" }]
+    },
+    {
+      "name": "@starting-style",
+      "references": [{ "name": "", "url": "https://github.com/microsoft/vscode-css-languageservice/issues/403" }]
+    },
     { "name": "@position-try" }
   ],
   "pseudoClasses": [],
