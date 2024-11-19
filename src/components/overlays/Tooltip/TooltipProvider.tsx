@@ -103,8 +103,6 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     const arrowPos = ((): string | number => {
       const placement = activePlacement.split('-')[0] as 'top' | 'right' | 'bottom' | 'left';
       
-      console.log(arrow);
-      
       switch (placement) {
         case 'top':
         case 'bottom': {
