@@ -186,13 +186,13 @@ $font-weight-bold: 700 !default;
 //$font-size-xl: 1.6rem !default;
 //$font-size-xxl: 2.0rem !default;
 //$font-size-xxxl: 3.0rem !default;
-$font-size-xs: math.div(10, 14) * 1rem !default;
-$font-size-s: math.div(12, 14) * 1rem !default;
-$font-size-m: math.div(14, 14) * 1rem !default;
-$font-size-l: math.div(17, 14) * 1rem !default;
-$font-size-xl: math.div(22, 14) * 1rem !default;
-$font-size-xxl: math.div(28, 14) * 1rem !default;
-$font-size-xxxl: math.div(42, 14) * 1rem !default;
+$font-size-xs: math.div(10, 14) * 1rem !default; // ~10px
+$font-size-s: math.div(12, 14) * 1rem !default; // ~12px
+$font-size-m: math.div(14, 14) * 1rem !default; // ~14px
+$font-size-l: math.div(17, 14) * 1rem !default; // ~17px
+$font-size-xl: math.div(22, 14) * 1rem !default; // ~22px
+$font-size-xxl: math.div(28, 14) * 1rem !default; // ~28px
+$font-size-xxxl: math.div(42, 14) * 1rem !default; // ~42px
 
 // Border radius
 $border-radius-none: $sizing-0 !default;

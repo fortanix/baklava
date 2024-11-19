@@ -26,7 +26,7 @@ export default {
   argTypes: {
   },
   args: {
-    tooltip: 'This is a tooltip',
+    tooltip: <>This is a tooltip</>,
     children: (props) => <Button {...props()} variant="primary" label="Hover over me"/>,
   },
   render: (args) => <TooltipProvider {...args}/>,
