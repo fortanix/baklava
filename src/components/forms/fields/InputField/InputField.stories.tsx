@@ -55,3 +55,32 @@ export const InvalidInput: Story = {
     await fireEvent.submit(input.closest('form')!);
   },  
 };
+
+export const InputWithTags: Story = {
+  name: 'Input with tags (enter creates new tag, backspace erases tags)',
+  render: () => {
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInputText(e.target.value);
+    };
+    const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Backspace' && inputText === '') {
+        setTags(tags.slice(0,-1));
+      }
+      if (e.key === 'Enter' && inputText !== '') {
+        setTags([...tags, inputText]);
+        setInputText('');
+      }
+    };
+    const [tags, setTags] = React.useState<Array<string>>(['Tag Title', 'Tag Title 2']);
+    const [inputText, setInputText] = React.useState<string>('Example');
+    return (
+      <InputField
+        tags={tags}
+        value={inputText}
+        onKeyUp={onKeyUp}
+        onChange={onChange}
+        placeholder={''}
+      />
+    );
+  }
+};

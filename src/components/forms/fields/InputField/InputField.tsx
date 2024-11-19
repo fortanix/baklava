@@ -4,10 +4,10 @@
 
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import * as React from 'react';
-import { useFormStatus } from 'react-dom';
 
 import { useFormContext } from '../../context/Form/Form.tsx';
 import { Input } from '../../controls/Input/Input.tsx';
+import { Tag } from '../../controls/Tag/Tag.tsx';
 
 import cl from './InputField.module.scss';
 
@@ -17,15 +17,18 @@ export { cl as InputFieldClassNames };
 export type InputFieldProps = ComponentProps<'input'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-  
+
   /** Label for the input. */
   label?: undefined | React.ReactNode,
-  
+
   /** Props for the `<label>` element, if `label` is defined. */
   labelProps?: undefined | ComponentProps<'label'>,
-  
+
   /** Props for the wrapper element. */
   wrapperProps?: undefined | ComponentProps<'div'>,
+
+  /** Tags to be displayed inside the input field */
+  tags?: undefined | string[],
 };
 /**
  * Input field.
@@ -36,19 +39,25 @@ export const InputField = (props: InputFieldProps) => {
     label,
     labelProps = {},
     wrapperProps = {},
+    tags = [],
     ...inputProps
   } = props;
-  
+
   const controlId = React.useId();
   const formContext = useFormContext();
-  //const formStatus = useFormStatus();
-  
+
+  const injectedInputProps = {
+    ...inputProps,
+    unstyled: tags && tags.length > 0,
+  };
+
   return (
     <div
       {...wrapperProps}
       className={cx(
         'bk',
         { [cl['bk-input-field']]: !unstyled },
+        { [cl['bk-input-field--with-tags']]: tags && tags.length > 0 },
         wrapperProps.className,
       )}
     >
@@ -61,12 +70,17 @@ export const InputField = (props: InputFieldProps) => {
           {label}
         </label>
       }
-      <Input
-        {...inputProps}
-        id={controlId}
-        form={formContext.formId}
-        className={cx(cl['bk-input-field__control'], inputProps.className)}
-      />
+      <div className={cl['bk-input-field__tags-and-input']}>
+        {tags && (
+          tags.map((tag, idx) => <Tag key={idx} value={tag}/>)
+        )}
+        <Input
+          {...injectedInputProps}
+          id={controlId}
+          form={formContext.formId}
+          className={cx(cl['bk-input-field__control'], inputProps.className)}
+        />
+      </div>
     </div>
   );
 };
