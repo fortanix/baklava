@@ -49,7 +49,7 @@ const Actions = () => {
   );
 };
 
-export const Success: Story = {
+export const SuccessToast: Story = {
   args: {
     options: {},
   },
@@ -60,7 +60,7 @@ export const Success: Story = {
   ),
 };
 
-export const Info: Story = {
+export const InfoToast: Story = {
   args: {
     options: {},
   },
@@ -71,7 +71,7 @@ export const Info: Story = {
   ),
 };
 
-export const Error: Story = {
+export const ErrorToast: Story = {
   args: {
     options: {},
   },

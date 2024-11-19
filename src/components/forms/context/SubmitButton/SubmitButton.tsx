@@ -45,13 +45,13 @@ export const SubmitButton = (props: SubmitButtonProps) => {
   const isDisabled = !isInteractive;
   const isNonactive = propsButton.nonactive || isPending;
   
-  const handlePress = () => {
+  const handlePress = React.useCallback(() => {
     if (typeof onPress !== 'function') { return; }
     
     startPressTransition(async () => {
       await Promise.race([onPress(), timeout(asyncTimeout)]);
     });
-  };
+  }, [onPress, asyncTimeout]);
   
   const handleClick = React.useCallback(async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     // `onClick` should not be used in most cases, only if the consumer needs low level control over click events.
