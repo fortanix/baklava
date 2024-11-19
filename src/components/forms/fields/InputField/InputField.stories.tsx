@@ -59,6 +59,9 @@ export const InvalidInput: Story = {
 export const InputWithTags: Story = {
   name: 'Input with tags (enter creates new tag, backspace erases tags)',
   render: () => {
+    const [tags, setTags] = React.useState<Array<string>>(['Tag Title', 'Tag Title 2']);
+    const [inputText, setInputText] = React.useState<string>('Example');
+
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setInputText(e.target.value);
     };
@@ -71,8 +74,7 @@ export const InputWithTags: Story = {
         setInputText('');
       }
     };
-    const [tags, setTags] = React.useState<Array<string>>(['Tag Title', 'Tag Title 2']);
-    const [inputText, setInputText] = React.useState<string>('Example');
+
     return (
       <InputField
         tags={tags}
