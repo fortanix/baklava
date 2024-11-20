@@ -41,6 +41,10 @@ const preview = {
               'Icon',
               'Spinner',
             ],
+            'text',
+            [
+              'Tag',
+            ],
             'containers',
             [
               'Panel',
