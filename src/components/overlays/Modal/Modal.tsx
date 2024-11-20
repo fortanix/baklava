@@ -161,7 +161,6 @@ const Modal = ({
   };
 
   return (
-    // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
     <dialog
       ref={dialogRef}
       className={cx(

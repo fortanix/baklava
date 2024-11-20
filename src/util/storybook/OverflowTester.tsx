@@ -13,6 +13,8 @@ type OverflowTesterProps = {
 };
 export const OverflowTester = ({ lines = 50, openDefault = false }: OverflowTesterProps) => {
   const ref = React.useRef<HTMLDetailsElement>(null);
+  
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `openDefault` only applies on mount
   React.useEffect(() => {
     if (openDefault && ref.current) {
       ref.current.open = true;
@@ -23,6 +25,7 @@ export const OverflowTester = ({ lines = 50, openDefault = false }: OverflowTest
     <details ref={ref} className="util-overflow-tester">
       <summary>Test overflow</summary>
       {Array.from({ length: lines }).map((_, index) =>
+        // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
         <p key={index}>...</p>
       )}
     </details>

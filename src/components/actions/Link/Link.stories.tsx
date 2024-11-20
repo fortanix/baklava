@@ -45,7 +45,7 @@ export const Descenders: Story = {
 export const Scroll: Story = {
   render: (args) => (
     <>
-      <a id="anchor"></a>
+      <a id="anchor" href="/" onClick={evt => { evt.preventDefault(); }}>Anchor</a>
       <OverflowTester openDefault/>
       <Link {...args} href="#anchor"/>
       <OverflowTester openDefault/>
