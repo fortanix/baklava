@@ -166,7 +166,11 @@ const packageConfig = {
     // See https://react.dev/blog/2024/04/25/react-19-upgrade-guide#installing
     '@types/react': 'npm:types-react@rc',
     '@types/react-dom': 'npm:types-react-dom@rc',
-  }
+  },
+  peerDependencies: {
+    'react': '>= 19.0.0-rc.1',
+    'react-dom': '>= 19.0.0-rc.1',
+  },
 };
 
 const packageConfigWithComment = {
