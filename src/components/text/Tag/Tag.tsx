@@ -16,8 +16,8 @@ export type TagProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
-  /** Some content to be displayed inside the tag, either as string or JSX. */
-  content: string | React.ReactNode,
+  /** Some content to be displayed inside the tag. */
+  content: React.ReactNode,
 };
 
 /**
@@ -26,10 +26,10 @@ export type TagProps = ComponentProps<'div'> & {
 export const Tag = (props: TagProps) => {
   const {
     unstyled = false,
-    content = '',
+    content = null,
     ...propsRest
   } = props;
-  
+
   return (
     <div
       {...propsRest}
