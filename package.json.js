@@ -184,4 +184,4 @@ const packageConfigWithComment = {
 const packageConfigFormatted = JSON.stringify(packageConfigWithComment, null, 2);
 
 // Write to `package.json`
-fs.writeFileSync('./package.json', packageConfigFormatted);
+fs.writeFileSync('./package.json', packageConfigFormatted + '\n');
