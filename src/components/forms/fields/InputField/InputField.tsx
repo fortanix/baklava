@@ -7,7 +7,7 @@ import * as React from 'react';
 
 import { useFormContext } from '../../context/Form/Form.tsx';
 import { Input } from '../../controls/Input/Input.tsx';
-import { Tag } from '../../controls/Tag/Tag.tsx';
+import { Tag } from '../../../text/Tag/Tag.tsx';
 
 import cl from './InputField.module.scss';
 
