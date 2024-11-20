@@ -9,7 +9,7 @@ import '../src/styling/main.scss';
  */
 
 // Typography
-export * from '../src/typography/Heading/Heading.tsx';
+export { H1, H2, H3, H4, H5, H6 } from '../src/typography/Heading/Heading.tsx';
 
 // Actions
 export { Button } from '../src/components/actions/Button/Button.tsx';
