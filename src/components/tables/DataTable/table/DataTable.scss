@@ -1,0 +1,180 @@
+
+@use '../../../../style/variables.scss' as bkl;
+@use '../../../../style/mixins.scss' as mixins;
+
+
+.bkl-data-table {
+  width: 100%;
+  overflow-x: auto;
+  
+  table.bkl-data-table__table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    
+    th {
+      padding: 1.5rem 0.5rem;
+      
+      white-space: nowrap; // Header should never wrap to multiple lines
+      text-overflow: ellipsis;
+      overflow: hidden; // Hide overflow by default; may need to override this for things like local dropdown menus
+    }
+    
+    td {
+      padding: 1.5rem 0.5rem;
+      
+      white-space: nowrap; // Prevent wrapping by default, can override this on case-by-case basis
+      overflow: hidden; // Hide overflow by default; may need to override this for things like local dropdown menus
+      
+      // *If* `white-space: wrap` is enabled, then allow wrapping mid-word if necessary, to prevent overflow caused
+      // by a long word without spaces/hyphens/etc.
+      overflow-wrap: anywhere;
+    }
+    
+    thead {
+      border-bottom: 1px solid bkl.$neutral-color-1;
+      
+      th {
+        cursor: default;
+        padding-bottom: 1rem;
+        
+        color: bkl.$neutral-color-3;
+        @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-semibold);
+        font-size: bkl.$font-size-xs;
+        text-transform: uppercase;
+        
+        .column-header {
+          display: flex;
+          align-items: baseline;
+          
+          .sort-indicator {
+            align-self: baseline; // Override .bkl-icon
+            margin-left: 0.8rem;
+            width: 1rem;
+            
+            &.sort-indicator--inactive {
+              opacity: 0.3;
+            }
+            
+            transition: transform 240ms ease-in-out, opacity 120ms ease-in-out;
+            &.asc {
+              transform: rotateX(180deg); // Rotate along the X-axis (i.e. it flips up-down)
+            }
+          }
+        }
+      }
+    }
+    
+    tbody {
+      tr:not(.bkl-data-table__placeholder) {
+        &:not(:last-of-type) {
+          border-bottom: 1px solid bkl.$neutral-color-1;
+        }
+        
+        &:hover {
+          background-color: bkl.$light-color-2;
+          
+          // Add rounded edges to the sides of the table row
+          border-radius: bkl.$border-radius-s;
+          box-shadow: -0.7rem 0 0 0 bkl.$light-color-2, 0.7rem 0 0 0 bkl.$light-color-2;
+          
+          // Workaround for WebKit, where box-shadow on `tr` does not work:
+          // https://stackoverflow.com/questions/5972525/table-row-box-shadow-on-hover-webkit
+          // Note: the following does not seem to work in Chrome, so we need both `tr` and `td` solutions
+          > td:first-child {
+            border-top-left-radius: bkl.$border-radius-s;
+            border-bottom-left-radius: bkl.$border-radius-s;
+            box-shadow: -0.7rem 0 0 0 bkl.$light-color-2;
+          }
+          > td:last-child {
+            border-top-right-radius: bkl.$border-radius-s;
+            border-bottom-right-radius: bkl.$border-radius-s;
+            box-shadow: 0.7rem 0 0 0 bkl.$light-color-2;
+          }
+        }
+        
+        // Item cell
+        > td {
+          font-size: bkl.$font-size-s;
+          
+          .text-minor {
+            color: bkl.$brand-color;
+            font-size: bkl.$font-size-xs;
+          }
+          
+          :any-link:not(.bkl-link--plain) {
+            color: bkl.$dark-color-1;
+            
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+          
+          .bkl-data-table__item__name {
+            @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-medium);
+          }
+          @at-root .bkl-data-table tr:hover .bkl-data-table__item__name { text-decoration: underline; }
+        }
+      }
+    }
+    
+    tfoot {
+      td {
+        overflow: visible; // Allow overflow due to dropdown menu
+      }
+    }
+  }
+}
+
+@media only screen and (width <= 1100px) {
+  table.bkl-data-table {
+    display: flex;
+    flex-direction: column;
+    
+    // Common styling for both `thead tr` and `tbody tr`
+    tr {
+      padding: 0.6rem 0;
+      
+      display: flex;
+      flex-direction: column;
+      white-space: normal;
+      
+      > td, > th {
+        padding: 0.6rem 0;
+        
+        display: flex;
+        flex-direction: row;
+      }
+    }
+    
+    thead {
+      border-bottom: none;
+      
+      display: flex;
+      flex-direction: column;
+    }
+    
+    tbody {
+      display: flex;
+      flex-direction: column;
+      
+      tr:not(.bkl-data-table__placeholder) {
+        margin: 1.5rem 0;
+        padding: 1.5rem;
+        border-radius: bkl.$border-radius-ms;
+        background: bkl.$light-color-2;
+        box-shadow: 0.1rem 0.1rem 0.1rem rgba(bkl.$brand-color-dark-1, 0.15);
+        
+        &:not(:last-of-type) {
+          border-bottom: none;
+        }
+        
+        &:hover {
+          box-shadow: 0.1rem 0.1rem 0.1rem rgba(bkl.$brand-color-dark-1, 0.15); // Override desktop `:hover`
+        }
+        
+        > td:empty { display: none; }
+      }
+    }
+  }
+}

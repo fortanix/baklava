@@ -1,0 +1,8 @@
+
+@use '../../../style/variables.scss' as bkl;
+@use './DataTableLazy.scss' as dataTableLazy;
+
+
+.bkl-data-table-stream--loading {
+  @include dataTableLazy.data-table-loading();
+}

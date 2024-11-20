@@ -56,3 +56,10 @@ export const icons = {
   'warning': {},
   'workflows': {},
 } as const satisfies Record<string, IconDef>;
+
+export type IconKey = keyof typeof icons;
+
+const iconKeys = new Set(Object.keys(icons));
+export const isIconKey = (iconKey: string): iconKey is IconKey => {
+  return iconKeys.has(iconKey);
+};

@@ -1,0 +1,15 @@
+
+@use '../../../../style/variables.scss' as bkl;
+
+.bkl-data-table-row-select {
+  width: bkl.$sizing-7 + bkl.$sizing-1;
+  max-width: bkl.$sizing-7 + bkl.$sizing-1;
+
+  &__header {
+    margin-bottom: bkl.$sizing-m;
+  }
+
+  &__cell {
+    margin-bottom: bkl.$sizing-m;
+  }
+}

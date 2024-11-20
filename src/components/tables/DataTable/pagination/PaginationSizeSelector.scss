@@ -1,0 +1,36 @@
+
+@use '../../../../style/variables.scss' as bkl;
+@use '../../../../style/mixins.scss' as mixins;
+
+
+.page-size-selector {
+  flex: none;
+  
+  display: flex;
+  align-items: center;
+  
+  .page-size-selector__page-size {
+    user-select: none;
+    flex: none;
+    
+    padding: bkl.$sizing-xs;
+    
+    display: flex;
+    align-items: center;
+    gap: bkl.$sizing-xs;
+    
+    @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+    
+    .icon-caret {
+      width: 0.8em;
+    }
+  }
+  
+  @at-root .page-size-selector__selector {
+    min-width: 6rem;
+    .bkl-dropdown__menu > .bkl-dropdown__menu-item {
+      padding-block: bkl.$sizing-xxs;
+      text-align: right;
+    }
+  }
+}

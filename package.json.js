@@ -140,6 +140,8 @@ const packageConfig = {
     //'@types/react-dom': '^18.2.22',
     '@types/react': 'npm:types-react@rc',
     '@types/react-dom': 'npm:types-react-dom@rc',
+    
+    '@types/react-table': '^7.7.20',
   },
   
   // Dependencies needed when running the generated build
@@ -156,6 +158,7 @@ const packageConfig = {
     
     '@floating-ui/react': '^0.26.28',
     'react-toastify': '^10.0.6',
+    'react-table': '^7.8.0',
     
     'effect': '^3.10.15',
     'react-hook-form': '^7.53.2',

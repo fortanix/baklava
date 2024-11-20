@@ -1,0 +1,96 @@
+
+@use '../../../../style/variables.scss' as bkl;
+@use '../../../../style/mixins.scss' as mixins;
+
+
+.bk-table-placeholder {
+  min-height: 40rem;
+  padding: bkl.$sizing-l;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  color: bkl.$brand-color-dark-2;
+  @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+  font-size: bkl.$font-size-l;
+  
+  .bk-table-placeholder__icon {
+    box-sizing: content-box; // Have padding increase the size rather than shrink the content
+    width: 1.8em;
+    height: 1.8em;
+    margin-bottom: bkl.$sizing-m;
+    padding: 1em;
+  }
+  
+  .bk-table-placeholder__message {
+    margin: 0;
+  }
+  
+  .bk-table-placeholder__actions {
+    margin: 0;
+    margin-top: bkl.$sizing-l;
+    
+    display: flex;
+    gap: bkl.$sizing-s;
+  }
+  
+  &.bk-table-placeholder--error {
+    color: bkl.$status-color-error;
+    
+    .bk-table-placeholder--error__error-icon {
+      position: relative;
+      
+      .icon-cross {
+        position: absolute;
+        top: 1.4rem;
+        right: 1.6rem;
+        
+        @include mixins.circle($size: 1.8rem);
+        background: bkl.$status-color-error;
+        color: bkl.$light-color-1;
+        
+        border: 0.2rem solid bkl.$light-color-1;
+      }
+    }
+  }
+}
+
+.bk-table-row-placeholder {
+  background: hsla(37, 91%, 55%, 0.04);
+  border: 1px solid #F5A623;
+  padding: bkl.$sizing-3 (bkl.$sizing-4 + bkl.$sizing-1);
+  height: 5.2rem;
+  display: flex;
+  align-items: center;
+
+  .bk-table-row-placeholder__icon {
+    color: #F5A623;
+    margin-right: bkl.$sizing-4 + bkl.$sizing-1;
+  }
+
+  .bk-table-row-placeholder__message {
+    @include mixins.font(
+      $family: bkl.$font-family-body,
+      $weight: bkl.$font-weight-regular,
+      $size: bkl.$font-size-s,
+    );
+    line-height: bkl.$line-height-4;
+    color: rgba(12, 12, 34, 0.87);
+  }
+}
+
+.bk-table-placeholder.bk-table-placeholder--skeleton {
+  align-items: stretch;
+  justify-content: space-around;
+  gap: 1rem;
+  
+  > .skeleton-row {
+    display: block;
+    height: 1.5rem;
+    border-radius: bkl.$border-radius-ms;
+    
+    @include mixins.shimmer($baseColor: bkl.$neutral-color-4, $highlightColor: bkl.$light-color-2);
+  }
+}
