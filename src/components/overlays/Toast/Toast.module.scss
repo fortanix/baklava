@@ -6,7 +6,6 @@
 
 @layer baklava.components {
   .bk-toast {
-    width: auto !important; // Override style for .Toastify__toast-container
     padding: 0 !important; // Override style for .Toastify__toast-container
     width: 400px !important; // Override style for .Toastify__toast-container
 
@@ -15,7 +14,7 @@
         margin-right: bk.$spacing-4 !important; // Override style for .Toastify__toast-body
       }
     }
-    
+
     .bk-toast--success,
     .bk-toast--info,
     .bk-toast--error {
@@ -42,21 +41,21 @@
       // Override style for .Toastify__toast-theme--light
       background-color: #{bk.$theme-notification-alert-background-default} !important;
     }
-    
+
     .bk-toast__icon--success,
     .bk-toast__icon--info,
     .bk-toast__icon--error {
       font-size: 18px;
     }
-    
+
     .bk-toast__icon--success {
       color: #{bk.$theme-notification-success-border-default};
     }
-                
+
     .bk-toast__icon--info {
       color: #{bk.$theme-notification-informational-border-default};
     }
-    
+
     .bk-toast__icon--error {
       color: #{bk.$theme-notification-alert-border-default};
     }
@@ -83,7 +82,7 @@
       flex-direction: column;
       gap: bk.$spacing-1;
     }
-    
+
     .bk-toast__message__title {
       font-weight: bk.$font-weight-semibold;
     }
@@ -107,7 +106,7 @@
       opacity: 1 !important; // Override style for .Toastify__progress-bar
       background-color: #{bk.$theme-progress-bar-fill} !important; // Override style for .Toastify__progress-bar
     }
-    
+
     .bk-toast__button,
     .bk-toast__copy-button {
       padding: 0;
@@ -115,7 +114,7 @@
       font-size: 12px;
       font-weight: bk.$font-weight-semibold;
     }
-    
+
     .bk-toast__link {
       font-weight: bk.$font-weight-semibold;
     }
