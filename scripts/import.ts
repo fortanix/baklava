@@ -26,8 +26,8 @@ const getServices = () => {
 
 type ScriptArgs = {
   values: {
-    help: boolean | undefined,
-    silent: boolean | undefined,
+    help?: undefined | boolean,
+    silent?: undefined | boolean,
   },
   positionals: Array<string>,
 };

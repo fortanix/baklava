@@ -31,7 +31,7 @@ type DefaultTabOption = {
   className?: string,
 };
 const defaultTabOptions: DefaultTabOption[] = [1,2,3,4].map(index => { 
-  return { index }
+  return { index };
 });
 
 type TabWithTriggerProps = React.PropsWithChildren<Partial<TabsArgs>> & {

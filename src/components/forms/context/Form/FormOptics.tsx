@@ -16,7 +16,7 @@ export { cl as FormClassNames };
 
 export type FormContext<T> = {
   formId: string,
-  accessor: O.OpticFor<T>,
+  //accessor: O.OpticFor<T>,
 };
 export const FormContext = React.createContext<null | FormContext<unknown>>(null);
 export const useFormContext = <T,>(): FormContext<T> => {
@@ -43,7 +43,7 @@ export const Form = (props: FormProps) => {
   const [wrapperRef, setWrapperRef] = React.useState<null | React.ComponentRef<'div'>>(null);
   
   // Memoize to keep a stable reference
-  const context: FormContext = React.useMemo(() => ({ formId }), [formId]);
+  const context: FormContext<unknown> = React.useMemo(() => ({ formId }), [formId]);
   
   const renderForm = ({ children }: { children: React.ReactNode }) => {
     return (

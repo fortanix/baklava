@@ -93,6 +93,7 @@ const packageConfig = {
     
     // Static analysis
     'typescript': '^5.6.3',
+    '@types/node': '^22.9.0',
     'stylelint': '^16.10.0',
     'stylelint-config-standard-scss': '^13.1.0',
     '@biomejs/biome': '^1.9.4',
