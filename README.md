@@ -1,6 +1,6 @@
 
 [![npm](https://img.shields.io/npm/v/@fortanix/baklava.svg?style=flat)](https://www.npmjs.com/package/@fortanix/baklava)
-[![CI](https://github.com/fortanix/baklava/actions/workflows/ci.yml/badge.svg)](https://github.com/fortanix/@fortanix/baklava/actions)
+[![CI](https://github.com/fortanix/baklava/actions/workflows/ci.yaml/badge.svg)](https://github.com/fortanix/@fortanix/baklava/actions)
 
 # Fortanix Baklava Design System
 
