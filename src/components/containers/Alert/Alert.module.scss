@@ -20,12 +20,12 @@
       --bk-panel-border-color: light-dark(#FEC84B, #FEC84B);
     }
     &.bk-alert--error {
-      --bk-panel-background-color: #{bk.$theme-notification-informational-background-default};
-      --bk-panel-border-color: #{bk.$theme-notification-informational-background-default};
+      --bk-panel-background-color: #{bk.$theme-notification-alert-border-default};
+      --bk-panel-border-color: #{bk.$theme-notification-alert-border-default};
     }
     &.bk-alert--success {
-      --bk-panel-background-color: #{bk.$theme-notification-informational-background-default};
-      --bk-panel-border-color: #{bk.$theme-notification-informational-background-default};
+      --bk-panel-background-color: #{bk.$theme-notification-success-border-default};
+      --bk-panel-border-color: #{bk.$theme-notification-success-border-default};
     }
     
     display: grid;
