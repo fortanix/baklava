@@ -2,7 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
+import { assertUnreachable } from '../../../util/types.ts';
+import { ClassNameArgument, classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import * as React from 'react';
 
 import { Icon, IconProps } from '../../graphics/Icon/Icon.tsx';
@@ -14,29 +15,54 @@ export { cl as TooltipClassNames };
 
 export type TooltipSize = 'small' | 'medium' | 'large';
 
+export type TooltipArrowPosition = 'top' | 'right' | 'bottom' | 'left';
+
 export type TooltipProps = React.PropsWithChildren<ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
+  
   /** Whether you want the component to have a fixed width. If unset, it will have dynamic size. */
   size?: undefined | TooltipSize,
+  
+  /* If specified, will render an arrow at the given position. */
+  arrow?: undefined | TooltipArrowPosition,
 }>;
 /**
  * A tooltip. Used by `TooltipProvider` to display a tooltip popover.
  */
-export const Tooltip = ({ unstyled = false, size = undefined, ...propsRest }: TooltipProps) => {
+export const Tooltip = ({ children, unstyled = false, arrow, size = undefined, ...propsRest }: TooltipProps) => {
+  const arrowClassNames = ((): ClassNameArgument => {
+    if (!arrow) { return; }
+    
+    switch (arrow) {
+      case 'top': return cx(cl['bk-tooltip--arrow'], cl['bk-tooltip--arrow-top']);
+      case 'right': return cx(cl['bk-tooltip--arrow'], cl['bk-tooltip--arrow-right']);
+      case 'bottom': return cx(cl['bk-tooltip--arrow'], cl['bk-tooltip--arrow-bottom']);
+      case 'left': return cx(cl['bk-tooltip--arrow'], cl['bk-tooltip--arrow-left']);
+      default: return assertUnreachable(arrow);
+    }
+  })();
+  
   return (
     <div
       role="tooltip" // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/tooltip_role
       {...propsRest}
-      className={cx({
-        bk: true,
-        [cl['bk-tooltip']]: !unstyled,
-        'bk-body-text': !unstyled,
-        [cl['bk-tooltip--small']]: size === 'small',
-        [cl['bk-tooltip--medium']]: size === 'medium',
-        [cl['bk-tooltip--large']]: size === 'large',
-      }, propsRest.className)}
-    />
+      className={cx(
+        {
+          bk: true,
+          [cl['bk-tooltip']]: !unstyled,
+          [cl['bk-tooltip--small']]: size === 'small',
+          [cl['bk-tooltip--medium']]: size === 'medium',
+          [cl['bk-tooltip--large']]: size === 'large',
+        },
+        arrowClassNames,
+        propsRest.className,
+      )}
+    >
+      <div className={cx(cl['bk-tooltip__content'], 'bk-body-text')}>
+        {children}
+      </div>
+    </div>
   );
 };
 

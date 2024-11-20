@@ -31,10 +31,10 @@ export default {
 
 export const Standard: Story = {};
 
-export const Info: Story = { args: { kind: 'info' } };
-export const Warning: Story = { args: { kind: 'warning' } };
-export const Error: Story = { args: { kind: 'error' } };
-export const Success: Story = { args: { kind: 'success' } };
+export const InfoAlert: Story = { args: { kind: 'info' } };
+export const WarningAlert: Story = { args: { kind: 'warning' } };
+export const ErrorAlert: Story = { args: { kind: 'error' } };
+export const SuccessAlert: Story = { args: { kind: 'success' } };
 
 /** Multiple alerts stacked. */
 export const Stacked: Story = {

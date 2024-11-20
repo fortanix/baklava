@@ -11,6 +11,7 @@
     "emitDeclarationOnly": true,
     "composite": true,
     "skipLibCheck": true,
+    "target": "es2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -19,5 +20,6 @@
   },
   "include": [
     "vite.config.ts",
+    "scripts/**/*",
   ],
 }

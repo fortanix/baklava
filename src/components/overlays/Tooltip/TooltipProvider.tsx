@@ -2,6 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import { assertUnreachable } from '../../../util/types.ts';
 import { classNames as cx, type ClassNameArgument } from '../../../util/componentUtil.ts';
 import { mergeRefs } from '../../../util/reactUtil.ts';
 import * as React from 'react';
@@ -65,10 +66,11 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     floatingStyles,
     getReferenceProps,
     getFloatingProps,
+    placement: activePlacement,
   } = usePopover({
     action: 'hover',
     placement,
-    offset: 6,
+    offset: 14,
     enablePreciseTracking,
     boundary,
     ...(arrowRef.current ? { arrowRef:  arrowRef as React.RefObject<HTMLElement> } : {}),
@@ -87,6 +89,35 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
   const renderTooltip = () => {
     if (!isMounted || !tooltip) { return null; }
     
+    const arrowClassName = (() => {
+      const placement = activePlacement.split('-')[0] as 'top' | 'right' | 'bottom' | 'left';
+      switch (placement) {
+        case 'top': return cx(TooltipClassNames['bk-tooltip--arrow'], TooltipClassNames['bk-tooltip--arrow-bottom']);
+        case 'right': return cx(TooltipClassNames['bk-tooltip--arrow'], TooltipClassNames['bk-tooltip--arrow-left']);
+        case 'bottom': return cx(TooltipClassNames['bk-tooltip--arrow'], TooltipClassNames['bk-tooltip--arrow-top']);
+        case 'left': return cx(TooltipClassNames['bk-tooltip--arrow'], TooltipClassNames['bk-tooltip--arrow-right']);
+        default: return assertUnreachable(placement);
+      }
+    })();
+    
+    const arrowPos = ((): string | number => {
+      const placement = activePlacement.split('-')[0] as 'top' | 'right' | 'bottom' | 'left';
+      
+      switch (placement) {
+        case 'top':
+        case 'bottom': {
+          const x = arrow?.arrowX ?? '50%';
+          return `calc(${x} + 15px)`;
+        }
+        case 'right':
+        case 'left': {
+          const y = arrow?.arrowY ?? '50%';
+          return `calc(${y} + 20px)`;
+        }
+        default: return assertUnreachable(placement);
+      }
+    })();
+    
     const floatingProps = getFloatingProps({
       popover: 'manual',
       style: floatingStyles,
@@ -97,18 +128,13 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
         ref={mergeRefs<HTMLDivElement>(refs.setFloating, tooltipProps.ref)}
         className={cx(
           floatingProps.className as ClassNameArgument,
-          { [TooltipClassNames['bk-tooltip--arrow']]: !!arrow?.side },
-          { [TooltipClassNames['bk-tooltip--arrow-top']]: arrow?.side === 'top' },
-          { [TooltipClassNames['bk-tooltip--arrow-bottom']]: arrow?.side === 'bottom' },
-          { [TooltipClassNames['bk-tooltip--arrow-left']]: arrow?.side === 'left' },
-          { [TooltipClassNames['bk-tooltip--arrow-right']]: arrow?.side === 'right' },
+          arrowClassName,
           tooltipProps.className,
         )}
         style={{
           ...(floatingProps.style ?? {}),
           ...tooltipProps.style,
-          '--arrow-x': arrow?.arrowX,
-          '--arrow-y': arrow?.arrowY,
+          '--arrow-pos': arrowPos,
         } as React.CSSProperties}
         size={size}
       >

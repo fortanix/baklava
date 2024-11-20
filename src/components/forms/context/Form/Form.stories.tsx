@@ -19,9 +19,9 @@ type FormArgs = React.ComponentProps<typeof Form>;
 type Story = StoryObj<FormArgs>;
 
 const FormWithState = (props: React.ComponentProps<typeof Form>) => {
-  const action = async (previousState: unknown, formData: FormData) => {
+  const action = async (previousState: unknown, formData: FormData): Promise<null> => {
     if (typeof props.action === 'function') {
-      return props.action?.(formData);
+      return props.action?.(formData) ?? null;
     }
     return null;
   };

@@ -20,10 +20,6 @@
       transition: all 300ms ease-in-out;
       transition-property: width, grid-template-columns;
       
-      &.-collapsed {
-        width: var(--bk-sizing-5);
-      }
-      
       .bk-app-layout-sidebar__action-collapse {
         margin: var(--bk-sizing-2);
         padding: var(--bk-sizing-1) var(--bk-sizing-2);

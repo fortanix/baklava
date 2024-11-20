@@ -1,7 +1,7 @@
 {
   // https://github.com/Microsoft/vscode-css-languageservice/blob/main/docs/customData.md
   // https://stackoverflow.com/questions/42520229/vs-code-and-intellisense-for-css-grid-and-css-modules
-  "css.customData": [".vscode/custom.css-data.json"],
+  "css.customData": ["./custom.css-data.json"],
   
   // Editor (code)
   "editor.insertSpaces": true, // Insert spaces when pressing Tab
@@ -19,4 +19,5 @@
   "editor.trimAutoWhitespace": false,
   "files.eol": "\n",
   "javascript.preferences.quoteStyle": "single",
+  "typescript.tsdk": "node_modules/typescript/lib", // Use the TypeScript SDK from the current project
 }

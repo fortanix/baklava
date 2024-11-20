@@ -83,7 +83,8 @@ export const SegmentedControl = (props: SegmentedControlProps) => {
         [cl['bk-segmented-control--disabled']]: disabled,
       }, propsRest.className)}
     >
-      {formattedOptions.map((option, index) => 
+      {formattedOptions.map((option, index) =>
+        // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
         <li key={index} className={cl['bk-segmented-control__item']}>
           <Button
             role="tab"

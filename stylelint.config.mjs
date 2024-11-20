@@ -11,7 +11,7 @@ export default {
   'rules': {
     // Override `stylelint-config-standard-scss` rules
     'scss/load-partial-extension': 'always',
-    'scss/at-import-partial-extension': 'always',
+    //'scss/at-import-partial-extension': 'always',
     'comment-empty-line-before': null,
     'comment-whitespace-inside': null,
     'scss/comment-no-empty': null,
@@ -44,6 +44,10 @@ export default {
     ],
     'scss/dollar-variable-empty-line-before': null,
     
+    'property-no-unknown': [
+      true,
+      { ignoreProperties: ['position-try-fallbacks'] },
+    ],
     'scss/at-rule-no-unknown': [
       true,
       { ignoreAtRules: ['scope', 'position-try'] },

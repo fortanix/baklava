@@ -15,7 +15,7 @@
     
     &.bk-stepper--vertical {
       .bk-stepper__item {
-        &:not(:first-child):not(:first-child) {
+        &:not(:first-child) {
           margin-top: bk.$spacing-9;
       
           .bk-stepper__item__circle {
