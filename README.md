@@ -1,9 +1,49 @@
 
+[![npm](https://img.shields.io/npm/v/@fortanix/baklava.svg?style=flat)](https://www.npmjs.com/package/@fortanix/baklava)
+[![CI](https://github.com/fortanix/baklava/actions/workflows/ci.yaml/badge.svg)](https://github.com/fortanix/baklava/actions)
+
 # Fortanix Baklava Design System
 
 This repository contains the Baklava design system used to build [Fortanix](https://fortanix.com) products.
 
 You can find the latest Storybook documentation [here](https://fortanix.github.io/baklava).
+
+
+## Usage
+
+Installation:
+
+```sh
+npm install --save @fortanix/baklava
+```
+
+To import a component:
+
+```typescript
+import { Button } from '@fortanix/baklava';
+```
+
+The package automatically includes CSS through Sass (`.scss`) imports. However, this assumes that you have set up your
+project in such a way that `.scss` imports (as well as assets like images and fonts) are handled. If you're using vite,
+this will be supported out of the box. Otherwise, you may need to configure your bundler accordingly.
+
+Icons are loaded through SVG sprites. This requires some additional setup. If you're using vite, install the
+`vite-plugin-svg-icons` plugin:
+
+```sh
+npm install --save vite-plugin-svg-icons
+```
+
+Then, add the following to the `plugins` array in your vite config:
+
+```
+createSvgIconsPlugin({
+  iconDirs: [path.resolve(__dirname, 'node_modules/@fortanix/baklava/src/assets/icons')],
+  symbolId: 'baklava-icon-[name]',
+  inject: 'body-last',
+  customDomId: 'baklava-icon-sprite',
+}),
+```
 
 
 ## Contributing
