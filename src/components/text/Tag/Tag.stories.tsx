@@ -30,3 +30,9 @@ export default {
 export const TagStory: Story = {
   name: 'Tag',
 };
+
+export const TagWithCloseButton: Story = {
+  args: {
+    onRemove: () => console.log('clicked on close button'),
+  },
+};

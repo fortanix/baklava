@@ -34,9 +34,7 @@ export default {
   render: (args) => <InputField {...args}/>,
 } satisfies Meta<InputArgs>;
 
-
-export const Standard: Story = {
-};
+export const Standard: Story = {};
 
 export const InvalidInput: Story = {
   args: {
@@ -53,7 +51,7 @@ export const InvalidInput: Story = {
     await delay(100);
     await userEvent.keyboard('{Enter}');
     await fireEvent.submit(input.closest('form')!);
-  },  
+  },
 };
 
 export const InputWithTags: Story = {
@@ -74,6 +72,9 @@ export const InputWithTags: Story = {
         setInputText('');
       }
     };
+    const onRemove = (index: number) => {
+      setTags(tags.filter((_, idx) => idx !== index));
+    };
 
     return (
       <InputField
@@ -82,6 +83,7 @@ export const InputWithTags: Story = {
         onKeyUp={onKeyUp}
         onChange={onChange}
         placeholder=""
+        tagRemoveCallback={onRemove}
       />
     );
   }

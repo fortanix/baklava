@@ -18,6 +18,9 @@ export type TagProps = ComponentProps<'div'> & {
 
   /** Some content to be displayed inside the tag. */
   content: React.ReactNode,
+
+  /** Callback to remove the tag. If set, display a close icon, otherwise it is hidden. */
+  onRemove?: () => void,
 };
 
 /**
@@ -27,6 +30,7 @@ export const Tag = (props: TagProps) => {
   const {
     unstyled = false,
     content = null,
+    onRemove,
     ...propsRest
   } = props;
 
@@ -36,11 +40,14 @@ export const Tag = (props: TagProps) => {
       className={cx(
         'bk',
         { [cl['bk-tag']]: !unstyled },
+        { [cl['bk-tag--with-close-button']]: !!onRemove },
         propsRest.className,
       )}
     >
       {content}
-      <Icon icon="cross" className={cl['bk-tag__icon']} />
+      {onRemove && (
+        <Icon icon="cross" className={cl['bk-tag__icon']} onClick={onRemove}/>
+      )}
     </div>
   );
 };

@@ -29,6 +29,9 @@ export type InputFieldProps = ComponentProps<'input'> & {
 
   /** Tags to be displayed inside the input field */
   tags?: undefined | string[],
+
+  /** Callback to remove a specific Tag, passed down to Tag component. */
+  tagRemoveCallback?: (index: number) => void,
 };
 /**
  * Input field.
@@ -40,6 +43,7 @@ export const InputField = (props: InputFieldProps) => {
     labelProps = {},
     wrapperProps = {},
     tags = [],
+    tagRemoveCallback,
     ...inputProps
   } = props;
 
@@ -72,7 +76,7 @@ export const InputField = (props: InputFieldProps) => {
       }
       <div className={cl['bk-input-field__tags-and-input']}>
         {tags && (
-          tags.map((tag, idx) => <Tag key={idx} content={tag}/>)
+          tags.map((tag, idx) => <Tag key={idx} content={tag} onRemove={() => tagRemoveCallback?.(idx)}/>)
         )}
         <Input
           {...injectedInputProps}
