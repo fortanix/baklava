@@ -8,6 +8,9 @@ import '../src/styling/main.scss';
  * Components
  */
 
+// Typography
+export * from '../src/typography/Heading/Heading.tsx';
+
 // Actions
 export { Button } from '../src/components/actions/Button/Button.tsx';
 export { ButtonAsLink } from '../src/components/actions/ButtonAsLink/ButtonAsLink.tsx';
@@ -59,6 +62,7 @@ export { Modal } from '../src/components/overlays/Modal/Modal.tsx';
 export { type ToastContent, ToastProvider, ToastMessage } from '../src/components/overlays/Toast/Toast.tsx';
 export { Tooltip } from '../src/components/overlays/Tooltip/Tooltip.tsx';
 export { TooltipProvider } from '../src/components/overlays/Tooltip/TooltipProvider.tsx';
+export { notify } from '../src/components/overlays/Toast/Toast.tsx';
 
 /**
  * Layouts
