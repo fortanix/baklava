@@ -11,6 +11,10 @@ You can find the latest Storybook documentation [here](https://fortanix.github.i
 
 ## Usage
 
+Requirements:
+
+- React v19 or higher.
+
 Installation:
 
 ```console
