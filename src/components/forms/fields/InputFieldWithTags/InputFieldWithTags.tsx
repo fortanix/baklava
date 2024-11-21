@@ -36,7 +36,7 @@ export type InputFieldWithTagsProps = Omit<ComponentProps<'input'>, 'value'> & {
   /** Callback to update the input value. Internally hooks to onChange */
   onUpdate?: undefined | ((value: string) => void),
 
-  /** Callback to update the tags. Internally hooks to onKeyUp */
+  /** Callback to update the tags. Internally hooks to onKeyDown */
   onUpdateTags?: undefined | ((tags: string[]) => void),
 };
 /**
@@ -69,10 +69,10 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
     }
   };
 
-  const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // first handle supplied onKeyUp, if exists
-    if (inputProps.onKeyUp) {
-      inputProps.onKeyUp(e);
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // first handle supplied onKeyDown, if exists
+    if (inputProps.onKeyDown) {
+      inputProps.onKeyDown(e);
     }
     // then return value to onUpdateTags
     if (onUpdateTags && onUpdate) {
@@ -122,7 +122,7 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
           form={formContext.formId}
           className={cx(cl['bk-input-field-with-tags__control'], inputProps.className)}
           onChange={onChange}
-          onKeyUp={onKeyUp}
+          onKeyDown={onKeyDown}
           value={value}
         />
       </div>
