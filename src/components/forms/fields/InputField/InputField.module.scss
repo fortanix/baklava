@@ -7,16 +7,16 @@
 @layer baklava.components {
   .bk-input-field {
     @include bk.component-base(bk-input-field);
-    
+
     display: flex;
     flex-direction: column;
     gap: 6px;
-    
+
     .bk-input-field__label {
       @include bk.font(bk.$font-family-body, bk.$font-weight-semibold);
       cursor: default;
     }
-    
+
     .bk-input-field__control {
       --empty: ; // Prevent empty class from being removed
     }

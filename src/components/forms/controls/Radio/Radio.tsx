@@ -15,7 +15,7 @@ export type RadioProps = ComponentProps<'input'> & {
   unstyled?: undefined | boolean,
 };
 /**
- * A simple Radio control, just the &lt;input type="radio"&gt; and nothing else..
+ * A simple Radio control, just the &lt;input type="radio"&gt; and nothing else.
  */
 export const Radio = (props: RadioProps) => {
   const {

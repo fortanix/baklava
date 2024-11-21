@@ -1,0 +1,33 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-tag {
+    @include bk.component-base(bk-tag);
+
+    background: bk.$theme-tag-background-default;
+    border-radius: bk.$size-2;
+    color: bk.$theme-tag-text-default;
+    display: flex;
+    align-items: center;
+    font-size: bk.$font-size-xs;
+    padding: bk.$size-2 bk.$spacing-2 bk.$size-3;
+
+    &.bk-tag--with-close-button {
+      padding-right: 0;
+    }
+
+    .bk-tag__icon {
+      --icon-size: 7px;
+
+      width: var(--icon-size);
+      height: var(--icon-size);
+      color: bk.$theme-tag-icon-default;
+      cursor: pointer;
+      padding: bk.$size-2 bk.$spacing-2 bk.$size-2 bk.$spacing-2;
+    }
+  }
+}

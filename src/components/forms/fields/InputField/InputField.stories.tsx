@@ -34,9 +34,7 @@ export default {
   render: (args) => <InputField {...args}/>,
 } satisfies Meta<InputArgs>;
 
-
-export const Standard: Story = {
-};
+export const Standard: Story = {};
 
 export const InvalidInput: Story = {
   args: {
@@ -52,6 +50,7 @@ export const InvalidInput: Story = {
     await userEvent.type(input, 'invalid');
     await delay(100);
     await userEvent.keyboard('{Enter}');
+    // biome-ignore lint/style/noNonNullAssertion: we know there is a form on this story
     await fireEvent.submit(input.closest('form')!);
-  },  
+  },
 };

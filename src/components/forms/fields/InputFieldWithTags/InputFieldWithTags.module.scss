@@ -1,0 +1,48 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-input-field-with-tags {
+    @include bk.component-base(input-field-with-tags);
+
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: 1px;
+    border-bottom: 1px solid bk.$theme-form-rule-default;
+
+    .bk-input-field-with-tags__label {
+      @include bk.font(bk.$font-family-body, bk.$font-weight-semibold);
+      cursor: default;
+    }
+
+    .bk-input-field-with-tags__control {
+      --empty: ; // Prevent empty class from being removed
+    }
+
+    &:focus-within {
+      border-bottom-color: bk.$theme-form-rule-focused;
+
+      input {
+        outline: none !important;
+      }
+    }
+  }
+
+  .bk-input-field-with-tags__container {
+    display: flex;
+    flex-flow: row wrap;
+    gap: bk.$spacing-2;
+  }
+
+  .bk-input-field-with-tags__input-container {
+    flex-grow: 1;
+
+    input {
+      width: 100%;
+    }
+  }
+}

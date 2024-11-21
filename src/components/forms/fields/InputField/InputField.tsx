@@ -4,26 +4,26 @@
 
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import * as React from 'react';
-import { useFormStatus } from 'react-dom';
 
 import { useFormContext } from '../../context/Form/Form.tsx';
 import { Input } from '../../controls/Input/Input.tsx';
+import { Tag } from '../../../text/Tag/Tag.tsx';
 
 import cl from './InputField.module.scss';
 
 
 export { cl as InputFieldClassNames };
 
-export type InputFieldProps = ComponentProps<'input'> & {
+export type InputFieldProps = Omit<ComponentProps<'input'>, 'value'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-  
+
   /** Label for the input. */
   label?: undefined | React.ReactNode,
-  
+
   /** Props for the `<label>` element, if `label` is defined. */
   labelProps?: undefined | ComponentProps<'label'>,
-  
+
   /** Props for the wrapper element. */
   wrapperProps?: undefined | ComponentProps<'div'>,
 };
@@ -38,11 +38,10 @@ export const InputField = (props: InputFieldProps) => {
     wrapperProps = {},
     ...inputProps
   } = props;
-  
+
   const controlId = React.useId();
   const formContext = useFormContext();
-  //const formStatus = useFormStatus();
-  
+
   return (
     <div
       {...wrapperProps}
