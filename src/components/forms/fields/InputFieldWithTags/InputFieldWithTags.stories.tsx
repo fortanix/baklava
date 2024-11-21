@@ -2,13 +2,11 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { delay } from '../../../../util/time.ts';
-
 import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, fireEvent, within } from '@storybook/test';
 import * as React from 'react';
 
 import { Form } from '../../context/Form/Form.tsx';
+import { Card } from '../../../containers/Card/Card.tsx';
 
 import { InputFieldWithTags } from './InputFieldWithTags.tsx';
 
@@ -35,7 +33,6 @@ export default {
   decorators: [
     Story => <Form><Story/></Form>,
   ],
-  render: (args) => <InputFieldWithTags {...args}/>,
 } satisfies Meta<InputArgs>;
 
 export const InputWithTags: Story = {
@@ -52,13 +49,15 @@ export const InputWithTags: Story = {
     };
 
     return (
-      <InputFieldWithTags
-        tags={tags}
-        value={inputText}
-        onUpdate={handleUpdate}
-        onUpdateTags={handleUpdateTags}
-        placeholder=""
-      />
+      <Card>
+        <InputFieldWithTags
+          tags={tags}
+          value={inputText}
+          onUpdate={handleUpdate}
+          onUpdateTags={handleUpdateTags}
+          placeholder=""
+        />
+      </Card>
     );
   }
 };
