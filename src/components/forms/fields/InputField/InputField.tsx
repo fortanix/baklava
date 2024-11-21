@@ -26,18 +26,6 @@ export type InputFieldProps = Omit<ComponentProps<'input'>, 'value'> & {
 
   /** Props for the wrapper element. */
   wrapperProps?: undefined | ComponentProps<'div'>,
-
-  /** Value of the input field */
-  value?: undefined | string,
-
-  /** Tags to be displayed inside the input field */
-  tags?: undefined | string[],
-
-  /** Callback to update the input value. Internally hooks to onChange */
-  onUpdate?: undefined | ((value: string) => void),
-
-  /** Callback to update the tags. Internally hooks to onKeyUp */
-  onUpdateTags?: undefined | ((tags: string[]) => void),
 };
 /**
  * Input field.
@@ -48,54 +36,11 @@ export const InputField = (props: InputFieldProps) => {
     label,
     labelProps = {},
     wrapperProps = {},
-    value = '',
-    tags = [],
-    onUpdate,
-    onUpdateTags,
     ...inputProps
   } = props;
 
   const controlId = React.useId();
   const formContext = useFormContext();
-
-  const injectedInputProps = {
-    ...inputProps,
-    unstyled: tags && tags.length > 0,
-  };
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // first handle supplied onChange, if exists
-    if (inputProps.onChange) {
-      inputProps.onChange(e);
-    }
-    // then return value to onUpdate
-    if (onUpdate) {
-      onUpdate(e.target.value);
-    }
-  };
-
-  const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // first handle supplied onKeyUp, if exists
-    if (inputProps.onKeyUp) {
-      inputProps.onKeyUp(e);
-    }
-    // then return value to onUpdateTags
-    if (onUpdateTags && onUpdate) {
-      if (e.key === 'Backspace' && value === '') {
-        onUpdateTags(tags.slice(0,-1));
-      }
-      if (e.key === 'Enter' && value !== '') {
-        onUpdateTags([...tags, value.trim()]);
-        onUpdate('');
-      }
-    }
-  };
-
-  const onRemoveTag = (index: number) => {
-    if (onUpdateTags) {
-      onUpdateTags(tags.filter((_, idx) => idx !== index));
-    }
-  };
 
   return (
     <div
@@ -103,7 +48,6 @@ export const InputField = (props: InputFieldProps) => {
       className={cx(
         'bk',
         { [cl['bk-input-field']]: !unstyled },
-        { [cl['bk-input-field--with-tags']]: tags && tags.length > 0 },
         wrapperProps.className,
       )}
     >
@@ -116,21 +60,12 @@ export const InputField = (props: InputFieldProps) => {
           {label}
         </label>
       }
-      <div className={cl['bk-input-field__container']}>
-        {tags && (
-          // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
-          tags.map((tag, idx) => <Tag key={idx} content={tag} onRemove={() => onRemoveTag(idx)}/>)
-        )}
-        <Input
-          {...injectedInputProps}
-          id={controlId}
-          form={formContext.formId}
-          className={cx(cl['bk-input-field__control'], inputProps.className)}
-          onChange={onChange}
-          onKeyUp={onKeyUp}
-          value={value}
-        />
-      </div>
+      <Input
+        {...inputProps}
+        id={controlId}
+        form={formContext.formId}
+        className={cx(cl['bk-input-field__control'], inputProps.className)}
+      />
     </div>
   );
 };

@@ -54,28 +54,3 @@ export const InvalidInput: Story = {
     await fireEvent.submit(input.closest('form')!);
   },
 };
-
-export const InputWithTags: Story = {
-  name: 'Input with tags (enter creates new tag, backspace erases tags)',
-  render: () => {
-    const [tags, setTags] = React.useState<Array<string>>(['Tag Title', 'Tag Title 2']);
-    const [inputText, setInputText] = React.useState<string>('Example');
-
-    const handleUpdate = (newInputText: string) => {
-      setInputText(newInputText);
-    };
-    const handleUpdateTags = (newTags: string[]) => {
-      setTags(newTags);
-    };
-
-    return (
-      <InputField
-        tags={tags}
-        value={inputText}
-        onUpdate={handleUpdate}
-        onUpdateTags={handleUpdateTags}
-        placeholder=""
-      />
-    );
-  }
-};

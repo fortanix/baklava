@@ -5,20 +5,35 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-input-field {
-    @include bk.component-base(bk-input-field);
+  .bk-input-field-with-tags {
+    @include bk.component-base(input-field-with-tags);
 
     display: flex;
     flex-direction: column;
     gap: 6px;
+    border-bottom: 1px solid bk.$theme-form-rule-default;
 
-    .bk-input-field__label {
+    .bk-input-field-with-tags__label {
       @include bk.font(bk.$font-family-body, bk.$font-weight-semibold);
       cursor: default;
     }
 
-    .bk-input-field__control {
+    .bk-input-field-with-tags__control {
       --empty: ; // Prevent empty class from being removed
     }
+
+    &:focus-within {
+      border-bottom-color: bk.$theme-form-rule-focused;
+
+      input {
+        outline: none !important;
+      }
+    }
+  }
+
+  .bk-input-field-with-tags__container {
+    display: flex;
+    flex-direction: row;
+    gap: bk.$spacing-2;
   }
 }
