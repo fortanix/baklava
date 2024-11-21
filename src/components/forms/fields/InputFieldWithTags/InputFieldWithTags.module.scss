@@ -34,8 +34,7 @@
 
   .bk-input-field-with-tags__container {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
     gap: bk.$spacing-2;
   }
 
