@@ -115,6 +115,7 @@ export const InputField = (props: InputFieldProps) => {
       }
       <div className={cl['bk-input-field__container']}>
         {tags && (
+          // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
           tags.map((tag, idx) => <Tag key={idx} content={tag} onRemove={() => onRemoveTag(idx)}/>)
         )}
         <Input
