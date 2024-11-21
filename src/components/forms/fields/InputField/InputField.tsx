@@ -14,7 +14,7 @@ import cl from './InputField.module.scss';
 
 export { cl as InputFieldClassNames };
 
-export type InputFieldProps = ComponentProps<'input'> & {
+export type InputFieldProps = Omit<ComponentProps<'input'>, 'value'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
@@ -27,14 +27,17 @@ export type InputFieldProps = ComponentProps<'input'> & {
   /** Props for the wrapper element. */
   wrapperProps?: undefined | ComponentProps<'div'>,
 
+  /** Value of the input field */
+  value?: undefined | string,
+
   /** Tags to be displayed inside the input field */
   tags?: undefined | string[],
 
   /** Callback to update the input value. Internally hooks to onChange */
-  onUpdate?: undefined | ((arg0: string) => void),
+  onUpdate?: undefined | ((value: string) => void),
 
   /** Callback to update the tags. Internally hooks to onKeyUp */
-  onUpdateTags?: undefined | ((arg0: string[]) => void),
+  onUpdateTags?: undefined | ((tags: string[]) => void),
 };
 /**
  * Input field.
@@ -45,9 +48,10 @@ export const InputField = (props: InputFieldProps) => {
     label,
     labelProps = {},
     wrapperProps = {},
+    value = '',
     tags = [],
-    onUpdate = null,
-    onUpdateTags = null,
+    onUpdate,
+    onUpdateTags,
     ...inputProps
   } = props;
 
@@ -77,12 +81,11 @@ export const InputField = (props: InputFieldProps) => {
     }
     // then return value to onUpdateTags
     if (onUpdateTags && onUpdate) {
-      const { value } = inputProps;
       if (e.key === 'Backspace' && value === '') {
         onUpdateTags(tags.slice(0,-1));
       }
       if (e.key === 'Enter' && value !== '') {
-        onUpdateTags([...tags as string[], value as string]);
+        onUpdateTags([...tags, value.trim()]);
         onUpdate('');
       }
     }
@@ -125,6 +128,7 @@ export const InputField = (props: InputFieldProps) => {
           className={cx(cl['bk-input-field__control'], inputProps.className)}
           onChange={onChange}
           onKeyUp={onKeyUp}
+          value={value}
         />
       </div>
     </div>
