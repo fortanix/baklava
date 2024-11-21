@@ -58,11 +58,6 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
   const controlId = React.useId();
   const formContext = useFormContext();
 
-  const injectedInputProps = {
-    ...inputProps,
-    unstyled: tags && tags.length > 0,
-  };
-
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // first handle supplied onChange, if exists
     if (inputProps.onChange) {
@@ -121,7 +116,8 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
           tags.map((tag, idx) => <Tag key={idx} content={tag} onRemove={() => onRemoveTag(idx)}/>)
         )}
         <Input
-          {...injectedInputProps}
+          {...inputProps}
+          unstyled={true}
           id={controlId}
           form={formContext.formId}
           className={cx(cl['bk-input-field-with-tags__control'], inputProps.className)}
