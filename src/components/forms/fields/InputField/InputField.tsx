@@ -30,8 +30,11 @@ export type InputFieldProps = ComponentProps<'input'> & {
   /** Tags to be displayed inside the input field */
   tags?: undefined | string[],
 
-  /** Callback to remove a specific Tag, passed down to Tag component. */
-  tagRemoveCallback?: (index: number) => void,
+  /** Callback to update the input value. Internally hooks to onChange */
+  onUpdate?: undefined | ((arg0: string) => void),
+
+  /** Callback to update the tags. Internally hooks to onKeyUp */
+  onUpdateTags?: undefined | ((arg0: string[]) => void),
 };
 /**
  * Input field.
@@ -43,7 +46,8 @@ export const InputField = (props: InputFieldProps) => {
     labelProps = {},
     wrapperProps = {},
     tags = [],
-    tagRemoveCallback,
+    onUpdate = null,
+    onUpdateTags = null,
     ...inputProps
   } = props;
 
@@ -53,6 +57,41 @@ export const InputField = (props: InputFieldProps) => {
   const injectedInputProps = {
     ...inputProps,
     unstyled: tags && tags.length > 0,
+  };
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // first handle supplied onChange, if exists
+    if (inputProps.onChange) {
+      inputProps.onChange(e);
+    }
+    // then return value to onUpdate
+    if (onUpdate) {
+      onUpdate(e.target.value);
+    }
+  };
+
+  const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // first handle supplied onKeyUp, if exists
+    if (inputProps.onKeyUp) {
+      inputProps.onKeyUp(e);
+    }
+    // then return value to onUpdateTags
+    if (onUpdateTags && onUpdate) {
+      const { value } = inputProps;
+      if (e.key === 'Backspace' && value === '') {
+        onUpdateTags(tags.slice(0,-1));
+      }
+      if (e.key === 'Enter' && value !== '') {
+        onUpdateTags([...tags as string[], value as string]);
+        onUpdate('');
+      }
+    }
+  };
+
+  const onRemoveTag = (index: number) => {
+    if (onUpdateTags) {
+      onUpdateTags(tags.filter((_, idx) => idx !== index));
+    }
   };
 
   return (
@@ -74,15 +113,17 @@ export const InputField = (props: InputFieldProps) => {
           {label}
         </label>
       }
-      <div className={cl['bk-input-field__tags-and-input']}>
+      <div className={cl['bk-input-field__container']}>
         {tags && (
-          tags.map((tag, idx) => <Tag key={idx} content={tag} onRemove={() => tagRemoveCallback?.(idx)}/>)
+          tags.map((tag, idx) => <Tag key={idx} content={tag} onRemove={() => onRemoveTag(idx)}/>)
         )}
         <Input
           {...injectedInputProps}
           id={controlId}
           form={formContext.formId}
           className={cx(cl['bk-input-field__control'], inputProps.className)}
+          onChange={onChange}
+          onKeyUp={onKeyUp}
         />
       </div>
     </div>

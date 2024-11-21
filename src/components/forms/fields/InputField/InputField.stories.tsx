@@ -60,30 +60,20 @@ export const InputWithTags: Story = {
     const [tags, setTags] = React.useState<Array<string>>(['Tag Title', 'Tag Title 2']);
     const [inputText, setInputText] = React.useState<string>('Example');
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setInputText(e.target.value);
+    const handleUpdate = (newInputText: string) => {
+      setInputText(newInputText);
     };
-    const onKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Backspace' && inputText === '') {
-        setTags(tags.slice(0,-1));
-      }
-      if (e.key === 'Enter' && inputText !== '') {
-        setTags([...tags, inputText]);
-        setInputText('');
-      }
-    };
-    const onRemove = (index: number) => {
-      setTags(tags.filter((_, idx) => idx !== index));
+    const handleUpdateTags = (newTags: string[]) => {
+      setTags(newTags);
     };
 
     return (
       <InputField
         tags={tags}
         value={inputText}
-        onKeyUp={onKeyUp}
-        onChange={onChange}
+        onUpdate={handleUpdate}
+        onUpdateTags={handleUpdateTags}
         placeholder=""
-        tagRemoveCallback={onRemove}
       />
     );
   }
