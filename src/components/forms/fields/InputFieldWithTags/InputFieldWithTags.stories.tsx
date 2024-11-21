@@ -20,6 +20,10 @@ export default {
   component: InputFieldWithTags,
   parameters: {
     layout: 'centered',
+    design: {
+      type: 'figma',
+      url: 'https://www.figma.com/design/ymWCnsGfIsC2zCz17Ur11Z/Design-System-UX?node-id=3606-101183&node-type=instance&m=dev',
+    }
   },
   tags: ['autodocs'],
   argTypes: {

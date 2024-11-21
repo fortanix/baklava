@@ -40,7 +40,7 @@ export type InputFieldWithTagsProps = Omit<ComponentProps<'input'>, 'value'> & {
   onUpdateTags?: undefined | ((tags: string[]) => void),
 };
 /**
- * Input field.
+ * Input field with tags. Enter creates a new tag, backspace erases last tag.
  */
 export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
   const {
@@ -115,16 +115,18 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
           // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
           tags.map((tag, idx) => <Tag key={idx} content={tag} onRemove={() => onRemoveTag(idx)}/>)
         )}
-        <Input
-          {...inputProps}
-          unstyled={true}
-          id={controlId}
-          form={formContext.formId}
-          className={cx(cl['bk-input-field-with-tags__control'], inputProps.className)}
-          onChange={onChange}
-          onKeyDown={onKeyDown}
-          value={value}
-        />
+        <div className={cl['bk-input-field-with-tags__input-container']}>
+          <Input
+            {...inputProps}
+            unstyled={true}
+            id={controlId}
+            form={formContext.formId}
+            className={cx(cl['bk-input-field-with-tags__control'], inputProps.className)}
+            onChange={onChange}
+            onKeyDown={onKeyDown}
+            value={value}
+          />
+        </div>
       </div>
     </div>
   );
