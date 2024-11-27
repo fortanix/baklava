@@ -17,3 +17,8 @@ export type ComponentProps<T extends React.ElementType> =
   Omit<React.ComponentPropsWithRef<T>, 'className'> & {
     className?: undefined | ClassNameArgument,
   };
+
+export type ComponentPropsWithoutRef<T extends React.ElementType> =
+  Omit<React.ComponentPropsWithoutRef<T>, 'className'> & {
+    className?: undefined | ClassNameArgument,
+  };

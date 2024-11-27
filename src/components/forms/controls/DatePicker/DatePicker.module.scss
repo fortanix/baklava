@@ -1,0 +1,142 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+// TODO: copied manually from old Baklava, where should we put this?
+$z-index--date-picker: 100;
+
+@layer baklava.components {
+  .bk-datepicker {
+    @include bk.component-base(bk-datepicker);
+
+    width: 12rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .bk-date-picker__date {
+      text-align: right;
+    }
+  }
+}
+
+// DATEPICKER override react-datepicker styles
+
+.react-datepicker-popper {
+  z-index: $z-index--date-picker;
+}
+.react-datepicker {
+  color: red !important; // DEBUG
+  width: 30rem;
+  text-align: center;
+  margin-top: 0.5rem;
+  padding: 2.5rem;
+  //background-color: bkl.$light-color-3; // TODO
+  border-radius: 0.4rem !important;
+  border-width: 0 !important;
+  font-family: bk.$font-family-body;
+  font-size: bk.$font-size-m;
+  font-weight: bk.$font-weight-regular;
+  &__triangle,
+  &__triangle::before {
+    border: none !important;
+  }
+  &__header {
+    background: transparent;
+    border: 0;
+    //color: bkl.$brand-color-dark-2; // TODO color
+    font-family: bk.$font-family-display;
+    font-weight: bk.$font-weight-regular;
+  }
+  &__month-container {
+    display: inline-block;
+    width: 100%;
+    float: none;
+  }
+  &__current-month {
+    //color: bkl.$brand-color-dark-2; // TODO color
+    font-size: 2rem; // TODO font-size
+    margin-bottom: 1rem;
+    font-family: bk.$font-family-display;
+    font-weight: bk.$font-weight-regular;
+  }
+  &__navigation {
+    position: absolute;
+    top: 3.3rem;
+    width: 3rem;
+    border: none;
+    text-indent: -999em;
+    &-icon {
+      &:before, &:after {
+        display: flex;
+      }
+    }
+    &--previous {
+      background: url('../../../../assets/icons_old/arrow-left.svg') no-repeat center center; // TODO maybe new icon?
+      background-size: 1.8rem;
+      left: 2rem;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+    &--next {
+      background: url('../../../../assets/icons_old/arrow-right.svg') no-repeat center center; // TODO maybe new icon?
+      background-size: 1.8rem;
+      right: 2rem;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+  &__day-names {
+    border-bottom: 0.1rem solid #d0d0d0; // TODO hardcoded color
+  }
+  &__day-name,
+  &__day {
+    display: inline-block;
+    width: 3.5rem;
+    line-height: 3.5rem;
+    margin: 0;
+    color: #454545; // TODO hardcoded color
+    &--outside-month {
+      opacity: .7;
+    }
+    &--disabled {
+      opacity: .35;
+    }
+  }
+  &__day {
+    &--selected,
+    &--keyboard-selected {
+      // background: bkl.$accent-color; // TODO color
+      border-radius: 50%;
+    }
+    &:not(&--selected):hover {
+      // background: rgba(bkl.$accent-color, 0.5); // TODO color
+      border-radius: 50%;
+    }
+    &--in-range,
+    &--in-selecting-range {
+      background: transparent;
+      background-color: transparent;
+      border-radius: 0;
+    }
+  }
+}
+.react-datepicker-popper[data-placement^="bottom"] {
+  margin-top: 0;
+}
+
+.react-datepicker-popper[data-placement^="top"] {
+  margin-bottom: 0;
+}
+
+.react-datepicker__month--selecting-range .react-datepicker__day--in-range:not(.react-datepicker__day--in-selecting-range),
+.react-datepicker__month--selecting-range .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-range) {
+  background: transparent;
+  background-color: transparent;
+  border-radius: 0;
+  color: #454545; // TODO hardcoded color
+}
