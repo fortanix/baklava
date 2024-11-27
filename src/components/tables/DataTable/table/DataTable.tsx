@@ -19,7 +19,7 @@ import type { DataTableStatus } from '../DataTableContext.tsx';
 
 
 // Note: `placeholder` is included in `table` props as part of "Standard HTML Attributes", but it's not actually a
-// valid `<table>` attribute, so we can override it.
+// valid `<table>` attribute, so we can safely override it.
 type DataTableProps<D extends object> = Omit<ComponentProps<'table'>, 'placeholder'> & {
   table: ReactTable.TableInstance<D>,
   columnGroups?: React.ReactNode,
@@ -76,7 +76,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                     {column.render('Header')}
                   </span>
                   {column.canSort &&
-                    <Icon icon="arrow-drop-down"
+                    <Icon icon="caret-down"
                       className={cx('sort-indicator',
                         { 'sort-indicator--inactive': !column.isSorted },
                         { 'asc': !column.isSorted || (column.isSorted && !column.isSortedDesc) },

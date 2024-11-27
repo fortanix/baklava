@@ -9,8 +9,13 @@ import { icons } from '../../../assets/icons/_icons.ts';
 import cl from './Icon.module.scss';
 
 
-export type IconName = keyof typeof icons;
 export { cl as IconClassNames };
+
+export type IconName = keyof typeof icons;
+export const iconNames = new Set(Object.keys(icons) as Array<IconName>);
+export const isIconName = (iconName: string): iconName is IconName => {
+  return (iconNames as Set<string>).has(iconName);
+};
 
 export type Decoration = (
   | { type: 'background-circle' }

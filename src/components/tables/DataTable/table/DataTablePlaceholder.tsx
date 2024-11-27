@@ -4,14 +4,13 @@
 
 import * as React from 'react';
 import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../../util/componentUtil.ts';
-import { type IconKey, isIconKey } from '../../../../assets/icons/_icons.ts';
-import { Icon, type IconProps } from '../../../graphics/Icon/Icon.tsx';
+import { type IconName, isIconName, Icon, type IconProps } from '../../../graphics/Icon/Icon.tsx';
 
 //import './DataTablePlaceholder.scss';
 
 
 type DataTablePlaceholderProps = ComponentProps<'div'> & {
-  icon?: IconKey | React.ReactNode,
+  icon?: IconName | React.ReactNode,
   classNameIcon?: ClassNameArgument,
   classNameMessage?: ClassNameArgument,
   classNameActions?: ClassNameArgument,
@@ -29,16 +28,10 @@ export const DataTablePlaceholder = (props: DataTablePlaceholderProps) => {
   };
   
   const renderIcon = (): React.ReactNode => {
-    if (typeof icon === 'undefined') {
-      return renderStandardIcon('view-type-table');
+    if (typeof icon === 'string' && isIconName(icon)) {
+      return renderStandardIcon(icon);
     }
-    if (typeof icon === 'string') {
-      if (isIconKey(icon)) {
-        return renderStandardIcon(icon);
-      }
-      throw new Error(`Invalid icon ${icon}`);
-    }
-    return icon;
+    return renderStandardIcon('file');
   };
   
   return (
@@ -57,7 +50,6 @@ export const DataTablePlaceholder = (props: DataTablePlaceholderProps) => {
     </div>
   );
 };
-DataTablePlaceholder.displayName = 'DataTablePlaceholder';
 
 
 // Loading skeleton (when there's no data to show yet)
@@ -72,7 +64,6 @@ export const DataTablePlaceholderSkeleton = (props: DataTablePlaceholderSkeleton
     </div>
   );
 };
-DataTablePlaceholderSkeleton.displayName = 'DataTablePlaceholderSkeleton';
 
 
 // Empty table (ready but no data)
@@ -89,7 +80,6 @@ export const DataTablePlaceholderEmpty = (props: DataTablePlaceholderEmptyProps)
     />
   );
 };
-DataTablePlaceholderEmpty.displayName = 'DataTablePlaceholderEmpty';
 
 
 type DataTableErrorIconProps = Omit<IconProps, 'icon'> & {
@@ -100,14 +90,13 @@ export const DataTableErrorIcon = (props: DataTableErrorIconProps) => {
   return (
     <div className="bk-table-placeholder--error__error-icon">
       <Icon icon="cross" className="icon-cross"/>
-      <Icon decoration={decoration} icon="view-type-table"
+      <Icon decoration={decoration} icon="file"
         {...props}
         className={cx('bk-table-placeholder__icon', props.className)}
       />
     </div>
   );
 };
-DataTableErrorIcon.displayName = 'DataTableErrorIcon';
 
 type DataTablePlaceholderErrorProps = Omit<DataTablePlaceholderProps, 'placeholderMessage'> & {
   // Make `placeholderMessage` optional
@@ -123,11 +112,10 @@ export const DataTablePlaceholderError = (props: DataTablePlaceholderErrorProps)
     />
   );
 };
-DataTablePlaceholderError.displayName = 'DataTablePlaceholderError';
 
 
 type DataTableRowPlaceholderProps = ComponentProps<'div'> & {
-  icon?: IconKey | React.ReactNode,
+  icon?: IconName | React.ReactNode,
   classNameIcon?: ClassNameArgument,
   classNameMessage?: ClassNameArgument,
   classNameActions?: ClassNameArgument,
@@ -145,10 +133,10 @@ export const DataTableRowPlaceholder = (props: DataTableRowPlaceholderProps) => 
   
   const renderIcon = (): React.ReactNode => {
     if (typeof icon === 'undefined') {
-      return renderStandardIcon('event-warning');
+      return renderStandardIcon('alert');
     }
     if (typeof icon === 'string') {
-      if (isIconKey(icon)) {
+      if (isIconName(icon)) {
         return renderStandardIcon(icon);
       }
       throw new Error(`Invalid icon ${icon}`);
@@ -172,7 +160,6 @@ export const DataTableRowPlaceholder = (props: DataTableRowPlaceholderProps) => 
     </div>
   );
 };
-DataTableRowPlaceholder.displayName = 'DataTableRowPlaceholder';
 
 type DataTablePlaceholderEndOfTableProps = Omit<DataTableRowPlaceholderProps, 'placeholderMessage'> & {
   // Make `placeholderMessage` optional
@@ -188,4 +175,3 @@ export const DataTablePlaceholderEndOfTable = (props: DataTablePlaceholderEndOfT
     />
   );
 };
-DataTablePlaceholderEndOfTable.displayName = 'DataTablePlaceholderEndOfTable';

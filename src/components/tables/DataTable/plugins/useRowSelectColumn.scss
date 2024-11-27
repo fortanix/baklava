@@ -7,12 +7,12 @@
 .bkl-data-table-row-select {
   width: bkl.$sizing-7 + bkl.$sizing-1;
   max-width: bkl.$sizing-7 + bkl.$sizing-1;
-
-  &__header {
+  
+  .bkl-data-table-row-select__header {
     margin-bottom: bkl.$sizing-m;
   }
-
-  &__cell {
+  
+  .bkl-data-table-row-select__cell {
     margin-bottom: bkl.$sizing-m;
   }
 }

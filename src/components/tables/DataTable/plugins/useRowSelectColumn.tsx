@@ -4,7 +4,8 @@
 
 import * as React from 'react';
 import * as ReactTable from 'react-table';
-import { Checkbox } from '../../../forms/checkbox/Checkbox';
+
+import { Checkbox } from '../../../forms/controls/Checkbox/Checkbox.tsx';
 
 import './useRowSelectColumn.scss';
 
@@ -20,7 +21,7 @@ export const useRowSelectColumn = <D extends object>(hooks: ReactTable.Hooks<D>)
         const { checked, onChange } = getToggleAllPageRowsSelectedProps();
         return (
           <div className="bkl-data-table-row-select__header">
-            <Checkbox.Item primary checked={checked} onChange={onChange}/>
+            <Checkbox checked={checked} onChange={onChange}/>
           </div>
         );
       },
@@ -28,7 +29,7 @@ export const useRowSelectColumn = <D extends object>(hooks: ReactTable.Hooks<D>)
         const { checked, onChange } = row.getToggleRowSelectedProps();
         return (
           <div className="bkl-data-table-row-select__cell">
-            <Checkbox.Item primary checked={checked} onChange={onChange}/>
+            <Checkbox checked={checked} onChange={onChange}/>
           </div>
         );
       },

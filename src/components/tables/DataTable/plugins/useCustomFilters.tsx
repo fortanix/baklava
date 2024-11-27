@@ -4,6 +4,7 @@
 
 import * as React from 'react';
 import * as ReactTable from 'react-table';
+import { type FilterQuery } from '../../MultiSearch/MultiSearch.tsx';
 
 
 // Actions
@@ -26,13 +27,11 @@ const reducer = <D extends object>(
 };
 
 const useInstance = <D extends object>(instance: ReactTable.TableInstance<D>) => {
-  const {
-    state: { customFilters },
-    dispatch,
-  } = instance;
+  const { dispatch, } = instance;
+  //const customFilters = instance.state.customFilters;
   
   const setCustomFilters = React.useCallback(
-    customFilters => {
+    (customFilters: FilterQuery) => {
       return dispatch({ type: ReactTable.actions.setCustomFilters, customFilters });
     },
     [dispatch],
