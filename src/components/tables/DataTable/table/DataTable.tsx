@@ -141,7 +141,6 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
     </table>
   );
 };
-DataTable.displayName = 'DataTable';
 
 
 type DataTableSyncProps<D extends object> = DataTableProps<D> & {
@@ -244,4 +243,3 @@ export const DataTableAsync = <D extends object>(props: DataTableAsyncProps<D>) 
     </div>
   );
 };
-DataTableAsync.displayName = 'DataTableAsync';

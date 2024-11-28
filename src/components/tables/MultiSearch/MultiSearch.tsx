@@ -2,8 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import * as Random from '../../../util/random';
-import * as ObjectUtil from '../../../util/object_util';
+import * as Random from '../../../util/random.ts';
+import * as ObjectUtil from '../../../util/objectUtil.ts';
 import {
   isEqual,
   fromUnixTime,
@@ -17,167 +17,32 @@ import {
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { classNames as cx, ClassNameArgument, ComponentPropsWithoutRef } from '../../../util/component_util';
+import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../util/componentUtil.ts';
 import * as Popper from 'react-popper';
+import { mergeRefs } from '../../../util/reactUtil.ts';
+import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandler.ts';
+import { useFocus } from '../../../util/hooks/useFocus.ts';
 
-import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandler';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
+import { Tag } from '../../text/Tag/Tag.tsx';
+import { Button } from '../../actions/Button/Button.tsx';
+import { Input } from '../../forms/controls/Input/Input.tsx';
+import { CheckboxGroup } from '../../forms/fields/CheckboxGroup/CheckboxGroup.tsx';
+import * as Dropdown from '../../overlays/dropdown/Dropdown.tsx';
+import { DateTimePicker } from '../../forms/datetime/DateTimePicker.tsx';
 
-import { BaklavaIcon } from '../../../components/icons/icon-pack-baklava/BaklavaIcon';
-import Input from '../../../components/forms/input/Input';
-import * as Dropdown from '../../../components/overlays/dropdown/Dropdown';
-import { Tag } from '../../../components/containers/tag/Tag';
-import { useCombinedRefs } from '../../../util/hooks/useCombinedRefs';
-import { useFocus } from '../../../util/hooks/useFocus';
-import Checkbox from '../../../components/forms/checkbox/Checkbox';
-import { Button } from '../../../components/buttons/Button';
-import { DateTimePicker } from '../../../components/forms/datetime/DateTimePicker';
-import { Caption } from '../../../components/typography/caption/Caption';
+import * as FQ from './filterQuery.ts';
 
-import './MultiSearch.scss';
+//import './MultiSearch.scss';
 
 
-// Suggestions dropdown
-const SuggestionItem = Dropdown.Item;
+// Utilities
+type Primitive = null | string | number | bigint | boolean;
 
-export type SuggestionProps = Omit<ComponentPropsWithoutRef<'div'>, 'children'> & {
-  children: React.ReactNode | ((props: { close: () => void }) => React.ReactNode),
-  elementRef?: React.RefObject<HTMLInputElement>, // Helps to toggle multiple dropdowns on the same reference element
-  active?: boolean,
-  withArrow?: boolean,
-  primary?: boolean,
-  secondary?: boolean,
-  basic?: boolean,
-  popperOptions?: Dropdown.PopperOptions,
-  onOutsideClick?: () => void,
-  containerRef?: React.RefObject<HTMLInputElement>,
-};
-export const Suggestions = (props: SuggestionProps) => {
-  const {
-    active = false,
-    className = '',
-    withArrow = false,
-    primary = false,
-    secondary = false,
-    basic = false,
-    children = '',
-    elementRef,
-    popperOptions = {},
-    onOutsideClick,
-    containerRef,
-  } = props;
-  
-  const [isActive, setIsActive] = React.useState(false);
 
-  const [referenceElement, setReferenceElement] = React.useState<HTMLElement | null>(elementRef?.current ?? null);
-  const [popperElement, setPopperElement] = React.useState<HTMLElement | null>(null);
-  const [arrowElement, setArrowElement] = React.useState<HTMLElement | null>(null);
-  const popper = Popper.usePopper(referenceElement, popperElement, {
-    modifiers: [
-      { name: 'arrow', options: { element: arrowElement } },
-      { name: 'preventOverflow', enabled: true },
-      ...(popperOptions.modifiers || []),
-    ],
-    placement: popperOptions.placement,
-  });
+// Map operators to a human-readable string to be shown in the UI
 
-  React.useEffect(() => {
-    if (elementRef?.current) {
-      setReferenceElement(elementRef?.current);
-    }
-  }, [elementRef]);
-  
-  const onClose = () => {
-    setIsActive(false);
-  };
-
-  const dropdownRef = { current: popperElement };
-  const toggleRef = { current: referenceElement };
-  useOutsideClickHandler([dropdownRef, toggleRef, ...(containerRef ? [containerRef] : [])], onOutsideClick ?? onClose);
-
-  const renderDropdownItems = (dropdownItems: React.ReactElement) => {
-    const dropdownChildren = dropdownItems.type === React.Fragment
-      ? dropdownItems.props.children
-      : dropdownItems;
-
-    return React.Children.map(dropdownChildren, child => {
-      const { onActivate: childOnActivate, onClose: childOnClose } = child.props;
-
-      return child.type !== SuggestionItem
-        ? child
-        : React.cloneElement(child, {
-          onActivate: (value: string | number) => { childOnActivate(value); },
-          onClose: childOnClose ?? onClose,
-        });
-    });
-  };
-
-  const renderDropdown = () => {
-    return (
-      <div
-        ref={setPopperElement}
-        className={cx('bkl-dropdown', className, {
-          'bkl-dropdown--primary': primary,
-          'bkl-dropdown--secondary': secondary,
-          'bkl-dropdown--basic': basic,
-          'bkl-dropdown--with-arrow': withArrow,
-        })}
-        style={popper.styles.popper}
-        {...popper.attributes.popper}
-      >
-        <ul className="bkl-dropdown__menu" role="menu" aria-labelledby="menubutton">
-          {typeof children === 'function'
-            ? children({ close: onClose })
-            : renderDropdownItems(children as React.ReactElement)
-          }
-        </ul>
-        {withArrow && <div className="bkl-dropdown__arrow" ref={setArrowElement} style={popper.styles.arrow}/>}
-      </div>
-    );
-  };
-  
-  return (
-    <>
-      {(isActive || active) && ReactDOM.createPortal(renderDropdown(), document.body)}
-    </>
-  );
-};
-
-// Utility
-type ValueOf<T extends ReadonlyArray<unknown>> = T[number];
-
-// Operators
-const enumFieldOperators = ['$in', '$nin', '$eq', '$ne'] as const;
-type EnumFieldOperator = ValueOf<typeof enumFieldOperators>;
-
-const arrayFieldOperators = ['$eq', '$ne', '$all', '$any'] as const;
-type ArrayFieldOperator = ValueOf<typeof arrayFieldOperators>;
-
-const textFieldOperators = ['$eq', '$text'] as const;
-type TextFieldOperator = ValueOf<typeof textFieldOperators>;
-
-const numberFieldOperators = ['$eq', '$gt', '$gte', '$lt', '$lte', '$ne'] as const;
-type NumberFieldOperator = ValueOf<typeof numberFieldOperators>;
-
-const dictionaryFieldOperators = ['$all'] as const;
-type DictionaryFieldOperators = ValueOf<typeof dictionaryFieldOperators>;
-
-const recordFieldOperators = ['$all', '$any'] as const;
-type RecordFieldOperators = ValueOf<typeof recordFieldOperators>;
-
-const dateTimeFieldOperators = ['$eq', '$gt', '$gte', '$lt', '$lte', '$ne', '$range'] as const;
-type DateTimeFieldOperator = ValueOf<typeof dateTimeFieldOperators>;
-
-const operators = [
-  ...enumFieldOperators,
-  ...arrayFieldOperators,
-  ...textFieldOperators,
-  ...numberFieldOperators,
-  ...dictionaryFieldOperators,
-  ...dateTimeFieldOperators,
-] as const;
-type Operator = ValueOf<typeof operators>;
-
-const numberOperatorsToSymbolMap: Record<NumberFieldOperator, string> = {
+const numberOperatorsToSymbolMap: Record<FQ.NumberFieldOperator, string> = {
   '$eq': '\u003D',
   '$lt': '\u003C',
   '$lte': '\u2264',
@@ -186,7 +51,7 @@ const numberOperatorsToSymbolMap: Record<NumberFieldOperator, string> = {
   '$ne': '\u2260',
 } as const;
 
-const dateTimeFieldOperatorsToSymbolMap: Record<DateTimeFieldOperator, string> = {
+const dateTimeFieldOperatorsToSymbolMap: Record<FQ.DateTimeFieldOperator, string> = {
   '$eq': '\u003D',
   '$lt': '\u003C',
   '$lte': '\u2264',
@@ -196,669 +61,68 @@ const dateTimeFieldOperatorsToSymbolMap: Record<DateTimeFieldOperator, string> =
   '$range': 'Range',
 } as const;
 
-const enumOperatorsToSymbolMap: Record<EnumFieldOperator, string> = {
+const enumOperatorsToSymbolMap: Record<FQ.EnumFieldOperator, string> = {
   '$eq': 'is',
   '$ne': 'is not',
   '$in': 'is one of',
   '$nin': 'is none of',
 };
 
-const arrayOperatorsToSymbolMap: Record<ArrayFieldOperator, string> = {
+const arrayOperatorsToSymbolMap: Record<FQ.ArrayFieldOperator, string> = {
   '$eq': 'is',
   '$ne': 'is not',
   '$any': 'contains any matching',
   '$all': 'contains all matching',
 };
 
-const getOperatorLabel = (operator: Operator, field: Field) => {
+const getOperatorLabel = (operator: FQ.Operator, field: FQ.Field): string => {
   let label = '';
   
   if (field.operatorInfo && operator in field.operatorInfo) {
     label = field.operatorInfo[operator]?.label ?? '';
   } else if (field.type === 'array') {
-    if (operator in arrayOperatorsToSymbolMap) {
-      label = arrayOperatorsToSymbolMap[operator as ArrayFieldOperator];
-    }
+    label = arrayOperatorsToSymbolMap[operator as FQ.ArrayFieldOperator] ?? '';
   } else if (field.type === 'enum') {
-    if (operator in enumOperatorsToSymbolMap) {
-      label = enumOperatorsToSymbolMap[operator as EnumFieldOperator];
-    }
+    label = enumOperatorsToSymbolMap[operator as FQ.EnumFieldOperator] ?? '';
   } else if (field.type === 'number') {
-    if (operator in numberOperatorsToSymbolMap) {
-      label = numberOperatorsToSymbolMap[operator as NumberFieldOperator];
-    }
+    label = numberOperatorsToSymbolMap[operator as FQ.NumberFieldOperator] ?? '';
   } else if (field.type === 'datetime') {
-    if (operator in dateTimeFieldOperatorsToSymbolMap) {
-      label = dateTimeFieldOperatorsToSymbolMap[operator as DateTimeFieldOperator];
-    }
+    label = dateTimeFieldOperatorsToSymbolMap[operator as FQ.DateTimeFieldOperator] ?? '';
   }
-
+  
   return label;
 };
 
-// Field specification
-type Alternative = { label: string };
-type Alternatives = Record<string, Alternative>;
-type OperatorInfo = Partial<Record<Operator, { label: string }>>;
-export type TypeOfFieldSpec<S extends Field> =
-  S extends { type: 'number' }
-    ? number
-    : S extends { type: 'text' }
-      ? string
-      : S extends { type: 'datetime' }
-        ? Date
-        : S extends { type: 'enum' }
-          ? keyof S['alternatives']
-          : S extends { type: 'array' }
-            ? Array<TypeOfFieldSpec<S['subfield']>>
-            : S extends { type: 'dictionary' }
-              ? Record<string, string>
-              : S extends { type: 'record' }
-                ? TypeOfFieldsSpec<S['fields']>
-                : never;
-                
-export type TypeOfFieldsSpec<S extends Fields> = {
-  [fieldName in keyof S]: TypeOfFieldSpec<S[fieldName]>
-};
 
-type ValidatorResponse = {
-  isValid: boolean,
-  message: string,
-};
-export type DateTimeValidator = (param: {
-  dateTime: Date,
-  startDateTime: Date,
-  endDateTime: Date
-}) => ValidatorResponse;
-export type TextValidator = (options: { buffer: string }) => ValidatorResponse;
-export type ArrayValidator<Spec extends ArrayFieldSpec> =
-  (options: { buffer: TypeOfFieldSpec<Spec> }) => ValidatorResponse;
-export type EnumValidator<Spec extends EnumFieldSpec> =
-  (options: { buffer: TypeOfFieldSpec<Spec> }) => ValidatorResponse;
-export type DictionaryValidator = (options: { key: string, buffer: string }) => ValidatorResponse;
-
-export type Accessor<R> = (item: any) => R;
-
-export type EnumFieldSpec = {
-  type: 'enum',
-  label: React.ReactNode,
-  operators: Array<EnumFieldOperator>,
-  alternatives: Alternatives,
-  placeholder?: string,
-  operatorInfo?: OperatorInfo,
-  validator?: EnumValidator<EnumFieldSpec>,
-  accessor?: Accessor<string>,
-};
-export type ArrayFieldSpec = {
-  type: 'array',
-  label: React.ReactNode,
-  operators: Array<ArrayFieldOperator>,
-  subfield: EnumFieldSpec | NumberFieldSpec,
-  placeholder?: string,
-  operatorInfo?: OperatorInfo,
-  validator?: ArrayValidator<ArrayFieldSpec>,
-  accessor?: Accessor<string | number>,
-};
-export type TextFieldSpec = {
-  type: 'text',
-  label: React.ReactNode,
-  operators: Array<TextFieldOperator>,
-  placeholder?: string,
-  operatorInfo?: OperatorInfo,
-  validator?: TextValidator,
-  accessor?: Accessor<string>,
-};
-export type NumberFieldSpec = {
-  type: 'number',
-  label: React.ReactNode,
-  operators: Array<NumberFieldOperator>,
-  placeholder?: string,
-  operatorInfo?: OperatorInfo,
-  validator?: TextValidator,
-  accessor?: Accessor<number>,
-};
-
-type DateType = Date | number;
-export type SelectedDate = DateType | [DateType, DateType];
-export type OnAddFilter = (newFilter: FieldQuery, currentFilters: FilterQuery) => FilterQuery;
-
-export type DateTimeFieldSpec = {
-  type: 'datetime',
-  label: React.ReactNode,
-  operators: Array<DateTimeFieldOperator>,
-  placeholder?: string,
-  selectedDate?: SelectedDate,
-  onAddFilter?: OnAddFilter,
-  maxDate?: Date | number,
-  minDate?: Date | number,
-  operatorInfo?: OperatorInfo,
-  validator?: DateTimeValidator,
-  accessor?: Accessor<Date>,
-};
-type SuggestedKey = { label: string };
-type SuggestedKeys = { [key: string]: SuggestedKey };
-export type DictionaryFieldSpec = {
-  type: 'dictionary',
-  label: React.ReactNode,
-  operators: Array<DictionaryFieldOperators>,
-  suggestedKeys?: SuggestedKeys,
-  placeholder?: string,
-  operatorInfo?: OperatorInfo,
-  validator?: DictionaryValidator,
-  accessor?: Accessor<Record<string, string>>,
-};
-export type RecordFieldSpec = {
-  type: 'record',
-  label: React.ReactNode,
-  operators: Array<RecordFieldOperators>,
-  fields: Fields,
-  placeholder?: string,
-  operatorInfo?: OperatorInfo,
-  validator?: DictionaryValidator,
-  accessor?: Accessor<Record<string, unknown>>,
-};
-
-export type Field =
-  | EnumFieldSpec
-  | ArrayFieldSpec
-  | TextFieldSpec
-  | NumberFieldSpec
-  | DateTimeFieldSpec
-  | DictionaryFieldSpec
-  | RecordFieldSpec;
-export type Fields = Record<string, Field>;
-
-type Primitive = null | string | number | bigint | boolean;
-type RangeOperationValue = [start: number, end: number];
-type QueryOperation =
-  | { $eq: Primitive | Array<Primitive> }
-  | { $ne: Primitive | Array<Primitive> }
-  | { $in: Array<Primitive> }
-  | { $nin: Array<Primitive> }
-  | { $text: { $search: string } }
-  | { $lt: number }
-  | { $lte: number }
-  | { $gt: number }
-  | { $gte: number }
-  | { $range: RangeOperationValue }
-  | { $all: (
-    // For dictionary type fields
-    | { [key: string]: Primitive | QueryOperation }
-    // For array type fields
-    //| QueryOperation // Equivalent to `{ $and: [<op>] }`
-    | { $or: Array<QueryOperation> }
-    | { $and: Array<QueryOperation> }
-  )}
-  | { $any: (
-    // For dictionary type fields
-    | { [key: string]: Primitive | QueryOperation } // TODO: not yet implemented in the UI
-    // For array type fields
-    | { $or: Array<QueryOperation> }
-    | { $and: Array<QueryOperation> }
-  )};
-
-type EnumFieldQueryOperation = Extract<QueryOperation, Partial<{ [K in EnumFieldOperator]: unknown }>>;
-type ArrayFieldQueryOperation = Extract<QueryOperation, Partial<{ [K in ArrayFieldOperator]: unknown }>>;
-type NumberFieldQueryOperation = Extract<QueryOperation, Partial<{ [K in NumberFieldOperator]: unknown }>>;
-type DateTimeFieldQueryOperation = Extract<QueryOperation, Partial<{ [K in DateTimeFieldOperator]: unknown }>>;
-
-type FieldName = string | null;
-export type FieldQuery = { fieldName: FieldName, operation: QueryOperation };
-export type FilterQuery = Array<FieldQuery>;
-
-const isRangeOperationValue = (input: unknown): input is RangeOperationValue => {
-  return Array.isArray(input) && input.length === 2 && typeof input[0] === 'number' && typeof input[1] === 'number';
-};
-
-const isValidOperator = (operator: Operator, type?: Field['type']) => {
-  let isValid = false;
-
-  switch (type) {
-    case 'enum':
-      isValid = (enumFieldOperators as ReadonlyArray<Operator>).includes(operator);
-      break;
-    
-    case 'array':
-      isValid = (arrayFieldOperators as ReadonlyArray<Operator>).includes(operator);
-      break;
-
-    case 'dictionary':
-      isValid = (dictionaryFieldOperators as ReadonlyArray<Operator>).includes(operator);
-      break;
-    
-    case 'number':
-      isValid = (numberFieldOperators as ReadonlyArray<Operator>).includes(operator);
-      break;
-    
-    case 'text':
-      isValid = (textFieldOperators as ReadonlyArray<Operator>).includes(operator);
-      break;
-    
-    case 'datetime':
-      isValid = (dateTimeFieldOperators as ReadonlyArray<Operator>).includes(operator);
-      break;
-
-    default:
-      isValid = (enumFieldOperators as ReadonlyArray<Operator>).includes(operator)
-        || (textFieldOperators as ReadonlyArray<Operator>).includes(operator)
-        || (numberFieldOperators as ReadonlyArray<Operator>).includes(operator);
-      break;
-  }
-
-  return isValid;
-};
-
-const encodeEnumFieldQueryOperation = (
-  operators: EnumFieldOperator[],
-  value: Array<Primitive>,
-  selectedOperator: EnumFieldOperator = '$in',
-) => {
-  if (value.length === 0) { return null; }
-  
-  let queryOperation: QueryOperation;
-  
-  if (operators.includes('$in') && selectedOperator === '$in') {
-    queryOperation = { $in: value };
-  } else if (operators.includes('$nin') && selectedOperator === '$nin') {
-    queryOperation = { $nin: value };
-  } else if (operators.includes('$ne') && selectedOperator === '$ne') {
-    queryOperation = { $ne: value[0] };
-  } else {
-    // Default to $eq
-    queryOperation = { $eq: value[0] };
-  }
-  
-  return queryOperation;
-};
-
-const encodeArrayFieldQueryOperation = (
-  operators: ArrayFieldOperator[],
-  value: Array<Primitive> | Primitive,
-  selectedOperator: ArrayFieldOperator,
-  selectedSubOperator: EnumFieldOperator | NumberFieldOperator | null,
-) => {
-  if (Array.isArray(value) && value.length === 0) { return null; }
-  
-  let queryOperation: QueryOperation;
-  
-  if (operators.includes('$ne') && selectedOperator === '$ne') {
-    queryOperation = { $ne: value };
-  } else if (operators.includes('$any') && selectedOperator === '$any' && selectedSubOperator) {
-    if (selectedSubOperator === '$in' && Array.isArray(value)) {
-      queryOperation = { $any: { $or: value.map(v => ({ $eq: v })) } };
-    } else if (selectedSubOperator === '$nin' && Array.isArray(value)) {
-      queryOperation = { $any: { $and: value.map(v => ({ $ne: v })) } };
-    } else if (numberFieldOperators.includes(selectedSubOperator as NumberFieldOperator) && typeof value === 'string') {
-      // Remove comma and space from the value
-      const valueAsNumber = parseFloat(value.trim().replace(/[ ,]+/g, ''));
-      queryOperation = { $any: { [selectedSubOperator]: valueAsNumber } };
-    } else {
-      queryOperation = { $eq: value };
-    }
-  } else if (operators.includes('$all') && selectedOperator === '$all' && selectedSubOperator) {
-    if (selectedSubOperator === '$in' && Array.isArray(value)) {
-      queryOperation = { $all: { $or: value.map(v => ({ $eq: v })) } };
-    } else if (selectedSubOperator === '$nin' && Array.isArray(value)) {
-      queryOperation = { $all: { $and: value.map(v => ({ $ne: v })) } };
-    } else if (numberFieldOperators.includes(selectedSubOperator as NumberFieldOperator) && typeof value === 'string') {
-      // Remove comma and space from the value
-      const valueAsNumber = parseFloat(value.trim().replace(/[ ,]+/g, ''));
-      queryOperation = { $all: { [selectedSubOperator]: valueAsNumber } };
-    } else {
-      queryOperation = { $eq: value };
-    }
-  } else {
-    // Default to $eq
-    queryOperation = { $eq: value };
-  }
-  
-  return queryOperation;
-};
-
-const encodeDictionaryFieldQueryOperation = (
-  operators: DictionaryFieldOperators[],
-  value: string = '',
-  key: string,
-): QueryOperation => {
-  return { $all: { [key]: value } };
-};
-
-const encodeTextFieldQueryOperation = (
-  operators: TextFieldOperator[],
-  value = '',
-) => {
-  if (value.length === 0) { return null; }
-  
-  let queryOperation: QueryOperation;
-  
-  if (operators.includes('$text')) {
-    queryOperation = { $text: { $search: value } };
-  } else {
-    // Default to $eq
-    queryOperation = { $eq: value };
-  }
-  
-  return queryOperation;
-};
-
-const encodeNumberFieldQueryOperation = (
-  operators: NumberFieldOperator[],
-  value: number,
-  selectedOperator: NumberFieldOperator | null = null,
-) => {
-  let queryOperation: QueryOperation;
-  
-  if (selectedOperator === '$lt') {
-    queryOperation = { $lt: value };
-  } else if (selectedOperator === '$lte') {
-    queryOperation = { $lte: value };
-  } else if (selectedOperator === '$gt') {
-    queryOperation = { $gt: value };
-  } else if (selectedOperator === '$gte') {
-    queryOperation = { $gte: value };
-  } else if (selectedOperator === '$ne') {
-    queryOperation = { $ne: value };
-  } else {
-    // Default to $eq
-    queryOperation = { $eq: value };
-  }
-  
-  return queryOperation;
-};
-
-const encodeDateTimeFieldQueryOperation = (
-  operators: DateTimeFieldOperator[],
-  value: number | RangeOperationValue,
-  selectedOperator: DateTimeFieldOperator | null = null,
-) => {
-  let queryOperation: QueryOperation;
-  
-  if (isRangeOperationValue(value)) {
-    if (!value[0] || !value[1]) {
-      return null;
-    }
-    if (operators.includes('$range')) {
-      queryOperation = { $range: value };
-    } else {
-      return null;
-    }
-  } else if (selectedOperator === '$lt') {
-    queryOperation = { $lt: value };
-  } else if (selectedOperator === '$lte') {
-    queryOperation = { $lte: value };
-  } else if (selectedOperator === '$gt') {
-    queryOperation = { $gt: value };
-  } else if (selectedOperator === '$gte') {
-    queryOperation = { $gte: value };
-  } else if (selectedOperator === '$ne') {
-    queryOperation = { $ne: value };
-  } else {
-    // Default to $eq
-    queryOperation = { $eq: value };
-  }
-
-  return queryOperation;
-};
-
-export const encodeFieldQuery = (
-  fieldName: FieldName,
-  value: Primitive | Array<Primitive>,
-  selectedOperator: Operator | null = null,
-  selectedSubOperator: Operator | null = null,
-  fields?: Fields,
-  key?: string,
-): FieldQuery | null => {
-  let operation: QueryOperation | null = null;
-  const field = fieldName ? fields?.[fieldName] : null;
-  
-  if (selectedOperator && !isValidOperator(selectedOperator, field?.type)) { return null; }
-  
-  if (field?.type === 'enum' && Array.isArray(value)) {
-    operation = encodeEnumFieldQueryOperation(
-      field.operators,
-      value,
-      selectedOperator as EnumFieldOperator,
-    );
-  } else if (field?.type === 'array') {
-    operation = encodeArrayFieldQueryOperation(
-      field.operators,
-      value,
-      selectedOperator as ArrayFieldOperator,
-      selectedSubOperator as NumberFieldOperator | EnumFieldOperator,
-    );
-  } else if (field?.type === 'dictionary' && typeof value === 'string' && typeof key === 'string') {
-    operation = encodeDictionaryFieldQueryOperation(
-      field.operators,
-      value,
-      key,
-    );
-  } else if (field?.type === 'text' && typeof value === 'string') {
-    operation = encodeTextFieldQueryOperation(
-      field.operators,
-      value.trim(),
-    );
-  } else if (field?.type === 'number' && typeof value === 'string') {
-    // Remove comma and space from the value
-    const valueAsNumber = parseFloat(value.trim().replace(/[ ,]+/g, ''));
-    
-    if (!Number.isNaN(valueAsNumber) && Number.isFinite(valueAsNumber)) {
-      operation = encodeNumberFieldQueryOperation(
-        field.operators,
-        valueAsNumber,
-        selectedOperator as NumberFieldOperator,
-      );
-    }
-  } else if (field?.type === 'datetime' && (typeof value === 'number' || isRangeOperationValue(value))) {
-    operation = encodeDateTimeFieldQueryOperation(
-      field.operators,
-      value as number | RangeOperationValue,
-      selectedOperator as DateTimeFieldOperator,
-    );
-  } else if (field === null && typeof value === 'string') {
-    operation = encodeTextFieldQueryOperation(
-      ['$text'],
-      value.trim(),
-    );
-  }
-
-  if (!operation) { return null; }
-
-  return { fieldName, operation };
-};
-
-const decodeEnumFieldQuery = (fieldQuery: FieldQuery) => {
-  const operation = fieldQuery.operation as EnumFieldQueryOperation;
-  const operator = Object.keys(operation)[0] as EnumFieldOperator;
-  const operatorSymbol = enumOperatorsToSymbolMap[operator];
-
-  const operand = Object.values(fieldQuery.operation)[0];
-  
-  return {
-    fieldName: fieldQuery.fieldName,
-    operator,
-    operatorSymbol,
-    operand,
-  };
-};
-
-const decodeArrayFieldQuery = (fieldQuery: FieldQuery, field: ArrayFieldSpec) => {
-  const operation = fieldQuery.operation as ArrayFieldQueryOperation;
-  const operator = Object.keys(operation)[0] as ArrayFieldOperator;
-  const operatorSymbol = getOperatorLabel(operator, field);
-  let subOperatorSymbol = '';
-
-  let operand = [];
-
-  if (operator === '$any' && '$any' in operation) {
-    if ('$or' in operation.$any && Array.isArray(operation.$any.$or)) {
-      operand = operation.$any.$or.map(value => {
-        if (typeof value !== 'object' || !value) {
-          return value;
-        }
-
-        if ('$eq' in value) {
-          subOperatorSymbol = getOperatorLabel('$in', field.subfield);
-          return value.$eq;
-        } else {
-          return value;
-        }
-      });
-    } else if ('$and' in operation.$any && Array.isArray(operation.$any.$and)) {
-      operand = operation.$any.$and.map(value => {
-        if (typeof value !== 'object' || !value) {
-          return value;
-        }
-
-        if ('$ne' in value) {
-          subOperatorSymbol = getOperatorLabel('$nin', field.subfield);
-          return value.$ne;
-        } else {
-          return value;
-        }
-      });
-    } else if (Object.keys(operation.$any)[0]) {
-      const subOperator = Object.keys(operation.$any)[0];
-
-      if (numberFieldOperators.includes(subOperator as NumberFieldOperator)) {
-        subOperatorSymbol = getOperatorLabel(subOperator as Operator, field.subfield);
-        operand = Object.values(operation.$any)[0];
-      }
-    }
-  } else if (operator === '$all' && '$all' in operation) {
-    if ('$or' in operation.$all && Array.isArray(operation.$all.$or)) {
-      operand = operation.$all.$or.map(value => {
-        if (typeof value !== 'object' || !value) {
-          return value;
-        }
-
-        if ('$eq' in value) {
-          subOperatorSymbol = getOperatorLabel('$in', field.subfield);
-          return value.$eq;
-        } else {
-          return value;
-        }
-      });
-    } else if ('$and' in operation.$all && Array.isArray(operation.$all.$and)) {
-      operand = operation.$all.$and.map(value => {
-        if (typeof value !== 'object' || !value) {
-          return value;
-        }
-
-        if ('$ne' in value) {
-          subOperatorSymbol = getOperatorLabel('$nin', field.subfield);
-          return value.$ne;
-        } else {
-          return value;
-        }
-      });
-    } else if (Object.keys(operation.$all)[0]) {
-      const subOperator = Object.keys(operation.$all)[0];
-
-      if (numberFieldOperators.includes(subOperator as NumberFieldOperator)) {
-        subOperatorSymbol = getOperatorLabel(subOperator as Operator, field.subfield);
-        operand = Object.values(operation.$all)[0];
-      }
-    }
-  } else {
-    operand = Object.values(fieldQuery.operation)[0];
-  }
-  
-  return {
-    fieldName: fieldQuery.fieldName,
-    operator,
-    operatorSymbol,
-    operand,
-    subOperatorSymbol,
-  };
-};
-
-const decodeNumberFieldQuery = (fieldQuery: FieldQuery) => {
-  const operation = fieldQuery.operation as NumberFieldQueryOperation;
-  const operator = Object.keys(operation)[0] as NumberFieldOperator;
-  const operatorSymbol = numberOperatorsToSymbolMap[operator];
-
-  const operand = Object.values(fieldQuery.operation)[0];
-  
-  return {
-    fieldName: fieldQuery.fieldName,
-    operator,
-    operatorSymbol,
-    operand,
-  };
-};
-
-const decodeDateTimeFieldQuery = (fieldQuery: FieldQuery) => {
-  const operation = fieldQuery.operation as DateTimeFieldQueryOperation;
-  const operator = Object.keys(operation)[0] as DateTimeFieldOperator;
-  const operatorSymbol = dateTimeFieldOperatorsToSymbolMap[operator];
-
-  const operand = Object.values(fieldQuery.operation)[0];
-  
-  return {
-    fieldName: fieldQuery.fieldName,
-    operator,
-    operatorSymbol,
-    operand,
-  };
-};
-
-const decodeFieldQuery = (fieldQuery: FieldQuery, fields: Fields): {
-  fieldName: FieldName,
-  operator: Operator,
-  operatorSymbol: string,
-  operand: any,
-  subOperatorSymbol?: string,
-} => {
-  const field = fieldQuery.fieldName ? fields[fieldQuery.fieldName] : null;
-  const fieldType = fieldQuery.fieldName ? fields[fieldQuery.fieldName].type : null;
-
-  if (fieldType === 'enum') {
-    return decodeEnumFieldQuery(fieldQuery);
-  } else if (field && field.type === 'array') {
-    return decodeArrayFieldQuery(fieldQuery, field);
-  } else if (fieldType === 'number') {
-    return decodeNumberFieldQuery(fieldQuery);
-  } else if (fieldType === 'datetime') {
-    return decodeDateTimeFieldQuery(fieldQuery);
-  }
-
-  const operator = Object.keys(fieldQuery.operation)[0] as Operator;
-  const operatorSymbol = ':';
-  const operationValue = Object.values(fieldQuery.operation)[0];
-  const operand = operator === '$text' ? operationValue?.$search || '' : operationValue;
-  
-  return {
-    fieldName: fieldQuery.fieldName,
-    operator,
-    operatorSymbol,
-    operand,
-  };
-};
+//
+// Query filter management
+//
 
 type UseFiltersProps = {
-  fields?: Fields,
-  customFilters?: FilterQuery,
-  query?: (filters: FilterQuery) => void;
+  fields: FQ.Fields, // Field definitions
+  customFilters: FQ.FilterQuery, // The filter query
+  query: (filters: FQ.FilterQuery) => void, // Callback to be called with the latest filter query
 };
-export const useFilters = (props: UseFiltersProps) => {
+// Custom hook to manage a `FilterQuery` instance
+const useFilters = (props: UseFiltersProps) => {
   const {
     fields,
     customFilters,
     query,
   } = props;
   
-  const [filters, setFilters] = React.useState<FilterQuery>([]);
+  const [filters, setFilters] = React.useState<FQ.FilterQuery>([]);
   
   React.useEffect(() => {
     setFilters(customFilters ?? []);
   }, [customFilters]);
-
+  
   const addFilter = (options: {
-    fieldName: FieldName,
+    fieldName: FQ.FieldName,
     value: Primitive | Array<Primitive>,
-    selectedOperator?: Operator | null,
-    selectedSubOperator?: Operator | null,
-    key?: string,
+    selectedOperator?: undefined | null | FQ.Operator,
+    selectedSubOperator?: undefined | null | FQ.Operator,
+    key?: undefined | string,
   }) => {
     const {
       fieldName,
@@ -867,8 +131,8 @@ export const useFilters = (props: UseFiltersProps) => {
       selectedSubOperator = null,
       key = '',
     } = options;
-
-    const fieldQuery = encodeFieldQuery(fieldName, value, selectedOperator, selectedSubOperator, fields, key);
+    
+    const fieldQuery = FQ.encodeFieldQuery(fieldName, value, selectedOperator, selectedSubOperator, fields, key);
     
     if (fieldName && fields && typeof fields[fieldName]?.onAddFilter === 'function') {
       const field = fields[fieldName];
@@ -879,12 +143,12 @@ export const useFilters = (props: UseFiltersProps) => {
       query?.(newFilters);
     }
   };
-
+  
   const removeFilter = (index: number) => {
     const newFilters = filters.filter((_, i) => i !== index);
     query?.(newFilters);
   };
-
+  
   const removeAllFilters = () => {
     query?.([]);
   };
@@ -899,8 +163,8 @@ export const useFilters = (props: UseFiltersProps) => {
 };
 
 type FiltersProps = {
-  fields: Fields,
-  filters?: FilterQuery,
+  fields: FQ.Fields,
+  filters?: FQ.FilterQuery,
   onRemoveFilter?: (index: number) => void,
   onRemoveAllFilters: () => void,
 };
@@ -911,7 +175,7 @@ export const Filters = (props: FiltersProps) => {
     onRemoveFilter,
     onRemoveAllFilters,
   } = props;
-
+  
   const renderDateTimeFilter = (filter: FieldQuery, index: number) => {
     const { fieldName, operatorSymbol, operand } = decodeFieldQuery(filter, fields);
     const field = fieldName ? fields[fieldName] : null;
@@ -940,38 +204,35 @@ export const Filters = (props: FiltersProps) => {
         operandLabel = dateTime;
       }
     }
-
+    
+    const content: React.ReactNode = fieldNameLabel
+      ? (
+        <>
+          <span>{`${fieldNameLabel}${symbol}`} </span>
+          {typeof operandLabel === 'string'
+            ? <span className="filter-value">{operandLabel}</span>
+            : (
+              <>
+                <span className="filter-operand">from</span>
+                <span className="filter-value">{operandLabel.from}</span>
+                <span className="filter-operand">to</span>
+                <span className="filter-value">{operandLabel.to}</span>
+              </>
+            )
+          }
+        </>
+      ) : `${operandLabel}`;
+    
     return (
       <Tag
-        key={Random.generateRandomId()}
         className="bkl-multi-search__filter"
-        onClose={() => { onRemoveFilter?.(index); }}
-        primary
-        small
-      >
-        {fieldNameLabel
-          ? (
-            <>
-              <span>{`${fieldNameLabel}${symbol}`} </span>
-              {typeof operandLabel === 'string'
-                ? <span className="filter-value">{operandLabel}</span>
-                : (
-                  <>
-                    <span className="filter-operand">from</span>
-                    <span className="filter-value">{operandLabel.from}</span>
-                    <span className="filter-operand">to</span>
-                    <span className="filter-value">{operandLabel.to}</span>
-                  </>
-                )
-              }
-            </>
-          ) : `${operandLabel}`
-        }
-      </Tag>
+        onRemove={() => { onRemoveFilter?.(index); }}
+        content={content}
+      />
     );
   };
- 
-  const renderArrayFilter = (filter: FieldQuery, index: number) => {
+  
+  const renderArrayFilter = (filter: FQ.FieldQuery, index: number) => {
     const { fieldName, operatorSymbol, operand, subOperatorSymbol = '' } = decodeFieldQuery(filter, fields);
     const field = fieldName ? fields[fieldName] : null;
     const subField = field && field.type === 'array' ? field.subfield : null;
@@ -982,8 +243,8 @@ export const Filters = (props: FiltersProps) => {
       symbol = ` ${operatorSymbol} ${subOperatorSymbol}`;
     }
 
-    let operandLabel: string = '';
-
+    let operandLabel = '';
+    
     if (subField) {
       if (subField.type === 'enum') {
         if (Array.isArray(operand)) {
@@ -995,16 +256,13 @@ export const Filters = (props: FiltersProps) => {
         operandLabel = operand;
       }
     }
-
+    
     return (
       <Tag
-        key={Random.generateRandomId()}
         className="bkl-multi-search__filter"
-        onClose={() => { onRemoveFilter?.(index); }}
-        primary
-        small
-      >
-        {fieldNameLabel
+        onRemove={() => { onRemoveFilter?.(index); }}
+        content={
+          fieldNameLabel
           ? (
             <>
               <span>{`${fieldNameLabel}${symbol}`} </span>
@@ -1012,7 +270,7 @@ export const Filters = (props: FiltersProps) => {
             </>
           ) : `${operandLabel}`
         }
-      </Tag>
+      />
     );
   };
 
@@ -1037,7 +295,7 @@ export const Filters = (props: FiltersProps) => {
       }
     }
     
-    let operandLabel;
+    let operandLabel: string;
     
     if (field && field.type === 'enum') {
       if (Array.isArray(operand)) {
@@ -1048,7 +306,6 @@ export const Filters = (props: FiltersProps) => {
     } else if (field && field.type === 'dictionary') {
       operandLabel = Object.keys(operand).map(key => {
         const keyLabel = field.suggestedKeys?.[key]?.label ?? key;
-
         return `${keyLabel} = ${operand[key]}`;
       }).join(', ');
     } else {
@@ -1059,11 +316,9 @@ export const Filters = (props: FiltersProps) => {
       <Tag
         key={Random.generateRandomId()}
         className="bkl-multi-search__filter"
-        onClose={() => { onRemoveFilter?.(index); }}
-        primary
-        small
-      >
-        {fieldNameLabel
+        onRemove={() => { onRemoveFilter?.(index); }}
+        content={
+          fieldNameLabel
           ? (
             <>
               <span>{`${fieldNameLabel}${symbol}`} </span>
@@ -1071,7 +326,7 @@ export const Filters = (props: FiltersProps) => {
             </>
           ) : `${operandLabel}`
         }
-      </Tag>
+      />
     );
   };
 
@@ -1105,12 +360,122 @@ export const Filters = (props: FiltersProps) => {
   );
 };
 
-type MultiSearchInputProps = ComponentPropsWithoutRef<typeof Input> & {
+
+//
+// Suggestions dropdown
+//
+
+const SuggestionItem = Dropdown.Item;
+
+export type SuggestionProps = Omit<ComponentProps<'div'>, 'children'> & {
+  children: React.ReactNode | ((props: { close: () => void }) => React.ReactNode),
+  elementRef?: undefined | React.RefObject<HTMLInputElement>, // Helps to toggle multiple dropdowns on the same reference element
+  active?: undefined | boolean,
+  withArrow?: undefined | boolean,
+  primary?: undefined | boolean,
+  secondary?: undefined | boolean,
+  basic?: undefined | boolean,
+  popperOptions?: undefined | Dropdown.PopperOptions,
+  onOutsideClick?: undefined | (() => void),
+  containerRef?: undefined | React.RefObject<HTMLInputElement>,
+};
+export const Suggestions = (props: SuggestionProps) => {
+  const {
+    active = false,
+    className = '',
+    withArrow = false,
+    primary = false,
+    secondary = false,
+    basic = false,
+    children = '',
+    elementRef,
+    popperOptions = {},
+    onOutsideClick,
+    containerRef,
+  } = props;
+  
+  const [isActive, setIsActive] = React.useState(false);
+  
+  const [referenceElement, setReferenceElement] = React.useState<HTMLElement | null>(elementRef?.current ?? null);
+  const [popperElement, setPopperElement] = React.useState<HTMLElement | null>(null);
+  const [arrowElement, setArrowElement] = React.useState<HTMLElement | null>(null);
+  const popper = Popper.usePopper(referenceElement, popperElement, {
+    modifiers: [
+      { name: 'arrow', options: { element: arrowElement } },
+      { name: 'preventOverflow', enabled: true },
+      ...(popperOptions.modifiers || []),
+    ],
+    placement: popperOptions.placement,
+  });
+  
+  React.useEffect(() => {
+    if (elementRef?.current) {
+      setReferenceElement(elementRef?.current);
+    }
+  }, [elementRef]);
+  
+  const onClose = () => {
+    setIsActive(false);
+  };
+  
+  const dropdownRef = { current: popperElement };
+  const toggleRef = { current: referenceElement };
+  useOutsideClickHandler([dropdownRef, toggleRef, ...(containerRef ? [containerRef] : [])], onOutsideClick ?? onClose);
+  
+  const renderDropdownItems = (dropdownItems: React.ReactElement) => {
+    const dropdownChildren = dropdownItems.type === React.Fragment
+      ? dropdownItems.props.children
+      : dropdownItems;
+    
+    return React.Children.map(dropdownChildren, child => {
+      const { onActivate: childOnActivate, onClose: childOnClose } = child.props;
+      
+      return child.type !== SuggestionItem
+        ? child
+        : React.cloneElement(child, {
+          onActivate: (value: string | number) => { childOnActivate(value); },
+          onClose: childOnClose ?? onClose,
+        });
+    });
+  };
+  
+  const renderDropdown = () => {
+    return (
+      <div
+        ref={setPopperElement}
+        className={cx('bkl-dropdown', className, {
+          'bkl-dropdown--primary': primary,
+          'bkl-dropdown--secondary': secondary,
+          'bkl-dropdown--basic': basic,
+          'bkl-dropdown--with-arrow': withArrow,
+        })}
+        style={popper.styles.popper}
+        {...popper.attributes.popper}
+      >
+        <ul className="bkl-dropdown__menu" role="menu" aria-labelledby="menubutton">
+          {typeof children === 'function'
+            ? children({ close: onClose })
+            : renderDropdownItems(children as React.ReactElement)
+          }
+        </ul>
+        {withArrow && <div className="bkl-dropdown__arrow" ref={setArrowElement} style={popper.styles.arrow}/>}
+      </div>
+    );
+  };
+  
+  return (
+    <>
+      {(isActive || active) && ReactDOM.createPortal(renderDropdown(), document.body)}
+    </>
+  );
+};
+
+export type SearchInputProps = ComponentProps<typeof Input> & {
   fields: Fields,
   fieldQueryBuffer: FieldQueryBuffer,
   inputRef: React.RefObject<HTMLInputElement>,
 };
-export const SearchInput = React.forwardRef<HTMLInputElement, MultiSearchInputProps>((props, ref) => {
+export const SearchInput = (props: SearchInputProps) => {
   const {
     className,
     onKeyDown,
@@ -1121,8 +486,6 @@ export const SearchInput = React.forwardRef<HTMLInputElement, MultiSearchInputPr
     onBlur,
     ...restProps
   } = props;
-  
-  const combinedRefs = useCombinedRefs(ref, inputRef);
   
   const {
     isFocused,
@@ -1192,14 +555,14 @@ export const SearchInput = React.forwardRef<HTMLInputElement, MultiSearchInputPr
       onClick={onWrapperClick}
       onKeyDown={onWrapperKeyDown}
     >
-      <BaklavaIcon icon="search" className="bkl-search-input__search-icon"/>
+      <Icon icon="search" className="bkl-search-input__search-icon"/>
       {field &&
         <span className="bkl-search-input__search-key">
           {field.label}{operator}{subOperator} {key ? `${key} =` : ''}
         </span>
       }
       <Input
-        ref={combinedRefs}
+        ref={mergeRefs(props.ref, inputRef)}
         placeholder={renderPlaceholder()}
         className="bkl-search-input__input"
         onKeyDown={onKeyDown}
@@ -1209,7 +572,7 @@ export const SearchInput = React.forwardRef<HTMLInputElement, MultiSearchInputPr
       />
     </div>
   );
-});
+};
 
 type FieldsDropdownProps = {
   inputRef?: React.RefObject<HTMLInputElement>,
@@ -1276,16 +639,16 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
     validator,
   } = props;
 
-  const [selectedAlternatives, setSelectedAlternatives] = React.useState<string[]>([]);
-
+  const [selectedAlternatives, setSelectedAlternatives] = React.useState<Array<string>>([]);
+  
   const canSelectMultipleItems = ['$in', '$nin', '$any', '$all'].includes(selectedOperator);
-
+  
   const onOptionClick = (key?: string) => {
     if (typeof key !== 'undefined') {
       onChange([key]);
     }
   };
-
+  
   const ValidateSelection = () => {
     let isValid = false;
     let message = '';
@@ -1297,55 +660,48 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
       isValid = validatorResponse.isValid;
       message = validatorResponse.message;
     }
-
+    
     return { isValid, message };
   };
-
+  
   const arrayValidation = ValidateSelection();
-
+  
   const onSelectionComplete = () => {
     onChange(selectedAlternatives);
   };
-
-  const onSelectionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const target = event.target;
-    const checked = target.checked;
-    const value = target.value;
-    if (checked) {
-      setSelectedAlternatives([...selectedAlternatives, value]);
+  
+  const onSelectionChange = (alternativeName: string, shouldBeChecked: boolean) => {
+    if (shouldBeChecked) {
+      setSelectedAlternatives([...selectedAlternatives, alternativeName]);
     } else {
-      setSelectedAlternatives([...selectedAlternatives.filter(item => item !== value)]);
+      setSelectedAlternatives([...selectedAlternatives.filter(item => item !== alternativeName)]);
     }
   };
-
+  
   const renderMultiSelectAlternatives = () => (
     <>
-      <Checkbox.Group
+      <CheckboxGroup
         className="bkl-multi-search__alternatives-group"
-        selectedValues={selectedAlternatives}
-        primary
       >
-        {Object.entries(alternatives || {}).map(([alternativesName, { label }]) => (
-          <Checkbox.Item
+        {Object.entries(alternatives || {}).map(([alternativesName, { label }], index) => (
+          <CheckboxGroup.CheckboxField
             key={alternativesName}
             label={label}
-            value={alternativesName}
+            checked={selectedAlternatives.includes(alternativesName)}
             className="bkl-dropdown__menu-item"
-            onChange={onSelectionChange}
+            onChange={(event) => { onSelectionChange(alternativesName, event.target.checked); }}
           />
         ))}
-      </Checkbox.Group>
-      <>
-        {!arrayValidation.isValid && arrayValidation.message && (
-          <Caption className="bkl-multi-search__dropdown-error-msg">
-            {arrayValidation.message}
-          </Caption>
-        )}
-      </>
+      </CheckboxGroup>
+      {!arrayValidation.isValid && arrayValidation.message && (
+        <span className="bkl-multi-search__dropdown-error-msg">
+          {arrayValidation.message}
+        </span>
+      )}
       <div className="bkl-multi-search__alternatives-action">
         <Button
-          onClick={onSelectionComplete}
-          primary
+          variant="primary"
+          onPress={onSelectionComplete}
           disabled={!arrayValidation.isValid}
         >
           Done
@@ -1554,18 +910,18 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
         {!dateTimeRangeValidation.isValid
           && dateTimeRangeValidation.message
           && (
-            <Caption className="bkl-multi-search__dropdown-error-msg">
+            <span className="bkl-multi-search__dropdown-error-msg">
               {dateTimeRangeValidation.message}
-            </Caption>
+            </span>
           )
         }
       </>
         
       <div className="bkl-multi-search__date-time-action">
         <Button
-          primary
-          onClick={onSelectionComplete}
-          disabled={!dateTimeRangeValidation.isValid}
+          variant="primary"
+          onPress={onSelectionComplete}
+          nonactive={!dateTimeRangeValidation.isValid}
         >
           Done
         </Button>
@@ -1587,9 +943,9 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
 
       <div className="bkl-multi-search__date-time-action">
         <Button
-          onClick={onSelectionComplete}
-          disabled={!dateTimeRangeValidation.isValid}
-          primary
+          variant="primary"
+          onPress={onSelectionComplete}
+          nonactive={!dateTimeRangeValidation.isValid}
         >
           Done
         </Button>
@@ -1766,12 +1122,12 @@ export const initializeFieldQueryBuffer = (): FieldQueryBuffer => ({
   value: '',
 });
 
-export type MultiSearchProps = Omit<ComponentPropsWithoutRef<'input'>, 'className'|'children'> & {
+export type MultiSearchProps = Omit<ComponentProps<'input'>, 'className'|'children'> & {
   className?: ClassNameArgument,
-  fields: Fields,
+  fields: FQ.Fields,
   popperOptions?: Dropdown.PopperOptions,
-  query?: (filters: FilterQuery) => void;
-  filters?: FilterQuery,
+  query?: (filters: FQ.FilterQuery) => void;
+  filters?: FQ.FilterQuery,
 };
 export const MultiSearch = (props: MultiSearchProps) => {
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -1780,11 +1136,11 @@ export const MultiSearch = (props: MultiSearchProps) => {
     className,
     fields,
     popperOptions: customPopperOptions,
-    query,
+    query = () => {},
     onFocus,
     onClick,
     disabled,
-    filters: customFilters,
+    filters: customFilters = FQ.createFilterQuery(),
   } = props;
   
   const { filters, addFilter, removeFilter, removeAllFilters } = useFilters({
@@ -1795,7 +1151,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
   const [fieldQueryBuffer, setFieldQueryBuffer] = React.useState<FieldQueryBuffer>(initializeFieldQueryBuffer);
   const [isInputFocused, setIsInputFocused] = React.useState(false);
   const [validatorResponse, setValidatorResponse] = React.useState({ isValid: true, message: '' });
-
+  
   const popperOptions: Dropdown.PopperOptions = {
     placement: 'bottom-start',
     ...(customPopperOptions ?? {}),
@@ -1808,7 +1164,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
   const validateFieldQuery = (fieldQueryBuffer: FieldQueryBuffer): ValidatorResponse => {
     let isValid = fieldQueryBuffer.value?.trim() !== '';
     let message = '';
-
+    
     if (fieldQueryBuffer.fieldName) {
       const field: Field = fields[fieldQueryBuffer.fieldName];
       if (field.type === 'text') {
@@ -1896,7 +1252,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
   const onInputKeyDown = (evt: React.KeyboardEvent) => {
     if (evt.key === 'Enter') {
       evt.preventDefault();
-
+      
       const validatorResponse = validateFieldQuery(fieldQueryBuffer);
       if (validatorResponse.isValid) {
         let fieldValue: string | string[] | number = fieldQueryBuffer.value;
@@ -1929,7 +1285,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
       } else {
         updateFieldQueryBuffer(initializeFieldQueryBuffer());
       }
-
+      
       validateFieldQuery(fieldQueryBuffer);
     }
   };
@@ -1970,24 +1326,24 @@ export const MultiSearch = (props: MultiSearchProps) => {
     
     const onFieldClick = (fieldName?: string) => {
       if (!fieldName) { return; }
-
+      
       const field = fields[fieldName];
       
       const newFieldQuery: FieldQueryBuffer = {
         ...fieldQueryBuffer,
         fieldName,
       };
-
+      
       if (['number', 'datetime', 'enum', 'array'].includes(field.type) && field.operators.length === 1) {
         newFieldQuery.operator = field.operators[0];
       }
-
+      
       if (field.type === 'array' && field.subfield.operators.length === 1) {
         newFieldQuery.subOperator = field.subfield.operators[0];
       }
-
+      
       updateFieldQueryBuffer(newFieldQuery);
-
+      
       if (inputRef.current) {
         inputRef.current.focus();
       }
@@ -2011,25 +1367,25 @@ export const MultiSearch = (props: MultiSearchProps) => {
     if (!fieldName || !operator) { return null; }
     
     const field = fields[fieldName];
-
+    
     if (!field) {
       return null;
     }
-
+    
     let alternatives = {};
-
+    
     if (field.type === 'enum') {
       alternatives = field.alternatives;
     } else if (field.type === 'array' && field.subfield.type === 'enum') {
       alternatives = field.subfield.alternatives;
     }
-
+    
     if (!Object.keys(alternatives).length) {
       return null;
     }
-
+    
     let operators: Array<EnumFieldOperator> | Array<ArrayFieldOperator> = [];
-
+    
     if (field.operators) {
       operators = field.operators as Array<EnumFieldOperator> | Array<ArrayFieldOperator>;
     }
@@ -2069,7 +1425,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
       />
     );
   };
-
+  
   const renderDateTimeSelectorDropdown = () => {
     const { fieldName, operator } = fieldQueryBuffer;
     
@@ -2078,7 +1434,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
     const field = fields[fieldName];
     
     if (field?.type !== 'datetime') { return null; }
-
+    
     const isActive = isInputFocused
       && field
       && !!operator
@@ -2086,14 +1442,14 @@ export const MultiSearch = (props: MultiSearchProps) => {
     
     const onDateTimeRangeChange = (value: number | [number, number]) => {
       addFilter({ fieldName, value, selectedOperator: operator });
-
+      
       updateFieldQueryBuffer(initializeFieldQueryBuffer());
-
+      
       if (inputRef.current) {
         inputRef.current.focus();
       }
     };
-
+    
     const canSelectDateTimeRange = () => {
       return operator === '$range';
     };
@@ -2113,7 +1469,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
       />
     );
   };
-
+  
   const renderSuggestedKeysDropdown = () => {
     const { fieldName } = fieldQueryBuffer;
     
@@ -2145,16 +1501,16 @@ export const MultiSearch = (props: MultiSearchProps) => {
       />
     );
   };
-
+  
   const renderOperatorsDropdown = () => {
     const { fieldName } = fieldQueryBuffer;
     
     if (!fieldName) { return null; }
     
     const field = fields[fieldName];
-
+    
     const operatorTypes = ['number', 'datetime', 'enum', 'array'];
-
+    
     if (!field
       || (field.type !== 'number'
         && field.type !== 'datetime'
@@ -2164,7 +1520,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
     ) { return null; }
     
     const isFieldSupported = field && operatorTypes.includes(field.type);
-
+    
     const isActive = isInputFocused
       && isFieldSupported
       && !fieldQueryBuffer.operator
@@ -2176,13 +1532,13 @@ export const MultiSearch = (props: MultiSearchProps) => {
       operator?: NumberFieldOperator | DateTimeFieldOperator | EnumFieldOperator | ArrayFieldOperator,
     ) => {
       if (typeof operator === 'undefined') { return; }
-
+      
       const newFieldQuery = { ...fieldQueryBuffer, operator };
       
       if (field.type === 'array' && field.subfield.operators.length === 1) {
         newFieldQuery.subOperator = field.subfield.operators[0];
       }
-
+      
       updateFieldQueryBuffer(newFieldQuery);
       
       if (inputRef.current) {
@@ -2203,28 +1559,27 @@ export const MultiSearch = (props: MultiSearchProps) => {
       />
     );
   };
-
+  
   const renderSubOperatorsDropdown = () => {
     const { fieldName, operator } = fieldQueryBuffer;
-    
+      
     if (!fieldName) { return null; }
     
     const field = fields[fieldName];
-
+    
     const operatorTypes = ['array'];
-
+    
     if (!field || field.type !== 'array') { return null; }
     
     const subOperatorTypes = ['enum', 'number'];
     const subField = field.subfield;
-
-    if (!subField || (subField.type !== 'number' && subField.type !== 'enum')
-    ) {
+    
+    if (!subField || (subField.type !== 'number' && subField.type !== 'enum')) {
       return null;
     }
-
+    
     const isFieldSupported = subField && subOperatorTypes.includes(subField.type);
-
+    
     const isActive = isInputFocused
       && isFieldSupported
       && !!operator
@@ -2272,9 +1627,9 @@ export const MultiSearch = (props: MultiSearchProps) => {
       {renderOperatorsDropdown()}
       {renderSubOperatorsDropdown()}
       {!validatorResponse.isValid && validatorResponse.message && (
-        <Caption className="bkl-multi-search__error-msg">
+        <span className="bkl-multi-search__error-msg">
           {validatorResponse.message}
-        </Caption>
+        </span>
       )}
       <Filters
         fields={fields}
@@ -2285,4 +1640,3 @@ export const MultiSearch = (props: MultiSearchProps) => {
     </div>
   );
 };
-MultiSearch.displayName = 'MultiSearch';

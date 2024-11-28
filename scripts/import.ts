@@ -141,7 +141,6 @@ const runImportIcons = async (args: ScriptArgs) => {
     'page-fwd': 'page-forward',
     'user-account': 'user-profile', // "User account" is a misleading term considering our information architecture
     'users': 'user',
-    // NOTE: missing `account` icon
   };
   
   const pathIcons = path.join(process.cwd(), './src/assets/icons_new');

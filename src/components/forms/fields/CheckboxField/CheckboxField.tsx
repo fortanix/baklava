@@ -42,36 +42,36 @@ export const CheckboxFieldTitle = ({ className, children, titleOptional, titleTo
   </h1>
 );
 
-export type CheckboxFieldProps = ComponentProps<'div'> & {
+export type CheckboxFieldProps = ComponentProps<typeof Checkbox> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-
+  
   /** A label to be displayed after the checkbox. */
   label: string,
-
+  
   /** An optional supporting copy to be displayed under the label. */
   sublabel?: undefined | string,
-
+  
   /** An optional title. */
   title?: undefined | string,
-
+  
   /** An optional tooltip to be displayed on an info icon next to the title. */
   titleTooltip?: undefined | string,
-
+  
   /** Whether to display the optional observation on title. */
   titleOptional?: undefined | boolean,
-
+  
   /** Whether the checkbox is checked by default. Passed down to Checkbox component. */
   defaultChecked?: undefined | boolean,
-
+  
   /** Whether the checkbox is checked. Passed down to Checkbox component. */
   checked?: undefined | boolean,
-
+  
   /** Whether the checkbox is disabled. Passed down to Checkbox component. */
   disabled?: undefined | boolean,
-
+  
   /** The onChange event for the checkbox. Passed down to Checkbox component. */
-  onChange?: (e: React.FormEvent) => void,
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
 };
 
 /**
@@ -86,8 +86,9 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
     titleOptional,
     titleTooltip,
     className,
+    ...propsRest
   } = props;
-
+  
   return (
     <div className={cx(
       'bk',
@@ -102,13 +103,14 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
           {title}
         </CheckboxFieldTitle>
       )}
-      {/* biome ignore lint/a11y/noLabelWithoutControl: the `<Checkbox>` will resolve to an `<input>` */}
+      {/* biome-ignore lint/a11y/noLabelWithoutControl: the `<Checkbox>` will resolve to an `<input>` */}
       <label className={cl['bk-checkbox-field__label']}>
         <Checkbox
           checked={props.checked}
           defaultChecked={props.defaultChecked}
           disabled={props.disabled}
           onChange={props.onChange}
+          {...propsRest}
         />
         <span className={cl['bk-checkbox-field__label__content']}>
           {label}

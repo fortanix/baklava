@@ -12,7 +12,7 @@ import cl from './Tag.module.scss';
 
 export { cl as TagClassNames };
 
-export type TagProps = ComponentProps<'div'> & {
+export type TagProps = Omit<ComponentProps<'div'>, 'content' | 'children'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
@@ -22,7 +22,7 @@ export type TagProps = ComponentProps<'div'> & {
   /** Callback to remove the tag. If set, display a close icon, otherwise it is hidden. */
   onRemove?: () => void,
 };
-
+type Test = ComponentProps<'div'>['content'];
 /**
  * A tag component.
  */
