@@ -23,118 +23,137 @@ $z-index--date-picker: 100;
 }
 
 // DATEPICKER override react-datepicker styles
-
-.react-datepicker-popper {
+// Note: Sass do not support using suffixes (i.e. &__suffix) when using global selector
+:global(.react-datepicker-popper) {
   z-index: $z-index--date-picker;
 }
-.react-datepicker {
-  color: red !important; // DEBUG
+
+:global(.react-datepicker) {
   width: 30rem;
   text-align: center;
   margin-top: 0.5rem;
   padding: 2.5rem;
-  //background-color: bkl.$light-color-3; // TODO
+  background-color: #edeff2; // TODO hardcoded color
   border-radius: 0.4rem !important;
   border-width: 0 !important;
   font-family: bk.$font-family-body;
   font-size: bk.$font-size-m;
   font-weight: bk.$font-weight-regular;
-  &__triangle,
-  &__triangle::before {
-    border: none !important;
-  }
-  &__header {
-    background: transparent;
-    border: 0;
-    //color: bkl.$brand-color-dark-2; // TODO color
-    font-family: bk.$font-family-display;
-    font-weight: bk.$font-weight-regular;
-  }
-  &__month-container {
-    display: inline-block;
-    width: 100%;
-    float: none;
-  }
-  &__current-month {
-    //color: bkl.$brand-color-dark-2; // TODO color
-    font-size: 2rem; // TODO font-size
-    margin-bottom: 1rem;
-    font-family: bk.$font-family-display;
-    font-weight: bk.$font-weight-regular;
-  }
-  &__navigation {
-    position: absolute;
-    top: 3.3rem;
-    width: 3rem;
-    border: none;
-    text-indent: -999em;
-    &-icon {
-      &:before, &:after {
-        display: flex;
-      }
-    }
-    &--previous {
-      background: url('../../../../assets/icons_old/arrow-left.svg') no-repeat center center; // TODO maybe new icon?
-      background-size: 1.8rem;
-      left: 2rem;
-      &:hover {
-        opacity: 0.7;
-      }
-    }
-    &--next {
-      background: url('../../../../assets/icons_old/arrow-right.svg') no-repeat center center; // TODO maybe new icon?
-      background-size: 1.8rem;
-      right: 2rem;
-      &:hover {
-        opacity: 0.7;
-      }
-    }
-  }
-  &__day-names {
-    border-bottom: 0.1rem solid #d0d0d0; // TODO hardcoded color
-  }
-  &__day-name,
-  &__day {
-    display: inline-block;
-    width: 3.5rem;
-    line-height: 3.5rem;
-    margin: 0;
-    color: #454545; // TODO hardcoded color
-    &--outside-month {
-      opacity: .7;
-    }
-    &--disabled {
-      opacity: .35;
-    }
-  }
-  &__day {
-    &--selected,
-    &--keyboard-selected {
-      // background: bkl.$accent-color; // TODO color
-      border-radius: 50%;
-    }
-    &:not(&--selected):hover {
-      // background: rgba(bkl.$accent-color, 0.5); // TODO color
-      border-radius: 50%;
-    }
-    &--in-range,
-    &--in-selecting-range {
-      background: transparent;
-      background-color: transparent;
-      border-radius: 0;
-    }
-  }
 }
-.react-datepicker-popper[data-placement^="bottom"] {
+
+:global(.react-datepicker__triangle),
+:global(.react-datepicker__triangle::before) {
+  border: none !important;
+}
+
+:global(.react-datepicker__header) {
+  background: transparent;
+  border: 0;
+  color: #081353; // TODO hardcoded color
+  font-family: bk.$font-family-display;
+  font-weight: bk.$font-weight-regular;
+}
+
+:global(.react-datepicker__month-container) {
+  display: inline-block;
+  width: 100%;
+  float: none;
+}
+
+:global(.react-datepicker__current-month) {
+  color: #081353; // TODO hardcoded color
+  font-size: 2rem; // TODO font-size
+  margin-bottom: 1rem;
+  font-family: bk.$font-family-display;
+  font-weight: bk.$font-weight-regular;
+}
+
+:global(.react-datepicker__navigation) {
+  position: absolute;
+  top: 3.3rem;
+  width: 3rem;
+  border: none;
+  text-indent: -999em;
+}
+
+:global(.react-datepicker__navigation-icon::before),
+:global(.react-datepicker__navigation-icon::after) {
+  display: flex;
+}
+
+:global(.react-datepicker__navigation--previous) {
+  background: url('../../../../assets/icons_old/arrow-left.svg') no-repeat center center; // TODO maybe new icon?
+  background-size: 1.8rem;
+  left: 2rem;
+}
+
+:global(.react-datepicker__navigation--previous:hover) {
+  opacity: 0.7;
+}
+
+:global(.react-datepicker__navigation--next) {
+  background: url('../../../../assets/icons_old/arrow-right.svg') no-repeat center center; // TODO maybe new icon?
+  background-size: 1.8rem;
+  right: 2rem;
+}
+
+:global(.react-datepicker__navigation--next:hover) {
+  opacity: 0.7;
+}
+
+:global(.react-datepicker__day-names) {
+  border-bottom: 0.1rem solid #d0d0d0; // TODO hardcoded color
+}
+
+:global(.react-datepicker__day-name),
+:global(.react-datepicker__day) {
+  display: inline-block;
+  width: 3.5rem;
+  line-height: 3.5rem;
+  margin: 0;
+  color: #454545; // TODO hardcoded color
+}
+
+// TODO check if both are actually needed
+:global(.react-datepicker__day-name--outside-month),
+:global(.react-datepicker__day--outside-month) {
+  opacity: .7;
+}
+
+// TODO check if both are actually needed
+:global(.react-datepicker__day-name--disabled),
+:global(.react-datepicker__day--disabled) {
+  opacity: .35;
+}
+
+:global(.react-datepicker__day--selected),
+:global(.react-datepicker__day--keyboard-selected) {
+  background: #007A8D; // TODO hardcoded color
+  border-radius: 50%;
+}
+
+:global(.react-datepicker__day:not(&--selected):hover) {
+  background: rgba(#007A8D, 0.5); // TODO hardcoded color
+  border-radius: 50%;
+}
+
+:global(.react-datepicker__day--in-range),
+:global(.react-datepicker__day--in-selecting-range) {
+  background: transparent;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+:global(.react-datepicker-popper[data-placement^="bottom"]) {
   margin-top: 0;
 }
 
-.react-datepicker-popper[data-placement^="top"] {
+:global(.react-datepicker-popper[data-placement^="top"]) {
   margin-bottom: 0;
 }
 
-.react-datepicker__month--selecting-range .react-datepicker__day--in-range:not(.react-datepicker__day--in-selecting-range),
-.react-datepicker__month--selecting-range .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-range) {
+:global(.react-datepicker__month--selecting-range .react-datepicker__day--in-range:not(.react-datepicker__day--in-selecting-range)),
+:global(.react-datepicker__month--selecting-range .react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-range)) {
   background: transparent;
   background-color: transparent;
   border-radius: 0;

@@ -32,7 +32,7 @@ export const DatePickerStory: Story = {
     const [startDate, setStartDate] = React.useState(new Date());
 
     return (
-      <div style={{height: '300px'}}>
+      <div style={{height: '500px'}}>
         <DatePicker {...args} selected={startDate} onChange={(date) => setStartDate(date)} />
       </div>
     );

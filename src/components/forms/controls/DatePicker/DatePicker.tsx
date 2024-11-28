@@ -44,7 +44,6 @@ export const DatePicker = (props: DatePickerProps) => {
       <ReactDatePicker
         className={cx(
           cl['bk-date-picker__date'],
-          // cl['react-datepicker'],
         )}
         dateFormat="MM/dd/yyyy"
         maxDate={maxDate}
