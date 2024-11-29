@@ -21,8 +21,8 @@ To create a new release:
 - Create a release branch named `release/vx.y.z`.
 
 - Submit a release PR targeting the `master` branch:
-  - Bumps the version in `package.json`.
-  - Run `npm install` to update the `package-lock.json`.
+  - Bumps the version in `package.json.js`.
+  - Run `npm run install-project` to update the `package.json` and `package-lock.json` files.
   - The commit message should be of the form "Release vx.y.z"
   - The title of the release PR should be of the form "Release vx.y.z"
 
