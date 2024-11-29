@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 
 const packageConfig = {
   name: '@fortanix/baklava',
-  version: '1.0.0-beta-20241126',
+  version: '1.0.0-beta-20241129',
   license: 'MPL-2.0',
   author: 'Fortanix',
   description: 'Fortanix Baklava design system',
@@ -88,40 +88,40 @@ const packageConfig = {
     'glob': '^11.0.0',
     
     // Build
-    'vite': '^5.4.11',
-    '@vitejs/plugin-react': '^4.3.3',
+    'vite': '^6.0.1',
+    '@vitejs/plugin-react': '^4.3.4',
     'vite-plugin-dts': '^4.3.0',
     'vite-plugin-lib-inject-css': '^2.1.1',
     'vite-plugin-svg-icons': '^2.0.1',
     
     // Static analysis
-    'typescript': '^5.6.3',
-    '@types/node': '^22.9.0',
-    'stylelint': '^16.10.0',
+    'typescript': '^5.7.2',
+    '@types/node': '^22.10.1',
+    'stylelint': '^16.11.0',
     'stylelint-config-standard-scss': '^13.1.0',
     '@biomejs/biome': '^1.9.4',
     
     // Testing
-    'vitest': '^2.1.5',
-    '@vitest/ui': '^2.1.5',
+    'vitest': '^2.1.6',
+    '@vitest/ui': '^2.1.6',
     
     // Storybook
-    'storybook': '^8.4.4',
-    '@storybook/react': '^8.4.4',
-    '@storybook/react-vite': '^8.4.4',
-    '@storybook/blocks': '^8.4.4',
-    '@storybook/test': '^8.4.4',
-    '@storybook/addon-essentials': '^8.4.4',
-    '@storybook/addon-a11y': '^8.4.4',
-    '@storybook/addon-interactions': '^8.4.4',
-    '@storybook/addon-links': '^8.4.4',
-    '@storybook/addon-storysource': '^8.4.4',
+    'storybook': '^8.4.6',
+    '@storybook/react': '^8.4.6',
+    '@storybook/react-vite': '^8.4.6',
+    '@storybook/blocks': '^8.4.6',
+    '@storybook/test': '^8.4.6',
+    '@storybook/addon-essentials': '^8.4.6',
+    '@storybook/addon-a11y': '^8.4.6',
+    '@storybook/addon-interactions': '^8.4.6',
+    '@storybook/addon-links': '^8.4.6',
+    '@storybook/addon-storysource': '^8.4.6',
     '@storybook/addon-designs': '^8.0.4',
     '@chromatic-com/storybook': '^3.2.2', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     'storybook-dark-mode': '^4.0.2',
-    '@percy/cli': '^1.30.2',
-    '@percy/storybook': '^6.0.2',
+    '@percy/cli': '^1.30.3',
+    '@percy/storybook': '^6.0.3',
     
     // Styling
     'vite-css-modules': '^1.6.0',
@@ -133,7 +133,7 @@ const packageConfig = {
     //'postcss-mixins': '^10.0.1',
     //'@csstools/postcss-light-dark-function': '^1.0.5',
     'postcss-color-contrast': '^1.1.0',
-    'lightningcss': '^1.28.1',
+    'lightningcss': '^1.28.2',
     
     // React
     //'@types/react': '^18.3.7',
@@ -157,7 +157,7 @@ const packageConfig = {
     '@floating-ui/react': '^0.26.28',
     'react-toastify': '^10.0.6',
     
-    'effect': '^3.10.15',
+    'effect': '^3.10.19',
     'react-hook-form': '^7.53.2',
     
     'optics-ts': '^2.4.1',
