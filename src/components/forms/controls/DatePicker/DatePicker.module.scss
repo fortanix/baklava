@@ -7,21 +7,6 @@
 // TODO: copied manually from old Baklava, where should we put this?
 $z-index--date-picker: 100;
 
-@layer baklava.components {
-  .bk-datepicker {
-    @include bk.component-base(bk-datepicker);
-
-    width: 12rem;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    .bk-date-picker__date {
-      text-align: right;
-    }
-  }
-}
-
 // DATEPICKER override react-datepicker styles
 // Note: Sass do not support using suffixes (i.e. &__suffix) when using global selector
 :global(.react-datepicker-popper) {
@@ -29,13 +14,12 @@ $z-index--date-picker: 100;
 }
 
 :global(.react-datepicker) {
-  width: 30rem;
+  width: 284px;
   text-align: center;
-  margin-top: 0.5rem;
-  padding: 2.5rem;
-  background-color: #edeff2; // TODO hardcoded color
-  border-radius: 0.4rem !important;
-  border-width: 0 !important;
+  padding: 22px 26px 30px 26px;
+  background-color: bk.$theme-card-background-default;
+  border-radius: 6px;
+  border: 1px solid bk.$theme-card-border-default;
   font-family: bk.$font-family-body;
   font-size: bk.$font-size-m;
   font-weight: bk.$font-weight-regular;
@@ -43,7 +27,7 @@ $z-index--date-picker: 100;
 
 :global(.react-datepicker__triangle),
 :global(.react-datepicker__triangle::before) {
-  border: none !important;
+  display: none;
 }
 
 :global(.react-datepicker__header) {
@@ -61,11 +45,12 @@ $z-index--date-picker: 100;
 }
 
 :global(.react-datepicker__current-month) {
-  color: #081353; // TODO hardcoded color
-  font-size: 2rem; // TODO font-size
-  margin-bottom: 1rem;
+  color: bk.$theme-text-heading-default;
   font-family: bk.$font-family-display;
-  font-weight: bk.$font-weight-regular;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: bk.$font-weight-semibold;
+  text-transform: uppercase;
 }
 
 :global(.react-datepicker__navigation) {
@@ -76,48 +61,46 @@ $z-index--date-picker: 100;
   text-indent: -999em;
 }
 
-:global(.react-datepicker__navigation-icon::before),
-:global(.react-datepicker__navigation-icon::after) {
-  display: flex;
+:global(.react-datepicker__navigation) {
+  mask: url('../../../../assets/icons/caret-down.svg') no-repeat center center;
+  mask-size: 32px;
+  background: bk.$theme-date-picker-text-default;
+  top: 1.8rem;
 }
-
+$navigation-distance: 1rem;
 :global(.react-datepicker__navigation--previous) {
-  background: url('../../../../assets/icons_old/arrow-left.svg') no-repeat center center; // TODO maybe new icon?
-  background-size: 1.8rem;
-  left: 2rem;
+  left: $navigation-distance;
+  transform: rotate(90deg);
 }
-
-:global(.react-datepicker__navigation--previous:hover) {
-  opacity: 0.7;
-}
-
 :global(.react-datepicker__navigation--next) {
-  background: url('../../../../assets/icons_old/arrow-right.svg') no-repeat center center; // TODO maybe new icon?
-  background-size: 1.8rem;
-  right: 2rem;
+  right: $navigation-distance;
+  transform: rotate(-90deg);
 }
-
-:global(.react-datepicker__navigation--next:hover) {
+:global(.react-datepicker__navigation:hover) {
   opacity: 0.7;
+}
+:global(.react-datepicker__navigation-icon) {
+  // original icon
+  display: none;
 }
 
 :global(.react-datepicker__day-names) {
-  border-bottom: 0.1rem solid #d0d0d0; // TODO hardcoded color
+  border-bottom: 0.1rem solid bk.$color-blackberry-300;
 }
 
 :global(.react-datepicker__day-name),
 :global(.react-datepicker__day) {
   display: inline-block;
-  width: 3.5rem;
-  line-height: 3.5rem;
-  margin: 0;
-  color: #454545; // TODO hardcoded color
+  width: 30px;
+  line-height: 30px;
+  margin: 5px 0;
+  color: bk.$theme-date-picker-text-default;
 }
 
 // TODO check if both are actually needed
 :global(.react-datepicker__day-name--outside-month),
 :global(.react-datepicker__day--outside-month) {
-  opacity: .7;
+  color: bk.$theme-date-picker-text-disabled;
 }
 
 // TODO check if both are actually needed
@@ -128,12 +111,12 @@ $z-index--date-picker: 100;
 
 :global(.react-datepicker__day--selected),
 :global(.react-datepicker__day--keyboard-selected) {
-  background: #007A8D; // TODO hardcoded color
+  background: bk.$color-blueberry-500; // TODO use proper variable
   border-radius: 50%;
 }
 
 :global(.react-datepicker__day:not(&--selected):hover) {
-  background: rgba(#007A8D, 0.5); // TODO hardcoded color
+  background: rgba(bk.$color-blueberry-500, 0.5); // TODO use proper variable
   border-radius: 50%;
 }
 
@@ -157,5 +140,20 @@ $z-index--date-picker: 100;
   background: transparent;
   background-color: transparent;
   border-radius: 0;
-  color: #454545; // TODO hardcoded color
+  color: bk.$theme-date-picker-text-default;
+}
+
+@layer baklava.components {
+  .bk-datepicker {
+    @include bk.component-base(bk-datepicker);
+
+    width: 12rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .bk-date-picker__date {
+      text-align: right;
+    }
+  }
 }
