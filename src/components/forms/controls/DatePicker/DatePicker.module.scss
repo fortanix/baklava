@@ -85,7 +85,7 @@ $navigation-distance: 1rem;
 }
 
 :global(.react-datepicker__day-names) {
-  border-bottom: 0.1rem solid bk.$color-blackberry-300;
+  border-bottom: 0.1rem solid bk.$theme-date-picker-rule-default;
 }
 
 :global(.react-datepicker__day-name),
@@ -111,8 +111,16 @@ $navigation-distance: 1rem;
 
 :global(.react-datepicker__day--selected),
 :global(.react-datepicker__day--keyboard-selected) {
-  background: bk.$color-blueberry-500; // TODO use proper variable
-  border-radius: 50%;
+  background: bk.$theme-date-picker-background-selected;
+  border-radius: bk.$border-radius-circle;
+  color: bk.$theme-date-picker-text-selected;
+}
+
+:global(.react-datepicker__day--selected:not([aria-disabled=true]):hover),
+:global(.react-datepicker__day--keyboard-selected:not([aria-disabled=true]):hover) {
+  background: bk.$theme-date-picker-background-hover;
+  border-radius: bk.$border-radius-circle;
+  color: bk.$theme-date-picker-text-hover;
 }
 
 :global(.react-datepicker__day:not(&--selected):hover) {
