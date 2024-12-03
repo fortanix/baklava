@@ -5,7 +5,7 @@
 // Note: use the `dedupe` variant so that the consumer of a component can overwrite classes from the component using
 // `<MyComponent className={{ foo: false }}/>`
 import classNames from 'classnames/dedupe';
-import { type Argument as ClassNameArgument } from 'classnames';
+import type { Argument as ClassNameArgument } from 'classnames';
 
 
 export { classNames, type ClassNameArgument };
@@ -17,3 +17,16 @@ export type ComponentProps<T extends React.ElementType> =
   Omit<React.ComponentPropsWithRef<T>, 'className'> & {
     className?: undefined | ClassNameArgument,
   };
+
+export const joinElements = (
+  separator: React.ReactNode,
+  elements: Array<React.ReactNode>
+): React.ReactNode => {
+  if (!elements.length) return null;
+
+  return elements.reduce<React.ReactNode[]>((acc, element, index) => {
+    if (index > 0) acc.push(separator);
+    acc.push(element);
+    return acc;
+  }, []);
+};

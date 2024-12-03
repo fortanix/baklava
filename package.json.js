@@ -142,6 +142,9 @@ const packageConfig = {
     '@types/react-dom': 'npm:types-react-dom@rc',
     
     '@types/react-table': '^7.7.20',
+    
+    // Fake data
+    "@ngneat/falso": "^6.4.0",
   },
   
   // Dependencies needed when running the generated build
@@ -187,4 +190,4 @@ const packageConfigWithComment = {
 const packageConfigFormatted = JSON.stringify(packageConfigWithComment, null, 2);
 
 // Write to `package.json`
-fs.writeFileSync('./package.json', packageConfigFormatted + '\n');
+fs.writeFileSync('./package.json', `${packageConfigFormatted}\n`);

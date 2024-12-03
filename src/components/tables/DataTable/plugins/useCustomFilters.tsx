@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import * as ReactTable from 'react-table';
-import { type FilterQuery } from '../../MultiSearch/MultiSearch.tsx';
+import type { FilterQuery } from '../../MultiSearch/filterQuery.ts';
 
 
 // Actions

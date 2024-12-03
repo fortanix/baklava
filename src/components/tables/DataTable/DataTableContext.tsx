@@ -3,7 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import * as ReactTable from 'react-table';
+import type * as ReactTable from 'react-table';
 
 
 export type DataTableStatus = {

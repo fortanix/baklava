@@ -18,7 +18,7 @@ import {
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../util/componentUtil.ts';
-import * as Popper from 'react-popper';
+// import * as Popper from 'react-popper';
 import { mergeRefs } from '../../../util/reactUtil.ts';
 import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandler.ts';
 import { useFocus } from '../../../util/hooks/useFocus.ts';
@@ -28,8 +28,9 @@ import { Tag } from '../../text/Tag/Tag.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { Input } from '../../forms/controls/Input/Input.tsx';
 import { CheckboxGroup } from '../../forms/fields/CheckboxGroup/CheckboxGroup.tsx';
-import * as Dropdown from '../../overlays/dropdown/Dropdown.tsx';
-import { DateTimePicker } from '../../forms/datetime/DateTimePicker.tsx';
+// import * as Dropdown from '../../overlays/dropdown/Dropdown.tsx';
+import { DropdownMenu } from '../../overlays/DropdownMenu/DropdownMenu.tsx';
+// import { DateTimePicker } from '../../forms/datetime/DateTimePicker.tsx';
 
 import * as FQ from './filterQuery.ts';
 
@@ -176,8 +177,8 @@ export const Filters = (props: FiltersProps) => {
     onRemoveAllFilters,
   } = props;
   
-  const renderDateTimeFilter = (filter: FieldQuery, index: number) => {
-    const { fieldName, operatorSymbol, operand } = decodeFieldQuery(filter, fields);
+  const renderDateTimeFilter = (filter: FQ.FieldQuery, index: number) => {
+    const { fieldName, operatorSymbol, operand } = FQ.decodeFieldQuery(filter, fields);
     const field = fieldName ? fields[fieldName] : null;
     const fieldNameLabel = typeof field?.label === 'string' ? field?.label : '';
     let symbol = ':';
@@ -194,7 +195,7 @@ export const Filters = (props: FiltersProps) => {
 
     if (field && field.type === 'datetime') {
       if (operatorSymbol === 'Range') {
-        if (isRangeOperationValue(operand)) {
+        if (FQ.isRangeOperationValue(operand)) {
           const startDateTime = dateFormat(operand[0] * 1000, 'MMMM do yyyy HH:mm');
           const endDateTime = dateFormat(operand[1] * 1000, 'MMMM do yyyy HH:mm');
           operandLabel = { from: startDateTime, to: endDateTime };
@@ -233,7 +234,7 @@ export const Filters = (props: FiltersProps) => {
   };
   
   const renderArrayFilter = (filter: FQ.FieldQuery, index: number) => {
-    const { fieldName, operatorSymbol, operand, subOperatorSymbol = '' } = decodeFieldQuery(filter, fields);
+    const { fieldName, operatorSymbol, operand, subOperatorSymbol = '' } = FQ.decodeFieldQuery(filter, fields);
     const field = fieldName ? fields[fieldName] : null;
     const subField = field && field.type === 'array' ? field.subfield : null;
     const fieldNameLabel = typeof field?.label === 'string' ? field?.label : '';
@@ -274,14 +275,15 @@ export const Filters = (props: FiltersProps) => {
     );
   };
 
-  const renderFilter = (filter: FieldQuery, index: number) => {
-    const { fieldName, operatorSymbol, operand } = decodeFieldQuery(filter, fields);
+  const renderFilter = (filter: FQ.FieldQuery, index: number) => {
+    const { fieldName, operatorSymbol, operand } = FQ.decodeFieldQuery(filter, fields);
     const field = fieldName ? fields[fieldName] : null;
 
     if (field) {
       if (field.type === 'datetime') {
         return renderDateTimeFilter(filter, index);
-      } else if (field.type === 'array') {
+      }
+      if (field.type === 'array') {
         return renderArrayFilter(filter, index);
       }
     }
@@ -334,6 +336,7 @@ export const Filters = (props: FiltersProps) => {
     return filters.length > 0 && (
       <div className="bkl-multi-search__filter-actions">
         <span
+          // biome-ignore lint/a11y/useSemanticElements: <explanation>
           role="button"
           tabIndex={0}
           className="clear-all"
@@ -365,7 +368,7 @@ export const Filters = (props: FiltersProps) => {
 // Suggestions dropdown
 //
 
-const SuggestionItem = Dropdown.Item;
+const SuggestionItem = DropdownMenu.Action;
 
 export type SuggestionProps = Omit<ComponentProps<'div'>, 'children'> & {
   children: React.ReactNode | ((props: { close: () => void }) => React.ReactNode),
@@ -375,7 +378,7 @@ export type SuggestionProps = Omit<ComponentProps<'div'>, 'children'> & {
   primary?: undefined | boolean,
   secondary?: undefined | boolean,
   basic?: undefined | boolean,
-  popperOptions?: undefined | Dropdown.PopperOptions,
+  // popperOptions?: undefined | Dropdown.PopperOptions,
   onOutsideClick?: undefined | (() => void),
   containerRef?: undefined | React.RefObject<HTMLInputElement>,
 };
@@ -389,7 +392,7 @@ export const Suggestions = (props: SuggestionProps) => {
     basic = false,
     children = '',
     elementRef,
-    popperOptions = {},
+    // popperOptions = {},
     onOutsideClick,
     containerRef,
   } = props;
@@ -471,7 +474,7 @@ export const Suggestions = (props: SuggestionProps) => {
 };
 
 export type SearchInputProps = ComponentProps<typeof Input> & {
-  fields: Fields,
+  fields: FQ.Fields,
   fieldQueryBuffer: FieldQueryBuffer,
   inputRef: React.RefObject<HTMLInputElement>,
 };
@@ -549,6 +552,7 @@ export const SearchInput = (props: SearchInputProps) => {
   
   return (
     <div
+      // biome-ignore lint/a11y/useSemanticElements: <explanation>
       role="button"
       tabIndex={0}
       className={cx('bkl-search-input', className, { 'bkl-search-input--active': isFocused })}
@@ -577,8 +581,8 @@ export const SearchInput = (props: SearchInputProps) => {
 type FieldsDropdownProps = {
   inputRef?: React.RefObject<HTMLInputElement>,
   isActive?: boolean,
-  fields?: Fields,
-  popperOptions?: Dropdown.PopperOptions,
+  fields?: FQ.Fields,
+  // popperOptions?: Dropdown.PopperOptions,
   onClick: (fieldName?: string) => void,
   onOutsideClick?: () => void,
 };
@@ -600,7 +604,7 @@ const FieldsDropdown = (props: FieldsDropdownProps) => {
   return (
     <Suggestions
       active={isActive}
-      popperOptions={popperOptions}
+      // popperOptions={popperOptions}
       elementRef={inputRef}
       onOutsideClick={onOutsideClick}
       basic
@@ -617,13 +621,13 @@ const FieldsDropdown = (props: FieldsDropdownProps) => {
 type AlternativesDropdownProps = {
   inputRef?: React.RefObject<HTMLInputElement>,
   isActive?: boolean,
-  operators?: EnumFieldOperator[] | ArrayFieldOperator[],
-  alternatives?: Alternatives,
-  popperOptions?: Dropdown.PopperOptions,
-  selectedOperator: Operator,
+  operators?: FQ.EnumFieldOperator[] | FQ.ArrayFieldOperator[],
+  alternatives?: FQ.Alternatives,
+  // popperOptions?: Dropdown.PopperOptions,
+  selectedOperator: FQ.Operator,
   onChange: (value: Primitive[]) => void,
   onOutsideClick?: () => void,
-  validator?: ArrayValidator<ArrayFieldSpec>,
+  validator?: FQ.ArrayValidator<FQ.ArrayFieldSpec>,
 };
 
 const AlternativesDropdown = (props: AlternativesDropdownProps) => {
@@ -722,7 +726,7 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
     <Suggestions
       className="bkl-multi-search__alternatives"
       active={isActive}
-      popperOptions={popperOptions}
+      // popperOptions={popperOptions}
       elementRef={inputRef}
       onOutsideClick={onOutsideClick}
       basic
@@ -735,14 +739,14 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
 type DateTimeDropdownProps = {
   inputRef?: React.RefObject<HTMLInputElement>,
   isActive?: boolean,
-  popperOptions?: Dropdown.PopperOptions,
+  // popperOptions?: Dropdown.PopperOptions,
   onChange: (value: number | [number, number]) => void,
   onOutsideClick?: () => void,
   maxDate?: Date | number,
   minDate?: Date | number,
-  selectedDate?: SelectedDate,
+  selectedDate?: FQ.SelectedDate,
   canSelectDateTimeRange?: boolean,
-  validator?: DateTimeValidator,
+  validator?: FQ.DateTimeValidator,
 };
 
 const DateTimeDropdown = (props: DateTimeDropdownProps) => {
@@ -766,7 +770,7 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
     return !!(date && typeof date === 'number' || date instanceof Date);
   };
 
-  const isValidSelectedDate = (selectedDate: SelectedDate | undefined) => {
+  const isValidSelectedDate = (selectedDate: FQ.SelectedDate | undefined) => {
     if (Array.isArray(selectedDate) && selectedDate.length === 2) {
       return isValidDateParamType(selectedDate[0]) && isValidDateParamType(selectedDate[1]);
     }
@@ -780,7 +784,7 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
       : date;
   };
 
-  const initDateTime = (selectedDate: SelectedDate | undefined, range: 'start' | 'end') => {
+  const initDateTime = (selectedDate: FQ.SelectedDate | undefined, range: 'start' | 'end') => {
     const defaultDate = setDate(new Date(), { seconds: 0, milliseconds: 0 });
     if (!selectedDate) {
       return defaultDate;
@@ -886,28 +890,27 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
     <>
       <div className="bkl-multi-search__date-time-group">
         <div className="bkl-multi-search__date-time-label"><span>Start Date</span></div>
-        <DateTimePicker
+        {/* <DateTimePicker
           dateTime={startDateTime}
           onChange={setStartDateTime}
           minDate={minDate ? new Date(minDate) : undefined}
           maxDate={maxDate ? new Date(maxDate) : undefined}
           dropdownReference={dateTimeMeridiemRef}
-        />
+        /> */}
       </div>
 
       <div className="bkl-multi-search__date-time-group">
         <div className="bkl-multi-search__date-time-label"><span>End Date</span></div>
-        <DateTimePicker
+        {/* <DateTimePicker
           dateTime={endDateTime}
           onChange={setEndDateTime}
           minDate={minDate ? new Date(minDate) : undefined}
           maxDate={maxDate ? new Date(maxDate) : undefined}
           dropdownReference={dateTimeMeridiemRef}
-        />
+        /> */}
       </div>
     
-      <>
-        {!dateTimeRangeValidation.isValid
+      {!dateTimeRangeValidation.isValid
           && dateTimeRangeValidation.message
           && (
             <span className="bkl-multi-search__dropdown-error-msg">
@@ -915,7 +918,6 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
             </span>
           )
         }
-      </>
         
       <div className="bkl-multi-search__date-time-action">
         <Button
@@ -932,13 +934,13 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
   const renderDateTimePicker = () => (
     <>
       <div className="bkl-multi-search__date-time-group">
-        <DateTimePicker
+        {/* <DateTimePicker
           dateTime={dateTime}
           onChange={setDateTime}
           minDate={minDate ? new Date(minDate) : undefined}
           maxDate={maxDate ? new Date(maxDate) : undefined}
           dropdownReference={dateTimeMeridiemRef}
-        />
+        /> */}
       </div>
 
       <div className="bkl-multi-search__date-time-action">
@@ -971,8 +973,8 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
 type SuggestedKeysDropdownProps = {
   inputRef?: React.RefObject<HTMLInputElement>,
   isActive?: boolean,
-  operators?: DictionaryFieldOperators[],
-  suggestedKeys?: SuggestedKeys,
+  operators?: FQ.DictionaryFieldOperators[],
+  suggestedKeys?: FQ.SuggestedKeys,
   popperOptions?: Dropdown.PopperOptions,
   onChange: (value: string) => void,
   onOutsideClick?: () => void,
@@ -1043,14 +1045,14 @@ const SuggestedKeysDropdown = (props: SuggestedKeysDropdownProps) => {
 };
 
 type OperatorsDropdownProps = {
-  type: Field['type'],
+  type: FQ.Field['type'],
   inputRef: React.RefObject<HTMLInputElement>,
   isActive: boolean,
-  operators: Array<NumberFieldOperator | DateTimeFieldOperator | EnumFieldOperator | ArrayFieldOperator>,
+  operators: Array<FQ.NumberFieldOperator | FQ.DateTimeFieldOperator | FQ.EnumFieldOperator | FQ.ArrayFieldOperator>,
   popperOptions?: Dropdown.PopperOptions,
-  onClick: (key?: NumberFieldOperator | DateTimeFieldOperator | EnumFieldOperator | ArrayFieldOperator) => void,
+  onClick: (key?: FQ.NumberFieldOperator | FQ.DateTimeFieldOperator | FQ.EnumFieldOperator | FQ.ArrayFieldOperator) => void,
   onOutsideClick?: () => void,
-  operatorInfo?: OperatorInfo,
+  operatorInfo?: FQ.OperatorInfo,
 };
 
 const OperatorsDropdown = (props: OperatorsDropdownProps) => {
@@ -1081,7 +1083,7 @@ const OperatorsDropdown = (props: OperatorsDropdownProps) => {
 
   symbolMap = ObjectUtil.map(symbolMap, (label, operator) => {
     return operator in operatorInfo
-      ? operatorInfo[operator as Operator]?.label
+      ? operatorInfo[operator as FQ.Operator]?.label
       : label;
   });
 
@@ -1089,7 +1091,7 @@ const OperatorsDropdown = (props: OperatorsDropdownProps) => {
     <Suggestions
       className="bkl-multi-search__operators"
       active={isActive}
-      popperOptions={popperOptions}
+      // popperOptions={popperOptions}
       elementRef={inputRef}
       onOutsideClick={onOutsideClick}
       basic
@@ -1107,9 +1109,9 @@ const OperatorsDropdown = (props: OperatorsDropdownProps) => {
 };
 
 type FieldQueryBuffer = {
-  fieldName: FieldName,
-  operator: Operator | null,
-  subOperator: Operator | null,
+  fieldName: FQ.FieldName,
+  operator: FQ.Operator | null,
+  subOperator: FQ.Operator | null,
   key: string,
   value: string,
 };
@@ -1125,7 +1127,7 @@ export const initializeFieldQueryBuffer = (): FieldQueryBuffer => ({
 export type MultiSearchProps = Omit<ComponentProps<'input'>, 'className'|'children'> & {
   className?: ClassNameArgument,
   fields: FQ.Fields,
-  popperOptions?: Dropdown.PopperOptions,
+  // popperOptions?: Dropdown.PopperOptions,
   query?: (filters: FQ.FilterQuery) => void;
   filters?: FQ.FilterQuery,
 };
@@ -1135,7 +1137,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
   const {
     className,
     fields,
-    popperOptions: customPopperOptions,
+    // popperOptions: customPopperOptions,
     query = () => {},
     onFocus,
     onClick,
@@ -1152,30 +1154,30 @@ export const MultiSearch = (props: MultiSearchProps) => {
   const [isInputFocused, setIsInputFocused] = React.useState(false);
   const [validatorResponse, setValidatorResponse] = React.useState({ isValid: true, message: '' });
   
-  const popperOptions: Dropdown.PopperOptions = {
-    placement: 'bottom-start',
-    ...(customPopperOptions ?? {}),
-  };
+  // const popperOptions: Dropdown.PopperOptions = {
+  //   placement: 'bottom-start',
+  //   ...(customPopperOptions ?? {}),
+  // };
   
   const updateFieldQueryBuffer = (newFieldQuery: FieldQueryBuffer) => {
     setFieldQueryBuffer(newFieldQuery);
   };
   
-  const validateFieldQuery = (fieldQueryBuffer: FieldQueryBuffer): ValidatorResponse => {
+  const validateFieldQuery = (fieldQueryBuffer: FieldQueryBuffer): FQ.ValidatorResponse => {
     let isValid = fieldQueryBuffer.value?.trim() !== '';
     let message = '';
     
     if (fieldQueryBuffer.fieldName) {
-      const field: Field = fields[fieldQueryBuffer.fieldName];
+      const field: FQ.Field = fields[fieldQueryBuffer.fieldName];
       if (field.type === 'text') {
-        const searchInputValidator = field.validator as TextValidator;
+        const searchInputValidator = field.validator as FQ.TextValidator;
         if (isValid && typeof searchInputValidator === 'function') {
           const validatorResponse = searchInputValidator({ buffer: fieldQueryBuffer.value });
           isValid = validatorResponse.isValid;
           message = validatorResponse.message;
         }
       } else if (field.type === 'number') {
-        const searchInputValidator = field.validator as TextValidator;
+        const searchInputValidator = field.validator as FQ.TextValidator;
         if (isValid) {
           const inputNumber = Number(fieldQueryBuffer.value);
           if (Number.isNaN(inputNumber) || !Number.isFinite(inputNumber)) {
@@ -1188,7 +1190,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
           }
         }
       } else if (field.type === 'array') {
-        const searchInputValidator = field.validator as ArrayValidator<ArrayFieldSpec>;
+        const searchInputValidator = field.validator as FQ.ArrayValidator<FQ.ArrayFieldSpec>;
         if (isValid) {
           if (field.subfield && field.subfield.type === 'enum') {
             isValid = Object.values(field.subfield.alternatives).filter(alternative =>
@@ -1203,7 +1205,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
           }
         }
       } else if (field.type === 'enum') {
-        const searchInputValidator = field.validator as EnumValidator<EnumFieldSpec>;
+        const searchInputValidator = field.validator as FQ.EnumValidator<FQ.EnumFieldSpec>;
         if (isValid) {
           isValid = Object.values(field.alternatives).filter(alternative =>
             alternative.label.toLowerCase() === fieldQueryBuffer.value.toLowerCase()).length > 0;
@@ -1216,7 +1218,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
           }
         }
       } else if (field.type === 'dictionary') {
-        const searchInputValidator = field.validator as DictionaryValidator;
+        const searchInputValidator = field.validator as FQ.DictionaryValidator;
         if (typeof searchInputValidator === 'function') {
           const validatorResponse = searchInputValidator({ key: fieldQueryBuffer.key, buffer: fieldQueryBuffer.value });
           isValid = validatorResponse.isValid;
@@ -1227,7 +1229,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
           isValid = true;
         }
       } else if (field.type === 'datetime') {
-        const searchInputValidator = field.validator as DateTimeValidator;
+        const searchInputValidator = field.validator as FQ.DateTimeValidator;
         if (isValid) {
           const dateTime = new Date(fieldQueryBuffer.value);
           if (Number.isNaN(dateTime.valueOf())) {
@@ -1257,7 +1259,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
       if (validatorResponse.isValid) {
         let fieldValue: string | string[] | number = fieldQueryBuffer.value;
         if (fieldQueryBuffer && fieldQueryBuffer.fieldName) {
-          const field: Field = fields[fieldQueryBuffer.fieldName];
+          const field = fields[fieldQueryBuffer.fieldName];
           if (field.type === 'enum' || (field.type === 'array' && field.subfield?.type === 'enum')) {
             fieldValue = [fieldQueryBuffer.value];
           } else if (field.type === 'datetime') {
@@ -1278,9 +1280,9 @@ export const MultiSearch = (props: MultiSearchProps) => {
       
       if (fieldQueryBuffer.key) {
         updateFieldQueryBuffer({ ...fieldQueryBuffer, key: '' });
-      } else if (fieldQueryBuffer.subOperator && operators.includes(fieldQueryBuffer.subOperator)) {
+      } else if (fieldQueryBuffer.subOperator && FQ.operators.includes(fieldQueryBuffer.subOperator)) {
         updateFieldQueryBuffer({ ...fieldQueryBuffer, subOperator: null });
-      } else if (fieldQueryBuffer.operator && operators.includes(fieldQueryBuffer.operator)) {
+      } else if (fieldQueryBuffer.operator && FQ.operators.includes(fieldQueryBuffer.operator)) {
         updateFieldQueryBuffer({ ...fieldQueryBuffer, operator: null, subOperator: null });
       } else {
         updateFieldQueryBuffer(initializeFieldQueryBuffer());
@@ -1329,6 +1331,10 @@ export const MultiSearch = (props: MultiSearchProps) => {
       
       const field = fields[fieldName];
       
+      if (!field) {
+        return null;
+      }
+      
       const newFieldQuery: FieldQueryBuffer = {
         ...fieldQueryBuffer,
         fieldName,
@@ -1354,7 +1360,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
         isActive={isActive}
         inputRef={inputRef}
         fields={fields}
-        popperOptions={popperOptions}
+        // popperOptions={popperOptions}
         onClick={onFieldClick}
         onOutsideClick={onOutsideClick}
       />
@@ -1384,10 +1390,10 @@ export const MultiSearch = (props: MultiSearchProps) => {
       return null;
     }
     
-    let operators: Array<EnumFieldOperator> | Array<ArrayFieldOperator> = [];
+    let operators: Array<FQ.EnumFieldOperator> | Array<FQ.ArrayFieldOperator> = [];
     
     if (field.operators) {
-      operators = field.operators as Array<EnumFieldOperator> | Array<ArrayFieldOperator>;
+      operators = field.operators as Array<FQ.EnumFieldOperator> | Array<FQ.ArrayFieldOperator>;
     }
     
     const isActive = isInputFocused
@@ -1417,11 +1423,11 @@ export const MultiSearch = (props: MultiSearchProps) => {
         inputRef={inputRef}
         operators={operators}
         alternatives={alternatives}
-        popperOptions={popperOptions}
+        // popperOptions={popperOptions}
         onChange={onAlternativesChange}
         onOutsideClick={onOutsideClick}
         selectedOperator={field.type === 'array' ? '$any' : operator}
-        validator={field.validator as ArrayValidator<ArrayFieldSpec>}
+        validator={field.validator as FQ.ArrayValidator<FQ.ArrayFieldSpec>}
       />
     );
   };
@@ -1458,7 +1464,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
       <DateTimeDropdown
         isActive={isActive}
         inputRef={inputRef}
-        popperOptions={popperOptions}
+        // popperOptions={popperOptions}
         onChange={onDateTimeRangeChange}
         onOutsideClick={onOutsideClick}
         maxDate={field.maxDate}
@@ -1495,7 +1501,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
         inputRef={inputRef}
         operators={field.operators}
         suggestedKeys={field.suggestedKeys}
-        popperOptions={popperOptions}
+        // popperOptions={popperOptions}
         onChange={onSuggestedKeysChange}
         onOutsideClick={onOutsideClick}
       />
@@ -1529,7 +1535,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
       && fieldQueryBuffer.value === '';
     
     const onOperatorClick = (
-      operator?: NumberFieldOperator | DateTimeFieldOperator | EnumFieldOperator | ArrayFieldOperator,
+      operator?: FQ.NumberFieldOperator | FQ.DateTimeFieldOperator | FQ.EnumFieldOperator | FQ.ArrayFieldOperator,
     ) => {
       if (typeof operator === 'undefined') { return; }
       
@@ -1552,7 +1558,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
         isActive={isActive}
         inputRef={inputRef}
         operators={field.operators}
-        popperOptions={popperOptions}
+        // popperOptions={popperOptions}
         onClick={onOperatorClick}
         onOutsideClick={onOutsideClick}
         operatorInfo={field.operatorInfo}
@@ -1590,7 +1596,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
       && fieldQueryBuffer.value === '';
     
     const onOperatorClick = (
-      subOperator?: NumberFieldOperator | DateTimeFieldOperator | EnumFieldOperator | ArrayFieldOperator,
+      subOperator?: FQ.NumberFieldOperator | FQ.DateTimeFieldOperator | FQ.EnumFieldOperator | FQ.ArrayFieldOperator,
     ) => {
       if (typeof subOperator === 'undefined') { return; }
       
@@ -1609,7 +1615,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
         operators={subField.type === 'enum'
           ? subField.operators.filter(op => op !== '$eq' && op !== '$ne')
           : subField.operators}
-        popperOptions={popperOptions}
+        // popperOptions={popperOptions}
         onClick={onOperatorClick}
         onOutsideClick={onOutsideClick}
         operatorInfo={field.subfield.operatorInfo}

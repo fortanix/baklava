@@ -2,55 +2,59 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import cx from 'classnames';
-import * as React from 'react';
+import type React from 'react';
 
-import { SpriteIcon as Icon } from '../../../icons/Icon';
-import { Button } from '../../../buttons/Button';
-import { Dropdown } from '../../../overlays/dropdown/Dropdown';
+import { Icon } from '../../../graphics/Icon/Icon.tsx';
+import { Button } from '../../../actions/Button/Button.tsx';
+import { DropdownMenuProvider } from '../../../overlays/DropdownMenu/DropdownMenuProvider.tsx';
 
-import { useTable } from '../DataTableContext';
+import { useTable } from '../DataTableContext.tsx';
 
-import './PaginationSizeSelector.scss';
+// import './PaginationSizeSelector.scss';
 
 
 export type PageSizeOption = number;
 export const defaultPageSizeOptions: Array<PageSizeOption> = [10, 25, 50, 100];
 
 type PaginationSizeSelectorProps = {
-  pageSizeOptions?: Array<PageSizeOption>,
-  pageSizeLabel?: string;
+  pageSizeOptions?: Array<PageSizeOption> | undefined,
+  pageSizeLabel?: string | undefined,
 };
 export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
   const { pageSizeOptions = defaultPageSizeOptions, pageSizeLabel = 'Items per page' } = props;
-  
+
   const { table } = useTable();
-  
+
   return (
     <div className="page-size-selector">
       {pageSizeLabel}:
-      
-      <Dropdown primary placement="bottom"
-        className="page-size-selector__selector"
-        toggle={
-          <Button plain className="page-size-selector__page-size">
+
+      <DropdownMenuProvider
+        items={pageSizeOptions.map((pageSize) => (
+          <DropdownMenuProvider.Action
+            key={pageSize.toString()}
+            itemKey={pageSize.toString()}
+            label={`${pageSize}`}
+            onActivate={(context) => {
+              table.setPageSize(pageSize);
+              context.close();
+            }}
+          />
+        ))}
+      >
+        {({ props }) => (
+          <Button
+            variant="primary"
+            {...props()}
+            className="page-size-selector__button"
+          >
             {table.state.pageSize}
-            <Icon name="arrow-drop-down" icon={import(`../../../../assets/icons/arrow-drop-down.svg?sprite`)}
+            <Icon name="arrow-drop-down" icon="caret-down"
               className="icon-caret"
             />
           </Button>
-        }
-      >
-        {({ close }) =>
-          pageSizeOptions.map(pageSize =>
-            <Dropdown.Item key={pageSize}
-              onClick={() => { table.setPageSize(pageSize); close(); }}
-            >
-              {pageSize}
-            </Dropdown.Item>,
-          )
-        }
-      </Dropdown>
+        )}
+      </DropdownMenuProvider>
     </div>
   );
 };

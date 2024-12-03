@@ -45,7 +45,7 @@
     "check:types": "tsc --noEmit",
     "lint:style": "stylelint 'src/**/*.scss'",
     "lint:script": "biome lint",
-    "lint": "npm run lint:style && npm run lint:script",
+    "lint": "npm run lint:style; npm run lint:script",
     "test:unit": "vitest run --root=.",
     "test": "npm run check:types; npm run lint:style; npm run test:unit",
     "test-ui": "vitest --ui",
@@ -91,7 +91,8 @@
     "lightningcss": "^1.28.1",
     "@types/react": "npm:types-react@rc",
     "@types/react-dom": "npm:types-react-dom@rc",
-    "@types/react-table": "^7.7.20"
+    "@types/react-table": "^7.7.20",
+    "@ngneat/falso": "^6.4.0"
   },
   "dependencies": {
     "date-fns": "^4.1.0",

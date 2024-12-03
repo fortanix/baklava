@@ -5,25 +5,20 @@
 import { getDay as dateGetDay, startOfDay as dateStartOfDay, endOfDay as dateEndOfDay, sub as dateSub } from 'date-fns';
 
 import * as React from 'react';
-import * as StorybookKnobs from '@storybook/addon-knobs';
 
-import { StoryMetadata } from '../../../types/storyMetadata';
-
-import { Panel } from '../../../components/containers/panel/Panel';
-import * as MultiSearch from './MultiSearch';
+import type * as FQ from './filterQuery.ts';
+import * as MultiSearch from './MultiSearch.tsx';
 
 
 export default {
-  title: 'Prefab/Forms/MultiSearch',
-  decorators: [
-    StorybookKnobs.withKnobs,
-    renderStory => <Panel>{renderStory()}</Panel>,
-  ],
-  component: MultiSearch,
-} as StoryMetadata;
-
+  component: MultiSearch, 
+  tags: ['autodocs'],
+  parameters: {
+    layout: 'centered',
+  },
+};
 export const Standard = () => {
-  const severityFieldSpec: MultiSearch.EnumFieldSpec = {
+  const severityFieldSpec: FQ.EnumFieldSpec = {
     type: 'enum',
     operators: ['$eq', '$ne', '$in', '$nin'],
     label: 'Severity',
@@ -35,7 +30,7 @@ export const Standard = () => {
     },
   };
 
-  const keyOpsFieldSpec: MultiSearch.ArrayFieldSpec = {
+  const keyOpsFieldSpec: FQ.ArrayFieldSpec = {
     type: 'array',
     operators: ['$eq', '$ne', '$any', '$all'],
     label: 'Key Ops',
@@ -56,21 +51,21 @@ export const Standard = () => {
     },
   };
   
-  const initiatorFieldSpec: MultiSearch.TextFieldSpec = {
+  const initiatorFieldSpec: FQ.TextFieldSpec = {
     type: 'text',
     operators: ['$text'],
     label: 'Initiator',
     placeholder: 'Search initiator',
   };
 
-  const countFieldSpec: MultiSearch.Field = {
+  const countFieldSpec: FQ.Field = {
     type: 'number',
     operators: ['$eq', '$lt', '$lte', '$gt', '$gte', '$ne'],
     label: 'Count',
     placeholder: 'Search ip-address',
   };
   
-  const customAttributesFieldSpec: MultiSearch.DictionaryFieldSpec = {
+  const customAttributesFieldSpec: FQ.DictionaryFieldSpec = {
     type: 'dictionary',
     operators: ['$all'],
     label: 'Custom Attributes',
@@ -80,7 +75,7 @@ export const Standard = () => {
     },
   };
   
-  const createdAtFieldSpec: MultiSearch.DateTimeFieldSpec = {
+  const createdAtFieldSpec: FQ.DateTimeFieldSpec = {
     type: 'datetime',
     operators: ['$gt', '$range'],
     label: 'Created',
@@ -107,9 +102,9 @@ export const Standard = () => {
     },
   }];
 
-  const [filters, setFilters] = React.useState<MultiSearch.FilterQuery>(defaultFilters);
+  const [filters, setFilters] = React.useState<FQ.FilterQuery>(defaultFilters);
   
-  const query = (filter: MultiSearch.FilterQuery) => setFilters(filter);
+  const query = (filter: FQ.FilterQuery) => setFilters(filter);
 
   return (
     <MultiSearch.MultiSearch fields={fields} query={query} filters={filters} />
@@ -117,7 +112,7 @@ export const Standard = () => {
 };
 
 export const WithValidation = () => {
-  const uuidFieldSpec: MultiSearch.TextFieldSpec = {
+  const uuidFieldSpec: FQ.TextFieldSpec = {
     type: 'text',
     operators: ['$text'],
     label: 'UUID',
@@ -131,7 +126,7 @@ export const WithValidation = () => {
     },
   };
   
-  const severityFieldSpec: MultiSearch.EnumFieldSpec = {
+  const severityFieldSpec: FQ.EnumFieldSpec = {
     type: 'enum',
     operators: ['$eq', '$ne', '$in', '$nin'],
     label: 'Severity',
@@ -150,7 +145,7 @@ export const WithValidation = () => {
     },
   };
 
-  const keyOpsFieldSpec: MultiSearch.ArrayFieldSpec = {
+  const keyOpsFieldSpec: FQ.ArrayFieldSpec = {
     type: 'array',
     operators: ['$eq', '$ne', '$any', '$all'],
     label: 'Key Ops',
@@ -178,7 +173,7 @@ export const WithValidation = () => {
     },
   };
 
-  const countFieldSpec: MultiSearch.Field = {
+  const countFieldSpec: FQ.Field = {
     type: 'number',
     operators: ['$eq', '$lt', '$lte', '$gt', '$gte', '$ne'],
     label: 'Count',
@@ -192,7 +187,7 @@ export const WithValidation = () => {
     },
   };
   
-  const customAttributesFieldSpec: MultiSearch.DictionaryFieldSpec = {
+  const customAttributesFieldSpec: FQ.DictionaryFieldSpec = {
     type: 'dictionary',
     operators: ['$all'],
     label: 'Custom attributes',
@@ -209,7 +204,7 @@ export const WithValidation = () => {
     },
   };
   
-  const createdAtFieldSpec: MultiSearch.DateTimeFieldSpec = {
+  const createdAtFieldSpec: FQ.DateTimeFieldSpec = {
     type: 'datetime',
     operators: ['$gt', '$range'],
     label: 'Created',
@@ -231,9 +226,9 @@ export const WithValidation = () => {
     createdAt: createdAtFieldSpec,
   };
   
-  const [filters, setFilters] = React.useState<MultiSearch.FilterQuery>([]);
+  const [filters, setFilters] = React.useState<FQ.FilterQuery>([]);
   
-  const query = (filter: MultiSearch.FilterQuery) => setFilters(filter);
+  const query = (filter: FQ.FilterQuery) => setFilters(filter);
 
   return (
     <MultiSearch.MultiSearch fields={fields} query={query} filters={filters} />

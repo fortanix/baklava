@@ -3,24 +3,24 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { classNames as cx } from '../../../util/component_util';
+import { classNames as cx } from '../../../util/componentUtil.ts';
 
-import { Loader } from '../../overlays/loader/Loader';
-import { Button } from '../../buttons/Button';
 
 import * as ReactTable from 'react-table';
-import { DataTableStatus, TableContextState, createTableContext, useTable } from './DataTableContext';
+import { type DataTableStatus, type TableContextState, createTableContext, useTable } from './DataTableContext';
 import { PaginationStream } from './pagination/PaginationStream';
 import { DataTablePlaceholderError } from './table/DataTablePlaceholder';
 import { DataTableAsync } from './table/DataTable';
 
-import type { FilterQuery } from '../../../prefab/forms/MultiSearch/MultiSearch';
+import type { FilterQuery } from '../MultiSearch/filterQuery.ts';
 
 // Table plugins
 import { useCustomFilters } from './plugins/useCustomFilters';
 
 // Styles
-import './DataTableStream.scss';
+// import './DataTableStream.scss';
+import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
+import { Button } from '../../actions/Button/Button.tsx';
 
 
 export * from './DataTableContext';
@@ -51,9 +51,8 @@ const usePageHistory = <D extends object, PageHistoryItem extends object>() => {
       const keys = [...pageHistory.keys()];
       if (keys.length === 0 || keys[keys.length - 1] === pageIndex) {
         return pageHistory; // Don't update if we don't need to (optimization)
-      } else {
-        return new Map([...pageHistory.entries()].filter(([pageIndexCurrent]) => pageIndexCurrent <= pageIndex));
       }
+        return new Map([...pageHistory.entries()].filter(([pageIndexCurrent]) => pageIndexCurrent <= pageIndex));
     },
     [],
   );
@@ -75,7 +74,7 @@ const usePageHistory = <D extends object, PageHistoryItem extends object>() => {
       const lastIndex: undefined | PageIndex = indices[indices.length - 1];
       // Make sure the page indices are contiguous
       if (pageIndex > lastIndex + 1) {
-        throw new Error(`Non-contiguous page indices`); // Should never happen
+        throw new Error('Non-contiguous page indices'); // Should never happen
       }
 
       const history = new Map(pageHistory).set(pageIndex, pageHistoryItem);
@@ -94,7 +93,7 @@ const usePageHistory = <D extends object, PageHistoryItem extends object>() => {
   return pageHistoryApi(pageHistory);
 };
 
-export type DataTableQueryResult<D extends object, P extends unknown = undefined> = {
+export type DataTableQueryResult<D extends object, P = undefined> = {
   itemsPage: ReactTableOptions<D>['data'],
   // Custom page state to be stored in page history
   pageState?: P,
@@ -102,7 +101,7 @@ export type DataTableQueryResult<D extends object, P extends unknown = undefined
   isEndOfStream?: boolean,
 };
 
-export type DataTableQuery<D extends object, P extends unknown = undefined> =
+export type DataTableQuery<D extends object, P = undefined> =
   (params: {
     previousItem: null | D,
     previousPageState?: undefined | P,
@@ -116,7 +115,7 @@ export type DataTableQuery<D extends object, P extends unknown = undefined> =
     customFilters: FilterQuery,
   }) => Promise<DataTableQueryResult<D, P>>;
 
-export type TableProviderStreamProps<D extends object, P extends unknown = undefined> = {
+export type TableProviderStreamProps<D extends object, P = undefined> = {
   children: React.ReactNode,
   columns: ReactTableOptions<D>['columns'],
   getRowId: ReactTableOptions<D>['getRowId'],
@@ -131,7 +130,7 @@ export type TableProviderStreamProps<D extends object, P extends unknown = undef
   // Callback to request the consumer to update controlled state with the given data
   updateItems: (items: Array<D>) => void,
 };
-export const TableProviderStream = <D extends object, P extends unknown = undefined>(
+export const TableProviderStream = <D extends object, P = undefined>(
   props: TableProviderStreamProps<D, P>,
 ) => {
   const {
@@ -165,7 +164,7 @@ export const TableProviderStream = <D extends object, P extends unknown = undefi
   const tableOptions = {
     columns,
     data: items,
-    getRowId,
+    ...(getRowId && { getRowId }), // Add `getRowId` only if it is defined
   };
   const table = ReactTable.useTable<D>(
     {
@@ -440,7 +439,6 @@ export const TableProviderStream = <D extends object, P extends unknown = undefi
     table,
   }), [
     JSON.stringify(status),
-    reload,
     // Note: the `table` reference is mutated, so cannot use it as dependency for `useMemo` directly
     table.state,
     ...Object.values(tableOptions),
@@ -488,7 +486,7 @@ export const DataTableStream = ({
   };
 
   const renderLoadMoreResults = () => {
-    return <Button onClick={loadMore} light>Load more results</Button>;
+    return <Button onClick={loadMore}>Load more results</Button>;
   };
 
   // Use `<Pagination/>` by default, unless the table is empty (in which case there are "zero" pages)
@@ -496,7 +494,7 @@ export const DataTableStream = ({
     ? null
     : (
       <PaginationStream
-        renderLoadMoreResults={isEndOfStreamReached && isPartialStream ? renderLoadMoreResults : undefined}
+        renderLoadMoreResults={isEndOfStreamReached && isPartialStream ? renderLoadMoreResults :() => <></>}
       />
     );
   const footerWithFallback = typeof footer === 'undefined' ? footerDefault : footer;
@@ -514,7 +512,7 @@ export const DataTableStream = ({
       placeholderError={
         <DataTablePlaceholderError
           actions={
-            <Button primary onClick={() => { reload(); }}>
+            <Button variant="primary" onClick={() => { reload(); }}>
               Retry
             </Button>
           }
@@ -527,7 +525,7 @@ export const DataTableStream = ({
       }
       {...propsRest}
     >
-      {showLoadingIndicator && <Loader delay={1000}/>}
+      {showLoadingIndicator && <Spinner />}
     </DataTableAsync>
   );
 };

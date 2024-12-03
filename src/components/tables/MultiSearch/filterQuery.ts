@@ -46,9 +46,9 @@ export const operators = uniq([
 export type Operator = ValueOf<typeof operators>;
 
 // Field specification
-type Alternative = { label: string };
-type Alternatives = Record<string, Alternative>;
-type OperatorInfo = Partial<Record<Operator, { label: string }>>;
+export type Alternative = { label: string };
+export type Alternatives = Record<string, Alternative>;
+export type OperatorInfo = Partial<Record<Operator, { label: string }>>;
 export type TypeOfFieldSpec<S extends Field> =
   S extends { type: 'number' }
     ? number
@@ -70,7 +70,7 @@ export type TypeOfFieldsSpec<S extends Fields> = {
   [fieldName in keyof S]: TypeOfFieldSpec<S[fieldName]>
 };
 
-type ValidatorResponse = {
+export type ValidatorResponse = {
   isValid: boolean,
   message: string,
 };
@@ -145,7 +145,7 @@ export type DateTimeFieldSpec = {
   accessor?: Accessor<Date>,
 };
 type SuggestedKey = { label: string };
-type SuggestedKeys = { [key: string]: SuggestedKey };
+export type SuggestedKeys = { [key: string]: SuggestedKey };
 export type DictionaryFieldSpec = {
   type: 'dictionary',
   label: React.ReactNode,
@@ -217,7 +217,7 @@ export type FilterQuery = Array<FieldQuery>;
 
 export const createFilterQuery = (): FilterQuery => [];
 
-const isRangeOperationValue = (input: unknown): input is RangeOperationValue => {
+export const isRangeOperationValue = (input: unknown): input is RangeOperationValue => {
   return Array.isArray(input) && input.length === 2 && typeof input[0] === 'number' && typeof input[1] === 'number';
 };
 
@@ -613,7 +613,7 @@ const decodeDateTimeFieldQuery = (fieldQuery: FieldQuery) => {
   };
 };
 
-const decodeFieldQuery = (fieldQuery: FieldQuery, fields: Fields): {
+export const decodeFieldQuery = (fieldQuery: FieldQuery, fields: Fields): {
   fieldName: FieldName,
   operator: Operator,
   operatorSymbol: string,

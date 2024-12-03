@@ -3,20 +3,20 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { classNames as cx, ClassNameArgument } from '../../../util/component_util';
-import { useEffectAsync } from '../../../util/hooks';
+import { classNames as cx, ClassNameArgument } from '../../../util/componentUtil.ts';
+import { useEffectAsync } from '../util/hooks.ts';
 
-import { Loader } from '../../overlays/loader/Loader';
-import { Button } from '../../buttons/Button';
+import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
+import { Button } from '../../actions/Button/Button.tsx';
 
 import * as ReactTable from 'react-table';
-import { DataTableStatus, TableContextState, createTableContext, useTable } from './DataTableContext';
+import { type DataTableStatus, type TableContextState, createTableContext, useTable } from './DataTableContext.tsx';
 import { Pagination } from './pagination/Pagination';
 import { DataTablePlaceholderError } from './table/DataTablePlaceholder';
 import { DataTableAsync } from './table/DataTable';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
 
-import './DataTableLazy.scss';
-import { BaklavaIcon } from '../../icons/icon-pack-baklava/BaklavaIcon';
+// import './DataTableLazy.scss';
 
 
 export * from './DataTableContext';
@@ -139,10 +139,10 @@ export const TableProviderLazy = <D extends object>(props: TableProviderLazyProp
   // Controlled table state
   const [pageSize, setPageSize] = React.useState(initialState?.pageSize ?? 10);
   
-  const tableOptions = {
+  const tableOptions: ReactTable.TableOptions<D> = {
     columns,
     data: items.itemsPage,
-    getRowId,
+    ...(getRowId && { getRowId }), // Add `getRowId` only if it is defined
   };
   const table = ReactTable.useTable(
     {
@@ -280,15 +280,15 @@ export const DataTableLazy = ({ className, footer, ...propsRest }: DataTableLazy
       placeholderError={
         <DataTablePlaceholderError
           actions={
-            <Button primary className="bkl-button--with-icon" onClick={() => { reload(); }}>
-              <BaklavaIcon icon="refresh"/> Retry
+            <Button variant="primary" className="bkl-button--with-icon" onClick={() => { reload(); }}>
+              <Icon icon="accounts"/> Retry
             </Button>
           }
         />
       }
       {...propsRest}
     >
-      {showLoadingIndicator && <Loader delay={1000}/>}
+      {showLoadingIndicator && <Spinner />}
     </DataTableAsync>
   );
 };

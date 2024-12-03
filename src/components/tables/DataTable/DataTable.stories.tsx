@@ -15,7 +15,7 @@ type Story = StoryObj<typeof DataTable>;
 
 
 import * as ReactTable from 'react-table';
-import { createTableContext, TableContextState } from './DataTableContext.tsx';
+import { createTableContext, type TableContextState } from './DataTableContext.tsx';
 const DataTableContext = ({ children }: React.PropsWithChildren) => {
   type User = { name: string };
   const columns = React.useMemo<Array<ReactTable.Column<User>>>(() => [

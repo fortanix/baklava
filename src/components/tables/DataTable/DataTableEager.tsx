@@ -3,16 +3,16 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { classNames as cx, ClassNameArgument } from '../../../util/componentUtil.ts';
+import { classNames as cx, type ClassNameArgument } from '../../../util/componentUtil.ts';
 import * as ReactTable from 'react-table';
 
-import { TableContextState, createTableContext, useTable } from './DataTableContext.tsx';
+import { type TableContextState, createTableContext, useTable } from './DataTableContext.tsx';
 import { Pagination } from './pagination/Pagination.tsx';
-import { SearchInput } from '../../../prefab/forms/SearchInput/SearchInput.tsx';
-import { MultiSearch as MultiSearchInput } from '../../../prefab/forms/MultiSearch/MultiSearch.tsx';
-import { DataTableSync } from './table/DataTable';
+import { SearchInput } from '../SearchInput/SearchInput.tsx';
+import { MultiSearch as MultiSearchInput } from '../MultiSearch/MultiSearch.tsx';
+import { DataTableSync } from './table/DataTable.tsx';
 
-import './DataTableEager.scss';
+// import './DataTableEager.scss';
 
 export * from './DataTableContext';
 export { Pagination };
@@ -44,15 +44,14 @@ export const TableProviderEager = <D extends object>(props: TableProviderEagerPr
     isReady = true,
   } = props;
   
-  const tableOptions = {
+  const tableOptions: ReactTable.TableOptions<D> = {
     columns,
     data: items,
-    getRowId,
+    ...(getRowId && { getRowId }),
   };
   const table = ReactTable.useTable(
     {
       ...tableOptions,
-      
       defaultColumn: {
         disableGlobalFilter: true,
         disableSortBy: true,

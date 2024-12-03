@@ -3,11 +3,11 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import * as ReactTable from 'react-table';
+import type * as ReactTable from 'react-table';
 
 import { Checkbox } from '../../../forms/controls/Checkbox/Checkbox.tsx';
 
-import './useRowSelectColumn.scss';
+// import './useRowSelectColumn.scss';
 
 
 // `react-table` plugin for row selection column. Note: depends on `react-table`'s `useRowSelect` plugin.
