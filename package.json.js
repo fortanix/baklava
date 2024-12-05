@@ -106,16 +106,16 @@ const packageConfig = {
     '@vitest/ui': '^2.1.6',
     
     // Storybook
-    'storybook': '^8.4.6',
-    '@storybook/react': '^8.4.6',
-    '@storybook/react-vite': '^8.4.6',
-    '@storybook/blocks': '^8.4.6',
-    '@storybook/test': '^8.4.6',
-    '@storybook/addon-essentials': '^8.4.6',
-    '@storybook/addon-a11y': '^8.4.6',
-    '@storybook/addon-interactions': '^8.4.6',
-    '@storybook/addon-links': '^8.4.6',
-    '@storybook/addon-storysource': '^8.4.6',
+    'storybook': '^8.4.7',
+    '@storybook/react': '^8.4.7',
+    '@storybook/react-vite': '^8.4.7',
+    '@storybook/blocks': '^8.4.7',
+    '@storybook/test': '^8.4.7',
+    '@storybook/addon-essentials': '^8.4.7',
+    '@storybook/addon-a11y': '^8.4.7',
+    '@storybook/addon-interactions': '^8.4.7',
+    '@storybook/addon-links': '^8.4.7',
+    '@storybook/addon-storysource': '^8.4.7',
     '@storybook/addon-designs': '^8.0.4',
     '@chromatic-com/storybook': '^3.2.2', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
@@ -136,10 +136,8 @@ const packageConfig = {
     'lightningcss': '^1.28.2',
     
     // React
-    //'@types/react': '^18.3.7',
-    //'@types/react-dom': '^18.2.22',
-    '@types/react': 'npm:types-react@rc',
-    '@types/react-dom': 'npm:types-react-dom@rc',
+    '@types/react': '^19.0.0',
+    '@types/react-dom': '^19.0.0',
   },
   
   // Dependencies needed when running the generated build
@@ -150,8 +148,8 @@ const packageConfig = {
     
     // React
     'classnames': '^2.5.1',
-    'react': '^19.0.0-rc.1',
-    'react-dom': '^19.0.0-rc.1',
+    'react': '^19.0.0',
+    'react-dom': '^19.0.0',
     'react-error-boundary': '^4.1.2',
     
     '@floating-ui/react': '^0.26.28',
@@ -162,14 +160,9 @@ const packageConfig = {
     
     'optics-ts': '^2.4.1',
   },
-  overrides: {
-    // See https://react.dev/blog/2024/04/25/react-19-upgrade-guide#installing
-    '@types/react': 'npm:types-react@rc',
-    '@types/react-dom': 'npm:types-react-dom@rc',
-  },
   peerDependencies: {
-    'react': '>= 19.0.0-rc.1',
-    'react-dom': '>= 19.0.0-rc.1',
+    'react': '>= 19.0.0',
+    'react-dom': '>= 19.0.0',
   },
 };
 
