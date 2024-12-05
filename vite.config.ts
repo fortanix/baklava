@@ -75,7 +75,6 @@ export default defineConfig({
         safari: 17 << 16 | 5 << 8,
       },
       cssModules: {
-        // @ts-expect-error The `grid` prop is missing from the vite type at the moment, but lightningcss supports it
         grid: false, // Workaround for https://github.com/parcel-bundler/lightningcss/issues/762
       },
     },
@@ -99,6 +98,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'app/lib.ts'),
       name: 'baklava',
       fileName: 'baklava',
+      cssFileName: 'baklava',
       formats: ['es'],
     },
     rollupOptions: {
