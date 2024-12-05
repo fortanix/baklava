@@ -68,16 +68,16 @@
     "@biomejs/biome": "^1.9.4",
     "vitest": "^2.1.6",
     "@vitest/ui": "^2.1.6",
-    "storybook": "^8.4.6",
-    "@storybook/react": "^8.4.6",
-    "@storybook/react-vite": "^8.4.6",
-    "@storybook/blocks": "^8.4.6",
-    "@storybook/test": "^8.4.6",
-    "@storybook/addon-essentials": "^8.4.6",
-    "@storybook/addon-a11y": "^8.4.6",
-    "@storybook/addon-interactions": "^8.4.6",
-    "@storybook/addon-links": "^8.4.6",
-    "@storybook/addon-storysource": "^8.4.6",
+    "storybook": "^8.4.7",
+    "@storybook/react": "^8.4.7",
+    "@storybook/react-vite": "^8.4.7",
+    "@storybook/blocks": "^8.4.7",
+    "@storybook/test": "^8.4.7",
+    "@storybook/addon-essentials": "^8.4.7",
+    "@storybook/addon-a11y": "^8.4.7",
+    "@storybook/addon-interactions": "^8.4.7",
+    "@storybook/addon-links": "^8.4.7",
+    "@storybook/addon-storysource": "^8.4.7",
     "@storybook/addon-designs": "^8.0.4",
     "@chromatic-com/storybook": "^3.2.2",
     "storybook-dark-mode": "^4.0.2",
@@ -88,15 +88,15 @@
     "sass": "^1.81.0",
     "postcss-color-contrast": "^1.1.0",
     "lightningcss": "^1.28.2",
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc"
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
   },
   "dependencies": {
     "date-fns": "^4.1.0",
     "message-tag": "^0.10.0",
     "classnames": "^2.5.1",
-    "react": "^19.0.0-rc.1",
-    "react-dom": "^19.0.0-rc.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "react-error-boundary": "^4.1.2",
     "@floating-ui/react": "^0.26.28",
     "react-toastify": "^10.0.6",
@@ -104,12 +104,8 @@
     "react-hook-form": "^7.53.2",
     "optics-ts": "^2.4.1"
   },
-  "overrides": {
-    "@types/react": "npm:types-react@rc",
-    "@types/react-dom": "npm:types-react-dom@rc"
-  },
   "peerDependencies": {
-    "react": ">= 19.0.0-rc.1",
-    "react-dom": ">= 19.0.0-rc.1"
+    "react": ">= 19.0.0",
+    "react-dom": ">= 19.0.0"
   }
 }

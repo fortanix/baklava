@@ -21,7 +21,8 @@ type Story = StoryObj<FormArgs>;
 const FormWithState = (props: React.ComponentProps<typeof Form>) => {
   const action = async (previousState: unknown, formData: FormData): Promise<null> => {
     if (typeof props.action === 'function') {
-      return props.action?.(formData) ?? null;
+      await props.action?.(formData);
+      return null;
     }
     return null;
   };
@@ -77,7 +78,7 @@ export const Standard: Story = {
     //onSubmit: (event) => { event.preventDefault(); console.log('submit', event); },
     action: (formData) => {
       //console.log('action', formData.get('field-1'));
-      return [...formData.entries()].reduce(
+      const result = [...formData.entries()].reduce(
         (acc, [fieldKey, field]) => {
           if (Object.hasOwn(acc, fieldKey)) {
             console.warn(`Found duplicate entries for key ${fieldKey}`);
@@ -87,6 +88,7 @@ export const Standard: Story = {
         },
         {} as Record<string, unknown>,
       );
+      return; // FIXME: form actions now return type `void | Promise<void>`
     },
     children: (
       <>
