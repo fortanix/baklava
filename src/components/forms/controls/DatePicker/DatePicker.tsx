@@ -11,16 +11,13 @@ import 'react-datepicker/dist/react-datepicker.css';
 import cl from './DatePicker.module.scss';
 
 
-export type DatePickerProps = Omit<ComponentPropsWithoutRef<typeof ReactDatePicker>, 'onChange'> & {
+// Omit<ComponentPropsWithoutRef<typeof ReactDatePicker>, 'onChange'> & {
+export type DatePickerProps = typeof ReactDatePicker & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
+  /** An optional class name to be appended to the class list. */
   className?: ClassNameArgument,
-
-  date: Date,
-  maxDate?: Date,
-  minDate?: Date,
-  onChange: (date: Date) => void,
 };
 
 /** A wrapper for ReactDatePicker */
@@ -28,10 +25,6 @@ export const DatePicker = (props: DatePickerProps) => {
   const {
     unstyled = false,
     className,
-    date,
-    maxDate,
-    minDate,
-    onChange,
     ...propsRest
   } = props;
 
@@ -46,11 +39,7 @@ export const DatePicker = (props: DatePickerProps) => {
           cl['bk-date-picker__date'],
         )}
         dateFormat="MM/dd/yyyy"
-        maxDate={maxDate}
-        minDate={minDate}
         placeholderText="MM/DD/YYYY"
-        selected={date}
-        onChange={onChange}
         {...propsRest}
       />
     </div>

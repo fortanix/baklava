@@ -97,16 +97,17 @@ $navigation-distance: 1rem;
   color: bk.$theme-date-picker-text-default;
 }
 
-// TODO check if both are actually needed
-:global(.react-datepicker__day-name--outside-month),
-:global(.react-datepicker__day--outside-month) {
+:global(.react-datepicker__day--today) {
+  font-weight: bk.$font-weight-semibold;
+}
+
+:global(.react-datepicker__day--outside-month),
+:global(.react-datepicker__day--disabled) {
   color: bk.$theme-date-picker-text-disabled;
 }
 
-// TODO check if both are actually needed
-:global(.react-datepicker__day-name--disabled),
-:global(.react-datepicker__day--disabled) {
-  opacity: .35;
+:global(.react-datepicker__day--outside-month.react-datepicker__day--disabled) {
+  color: bk.$theme-date-picker-text-unavailable;
 }
 
 :global(.react-datepicker__day--selected),
@@ -116,6 +117,7 @@ $navigation-distance: 1rem;
   color: bk.$theme-date-picker-text-selected;
 }
 
+:global(.react-datepicker__day:not([aria-disabled=true]):hover),
 :global(.react-datepicker__day--selected:not([aria-disabled=true]):hover),
 :global(.react-datepicker__day--keyboard-selected:not([aria-disabled=true]):hover) {
   background: bk.$theme-date-picker-background-hover;
@@ -123,16 +125,43 @@ $navigation-distance: 1rem;
   color: bk.$theme-date-picker-text-hover;
 }
 
+:global(.react-datepicker__day--in-range),
+:global(.react-datepicker__day--in-selecting-range:not(
+  .react-datepicker__month-text--in-range,
+  .react-datepicker__quarter-text--in-range,
+  .react-datepicker__year-text--in-range
+)) {
+  background: bk.$theme-date-picker-background-selected;
+  border-radius: 0;
+  color: bk.$theme-date-picker-text-selected;
+}
+:global(.react-datepicker__day--in-range:not([aria-disabled=true]):hover),
+:global(.react-datepicker__day--in-selecting-range:not([aria-disabled=true]):hover) {
+  background: bk.$theme-date-picker-background-hover;
+  border-radius: 0;
+  color: bk.$theme-date-picker-text-hover;
+}
+
+:global(.react-datepicker__day--range-start),
+:global(.react-datepicker__day--selecting-range-start),
+:global(.react-datepicker__day--range-start:not([aria-disabled=true]):hover) {
+  border-radius: bk.$border-radius-circle 0 0 bk.$border-radius-circle;
+}
+
+:global(.react-datepicker__day--range-end),
+:global(.react-datepicker__day--selecting-range-end),
+:global(.react-datepicker__day--range-end:not([aria-disabled=true]):hover) {
+  border-radius: 0 bk.$border-radius-circle bk.$border-radius-circle 0;
+}
+
+:global(.react-datepicker__day--range-start.react-datepicker__day--range-end),
+:global(.react-datepicker__day--range-start.react-datepicker__day--range-end:not([aria-disabled=true]):hover) {
+  border-radius: bk.$border-radius-circle;
+}
+
 :global(.react-datepicker__day:not(&--selected):hover) {
   background: rgba(bk.$color-blueberry-500, 0.5); // TODO use proper variable
   border-radius: 50%;
-}
-
-:global(.react-datepicker__day--in-range),
-:global(.react-datepicker__day--in-selecting-range) {
-  background: transparent;
-  background-color: transparent;
-  border-radius: 0;
 }
 
 :global(.react-datepicker-popper[data-placement^="bottom"]) {
