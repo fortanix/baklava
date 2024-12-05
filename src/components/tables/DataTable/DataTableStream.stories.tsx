@@ -12,7 +12,6 @@ import { Panel } from '../../containers/Panel/Panel.tsx';
 import * as DataTableStream from './DataTableStream.tsx';
 
 export default {
-  title: 'Components/Tables/DataTableStream',
   component: DataTableStream.DataTableStream,
   tags: ['autodocs'],
   parameters: {

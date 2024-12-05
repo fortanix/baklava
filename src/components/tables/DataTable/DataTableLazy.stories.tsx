@@ -12,7 +12,6 @@ import { Panel } from '../../containers/Panel/Panel.tsx';
 import * as DataTableLazy from './DataTableLazy.tsx';
 
 export default {
-  title: 'Components/Tables/DataTableLazy',
   component: DataTableLazy.DataTableLazy,
   tags: ['autodocs'],
   parameters: {

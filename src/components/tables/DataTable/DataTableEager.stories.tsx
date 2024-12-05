@@ -141,7 +141,6 @@ const DataTableEagerWithFilterTemplate = (props: dataTeableEagerTemplateProps) =
 };
 
 export default {
-  title: 'Components/Tables/DataTableEager',
   component: DataTableEager.DataTableEager,
   tags: ['autodocs'],
   parameters: {
