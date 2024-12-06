@@ -10,6 +10,8 @@ import { classNames as cx, type ComponentPropsWithoutRef, type ClassNameArgument
 import 'react-datepicker/dist/react-datepicker.css';
 import cl from './DatePicker.module.scss';
 
+import { Input } from '../Input/Input.tsx';
+
 
 // Omit<ComponentPropsWithoutRef<typeof ReactDatePicker>, 'onChange'> & {
 export type DatePickerProps = typeof ReactDatePicker & {
@@ -40,6 +42,7 @@ export const DatePicker = (props: DatePickerProps) => {
         )}
         dateFormat="MM/dd/yyyy"
         placeholderText="MM/DD/YYYY"
+        customInput={<Input />}
         {...propsRest}
       />
     </div>
