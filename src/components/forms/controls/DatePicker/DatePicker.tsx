@@ -5,7 +5,7 @@
 import * as React from 'react';
 import ReactDatePicker from 'react-datepicker';
 
-import { classNames as cx, type ComponentPropsWithoutRef, type ClassNameArgument } from '../../../../util/componentUtil.ts';
+import { classNames as cx, type ClassNameArgument } from '../../../../util/componentUtil.ts';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import cl from './DatePicker.module.scss';
