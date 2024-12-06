@@ -23,26 +23,33 @@ type GenericProps = {
 }
 
 // copying props from react-datepicker and restricting them to specific versions
-// TODO: I would like to reuse this on DatePickerRange.tsx, how can I reuse it there without exporting it?
+// TODO: I would like to reuse this from DatePicker.tsx, how can I reuse it from there without exporting it?
+// Or maybe the solution is to define all variants from the same file?
 type GenericReactDatePickerOmittedProps = Omit<ComponentProps<typeof ReactDatePicker>, 'selectsRange' | 'selectsMultiple' | 'onChange'>;
 
-type ReactDatePickerProps = GenericReactDatePickerOmittedProps & {
-  // TODO: considering we omitted them, do we still need to include it's properties as "never" (as defined on original library),
-  // or in this case is it redundant?
-  // selectsRange?: never,
+type ReactDatePickerRangeProps = GenericReactDatePickerOmittedProps & {
+  // not including selectsRange because we will pass that manually to react-datepicker
   // selectsMultiple?: never,
-  onChange?: (date: Date | null, event?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => void,
+  // TODO: it seems like react-datepicker has a bug? the onChange accepts always "Date | null" or variations -
+  // in this case, an array of exactly two elements of Date | null)
+  // but then the startDate and endDate parameters do NOT take null.
+  // therefore I think it'd make sense to handle them as [Date, Date] and
+  // somehow make it accept (as our more strict variant is within what they accept)
+  onChange?: (date: [Date, Date], event?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => void,
 };
 
-export type DatePickerProps = GenericProps & ReactDatePickerProps;
+export type DatePickerRangeProps = GenericProps & ReactDatePickerRangeProps;
 
-export const DatePicker = (props: DatePickerProps) => {
+export const DatePickerRange = (props: DatePickerRangeProps) => {
+  // TODO how could I reuse DatePicker component only passing the props that I want? Something as simple as
+  // <DatePicker selectsRange={true} {...propsRest} />
+  
   const {
     unstyled = false,
     className,
     ...propsRest
   } = props;
-
+  
   return (
     <div className={cx(
       'bk',
@@ -50,6 +57,8 @@ export const DatePicker = (props: DatePickerProps) => {
       className,
     )}>
       <ReactDatePicker
+        selectsRange={true}
+        // everything else is the same
         className={cx(
           cl['bk-date-picker__date'],
         )}
