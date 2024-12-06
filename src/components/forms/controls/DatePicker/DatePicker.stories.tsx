@@ -35,10 +35,8 @@ export const DatePickerStory: Story = {
       <div style={{height: '500px'}}>
         <DatePicker
           {...args}
-          // TODO: why this error? selected is defined as Date | null on
-          // node_modules/react-datepicker/dist/index.d.ts, line 67
           selected={startDate}
-          onChange={(date: Date) => setStartDate(date)}
+          onChange={(date: Date | null) => setStartDate(date)}
         />
       </div>
     );
