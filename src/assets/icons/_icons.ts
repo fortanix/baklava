@@ -43,6 +43,7 @@ export const icons = {
   'plugins': {},
   'policy': {},
   'print': {},
+  'refresh': {},
   'scripts': {},
   'search': {},
   'security-object': {},
