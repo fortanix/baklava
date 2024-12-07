@@ -86,7 +86,7 @@ const packageConfig = {
     'glob': '^11.0.0',
     
     // Build
-    'vite': '^6.0.3',
+    'vite': '^5.4.11', // Cannot use vite v6, blocked by https://github.com/privatenumber/vite-css-modules/issues/13
     '@vitejs/plugin-react': '^4.3.4',
     'vite-plugin-dts': '^4.3.0',
     'vite-plugin-lib-inject-css': '^2.1.1',
@@ -168,10 +168,6 @@ const packageConfig = {
     '@storybook/icons': {
       'react': '$react',
       'react-dom': '$react-dom',
-    },
-    // Issue: (none yet)
-    'vite-css-modules': {
-      'vite': '$vite',
     },
   },
 };
