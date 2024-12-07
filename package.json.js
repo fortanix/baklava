@@ -38,9 +38,8 @@ const packageConfig = {
   scripts: {
     // Utilities
     'gen-package': 'node package.json.js', // Update `package.json`
-    // Use --force currently since we're using React v19 rc. Once peer deps are updated remove this.
-    'install-project': 'npm run gen-package && npm install --force',
-    'ci-project': 'npm ci --force',
+    'install-project': 'npm run gen-package && npm install', // Project-specific version of `npm install`
+    'ci-project': 'npm ci', // Project-specific version of `npm ci`
     
     // CLI
     'node': 'node --import=tsx',
@@ -88,7 +87,7 @@ const packageConfig = {
     'glob': '^11.0.0',
     
     // Build
-    'vite': '^6.0.1',
+    'vite': '^6.0.3',
     '@vitejs/plugin-react': '^4.3.4',
     'vite-plugin-dts': '^4.3.0',
     'vite-plugin-lib-inject-css': '^2.1.1',
@@ -98,12 +97,12 @@ const packageConfig = {
     'typescript': '^5.7.2',
     '@types/node': '^22.10.1',
     'stylelint': '^16.11.0',
-    'stylelint-config-standard-scss': '^13.1.0',
+    'stylelint-config-standard-scss': '^14.0.0',
     '@biomejs/biome': '^1.9.4',
     
     // Testing
-    'vitest': '^2.1.6',
-    '@vitest/ui': '^2.1.6',
+    'vitest': '^2.1.8',
+    '@vitest/ui': '^2.1.8',
     
     // Storybook
     'storybook': '^8.4.7',
@@ -120,13 +119,13 @@ const packageConfig = {
     '@chromatic-com/storybook': '^3.2.2', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     'storybook-dark-mode': '^4.0.2',
-    '@percy/cli': '^1.30.3',
+    '@percy/cli': '^1.30.4',
     '@percy/storybook': '^6.0.3',
     
     // Styling
     'vite-css-modules': '^1.6.0',
     'typescript-plugin-css-modules': '^5.0.1',
-    'sass': '^1.81.0',
+    'sass-embedded': '^1.82.0',
     //'postcss': '^8.4.34',
     //'@types/postcss-mixins': '^9.0.5',
     //'postcss-simple-vars': '^7.0.1',
@@ -136,8 +135,8 @@ const packageConfig = {
     'lightningcss': '^1.28.2',
     
     // React
-    '@types/react': '^19.0.0',
-    '@types/react-dom': '^19.0.0',
+    '@types/react': '^19.0.1',
+    '@types/react-dom': '^19.0.1',
   },
   
   // Dependencies needed when running the generated build
@@ -155,14 +154,31 @@ const packageConfig = {
     '@floating-ui/react': '^0.26.28',
     'react-toastify': '^10.0.6',
     
-    'effect': '^3.10.19',
-    'react-hook-form': '^7.53.2',
+    'effect': '^3.11.3',
+    'react-hook-form': '^7.54.0',
     
     'optics-ts': '^2.4.1',
   },
   peerDependencies: {
     'react': '>= 19.0.0',
     'react-dom': '>= 19.0.0',
+  },
+  peerDependenciesMeta: {},
+  overrides: {
+    // Issue: https://github.com/storybookjs/addon-designs/issues/246
+    '@storybook/addon-designs': {
+      'react': '$react',
+      'react-dom': '$react-dom',
+    },
+    // Issue: https://github.com/storybookjs/icons/issues/34
+    '@storybook/icons': {
+      'react': '$react',
+      'react-dom': '$react-dom',
+    },
+    // Issue: (none yet)
+    'vite-css-modules': {
+      'vite': '$vite',
+    },
   },
 };
 
