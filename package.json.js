@@ -39,7 +39,6 @@ const packageConfig = {
     // Utilities
     'gen-package': 'node package.json.js', // Update `package.json`
     'install-project': 'npm run gen-package && npm install', // Project-specific version of `npm install`
-    'ci-project': 'npm ci', // Project-specific version of `npm ci`
     
     // CLI
     'node': 'node --import=tsx',
@@ -126,11 +125,6 @@ const packageConfig = {
     'vite-css-modules': '^1.6.0',
     'typescript-plugin-css-modules': '^5.0.1',
     'sass-embedded': '^1.82.0',
-    //'postcss': '^8.4.34',
-    //'@types/postcss-mixins': '^9.0.5',
-    //'postcss-simple-vars': '^7.0.1',
-    //'postcss-mixins': '^10.0.1',
-    //'@csstools/postcss-light-dark-function': '^1.0.5',
     'postcss-color-contrast': '^1.1.0',
     'lightningcss': '^1.28.2',
     

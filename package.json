@@ -32,8 +32,7 @@
   },
   "scripts": {
     "gen-package": "node package.json.js",
-    "install-project": "npm run gen-package && npm install --force",
-    "ci-project": "npm ci --force",
+    "install-project": "npm run gen-package && npm install",
     "node": "node --import=tsx",
     "repl": "tsx",
     "plop": "NODE_OPTIONS=\"--import tsx\" plop",
