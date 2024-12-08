@@ -37,6 +37,7 @@
     "repl": "tsx",
     "plop": "NODE_OPTIONS=\"--import tsx\" plop",
     "import": "tsx scripts/import.ts",
+    "automate": "tsx scripts/automate.ts",
     "serve:dev": "vite --config=./vite.config.ts serve",
     "build": "vite --config=./vite.config.ts --emptyOutDir build",
     "storybook:serve": "storybook dev -p 6006",
