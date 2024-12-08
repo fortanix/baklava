@@ -45,6 +45,7 @@ const packageConfig = {
     'repl': 'tsx',
     'plop': 'NODE_OPTIONS="--import tsx" plop',
     'import': 'tsx scripts/import.ts',
+    'automate': 'tsx scripts/automate.ts',
     
     // Library
     //'lib:build': '',
