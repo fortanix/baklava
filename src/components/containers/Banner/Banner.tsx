@@ -6,21 +6,25 @@ import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
 import cl from './Banner.module.scss';
-import { Icon } from '../../graphics/Icon/Icon.tsx';
+import { Icon, type IconName } from '../../graphics/Icon/Icon.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 
 
 export { cl as BannerClassNames };
 
 type BannerIconProps = React.PropsWithChildren<ComponentProps<'div'> & {
-  variant: 'informational' | 'success' | 'warning' | 'alert',
+  variant: 'informational' | 'warning' | 'alert' | 'success',
 }>;
 const BannerIcon = (props: BannerIconProps) => {
   const { variant } = props;
-  let icon = variant;
-  if (icon === 'informational') {
-    icon = 'warning';
-  }
+  const icon = ((): IconName => {
+    switch (variant) {
+      case 'informational': return 'info';
+      case 'warning': return 'warning';
+      case 'alert': return 'status-failed';
+      case 'success': return 'status-success';
+    }
+  })();
   return (<Icon icon={icon} />);
 };
 

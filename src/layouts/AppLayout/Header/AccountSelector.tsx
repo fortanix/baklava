@@ -39,7 +39,7 @@ export const AccountSelector = (props: AccountSelectorProps) => {
             className: cx('bk', { [cl['bk-account-selector']]: !unstyled }, propsRest.className),
           })}
         >
-          <Icon icon="groups" className={cl['bk-account-selector__icon']}
+          <Icon icon="group" className={cl['bk-account-selector__icon']}
             decoration={{ type: 'background-circle' }}
           />
           {state.selectedOption === null ? 'Accounts' : state.selectedOption}

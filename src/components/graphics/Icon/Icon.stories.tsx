@@ -52,10 +52,10 @@ export const Inline: Story = {
       }}
     >
       <p style={{ color: 'light-dark(#645EC3, #BDB9F3)' }}>
-        Icons <Icon {...args} icon="assessment"/> automatically adjust to the font size and color of the text.
+        Icons <Icon {...args} icon="badge-assessment"/> automatically adjust to the font size and color of the text.
       </p>
       <p>
-        Another icon <Icon {...args} icon="integrations" style={{ fontSize: '2em' }}/>, with a large size to
+        Another icon <Icon {...args} icon="integration" style={{ fontSize: '2em' }}/>, with a large size to
         demonstrate vertical alignment within the text.
       </p>
       <p style={{ fontSize: '1em', display: 'flex', alignItems: 'center', gap: '0.5ch', textAlign: 'start' }}>

@@ -25,7 +25,7 @@ import cl from './Toast.module.scss';
 
 export { cl as ToastClassNames };
 
-export { type ToastContent };
+export type { ToastContent };
 
 
 export const ToastLink = ({ className, ...propsRest }: LinkProps) => {
@@ -127,7 +127,7 @@ const success = ({ title, message, options = {} }: NotifyProps) => {
     className: cx(cl['bk-toast--success'], className),
     bodyClassName: cx(cl['bk-toast__body'], bodyClassName),
     progressClassName: cx(cl['bk-toast__progress-bar--success']),
-    icon: <Icon icon="success" className={cx(cl['bk-toast__icon--success'])} />,
+    icon: <Icon icon="status-success" className={cx(cl['bk-toast__icon--success'])} />,
     closeButton: closeButton === true ? <CloseToastButton /> : closeButton,
     ...restOptions,
   };
@@ -166,14 +166,14 @@ const error = ({ title, message, options = {} }: NotifyProps) => {
     className: cx(cl['bk-toast--error'], className),
     bodyClassName: cx(cl['bk-toast__body'], bodyClassName),
     progressClassName: cx(cl['bk-toast__progress-bar--error']),
-    icon: <Icon icon="alert" className={cx(cl['bk-toast__icon--error'])} />,
+    icon: <Icon icon="status-failed" className={cx(cl['bk-toast__icon--error'])} />,
     closeButton: closeButton === true ? <CloseToastButton /> : closeButton,
     ...restOptions,
   };
   return toast.error(content, updatedOptions);
 };
 
-const dismiss = (id?: string | number): boolean | void => toast.dismiss(id);
+const dismiss = (id?: string | number): void => toast.dismiss(id);
 
 export const notify = { success, info, error, dismiss };
 
