@@ -199,6 +199,8 @@ const runImportIcons = async (args: ScriptArgs) => {
   
   const files = await fs.readdir(pathIconsSource);
   for (const fileName of files) {
+    if (!fileName.includes('.svg')) { continue; }
+    
     const fileNameKebab = kebabCase(fileName.replace(/\.svg$/, ''));
     const iconName = ((): string => {
       if (Object.hasOwn(renamedIcons, fileNameKebab) && renamedIcons[fileNameKebab]) {

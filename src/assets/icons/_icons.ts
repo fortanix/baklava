@@ -1,6 +1,5 @@
 type IconDef = {};
 export const icons = {
-  '.ds-store': {},
   'account': {},
   'accounts': {},
   'activity': {},
