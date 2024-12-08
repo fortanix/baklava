@@ -184,6 +184,7 @@ const runImportIcons = async (args: ScriptArgs) => {
     'infrastructure': 'compute-node',
     'log-out': 'logout', // Make consistent with `login`
     'new-tab': 'link-external',
+    'new-query': 'conversation-new', // Note: 'query' is already used for a different concept/icon
   };
   
   const pathIconsSource = path.join(process.cwd(), './src/assets/icons_source');
