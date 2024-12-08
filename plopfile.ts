@@ -48,7 +48,7 @@ const componentTemplate = {
           isolation, so that anything inside a `.bk` is excluded from other style rules. In the future once `@scope` is
           supported in browsers it can be useful to do `@scope (.my-class) to (.bk) {}`.
   */
-  'Component.tsx': '\n' + dedent`
+  'Component.tsx': dedent`
     /* Copyright (c) Fortanix, Inc.
     |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
     |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -112,7 +112,7 @@ const componentTemplate = {
           with `prefers-reduced-motion: no-preference`. There are exceptions, e.g. if the animation has a functional
           purpose (like for a loading spinner).
   */
-  'Component.module.scss': '\n' + dedent`
+  'Component.module.scss': dedent`
     /* Copyright (c) Fortanix, Inc.
     |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
     |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -158,7 +158,7 @@ const componentTemplate = {
         > The first exported story in the module will be used as the "standard" story at the top of the generated docs
           page. This story should give the most typical example of the component.
   */
-  'Component.stories.tsx': '\n' + dedent`
+  'Component.stories.tsx': dedent`
     /* Copyright (c) Fortanix, Inc.
     |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
     |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */

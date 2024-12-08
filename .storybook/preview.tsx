@@ -49,6 +49,7 @@ const preview = {
             [
               'Panel',
               'Card',
+              'Accordion',
               'Alert',
               'Dialog',
             ],
