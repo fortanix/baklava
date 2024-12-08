@@ -243,7 +243,7 @@ export const CustomContentWithIconBefore: Story = {
   args: {
     ...PrimaryStory.args,
     children: <>
-      <Icon icon="success" className="icon"/>
+      <Icon icon="status-success" className="icon"/>
       Button with icon
     </>,
   },
