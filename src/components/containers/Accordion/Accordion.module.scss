@@ -1,0 +1,54 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+@use '../../../typography/Heading/Heading.mixins.scss' as heading;
+
+@layer baklava.components {
+  .bk-accordion {
+    @include bk.component-base(bk-accordion);
+    
+    /* FIXME: no accordion-specific semantic tokens for these */
+    --bk-accordion-background-color: #{bk.$theme-panel-background-default};
+    --bk-accordion-border-color: #{bk.$theme-panel-border-default};
+    --bk-accordion-text-color: #{bk.$theme-text-body-default};
+    
+    padding: 14px 16px bk.$spacing-4 bk.$spacing-4; /* FIXME: tokens */
+    
+    border-radius: 6px; /* FIXME: token */
+    border: 1px solid var(--bk-accordion-border-color); /* FIXME: token (for 1px border) */
+    background: var(--bk-accordion-background-color);
+    color: var(--bk-accordion-text-color);
+    
+    summary {
+      cursor: pointer;
+      
+      display: flex;
+      align-items: center;
+      gap: bk.$spacing-3;
+      
+      line-height: 1;
+      @include heading.h5;
+      
+      .bk-accordion__title {
+        @include bk.text-one-line;
+      }
+      
+      .bk-accordion__collapse-icon {
+        margin-inline-start: auto;
+        font-size: 1.2em;
+      }
+    }
+    
+    &[open] {
+      .bk-accordion__collapse-icon {
+        transform: rotate(0.5turn);
+      }
+    }
+    
+    .bk-accordion__content {
+      margin-top: calc(32px - 8px); /* FIXME */
+    }
+  }
+}
