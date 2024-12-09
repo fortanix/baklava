@@ -112,6 +112,7 @@ const printUsage = () => {
     Usage: automate.ts <cmd> <...args>
     
     Commands:
+      - github:create-release-pr
       - github:create-release
   `);
 };
