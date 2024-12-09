@@ -1,0 +1,66 @@
+
+@use 'sass:meta';
+
+@layer reset {
+  @include meta.load-css('./lib/reset.css');
+  
+  
+  /* Custom reset styling */
+  
+  // :focus-visible {
+  //   /* outline: calc(var(--bk-sizing-1) / 2) solid color-contrast(var(--bk-page-color-background) vs white, black); */
+  //   /*
+  //   Note:
+  //     - The following should be overridable by components (e.g. `outline-offset` might not always look good)
+  //     - Focusable elements should never use `outline` for any other purpose than focus outline
+  //     - Use `px` rather than `rem` because these should not scale dynamically
+  //   */
+  //   /* outline: 3px solid var(--bk-focus-outline-color); */
+  //   /* outline-offset: 3px; */
+  //   /* border-radius: 3px; */
+  // }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    :has(:target) {
+      /* Add enough scroll padding so anchors don't get hidden */
+      scroll-padding-top: calc(var(--bk-layout-header-height) + var(--bk-sizing-2));
+    }
+  }
+  
+  
+  
+  
+  /* https://www.youtube.com/watch?v=cCAtD_BAHNw */
+  @media (prefers-reduced-motion: no-preference) {
+    :has(:target) {
+      scroll-behavior: smooth;
+      scroll-padding-top: 1rem;
+    }
+  }
+  
+  /* Note: new-css-reset only reverts `dialog:modal`, but not `dialog`. This breaks transitions. */
+  dialog, dialog::backdrop {
+    all: revert;
+    box-sizing: border-box;
+    
+    /* Override dialog:-internal-dialog-in-top-layer UA styles */
+    max-height: none;
+    max-width: none;
+  }
+  dialog {
+    padding: 0;
+    border: none;
+    background: none;
+  }
+  
+  button {
+    cursor: pointer;
+  }
+  
+  /*
+  input, select, textarea {
+    -webkit-appearance: revert;
+    appearance: revert;
+  }
+  */  
+}

@@ -76,7 +76,7 @@ export default defineConfig({
         safari: 17 << 16 | 5 << 8, // Minimum for `light-dark()`
       },
       cssModules: {
-        // @ts-expect-error Will be fixed in vite v6
+        // @ts-expect-error This is fixed in vite v6, remove this line once we upgrade.
         grid: false, // Workaround for https://github.com/parcel-bundler/lightningcss/issues/762
       },
     },

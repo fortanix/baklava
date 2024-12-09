@@ -2,26 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@use '../src/styling/defs.scss' as bk;
-
-/* Cascade layer ordering */
-/*
-Note: this ordering must be injected before any other CSS rules.
-*/
-@layer normalize, reset, baklava, app, accessibility, storybook;
-@layer baklava.base, baklava.body-text, baklava.theming, baklava.components;
-
-@import '../src/styling/lib/normalize.css' layer(normalize);
-@import '../src/styling/lib/reset.css' layer(reset);
-@import '../src/styling/lib/reset-custom.css' layer(reset);
-
-@import '../src/styling/variables.css';
-@import '../src/styling/fonts.css';
-@import '../src/styling/context/theming.scss';
-@import '../src/styling/global.scss' layer(baklava.base);
-@import '../src/typography/BodyText/BodyText.module.scss';
-
-@import '../src/styling/accessibility.css' layer(accessibility);
+@use '../src/styling/fonts.scss';
+//@use '../src/styling/main.scss';
 
 
 /* Storybook-specific style overrides */
