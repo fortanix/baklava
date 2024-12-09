@@ -15,6 +15,10 @@ import * as fs from 'node:fs/promises';
 import { AsyncLocalStorage } from 'node:async_hooks';
 
 
+//
+// Setup
+//
+
 type Logger = Pick<Console, 'info' | 'error' | 'log'>;
 type Services = { logger: Logger };
 const servicesStorage = new AsyncLocalStorage<Services>();
@@ -26,12 +30,27 @@ const getServices = () => {
 
 type ScriptArgs = {
   values: {
-    help?: undefined | boolean,
-    silent?: undefined | boolean,
+    'help'?: undefined | boolean,
+    'silent'?: undefined | boolean,
+    'dry-run'?: undefined | boolean,
   },
   positionals: Array<string>,
 };
 
+
+//
+// Common
+//
+
+// Return a relative path to the given absolute path, relative to the current CWD
+const rel = (absolutePath: string): string => {
+  return path.relative(process.cwd(), absolutePath);
+};
+
+
+//
+// Commands
+//
 
 /*
 Takes CSS variables of the form `--<var-name>: <expr>;` (as exported from Figma) and converts it to Sass variables. We
@@ -101,9 +120,9 @@ const runParseTokens = async (args: ScriptArgs) => {
 const runCreateIconsManifest = async (args: ScriptArgs) => {
   const { logger } = getServices();
   
-  const pathIcons = path.join(process.cwd(), './src/assets/icons');
+  const pathIconsSource = path.join(process.cwd(), './src/assets/icons');
   
-  const files = await fs.readdir(pathIcons);
+  const files = await fs.readdir(pathIconsSource);
   const icons = [];
   for (const fileName of files) {
     const iconName = fileName.replace(/\.svg$/, '');
@@ -117,65 +136,105 @@ const runCreateIconsManifest = async (args: ScriptArgs) => {
     } as const satisfies Record<string, IconDef>;
   `;
   
-  const manifestPath = path.join(pathIcons, '_icons.ts');
-  logger.info(`Writing file: ${manifestPath}`)
+  const manifestPath = path.join(pathIconsSource, '_icons.ts');
+  logger.info(`Writing file: ${manifestPath}`);
   await fs.writeFile(manifestPath, manifest, { encoding: 'utf-8' });
 };
 
 const runImportIcons = async (args: ScriptArgs) => {
   const { logger } = getServices();
   
+  const isDryRun = args.values['dry-run'] ?? false;
+  
   const kebabCase = (string: string) => string
     .replace(/([a-z])([A-Z])/g, "$1-$2")
     .replace(/[\s_]+/g, '-')
     .toLowerCase();
   
-  const remove: Array<string> = [
-    // Remove other company/project icons
-    'apache',
+  const skippedIcons: Array<string> = [
+    'apache', // Skip other company/project icons
+    'ai-guardrails', // Same as "send"?
+    'complete', // Same as "success"?
+    'table-settings', // Same as "edit-params"?
   ];
-  const rename: Record<string, string> = {
+  const renamedIcons: Record<string, string> = {
     'ki': 'fortanix-ki',
-    'security-objects': 'security-object',
-    'carrot-down': 'caret-down', // Typo
-    'page-fwd': 'page-forward',
+    'security-objects': 'security-object', // Should be singular
+    'users': 'user', // Should be singular
+    'apps': 'app', // Should be singular
+    'groups': 'group', // Should be singular
+    'workflows': 'workflow', // Should be singular
+    'integrations': 'integration', // Should be singular
+    'scripts': 'script', // Should be singular
+    'plugins': 'plugin', // Should be singular
+    'page-fwd': 'page-forward', // Do not abbreviate
     'user-account': 'user-profile', // "User account" is a misleading term considering our information architecture
-    'users': 'user',
+    'alert-01': 'bell',
+    'alert-02': 'warning',
+    'assessment': 'badge-assessment', // Depicts a security badge specifically
+    'gen-ai': 'badge-dashboard', // Does not specifically depict anything to do with GenAI
+    'authentication': 'user-authentication', // Depicts a user specifically (as opposed to e.g. app automation)
+    'cancel': 'status-cancelled', // Visually related
+    'success': 'status-success', // Visually related
+    'failed': 'status-failed', // Visually related
+    'ellipsis': 'ellipsis-vertical',
+    'filter': 'filter-closed', // Make consistent with `filter-open`
+    'eye': 'eye-open', // Visually related
+    'hide': 'eye-closed', // Visually related
+    'infrastructure': 'compute-node',
+    'log-out': 'logout', // Make consistent with `login`
+    'new-tab': 'link-external',
+    'new-query': 'conversation-new', // Note: 'query' is already used for a different concept/icon
   };
   
-  const pathIcons = path.join(process.cwd(), './src/assets/icons_new');
-  const pathIconsOut = path.join(process.cwd(), './src/assets/icons');
+  const pathIconsSource = path.join(process.cwd(), './src/assets/icons_source');
+  const pathIconsTarget = path.join(process.cwd(), './src/assets/icons');
   
   // Delete existing icons
-  for (const file of await fs.readdir(pathIconsOut)) {
-    await fs.unlink(path.join(pathIconsOut, file));
+  logger.log(`Deleting existing icons in ${rel(pathIconsTarget)}`);
+  if (!isDryRun) {
+    for (const fileName of await fs.readdir(pathIconsTarget)) {
+      await fs.unlink(path.join(pathIconsTarget, fileName));
+    }
   }
   
-  const files = await fs.readdir(pathIcons);
+  const files = await fs.readdir(pathIconsSource);
   for (const fileName of files) {
+    if (!fileName.includes('.svg')) { continue; }
+    
     const fileNameKebab = kebabCase(fileName.replace(/\.svg$/, ''));
     const iconName = ((): string => {
-      if (Object.hasOwn(rename, fileNameKebab) && rename[fileNameKebab]) {
-        return rename[fileNameKebab];
+      if (Object.hasOwn(renamedIcons, fileNameKebab) && renamedIcons[fileNameKebab]) {
+        return renamedIcons[fileNameKebab];
       } else {
         return fileNameKebab;
       }
     })();
     
-    if (iconName in remove) {
+    if (skippedIcons.includes(iconName)) {
+      logger.log(`Skipping icon: ${iconName}`);
       continue;
     }
     
-    const pathSource = path.join(pathIcons, fileName);
-    const pathTarget = path.join(pathIconsOut, `${iconName}.svg`)
-    logger.log(`Copying '${pathSource}' to '${pathTarget}'`);
-    await fs.copyFile(pathSource, pathTarget);
+    const pathSource = path.join(pathIconsSource, fileName);
+    const pathTarget = path.join(pathIconsTarget, `${iconName}.svg`)
+    logger.log(`Copying '${rel(pathSource)}' to '${rel(pathTarget)}'`);
+    if (!isDryRun) {
+      await fs.copyFile(pathSource, pathTarget);
+    }
   }
   
   // Create `_icons.ts` manifest file
-  await runCreateIconsManifest(args);
+  logger.log(`Creating '_icons.ts' manifest file.`);
+  if (!isDryRun) {
+    await runCreateIconsManifest(args);
+  }
 };
 
+
+//
+// Run
+//
 
 const printUsage = () => {
   const { logger } = getServices();
@@ -196,8 +255,9 @@ export const run = async (argsRaw: Array<string>): Promise<void> => {
     args: argsRaw,
     allowPositionals: true,
     options: {
-      help: { type: 'boolean', short: 'h' },
-      silent: { type: 'boolean' },
+      'help': { type: 'boolean', short: 'h' },
+      'silent': { type: 'boolean' },
+      'dry-run': { type: 'boolean' },
     },
   });
   

@@ -20,13 +20,14 @@ To create a new release:
 
 - Create a release branch named `release/vx.y.z`.
 
-- Submit a release PR targeting the `master` branch:
+- Submit a release PR:
   - Bump the version in `package.json.js`.
   - Run `npm run install-project` to update the `package.json` and `package-lock.json` files.
-  - The commit message should be of the form "Release vx.y.z"
+  - Create a new PR targeting the `master` branch.
+  - The commit message should be of the form "Release vx.y.z".
   - The title of the release PR should be of the form "Release vx.y.z"
 
-- Once the PR is merged, create a new release:
+- Once the PR is merged, create a new GitHub release:
   - Go the GitHub repo, and navigate to ["Releases"](https://github.com/fortanix/baklava/releases).
   - Click ["Draft a new release"](https://github.com/fortanix/baklava/releases/new).
   - Under "Choose a new tag", create a new tag of the form `vx.y.z`.

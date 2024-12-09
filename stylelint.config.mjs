@@ -11,7 +11,7 @@ export default {
   'rules': {
     // Override `stylelint-config-standard-scss` rules
     'scss/load-partial-extension': 'always',
-    //'scss/at-import-partial-extension': 'always',
+    'scss/load-partial-extension': 'always',
     'comment-empty-line-before': null,
     'comment-whitespace-inside': null,
     'scss/comment-no-empty': null,

@@ -36,6 +36,6 @@
       color: var(--bk-panel-border-color);
       font-size: 1.4em;
     }
-    //> .bk-alert__message {}
+    > .bk-alert__message { --keep: ; }
   }
 }

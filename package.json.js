@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 
 const packageConfig = {
   name: '@fortanix/baklava',
-  version: '1.0.0-beta-20241129',
+  version: '1.0.0-beta-20241206',
   license: 'MPL-2.0',
   author: 'Fortanix',
   description: 'Fortanix Baklava design system',
@@ -38,15 +38,14 @@ const packageConfig = {
   scripts: {
     // Utilities
     'gen-package': 'node package.json.js', // Update `package.json`
-    // Use --force currently since we're using React v19 rc. Once peer deps are updated remove this.
-    'install-project': 'npm run gen-package && npm install --force',
-    'ci-project': 'npm ci --force',
+    'install-project': 'npm run gen-package && npm install', // Project-specific version of `npm install`
     
     // CLI
     'node': 'node --import=tsx',
     'repl': 'tsx',
     'plop': 'NODE_OPTIONS="--import tsx" plop',
     'import': 'tsx scripts/import.ts',
+    'automate': 'tsx scripts/automate.ts',
     
     // Library
     //'lib:build': '',
@@ -88,7 +87,7 @@ const packageConfig = {
     'glob': '^11.0.0',
     
     // Build
-    'vite': '^6.0.1',
+    'vite': '^5.4.11', // Cannot use vite v6, blocked by https://github.com/privatenumber/vite-css-modules/issues/13
     '@vitejs/plugin-react': '^4.3.4',
     'vite-plugin-dts': '^4.3.0',
     'vite-plugin-lib-inject-css': '^2.1.1',
@@ -98,48 +97,43 @@ const packageConfig = {
     'typescript': '^5.7.2',
     '@types/node': '^22.10.1',
     'stylelint': '^16.11.0',
-    'stylelint-config-standard-scss': '^13.1.0',
+    'stylelint-config-standard-scss': '^14.0.0',
     '@biomejs/biome': '^1.9.4',
     
     // Testing
-    'vitest': '^2.1.6',
-    '@vitest/ui': '^2.1.6',
+    'vitest': '^2.1.8',
+    '@vitest/ui': '^2.1.8',
     
     // Storybook
-    'storybook': '^8.4.6',
-    '@storybook/react': '^8.4.6',
-    '@storybook/react-vite': '^8.4.6',
-    '@storybook/blocks': '^8.4.6',
-    '@storybook/test': '^8.4.6',
-    '@storybook/addon-essentials': '^8.4.6',
-    '@storybook/addon-a11y': '^8.4.6',
-    '@storybook/addon-interactions': '^8.4.6',
-    '@storybook/addon-links': '^8.4.6',
-    '@storybook/addon-storysource': '^8.4.6',
+    'storybook': '^8.4.7',
+    '@storybook/react': '^8.4.7',
+    '@storybook/react-vite': '^8.4.7',
+    '@storybook/blocks': '^8.4.7',
+    '@storybook/test': '^8.4.7',
+    '@storybook/addon-essentials': '^8.4.7',
+    '@storybook/addon-a11y': '^8.4.7',
+    '@storybook/addon-interactions': '^8.4.7',
+    '@storybook/addon-links': '^8.4.7',
+    '@storybook/addon-storysource': '^8.4.7',
     '@storybook/addon-designs': '^8.0.4',
     '@chromatic-com/storybook': '^3.2.2', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     'storybook-dark-mode': '^4.0.2',
-    '@percy/cli': '^1.30.3',
+    '@percy/cli': '^1.30.4',
     '@percy/storybook': '^6.0.3',
     
     // Styling
     'vite-css-modules': '^1.6.0',
     'typescript-plugin-css-modules': '^5.0.1',
-    'sass': '^1.81.0',
-    //'postcss': '^8.4.34',
-    //'@types/postcss-mixins': '^9.0.5',
-    //'postcss-simple-vars': '^7.0.1',
-    //'postcss-mixins': '^10.0.1',
-    //'@csstools/postcss-light-dark-function': '^1.0.5',
+    'sass-embedded': '^1.82.0',
     'postcss-color-contrast': '^1.1.0',
     'lightningcss': '^1.28.2',
     
     // React
     //'@types/react': '^18.3.7',
     //'@types/react-dom': '^18.2.22',
-    '@types/react': 'npm:types-react@rc',
-    '@types/react-dom': 'npm:types-react-dom@rc',
+    '@types/react': '^19.0.1',
+    '@types/react-dom': '^19.0.1',
     
     '@types/react-table': '^7.7.20',
     
@@ -155,27 +149,35 @@ const packageConfig = {
     
     // React
     'classnames': '^2.5.1',
-    'react': '^19.0.0-rc.1',
-    'react-dom': '^19.0.0-rc.1',
+    'react': '^19.0.0',
+    'react-dom': '^19.0.0',
     'react-error-boundary': '^4.1.2',
     
     '@floating-ui/react': '^0.26.28',
     'react-toastify': '^10.0.6',
     'react-table': '^7.8.0',
     
-    'effect': '^3.10.19',
-    'react-hook-form': '^7.53.2',
+    'effect': '^3.11.3',
+    'react-hook-form': '^7.54.0',
     
     'optics-ts': '^2.4.1',
   },
-  overrides: {
-    // See https://react.dev/blog/2024/04/25/react-19-upgrade-guide#installing
-    '@types/react': 'npm:types-react@rc',
-    '@types/react-dom': 'npm:types-react-dom@rc',
-  },
   peerDependencies: {
-    'react': '>= 19.0.0-rc.1',
-    'react-dom': '>= 19.0.0-rc.1',
+    'react': '>= 19.0.0',
+    'react-dom': '>= 19.0.0',
+  },
+  peerDependenciesMeta: {},
+  overrides: {
+    // Issue: https://github.com/storybookjs/addon-designs/issues/246
+    '@storybook/addon-designs': {
+      'react': '$react',
+      'react-dom': '$react-dom',
+    },
+    // Issue: https://github.com/storybookjs/icons/issues/34
+    '@storybook/icons': {
+      'react': '$react',
+      'react-dom': '$react-dom',
+    },
   },
 };
 
