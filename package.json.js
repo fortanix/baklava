@@ -53,7 +53,7 @@ const packageConfig = {
     // App
     'serve:dev': 'vite --config=./vite.config.ts serve',
     //'build': 'vite --config=./vite.config.ts --emptyOutDir build && cp src/types/vite-env.d.ts dist && echo \'{"name": "@fortanix/baklava","main": "./baklava.js"}\' > dist/package.json',
-    'build': 'vite --config=./vite.config.ts --emptyOutDir build',
+    'build': 'tsc -b && vite --config=./vite.config.ts',
     
     // Storybook
     'storybook:serve': 'storybook dev -p 6006',

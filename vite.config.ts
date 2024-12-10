@@ -70,9 +70,10 @@ export default defineConfig({
       targets: {
         // Use minimum targets so that the `light-dark()` polyfill doesn't get applied, which is buggy.
         // https://github.com/parcel-bundler/lightningcss/issues/821
-        chrome: 123 << 16,
-        firefox: 120 << 16,
-        safari: 17 << 16 | 5 << 8,
+        //chrome: 123 << 16, // Minimum for `light-dark()`
+        chrome: 121 << 16, // FIXME: needed for Chromatic, since it currently uses Chrome v121
+        firefox: 120 << 16, // Minimum for `light-dark()`
+        safari: 17 << 16 | 5 << 8, // Minimum for `light-dark()`
       },
       cssModules: {
         grid: false, // Workaround for https://github.com/parcel-bundler/lightningcss/issues/762
