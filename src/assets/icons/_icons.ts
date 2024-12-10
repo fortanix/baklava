@@ -42,7 +42,7 @@ export const icons = {
   'home': {},
   'info': {},
   'install': {},
-  'integrations': {},
+  'integration': {},
   'key-link': {},
   'key': {},
   'knowledge-base': {},
