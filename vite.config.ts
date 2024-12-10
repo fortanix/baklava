@@ -76,6 +76,7 @@ export default defineConfig({
         safari: 17 << 16 | 5 << 8, // Minimum for `light-dark()`
       },
       cssModules: {
+        // @ts-expect-error Will be fixed in vite v6
         grid: false, // Workaround for https://github.com/parcel-bundler/lightningcss/issues/762
       },
     },
@@ -99,7 +100,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'app/lib.ts'),
       name: 'baklava',
       fileName: 'baklava',
-      cssFileName: 'baklava',
+      //cssFileName: 'baklava',
       formats: ['es'],
     },
     rollupOptions: {

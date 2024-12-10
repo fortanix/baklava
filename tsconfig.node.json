@@ -34,8 +34,8 @@
     "useDefineForClassFields": true, // Use latest ES spec version of class fields
     
     // Linting
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    //"noUnusedLocals": true,
+    //"noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
   },
