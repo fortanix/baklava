@@ -53,7 +53,7 @@ const packageConfig = {
     // App
     'serve:dev': 'vite --config=./vite.config.ts serve',
     //'build': 'vite --config=./vite.config.ts --emptyOutDir build && cp src/types/vite-env.d.ts dist && echo \'{"name": "@fortanix/baklava","main": "./baklava.js"}\' > dist/package.json',
-    'build': 'tsc -b && vite --config=./vite.config.ts',
+    'build': 'tsc -b && vite --config=./vite.config.ts build',
     
     // Storybook
     'storybook:serve': 'storybook dev -p 6006',
@@ -118,7 +118,7 @@ const packageConfig = {
     '@storybook/addon-storysource': '^8.4.7',
     '@storybook/addon-designs': '^8.0.4',
     'chromatic': '^11.20.0',
-    //'@chromatic-com/storybook': '^3.2.2', // Chromatic integration for Storybook
+    '@chromatic-com/storybook': '^3.2.2', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     'storybook-dark-mode': '^4.0.2',
     '@percy/cli': '^1.30.4',
