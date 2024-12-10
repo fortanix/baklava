@@ -156,35 +156,15 @@ const runImportIcons = async (args: ScriptArgs) => {
     'ai-guardrails', // Same as "send"?
     'complete', // Same as "success"?
     'table-settings', // Same as "edit-params"?
+    'cross-large',
+    'cross-small',
   ];
   const renamedIcons: Record<string, string> = {
-    'ki': 'fortanix-ki',
-    'security-objects': 'security-object', // Should be singular
-    'users': 'user', // Should be singular
-    'apps': 'app', // Should be singular
-    'groups': 'group', // Should be singular
-    'workflows': 'workflow', // Should be singular
-    'integrations': 'integration', // Should be singular
-    'scripts': 'script', // Should be singular
-    'plugins': 'plugin', // Should be singular
-    'page-fwd': 'page-forward', // Do not abbreviate
-    'user-account': 'user-profile', // "User account" is a misleading term considering our information architecture
-    'alert-01': 'bell',
-    'alert-02': 'warning',
-    'assessment': 'badge-assessment', // Depicts a security badge specifically
-    'gen-ai': 'badge-dashboard', // Does not specifically depict anything to do with GenAI
-    'authentication': 'user-authentication', // Depicts a user specifically (as opposed to e.g. app automation)
-    'cancel': 'status-cancelled', // Visually related
-    'success': 'status-success', // Visually related
-    'failed': 'status-failed', // Visually related
-    'ellipsis': 'ellipsis-vertical',
-    'filter': 'filter-closed', // Make consistent with `filter-open`
-    'eye': 'eye-open', // Visually related
-    'hide': 'eye-closed', // Visually related
-    'infrastructure': 'compute-node',
-    'log-out': 'logout', // Make consistent with `login`
-    'new-tab': 'link-external',
-    'new-query': 'conversation-new', // Note: 'query' is already used for a different concept/icon
+    'integrations': 'integration',
+    'zctivity': 'activity',
+    'hallucination-policy': 'hallucination',
+    'status-cancel': 'status-cancelled',
+    'cross-medium': 'cross',
   };
   
   const pathIconsSource = path.join(process.cwd(), './src/assets/icons_source');
