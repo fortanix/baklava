@@ -58,6 +58,7 @@ const packageConfig = {
     // Storybook
     'storybook:serve': 'storybook dev -p 6006',
     'storybook:build': 'storybook build --docs',
+    'chromatic': 'npx chromatic', // Must be run with `CHROMATIC_PROJECT_TOKEN` env variable (secret)
     
     // Static analysis
     'check:types': 'tsc --noEmit',
@@ -116,7 +117,8 @@ const packageConfig = {
     '@storybook/addon-links': '^8.4.7',
     '@storybook/addon-storysource': '^8.4.7',
     '@storybook/addon-designs': '^8.0.4',
-    '@chromatic-com/storybook': '^3.2.2', // Chromatic integration for Storybook
+    'chromatic': '^11.20.0',
+    //'@chromatic-com/storybook': '^3.2.2', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     'storybook-dark-mode': '^4.0.2',
     '@percy/cli': '^1.30.4',
