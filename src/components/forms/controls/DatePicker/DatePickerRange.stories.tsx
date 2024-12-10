@@ -26,8 +26,7 @@ export default {
   ],
 } satisfies Meta<DatePickerRangeArgs>;
 
-export const DatePickerRangeStory: Story = {
-  name: 'Date Picker with Dates Range',
+export const Standard: Story = {
   render: (args) => {
     const [startDate, setStartDate] = React.useState(new Date());
     const [endDate, setEndDate] = React.useState(new Date());

@@ -5,18 +5,18 @@
 @use '../../../../styling/defs.scss' as bk;
 
 // TODO: copied manually from old Baklava, where should we put this?
-$z-index--date-picker: 100;
+$z-index-date-picker: 100;
 
 // DATEPICKER override react-datepicker styles
 // Note: Sass do not support using suffixes (i.e. &__suffix) when using global selector
 :global(.react-datepicker-popper) {
-  z-index: $z-index--date-picker;
+  z-index: $z-index-date-picker;
 }
 
 :global(.react-datepicker) {
   width: 284px;
   text-align: center;
-  padding: 22px 26px 30px 26px;
+  padding: 22px 26px 30px;
   background-color: bk.$theme-card-background-default;
   border-radius: 6px;
   border: 1px solid bk.$theme-card-border-default;
@@ -55,13 +55,9 @@ $z-index--date-picker: 100;
 
 :global(.react-datepicker__navigation) {
   position: absolute;
-  top: 3.3rem;
   width: 3rem;
   border: none;
   text-indent: -999em;
-}
-
-:global(.react-datepicker__navigation) {
   mask: url('../../../../assets/icons/caret-down.svg') no-repeat center center;
   mask-size: 32px;
   background: bk.$theme-date-picker-text-default;
@@ -117,9 +113,9 @@ $navigation-distance: 1rem;
   color: bk.$theme-date-picker-text-selected;
 }
 
-:global(.react-datepicker__day:not([aria-disabled=true]):hover),
-:global(.react-datepicker__day--selected:not([aria-disabled=true]):hover),
-:global(.react-datepicker__day--keyboard-selected:not([aria-disabled=true]):hover) {
+:global(.react-datepicker__day:not([aria-disabled="true"]):hover),
+:global(.react-datepicker__day--selected:not([aria-disabled="true"]):hover),
+:global(.react-datepicker__day--keyboard-selected:not([aria-disabled="true"]):hover) {
   background: bk.$theme-date-picker-background-hover;
   border-radius: bk.$border-radius-circle;
   color: bk.$theme-date-picker-text-hover;
@@ -135,8 +131,8 @@ $navigation-distance: 1rem;
   border-radius: 0;
   color: bk.$theme-date-picker-text-selected;
 }
-:global(.react-datepicker__day--in-range:not([aria-disabled=true]):hover),
-:global(.react-datepicker__day--in-selecting-range:not([aria-disabled=true]):hover) {
+:global(.react-datepicker__day--in-range:not([aria-disabled="true"]):hover),
+:global(.react-datepicker__day--in-selecting-range:not([aria-disabled="true"]):hover) {
   background: bk.$theme-date-picker-background-hover;
   border-radius: 0;
   color: bk.$theme-date-picker-text-hover;
@@ -144,22 +140,22 @@ $navigation-distance: 1rem;
 
 :global(.react-datepicker__day--range-start),
 :global(.react-datepicker__day--selecting-range-start),
-:global(.react-datepicker__day--range-start:not([aria-disabled=true]):hover) {
+:global(.react-datepicker__day--range-start:not([aria-disabled="true"]):hover) {
   border-radius: bk.$border-radius-circle 0 0 bk.$border-radius-circle;
 }
 
 :global(.react-datepicker__day--range-end),
 :global(.react-datepicker__day--selecting-range-end),
-:global(.react-datepicker__day--range-end:not([aria-disabled=true]):hover) {
+:global(.react-datepicker__day--range-end:not([aria-disabled="true"]):hover) {
   border-radius: 0 bk.$border-radius-circle bk.$border-radius-circle 0;
 }
 
 :global(.react-datepicker__day--range-start.react-datepicker__day--range-end),
-:global(.react-datepicker__day--range-start.react-datepicker__day--range-end:not([aria-disabled=true]):hover) {
+:global(.react-datepicker__day--range-start.react-datepicker__day--range-end:not([aria-disabled="true"]):hover) {
   border-radius: bk.$border-radius-circle;
 }
 
-:global(.react-datepicker__day:not(&--selected):hover) {
+:global(.react-datepicker__day:not(.react-datepicker__day--selected):hover) {
   background: rgba(bk.$color-blueberry-500, 0.5); // TODO use proper variable
   border-radius: 50%;
 }

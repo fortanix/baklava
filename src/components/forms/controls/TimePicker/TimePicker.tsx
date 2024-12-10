@@ -33,7 +33,7 @@ export const TimePicker = ({ unstyled = false, className, date, onUpdate, ...pro
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTimeString = e.target.value;
     const [newHours, newMinutes] = newTimeString.split(':');
-    let newDate = new Date(date);
+    const newDate = new Date(date);
     newDate.setHours(Number(newHours));
     newDate.setMinutes(Number(newMinutes));
     onUpdate(newDate);
