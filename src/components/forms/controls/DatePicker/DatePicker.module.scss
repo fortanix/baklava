@@ -155,7 +155,8 @@ $navigation-distance: 1rem;
   border-radius: bk.$border-radius-circle;
 }
 
-:global(.react-datepicker__day:not(.react-datepicker__day--selected):hover) {
+/* stylelint-disable-next-line */
+:global(.react-datepicker__day:not(&--selected):hover) {
   background: rgba(bk.$color-blueberry-500, 0.5); // TODO use proper variable
   border-radius: 50%;
 }

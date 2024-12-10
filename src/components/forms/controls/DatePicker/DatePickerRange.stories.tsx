@@ -28,9 +28,9 @@ export default {
 
 export const Standard: Story = {
   render: (args) => {
-    const [startDate, setStartDate] = React.useState(new Date());
-    const [endDate, setEndDate] = React.useState(new Date());
-    const onChange = (dates: [Date, Date]) => {
+    const [startDate, setStartDate] = React.useState<Date | null>(new Date());
+    const [endDate, setEndDate] = React.useState<Date | null>(new Date());
+    const onChange = (dates: [Date | null, Date | null]) => {
       const [start, end] = dates;
       setStartDate(start);
       setEndDate(end);
@@ -43,8 +43,8 @@ export const Standard: Story = {
           {...args}
           selected={startDate}
           onChange={onChange}
-          startDate={startDate}
-          endDate={endDate}
+          startDate={startDate as Date}
+          endDate={endDate as Date}
           inline={true}
         />
         {/* with a fixed width to avoid content moving around while selecting */}
