@@ -18,25 +18,17 @@ export type TimePickerProps = ComponentProps<'input'> & {
   /** An optional class name to be appended to the class list. */
   className?: ClassNameArgument,
   
-  /** The date object to show / manipulate the time. */
-  date: Date,
+  /** A time string as defined to be used by input type="time", with the hh:mm format. */
+  time: string,
   
   /** A callback function to update the time. */
-  onUpdate: (date: Date) => void,
+  onUpdate: (time: string) => void,
 };
 
-export const TimePicker = ({ unstyled = false, className, date, onUpdate, ...propsRest }: TimePickerProps) => {
-  const hours = date.getHours().toString().padStart(2, '0');
-  const minutes = date.getMinutes().toString().padStart(2, '0');
-  const time = `${hours}:${minutes}`;
-
+export const TimePicker = ({ unstyled = false, className, time, onUpdate, ...propsRest }: TimePickerProps) => {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTimeString = e.target.value;
-    const [newHours, newMinutes] = newTimeString.split(':');
-    const newDate = new Date(date);
-    newDate.setHours(Number(newHours));
-    newDate.setMinutes(Number(newMinutes));
-    onUpdate(newDate);
+    onUpdate(newTimeString);
   };
   
   return (

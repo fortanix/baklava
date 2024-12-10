@@ -29,14 +29,13 @@ export default {
 export const TimePickerStory: Story = {
   name: 'Time Picker',
   render: (args) => {
-    const [date, setDate] = React.useState<Date>(new Date());
+    const [time, setTime] = React.useState<string>(`${new Date().getHours()}:${new Date().getMinutes()}`);
 
     return (
       <div>
-        <TimePicker date={date} onUpdate={setDate}/>
+        <TimePicker time={time} onUpdate={setTime}/>
         <p>
-          The selected time is:&nbsp;
-          {date.getHours().toString().padStart(2, '0')}:{date.getMinutes().toString().padStart(2, '0')}
+          The selected time is: {time}
         </p>
       </div>
     );
