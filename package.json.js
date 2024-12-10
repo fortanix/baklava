@@ -171,6 +171,11 @@ const packageConfig = {
       'react': '$react',
       'react-dom': '$react-dom',
     },
+    // Issue: https://github.com/Hacker0x01/react-datepicker/issues/5273
+    'react-datepicker': {
+      'react': '$react',
+      'react-dom': '$react-dom',
+    },
   },
 };
 

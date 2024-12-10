@@ -118,6 +118,10 @@
     "@storybook/icons": {
       "react": "$react",
       "react-dom": "$react-dom"
+    },
+    "react-datepicker": {
+      "react": "$react",
+      "react-dom": "$react-dom"
     }
   }
 }
