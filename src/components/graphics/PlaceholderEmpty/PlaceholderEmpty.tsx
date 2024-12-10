@@ -43,7 +43,7 @@ export const PlaceholderEmpty = (props: PlaceholderEmptyProps) => {
   const {
     unstyled = false,
     size = 'large',
-    icon = 'graph',
+    icon = 'file', // FIXME: need the icon from the Figma
     customIcon = null,
     title = '',
     subtitle = '',

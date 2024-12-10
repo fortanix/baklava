@@ -75,7 +75,7 @@ export const TooltipMedium: Story = {
     tooltip: <>
       <TooltipTitle>Title</TooltipTitle>
       <TooltipItem alert={true}>
-        <TooltipIcon icon="alert" />
+        <TooltipIcon icon="status-failed" />
         Lorem ipsum
       </TooltipItem>
       <TooltipItem>

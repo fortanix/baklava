@@ -60,6 +60,7 @@ export { Tab, Tabs } from '../src/components/navigations/Tabs/Tabs.tsx';
 
 // Overlays
 export { DropdownMenu } from '../src/components/overlays/DropdownMenu/DropdownMenu.tsx';
+export { DropdownMenuProvider } from '../src/components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
 export { Modal } from '../src/components/overlays/Modal/Modal.tsx';
 export { type ToastContent, ToastProvider, ToastMessage } from '../src/components/overlays/Toast/Toast.tsx';
 export { Tooltip } from '../src/components/overlays/Tooltip/Tooltip.tsx';

@@ -39,8 +39,8 @@ export const Alert = (props: AlertProps) => {
     switch (kind) {
       case 'info': return 'info';
       case 'warning': return 'warning';
-      case 'error': return 'alert';
-      case 'success': return 'success';
+      case 'error': return 'status-failed';
+      case 'success': return 'status-success';
       default: throw assertUnreachable(kind);
     }
   })();
