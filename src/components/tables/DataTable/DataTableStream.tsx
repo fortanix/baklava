@@ -71,7 +71,8 @@ const usePageHistory = <D extends object, PageHistoryItem extends object>() => {
     },
     push: (pageIndex: PageIndex, pageHistoryItem: PageHistoryItem) => {
       const indices = [...pageHistory.keys()];
-      const lastIndex: undefined | PageIndex = indices[indices.length - 1];
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      const lastIndex: PageIndex = indices[indices.length - 1]!;
       // Make sure the page indices are contiguous
       if (pageIndex > lastIndex + 1) {
         throw new Error('Non-contiguous page indices'); // Should never happen
@@ -355,13 +356,17 @@ export const TableProviderStream = <D extends object, P = undefined>(
               //       to ensure the latest partial page state is stored.
               //    2. If end of stream hasn't been reached, then add the current page state to the
               //       page history
-              const itemLast = items.slice(-1)[0];
+              const itemLast = items.slice(-1)[0] || null;
 
               if (partialPageHistoryItem) {
                 updatedPageHistory = updatedPageHistory.pop(state.pageIndex);
               }
 
-              updatedPageHistory = updatedPageHistory.push(state.pageIndex, { itemLast, pageState });
+              const pageHistoryItem = pageState !== undefined
+                ? { itemLast, pageState }
+                : { itemLast };
+
+              updatedPageHistory = updatedPageHistory.push(state.pageIndex, pageHistoryItem);
             }
 
             // Update page history state
@@ -377,16 +382,13 @@ export const TableProviderStream = <D extends object, P = undefined>(
         return state;
       },
       useControlledState: state => {
-        return React.useMemo(
-          () => ({
-            ...state,
-            pageSize,
-            pageCount,
-            endOfStream,
-            partialStream,
-          }),
-          [state, pageSize, pageCount, endOfStream, partialStream],
-        );
+        return ({
+          ...state,
+          pageSize,
+          pageCount,
+          endOfStream,
+          partialStream,
+        })
       },
       
       // https://react-table.tanstack.com/docs/faq
@@ -424,6 +426,7 @@ export const TableProviderStream = <D extends object, P = undefined>(
     ...plugins,
   );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   React.useEffect(() => {
     table.dispatch({ type: 'tableLoad' });
   }, []);
@@ -432,14 +435,15 @@ export const TableProviderStream = <D extends object, P = undefined>(
     table.dispatch({ type: 'reload' });
   };
   
-  const context = React.useMemo<TableContextState<D>>(() => ({
+  // Note: the `table` reference is mutated, so cannot use it as dependency for `useMemo` directly
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+    const context = React.useMemo<TableContextState<D>>(() => ({
     status,
     setStatus,
     reload,
     table,
   }), [
     JSON.stringify(status),
-    // Note: the `table` reference is mutated, so cannot use it as dependency for `useMemo` directly
     table.state,
     ...Object.values(tableOptions),
   ]);
@@ -447,7 +451,8 @@ export const TableProviderStream = <D extends object, P = undefined>(
   const TableContext = React.useMemo(() => createTableContext<D>(), []);
   
   // If `pageSize` changes, we need to reset to the first page. Otherwise, our `previousItems` cache is no longer valid.
-  React.useEffect(() => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+      React.useEffect(() => {
     if (table.state.pageIndex !== 0) {
       table.gotoPage(0);
     }

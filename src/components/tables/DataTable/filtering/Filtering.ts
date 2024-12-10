@@ -73,33 +73,39 @@ const matchesFieldQuery = <S extends Field>(
       const fieldAsArray = field as Array<TypeOfFieldSpec<ArrayFieldSpec['subfield']>>; // Unsafe but guaranteed by `S`
 
       if ('$eq' in operation) {
-        return fieldAsArray.every(field => (operation.$eq as typeof fieldAsArray).indexOf(field) >= 0);
+        const arr = operation.$eq as Primitive[];
+        return fieldAsArray.every(element => arr.indexOf(element as Primitive) >= 0);
       } if ('$ne' in operation) {
-        return fieldAsArray.every(field => (operation.$ne as typeof fieldAsArray).indexOf(field) < 0);
+        const arr = operation.$ne as Primitive[];
+        return fieldAsArray.every(element => arr.indexOf(element as Primitive) < 0);
       } if ('$all' in operation) {
         const elementFieldSpec = fieldSpec.subfield;
-        return fieldAsArray.every(element => {
-          if ('$and' in operation.$all && Array.isArray(operation.$all.$and)) {
-            const operations = operation.$all.$and;
-            return operations.every(operation => matchesFieldQuery(elementFieldSpec, element, operation));
-          } if ('$or' in operation.$all && Array.isArray(operation.$all.$or)) {
-            const operations = operation.$all.$or;
-            return operations.some(operation => matchesFieldQuery(elementFieldSpec, element, operation));
-          }
-          throw new TypeError('Unsupported array operation');
-        });
+        if ('$and' in operation.$all && Array.isArray(operation.$all.$and)) {
+          const operations = operation.$all.$and;
+          return fieldAsArray.every(element =>
+            operations.every(op => matchesFieldQuery(elementFieldSpec, element, op))
+          );
+        } if ('$or' in operation.$all && Array.isArray(operation.$all.$or)) {
+          const operations = operation.$all.$or;
+          return fieldAsArray.every(element =>
+            operations.some(op => matchesFieldQuery(elementFieldSpec, element, op))
+          );
+        }
+        throw new TypeError('Unsupported array operation');
       } if ('$any' in operation) {
-        return fieldAsArray.some(element => {
-          const elementFieldSpec = fieldSpec.subfield;
-          if ('$and' in operation.$any && Array.isArray(operation.$any.$and)) {
-            const operations = operation.$any.$and;
-            return operations.every(operation => matchesFieldQuery(elementFieldSpec, element, operation));
-          } if ('$or' in operation.$any && Array.isArray(operation.$any.$or)) {
-            const operations = operation.$any.$or;
-            return operations.some(operation => matchesFieldQuery(elementFieldSpec, element, operation));
-          }
-          throw new TypeError('Unsupported array operation');
-        });
+        const elementFieldSpec = fieldSpec.subfield;
+        if ('$and' in operation.$any && Array.isArray(operation.$any.$and)) {
+          const operations = operation.$any.$and;
+          return fieldAsArray.some(element =>
+            operations.every(op => matchesFieldQuery(elementFieldSpec, element, op))
+          );
+        } if ('$or' in operation.$any && Array.isArray(operation.$any.$or)) {
+          const operations = operation.$any.$or;
+          return fieldAsArray.some(element =>
+            operations.some(op => matchesFieldQuery(elementFieldSpec, element, op))
+          );
+        }
+        throw new TypeError('Unsupported array operation');
       }
       throw new TypeError('Unknown query operator');
     }
@@ -107,7 +113,8 @@ const matchesFieldQuery = <S extends Field>(
       const fieldAsDictionary = field as string; // Unsafe but guaranteed by `S`
 
       if ('$all' in operation) {
-        return fieldAsDictionary.includes(Object.values(operation.$all)[0]);
+        const val = Object.values(operation.$all)[0];
+        return val !== undefined && fieldAsDictionary.includes(String(val));
       }
       throw new TypeError('Unknown query operator');
     }
@@ -119,9 +126,9 @@ const matchesFieldQuery = <S extends Field>(
       } if ('$nin' in operation) {
         return operation.$nin.indexOf(fieldAsEnum) === -1;
       } if ('$eq' in operation) {
-        return fieldAsEnum.includes(operation.$eq as string);
+        return fieldAsEnum.includes(String(operation.$eq));
       } if ('$ne' in operation) {
-        return !fieldAsEnum.includes(operation.$ne as string);
+        return !fieldAsEnum.includes(String(operation.$ne));
       }
       throw new TypeError('Unknown query operator');
     }
@@ -130,7 +137,8 @@ const matchesFieldQuery = <S extends Field>(
 
       if ('$all' in operation) {
         return Object.values(fieldAsRecord).every(element => {
-          const elementFieldSpec = Object.values(fieldSpec.fields)[0];
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
+          const elementFieldSpec = Object.values(fieldSpec.fields)[0]!;
           if ('$and' in operation.$all && Array.isArray(operation.$all.$and)) {
             const operations = operation.$all.$and;
             return operations.every(operation => matchesFieldQuery(elementFieldSpec, element, operation));
@@ -138,17 +146,20 @@ const matchesFieldQuery = <S extends Field>(
             const operations = operation.$all.$or;
             return operations.some(operation => matchesFieldQuery(elementFieldSpec, element, operation));
           }
-          const fieldName: keyof RecordFieldSpec['fields'] = Object.keys(operation.$all)[0];
-          const operations: FieldQuery['operation'] = Object.values(operation.$all)[0];
+          const allKey = Object.keys(operation.$all)[0];
+          const fieldName = allKey as keyof RecordFieldSpec['fields'];
+          const operations = Object.values(operation.$all)[0] as FieldQuery['operation'];
           if (typeof element === 'object' && element !== null && !Array.isArray(element)) {
             const item = element as Record<string, string>;
-            return matchesFieldQuery(elementFieldSpec, item[fieldName], operations);
+            // biome-ignore lint/style/noNonNullAssertion: <explanation>
+            return matchesFieldQuery(elementFieldSpec, item[fieldName]!, operations);
           }
           return matchesFieldQuery(elementFieldSpec, element, operations);
         });
       } if ('$any' in operation) {
         return Object.values(fieldAsRecord).some(element => {
-          const elementFieldSpec = Object.values(fieldSpec.fields)[0];
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
+          const elementFieldSpec = Object.values(fieldSpec.fields)[0]!;
           if ('$and' in operation.$any && Array.isArray(operation.$any.$and)) {
             const operations = operation.$any.$and;
             return operations.every(operation => matchesFieldQuery(elementFieldSpec, element, operation));
@@ -156,11 +167,13 @@ const matchesFieldQuery = <S extends Field>(
             const operations = operation.$any.$or;
             return operations.some(operation => matchesFieldQuery(elementFieldSpec, element, operation));
           }
-          const fieldName: keyof RecordFieldSpec['fields'] = Object.keys(operation.$any)[0];
-          const operations: FieldQuery['operation'] = Object.values(operation.$any)[0];
+          const anyKey = Object.keys(operation.$any)[0];
+          const fieldName = anyKey as keyof RecordFieldSpec['fields'];
+          const operations = Object.values(operation.$any)[0] as FieldQuery['operation'];
           if (typeof element === 'object' && element !== null && !Array.isArray(element)) {
             const item = element as Record<string, string>;
-            return matchesFieldQuery(elementFieldSpec, item[fieldName], operations);
+            // biome-ignore lint/style/noNonNullAssertion: <explanation>
+            return matchesFieldQuery(elementFieldSpec, item[fieldName]!, operations);
           }
           return matchesFieldQuery(elementFieldSpec, element, operations);
         });
@@ -175,7 +188,7 @@ const getFieldValue = <S extends Fields>(fieldSpec: Field, item: TypeOfFieldsSpe
   if (fieldSpec.accessor) {
     return fieldSpec.accessor(item);
   } if (fieldName !== '') {
-    return item[fieldName];
+    return item[fieldName as keyof TypeOfFieldsSpec<S>];
   }
   throw new TypeError('Unable to get field value, expected either `accessor` or `fieldName` to be configured');
 };
@@ -194,8 +207,9 @@ export const filterByQuery = <S extends Fields>(
         return query.every(fieldQuery => {
           const fieldName: null | keyof S = fieldQuery.fieldName;
           if (fieldName === null) { return true; }
-          const fieldSpec: Field = spec[fieldName];
-          const fieldValue = getFieldValue(fieldSpec, item, fieldName) as TypeOfFieldSpec<typeof fieldSpec>;
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
+          const fieldSpec: Field = spec[fieldName]!;
+          const fieldValue = getFieldValue(fieldSpec, item, fieldName as string) as TypeOfFieldSpec<typeof fieldSpec>;
           return matchesFieldQuery(fieldSpec, fieldValue, fieldQuery.operation);
         });
       })

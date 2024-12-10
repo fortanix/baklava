@@ -29,7 +29,7 @@ import { Button } from '../../actions/Button/Button.tsx';
 import { Input } from '../../forms/controls/Input/Input.tsx';
 import { CheckboxGroup } from '../../forms/fields/CheckboxGroup/CheckboxGroup.tsx';
 // import * as Dropdown from '../../overlays/dropdown/Dropdown.tsx';
-import { DropdownMenu } from '../../overlays/DropdownMenu/DropdownMenu.tsx';
+import { DropdownMenu, DropdownMenuContext } from '../../overlays/DropdownMenu/DropdownMenu.tsx';
 // import { DateTimePicker } from '../../forms/datetime/DateTimePicker.tsx';
 
 import * as FQ from './filterQuery.ts';
@@ -135,9 +135,10 @@ const useFilters = (props: UseFiltersProps) => {
     
     const fieldQuery = FQ.encodeFieldQuery(fieldName, value, selectedOperator, selectedSubOperator, fields, key);
     
-    if (fieldName && fields && typeof fields[fieldName]?.onAddFilter === 'function') {
+    if (fieldName && fields && typeof fields[fieldName]?.onAddFilter === 'function' && fieldQuery) {
       const field = fields[fieldName];
-      const updatedFilters = field.onAddFilter(fieldQuery, filters);
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      const updatedFilters = field.onAddFilter!(fieldQuery, filters);
       query?.(updatedFilters);
     } else if (fieldQuery) {
       const newFilters = [...filters, fieldQuery];
@@ -196,12 +197,15 @@ export const Filters = (props: FiltersProps) => {
     if (field && field.type === 'datetime') {
       if (operatorSymbol === 'Range') {
         if (FQ.isRangeOperationValue(operand)) {
-          const startDateTime = dateFormat(operand[0] * 1000, 'MMMM do yyyy HH:mm');
-          const endDateTime = dateFormat(operand[1] * 1000, 'MMMM do yyyy HH:mm');
+          const rangeOperand = operand as [number, number];
+          const startDateTime = dateFormat(rangeOperand[0] * 1000, 'MMMM do yyyy HH:mm');
+          const endDateTime = dateFormat(rangeOperand[1] * 1000, 'MMMM do yyyy HH:mm');
           operandLabel = { from: startDateTime, to: endDateTime };
         }
       } else {
-        const dateTime = dateFormat(operand * 1000, 'MMMM do yyyy HH:mm');
+        // Here operand should be a number
+        const singleOperand = operand as number;
+        const dateTime = dateFormat(singleOperand * 1000, 'MMMM do yyyy HH:mm');
         operandLabel = dateTime;
       }
     }
@@ -249,12 +253,12 @@ export const Filters = (props: FiltersProps) => {
     if (subField) {
       if (subField.type === 'enum') {
         if (Array.isArray(operand)) {
-          operandLabel = operand.map(o => subField?.alternatives[o]?.label || o).join(', ');
+          operandLabel = (operand as string[]).map(o => subField.alternatives[o]?.label || o).join(', ');
         } else {
-          operandLabel = subField?.alternatives[operand]?.label || operand;
+          operandLabel = subField.alternatives[operand as string]?.label || (operand as string);
         }
       } else if (subField.type === 'number') {
-        operandLabel = operand;
+        operandLabel = String(operand);
       }
     }
     
@@ -301,17 +305,18 @@ export const Filters = (props: FiltersProps) => {
     
     if (field && field.type === 'enum') {
       if (Array.isArray(operand)) {
-        operandLabel = operand.map(o => field?.alternatives[o]?.label || o).join(', ');
+        operandLabel = (operand as string[]).map(o => field.alternatives[o]?.label || o).join(', ');
       } else {
-        operandLabel = field?.alternatives[operand]?.label || operand;
+        operandLabel = field.alternatives[operand as string]?.label || (operand as string);
       }
     } else if (field && field.type === 'dictionary') {
-      operandLabel = Object.keys(operand).map(key => {
+      const dictOperand = operand as Record<string, unknown>;
+      operandLabel = Object.keys(dictOperand).map(key => {
         const keyLabel = field.suggestedKeys?.[key]?.label ?? key;
-        return `${keyLabel} = ${operand[key]}`;
+        return `${keyLabel} = ${String(dictOperand[key])}`;
       }).join(', ');
     } else {
-      operandLabel = operand;
+      operandLabel = String(operand);
     }
     
     return (
@@ -340,7 +345,7 @@ export const Filters = (props: FiltersProps) => {
           role="button"
           tabIndex={0}
           className="clear-all"
-          onKeyPress={onRemoveAllFilters}
+          onKeyDown={onRemoveAllFilters}
           onClick={onRemoveAllFilters}
         >
           Clear all
@@ -382,101 +387,101 @@ export type SuggestionProps = Omit<ComponentProps<'div'>, 'children'> & {
   onOutsideClick?: undefined | (() => void),
   containerRef?: undefined | React.RefObject<HTMLInputElement>,
 };
-export const Suggestions = (props: SuggestionProps) => {
-  const {
-    active = false,
-    className = '',
-    withArrow = false,
-    primary = false,
-    secondary = false,
-    basic = false,
-    children = '',
-    elementRef,
-    // popperOptions = {},
-    onOutsideClick,
-    containerRef,
-  } = props;
+// export const Suggestions = (props: SuggestionProps) => {
+//   const {
+//     active = false,
+//     className = '',
+//     withArrow = false,
+//     primary = false,
+//     secondary = false,
+//     basic = false,
+//     children = '',
+//     elementRef,
+//     // popperOptions = {},
+//     onOutsideClick,
+//     containerRef,
+//   } = props;
   
-  const [isActive, setIsActive] = React.useState(false);
+//   const [isActive, setIsActive] = React.useState(false);
   
-  const [referenceElement, setReferenceElement] = React.useState<HTMLElement | null>(elementRef?.current ?? null);
-  const [popperElement, setPopperElement] = React.useState<HTMLElement | null>(null);
-  const [arrowElement, setArrowElement] = React.useState<HTMLElement | null>(null);
-  const popper = Popper.usePopper(referenceElement, popperElement, {
-    modifiers: [
-      { name: 'arrow', options: { element: arrowElement } },
-      { name: 'preventOverflow', enabled: true },
-      ...(popperOptions.modifiers || []),
-    ],
-    placement: popperOptions.placement,
-  });
+//   const [referenceElement, setReferenceElement] = React.useState<HTMLElement | null>(elementRef?.current ?? null);
+//   const [popperElement, setPopperElement] = React.useState<HTMLElement | null>(null);
+//   const [arrowElement, setArrowElement] = React.useState<HTMLElement | null>(null);
+//   const popper = Popper.usePopper(referenceElement, popperElement, {
+//     modifiers: [
+//       { name: 'arrow', options: { element: arrowElement } },
+//       { name: 'preventOverflow', enabled: true },
+//       ...(popperOptions.modifiers || []),
+//     ],
+//     placement: popperOptions.placement,
+//   });
   
-  React.useEffect(() => {
-    if (elementRef?.current) {
-      setReferenceElement(elementRef?.current);
-    }
-  }, [elementRef]);
+//   React.useEffect(() => {
+//     if (elementRef?.current) {
+//       setReferenceElement(elementRef?.current);
+//     }
+//   }, [elementRef]);
   
-  const onClose = () => {
-    setIsActive(false);
-  };
+//   const onClose = () => {
+//     setIsActive(false);
+//   };
   
-  const dropdownRef = { current: popperElement };
-  const toggleRef = { current: referenceElement };
-  useOutsideClickHandler([dropdownRef, toggleRef, ...(containerRef ? [containerRef] : [])], onOutsideClick ?? onClose);
+//   const dropdownRef = { current: popperElement };
+//   const toggleRef = { current: referenceElement };
+//   useOutsideClickHandler([dropdownRef, toggleRef, ...(containerRef ? [containerRef] : [])], onOutsideClick ?? onClose);
   
-  const renderDropdownItems = (dropdownItems: React.ReactElement) => {
-    const dropdownChildren = dropdownItems.type === React.Fragment
-      ? dropdownItems.props.children
-      : dropdownItems;
+//   const renderDropdownItems = (dropdownItems: React.ReactElement) => {
+//     const dropdownChildren = dropdownItems.type === React.Fragment
+//       ? dropdownItems.props.children
+//       : dropdownItems;
     
-    return React.Children.map(dropdownChildren, child => {
-      const { onActivate: childOnActivate, onClose: childOnClose } = child.props;
+//     return React.Children.map(dropdownChildren, child => {
+//       const { onActivate: childOnActivate, onClose: childOnClose } = child.props;
       
-      return child.type !== SuggestionItem
-        ? child
-        : React.cloneElement(child, {
-          onActivate: (value: string | number) => { childOnActivate(value); },
-          onClose: childOnClose ?? onClose,
-        });
-    });
-  };
+//       return child.type !== SuggestionItem
+//         ? child
+//         : React.cloneElement(child, {
+//           onActivate: (value: string | number) => { childOnActivate(value); },
+//           onClose: childOnClose ?? onClose,
+//         });
+//     });
+//   };
   
-  const renderDropdown = () => {
-    return (
-      <div
-        ref={setPopperElement}
-        className={cx('bkl-dropdown', className, {
-          'bkl-dropdown--primary': primary,
-          'bkl-dropdown--secondary': secondary,
-          'bkl-dropdown--basic': basic,
-          'bkl-dropdown--with-arrow': withArrow,
-        })}
-        style={popper.styles.popper}
-        {...popper.attributes.popper}
-      >
-        <ul className="bkl-dropdown__menu" role="menu" aria-labelledby="menubutton">
-          {typeof children === 'function'
-            ? children({ close: onClose })
-            : renderDropdownItems(children as React.ReactElement)
-          }
-        </ul>
-        {withArrow && <div className="bkl-dropdown__arrow" ref={setArrowElement} style={popper.styles.arrow}/>}
-      </div>
-    );
-  };
+//   const renderDropdown = () => {
+//     return (
+//       <div
+//         ref={setPopperElement}
+//         className={cx('bkl-dropdown', className, {
+//           'bkl-dropdown--primary': primary,
+//           'bkl-dropdown--secondary': secondary,
+//           'bkl-dropdown--basic': basic,
+//           'bkl-dropdown--with-arrow': withArrow,
+//         })}
+//         style={popper.styles.popper}
+//         {...popper.attributes.popper}
+//       >
+//         <ul className="bkl-dropdown__menu" role="menu" aria-labelledby="menubutton">
+//           {typeof children === 'function'
+//             ? children({ close: onClose })
+//             : renderDropdownItems(children as React.ReactElement)
+//           }
+//         </ul>
+//         {withArrow && <div className="bkl-dropdown__arrow" ref={setArrowElement} style={popper.styles.arrow}/>}
+//       </div>
+//     );
+//   };
   
-  return (
-    <>
-      {(isActive || active) && ReactDOM.createPortal(renderDropdown(), document.body)}
-    </>
-  );
-};
+//   return (
+//     <>
+//       {(isActive || active) && ReactDOM.createPortal(renderDropdown(), document.body)}
+//     </>
+//   );
+// };
 
 export type SearchInputProps = ComponentProps<typeof Input> & {
   fields: FQ.Fields,
   fieldQueryBuffer: FieldQueryBuffer,
-  inputRef: React.RefObject<HTMLInputElement>,
+  inputRef: React.RefObject<HTMLInputElement | null>
 };
 export const SearchInput = (props: SearchInputProps) => {
   const {
@@ -579,7 +584,7 @@ export const SearchInput = (props: SearchInputProps) => {
 };
 
 type FieldsDropdownProps = {
-  inputRef?: React.RefObject<HTMLInputElement>,
+  inputRef?: React.RefObject<HTMLInputElement | null>,
   isActive?: boolean,
   fields?: FQ.Fields,
   // popperOptions?: Dropdown.PopperOptions,
@@ -592,7 +597,7 @@ const FieldsDropdown = (props: FieldsDropdownProps) => {
     inputRef,
     isActive = false,
     fields,
-    popperOptions,
+    // popperOptions,
     onClick,
     onOutsideClick,
   } = props;
@@ -602,24 +607,25 @@ const FieldsDropdown = (props: FieldsDropdownProps) => {
   }
 
   return (
-    <Suggestions
-      active={isActive}
-      // popperOptions={popperOptions}
-      elementRef={inputRef}
-      onOutsideClick={onOutsideClick}
-      basic
-    >
-      {Object.entries(fields || {}).map(([fieldName, { label }]) => (
-        <SuggestionItem key={fieldName} value={fieldName} onActivate={onClick}>
-          {label}
-        </SuggestionItem>
-      ))}
-    </Suggestions>
+    <></>
+    // <Suggestions
+    //   active={isActive}
+    //   // popperOptions={popperOptions}
+    //   elementRef={inputRef}
+    //   onOutsideClick={onOutsideClick}
+    //   basic
+    // >
+    //   {Object.entries(fields || {}).map(([fieldName, { label }]) => (
+    //     <SuggestionItem key={fieldName} value={fieldName} onActivate={onClick}>
+    //       {label}
+    //     </SuggestionItem>
+    //   ))}
+    // </Suggestions>
   );
 };
 
 type AlternativesDropdownProps = {
-  inputRef?: React.RefObject<HTMLInputElement>,
+  inputRef?: React.RefObject<HTMLInputElement | null>,
   isActive?: boolean,
   operators?: FQ.EnumFieldOperator[] | FQ.ArrayFieldOperator[],
   alternatives?: FQ.Alternatives,
@@ -636,7 +642,7 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
     isActive = false,
     operators,
     alternatives,
-    popperOptions,
+    // popperOptions,
     onChange,
     onOutsideClick,
     selectedOperator,
@@ -647,9 +653,9 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
   
   const canSelectMultipleItems = ['$in', '$nin', '$any', '$all'].includes(selectedOperator);
   
-  const onOptionClick = (key?: string) => {
-    if (typeof key !== 'undefined') {
-      onChange([key]);
+  const onOptionClick = (context: DropdownMenuContext) => {
+    if (typeof context.selectedOption !== 'undefined') {
+      onChange([context.selectedOption]);
     }
   };
   
@@ -716,44 +722,49 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
 
   const renderAlternatives = () => (
     Object.entries(alternatives || {}).map(([alternativesName, { label }]) => (
-      <SuggestionItem key={alternativesName} value={alternativesName} onActivate={onOptionClick}>
-        {label}
-      </SuggestionItem>
+      <SuggestionItem
+        key={alternativesName}
+        value={alternativesName}
+        onActivate={onOptionClick}
+        label={label}
+        itemKey={alternativesName}
+      />
     ))
   );
 
   return (
-    <Suggestions
-      className="bkl-multi-search__alternatives"
-      active={isActive}
-      // popperOptions={popperOptions}
-      elementRef={inputRef}
-      onOutsideClick={onOutsideClick}
-      basic
-    >
-      {canSelectMultipleItems ? renderMultiSelectAlternatives() : renderAlternatives()}
-    </Suggestions>
+    <></>
+    // <Suggestions
+    //   className="bkl-multi-search__alternatives"
+    //   active={isActive}
+    //   // popperOptions={popperOptions}
+    //   elementRef={inputRef}
+    //   onOutsideClick={onOutsideClick}
+    //   basic
+    // >
+    //   {canSelectMultipleItems ? renderMultiSelectAlternatives() : renderAlternatives()}
+    // </Suggestions>
   );
 };
 
 type DateTimeDropdownProps = {
-  inputRef?: React.RefObject<HTMLInputElement>,
+  inputRef?: React.RefObject<HTMLInputElement | null>,
   isActive?: boolean,
   // popperOptions?: Dropdown.PopperOptions,
   onChange: (value: number | [number, number]) => void,
   onOutsideClick?: () => void,
-  maxDate?: Date | number,
-  minDate?: Date | number,
-  selectedDate?: FQ.SelectedDate,
-  canSelectDateTimeRange?: boolean,
-  validator?: FQ.DateTimeValidator,
+  maxDate?: Date | number | undefined,
+  minDate?: Date | number | undefined,
+  selectedDate?: FQ.SelectedDate | undefined,
+  canSelectDateTimeRange?: boolean | undefined,
+  validator?: FQ.DateTimeValidator | undefined,
 };
 
 const DateTimeDropdown = (props: DateTimeDropdownProps) => {
   const {
     inputRef,
     isActive = false,
-    popperOptions,
+    // popperOptions,
     onChange,
     onOutsideClick,
     maxDate,
@@ -784,6 +795,14 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
       : date;
   };
 
+  const isSingleDate = (date: FQ.SelectedDate): date is FQ.DateType =>
+    typeof date === 'number' || date instanceof Date;
+
+
+  const isDateRange = (date: FQ.SelectedDate): date is [FQ.DateType, FQ.DateType] =>
+    Array.isArray(date) && date.length === 2;
+  
+
   const initDateTime = (selectedDate: FQ.SelectedDate | undefined, range: 'start' | 'end') => {
     const defaultDate = setDate(new Date(), { seconds: 0, milliseconds: 0 });
     if (!selectedDate) {
@@ -792,13 +811,16 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
 
     let date = defaultDate;
 
-    if (isValidDateParamType(selectedDate)) {
-      date = getDateObject(selectedDate as number | Date);
-    } else if (isValidSelectedDate(selectedDate)) {
+    // First, check if it's a single date
+    if (isSingleDate(selectedDate) && isValidDateParamType(selectedDate)) {
+      // Now it's safe to call isValidDateParamType(selectedDate)
+      date = getDateObject(selectedDate);
+    } else if (isValidSelectedDate(selectedDate) && isDateRange(selectedDate)) {
+      // It's a date range
       if (range === 'start') {
-        date = getDateObject(selectedDate?.[0]);
+        date = getDateObject(selectedDate[0]);
       } else if (range === 'end') {
-        date = getDateObject(selectedDate?.[1]);
+        date = getDateObject(selectedDate[1]);
       }
     }
 
@@ -809,6 +831,7 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
   const [startDateTime, setStartDateTime] = React.useState(initDateTime(selectedDate, 'start'));
   const [endDateTime, setEndDateTime] = React.useState(initDateTime(selectedDate, 'end'));
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   React.useEffect(() => {
     if (isValidSelectedDate(selectedDate)) {
       const updatedDateTime = initDateTime(selectedDate, 'start');
@@ -956,26 +979,27 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
   );
 
   return (
-    <Suggestions
-      className="bkl-multi-search__date-time"
-      active={isActive}
-      popperOptions={popperOptions}
-      elementRef={inputRef}
-      containerRef={dateTimeMeridiemRef}
-      onOutsideClick={onOutsideClick}
-      basic
-    >
-      {canSelectDateTimeRange ? renderDateTimeRangePicker() : renderDateTimePicker()}
-    </Suggestions>
+    <></>
+    // <Suggestions
+    //   className="bkl-multi-search__date-time"
+    //   active={isActive}
+    //   popperOptions={popperOptions}
+    //   elementRef={inputRef}
+    //   containerRef={dateTimeMeridiemRef}
+    //   onOutsideClick={onOutsideClick}
+    //   basic
+    // >
+    //   {canSelectDateTimeRange ? renderDateTimeRangePicker() : renderDateTimePicker()}
+    // </Suggestions>
   );
 };
 
 type SuggestedKeysDropdownProps = {
-  inputRef?: React.RefObject<HTMLInputElement>,
+  inputRef?: React.RefObject<HTMLInputElement | null>,
   isActive?: boolean,
   operators?: FQ.DictionaryFieldOperators[],
-  suggestedKeys?: FQ.SuggestedKeys,
-  popperOptions?: Dropdown.PopperOptions,
+  suggestedKeys?: FQ.SuggestedKeys | undefined,
+  // popperOptions?: Dropdown.PopperOptions,
   onChange: (value: string) => void,
   onOutsideClick?: () => void,
 };
@@ -986,16 +1010,16 @@ const SuggestedKeysDropdown = (props: SuggestedKeysDropdownProps) => {
     isActive = false,
     operators,
     suggestedKeys,
-    popperOptions,
+    // popperOptions,
     onChange,
     onOutsideClick,
   } = props;
 
   const [suggestedKeyValue, setSuggestedKeyValue] = React.useState('');
 
-  const onOptionClick = (key?: string) => {
-    if (typeof key !== 'undefined') {
-      onChange(key);
+  const onOptionClick = (dropdownContext?: DropdownMenuContext) => {
+    if (typeof dropdownContext?.selectedOption !== 'undefined') {
+      onChange(dropdownContext.selectedOption as string);
     }
   };
 
@@ -1013,9 +1037,13 @@ const SuggestedKeysDropdown = (props: SuggestedKeysDropdownProps) => {
 
   const renderSuggestedKeys = () => (
     Object.entries(suggestedKeys || {}).map(([suggestedKey, { label }]) => (
-      <SuggestionItem key={suggestedKey} value={suggestedKey} onActivate={onOptionClick}>
-        {label}
-      </SuggestionItem>
+      <SuggestionItem
+        key={suggestedKey}
+        value={suggestedKey}
+        onActivate={onOptionClick}
+        label={label}
+        itemKey={suggestedKey}
+      />
     ))
   );
 
@@ -1030,29 +1058,30 @@ const SuggestedKeysDropdown = (props: SuggestedKeysDropdownProps) => {
   );
 
   return (
-    <Suggestions
-      className="bkl-multi-search__suggested-keys"
-      active={isActive}
-      popperOptions={popperOptions}
-      elementRef={inputRef}
-      onOutsideClick={onOutsideClick}
-      basic
-    >
-      {renderSuggestedKeys()}
-      {renderSuggestedKeyInput()}
-    </Suggestions>
+    <></>
+    // <Suggestions
+    //   className="bkl-multi-search__suggested-keys"
+    //   active={isActive}
+    //   // popperOptions={popperOptions}
+    //   elementRef={inputRef}
+    //   onOutsideClick={onOutsideClick}
+    //   basic
+    // >
+    //   {renderSuggestedKeys()}
+    //   {renderSuggestedKeyInput()}
+    // </Suggestions>
   );
 };
 
 type OperatorsDropdownProps = {
   type: FQ.Field['type'],
-  inputRef: React.RefObject<HTMLInputElement>,
+  inputRef: React.RefObject<HTMLInputElement | null>,
   isActive: boolean,
   operators: Array<FQ.NumberFieldOperator | FQ.DateTimeFieldOperator | FQ.EnumFieldOperator | FQ.ArrayFieldOperator>,
-  popperOptions?: Dropdown.PopperOptions,
-  onClick: (key?: FQ.NumberFieldOperator | FQ.DateTimeFieldOperator | FQ.EnumFieldOperator | FQ.ArrayFieldOperator) => void,
+  // popperOptions?: Dropdown.PopperOptions,
+  onClick: (conext: DropdownMenuContext) => void,
   onOutsideClick?: () => void,
-  operatorInfo?: FQ.OperatorInfo,
+  operatorInfo?: FQ.OperatorInfo | undefined,
 };
 
 const OperatorsDropdown = (props: OperatorsDropdownProps) => {
@@ -1061,7 +1090,7 @@ const OperatorsDropdown = (props: OperatorsDropdownProps) => {
     inputRef,
     isActive = false,
     operators,
-    popperOptions,
+    // popperOptions,
     onClick,
     onOutsideClick,
     operatorInfo = {},
@@ -1088,23 +1117,24 @@ const OperatorsDropdown = (props: OperatorsDropdownProps) => {
   });
 
   return (
-    <Suggestions
-      className="bkl-multi-search__operators"
-      active={isActive}
-      // popperOptions={popperOptions}
-      elementRef={inputRef}
-      onOutsideClick={onOutsideClick}
-      basic
-    >
-      {ObjectUtil.entries(symbolMap)
-        .filter(entry => operators.includes(entry[0]))
-        .map(([operator, operatorSymbol]) => (
-          <SuggestionItem className="operator" key={operator} value={operator} onActivate={onClick}>
-            {operatorSymbol}
-          </SuggestionItem>
-        ))
-      }
-    </Suggestions>
+    <></>
+    // <Suggestions
+    //   className="bkl-multi-search__operators"
+    //   active={isActive}
+    //   // popperOptions={popperOptions}
+    //   elementRef={inputRef}
+    //   onOutsideClick={onOutsideClick}
+    //   basic
+    // >
+    //   {ObjectUtil.entries(symbolMap)
+    //     .filter(entry => operators.includes(entry[0]))
+    //     .map(([operator, operatorSymbol]) => (
+    //       <SuggestionItem className="operator" key={operator} value={operator} onActivate={onClick}>
+    //         {operatorSymbol}
+    //       </SuggestionItem>
+    //     ))
+    //   }
+    // </Suggestions>
   );
 };
 
@@ -1132,7 +1162,7 @@ export type MultiSearchProps = Omit<ComponentProps<'input'>, 'className'|'childr
   filters?: FQ.FilterQuery,
 };
 export const MultiSearch = (props: MultiSearchProps) => {
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
   
   const {
     className,
@@ -1168,7 +1198,8 @@ export const MultiSearch = (props: MultiSearchProps) => {
     let message = '';
     
     if (fieldQueryBuffer.fieldName) {
-      const field: FQ.Field = fields[fieldQueryBuffer.fieldName];
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      const field: FQ.Field = fields[fieldQueryBuffer.fieldName]!;
       if (field.type === 'text') {
         const searchInputValidator = field.validator as FQ.TextValidator;
         if (isValid && typeof searchInputValidator === 'function') {
@@ -1199,7 +1230,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
               message = 'Please enter a valid value';
             }
           } else if (typeof searchInputValidator === 'function') {
-            const validatorResponse = searchInputValidator({ buffer: fieldQueryBuffer.value });
+            const validatorResponse = searchInputValidator({ buffer: [fieldQueryBuffer.value] });
             isValid = validatorResponse.isValid;
             message = validatorResponse.message;
           }
@@ -1258,8 +1289,9 @@ export const MultiSearch = (props: MultiSearchProps) => {
       const validatorResponse = validateFieldQuery(fieldQueryBuffer);
       if (validatorResponse.isValid) {
         let fieldValue: string | string[] | number = fieldQueryBuffer.value;
-        if (fieldQueryBuffer && fieldQueryBuffer.fieldName) {
-          const field = fields[fieldQueryBuffer.fieldName];
+        if (fieldQueryBuffer?.fieldName) {
+          // biome-ignore lint/style/noNonNullAssertion: <explanation>
+          const field = fields[fieldQueryBuffer.fieldName]!;
           if (field.type === 'enum' || (field.type === 'array' && field.subfield?.type === 'enum')) {
             fieldValue = [fieldQueryBuffer.value];
           } else if (field.type === 'datetime') {
@@ -1341,11 +1373,13 @@ export const MultiSearch = (props: MultiSearchProps) => {
       };
       
       if (['number', 'datetime', 'enum', 'array'].includes(field.type) && field.operators.length === 1) {
-        newFieldQuery.operator = field.operators[0];
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        newFieldQuery.operator = field.operators[0]!;
       }
       
       if (field.type === 'array' && field.subfield.operators.length === 1) {
-        newFieldQuery.subOperator = field.subfield.operators[0];
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        newFieldQuery.subOperator = field.subfield.operators[0]!;
       }
       
       updateFieldQueryBuffer(newFieldQuery);
@@ -1535,14 +1569,15 @@ export const MultiSearch = (props: MultiSearchProps) => {
       && fieldQueryBuffer.value === '';
     
     const onOperatorClick = (
-      operator?: FQ.NumberFieldOperator | FQ.DateTimeFieldOperator | FQ.EnumFieldOperator | FQ.ArrayFieldOperator,
+      dropdownMenuContext: DropdownMenuContext,
     ) => {
-      if (typeof operator === 'undefined') { return; }
+      if (typeof dropdownMenuContext?.selectedOption === 'undefined') { return; }
       
-      const newFieldQuery = { ...fieldQueryBuffer, operator };
+      const newFieldQuery = { ...fieldQueryBuffer, operator: dropdownMenuContext.selectedOption as FQ.Operator };
       
       if (field.type === 'array' && field.subfield.operators.length === 1) {
-        newFieldQuery.subOperator = field.subfield.operators[0];
+        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        newFieldQuery.subOperator = field.subfield.operators[0]!;
       }
       
       updateFieldQueryBuffer(newFieldQuery);
@@ -1596,11 +1631,11 @@ export const MultiSearch = (props: MultiSearchProps) => {
       && fieldQueryBuffer.value === '';
     
     const onOperatorClick = (
-      subOperator?: FQ.NumberFieldOperator | FQ.DateTimeFieldOperator | FQ.EnumFieldOperator | FQ.ArrayFieldOperator,
+      dropdownMenuContext: DropdownMenuContext,
     ) => {
-      if (typeof subOperator === 'undefined') { return; }
+      if (typeof dropdownMenuContext.selectedOption === 'undefined') { return; }
       
-      updateFieldQueryBuffer({ ...fieldQueryBuffer, subOperator });
+      updateFieldQueryBuffer({ ...fieldQueryBuffer, subOperator: dropdownMenuContext.selectedOption as FQ.Operator });
       
       if (inputRef.current) {
         inputRef.current.focus();

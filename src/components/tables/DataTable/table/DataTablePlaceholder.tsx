@@ -133,7 +133,7 @@ export const DataTableRowPlaceholder = (props: DataTableRowPlaceholderProps) => 
   
   const renderIcon = (): React.ReactNode => {
     if (typeof icon === 'undefined') {
-      return renderStandardIcon('alert');
+      return renderStandardIcon('warning');
     }
     if (typeof icon === 'string') {
       if (isIconName(icon)) {

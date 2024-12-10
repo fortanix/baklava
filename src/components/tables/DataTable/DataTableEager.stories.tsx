@@ -10,6 +10,7 @@ import { delay } from '../util/async_util.ts';
 import { type User, generateData } from '../util/generateData.ts';
 import { useEffectAsync } from '../util/hooks.ts';
 import * as Filtering from './filtering/Filtering.ts';
+import type { Fields, FilterQuery } from '../MultiSearch/filterQuery.ts';
 
 import { Panel } from '../../containers/Panel/Panel.tsx';
 import * as DataTablePlugins from './plugins/useRowSelectColumn.tsx';
@@ -50,7 +51,7 @@ const columns = [
   },
 ];
 
-const fields = {
+const fields: Fields = {
   name: {
     type: 'text',
     operators: ['$text'],
@@ -80,11 +81,12 @@ const fields = {
     operators: ['$eq', '$ne', '$lt', '$lte', '$gt', '$gte'],
     label: 'Days active',
     placeholder: 'Number of days active',
-    accessor: (user: User) => differenceInDays(new Date(), user.joinDate),
+    accessor: (item: unknown) => differenceInDays(new Date(), (item as User).joinDate),
   },
 };
 
 type dataTeableEagerTemplateProps = DataTableEager.TableProviderEagerProps<User> & { delay: number };
+
 const DataTableEagerTemplate = (props: dataTeableEagerTemplateProps) => {
   const memoizedColumns = React.useMemo(() => props.columns, [props.columns]);
   const memoizedItems = React.useMemo(() => props.items, [props.items]);
@@ -117,13 +119,18 @@ const DataTableEagerTemplate = (props: dataTeableEagerTemplateProps) => {
 const DataTableEagerWithFilterTemplate = (props: dataTeableEagerTemplateProps) => {
   const memoizedColumns = React.useMemo(() => props.columns, [props.columns]);
 
-  const [filters, setFilters] = React.useState([]);
-  const [filteredItems, setFilteredItems] = React.useState(props.items);
+  const [filters, setFilters] = React.useState<FilterQuery>([]);
+  const [filteredItems, setFilteredItems] = React.useState<User[]>(props.items as User[]);
 
+  // Convert items array into a record
+  const itemsAsRecord = React.useMemo(() => {
+    return Object.fromEntries(props.items.map(item => [item.id, item])) as Record<string, User>;
+  }, [props.items]);
+  
   React.useEffect(() => {
-    const filtered = Filtering.filterByQuery(fields, props.items, filters);
-    setFilteredItems(Object.values(filtered));
-  }, [filters, props.items]);
+    const filtered = Filtering.filterByQuery(fields, itemsAsRecord, filters);
+    setFilteredItems(Object.values(filtered) as User[]);
+  }, [filters, itemsAsRecord]);
 
   return (
     <Panel>

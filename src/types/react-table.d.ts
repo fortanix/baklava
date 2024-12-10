@@ -3,7 +3,7 @@
 // See:
 // https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/react-table
 
-import {
+import type {
   UseColumnOrderInstanceProps,
   UseColumnOrderState,
   UseExpandedHooks,
@@ -53,9 +53,8 @@ import {
   UseSortByState,
 } from 'react-table';
 
-// import * as MultiSearch from '../src/components/tables/MultiSearch/MultiSearch.tsx';
+ import type * as FQ from '../components/tables/MultiSearch/filterQuery.ts';
 
-type FilterQuery = Array<unknown>; // TEMP
 
 interface CustomColumnProps {
   configurable?: boolean,
@@ -64,7 +63,7 @@ interface CustomColumnProps {
 }
 
 interface UseCustomFiltersState {
-  customFilters: FilterQuery;
+  customFilters: FQ.FilterQuery;
 }
 
 interface UseTableStreamState {
@@ -73,7 +72,7 @@ interface UseTableStreamState {
 }
 
 interface UseCustomFiltersInstanceProps {
-  setCustomFilters: (filters: FilterQuery) => void;
+  setCustomFilters: (filters: FQ.FilterQuery) => void;
 }
 
 declare module 'react-table' {
@@ -93,13 +92,13 @@ declare module 'react-table' {
       //Record<string, any>
       {}
   
-  export interface Hooks<D extends object = {}>
+  export interface Hooks<D>
     extends UseExpandedHooks<D>,
       UseGroupByHooks<D>,
       UseRowSelectHooks<D>,
       UseSortByHooks<D> {}
   
-  export interface TableInstance<D extends object = {}>
+  export interface TableInstance<D>
     extends UseColumnOrderInstanceProps<D>,
       UseExpandedInstanceProps<D>,
       UseFiltersInstanceProps<D>,
@@ -130,7 +129,7 @@ declare module 'react-table' {
     className?: string,
     style?: object,
   }
-  export interface ColumnInterface<D extends object = {}>
+  export interface ColumnInterface<D>
     extends UseFiltersColumnOptions<D>,
       UseGlobalFiltersColumnOptions<D>,
       UseGroupByColumnOptions<D>,
@@ -140,18 +139,18 @@ declare module 'react-table' {
       BaklavaCustomColumnInterface
       {}
   
-  export interface ColumnInstance<D extends object = {}>
+  export interface ColumnInstance<D>
     extends UseFiltersColumnProps<D>,
       UseGroupByColumnProps<D>,
       UseResizeColumnsColumnProps<D>,
       UseSortByColumnProps<D>,
       CustomColumnProps {}
   
-  export interface Cell<D extends object = {}, V = unknown>
+  export interface Cell<D, V = unknown>
     extends UseGroupByCellProps<D>,
       UseRowStateCellProps<D> {}
   
-  export interface Row<D extends object = {}>
+  export interface Row<D>
     extends UseExpandedRowProps<D>,
       UseGroupByRowProps<D>,
       UseRowSelectRowProps<D>,

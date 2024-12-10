@@ -48,15 +48,19 @@ const DataTableStreamTemplate = (props : dataTeableLazyTemplateProps) => {
 
   const [itemsProcessed, setItemsProcessed] = useState<Array<User>>([]);
 
-  const query: DataTableStream.DataTableQuery<User, UserPageState> = useCallback(
+  const query: DataTableStream.DataTableQuery<User, UserPageState | null> = useCallback(
     async ({ previousItem, previousPageState, limit, orderings, globalFilter }) => {
       if (delayQuery === Number.POSITIVE_INFINITY) return new Promise(() => {}); // Infinite delay
       if (delayQuery === -1) throw new Error('Failed'); // Simulate failure
 
       if (delayQuery) await delay(delayQuery);
+      
+      let offset = 0;
 
-      const previousItemIndex = items.indexOf(previousItem);
-      const offset = previousItemIndex === -1 ? 0 : previousItemIndex + 1;
+      if (previousItem) {
+        const previousItemIndex = items.indexOf(previousItem);
+        offset = previousItemIndex === -1 ? 0 : previousItemIndex + 1;
+      }
 
       const filteredItems = items
         .filter((row) => {
@@ -66,15 +70,24 @@ const DataTableStreamTemplate = (props : dataTeableLazyTemplateProps) => {
           if (!columnsFilterable.length) return false;
 
           return columnsFilterable.some((column) => {
-            const cell = typeof column.accessor === 'function' ? column.accessor(row) : undefined;
+            const cell = typeof column.accessor === 'function'
+              ? column.accessor(row, 0, { subRows: [], depth: 0, data: [row] })
+              : undefined;
             return typeof cell === 'string' && cell.toLowerCase().includes(globalFilter.trim().toLowerCase());
           });
         })
         .sort((a, b) => {
-          if (!orderings.length) return 0;
+          if (!orderings[0]) return 0;
           const { column, direction } = orderings[0];
           const factor = direction === 'DESC' ? -1 : 1;
-          return a[column]?.localeCompare(b[column]) * factor || 0;
+
+          const aValue = a[column as keyof User];
+          const bValue = b[column as keyof User];
+        
+          const aNormalized = aValue instanceof Date ? aValue.toISOString() : aValue?.toString();
+          const bNormalized = bValue instanceof Date ? bValue.toISOString() : bValue?.toString();
+        
+          return (aNormalized?.localeCompare(bNormalized) || 0) * factor;
         })
         .slice(offset, offset + limit);
 
