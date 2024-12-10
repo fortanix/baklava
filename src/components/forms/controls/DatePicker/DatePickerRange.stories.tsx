@@ -38,6 +38,7 @@ export const DatePickerRangeStory: Story = {
     };
 
     return (
+      // with a fixed height to avoid hiding the bottom part of the calendar
       <div style={{height: '500px'}}>
         <DatePickerRange
           {...args}
@@ -47,6 +48,11 @@ export const DatePickerRangeStory: Story = {
           endDate={endDate}
           inline={true}
         />
+        {/* with a fixed width to avoid content moving around while selecting */}
+        <p style={{width: '300px'}}>
+          Range selected:<br />
+          {startDate?.toDateString()} - {endDate?.toDateString()}
+        </p>
       </div>
     );
   }

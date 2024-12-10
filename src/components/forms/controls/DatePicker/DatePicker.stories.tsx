@@ -32,12 +32,14 @@ export const DatePickerStory: Story = {
     const [startDate, setStartDate] = React.useState<Date | null>(new Date());
 
     return (
+      // with a fixed height to avoid hiding the bottom part of the calendar
       <div style={{height: '500px'}}>
         <DatePicker
           {...args}
           selected={startDate}
           onChange={(date: Date | null) => setStartDate(date)}
         />
+        <p>Date selected: {startDate?.toDateString()}</p>
       </div>
     );
   }
