@@ -152,10 +152,7 @@ const runImportIcons = async (args: ScriptArgs) => {
     .toLowerCase();
   
   const skippedIcons: Array<string> = [
-    'apache', // Skip other company/project icons
     'ai-guardrails', // Same as "send"?
-    'complete', // Same as "success"?
-    'table-settings', // Same as "edit-params"?
     'cross-large',
     'cross-small',
   ];

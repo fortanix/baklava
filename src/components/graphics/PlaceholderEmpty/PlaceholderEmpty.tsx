@@ -21,7 +21,7 @@ export type PlaceholderEmptyProps = React.PropsWithChildren<ComponentProps<'div'
   /** A size of this component. Defaults to "large". */
   size?: undefined | PlaceholderEmptySize,
 
-  /** An icon type of this component. Defaults to "graph". */
+  /** The icon to show in the placeholder. */
   icon?: undefined | IconName,
   
   /** A custom icon of this component. */
