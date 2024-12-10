@@ -31,11 +31,13 @@ export { SubmitButton } from '../src/components/forms/context/SubmitButton/Submi
 // Forms > Controls
 export { Checkbox } from '../src/components/forms/controls/Checkbox/Checkbox.tsx';
 export { DatePicker } from '../src/components/forms/controls/DatePicker/DatePicker.tsx';
+export { DatePickerRange } from '../src/components/forms/controls/DatePicker/DatePickerRange.tsx';
 export { Input } from '../src/components/forms/controls/Input/Input.tsx';
 export { Radio } from '../src/components/forms/controls/Radio/Radio.tsx';
 export { SegmentedControl } from '../src/components/forms/controls/SegmentedControl/SegmentedControl.tsx';
 export { Select } from '../src/components/forms/controls/Select/Select.tsx';
 export { Switch } from '../src/components/forms/controls/Switch/Switch.tsx';
+export { TimePicker } from '../src/components/forms/controls/TimePicker/TimePicker.tsx';
 
 // Forms > Fields
 export { CheckboxField } from '../src/components/forms/fields/CheckboxField/CheckboxField.tsx';
