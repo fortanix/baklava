@@ -180,10 +180,12 @@ $navigation-distance: 1rem;
 @layer baklava.components {
   .bk-datepicker {
     @include bk.component-base(bk-datepicker);
-
-    width: 12rem;
     display: flex;
     flex-direction: row;
     align-items: center;
+  }
+  
+  .bk-datepicker--input {
+    width: 121px;
   }
 }

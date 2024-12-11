@@ -47,7 +47,12 @@ export const DatePicker = (props: DatePickerProps) => {
       <ReactDatePicker
         dateFormat="MM/dd/yyyy"
         placeholderText="MM/DD/YYYY"
-        customInput={<Input />}
+        customInput={
+          <Input className={cx(
+            'bk',
+            { [cl['bk-datepicker--input']]: !unstyled },
+          )}/>
+        }
         {...propsRest}
       />
     </div>

@@ -5,8 +5,11 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-timepicker {
-    @include bk.component-base(bk-timepicker);
-    line-height: 1.8;
+  .bk-datetimepicker {
+    @include bk.component-base(bk-datetimepicker);
+    
+    display: flex;
+    flex-direction: row;
+    gap: bk.$spacing-3;
   }
 }
