@@ -1,58 +1,7 @@
 {
-  "compilerOptions": {
-    "plugins": [{
-      "name": "typescript-plugin-css-modules",
-      "options": {
-        //"classnameTransform": "camelCase",
-        //"goToDefinition": true,
-      },
-    }],
-    
-    // Emission
-    "noEmit": true, // Do not emit by default (only type check)
-    //"emitDeclarationOnly": true,
-    "target": "es2022", // JavaScript language version to emit
-    "module": "es2022", // The type of file to emit (CommonJS/ESM/etc.)
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
-    
-    // Imports
-    "moduleResolution": "bundler", // Resolve import specifiers like bundlers (allows explicit file extensions)
-    "allowImportingTsExtensions": true, // Allow importing `.ts` extensions
-    "allowJs": true, // If `true` allows to import `.js` files
-    "resolveJsonModule": true, // Allow importing `.json` files
-    "forceConsistentCasingInFileNames": true, // Do not allow case-insensitive import file name matching
-    "paths": {
-      //"@": ["./src"],
-    },
-    "types": [
-      // See explanation in `node_modules/@types/react-dom/experimental.d.ts`
-      "react/experimental",
-      "react-dom/experimental",
-    ],
-    
-    // Type checking
-    "lib": ["es2023", "DOM", "DOM.Iterable"], // Library declaration files to include (globally)
-    "skipLibCheck": true, // Do not type check declaration files (for performance)
-    "noErrorTruncation": true,
-    
-    // Language
-    "isolatedModules": true, // Restrict language features not compatible with tools like babel
-    "strict": true,
-    "exactOptionalPropertyTypes": true,
-    "noUncheckedIndexedAccess": true,
-    "useDefineForClassFields": true,
-    "jsx": "preserve",
-  },
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts",
-    "src/components/navigations/Tabs/Tabs.stories.tsx", // TEMP: need to fix a few type errors
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" },
   ],
-  "include": [
-    //"vite.config.ts",
-    "app/**/*",
-    "src/**/*",
-  ],
-  "references": [{ "path": "./tsconfig.node.json" }],
 }

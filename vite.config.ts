@@ -70,11 +70,13 @@ export default defineConfig({
       targets: {
         // Use minimum targets so that the `light-dark()` polyfill doesn't get applied, which is buggy.
         // https://github.com/parcel-bundler/lightningcss/issues/821
-        chrome: 123 << 16,
-        firefox: 120 << 16,
-        safari: 17 << 16 | 5 << 8,
+        //chrome: 123 << 16, // Minimum for `light-dark()`
+        chrome: 121 << 16, // FIXME: needed for Chromatic, since it currently uses Chrome v121
+        firefox: 120 << 16, // Minimum for `light-dark()`
+        safari: 17 << 16 | 5 << 8, // Minimum for `light-dark()`
       },
       cssModules: {
+        // @ts-expect-error Will be fixed in vite v6
         grid: false, // Workaround for https://github.com/parcel-bundler/lightningcss/issues/762
       },
     },
@@ -98,7 +100,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'app/lib.ts'),
       name: 'baklava',
       fileName: 'baklava',
-      cssFileName: 'baklava',
+      //cssFileName: 'baklava',
       formats: ['es'],
     },
     rollupOptions: {
