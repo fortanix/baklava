@@ -43,7 +43,7 @@
     "storybook:serve": "storybook dev -p 6006",
     "storybook:build": "storybook build --docs",
     "chromatic": "npx chromatic",
-    "check:types": "tsc --noEmit",
+    "check:types": "tsc -b",
     "lint:style": "stylelint 'src/**/*.scss'",
     "lint:script": "biome lint",
     "lint": "npm run lint:style && npm run lint:script",

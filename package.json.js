@@ -61,7 +61,7 @@ const packageConfig = {
     'chromatic': 'npx chromatic', // Must be run with `CHROMATIC_PROJECT_TOKEN` env variable (secret)
     
     // Static analysis
-    'check:types': 'tsc --noEmit',
+    'check:types': 'tsc -b',
     'lint:style': `stylelint 'src/**/*.scss'`,
     'lint:script': 'biome lint',
     'lint': 'npm run lint:style && npm run lint:script',
