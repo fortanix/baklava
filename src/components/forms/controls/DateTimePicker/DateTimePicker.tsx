@@ -19,8 +19,10 @@ type GenericProps = {
   /** An optional class name to be appended to the class list. */
   className?: undefined | ClassNameArgument,
   
+  /** A Date object to hold the date and time. */
   date: Date | null,
   
+  /** A callback function that is called when either the date or the time picker is changed. */
   onChange: ((date: Date | null, event?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => void),
 };
 
@@ -30,7 +32,7 @@ export const DateTimePicker = ({ unstyled = false, className, date, onChange, ..
   // time string from date object
   const time = `${String(date?.getHours() || 0).padStart(2, '0')}:${String(date?.getMinutes() || 0).padStart(2, '0')}`;
   
-  // update date object from time string
+  // manually update upstream date object when time is updated
   const onTimeUpdate = (time: string) => {
     if (date) {
       const newDate = new Date(date);
@@ -55,4 +57,4 @@ export const DateTimePicker = ({ unstyled = false, className, date, onChange, ..
       <TimePicker time={time} onUpdate={onTimeUpdate}/>
     </div>
   );
-}
+};
