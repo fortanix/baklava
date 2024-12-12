@@ -38,7 +38,9 @@ export const DatePicker = (props: DatePickerProps) => {
     className,
     ...propsRest
   } = props;
-  
+
+  const [isOpen, setIsOpen] = React.useState<boolean>(false);
+
   return (
     <div className={cx(
       'bk',
@@ -56,8 +58,11 @@ export const DatePicker = (props: DatePickerProps) => {
             { [cl['bk-datepicker--input']]: !unstyled },
           )}/>
         }
+        onCalendarClose={() => setIsOpen(false)}
+        onCalendarOpen={() => setIsOpen(true)}
         {...propsRest}
       />
+      <Icon icon={`caret-${isOpen ? 'up' : 'down'}`} className={cx(cl['bk-datepicker--caret'])}/>
     </div>
   );
 };

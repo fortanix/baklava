@@ -190,8 +190,17 @@ $navigation-distance: 1rem;
     flex-direction: row;
     align-items: center;
   }
-  
+
   .bk-datepicker--input {
     width: 121px;
+    color: bk.$theme-form-text-default;
+  }
+
+  .bk-datepicker--caret {
+    width: 18px;
+    height: 18px;
+    position: relative;
+    left: -18px;
+    top: -3px;
   }
 }
