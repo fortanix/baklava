@@ -7,6 +7,7 @@ import ReactDatePicker from 'react-datepicker';
 
 import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../../util/componentUtil.ts';
 
+import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Input } from '../Input/Input.tsx';
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -47,6 +48,8 @@ export const DatePicker = (props: DatePickerProps) => {
       <ReactDatePicker
         dateFormat="MM/dd/yyyy"
         placeholderText="MM/DD/YYYY"
+        showIcon
+        icon={<Icon icon="calendar"/>}
         customInput={
           <Input className={cx(
             'bk',

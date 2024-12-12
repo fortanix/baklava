@@ -177,6 +177,12 @@ $navigation-distance: 1rem;
   color: bk.$theme-date-picker-text-default;
 }
 
+:global(.react-datepicker__input-container .react-datepicker__calendar-icon) {
+  width: 14px;
+  height: 14px;
+  bottom: 9px;
+}
+
 @layer baklava.components {
   .bk-datepicker {
     @include bk.component-base(bk-datepicker);
