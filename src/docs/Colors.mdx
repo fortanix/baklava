@@ -2,7 +2,6 @@
 import cx from 'classnames/dedupe';
 import { Meta, Unstyled } from '@storybook/blocks';
 
-import colorContrast from 'postcss-color-contrast/js';
 import { colorsByCategory } from '../styling/variables.ts';
 
 import { H4, H5 } from '../typography/Heading/Heading.tsx';
@@ -38,9 +37,7 @@ Primitive color tokens are the basic color definitions which are not dependent o
         <dl className={cl['colors-list']}>
           {Object.entries(colorCategory).map(([colorName, { weight, color }]) =>
             <TooltipProvider key={colorName} tooltip={<code className="bk-body-text">{`bk.$color-${colorName}`}</code>}>
-              <div className={cl['color']} tabIndex="1"
-                style={{ '--color': color, '--contrast': colorContrast(color, ['#e5e5e5', '#171717']) }}
-              >
+              <div className={cl['color']} tabIndex="1" style={{ '--color': color }}>
                 <dt>{weight}</dt>
                 <dd>{color}</dd>
               </div>
