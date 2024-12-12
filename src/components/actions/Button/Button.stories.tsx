@@ -22,7 +22,7 @@ export default {
   component: Button,
   parameters: {
     layout: 'centered',
-    design: { type: 'figma', url: 'https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fdesign%2FnOF5w9LfPiJabQD5yPzCEp%2F2024-Design-System-UX%3Fnode-id%3D327%253A6150%26t%3DjsTF1ykn6P4yp2et-1' },
+    design: { type: 'figma', url: 'https://www.figma.com/design/ymWCnsGfIsC2zCz17Ur11Z/Design-System-UX?node-id=4599-156236&m=dev' },
   },
   tags: ['autodocs'],
   argTypes: {},
