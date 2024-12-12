@@ -128,7 +128,6 @@ const packageConfig = {
     'vite-css-modules': '^1.6.0',
     'typescript-plugin-css-modules': '^5.0.1',
     'sass-embedded': '^1.82.0',
-    'postcss-color-contrast': '^1.1.0',
     'lightningcss': '^1.28.2',
     
     // React
