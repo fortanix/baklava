@@ -53,8 +53,17 @@ export const DateTimePicker = ({ unstyled = false, className, date, onChange, ..
       { [cl['bk-datetimepicker']]: !unstyled },
       className,
     )}>
-      <DatePicker selected={date} onChange={onChange} />
-      <TimePicker time={time} onUpdate={onTimeUpdate}/>
+      <DatePicker
+        selected={date}
+        onChange={onChange}
+      />
+      <TimePicker
+        time={time}
+        onUpdate={onTimeUpdate}
+        className={cx(
+          { [cl['bk-datetimepicker--timepicker']]: !unstyled },
+        )}
+      />
     </div>
   );
 };

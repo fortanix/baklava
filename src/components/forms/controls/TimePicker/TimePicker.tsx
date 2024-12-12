@@ -37,7 +37,15 @@ export const TimePicker = ({ unstyled = false, className, time, onUpdate, ...pro
       { [cl['bk-timepicker']]: !unstyled },
       className,
     )}>
-      <Input type="time" value={time} onChange={onChange} {...propsRest} />
+      <Input
+        type="time"
+        value={time}
+        onChange={onChange}
+        className={cx(
+          { [cl['bk-timepicker--input']]: !unstyled },
+        )}
+        {...propsRest}
+      />
     </div>
   );
 };

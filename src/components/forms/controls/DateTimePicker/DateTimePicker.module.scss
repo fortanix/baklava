@@ -7,9 +7,14 @@
 @layer baklava.components {
   .bk-datetimepicker {
     @include bk.component-base(bk-datetimepicker);
-    
+
     display: flex;
     flex-direction: row;
     gap: bk.$spacing-3;
+  }
+
+  .bk-datetimepicker--timepicker {
+    position: relative;
+    top: 4px;
   }
 }

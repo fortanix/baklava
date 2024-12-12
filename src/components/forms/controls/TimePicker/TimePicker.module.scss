@@ -9,4 +9,10 @@
     @include bk.component-base(bk-timepicker);
     line-height: 1.8;
   }
+
+  .bk-timepicker--input {
+    color: bk.$theme-form-text-default;
+    // a manual size increase to accomodate the clock icon without clipping the text
+    width: 90px;
+  }
 }

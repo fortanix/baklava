@@ -54,7 +54,6 @@ export const DatePicker = (props: DatePickerProps) => {
         icon={<Icon icon="calendar"/>}
         customInput={
           <Input className={cx(
-            'bk',
             { [cl['bk-datepicker--input']]: !unstyled },
           )}/>
         }

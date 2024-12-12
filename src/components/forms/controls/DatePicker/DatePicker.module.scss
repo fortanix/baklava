@@ -180,15 +180,22 @@ $navigation-distance: 1rem;
 :global(.react-datepicker__input-container .react-datepicker__calendar-icon) {
   width: 14px;
   height: 14px;
-  bottom: 9px;
+  bottom: 4px;
+}
+
+:global(.react-datepicker__view-calendar-icon input) {
+  padding: 6px 10px 0px 25px;
 }
 
 @layer baklava.components {
+  $caret-width: 18px;
+
   .bk-datepicker {
     @include bk.component-base(bk-datepicker);
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-right: -$caret-width;
   }
 
   .bk-datepicker--input {
@@ -197,10 +204,10 @@ $navigation-distance: 1rem;
   }
 
   .bk-datepicker--caret {
-    width: 18px;
-    height: 18px;
+    width: $caret-width;
+    height: $caret-width;
     position: relative;
-    left: -18px;
+    left: -$caret-width;
     top: -3px;
   }
 }
