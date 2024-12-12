@@ -28,7 +28,7 @@ export default {
 
 export const Standard: Story = {
   render: (args) => {
-    const [date, setDate] = React.useState<Date | null>(new Date());
+    const [date, setDate] = React.useState<Date | null>(new Date(2024, 11, 12, 9, 41));
 
     return (
       // with a fixed height to avoid hiding the bottom part of the calendar

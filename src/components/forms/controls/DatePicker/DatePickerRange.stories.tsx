@@ -28,8 +28,8 @@ export default {
 
 export const Standard: Story = {
   render: (args) => {
-    const [startDate, setStartDate] = React.useState<Date | null>(new Date());
-    const [endDate, setEndDate] = React.useState<Date | null>(new Date());
+    const [startDate, setStartDate] = React.useState<Date | null>(new Date(2024, 11, 12, 9, 41));
+    const [endDate, setEndDate] = React.useState<Date | null>(new Date(2024, 11, 14, 9, 41));
     const onChange = (dates: [Date | null, Date | null]) => {
       const [start, end] = dates;
       setStartDate(start);

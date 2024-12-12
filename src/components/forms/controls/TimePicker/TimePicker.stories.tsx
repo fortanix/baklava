@@ -29,7 +29,7 @@ export default {
 export const TimePickerStory: Story = {
   name: 'Time Picker',
   render: (args) => {
-    const [time, setTime] = React.useState<string>(`${new Date().getHours()}:${new Date().getMinutes()}`);
+    const [time, setTime] = React.useState<string>('09:41');
 
     return (
       <div>
