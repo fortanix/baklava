@@ -11,6 +11,11 @@ import { Input } from '../Input/Input.tsx';
 import cl from './TimePicker.module.scss';
 
 
+export type Time = {
+  hours: number,
+  minutes: number,
+}
+
 export type TimePickerProps = ComponentProps<'input'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
@@ -18,19 +23,22 @@ export type TimePickerProps = ComponentProps<'input'> & {
   /** An optional class name to be appended to the class list. */
   className?: ClassNameArgument,
   
-  /** A time string as defined to be used by input type="time", with the hh:mm format. */
-  time: string,
+  /** A time object with hours and minutes, as numbers. */
+  time: Time,
   
   /** A callback function to update the time. */
-  onUpdate: (time: string) => void,
+  onUpdate: (time: Time) => void,
 };
 
 export const TimePicker = ({ unstyled = false, className, time, onUpdate, ...propsRest }: TimePickerProps) => {
+  const timeString = `${String(time.hours).padStart(2, '0')}:${String(time.minutes).padStart(2, '0')}`;
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTimeString = e.target.value;
-    onUpdate(newTimeString);
+    const [hours, minutes] = newTimeString.split(':');
+    onUpdate({ hours: Number(hours), minutes: Number(minutes) });
   };
-  
+
   return (
     <div className={cx(
       'bk',
@@ -39,7 +47,7 @@ export const TimePicker = ({ unstyled = false, className, time, onUpdate, ...pro
     )}>
       <Input
         type="time"
-        value={time}
+        value={timeString}
         onChange={onChange}
         className={cx(
           { [cl['bk-timepicker--input']]: !unstyled },

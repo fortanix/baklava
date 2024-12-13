@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { TimePicker } from './TimePicker.tsx';
+import { TimePicker, type Time } from './TimePicker.tsx';
 
 
 type TimePickerArgs = React.ComponentProps<typeof TimePicker>;
@@ -29,13 +29,13 @@ export default {
 export const TimePickerStory: Story = {
   name: 'Time Picker',
   render: (args) => {
-    const [time, setTime] = React.useState<string>('09:41');
+    const [time, setTime] = React.useState<Time>({ hours: 9, minutes: 41 });
 
     return (
       <div>
         <TimePicker time={time} onUpdate={setTime}/>
         <p>
-          The selected time is: {time}
+          The selected time is: {time.hours}:{time.minutes}
         </p>
       </div>
     );

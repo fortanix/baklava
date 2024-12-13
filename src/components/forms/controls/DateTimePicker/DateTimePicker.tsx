@@ -7,7 +7,7 @@ import * as React from 'react';
 import { classNames as cx, type ClassNameArgument } from '../../../../util/componentUtil.ts';
 
 import { DatePicker } from '../DatePicker/DatePicker.tsx';
-import { TimePicker } from '../TimePicker/TimePicker.tsx';
+import { TimePicker, type Time } from '../TimePicker/TimePicker.tsx';
 
 import cl from './DateTimePicker.module.scss';
 
@@ -29,23 +29,18 @@ type GenericProps = {
 export type DateTimePickerProps = GenericProps;
 
 export const DateTimePicker = ({ unstyled = false, className, date, onChange, ...propsRest }: DateTimePickerProps) => {
-  // time string from date object
-  const time = `${String(date?.getHours() || 0).padStart(2, '0')}:${String(date?.getMinutes() || 0).padStart(2, '0')}`;
+  // time from date object
+  const time = { hours: date?.getHours() || 0, minutes: date?.getMinutes() || 0 };
   
   // manually update upstream date object when time is updated
-  const onTimeUpdate = (time: string) => {
+  const onTimeUpdate = (time: Time) => {
     if (date) {
       const newDate = new Date(date);
-      const [newHours, newMinutes] = time.split(':');
-      if (newHours) {
-        newDate.setHours(Number(newHours));
-      }
-      if (newMinutes) {
-        newDate.setMinutes(Number(newMinutes));
-      }
+      newDate.setHours(time.hours);
+      newDate.setMinutes(time.minutes);
       onChange(newDate);
     }
-  }
+  };
 
   return (
     <div className={cx(
