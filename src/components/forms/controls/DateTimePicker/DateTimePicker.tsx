@@ -12,7 +12,7 @@ import { TimePicker, type Time } from '../TimePicker/TimePicker.tsx';
 import cl from './DateTimePicker.module.scss';
 
 
-type GenericProps = {
+export type DateTimePickerProps = {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
@@ -24,11 +24,22 @@ type GenericProps = {
   
   /** A callback function that is called when either the date or the time picker is changed. */
   onChange: ((date: Date | null, event?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => void),
+  
+  /** A string for the date format, such as MM/dd/yyyy. */
+  dateFormat: string,
+  
+  /** A string for the placeholder text, such as MM/DD/YYYY. */
+  placeholderText: string,
 };
 
-export type DateTimePickerProps = GenericProps;
-
-export const DateTimePicker = ({ unstyled = false, className, date, onChange, ...propsRest }: DateTimePickerProps) => {
+export const DateTimePicker = ({
+  unstyled = false,
+  className,
+  date,
+  onChange,
+  dateFormat = 'MM/dd/yyyy',
+  placeholderText = 'MM/DD/YYYY',
+}: DateTimePickerProps) => {
   // Time from date object.
   const time = { hours: date?.getHours() || 0, minutes: date?.getMinutes() || 0 };
   
@@ -51,6 +62,8 @@ export const DateTimePicker = ({ unstyled = false, className, date, onChange, ..
       <DatePicker
         selected={date}
         onChange={onChange}
+        dateFormat={dateFormat}
+        placeholderText={placeholderText}
       />
       <TimePicker
         time={time}

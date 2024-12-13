@@ -36,6 +36,8 @@ export const DatePicker = (props: DatePickerProps) => {
   const {
     unstyled = false,
     className,
+    dateFormat = 'MM/dd/yyyy',
+    placeholderText = 'MM/DD/YYYY',
     ...propsRest
   } = props;
 
@@ -48,8 +50,8 @@ export const DatePicker = (props: DatePickerProps) => {
       className,
     )}>
       <ReactDatePicker
-        dateFormat="MM/dd/yyyy"
-        placeholderText="MM/DD/YYYY"
+        dateFormat={dateFormat}
+        placeholderText={placeholderText}
         showIcon
         icon={<Icon icon="calendar"/>}
         customInput={

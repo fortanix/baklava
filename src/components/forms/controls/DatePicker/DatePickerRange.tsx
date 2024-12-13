@@ -35,6 +35,8 @@ export const DatePickerRange = (props: DatePickerRangeProps) => {
   const {
     unstyled = false,
     className,
+    dateFormat = 'MM/dd/yyyy',
+    placeholderText = 'MM/DD/YYYY',
     ...propsRest
   } = props;
   
@@ -47,8 +49,8 @@ export const DatePickerRange = (props: DatePickerRangeProps) => {
       <ReactDatePicker
         selectsRange
         // everything else is the same
-        dateFormat="MM/dd/yyyy"
-        placeholderText="MM/DD/YYYY"
+        dateFormat={dateFormat}
+        placeholderText={placeholderText}
         customInput={<Input />}
         {...propsRest}
       />
