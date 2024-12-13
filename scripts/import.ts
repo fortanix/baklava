@@ -156,6 +156,8 @@ const validateIcon = async (path: string, iconName: string): Promise<IconValidit
       throw new Error(`Expect icon dimensions to be 18x18, found ${width}x${height}`);
     }
     
+    // TODO: accessibility checks? E.g. each icon should have an accessible name.
+    
     return { isValid: true };
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : `Unknown error (${JSON.stringify(error)})`;
