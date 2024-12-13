@@ -210,6 +210,9 @@ $radius-s: math.div(4, 14) * 1rem !default;
 $radius-m: math.div(6, 14) * 1rem !default;
 $radius-l: math.div(9, 14) * 1rem !default;
 
+// Z-Indexes
+$z-index-date-picker: 100;
+
 
 //
 // Theme-dependent design tokens

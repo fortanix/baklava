@@ -4,13 +4,10 @@
 
 @use '../../../../styling/defs.scss' as bk;
 
-// TODO: copied manually from old Baklava, where should we put this?
-$z-index-date-picker: 100;
-
 // DATEPICKER override react-datepicker styles
 // Note: Sass do not support using suffixes (i.e. &__suffix) when using global selector
 :global(.react-datepicker-popper) {
-  z-index: $z-index-date-picker;
+  z-index: bk.$z-index-date-picker;
 }
 
 :global(.react-datepicker) {
