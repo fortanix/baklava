@@ -36,7 +36,7 @@ export const Standard: Story = {
         <DatePicker
           {...args}
           selected={startDate}
-          onChange={(date: Date | null) => setStartDate(date)}
+          onChange={(date: Date | null) => { setStartDate(date) }}
         />
         <p>Date selected: {startDate?.toDateString()}</p>
       </div>
