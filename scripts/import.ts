@@ -166,8 +166,22 @@ const validateIcon = async (path: string, iconName: string): Promise<IconValidit
 const runImportIcons = async (args: ScriptArgs) => {
   const { logger } = getServices();
   
+  // Arguments
+  const pathIconsArg: undefined | string = args.positionals[0];
   const isDryRun = args.values['dry-run'] ?? false;
   
+  if (!pathIconsArg) { throw new Error(`Missing argument: icons source path`); }
+  
+  const pathIconsSource = pathIconsArg.startsWith('/') ? pathIconsArg : path.join(process.cwd(), pathIconsArg);
+  const pathIconsTarget = path.join(process.cwd(), './src/assets/icons');
+
+  try {
+    await fs.access(pathIconsSource);
+  } catch (error: unknown) {
+    throw new Error(`Could not access icons directory ${pathIconsSource}. Does it exist?`);
+  }
+  
+  // Util: convert to kebab-case
   const kebabCase = (string: string) => string
     .replace(/([a-z])([A-Z])/g, "$1-$2")
     .replace(/[\s_]+/g, '-')
@@ -175,9 +189,6 @@ const runImportIcons = async (args: ScriptArgs) => {
   
   const skippedIcons: Array<string> = [];
   const renamedIcons: Record<string, string> = {};
-  
-  const pathIconsSource = path.join(process.cwd(), './src/assets/icons_source');
-  const pathIconsTarget = path.join(process.cwd(), './src/assets/icons');
   
   // Delete existing icons
   logger.log(`Deleting existing icons in ${rel(pathIconsTarget)}`);
@@ -241,7 +252,7 @@ const printUsage = () => {
     
     Commands:
       - parse-tokens
-      - import-icons
+      - import-icons <path-to-icons>
   `);
 };
 
