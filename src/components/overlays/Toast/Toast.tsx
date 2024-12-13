@@ -181,7 +181,7 @@ type CloseToastButtonProps = {
   closeToast?: () => void,
 };
 const CloseToastButton = ({ closeToast }: CloseToastButtonProps) => (
-  <Icon icon="cross" className={cx(cl['bk-close--dark'])} onClick={closeToast} />
+  <Icon icon="cross" className={cx(cl['bk-toast__action-close'])} onClick={closeToast} />
 );
 
 type ToastProviderProps = Omit<ToastifyContainerProps, 'className'> & {
