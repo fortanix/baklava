@@ -5,15 +5,15 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-datetimepicker {
-    @include bk.component-base(bk-datetimepicker);
+  .bk-date-time-picker {
+    @include bk.component-base(bk-date-time-picker);
 
     display: flex;
     flex-direction: row;
     gap: bk.$spacing-3;
   }
 
-  .bk-datetimepicker--timepicker {
+  .bk-date-time-picker--time-picker {
     position: relative;
     top: 4px;
   }

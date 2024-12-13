@@ -184,20 +184,20 @@ $navigation-distance: 1rem;
 @layer baklava.components {
   $caret-width: 18px;
 
-  .bk-datepicker {
-    @include bk.component-base(bk-datepicker);
+  .bk-date-picker {
+    @include bk.component-base(bk-date-picker);
     display: flex;
     flex-direction: row;
     align-items: center;
     margin-right: -$caret-width;
   }
 
-  .bk-datepicker--input {
+  .bk-date-picker--input {
     width: 121px;
     color: bk.$theme-form-text-default;
   }
 
-  .bk-datepicker--caret {
+  .bk-date-picker--caret {
     width: $caret-width;
     height: $caret-width;
     position: relative;

@@ -41,7 +41,7 @@ export const DatePickerRange = (props: DatePickerRangeProps) => {
   return (
     <div className={cx(
       'bk',
-      { [cl['bk-datepicker']]: !unstyled },
+      { [cl['bk-date-picker']]: !unstyled },
       className,
     )}>
       <ReactDatePicker

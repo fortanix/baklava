@@ -14,7 +14,7 @@ import cl from './TimePicker.module.scss';
 export type Time = {
   hours: number,
   minutes: number,
-}
+};
 
 export type TimePickerProps = ComponentProps<'input'> & {
   /** Whether this component should be unstyled. */
@@ -42,7 +42,7 @@ export const TimePicker = ({ unstyled = false, className, time, onUpdate, ...pro
   return (
     <div className={cx(
       'bk',
-      { [cl['bk-timepicker']]: !unstyled },
+      { [cl['bk-time-picker']]: !unstyled },
       className,
     )}>
       <Input
@@ -50,7 +50,7 @@ export const TimePicker = ({ unstyled = false, className, time, onUpdate, ...pro
         value={timeString}
         onChange={onChange}
         className={cx(
-          { [cl['bk-timepicker--input']]: !unstyled },
+          { [cl['bk-time-picker--input']]: !unstyled },
         )}
         {...propsRest}
       />

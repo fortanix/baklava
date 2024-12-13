@@ -5,14 +5,14 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-timepicker {
-    @include bk.component-base(bk-timepicker);
+  .bk-time-picker {
+    @include bk.component-base(bk-time-picker);
     line-height: 1.8;
   }
 
-  .bk-timepicker--input {
+  .bk-time-picker--input {
     color: bk.$theme-form-text-default;
-    // a manual size increase to accomodate the clock icon without clipping the text
+    // A manual size increase to accommodate the clock icon without clipping the text.
     width: 92px;
   }
 }

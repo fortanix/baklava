@@ -29,10 +29,10 @@ type GenericProps = {
 export type DateTimePickerProps = GenericProps;
 
 export const DateTimePicker = ({ unstyled = false, className, date, onChange, ...propsRest }: DateTimePickerProps) => {
-  // time from date object
+  // Time from date object.
   const time = { hours: date?.getHours() || 0, minutes: date?.getMinutes() || 0 };
   
-  // manually update upstream date object when time is updated
+  // Manually update upstream Date object when time is updated.
   const onTimeUpdate = (time: Time) => {
     if (date) {
       const newDate = new Date(date);
@@ -45,7 +45,7 @@ export const DateTimePicker = ({ unstyled = false, className, date, onChange, ..
   return (
     <div className={cx(
       'bk',
-      { [cl['bk-datetimepicker']]: !unstyled },
+      { [cl['bk-date-time-picker']]: !unstyled },
       className,
     )}>
       <DatePicker
@@ -56,7 +56,7 @@ export const DateTimePicker = ({ unstyled = false, className, date, onChange, ..
         time={time}
         onUpdate={onTimeUpdate}
         className={cx(
-          { [cl['bk-datetimepicker--timepicker']]: !unstyled },
+          { [cl['bk-date-time-picker--time-picker']]: !unstyled },
         )}
       />
     </div>
