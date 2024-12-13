@@ -141,6 +141,28 @@ const runCreateIconsManifest = async (args: ScriptArgs) => {
   await fs.writeFile(manifestPath, manifest, { encoding: 'utf-8' });
 };
 
+type IconValidity = { isValid: true } | { isValid: false, message: string };
+const validateIcon = async (path: string, iconName: string): Promise<IconValidity> => {
+  try {
+    const iconSvg: string = (await fs.readFile(path)).toString();
+    
+    // Check: dimensions
+    const width = iconSvg.match(/width="(\d+)"/)?.[1];
+    const height = iconSvg.match(/height="(\d+)"/)?.[1];
+    if (!width || !height) {
+      throw new Error('Missing width/height in SVG');
+    }
+    if (Number.parseInt(width) !== 18 || Number.parseInt(height) !== 18) {
+      throw new Error(`Expect icon dimensions to be 18x18, found ${width}x${height}`);
+    }
+    
+    return { isValid: true };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : `Unknown error (${JSON.stringify(error)})`;
+    return { isValid: false, message };
+  }
+};
+
 const runImportIcons = async (args: ScriptArgs) => {
   const { logger } = getServices();
   
@@ -151,18 +173,8 @@ const runImportIcons = async (args: ScriptArgs) => {
     .replace(/[\s_]+/g, '-')
     .toLowerCase();
   
-  const skippedIcons: Array<string> = [
-    'ai-guardrails', // Same as "send"?
-    'cross-large',
-    'cross-small',
-  ];
-  const renamedIcons: Record<string, string> = {
-    'integrations': 'integration',
-    'zctivity': 'activity',
-    'hallucination-policy': 'hallucination',
-    'status-cancel': 'status-cancelled',
-    'cross-medium': 'cross',
-  };
+  const skippedIcons: Array<string> = [];
+  const renamedIcons: Record<string, string> = {};
   
   const pathIconsSource = path.join(process.cwd(), './src/assets/icons_source');
   const pathIconsTarget = path.join(process.cwd(), './src/assets/icons');
@@ -195,6 +207,14 @@ const runImportIcons = async (args: ScriptArgs) => {
     
     const pathSource = path.join(pathIconsSource, fileName);
     const pathTarget = path.join(pathIconsTarget, `${iconName}.svg`)
+    
+    const validity = await validateIcon(pathSource, iconName);
+    if (!validity.isValid) {
+      if (!['filter-closed', 'filter-open'].includes(iconName)) { // FIXME: invalid dimensions on these two icons
+        throw new Error(`Found invalid icon '${iconName}': ${validity.message}`);
+      }
+    }
+    
     logger.log(`Copying '${rel(pathSource)}' to '${rel(pathTarget)}'`);
     if (!isDryRun) {
       await fs.copyFile(pathSource, pathTarget);
