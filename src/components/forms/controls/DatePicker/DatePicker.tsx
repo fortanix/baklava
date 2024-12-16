@@ -63,7 +63,13 @@ export const DatePicker = (props: DatePickerProps) => {
         onCalendarOpen={() => setIsOpen(true)}
         {...propsRest}
       />
-      <Icon icon={`caret-${isOpen ? 'up' : 'down'}`} className={cx(cl['bk-date-picker--caret'])}/>
+      <Icon
+        className={cx(
+          cl['bk-date-picker--caret'],
+          { [cl['bk-date-picker--caret__down']]: !isOpen },
+        )}
+        icon={`caret-${isOpen ? 'up' : 'down'}`}
+      />
     </div>
   );
 };
