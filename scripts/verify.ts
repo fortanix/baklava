@@ -53,7 +53,7 @@ const readDistCss = async () => {
 // Commands
 //
 
-export const runVerifyDist = async (args: ScriptArgs) => {
+export const runVerifyBuild = async (args: ScriptArgs) => {
   const { logger } = getServices();
   
   const cssContent = await readDistCss();
@@ -61,10 +61,10 @@ export const runVerifyDist = async (args: ScriptArgs) => {
   
   // We need to make sure that an `@layer` ordering is at the beginning of the CSS build file.
   if (!cssContentStripped.match(/^@layer [^{]+?;/)) {
-    throw new Error(`Missing @layer ordering at the start of the CSS dist file`);
+    throw new Error(`Missing @layer ordering at the start of the CSS build file`);
   }
   
-  logger.log('Everything okay');
+  logger.log('verify:build – No issues found');
 };
 
 
@@ -79,7 +79,7 @@ const printUsage = () => {
     Usage: verify.ts <cmd> <...args>
     
     Commands:
-      - verify:dist
+      - verify:build
   `);
 };
 
@@ -111,7 +111,7 @@ export const run = async (argsRaw: Array<string>): Promise<void> => {
     
     const argsForCommand: ScriptArgs = { ...args, positionals: args.positionals.slice(1) };
     switch (command) {
-      case 'verify:dist': await runVerifyDist(argsForCommand); break;
+      case 'verify:build': await runVerifyBuild(argsForCommand); break;
       default:
         logger.error(`Unknown command '${command}'\n`);
         printUsage();

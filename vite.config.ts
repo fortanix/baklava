@@ -20,6 +20,14 @@ export default defineConfig({
   
   assetsInclude: ['**/*.md'], // Add `.md` as static asset type
   
+  
+  resolve: {
+    alias: {
+      // Needed for file references in Sass code (relative paths don't resolve properly when imported with `@use`)
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+  
   plugins: [
     react(),
     
