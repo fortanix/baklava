@@ -30,8 +30,17 @@ const packageConfig = {
       //'require': './dist/baklava.cjs',
       'default': './dist/baklava.js',
     },
+    // Expose variables for use in consumer components
     './styling/variables.scss': {
       'default': './src/styling/variables.scss',
+    },
+    // Expose mixins for use in consumer components
+    './styling/defs.scss': {
+      'default': './src/styling/defs.scss',
+    },
+    // Expose layer ordering, since consumers may want to explicitly emit these first (see note in README.md)
+    './styling/layers.scss': {
+      'default': './src/styling/layers.scss',
     },
   },
   
@@ -128,7 +137,7 @@ const packageConfig = {
     // Styling
     'vite-css-modules': '^1.6.0',
     'typescript-plugin-css-modules': '^5.0.1',
-    'sass-embedded': '^1.82.0',
+    'sass-embedded': '^1.83.0',
     'lightningcss': '^1.28.2',
     
     // React
