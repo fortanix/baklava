@@ -8,7 +8,7 @@ import ReactDatePicker from 'react-datepicker';
 import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../../util/componentUtil.ts';
 
 import 'react-datepicker/dist/react-datepicker.css';
-import cl from './DatePicker.module.scss';
+import cl from './DatePickerRange.module.scss';
 
 import { Input } from '../Input/Input.tsx';
 
@@ -35,7 +35,7 @@ type ReactDatePickerRangeProps = Omit<ComponentProps<typeof ReactDatePicker>, 'o
 };
 
 export type DatePickerRangeProps = GenericProps & ReactDatePickerRangeProps;
-type test = DatePickerRangeProps['startDate']
+
 export const DatePickerRange = (props: DatePickerRangeProps) => {
   const {
     unstyled = false,
@@ -48,7 +48,7 @@ export const DatePickerRange = (props: DatePickerRangeProps) => {
   return (
     <div className={cx(
       'bk',
-      { [cl['bk-date-picker']]: !unstyled },
+      { [cl['bk-date-picker-range']]: !unstyled },
       className,
     )}>
       <ReactDatePicker
@@ -56,7 +56,7 @@ export const DatePickerRange = (props: DatePickerRangeProps) => {
         // everything else is the same
         dateFormat={dateFormat}
         placeholderText={placeholderText}
-        customInput={<Input />}
+        customInput={<Input className={cl['bk-date-picker-range--input']}/>}
         {...propsRest}
         onChange={props.onChange}
         // biome-ignore lint/suspicious/noExplicitAny: bug in library, see above
