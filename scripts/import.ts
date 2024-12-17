@@ -223,9 +223,7 @@ const runImportIcons = async (args: ScriptArgs) => {
     
     const validity = await validateIcon(pathSource, iconName);
     if (!validity.isValid) {
-      if (!['filter-closed', 'filter-open'].includes(iconName)) { // FIXME: invalid dimensions on these two icons
-        throw new Error(`Found invalid icon '${iconName}': ${validity.message}`);
-      }
+      throw new Error(`Found invalid icon '${iconName}': ${validity.message}`);
     }
     
     logger.log(`Copying '${rel(pathSource)}' to '${rel(pathTarget)}'`);
