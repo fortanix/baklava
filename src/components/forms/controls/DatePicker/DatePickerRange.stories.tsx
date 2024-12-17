@@ -43,14 +43,14 @@ export const Standard: Story = {
           {...args}
           selected={startDate}
           onChange={onChange}
-          startDate={startDate as Date}
-          endDate={endDate as Date}
+          startDate={startDate}
+          endDate={endDate}
           inline={true}
         />
         {/* with a fixed width to avoid content moving around while selecting */}
         <p style={{width: '300px'}}>
           Range selected:<br />
-          {startDate?.toDateString()} - {endDate?.toDateString()}
+          {startDate?.toDateString()} - {endDate === null && '(null)'}{endDate?.toDateString()}
         </p>
       </div>
     );

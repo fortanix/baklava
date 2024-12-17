@@ -43,3 +43,21 @@ export const Standard: Story = {
     );
   }
 };
+
+export const DateNotSet: Story = {
+  render: (args) => {
+    const [startDate, setStartDate] = React.useState<Date | null>(null);
+
+    return (
+      // with a fixed height to avoid hiding the bottom part of the calendar
+      <div style={{height: '500px'}}>
+        <DatePicker
+          {...args}
+          selected={startDate}
+          onChange={(date: Date | null) => { setStartDate(date) }}
+        />
+        <p>Date selected: {startDate?.toDateString()}</p>
+      </div>
+    );
+  }
+};

@@ -28,6 +28,7 @@ type ReactDatePickerProps = Omit<ComponentProps<typeof ReactDatePicker>, 'onChan
   selectsMultiple?: never,
   showMonthYearDropdown?: never,
   onChange: ((date: Date | null, event?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => void),
+  selected: Date | null,
 };
 
 export type DatePickerProps = GenericProps & ReactDatePickerProps;
@@ -62,6 +63,8 @@ export const DatePicker = (props: DatePickerProps) => {
         onCalendarClose={() => setIsOpen(false)}
         onCalendarOpen={() => setIsOpen(true)}
         {...propsRest}
+        selected={props.selected}
+        onChange={props.onChange}
       />
       <Icon
         className={cx(

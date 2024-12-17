@@ -27,10 +27,15 @@ type ReactDatePickerRangeProps = Omit<ComponentProps<typeof ReactDatePicker>, 'o
   selectsMultiple?: never,
   showMonthYearDropdown?: never,
   onChange: ((date: [Date | null, Date | null], event?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement> | undefined) => void),
+  // There is a bug for startDate and endDate on the original library;
+  // it was already merged to master, but not released yet.
+  // https://github.com/Hacker0x01/react-datepicker/pull/5260
+  startDate?: Date | null,
+  endDate?: Date | null,
 };
 
 export type DatePickerRangeProps = GenericProps & ReactDatePickerRangeProps;
-
+type test = DatePickerRangeProps['startDate']
 export const DatePickerRange = (props: DatePickerRangeProps) => {
   const {
     unstyled = false,
@@ -53,6 +58,11 @@ export const DatePickerRange = (props: DatePickerRangeProps) => {
         placeholderText={placeholderText}
         customInput={<Input />}
         {...propsRest}
+        onChange={props.onChange}
+        // biome-ignore lint/suspicious/noExplicitAny: bug in library, see above
+        startDate={props.startDate as any}
+        // biome-ignore lint/suspicious/noExplicitAny: bug in library, see above
+        endDate={props.endDate as any}
       />
     </div>
   );
