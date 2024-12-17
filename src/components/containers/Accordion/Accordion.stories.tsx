@@ -16,6 +16,7 @@ export default {
   component: Accordion,
   parameters: {
     layout: 'centered',
+    design: { type: 'figma', url: 'https://www.figma.com/design/ymWCnsGfIsC2zCz17Ur11Z/Design-System-UX?node-id=5634-155879&node-type=instance' },
   },
   decorators: [
     Story => <div style={{ width: 400, display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}><Story/></div>
