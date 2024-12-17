@@ -8,7 +8,7 @@
  * example, modal `<dialog>` elements should not be affected by the cascade, it should be as though they were located
  * at the root of the document.
  */
- @mixin isolate {
+@mixin isolate {
   /* https://web.dev/learn/css/inheritance#which_properties_are_inherited_by_default */
   font: initial;
   font-family: var(--bk-font-family-body);
@@ -20,7 +20,7 @@
   text-transform: initial;
 }
 
-@layer baklava.base {
+@mixin styles {
   /* Class, for use with `@scope (.x) to (.isolate)` */
   .isolate {
     @include isolate;
@@ -29,9 +29,7 @@
   :root {
     @include isolate;
     
-    /* stylelint-disable */
     interpolate-size: allow-keywords;
-    /* stylelint-enable */
     
     /* Whether to inflate text on small devices */
     text-size-adjust: none;

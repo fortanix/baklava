@@ -1,11 +1,11 @@
 
 @use 'sass:meta';
 
-@layer reset {
-  @include meta.load-css('./lib/reset.css');
+@mixin styles {
+  @include meta.load-css('../lib/reset.css');
   
   
-  /* Custom reset styling */
+  /* Custom reset overrides */
   
   // :focus-visible {
   //   /* outline: calc(var(--bk-sizing-1) / 2) solid color-contrast(var(--bk-page-color-background) vs white, black); */

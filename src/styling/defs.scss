@@ -3,8 +3,8 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 @forward './variables.scss';
-@forward './fonts_mixins.scss';
-@forward './context/theming_mixins.scss';
+@forward './global/fonts.scss' hide styles;
+@forward './context/theming.scss' hide styles;
 
 @use './variables.scss' as vars;
 

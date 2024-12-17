@@ -2,7 +2,20 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@layer baklava.base {
+@mixin font-family-body($weight: 400) {
+  font-family: var(--bk-font-family-body, 'Open Sans');
+  font-weight: $weight;
+}
+@mixin font-family-display($weight: 400) {
+  font-family: var(--bk-font-family-display, 'Montserrat');
+  font-weight: $weight;
+}
+@mixin font-family-code($weight: 400) {
+  font-family: var(--bk-font-family-code, 'Source Code Pro');
+  font-weight: $weight;
+}
+
+@mixin styles {
   /*
   Open Sans
   https://google-webfonts-helper.herokuapp.com/fonts/open-sans?subsets=latin
@@ -13,7 +26,7 @@
     font-family: 'Open Sans';
     font-style: normal;
     font-weight: 400;
-    src: local(''), url('../assets/fonts/open-sans/open-sans-v23-latin-regular.woff2') format('woff2');
+    src: local(''), url('../../assets/fonts/open-sans/open-sans-v23-latin-regular.woff2') format('woff2');
     font-display: block;
   }
   /* open-sans-600 - latin */
@@ -21,7 +34,7 @@
     font-family: 'Open Sans';
     font-style: normal;
     font-weight: 600;
-    src: local(''), url('../assets/fonts/open-sans/open-sans-v23-latin-600.woff2') format('woff2');
+    src: local(''), url('../../assets/fonts/open-sans/open-sans-v23-latin-600.woff2') format('woff2');
     font-display: block;
   }
   /* open-sans-700 - latin */
@@ -29,7 +42,7 @@
     font-family: 'Open Sans';
     font-style: normal;
     font-weight: 700;
-    src: local(''), url('../assets/fonts/open-sans/open-sans-v23-latin-700.woff2') format('woff2');
+    src: local(''), url('../../assets/fonts/open-sans/open-sans-v23-latin-700.woff2') format('woff2');
     font-display: block;
   }
   
@@ -44,7 +57,7 @@
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 100;
-    src: local(''), url('../assets/fonts/montserrat/montserrat-v25-latin_latin-ext-100.woff2') format('woff2');
+    src: local(''), url('../../assets/fonts/montserrat/montserrat-v25-latin_latin-ext-100.woff2') format('woff2');
     font-display: block;
   }
   
@@ -53,7 +66,7 @@
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 200;
-    src: local(''), url('../assets/fonts/montserrat/montserrat-v25-latin_latin-ext-200.woff2') format('woff2');
+    src: local(''), url('../../assets/fonts/montserrat/montserrat-v25-latin_latin-ext-200.woff2') format('woff2');
     font-display: block;
   }
   
@@ -62,7 +75,7 @@
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 300;
-    src: local(''), url('../assets/fonts/montserrat/montserrat-v25-latin_latin-ext-300.woff2') format('woff2');
+    src: local(''), url('../../assets/fonts/montserrat/montserrat-v25-latin_latin-ext-300.woff2') format('woff2');
     font-display: block;
   }
   
@@ -71,7 +84,7 @@
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 400;
-    src: local(''), url('../assets/fonts/montserrat/montserrat-v25-latin_latin-ext-regular.woff2') format('woff2');
+    src: local(''), url('../../assets/fonts/montserrat/montserrat-v25-latin_latin-ext-regular.woff2') format('woff2');
     font-display: block;
   }
   
@@ -80,7 +93,7 @@
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 500;
-    src: local(''), url('../assets/fonts/montserrat/montserrat-v25-latin_latin-ext-500.woff2') format('woff2');
+    src: local(''), url('../../assets/fonts/montserrat/montserrat-v25-latin_latin-ext-500.woff2') format('woff2');
     font-display: block;
   }
   
@@ -89,7 +102,7 @@
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 600;
-    src: local(''), url('../assets/fonts/montserrat/montserrat-v25-latin_latin-ext-600.woff2') format('woff2');
+    src: local(''), url('../../assets/fonts/montserrat/montserrat-v25-latin_latin-ext-600.woff2') format('woff2');
     font-display: block;
   }
   
@@ -98,7 +111,7 @@
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 700;
-    src: local(''), url('../assets/fonts/montserrat/montserrat-v25-latin_latin-ext-700.woff2') format('woff2');
+    src: local(''), url('../../assets/fonts/montserrat/montserrat-v25-latin_latin-ext-700.woff2') format('woff2');
     font-display: block;
   }
   
@@ -113,7 +126,7 @@
     font-family: 'Source Code Pro';
     font-style: normal;
     font-weight: 400;
-    src: local(''), url('../assets/fonts/source-code-pro/source-code-pro-v14-latin-regular.woff2') format('woff2');
+    src: local(''), url('../../assets/fonts/source-code-pro/source-code-pro-v14-latin-regular.woff2') format('woff2');
     font-display: block;
   }
   

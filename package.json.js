@@ -46,6 +46,7 @@ const packageConfig = {
     'plop': 'NODE_OPTIONS="--import tsx" plop',
     'import': 'tsx scripts/import.ts',
     'automate': 'tsx scripts/automate.ts',
+    'verify': 'tsx scripts/verify.ts',
     
     // Library
     //'lib:build': '',
@@ -53,7 +54,7 @@ const packageConfig = {
     // App
     'serve:dev': 'vite --config=./vite.config.ts serve',
     //'build': 'vite --config=./vite.config.ts --emptyOutDir build && cp src/types/vite-env.d.ts dist && echo \'{"name": "@fortanix/baklava","main": "./baklava.js"}\' > dist/package.json',
-    'build': 'tsc -b && vite --config=./vite.config.ts build',
+    'build': 'tsc -b && vite --config=./vite.config.ts build && npm run verify verify:build',
     
     // Storybook
     'storybook:serve': 'storybook dev -p 6006',

@@ -1,8 +1,0 @@
-
-@use 'sass:meta';
-
-// Note: using `meta.load-css` for the following so we can wrap them in `@layer`, since these are third-party files
-// that we do not want to modify (and we cannot wrap `@use` in an `@layer`).
-@layer normalize {
-  @include meta.load-css('./lib/normalize.css');
-}
