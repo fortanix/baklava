@@ -9,7 +9,7 @@
     padding: 0 !important; // Override style for .Toastify__toast-container
     width: 400px !important; // Override style for .Toastify__toast-container
 
-    &:has(.bk-close--dark) {
+    &:has(.bk-toast__action-close) {
       .bk-toast__body {
         margin-right: bk.$spacing-4 !important; // Override style for .Toastify__toast-body
       }
@@ -60,12 +60,13 @@
       color: #{bk.$theme-notification-alert-border-default};
     }
 
-    .bk-close--dark {
+    .bk-toast__action-close {
       position: absolute;
       top: bk.$spacing-4;
       right: bk.$spacing-4;
       color: #{bk.$theme-notification-icon-default};
       cursor: pointer;
+      font-size: 1.2em;
     }
 
     .bk-toast__body {

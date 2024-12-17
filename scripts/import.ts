@@ -141,54 +141,56 @@ const runCreateIconsManifest = async (args: ScriptArgs) => {
   await fs.writeFile(manifestPath, manifest, { encoding: 'utf-8' });
 };
 
+type IconValidity = { isValid: true } | { isValid: false, message: string };
+const validateIcon = async (path: string, iconName: string): Promise<IconValidity> => {
+  try {
+    const iconSvg: string = (await fs.readFile(path)).toString();
+    
+    // Check: dimensions
+    const width = iconSvg.match(/width="(\d+)"/)?.[1];
+    const height = iconSvg.match(/height="(\d+)"/)?.[1];
+    if (!width || !height) {
+      throw new Error('Missing width/height in SVG');
+    }
+    if (Number.parseInt(width) !== 18 || Number.parseInt(height) !== 18) {
+      throw new Error(`Expect icon dimensions to be 18x18, found ${width}x${height}`);
+    }
+    
+    // TODO: accessibility checks? E.g. each icon should have an accessible name.
+    
+    return { isValid: true };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : `Unknown error (${JSON.stringify(error)})`;
+    return { isValid: false, message };
+  }
+};
+
 const runImportIcons = async (args: ScriptArgs) => {
   const { logger } = getServices();
   
+  // Arguments
+  const pathIconsArg: undefined | string = args.positionals[0];
   const isDryRun = args.values['dry-run'] ?? false;
   
+  if (!pathIconsArg) { throw new Error(`Missing argument: icons source path`); }
+  
+  const pathIconsSource = pathIconsArg.startsWith('/') ? pathIconsArg : path.join(process.cwd(), pathIconsArg);
+  const pathIconsTarget = path.join(process.cwd(), './src/assets/icons');
+
+  try {
+    await fs.access(pathIconsSource);
+  } catch (error: unknown) {
+    throw new Error(`Could not access icons directory ${pathIconsSource}. Does it exist?`);
+  }
+  
+  // Util: convert to kebab-case
   const kebabCase = (string: string) => string
     .replace(/([a-z])([A-Z])/g, "$1-$2")
     .replace(/[\s_]+/g, '-')
     .toLowerCase();
   
-  const skippedIcons: Array<string> = [
-    'apache', // Skip other company/project icons
-    'ai-guardrails', // Same as "send"?
-    'complete', // Same as "success"?
-    'table-settings', // Same as "edit-params"?
-  ];
-  const renamedIcons: Record<string, string> = {
-    'ki': 'fortanix-ki',
-    'security-objects': 'security-object', // Should be singular
-    'users': 'user', // Should be singular
-    'apps': 'app', // Should be singular
-    'groups': 'group', // Should be singular
-    'workflows': 'workflow', // Should be singular
-    'integrations': 'integration', // Should be singular
-    'scripts': 'script', // Should be singular
-    'plugins': 'plugin', // Should be singular
-    'page-fwd': 'page-forward', // Do not abbreviate
-    'user-account': 'user-profile', // "User account" is a misleading term considering our information architecture
-    'alert-01': 'bell',
-    'alert-02': 'warning',
-    'assessment': 'badge-assessment', // Depicts a security badge specifically
-    'gen-ai': 'badge-dashboard', // Does not specifically depict anything to do with GenAI
-    'authentication': 'user-authentication', // Depicts a user specifically (as opposed to e.g. app automation)
-    'cancel': 'status-cancelled', // Visually related
-    'success': 'status-success', // Visually related
-    'failed': 'status-failed', // Visually related
-    'ellipsis': 'ellipsis-vertical',
-    'filter': 'filter-closed', // Make consistent with `filter-open`
-    'eye': 'eye-open', // Visually related
-    'hide': 'eye-closed', // Visually related
-    'infrastructure': 'compute-node',
-    'log-out': 'logout', // Make consistent with `login`
-    'new-tab': 'link-external',
-    'new-query': 'conversation-new', // Note: 'query' is already used for a different concept/icon
-  };
-  
-  const pathIconsSource = path.join(process.cwd(), './src/assets/icons_source');
-  const pathIconsTarget = path.join(process.cwd(), './src/assets/icons');
+  const skippedIcons: Array<string> = [];
+  const renamedIcons: Record<string, string> = {};
   
   // Delete existing icons
   logger.log(`Deleting existing icons in ${rel(pathIconsTarget)}`);
@@ -218,6 +220,12 @@ const runImportIcons = async (args: ScriptArgs) => {
     
     const pathSource = path.join(pathIconsSource, fileName);
     const pathTarget = path.join(pathIconsTarget, `${iconName}.svg`)
+    
+    const validity = await validateIcon(pathSource, iconName);
+    if (!validity.isValid) {
+      throw new Error(`Found invalid icon '${iconName}': ${validity.message}`);
+    }
+    
     logger.log(`Copying '${rel(pathSource)}' to '${rel(pathTarget)}'`);
     if (!isDryRun) {
       await fs.copyFile(pathSource, pathTarget);
@@ -244,7 +252,7 @@ const printUsage = () => {
     
     Commands:
       - parse-tokens
-      - import-icons
+      - import-icons <path-to-icons>
   `);
 };
 

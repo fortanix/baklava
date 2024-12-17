@@ -72,8 +72,9 @@
     .bk-modal__close {
       position: absolute;
       right: bk.$spacing-8;
-      top: bk.$spacing-8;
+      top: calc(bk.$spacing-8 - 8px);
       z-index: 1;
+      font-size: 1.6em;
     }
     .bk-modal__container {
       padding: bk.$spacing-8;
