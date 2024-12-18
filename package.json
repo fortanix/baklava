@@ -103,7 +103,8 @@
     "react-toastify": "^10.0.6",
     "effect": "^3.11.3",
     "react-hook-form": "^7.54.0",
-    "optics-ts": "^2.4.1"
+    "optics-ts": "^2.4.1",
+    "react-datepicker": "^7.5.0"
   },
   "peerDependencies": {
     "react": ">= 19.0.0",
@@ -116,6 +117,10 @@
       "react-dom": "$react-dom"
     },
     "@storybook/icons": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    },
+    "react-datepicker": {
       "react": "$react",
       "react-dom": "$react-dom"
     }

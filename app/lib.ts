@@ -30,16 +30,20 @@ export { SubmitButton } from '../src/components/forms/context/SubmitButton/Submi
 
 // Forms > Controls
 export { Checkbox } from '../src/components/forms/controls/Checkbox/Checkbox.tsx';
+export { DatePicker } from '../src/components/forms/controls/DatePicker/DatePicker.tsx';
+export { DatePickerRange } from '../src/components/forms/controls/DatePickerRange/DatePickerRange.tsx';
 export { Input } from '../src/components/forms/controls/Input/Input.tsx';
 export { Radio } from '../src/components/forms/controls/Radio/Radio.tsx';
 export { SegmentedControl } from '../src/components/forms/controls/SegmentedControl/SegmentedControl.tsx';
 export { Select } from '../src/components/forms/controls/Select/Select.tsx';
 export { Switch } from '../src/components/forms/controls/Switch/Switch.tsx';
+export { TimePicker } from '../src/components/forms/controls/TimePicker/TimePicker.tsx';
 
 // Forms > Fields
 export { CheckboxField } from '../src/components/forms/fields/CheckboxField/CheckboxField.tsx';
 export { CheckboxGroup } from '../src/components/forms/fields/CheckboxGroup/CheckboxGroup.tsx';
 export { InputField } from '../src/components/forms/fields/InputField/InputField.tsx';
+export { InputFieldWithTags } from '../src/components/forms/fields/InputFieldWithTags/InputFieldWithTags.tsx';
 export { RadioField } from '../src/components/forms/fields/RadioField/RadioField.tsx';
 export { RadioGroup } from '../src/components/forms/fields/RadioGroup/RadioGroup.tsx';
 

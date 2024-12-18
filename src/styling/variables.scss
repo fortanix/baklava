@@ -210,6 +210,9 @@ $radius-s: math.div(4, 14) * 1rem !default;
 $radius-m: math.div(6, 14) * 1rem !default;
 $radius-l: math.div(9, 14) * 1rem !default;
 
+// Z-Indexes
+$z-index-date-picker: 100;
+
 
 //
 // Theme-dependent design tokens
@@ -413,6 +416,13 @@ $light-progress-bar-fill: $color-blueberry-600 !default;
 $light-spinner-track: $color-neutral-50 !default;
 $light-spinner-fill: $color-blueberry-600 !default;
 $light-date-picker-text-default: $color-neutral-900 !default;
+$light-date-picker-text-disabled: $color-neutral-500 !default;
+$light-date-picker-background-selected: $color-blueberry-600 !default;
+$light-date-picker-text-selected: $color-neutral-0 !default;
+$light-date-picker-background-hover: $color-blueberry-700 !default;
+$light-date-picker-text-hover: $color-neutral-0 !default;
+$light-date-picker-text-unavailable: $color-neutral-50 !default;
+$light-date-picker-rule-default: $color-blackberry-20 !default;
 $light-scroll-bar-thumb-default: $color-neutral-90 !default;
 $light-scroll-bar-slider-default: $color-neutral-50 !default;
 $light-tooltip-action-icon-background-hover: $color-neutral-40 !default;
@@ -648,6 +658,13 @@ $dark-progress-bar-fill: $color-blueberry-600 !default;
 $dark-spinner-track: $color-neutral-600 !default;
 $dark-spinner-fill: $color-blueberry-600 !default;
 $dark-date-picker-text-default: $color-neutral-10 !default;
+$dark-date-picker-text-disabled: $color-neutral-300 !default;
+$dark-date-picker-background-selected: $color-blueberry-500 !default;
+$dark-date-picker-text-hover: $color-neutral-10 !default;
+$dark-date-picker-background-hover: $color-blueberry-600 !default;
+$dark-date-picker-text-selected: $color-neutral-10 !default;
+$dark-date-picker-text-unavailable: $color-neutral-700 !default;
+$dark-date-picker-rule-default: $color-blackberry-300 !default;
 $dark-scroll-bar-thumb-default: $color-blackberry-200 !default;
 $dark-scroll-bar-slider-default: $color-blackberry-800 !default;
 $dark-tooltip-action-icon-background-hover: $color-blackberry-200 !default;
@@ -883,6 +900,13 @@ $theme-progress-bar-fill: #{ld($light-progress-bar-fill, $dark-progress-bar-fill
 $theme-spinner-track: #{ld($light-spinner-track, $dark-spinner-track)} !default;
 $theme-spinner-fill: #{ld($light-spinner-fill, $dark-spinner-fill)} !default;
 $theme-date-picker-text-default: #{ld($light-date-picker-text-default, $dark-date-picker-text-default)} !default;
+$theme-date-picker-text-disabled: #{ld($light-date-picker-text-disabled, $dark-date-picker-text-disabled)} !default;
+$theme-date-picker-background-selected: #{ld($light-date-picker-background-selected, $dark-date-picker-background-selected)} !default;
+$theme-date-picker-text-selected: #{ld($light-date-picker-text-selected, $dark-date-picker-text-selected)} !default;
+$theme-date-picker-background-hover: #{ld($light-date-picker-background-selected, $dark-date-picker-background-selected)} !default;
+$theme-date-picker-text-hover: #{ld($light-date-picker-text-hover, $dark-date-picker-text-hover)} !default;
+$theme-date-picker-text-unavailable: #{ld($light-date-picker-text-unavailable, $dark-date-picker-text-unavailable)} !default;
+$theme-date-picker-rule-default: #{ld($light-date-picker-rule-default, $dark-date-picker-rule-default)} !default;
 $theme-scroll-bar-thumb-default: #{ld($light-scroll-bar-thumb-default, $dark-scroll-bar-thumb-default)} !default;
 $theme-scroll-bar-slider-default: #{ld($light-scroll-bar-slider-default, $dark-scroll-bar-slider-default)} !default;
 $theme-tooltip-action-icon-background-hover: #{ld($light-tooltip-action-icon-background-hover, $dark-tooltip-action-icon-background-hover)} !default;

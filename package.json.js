@@ -154,6 +154,7 @@ const packageConfig = {
     'react-hook-form': '^7.54.0',
     
     'optics-ts': '^2.4.1',
+    "react-datepicker": "^7.5.0",
   },
   peerDependencies: {
     'react': '>= 19.0.0',
@@ -168,6 +169,11 @@ const packageConfig = {
     },
     // Issue: https://github.com/storybookjs/icons/issues/34
     '@storybook/icons': {
+      'react': '$react',
+      'react-dom': '$react-dom',
+    },
+    // Issue: https://github.com/Hacker0x01/react-datepicker/issues/5273
+    'react-datepicker': {
       'react': '$react',
       'react-dom': '$react-dom',
     },

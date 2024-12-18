@@ -1,0 +1,20 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-date-time-picker {
+    @include bk.component-base(bk-date-time-picker);
+
+    display: flex;
+    flex-direction: row;
+    gap: bk.$spacing-3;
+  }
+
+  .bk-date-time-picker--time-picker {
+    position: relative;
+    top: bk.rem-from-px(5);
+  }
+}
