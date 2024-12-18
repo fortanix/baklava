@@ -47,10 +47,151 @@ const rel = (absolutePath: string): string => {
   return path.relative(process.cwd(), absolutePath);
 };
 
+const addGenerationComment = (fileContents: string) => dedent`
+  /* GENERATED OUTPUT */
+  /* Do not modify, use \`npm run import\` instead. */
+  
+  ${fileContents}
+  ` + '\n';
+
+
+//
+// Token parsing
+//
+
+type TokenName = string;
+type Tokens<T> = Record<TokenName, T>;
+
+// Read a list of tokens from the given stream. There should be one token per line, the format of each should be:
+//   --<token-name>: <value>;
+// We continue to read either until the stream ends, or if we encounter a line of the form `---`.
+const readTokensFromStream = async <T>(
+  stream: AsyncIterable<string>,
+  parseToken: (tokenName: TokenName, tokenValue: string, prefix: null | string) => T,
+  prefixes: Array<null | string> = [null],
+): Promise<Tokens<T>> => {
+  let prefixIndex = 0;
+  
+  const tokensIn: Tokens<T> = {};
+  for await (const line of stream) {
+    const prefix: undefined | null | string = prefixes[prefixIndex];
+    if (typeof prefix === 'undefined') { break; }
+    
+    if (line.trim() === '') { continue; }
+    if (line.trim() === '---') { prefixIndex++; continue; } // Jump to the next prefix (if any)
+    
+    const matches = line.trim().match(/^--([a-z0-9-]+):\s*(.+)\s*;$/);
+    if (!matches) { throw new Error(`Invalid token input:\n${line}\n`); }
+    
+    const [_match, tokenName, tokenValue] = matches;
+    if (tokenName === undefined || tokenValue === undefined) { throw new Error(`Should not happen`); }
+    if (tokensIn[tokenName]) { throw new Error(`Duplicate token found: ${tokenName}`); }
+    
+    const tokenNameWithPrefix = typeof prefix === 'string' ? `${prefix}-${tokenName}` : tokenName;
+    
+    try {
+      tokensIn[tokenNameWithPrefix] = parseToken(tokenNameWithPrefix, tokenValue, prefix);
+    } catch (error: unknown) {
+      throw new Error(`Invalid token input:\n${line}\n`, { cause: error });
+    }
+  }
+  
+  // Sort keys
+  const tokenNamesSorted: Array<TokenName> = Object.keys(tokensIn).sort((tokenName1, tokenName2) => {
+    const segments1 = tokenName1.split('-');
+    const segments2 = tokenName2.split('-');
+    
+    for (let i = 0; i < segments1.length; i++) {
+      const segment1 = segments1[i] as string; // Safe, since we're assuming the array has no gaps
+      const segment2: undefined | string = segments2[i];
+      
+      if (typeof segment2 === 'undefined') { return +1; }
+      if (segment1 === segment2) { continue; }
+      if (/^\d+$/.test(segment1) && /^\d+$/.test(segment2)) { // Special case: comparing two numbers
+        return parseInt(segment1) - parseInt(segment2);
+      }
+      return segment1.localeCompare(segment2);
+    }
+    return 0; // Equal
+  });
+  
+  const tokens = tokenNamesSorted.reduce<Tokens<T>>((tokens, tokenName) => {
+    const token = tokensIn[tokenName];
+    if (typeof token === 'undefined') { throw new Error(`Should not happen`); }
+    tokens[tokenName] = token;
+    return tokens;
+  }, {});
+  
+  return tokens;
+};
+
 
 //
 // Commands
 //
+
+/*
+Takes primitive CSS color tokens of the form `--<var-name>: <expr>;` (as exported from Figma) and converts it to Sass
+variables.
+
+Usage:
+- Run `npm run -- import import-colors-primitive`.
+- Paste the CSS tokens exported from Figma.
+- Press CTRL+D to end the input stream.
+- Or, with files: `cat input.txt | npm run -- import import-colors-primitive`
+*/
+const runImportColorsPrimitive = async (args: ScriptArgs) => {
+  const { logger } = getServices();
+  const isDryRun = args.values['dry-run'] ?? false;
+  
+  const pathOutputSass = fileURLToPath(new URL('../src/styling/generated/colors_primitive.scss', import.meta.url));
+  const pathOutputTs = fileURLToPath(new URL('../src/styling/generated/colors_primitive.ts', import.meta.url));
+  
+  type PrimitiveColor = { category: string, weight: number, color: string };
+  const parseToken = (tokenName: TokenName, tokenValue: string): PrimitiveColor => {
+    const matches = tokenName.match(/^(.+)-(\d+)$/);
+    if (!matches) { throw new Error(`Invalid token name, expected: <category>-<weight>`); }
+    
+    const [_match, category, weight] = matches;
+    if (!category || !weight) { throw new Error(`Should not happen`); }
+    
+    return { category, weight: parseInt(weight), color: tokenValue };
+  };
+  
+  // Read tokens from stdin
+  logger.log(`Please paste in the CSS tokens from Figma, then press CTRL+D to mark the end of the input`);
+  logger.log(`Expected format: --<token-name>: <value>;\n`);
+  const tokens = await readTokensFromStream(createInterface({ input: process.stdin }), parseToken);
+  
+  const generatedSass = Object.entries(tokens)
+    .map(([tokenName, { color }]) => `$color-${tokenName}: ${color} !default;`)
+    .join('\n');
+  
+  const generatedTs = dedent`
+    export type TokenName = string;
+    export type ColorPrimitive = { category: string, weight: number, color: string };
+    export type ColorPrimitiveList = Record<TokenName, ColorPrimitive>;
+    export const colorsPrimitive: ColorPrimitiveList = {
+      ${Object.entries(tokens)
+        .map(([tokenName, value]) => `${JSON.stringify(tokenName)}: ${JSON.stringify(value)},`)
+        .join('\n')
+      }
+    };` + '\n';
+  
+  logger.log(`Writing generated Sass to: ${rel(pathOutputSass)}`);
+  if (isDryRun) {
+    logger.log(generatedSass);
+  } else {
+    await fs.writeFile(pathOutputSass, addGenerationComment(generatedSass), 'utf-8');
+  }
+  
+  logger.log(`Writing generated TypeScript to: ${rel(pathOutputTs)}`);
+  if (isDryRun) {
+    logger.log(generatedTs);
+  } else {
+    await fs.writeFile(pathOutputTs, addGenerationComment(generatedTs), 'utf-8');
+  }
+};
 
 /*
 Takes CSS variables of the form `--<var-name>: <expr>;` (as exported from Figma) and converts it to Sass variables. We
@@ -58,18 +199,93 @@ expect the same variable to be in the input exactly twice, the first is assumed 
 second dark.
 
 Usage:
-- Run `tsx scripts/import.ts parse-tokens`
-  > or, with files: `cat input.txt | tsx scripts/import.ts parse-tokens > output.txt`
-- Paste the variables input, with light variables first, then dark.
+- Run `npm run -- import import-colors-primitive`
+  > or, with files: `cat input.txt | npm run -- import import-colors-primitive`
+- Paste the variables input, with light variables first, then a '---' line as separator, then the dark variables.
 - Press CTRL+D to end the input stream.
-- Copy the output into `src/styling/variables.scss`
 */
-const runParseTokens = async (args: ScriptArgs) => {
+const runImportColorsSemantic = async (args: ScriptArgs) => {
   const { logger } = getServices();
+  const isDryRun = args.values['dry-run'] ?? false;
   
+  const pathOutputSass = fileURLToPath(new URL('../src/styling/generated/colors_semantic.scss', import.meta.url));
+  
+  type SemanticColor = { theme: 'light' | 'dark', name: string, color: string };
+  const parseToken = (tokenName: TokenName, tokenValue: string, prefix: null | string): SemanticColor => {
+    if (typeof prefix !== 'string' || (prefix !== 'light' && prefix !== 'dark')) {
+      throw new Error(`Should not happen`);
+    }
+    
+    // Replace references to primitive color tokens with their Sass variable equivalent
+    const color = tokenValue.replaceAll(/var\(--(.+?)-(\d+)\)/g, '\$color-$1-$2');
+    
+    return { theme: prefix, name: tokenName.replace(`${prefix}-`, ''), color };
+  };
+  
+  const stdin = createInterface({ input: process.stdin });
+  
+  // Read light theme tokens from stdin
+  logger.log(`Please paste in the light theme color tokens, followed by a '---' separator line, followed by`);
+  logger.log(`the dark theme color tokens. There should be a 1:1 mapping between light and dark tokens.`);
+  logger.log(`Expected format:`);
+  logger.log(`  --<token-name>: <light-color>;`);
+  logger.log(`  ---`);
+  logger.log(`  --<token-name>: <dark-color>;`);
+  logger.log('');
+  const tokens = await readTokensFromStream(stdin, parseToken, ['light', 'dark']);
+  
+  const tokensByTheme = Object.groupBy(Object.values(tokens), token => token.theme) as {
+    light: Array<SemanticColor>,
+    dark: Array<SemanticColor>,
+  };
+  
+  // Check that there are no missing pairs
+  const tokensLight = new Set(tokensByTheme.light.map(token => token.name));
+  const tokensDark = new Set(tokensByTheme.dark.map(token => token.name));
+  const tokensDiff = tokensLight.symmetricDifference(tokensDark);
+  if (tokensDiff.size !== 0) {
+    const diffNames = Array.from(tokensDiff.values()).join(', ');
+    throw new Error(`Found tokens which are missing a corresponding light/theme opposite: ${diffNames}`);
+  }
+  
+  const generatedSass = dedent`
+    @use './colors_primitive.scss' as *;
+    
+    @function ld($light-color, $dark-color) {
+      @return #{light-dark($light-color, $dark-color)};
+    }
+    
+    // Light theme
+    ${tokensByTheme.light
+      .map(({ theme, name, color }) => `$${theme}-${name}: ${color} !default;`)
+      .join('\n')
+    }
+    
+    // Dark theme
+    ${tokensByTheme.dark
+      .map(({ theme, name, color }) => `$${theme}-${name}: ${color} !default;`)
+      .join('\n')
+    }
+    
+    // Dynamic theme
+    ${tokensByTheme.light
+      .map(({ theme, name }) => `$theme-${name}: #{ld($light-${name}, $dark-${name})} !default;`)
+      .join('\n')
+    }
+  `;
+  
+  logger.log(`Writing generated Sass to: ${rel(pathOutputSass)}`);
+  if (isDryRun) {
+    logger.log(generatedSass);
+  } else {
+    await fs.writeFile(pathOutputSass, addGenerationComment(generatedSass), 'utf-8');
+  }
+  
+  /*
+  // Read tokens from stdin
   type Token = { light: string, dark?: undefined | string };
   type Tokens = Record<string, Token>;
-  let tokens: Tokens = {};
+  const tokens: Tokens = {};
   for await (const line of createInterface({ input: process.stdin })) {
     if (line.trim() === '') { continue; }
     
@@ -115,9 +331,11 @@ const runParseTokens = async (args: ScriptArgs) => {
     // Dynamic theme
     ${outputTheme.join('\n')}
   `);
+  */
 };
 
-const runCreateIconsManifest = async (args: ScriptArgs) => {
+
+const createIconsManifest = async (args: ScriptArgs) => {
   const { logger } = getServices();
   
   const pathIconsSource = path.join(process.cwd(), './src/assets/icons');
@@ -156,8 +374,6 @@ const validateIcon = async (path: string, iconName: string): Promise<IconValidit
       throw new Error(`Expect icon dimensions to be 18x18, found ${width}x${height}`);
     }
     
-    // TODO: accessibility checks? E.g. each icon should have an accessible name.
-    
     return { isValid: true };
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : `Unknown error (${JSON.stringify(error)})`;
@@ -165,6 +381,9 @@ const validateIcon = async (path: string, iconName: string): Promise<IconValidit
   }
 };
 
+/*
+Takes a directory of icons (exported from Figma) as input, and updates the icons directory in Baklava accordingly.
+*/
 const runImportIcons = async (args: ScriptArgs) => {
   const { logger } = getServices();
   
@@ -176,7 +395,7 @@ const runImportIcons = async (args: ScriptArgs) => {
   
   const pathIconsSource = pathIconsArg.startsWith('/') ? pathIconsArg : path.join(process.cwd(), pathIconsArg);
   const pathIconsTarget = path.join(process.cwd(), './src/assets/icons');
-
+  
   try {
     await fs.access(pathIconsSource);
   } catch (error: unknown) {
@@ -235,7 +454,7 @@ const runImportIcons = async (args: ScriptArgs) => {
   // Create `_icons.ts` manifest file
   logger.log(`Creating '_icons.ts' manifest file.`);
   if (!isDryRun) {
-    await runCreateIconsManifest(args);
+    await createIconsManifest(args);
   }
 };
 
@@ -252,6 +471,7 @@ const printUsage = () => {
     
     Commands:
       - parse-tokens
+      - import-colors-primitive
       - import-icons <path-to-icons>
   `);
 };
@@ -285,9 +505,9 @@ export const run = async (argsRaw: Array<string>): Promise<void> => {
     
     const argsForCommand: ScriptArgs = { ...args, positionals: args.positionals.slice(1) };
     switch (command) {
-      case 'parse-tokens': await runParseTokens(argsForCommand); break;
+      case 'import-colors-primitive': await runImportColorsPrimitive(argsForCommand); break;
+      case 'import-colors-semantic': await runImportColorsSemantic(argsForCommand); break;
       case 'import-icons': await runImportIcons(argsForCommand); break;
-      case 'icons-manifest': await runCreateIconsManifest(argsForCommand); break;
       default:
         logger.error(`Unknown command '${command}'\n`);
         printUsage();

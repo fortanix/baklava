@@ -3,6 +3,7 @@ import cx from 'classnames/dedupe';
 import { Meta, Unstyled } from '@storybook/blocks';
 
 import { colorsByCategory } from '../styling/variables.ts';
+import { colorsPrimitive } from '../styling/generated/colors_primitive.ts';
 
 import { H4, H5 } from '../typography/Heading/Heading.tsx';
 import { TooltipProvider } from '../components/overlays/Tooltip/TooltipProvider.tsx';
@@ -31,21 +32,23 @@ Primitive color tokens are the basic color definitions which are not dependent o
 
 <Unstyled>
   <div className={cl['primitive-colors']}>
-    {Object.entries(colorsByCategory).map(([colorCategoryName, colorCategory]) =>
-      <section key={colorCategoryName} className={cl['color-category']}>
-        <H4>{colorCategoryName}</H4>
-        <dl className={cl['colors-list']}>
-          {Object.entries(colorCategory).map(([colorName, { weight, color }]) =>
-            <TooltipProvider key={colorName} tooltip={<code className="bk-body-text">{`bk.$color-${colorName}`}</code>}>
-              <div className={cl['color']} tabIndex="1" style={{ '--color': color }}>
-                <dt>{weight}</dt>
-                <dd>{color}</dd>
-              </div>
-            </TooltipProvider>
-          )}
-        </dl>
-      </section>
-    )}
+    {Object.entries(Object.groupBy(Object.values(colorsPrimitive), ({ category }) => category)).map(
+      ([colorCategory, colors]) =>
+        <section key={colorCategory} className={cl['color-category']}>
+          <H4>{colorCategory}</H4>
+          <dl className={cl['colors-list']}>
+            {Object.entries(colors).map(([colorName, { weight, color }]) =>
+              <TooltipProvider key={colorName} tooltip={<code className="bk-body-text">{`bk.$color-${colorName}`}</code>}>
+                <div className={cl['color']} tabIndex="1" style={{ '--color': color }}>
+                  <dt>{weight}</dt>
+                  <dd>{color}</dd>
+                </div>
+              </TooltipProvider>
+            )}
+          </dl>
+        </section>
+      )
+    }
   </div>
 </Unstyled>
 
