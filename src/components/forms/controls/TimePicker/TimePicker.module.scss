@@ -2,7 +2,6 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@use 'sass:math';
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
@@ -13,7 +12,8 @@
 
   .bk-time-picker--input {
     color: bk.$theme-form-text-default;
+    line-height: 1.5;
     // A manual size increase to accommodate the clock icon without clipping the text.
-    width: math.div(94, 14) * 1rem;
+    width: bk.rem-from-px(94);
   }
 }

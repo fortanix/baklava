@@ -6,7 +6,7 @@
 @use '../../../../styling/lib/react-datepicker.scss';
 
 @layer baklava.components {
-  $caret-width: 18px;
+  $caret-width: bk.rem-from-px(18);
 
   .bk-date-picker {
     @include bk.component-base(bk-date-picker);
@@ -17,7 +17,7 @@
   }
 
   .bk-date-picker--input {
-    width: 130px;
+    width: bk.rem-from-px(134);
     color: bk.$theme-form-text-default;
   }
 
@@ -26,7 +26,7 @@
     height: $caret-width;
     position: relative;
     left: -$caret-width;
-    top: -1px;
+    top: bk.rem-from-px(-1);
   }
 
   .bk-date-picker--caret__down {

@@ -14,7 +14,7 @@
   }
 
   .bk-date-picker-range--input {
-    width: 130px;
+    width: bk.rem-from-px(134);
     color: bk.$theme-form-text-default;
   }
 }
