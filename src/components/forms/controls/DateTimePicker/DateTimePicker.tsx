@@ -26,10 +26,10 @@ export type DateTimePickerProps = {
   onChange: ((date: Date | null, event?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => void),
   
   /** A string for the date format, such as MM/dd/yyyy. */
-  dateFormat: string,
+  dateFormat?: undefined | string,
   
   /** A string for the placeholder text, such as MM/DD/YYYY. */
-  placeholderText: string,
+  placeholderText?: undefined | string,
 };
 
 export const DateTimePicker = ({
