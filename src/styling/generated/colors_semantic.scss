@@ -903,3 +903,16 @@ $theme-tooltip-background-default: #{ld($light-tooltip-background-default, $dark
 $theme-tooltip-border-default: #{ld($light-tooltip-border-default, $dark-tooltip-border-default)} !default;
 $theme-tooltip-text-default: #{ld($light-tooltip-text-default, $dark-tooltip-text-default)} !default;
 $theme-tooltip-text-error: #{ld($light-tooltip-text-error, $dark-tooltip-text-error)} !default;
+
+// FIXME: missing in Figma
+$light-segmented-control-background-default: $color-neutral-0 !default;
+$dark-segmented-control-background-default: $color-blackberry-600 !default;
+$theme-segmented-control-background-default: #{ld($light-segmented-control-background-default, $dark-segmented-control-background-default)} !default;
+
+$light-segmented-control-text-unselected-2: $color-neutral-70 !default;
+$dark-segmented-control-text-unselected-2: $color-neutral-200 !default;
+$theme-segmented-control-text-unselected-2: #{ld($light-segmented-control-text-unselected-2, $dark-segmented-control-text-unselected-2)} !default;
+
+$light-notification-icon-default: $color-neutral-900 !default;
+$dark-notification-icon-default: $color-neutral-900 !default;
+$theme-notification-icon-default: #{ld($light-notification-icon-default, $dark-notification-icon-default)} !default;

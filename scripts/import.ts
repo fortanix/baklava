@@ -272,6 +272,19 @@ const runImportColorsSemantic = async (args: ScriptArgs) => {
       .map(({ theme, name }) => `$theme-${name}: #{ld($light-${name}, $dark-${name})} !default;`)
       .join('\n')
     }
+    
+    // FIXME: missing in Figma
+    $light-segmented-control-background-default: $color-neutral-0 !default;
+    $dark-segmented-control-background-default: $color-blackberry-600 !default;
+    $theme-segmented-control-background-default: #{ld($light-segmented-control-background-default, $dark-segmented-control-background-default)} !default;
+    
+    $light-segmented-control-text-unselected-2: $color-neutral-70 !default;
+    $dark-segmented-control-text-unselected-2: $color-neutral-200 !default;
+    $theme-segmented-control-text-unselected-2: #{ld($light-segmented-control-text-unselected-2, $dark-segmented-control-text-unselected-2)} !default;
+    
+    $light-notification-icon-default: $color-neutral-900 !default;
+    $dark-notification-icon-default: $color-neutral-900 !default;
+    $theme-notification-icon-default: #{ld($light-notification-icon-default, $dark-notification-icon-default)} !default;
   `;
   
   logger.log(`Writing generated Sass to: ${rel(pathOutputSass)}`);

@@ -9,6 +9,17 @@ import variablesText from './variables.scss?raw';
 Some utilities to parse out information from `variables.scss` in order to use them in TypeScript code.
 */
 
+type Variables = Record<string, string>;
+const variables = [...variablesText.matchAll(/\$(.+):(.+)(?:!default).*;/g)].reduce<Variables>(
+  (variables, [match, variableName, variableValue]) => {
+    if (!match.includes('/* ignore */') && variableName && variableValue) {
+      variables[variableName.trim()] = variableValue.trim();
+    }
+    return variables;
+  },
+  {},
+);
+
 type FontSizes = Record<string, { sizeQualifier: string, sizeInRem: number }>;
 export const fontSizes = Object.entries(variables).reduce<FontSizes>(
   (fontSizes, [variableName, value]) => {
