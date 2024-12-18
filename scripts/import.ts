@@ -293,58 +293,6 @@ const runImportColorsSemantic = async (args: ScriptArgs) => {
   } else {
     await fs.writeFile(pathOutputSass, addGenerationComment(generatedSass), 'utf-8');
   }
-  
-  /*
-  // Read tokens from stdin
-  type Token = { light: string, dark?: undefined | string };
-  type Tokens = Record<string, Token>;
-  const tokens: Tokens = {};
-  for await (const line of createInterface({ input: process.stdin })) {
-    if (line.trim() === '') { continue; }
-    
-    const matches = line.trim().match(/^--([a-z0-9-]+):\s*(.+)\s*;$/);
-    if (!matches) {
-      throw new Error(`Invalid token input:\n${line}\n`);
-    }
-    const [_match, tokenName, tokenValue] = matches;
-    if (tokenName === undefined || tokenValue === undefined) { throw new Error(`Should not happen`); }
-    
-    if (tokens[tokenName]) {
-      tokens[tokenName].dark = tokenValue;
-    } else {
-      tokens[tokenName] = { light: tokenValue };
-    }
-  }
-  
-  const parseExpr = (expr: string) => {
-    // Replace color variables with their Sass equivalent
-    return expr.replaceAll(/var\(--([a-z0-9-]+-\d{1,4})\)/g, '$$color-$1');
-  };
-  
-  const outputLight = [];
-  const outputDark = [];
-  const outputTheme = [];
-  for (const [tokenName, token] of Object.entries(tokens)) {
-    if (typeof token.dark === 'undefined') {
-      throw new Error(`Missing dark variable for '${tokenName}'`);
-    }
-    
-    outputLight.push(`$light-${tokenName}: ${parseExpr(token.light)} !default;`);
-    outputDark.push(`$dark-${tokenName}: ${parseExpr(token.dark)} !default;`);
-    outputTheme.push(`$theme-${tokenName}: #{ld($light-${tokenName}, $dark-${tokenName})} !default;`);
-  }
-  
-  logger.log(dedent`
-    // Light theme
-    ${outputLight.join('\n')}
-    
-    // Dark theme
-    ${outputDark.join('\n')}
-    
-    // Dynamic theme
-    ${outputTheme.join('\n')}
-  `);
-  */
 };
 
 
