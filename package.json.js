@@ -30,8 +30,17 @@ const packageConfig = {
       //'require': './dist/baklava.cjs',
       'default': './dist/baklava.js',
     },
+    // Expose variables for use in consumer components
     './styling/variables.scss': {
       'default': './src/styling/variables.scss',
+    },
+    // Expose mixins for use in consumer components
+    './styling/defs.scss': {
+      'default': './src/styling/defs.scss',
+    },
+    // Expose layer ordering, since consumers may want to explicitly emit these first (see note in README.md)
+    './styling/layers.scss': {
+      'default': './src/styling/layers.scss',
     },
   },
   
@@ -46,6 +55,7 @@ const packageConfig = {
     'plop': 'NODE_OPTIONS="--import tsx" plop',
     'import': 'tsx scripts/import.ts',
     'automate': 'tsx scripts/automate.ts',
+    'verify': 'tsx scripts/verify.ts',
     
     // Library
     //'lib:build': '',
@@ -53,7 +63,7 @@ const packageConfig = {
     // App
     'serve:dev': 'vite --config=./vite.config.ts serve',
     //'build': 'vite --config=./vite.config.ts --emptyOutDir build && cp src/types/vite-env.d.ts dist && echo \'{"name": "@fortanix/baklava","main": "./baklava.js"}\' > dist/package.json',
-    'build': 'tsc -b && vite --config=./vite.config.ts build',
+    'build': 'tsc -b && vite --config=./vite.config.ts build && npm run verify verify:build',
     
     // Storybook
     'storybook:serve': 'storybook dev -p 6006',
@@ -127,7 +137,7 @@ const packageConfig = {
     // Styling
     'vite-css-modules': '^1.6.0',
     'typescript-plugin-css-modules': '^5.0.1',
-    'sass-embedded': '^1.82.0',
+    'sass-embedded': '^1.83.0',
     'lightningcss': '^1.28.2',
     
     // React

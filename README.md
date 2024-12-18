@@ -55,6 +55,18 @@ Additionally, you will need to add the following import in your main entry file:
 import 'virtual:svg-icons-register';
 ```
 
+Please make sure that Baklava is the first CSS that gets loaded in to your bundle. Baklava relies on CSS
+[cascade layers](https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/Cascade_layers) for its specificity
+management. If your application emits any code that uses an `@layer` name that is also used by Baklava
+(like `baklava.components`), and Baklava's layer ordering is not emitted first, then the ordering of the layers will
+get messed up (since browsers order layers by source order). If you want, you can also just emit the layers ordering
+from Baklava explicitly (rather than the whole bundle):
+
+```
+@use '@fortanix/baklava/styling/layers.scss';
+@include layers.styles;
+```
+
 
 ## Contributing
 

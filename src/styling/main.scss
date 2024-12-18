@@ -2,28 +2,39 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@use './defs.scss' as bk;
+@use 'sass:meta';
 
-/* Cascade layer ordering */
-/*
-Note: this ordering must be injected before any other CSS rules. In production Storybook builds it is hard to guarantee
-style ordering, so we also inject this list at the top of `preview-head.html`.
-*/
-@layer normalize, reset, baklava, app, accessibility, storybook;
-@layer baklava.base, baklava.body-text, baklava.theming, baklava.components;
+@use './layers.scss';
+@use './global/reset.scss';
+@use './context/variables.scss';
+@use './context/theming.scss';
+@use './global/global.scss';
+@use './global/accessibility.scss';
+@use './global/fonts.scss';
 
-@import './lib/normalize.css' layer(normalize);
-@import './lib/reset.css' layer(reset);
-@import './lib/reset-custom.css' layer(reset);
+// Defaults
+@use '../typography/BodyText/BodyText.mixins.scss' as bodytext;
 
-@import './variables.css';
-@import './fonts.css';
-@import './context/theming.scss';
-@import './global.scss' layer(baklava.base);
-@import '../typography/BodyText/BodyText.module.scss';
 
-/*
-Some styles (e.g. focus outline) need to override any existing styles. If for some reason a selector in a lower
-layer really needs to override these, `!important` can be used.
-*/
-@import './accessibility.css' layer(accessibility);
+//
+// Output
+//
+
+@include layers.styles; // Cascade layer ordering: MUST be emitted before anything else
+
+@layer normalize { @include meta.load-css('./lib/normalize.css'); } // First, normalize styling across browsers
+@layer reset { @include reset.styles; } // Next, reset all styling to minimal base
+
+// User-oriented styling (high layer specificity in order to apply to everything by default). If a component needs
+// to override these styling (e.g. custom focus outline), then use `!important`.
+// Note: despite being in a high layer, emitted early so that it is parsed sooner.
+@layer accessibility { @include accessibility.styles; }
+
+// Baklava-specific styling
+@layer baklava.base { @include variables.styles; }
+@layer baklava.base { @include theming.styles; }
+@layer baklava.base { @include global.styles; }
+@layer baklava.body-text { @include bodytext.styles; }
+
+// Emit fonts last, because vite will inline the font files, and we don't want to block the rest of the styling
+@layer baklava.base { @include fonts.styles; }
