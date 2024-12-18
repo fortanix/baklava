@@ -84,8 +84,8 @@ width of the viewport: on smaller devices (e.g. mobile), font sizes will be smal
         <tr key={fontSizeName}>
           <td><code>bk.${fontSizeName}</code></td>
           <td style={{ fontSize: `${fontSize.sizeInRem}rem` }}>This text has font size {fontSize.sizeQualifier}</td>
-          <td>{fontSize.sizeInRem}rem</td>
-          <td>~{(fontSize.sizeInRem * 16).toFixed(2)}px</td>
+          <td>{fontSize.sizeInRem.toFixed(2)}rem</td>
+          <td>~{(fontSize.sizeInRem * 14).toFixed(0)}px</td>
         </tr>
       )}
     </tbody>

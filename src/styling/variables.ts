@@ -61,7 +61,13 @@ export const fontSizes = Object.entries(variables).reduce<FontSizes>(
     const [_, sizeQualifier] = match;
     if (typeof sizeQualifier === 'undefined') { throw new Error(`Expected match`); }
     
-    fontSizes[variableName] = { sizeQualifier, sizeInRem: Number(value.replace('rem', '')) };
+    const sizeMatches = value.match(/math\.div\((\d+), (\d+)\)/);
+    if (!sizeMatches) { throw new Error(`Unable to parse size: ${value}`); }
+    
+    fontSizes[variableName] = {
+      sizeQualifier,
+      sizeInRem: Number(sizeMatches[1]) / Number(sizeMatches[2]),
+    };
     return fontSizes;
   },
   {},
