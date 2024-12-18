@@ -140,6 +140,7 @@ export const Select = Object.assign(
           ref={mergeRefs(selectedRef, refs.setReference as any)}
         >
           <Input
+            className={cl['bk-select__input']}
             tabIndex={-1}
             placeholder="Select an option"
             value={selected === null ? '' : selected.label}
