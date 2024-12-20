@@ -23,7 +23,7 @@
     },
     
     // Type checking
-    "lib": ["ES2023"], // Library declaration files to include (globally)
+    "lib": ["ESNext"], // Library declaration files to include (globally)
     "skipLibCheck": true, // Do not type check declaration files (for performance)
     "noErrorTruncation": true,
     
