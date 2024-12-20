@@ -98,7 +98,7 @@ const packageConfig = {
     'glob': '^11.0.0',
     
     // Build
-    'vite': '^6.0.5', // Cannot use vite v6, blocked by https://github.com/privatenumber/vite-css-modules/issues/13
+    'vite': '^6.0.5',
     '@vitejs/plugin-react': '^4.3.4',
     'vite-plugin-dts': '^4.3.0',
     'vite-plugin-lib-inject-css': '^2.1.1',
