@@ -431,8 +431,8 @@ const printUsage = () => {
     Usage: import.ts <cmd> <...args>
     
     Commands:
-      - parse-tokens
       - import-colors-primitive
+      - import-colors-semantic
       - import-icons <path-to-icons>
   `);
 };
