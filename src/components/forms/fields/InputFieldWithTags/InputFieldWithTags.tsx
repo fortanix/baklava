@@ -57,6 +57,7 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
 
   const controlId = React.useId();
   const formContext = useFormContext();
+  const inputRef = React.useRef<React.ComponentRef<'input'>>(null);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // first handle supplied onChange, if exists
@@ -90,6 +91,8 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
   const onRemoveTag = (index: number) => {
     if (onUpdateTags) {
       onUpdateTags(tags.filter((_, idx) => idx !== index));
+      const inputEl = inputRef.current;
+      inputEl?.focus();
     }
   };
 
@@ -119,6 +122,7 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
         onChange={onChange}
         onKeyDown={onKeyDown}
         value={value}
+        ref={inputRef}
       />
       <div className={cl['bk-input-field-with-tags__tags']}>
         {tags && (
