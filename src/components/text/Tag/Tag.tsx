@@ -47,8 +47,8 @@ export const Tag = (props: TagProps) => {
     >
       {content}
       {onRemove && (
-        <Button unstyled>
-          <Icon icon="cross" className={cl['bk-tag__icon']} onClick={onRemove}/>
+        <Button unstyled onPress={onRemove}>
+          <Icon icon="cross" className={cl['bk-tag__icon']}/>
         </Button>
       )}
     </div>

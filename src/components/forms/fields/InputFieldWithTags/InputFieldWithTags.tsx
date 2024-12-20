@@ -80,6 +80,7 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
         onUpdateTags(tags.slice(0,-1));
       }
       if (e.key === 'Enter' && value !== '') {
+        e.preventDefault();
         onUpdateTags([...tags, value.trim()]);
         onUpdate('');
       }
