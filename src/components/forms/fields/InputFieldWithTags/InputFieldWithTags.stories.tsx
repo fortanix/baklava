@@ -49,14 +49,16 @@ export const InputWithTags: Story = {
     };
 
     return (
-      <Card>
+      <Card style={{width: '350px'}}>
         <InputFieldWithTags
           tags={tags}
           value={inputText}
+          label={'Input with tags'}
           onUpdate={handleUpdate}
           onUpdateTags={handleUpdateTags}
-          placeholder=""
+          placeholder="Placeholder"
         />
+        <p>(enter creates new tags; backspace removes tags)</p>
       </Card>
     );
   }

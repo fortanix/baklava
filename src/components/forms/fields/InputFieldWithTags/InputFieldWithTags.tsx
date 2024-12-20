@@ -110,23 +110,20 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
           {label}
         </label>
       }
-      <div className={cl['bk-input-field-with-tags__container']}>
+      <Input
+        {...inputProps}
+        id={controlId}
+        form={formContext.formId}
+        className={cx(cl['bk-input-field-with-tags__control'], inputProps.className)}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        value={value}
+      />
+      <div className={cl['bk-input-field-with-tags__tags']}>
         {tags && (
           // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
           tags.map((tag, idx) => <Tag key={idx} content={tag} onRemove={() => onRemoveTag(idx)}/>)
         )}
-        <div className={cl['bk-input-field-with-tags__input-container']}>
-          <Input
-            {...inputProps}
-            unstyled={true}
-            id={controlId}
-            form={formContext.formId}
-            className={cx(cl['bk-input-field-with-tags__control'], inputProps.className)}
-            onChange={onChange}
-            onKeyDown={onKeyDown}
-            value={value}
-          />
-        </div>
       </div>
     </div>
   );
