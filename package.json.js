@@ -98,7 +98,7 @@ const packageConfig = {
     'glob': '^11.0.0',
     
     // Build
-    'vite': '^6.0.5',
+    'vite': '^5.4.11', // Cannot use vite v6, blocked by https://github.com/privatenumber/vite-css-modules/issues/13
     '@vitejs/plugin-react': '^4.3.4',
     'vite-plugin-dts': '^4.3.0',
     'vite-plugin-lib-inject-css': '^2.1.1',
@@ -135,7 +135,7 @@ const packageConfig = {
     '@percy/storybook': '^6.0.3',
     
     // Styling
-    'vite-css-modules': '^1.8.0',
+    'vite-css-modules': '^1.6.0',
     'typescript-plugin-css-modules': '^5.0.1',
     'sass-embedded': '^1.83.0',
     'lightningcss': '^1.28.2',
