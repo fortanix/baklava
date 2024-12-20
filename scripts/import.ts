@@ -321,7 +321,7 @@ const createIconsManifest = async (args: ScriptArgs) => {
 };
 
 type IconValidity = { isValid: true } | { isValid: false, message: string };
-const validateIcon = async (path: string, iconName: string): Promise<IconValidity> => {
+const validateIcon = async (path: string): Promise<IconValidity> => {
   try {
     const iconSvg: string = (await fs.readFile(path)).toString();
     
@@ -401,7 +401,7 @@ const runImportIcons = async (args: ScriptArgs) => {
     const pathSource = path.join(pathIconsSource, fileName);
     const pathTarget = path.join(pathIconsTarget, `${iconName}.svg`)
     
-    const validity = await validateIcon(pathSource, iconName);
+    const validity = await validateIcon(pathSource);
     if (!validity.isValid) {
       throw new Error(`Found invalid icon '${iconName}': ${validity.message}`);
     }
