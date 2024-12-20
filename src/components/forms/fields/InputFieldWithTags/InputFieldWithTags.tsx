@@ -57,6 +57,7 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
 
   const controlId = React.useId();
   const formContext = useFormContext();
+  const inputRef = React.useRef<React.ComponentRef<'input'>>(null);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // first handle supplied onChange, if exists
@@ -80,6 +81,7 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
         onUpdateTags(tags.slice(0,-1));
       }
       if (e.key === 'Enter' && value !== '') {
+        e.preventDefault();
         onUpdateTags([...tags, value.trim()]);
         onUpdate('');
       }
@@ -89,6 +91,8 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
   const onRemoveTag = (index: number) => {
     if (onUpdateTags) {
       onUpdateTags(tags.filter((_, idx) => idx !== index));
+      const inputEl = inputRef.current;
+      inputEl?.focus();
     }
   };
 
@@ -110,23 +114,21 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
           {label}
         </label>
       }
-      <div className={cl['bk-input-field-with-tags__container']}>
+      <Input
+        {...inputProps}
+        id={controlId}
+        form={formContext.formId}
+        className={cx(cl['bk-input-field-with-tags__control'], inputProps.className)}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        value={value}
+        ref={inputRef}
+      />
+      <div className={cl['bk-input-field-with-tags__tags']}>
         {tags && (
           // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
           tags.map((tag, idx) => <Tag key={idx} content={tag} onRemove={() => onRemoveTag(idx)}/>)
         )}
-        <div className={cl['bk-input-field-with-tags__input-container']}>
-          <Input
-            {...inputProps}
-            unstyled={true}
-            id={controlId}
-            form={formContext.formId}
-            className={cx(cl['bk-input-field-with-tags__control'], inputProps.className)}
-            onChange={onChange}
-            onKeyDown={onKeyDown}
-            value={value}
-          />
-        </div>
       </div>
     </div>
   );
