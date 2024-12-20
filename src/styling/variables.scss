@@ -13,7 +13,7 @@
 
 
 //
-// Primitive colors
+// Colors
 //
 
 @forward './generated/colors_primitive.scss';
@@ -104,6 +104,7 @@ $font-size-xxl: math.div(28, 14) * 1rem !default; // ~28px
 $font-size-xxxl: math.div(42, 14) * 1rem !default; // ~42px
 
 // Border radius
+//OLD
 $border-radius-none: $sizing-0 !default;
 $border-radius-s: $sizing-1 !default;
 $border-radius-ms: $sizing-2 !default; // "medium small" (halfway between 6px increments)
