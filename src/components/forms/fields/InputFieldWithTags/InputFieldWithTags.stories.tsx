@@ -36,7 +36,7 @@ export default {
 } satisfies Meta<InputArgs>;
 
 export const InputWithTags: Story = {
-  name: 'Input with tags (enter creates new tag, backspace erases tags)',
+  name: 'Standard',
   render: () => {
     const [tags, setTags] = React.useState<Array<string>>(['Tag Title', 'Tag Title 2']);
     const [inputText, setInputText] = React.useState<string>('Example');
