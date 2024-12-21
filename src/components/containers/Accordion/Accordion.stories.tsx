@@ -44,6 +44,10 @@ export default {
 } satisfies Meta<AccordionArgs>;
 
 
-export const Standard: Story = {
-  name: 'Accordion',
+export const Standard: Story = {};
+
+export const TextOverflow: Story = {
+  args: {
+    title: 'An Accordion with a Very Long Title Causing Overflow',
+  },
 };

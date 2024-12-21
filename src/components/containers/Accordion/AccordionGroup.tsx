@@ -17,7 +17,13 @@ const AccordionGroupContext = React.createContext<AccordionGroupContext>({});
 
 const AccordionWithContext = (props: AccordionProps) => {
   const context = React.use(AccordionGroupContext);
-  return <Accordion name={context.name} {...props}/>;
+  return (
+    <Accordion
+      name={context.name}
+      {...props}
+      className={cx(cl['bk-accordion-group__item'], props.className)}
+    />
+  );
 };
 
 export type AccordionGroupProps = React.PropsWithChildren<ComponentProps<'div'> & {
