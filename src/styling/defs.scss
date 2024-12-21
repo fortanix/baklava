@@ -40,6 +40,12 @@
   hyphens: auto;
 }
 
+@mixin text-one-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 @mixin flex-center() {
   display: flex;
   align-items: center;

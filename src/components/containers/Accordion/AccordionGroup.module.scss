@@ -1,0 +1,26 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-accordion-group {
+    @include bk.component-base(bk-accordion-group);
+    
+    display: flex;
+    flex-direction: column;
+    
+    min-width: 400px; /* FIXME */
+  }
+  
+  .bk-accordion-group__item + .bk-accordion-group__item {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top-width: 0;
+  }
+  .bk-accordion-group__item:has(+ .bk-accordion-group__item) {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}

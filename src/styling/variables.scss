@@ -103,6 +103,9 @@ $font-size-xl: math.div(22, 14) * 1rem !default; // ~22px
 $font-size-xxl: math.div(28, 14) * 1rem !default; // ~28px
 $font-size-xxxl: math.div(42, 14) * 1rem !default; // ~42px
 
+// Line heights
+$line-height-s: normal; // Depends on the font (note: currently used in the Figma, should replace with a fixed value)
+
 // Border radius
 //OLD
 $border-radius-none: $sizing-0 !default;
@@ -114,9 +117,12 @@ $border-radius-xl: $sizing-7 !default;
 $border-radius-circle: 100% !default;
 
 //NEW
-$radius-s: math.div(4, 14) * 1rem !default;
-$radius-m: math.div(6, 14) * 1rem !default;
-$radius-l: math.div(9, 14) * 1rem !default;
+$radius-1: math.div(2, 14) * 1rem !default; // ~2px
+$radius-2: math.div(4, 14) * 1rem !default; // ~4px
+$radius-3: math.div(6, 14) * 1rem !default; // ~6px
+$radius-s: math.div(4, 14) * 1rem !default; // FIXME
+$radius-m: math.div(6, 14) * 1rem !default; // FIXME
+$radius-l: math.div(9, 14) * 1rem !default; // FIXME
 
 // Z-Indexes
 $z-index-date-picker: 100;
