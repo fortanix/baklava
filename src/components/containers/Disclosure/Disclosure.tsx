@@ -29,6 +29,14 @@ export type DisclosureProps = Omit<ComponentProps<'details'>, 'title'> & {
  */
 export const Disclosure = (props: DisclosureProps) => {
   const { unstyled = false, title, summaryProps = {}, contentProps = {}, children, ...propsRest } = props;
+  
+  /*
+  Some notes on accessibility of `<details>`:
+  - https://www.scottohara.me/blog/2022/09/12/details-summary.html (2022)
+  - https://www.hassellinclusion.com/blog/accessible-accordions-part-2-using-details-summary (2019)
+  - https://a11ysupport.io/tech/html/summary_element
+  */
+  
   return (
     <details
       {...propsRest}

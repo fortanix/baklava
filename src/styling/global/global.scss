@@ -46,4 +46,8 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
   }
+  
+  // Workaround for https://github.com/vbenjs/vite-plugin-svg-icons/issues/90
+  // stylelint-disable-next-line selector-id-pattern
+  #baklava-icon-sprite { display: none; }
 }

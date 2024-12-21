@@ -9,7 +9,7 @@
   .bk-disclosure {
     @include bk.component-base(bk-disclosure);
     
-    --bk-disclosure-transition-duration: 1s;
+    --bk-disclosure-transition-duration: 500ms;
     
     --bk-disclosure-background-color: #{bk.$theme-accordion-background-default};
     --bk-disclosure-border-color: #{bk.$theme-accordion-border-default};
