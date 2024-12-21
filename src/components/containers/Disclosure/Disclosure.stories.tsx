@@ -77,6 +77,10 @@ export const WithScroll: Story = {
     open: true,
     title: 'A disclosure with scrollable content',
     children: <LoremIpsum paragraphs={3}/>,
-    style: { maxHeight: '30rem' },
+    style: {
+      //maxHeight: '30rem', // Doesn't work in browsers that don't support `::details-content`
+      // @ts-ignore
+      '--bk-disclosure-max-height': '30rem',
+    },
   },
 };

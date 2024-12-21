@@ -22,6 +22,7 @@
     
     overflow: hidden;
     
+    max-height: var(--bk-disclosure-max-height, none);
     padding: var(--bk-disclosure-padding-block) var(--bk-disclosure-padding-inline);
     
     border: bk.$size-1 solid var(--bk-disclosure-border-color);
@@ -110,13 +111,30 @@
       block-size: auto;
     }
     
+    // Fallback styling for browsers that don't support `::details-content`
     @supports not selector(::details-content) {
+      // Fix padding
       .bk-disclosure__content {
         // In case of overflow, since we don't the flex parent, the margin bottom here won't work.
         // Move it to `details[open]` instead.
         margin-bottom: 0;
       }
       &[open] { padding-bottom: bk.$spacing-8; }
+      
+      // Fix scrolling
+      // stylelint-disable-next-line no-duplicate-selectors
+      .bk-disclosure__content {
+        // It seems there is no easy way to make this element scrollable with `height: auto` (and setting the height
+        // on the `<details>` instead), because without `::details-content` there is no way to make the details content
+        // a flex container.
+        // What does work is to set an explicit height on the `.bk-disclosure__content`.
+        //height: 20rem; // This works
+        
+        // We can use a variable for the `<details>` height and then calculate the height of the content box.
+        --summary-height: calc(var(--bk-disclosure-padding-block) + 1.6rem);
+        --padding-height: calc(2 * #{bk.$spacing-8});
+        max-height: calc(var(--bk-disclosure-max-height) - var(--summary-height) - var(--padding-height));
+      }
     }
   }
 }
