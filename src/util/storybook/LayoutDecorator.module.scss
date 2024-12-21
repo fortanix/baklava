@@ -1,0 +1,13 @@
+
+@layer baklava.base {
+  .util-layout-decorator {
+    width: 80ch;
+    
+    &.util-layout-decorator--small { width: 60ch; }
+    &.util-layout-decorator--large { width: 100ch; }
+    
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
