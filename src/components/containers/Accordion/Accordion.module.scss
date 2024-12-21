@@ -9,23 +9,42 @@
   .bk-accordion {
     @include bk.component-base(bk-accordion);
     
-    /* FIXME: no accordion-specific semantic tokens for these */
+    --bk-accordion-transition-duration: 1s;
+    
     --bk-accordion-background-color: #{bk.$theme-accordion-background-default};
     --bk-accordion-border-color: #{bk.$theme-accordion-border-default};
     --bk-accordion-text-color: var(--bk-page-color-text);
     
-    padding-inline: bk.$spacing-4;
-    padding-block: bk.rem-from-px(14); // FIXME
+    --bk-accordion-border-radius-top: #{bk.$radius-3};
+    --bk-accordion-border-radius-bottom: #{bk.$radius-3};
+    --bk-accordion-padding-inline: #{bk.$spacing-4};
+    --bk-accordion-padding-block: #{bk.rem-from-px(14)}; // FIXME: does not correspond to an existing token
     
-    border-radius: bk.$radius-3;
+    overflow: hidden;
+    
+    padding: var(--bk-accordion-padding-block) var(--bk-accordion-padding-inline);
+    
     border: bk.$size-1 solid var(--bk-accordion-border-color);
+    border-radius:
+      var(--bk-accordion-border-radius-top)
+      var(--bk-accordion-border-radius-top)
+      var(--bk-accordion-border-radius-bottom)
+      var(--bk-accordion-border-radius-bottom);
     background: var(--bk-accordion-background-color);
     color: var(--bk-accordion-text-color);
+    
+    // Use flex so that we can fit the content to the <details> height, allowing us to do `overflow-y: auto`
+    display: flex;
+    flex-direction: column;
     
     summary {
       @include heading.h5;
       
       cursor: pointer;
+      
+      // Expand the target size
+      margin: calc(-1 * var(--bk-accordion-padding-block)) calc(-1 * var(--bk-accordion-padding-inline));
+      padding: var(--bk-accordion-padding-block) var(--bk-accordion-padding-inline);
       
       display: flex;
       align-items: center;
@@ -45,18 +64,56 @@
           transition: rotate 120ms ease-in-out;
         }
       }
+      
+      // Border radius for focus outline
+      border-radius: // Note: `inherit` keyword does not work for some reason?
+        var(--bk-accordion-border-radius-top)
+        var(--bk-accordion-border-radius-top)
+        var(--bk-accordion-border-radius-bottom)
+        var(--bk-accordion-border-radius-bottom);
+      @include bk.focus-inset;
     }
-    
-    &[open] {
-      padding-bottom: bk.$spacing-8;
+    &[open] summary {
+      --bk-accordion-border-radius-bottom: 0; // Disable bottom radius on the summary when open (for focus outline)
       
       .bk-accordion__collapse-icon {
         rotate: -0.5turn;
       }
     }
     
+    // Note: when `::details-content` is well-supported we can use that and remove this wrapper element
     .bk-accordion__content {
-      margin-top: bk.$spacing-8;
+      //padding-top: bk.$spacing-8;
+      //overflow-y: auto;
+    }
+    
+    // The bottom padding should increase when open. We animate this padding change along with the collapse animation
+    // to make the change less jarring.
+    &[open] {
+      padding-bottom: bk.$spacing-8;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      transition-property: padding-top, padding-bottom;
+      transition-duration: var(--bk-accordion-transition-duration);
+    }
+    
+    // Animate the collapsing of the details content.
+    // Note: does not have full browser support yet, but it's a progressive enhancement.
+    &::details-content {
+      block-size: 0;
+      
+      // FIXME: cannot yet use the following without browser support
+      overflow-y: auto;
+      
+      @media (prefers-reduced-motion: no-preference) {
+        // Note: do not use `transition` shorthand due to https://github.com/parcel-bundler/lightningcss/issues/572
+        transition-property: block-size, content-visibility;
+        transition-duration: var(--bk-accordion-transition-duration);
+        transition-behavior: allow-discrete;
+      }
+    }
+    &[open]::details-content {
+      block-size: auto;
     }
   }
 }

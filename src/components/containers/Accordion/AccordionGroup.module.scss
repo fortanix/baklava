@@ -11,16 +11,12 @@
     display: flex;
     flex-direction: column;
     
-    min-width: 400px; /* FIXME */
-  }
-  
-  .bk-accordion-group__item + .bk-accordion-group__item {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-top-width: 0;
-  }
-  .bk-accordion-group__item:has(+ .bk-accordion-group__item) {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+    .bk-accordion-group__item + .bk-accordion-group__item {
+      --bk-accordion-border-radius-top: 0;
+      border-top-width: 0;
+    }
+    .bk-accordion-group__item:has(+ .bk-accordion-group__item) {
+      --bk-accordion-border-radius-bottom: 0;
+    }
   }
 }

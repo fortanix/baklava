@@ -6,7 +6,11 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
+import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
+import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
+
 import { Accordion } from './Accordion.tsx';
+import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
 
 
 type AccordionArgs = React.ComponentProps<typeof Accordion>;
@@ -19,24 +23,14 @@ export default {
     design: { type: 'figma', url: 'https://www.figma.com/design/ymWCnsGfIsC2zCz17Ur11Z/Design-System-UX?node-id=5634-155879&node-type=instance' },
   },
   decorators: [
-    Story => <div style={{ width: 400, display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}><Story/></div>
+    Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>,
   ],
   tags: ['autodocs'],
   argTypes: {
   },
   args: {
     children: (
-      <article className="bk-body-text">
-        <p>
-          Lorem ipsum odor amet, consectetuer adipiscing elit. Pretium eget risus suspendisse, inceptos aliquet dolor. Parturient nunc euismod montes neque fames accumsan. Litora litora nisi porta tempus elit. Mus per nascetur amet nascetur convallis nibh. Rhoncus adipiscing velit praesent quisque eu torquent. Blandit dignissim malesuada senectus finibus potenti bibendum mattis. Sem habitasse tellus inceptos habitant pretium parturient parturient sociosqu. Leo tempor lorem mus consectetur justo.
-        </p>
-        <p>
-          Iaculis augue nec turpis tortor praesent eu. Leo convallis aliquam placerat elementum justo nam. Cursus neque viverra erat ante; rhoncus maximus fringilla. Quis gravida vulputate suspendisse sem nullam ipsum ut duis. Duis mollis consequat augue amet hac iaculis. Ridiculus curabitur magna duis velit netus. Habitasse metus molestie potenti vitae ullamcorper habitant potenti montes. Ullamcorper nulla curae orci; metus ultricies malesuada pretium.
-        </p>
-        <p>
-          Tempus enim congue mus erat tempus ex inceptos per praesent. Augue conubia parturient volutpat convallis efficitur?
-        </p>
-      </article>
+      <LoremIpsum paragraphs={1}/>
     ),
     title: 'My Accordion',
   },
@@ -46,8 +40,44 @@ export default {
 
 export const Standard: Story = {};
 
-export const TextOverflow: Story = {
+export const DefaultOpen: Story = {
   args: {
-    title: 'An Accordion with a Very Long Title Causing Overflow',
+    open: true,
+    title: 'I should be open by default',
+  },
+};
+
+export const WithFocusClosed: Story = {
+  args: {
+    open: false,
+    summaryProps: { className: 'pseudo-focus-visible' },
+    title: 'I should have a focus outline',
+    children: <>The border radius on the outline should be on both top and bottom when closed.</>,
+  },
+};
+
+export const WithFocusOpen: Story = {
+  args: {
+    open: true,
+    summaryProps: { className: 'pseudo-focus-visible' },
+    title: 'I should have a focus outline',
+    children: <>The border radius on the outline should be only on the top when open.</>,
+  },
+};
+
+export const WithTextOverflow: Story = {
+  args: {
+    title: 'An accordion with a long title that should cause text overflow',
+  },
+};
+
+// Note: interesting quirk with the open/close animation. Because it's the `::details-content` that gets its height
+// animated, if there is a lot of overflowing content, there is a visual delay in the close animation.
+export const WithScroll: Story = {
+  args: {
+    open: true,
+    title: 'An accordion with lots of content',
+    children: <LoremIpsum paragraphs={6}/>,
+    style: { maxHeight: '80svh' },
   },
 };
