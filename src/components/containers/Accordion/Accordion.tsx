@@ -5,47 +5,61 @@
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
+import { type DisclosureProps, Disclosure } from '../Disclosure/Disclosure.tsx';
+
 import cl from './Accordion.module.scss';
-import { Icon } from '../../graphics/Icon/Icon.tsx';
 
 
 export { cl as AccordionClassNames };
-export type AccordionProps = Omit<ComponentProps<'details'>, 'title'> & {
+
+type AccordionContext = { name?: undefined | string };
+const AccordionContext = React.createContext<AccordionContext>({});
+
+type AccordionItemProps = Omit<DisclosureProps, 'name'>;
+const AccordionItem = (props: AccordionItemProps) => {
+  const context = React.use(AccordionContext);
+  return (
+    <Disclosure
+      {...props}
+      name={context.name}
+      className={cx(cl['bk-accordion__item'], props.className)}
+    />
+  );
+};
+
+export type AccordionProps = React.PropsWithChildren<ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
-  /** The title of the accordion. */
-  title: React.ReactNode,
-  
-  /** Additional props for the <summary> element. */
-  summaryProps?: undefined | Omit<ComponentProps<'summary'>, 'children'>,
-  
-  /** Additional props for the details content. */
-  contentProps?: undefined | Omit<ComponentProps<'div'>, 'children'>,
-};
+  /** If true, only one accordion may be open at a given time */
+  exclusive?: undefined | boolean,
+}>;
 /**
- * An accordion, i.e. a collapsible container.
+ * Accordion component: a sequence of disclosure components that can be opened individually (exclusive by default).
  */
-export const Accordion = (props: AccordionProps) => {
-  const { unstyled = false, title, summaryProps = {}, contentProps = {}, children, ...propsRest } = props;
-  return (
-    <details
-      {...propsRest}
-      className={cx(
-        { bk: true },
-        { [cl['bk-accordion']]: !unstyled },
-        propsRest.className,
-      )}
-    >
-      <summary {...summaryProps} className={cx(summaryProps.className)}>
-        <span className={cl['bk-accordion__title']}>
-          {title}
-        </span>
-        <Icon icon="caret-down" className={cl['bk-accordion__collapse-icon']}/>
-      </summary>
-      <div {...contentProps} className={cx(cl['bk-accordion__content'], contentProps.className)}>
-        {children}
-      </div>
-    </details>
-  );
-};
+export const Accordion = Object.assign(
+  (props: AccordionProps) => {
+    const { unstyled = false, exclusive = true, ...propsRest } = props;
+    
+    const name = `bk-accordion-${React.useId()}`;
+    const context: AccordionContext = React.useMemo(() => {
+      if (exclusive) {
+        return { name };
+      }
+      return {};
+    }, [exclusive, name]);
+    
+    return (
+      <AccordionContext.Provider value={context}>
+        <div
+          {...propsRest}
+          className={cx({
+            bk: true,
+            [cl['bk-accordion']]: !unstyled,
+          }, propsRest.className)}
+        />
+      </AccordionContext.Provider>
+    );
+  },
+  { Disclosure: AccordionItem },
+);
