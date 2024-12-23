@@ -30,7 +30,7 @@ export default {
         <Accordion.Disclosure title="Title 1"><LoremIpsum/></Accordion.Disclosure>
         <Accordion.Disclosure title="Title 2"><LoremIpsum/></Accordion.Disclosure>
         <Accordion.Disclosure title="Title 3"><LoremIpsum/></Accordion.Disclosure>
-        <Accordion.Disclosure title="An accordion with a very long title that should cause text overflow">
+        <Accordion.Disclosure title="An item with a very long title that should cause text overflow">
           <LoremIpsum paragraphs={3}/>
         </Accordion.Disclosure>
       </>
@@ -44,7 +44,7 @@ export const ExclusiveAccordion: Story = {
   args: {
     children: (
       <>
-        <Accordion.Disclosure title="Only one of these accordions can be open">
+        <Accordion.Disclosure open title="Only one of these items can be open">
           <LoremIpsum/>
         </Accordion.Disclosure>
         <Accordion.Disclosure title="Title 2"><LoremIpsum/></Accordion.Disclosure>

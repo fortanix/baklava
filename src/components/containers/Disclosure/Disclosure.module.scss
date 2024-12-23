@@ -85,7 +85,7 @@
     // Inner wrapper for content. We cannot give `::details-content` any margin/padding because it would still be
     // visible (due to `content-visibility: hidden` still taking up space). So we use this as scroller and for spacing.
     .bk-disclosure__content {
-      overflow-y: scroll;
+      overflow-y: auto;
       
       margin-top: bk.$spacing-8;
       margin-bottom: calc(bk.$spacing-8 - var(--bk-disclosure-padding-block)); // Total should equal `bk.$spacing-8`
