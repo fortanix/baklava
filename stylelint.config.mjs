@@ -60,6 +60,7 @@ export default {
     //'property-no-unknown': [true, { ignoreProperties: [] }],
     //'scss/at-rule-no-unknown': [true, { ignoreAtRules: [] }],
     'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ['global', 'local'] }],
+    'selector-pseudo-element-no-unknown': [true, { ignorePseudoElements: ['details-content'] }],
     
     'no-descending-specificity': null, // Does not work properly with a lot of nesting (see docs page also)
   },

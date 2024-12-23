@@ -18,11 +18,13 @@ export { Link } from '../src/components/actions/Link/Link.tsx';
 export { LinkAsButton } from '../src/components/actions/LinkAsButton/LinkAsButton.tsx';
 
 // Containers
-export { Alert } from '../src/components/containers/Alert/Alert.tsx';
-export { Banner } from '../src/components/containers/Banner/Banner.tsx';
+export { Panel } from '../src/components/containers/Panel/Panel.tsx';
 export { Card } from '../src/components/containers/Card/Card.tsx';
 export { Dialog } from '../src/components/containers/Dialog/Dialog.tsx';
-export { Panel } from '../src/components/containers/Panel/Panel.tsx';
+export { Disclosure } from '../src/components/containers/Disclosure/Disclosure.tsx';
+export { Accordion } from '../src/components/containers/Accordion/Accordion.tsx';
+export { Alert } from '../src/components/containers/Alert/Alert.tsx';
+export { Banner } from '../src/components/containers/Banner/Banner.tsx';
 
 // Forms > Context
 export { Form } from '../src/components/forms/context/Form/Form.tsx';

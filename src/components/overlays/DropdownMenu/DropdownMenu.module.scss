@@ -89,10 +89,6 @@
         font-size: 14px;
         line-height: 24px;
         
-        &:focus-visible {
-          @include bk.focus-inset;
-        }
-        
         display: flex;
         align-items: center;
         gap: bk.$spacing-3;
@@ -100,6 +96,8 @@
         .bk-dropdown-menu__item__icon {
           font-size: 1.4em;
         }
+        
+        @include bk.focus-inset;
       }
     }
     

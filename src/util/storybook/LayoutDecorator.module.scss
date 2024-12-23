@@ -1,0 +1,16 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@layer baklava.base {
+  .util-layout-decorator {
+    width: 80ch;
+    
+    &.util-layout-decorator--small { width: 60ch; }
+    &.util-layout-decorator--large { width: 100ch; }
+    
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

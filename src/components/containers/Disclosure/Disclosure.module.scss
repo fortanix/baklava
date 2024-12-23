@@ -1,0 +1,155 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+@use '../../../typography/Heading/Heading.mixins.scss' as heading;
+
+@layer baklava.components {
+  @keyframes bk-disclosure-scroller {
+    0% { overflow-y: hidden; }
+    100% { overflow-y: auto; }
+  }
+  
+  .bk-disclosure {
+    @include bk.component-base(bk-disclosure);
+    
+    --bk-disclosure-transition-duration: 500ms;
+    
+    --bk-disclosure-background-color: #{bk.$theme-accordion-background-default};
+    --bk-disclosure-border-color: #{bk.$theme-accordion-border-default};
+    --bk-disclosure-text-color: var(--bk-page-color-text);
+    
+    --bk-disclosure-border-radius-top: #{bk.$radius-3};
+    --bk-disclosure-border-radius-bottom: #{bk.$radius-3};
+    --bk-disclosure-padding-inline: #{bk.$spacing-4};
+    --bk-disclosure-padding-block: #{bk.rem-from-px(14)}; // FIXME: does not correspond to an existing token
+    
+    overflow: hidden;
+    
+    max-height: var(--bk-disclosure-max-height, none);
+    padding: var(--bk-disclosure-padding-block) var(--bk-disclosure-padding-inline);
+    
+    border: bk.$size-1 solid var(--bk-disclosure-border-color);
+    border-radius:
+      var(--bk-disclosure-border-radius-top)
+      var(--bk-disclosure-border-radius-top)
+      var(--bk-disclosure-border-radius-bottom)
+      var(--bk-disclosure-border-radius-bottom);
+    background: var(--bk-disclosure-background-color);
+    color: var(--bk-disclosure-text-color);
+    
+    // Use flex so that we can fit the content to the <details> height, allowing us to do `overflow-y: auto`
+    display: flex;
+    flex-direction: column;
+    
+    summary {
+      @include heading.h5;
+      
+      cursor: pointer;
+      
+      // Expand the target size
+      margin: calc(-1 * var(--bk-disclosure-padding-block)) calc(-1 * var(--bk-disclosure-padding-inline));
+      padding: var(--bk-disclosure-padding-block) var(--bk-disclosure-padding-inline);
+      
+      display: flex;
+      align-items: center;
+      gap: bk.$spacing-9;
+      
+      line-height: bk.$line-height-s;
+      
+      .bk-disclosure__title {
+        @include bk.text-one-line;
+      }
+      
+      .bk-disclosure__collapse-icon {
+        margin-inline-start: auto;
+        font-size: 1.125em; // ~18px
+        
+        @media (prefers-reduced-motion: no-preference) {
+          transition: rotate 120ms ease-in-out;
+        }
+      }
+      
+      // Border radius for focus outline
+      border-radius: // Note: `inherit` keyword does not work for some reason?
+        var(--bk-disclosure-border-radius-top)
+        var(--bk-disclosure-border-radius-top)
+        var(--bk-disclosure-border-radius-bottom)
+        var(--bk-disclosure-border-radius-bottom);
+      @include bk.focus-inset;
+    }
+    &[open] summary {
+      --bk-disclosure-border-radius-bottom: 0; // Disable bottom radius on the summary when open (for focus outline)
+      
+      .bk-disclosure__collapse-icon {
+        rotate: -0.5turn;
+      }
+    }
+    
+    // Inner wrapper for content. We cannot give `::details-content` any margin/padding because it would still be
+    // visible (due to `content-visibility: hidden` still taking up space). So we use this as scroller and for spacing.
+    .bk-disclosure__content {
+      margin-top: bk.$spacing-8;
+      margin-bottom: calc(bk.$spacing-8 - var(--bk-disclosure-padding-block)); // Total should equal `bk.$spacing-8`
+      overflow: hidden;
+    }
+    // Make the content scrollable when the content is open
+    &[open] .bk-disclosure__content {
+      // Note: in order to not show a scollbar during the open/close transition, we apply the `overflow-y: auto`
+      // using an animation that only kicks in after the transition is complete.
+      animation: bk-disclosure-scroller var(--bk-disclosure-transition-duration) step-end forwards;
+    }
+    
+    // Animate the collapsing of the details content.
+    // Note: `::details-content` does not yet have full browser support, but it is a progressive enhancement.
+    &::details-content {
+      overflow: hidden;
+      block-size: 0;
+      
+      display: flex;
+      flex-direction: column;
+      
+      @media (prefers-reduced-motion: no-preference) {
+        // Note: do not use `transition` shorthand due to https://github.com/parcel-bundler/lightningcss/issues/572
+        transition-property: block-size, content-visibility;
+        transition-duration: var(--bk-disclosure-transition-duration);
+        transition-behavior: allow-discrete;
+      }
+    }
+    &[open]::details-content {
+      block-size: auto;
+    }
+    
+    // Fallback styling for browsers that don't support `::details-content` and `interpolate-size`
+    @supports not (selector(::details-content) and (interpolate-size: allow-keywords)) {
+      // Fix padding
+      .bk-disclosure__content {
+        // In case of overflow, since we don't the flex parent, the margin bottom here won't work.
+        // Move it to `details[open]` instead.
+        margin-bottom: 0;
+      }
+      &[open] { padding-bottom: bk.$spacing-8; }
+      
+      // Fix scrolling
+      // stylelint-disable-next-line no-duplicate-selectors
+      .bk-disclosure__content {
+        // It seems there is no easy way to make this element scrollable with `height: auto` (and setting the height
+        // on the `<details>` instead), because without `::details-content` there is no way to make the details content
+        // a flex container.
+        // What does work is to set an explicit height on the `.bk-disclosure__content`.
+        //height: 20rem; // This works
+        
+        // We can use a variable for the `<details>` height and then calculate the height of the content box.
+        --summary-height: calc(var(--bk-disclosure-padding-block) + 1.6rem);
+        --padding-height: calc(2 * #{bk.$spacing-8});
+        max-height: calc(var(--bk-disclosure-max-height) - var(--summary-height) - var(--padding-height));
+      }
+      &[open] .bk-disclosure__content {
+        // Apply the `overflow-y: auto` immediately, since there is no animation
+        animation: none;
+        overflow-y: auto;
+      }
+    }
+  }
+}
