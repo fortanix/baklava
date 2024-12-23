@@ -61,5 +61,5 @@ export const Accordion = Object.assign(
       </AccordionContext.Provider>
     );
   },
-  { Disclosure: AccordionItem },
+  { Item: AccordionItem },
 );

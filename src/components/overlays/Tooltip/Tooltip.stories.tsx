@@ -101,13 +101,11 @@ const TooltipNativeAnchoringControlled = () => {
     <>
       <OverflowTester/>
       
-      {/* @ts-ignore Anchor Positioning not yet supported. */}
       <Tooltip ref={refTooltip} id={id} popover="manual" style={{ positionAnchor: anchorName }}>
         This is a tooltip with a lot of text that gives more information about the element.
         It has a <a href="/" onClick={event => { event.preventDefault(); }}>link</a> you can focus.
       </Tooltip>
-      <Button type="button" popoverTarget={id} variant="primary" label="Hover over me"
-        // @ts-ignore Anchor Positioning not yet supported.
+      <Button popoverTarget={id} variant="primary" label="Hover over me"
         style={{ anchorName }}
         onMouseEnter={() => { refTooltip.current?.showPopover(); }}
         onMouseLeave={() => { refTooltip.current?.hidePopover(); }}
