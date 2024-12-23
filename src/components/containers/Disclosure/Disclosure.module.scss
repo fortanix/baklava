@@ -111,8 +111,8 @@
       block-size: auto;
     }
     
-    // Fallback styling for browsers that don't support `::details-content`
-    @supports not selector(::details-content) {
+    // Fallback styling for browsers that don't support `::details-content` and `interpolate-size`
+    @supports not (selector(::details-content) and (interpolate-size: allow-keywords)) {
       // Fix padding
       .bk-disclosure__content {
         // In case of overflow, since we don't the flex parent, the margin bottom here won't work.
