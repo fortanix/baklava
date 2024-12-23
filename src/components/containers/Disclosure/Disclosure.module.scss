@@ -6,6 +6,11 @@
 @use '../../../typography/Heading/Heading.mixins.scss' as heading;
 
 @layer baklava.components {
+  @keyframes bk-disclosure-scroller {
+    0% { overflow-y: hidden; }
+    100% { overflow-y: auto; }
+  }
+  
   .bk-disclosure {
     @include bk.component-base(bk-disclosure);
     
@@ -85,10 +90,15 @@
     // Inner wrapper for content. We cannot give `::details-content` any margin/padding because it would still be
     // visible (due to `content-visibility: hidden` still taking up space). So we use this as scroller and for spacing.
     .bk-disclosure__content {
-      overflow-y: auto;
-      
       margin-top: bk.$spacing-8;
       margin-bottom: calc(bk.$spacing-8 - var(--bk-disclosure-padding-block)); // Total should equal `bk.$spacing-8`
+      overflow: hidden;
+    }
+    // Make the content scrollable when the content is open
+    &[open] .bk-disclosure__content {
+      // Note: in order to not show a scollbar during the open/close transition, we apply the `overflow-y: auto`
+      // using an animation that only kicks in after the transition is complete.
+      animation: bk-disclosure-scroller var(--bk-disclosure-transition-duration) step-end forwards;
     }
     
     // Animate the collapsing of the details content.
@@ -134,6 +144,11 @@
         --summary-height: calc(var(--bk-disclosure-padding-block) + 1.6rem);
         --padding-height: calc(2 * #{bk.$spacing-8});
         max-height: calc(var(--bk-disclosure-max-height) - var(--summary-height) - var(--padding-height));
+      }
+      &[open] .bk-disclosure__content {
+        // Apply the `overflow-y: auto` immediately, since there is no animation
+        animation: none;
+        overflow-y: auto;
       }
     }
   }
