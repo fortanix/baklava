@@ -78,8 +78,9 @@ const packageConfig = {
     
     // Test
     // Note: use `vitest run --root=. src/...` to run a single test file
-    //'test': 'vitest run --root=.', // Need to specify `--root=.` since the vite root is set to `./app`
-    'test': 'npm run check:types && npm run lint:style',
+    //'test:unit': 'vitest run --root=.', // Need to specify `--root=.` since the vite root is set to `./app`
+    'test:storybook': 'test-storybook --failOnConsole --browsers chromium', // For text only: FORCE_COLOR=false
+    'test': 'npm run check:types && npm run lint:style', // TODO: add `lint:script`, `test:unit, and `test:storybook`
     'test-ui': 'vitest --ui',
     'coverage': 'vitest run --coverage',
     
@@ -114,6 +115,7 @@ const packageConfig = {
     // Testing
     'vitest': '^2.1.8',
     '@vitest/ui': '^2.1.8',
+    'axe-playwright': '^2.0.3',
     
     // Storybook
     'storybook': '^8.4.7',
@@ -121,6 +123,7 @@ const packageConfig = {
     '@storybook/react-vite': '^8.4.7',
     '@storybook/blocks': '^8.4.7',
     '@storybook/test': '^8.4.7',
+    '@storybook/test-runner': '^0.21.0',
     '@storybook/addon-essentials': '^8.4.7',
     '@storybook/addon-a11y': '^8.4.7',
     '@storybook/addon-interactions': '^8.4.7',
