@@ -22,7 +22,9 @@ export default {
   argTypes: {
   },
   decorators: [
-    Story => <div style={{ maxWidth: 500 }}><Story/></div>,
+    // FIXME: should be responsive and shrink to below 500px, but `max-width` doesn't quite work here since we're
+    // using flex box will shrink to max-content by default.
+    Story => <div style={{ width: 500 }}><Story/></div>,
   ],
   args: {
     children: (
