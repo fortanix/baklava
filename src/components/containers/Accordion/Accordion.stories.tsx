@@ -29,12 +29,12 @@ export default {
   args: {
     children: (
       <>
-        <Accordion.Disclosure title="Title 1"><LoremIpsum/></Accordion.Disclosure>
-        <Accordion.Disclosure title="Title 2"><LoremIpsum/></Accordion.Disclosure>
-        <Accordion.Disclosure title="Title 3"><LoremIpsum/></Accordion.Disclosure>
-        <Accordion.Disclosure title="An item with a very long title that should cause text overflow">
+        <Accordion.Item title="Title 1"><LoremIpsum/></Accordion.Item>
+        <Accordion.Item title="Title 2"><LoremIpsum/></Accordion.Item>
+        <Accordion.Item title="Title 3"><LoremIpsum/></Accordion.Item>
+        <Accordion.Item title="An item with a very long title that should cause text overflow">
           <LoremIpsum paragraphs={3}/>
-        </Accordion.Disclosure>
+        </Accordion.Item>
       </>
     ),
   },
@@ -46,11 +46,11 @@ export const ExclusiveAccordion: Story = {
   args: {
     children: (
       <>
-        <Accordion.Disclosure open title="Only one of these items can be open">
+        <Accordion.Item open title="Only one of these items can be open">
           <LoremIpsum/>
-        </Accordion.Disclosure>
-        <Accordion.Disclosure title="Title 2"><LoremIpsum/></Accordion.Disclosure>
-        <Accordion.Disclosure title="Title 3"><LoremIpsum/></Accordion.Disclosure>
+        </Accordion.Item>
+        <Accordion.Item title="Title 2"><LoremIpsum/></Accordion.Item>
+        <Accordion.Item title="Title 3"><LoremIpsum/></Accordion.Item>
       </>
     ),
   }
@@ -60,11 +60,11 @@ export const NonexclusiveAccordion: Story = {
     exclusive: false,
     children: (
       <>
-        <Accordion.Disclosure title="Multiple of these can be open at the same time">
+        <Accordion.Item title="Multiple of these can be open at the same time">
           <LoremIpsum short/>
-        </Accordion.Disclosure>
-        <Accordion.Disclosure open title="I am open by default"><LoremIpsum short/></Accordion.Disclosure>
-        <Accordion.Disclosure open title="I am also open by default"><LoremIpsum short/></Accordion.Disclosure>
+        </Accordion.Item>
+        <Accordion.Item open title="I am open by default"><LoremIpsum short/></Accordion.Item>
+        <Accordion.Item open title="I am also open by default"><LoremIpsum short/></Accordion.Item>
       </>
     ),
   },
@@ -74,14 +74,35 @@ export const WithFocus: Story = {
   args: {
     children: (
       <>
-        <Accordion.Disclosure title="Title 1"><LoremIpsum/></Accordion.Disclosure>
-        <Accordion.Disclosure title="Title 2"><LoremIpsum/></Accordion.Disclosure>
-        <Accordion.Disclosure
+        <Accordion.Item title="Title 1"><LoremIpsum/></Accordion.Item>
+        <Accordion.Item title="Title 2"><LoremIpsum/></Accordion.Item>
+        <Accordion.Item
           title="I should have a focus outline"
           summaryProps={{ className: 'pseudo-focus-visible' }}
         >
           <LoremIpsum/>
-        </Accordion.Disclosure>
+        </Accordion.Item>
+      </>
+    ),
+  },
+};
+
+export const WithScroll: Story = {
+  args: {
+    children: (
+      <>
+        <Accordion.Item
+          style={{
+            //maxHeight: '...', // Doesn't work in browsers w/o for support `::details-content`, see `Disclosure` scss
+            '--bk-disclosure-max-height': '13.8lh', // Choose a value that shows the text cut off
+          }}
+          open
+          title="The content below should be scrollable"
+        >
+          <LoremIpsum paragraphs={3}/>
+        </Accordion.Item>
+        <Accordion.Item title="Title 2"><LoremIpsum/></Accordion.Item>
+        <Accordion.Item title="Title 3"><LoremIpsum/></Accordion.Item>
       </>
     ),
   },

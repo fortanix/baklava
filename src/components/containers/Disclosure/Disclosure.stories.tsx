@@ -71,16 +71,16 @@ export const WithTextOverflow: Story = {
 };
 
 // Note: interesting quirk with the open/close animation. Because it's the `::details-content` that gets its height
-// animated, if there is a lot of overflowing content, there is a visual delay in the close animation.
+// animated, if there is a lot of overflowing content, there is a visual delay in the close animation while the
+// hidden overflowing content "catches up" to the visual container that has the `max-height`.
 export const WithScroll: Story = {
   args: {
     open: true,
     title: 'A disclosure with scrollable content',
     children: <LoremIpsum paragraphs={3}/>,
     style: {
-      //maxHeight: '30rem', // Doesn't work in browsers that don't support `::details-content`
-      // @ts-ignore
-      '--bk-disclosure-max-height': '30rem',
+      //maxHeight: '...', // Doesn't work in browsers w/o for support `::details-content`, see Sass file for comments
+      '--bk-disclosure-max-height': '13.8lh', // Choose a value that shows the text cut off
     },
   },
 };

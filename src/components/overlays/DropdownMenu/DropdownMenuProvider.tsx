@@ -120,7 +120,6 @@ export const DropdownMenuProvider = Object.assign(
     };
     
     return (
-      // @ts-ignore React 19
       <DropdownMenuContext value={context}>
         {renderAnchor()}
         
