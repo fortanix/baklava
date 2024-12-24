@@ -54,10 +54,11 @@
     "lint:style": "stylelint 'src/**/*.scss'",
     "lint:script": "biome lint",
     "lint": "npm run lint:style && npm run lint:script",
-    "test:storybook": "test-storybook --failOnConsole --browsers chromium",
     "test": "npm run check:types && npm run lint:style",
     "test-ui": "vitest --ui",
     "coverage": "vitest run --coverage",
+    "test:storybook": "test-storybook --failOnConsole --browsers chromium",
+    "test:storybook-ci": "\n      npx concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\"        \"npm run storybook:build --quiet && npx http-server storybook-static --port 6006 --silent\"        \"wait-on tcp:6006 && npm run test:storybook\"\n    ",
     "start": "npm run storybook:serve",
     "prepare": "npm run build"
   },
