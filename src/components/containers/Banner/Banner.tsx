@@ -102,7 +102,8 @@ export const Banner = (props: BannerProps) => {
       {closeButton && (
         <Button
           className={cl['bk-banner__close-button']}
-          onClick={() => setIsClosed(true)}
+          onPress={() => { setIsClosed(true); }}
+          aria-label="Close banner"
         >
           <Icon icon="cross" />
         </Button>

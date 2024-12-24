@@ -56,8 +56,8 @@ export const BannerInformationalWithSubtitle: Story = {
 export const BannerInformationalWithButton: Story = {
   name: 'Informational with button',
   args: {
-    title: 'Banner tasdasdadsadsitle',
-    subtitle: 'Subtitle text gasdasd',
+    title: 'Banner',
+    subtitle: 'Subtitle text',
     closeButton: true,
     variant: 'informational',
     actions: (
@@ -99,8 +99,8 @@ export const BannerSuccessWithSubtitle: Story = {
 export const BannerSuccessWithButton: Story = {
   name: 'Success with button',
   args: {
-    title: 'Banner tasdasdadsadsitle',
-    subtitle: 'Subtitle text gasdasd',
+    title: 'Banner',
+    subtitle: 'Subtitle text',
     closeButton: true,
     variant: 'success',
     actions: (
@@ -142,8 +142,8 @@ export const BannerWarningWithSubtitle: Story = {
 export const BannerWarningWithButton: Story = {
   name: 'Warning with button',
   args: {
-    title: 'Banner tasdasdadsadsitle',
-    subtitle: 'Subtitle text gasdasd',
+    title: 'Banner',
+    subtitle: 'Subtitle text',
     closeButton: true,
     variant: 'warning',
     actions: (
@@ -185,8 +185,8 @@ export const BannerAlertWithSubtitle: Story = {
 export const BannerAlertWithButton: Story = {
   name: 'Alert with button',
   args: {
-    title: 'Banner tasdasdadsadsitle',
-    subtitle: 'Subtitle text gasdasd',
+    title: 'Banner',
+    subtitle: 'Subtitle text',
     closeButton: true,
     variant: 'alert',
     actions: (
