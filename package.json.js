@@ -87,7 +87,7 @@ const packageConfig = {
     // https://github.com/storybookjs/test-runner?tab=readme-ov-file#2-running-against-locally-built-storybooks-in-ci
     'test:storybook': 'test-storybook --failOnConsole --browsers chromium', // For text only: FORCE_COLOR=false
     'test:storybook-ci': `
-      npx playwright install && npx playwright install-deps
+      npx playwright install --with-deps chromium
         && npx concurrently -k -s first -n "SB,TEST" -c "magenta,blue"\
           "npm run storybook:build --quiet && npx http-server storybook-static --port 6006 --silent"\
           "npx wait-on tcp:6006 && npm run test:storybook"
