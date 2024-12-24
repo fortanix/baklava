@@ -174,7 +174,6 @@ const preview = {
         rules: [
           // Known accessibility issues (need to fix these)
           //{ id: 'color-contrast', selector: '*:not(button[class*=primary])' },
-          { id: 'color-contrast', enabled: false },
         ],
       },
       // Axe's options parameter
