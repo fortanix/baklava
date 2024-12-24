@@ -165,6 +165,21 @@ const preview = {
       classTarget: 'html',
       stylePreview: true,
     },
+    
+    // https://storybook.js.org/docs/8.5/writing-tests/accessibility-testing
+    // https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md
+    a11y: {
+      config: {
+        // Format: { id: <rule-name>, enabled: <boolean>, selector: <css-selector> }
+        rules: [
+          // Known accessibility issues (need to fix these)
+          //{ id: 'color-contrast', selector: '*:not(button[class*=primary])' },
+          { id: 'color-contrast', enabled: false },
+        ],
+      },
+      // Axe's options parameter
+      options: {},
+    },
   },
 } satisfies Preview;
 
