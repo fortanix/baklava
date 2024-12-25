@@ -7,49 +7,77 @@
 @layer baklava.components {
   .bk-banner {
     @include bk.component-base(bk-banner);
-
+    
+    --bk-banner-color-foreground: #{bk.$theme-banner-informational-border-default};
+    --bk-banner-color-background: #{bk.$theme-banner-informational-background-default};
+    --bk-banner-border-radius: #{bk.$radius-2};
+    --bk-banner-indent: 30px;
+    
+    overflow: hidden;
+    
+    padding-block: bk.$spacing-2;
+    padding-inline: bk.$spacing-4 - bk.$radius-2;
+    padding-inline-start: var(--bk-banner-indent); // Indent all of the content (e.g. for when the message wraps)
+    
+    border: bk.$size-1 var(--bk-banner-color-foreground) solid;
+    border-inline-start-width: var(--bk-banner-border-radius); // Thicker border extending as far as the radius
+    border-radius: var(--bk-banner-border-radius);
+    background: var(--bk-banner-color-background);
+    
     display: flex;
     flex-direction: row;
     align-items: center;
     
-    border-radius: bk.$spacing-1;
-    border-style: solid;
-    border-width: 1px;
-
-    padding: bk.$spacing-2;
-
-    color: bk.$theme-banner-text-default;
-    line-height: 22px; // non-standard sizing
-
-    .bk-banner__icon {
-      font-size: 1.4em;
-      margin-right: bk.$spacing-3;
-      margin-left: bk.$spacing-2;
-    }
-
-    .bk-banner__title {
-      font-weight: bk.$font-weight-semibold;
-    }
-
-    .bk-banner__subtitle {
-      margin-left: bk.$spacing-1;
-    }
+    min-width: 0;
     
-    &:has(> .bk-banner__subtitle) .bk-banner__subtitle {
-      margin-right: auto;
-    }
-    &:not(:has(> .bk-banner__subtitle)) .bk-banner__title {
-      margin-right: auto;
+    @include bk.font(bk.$font-family-body, bk.$font-weight-regular, bk.$font-size-m);
+    line-height: bk.$line-height-m;
+    color: bk.$theme-banner-text-default;
+    
+    .bk-banner__content {
+      margin-inline-end: auto; // Space between text and actions
+      
+      min-width: 0;
+      display: flex;
+      flex-flow: row wrap;
+      gap: bk.$spacing-1;
+      //@include bk.text-one-line;
+      
+      .bk-banner__title {
+        margin-inline-start: calc(-1 * var(--bk-banner-indent));
+        
+        min-width: 0;
+        display: flex;
+        flex-direction: row;
+        gap: bk.$spacing-2;
+        align-items: center;
+        
+        //@include bk.text-one-line;
+        font-weight: bk.$font-weight-semibold;
+        
+        .bk-banner__title__text {
+          @include bk.text-one-line;
+        }
+        
+        .bk-banner__title__icon {
+          flex-shrink: 0;
+          color: var(--bk-banner-color-foreground);
+        }
+      }
+      
+      .bk-banner__message {
+        --keep: ;
+      }
     }
     
     .bk-banner__button {
       padding: 0;
       margin-right: bk.$spacing-5;
     }
-
+    
     .bk-banner__action {
       height: bk.$spacing-5;
-
+      
       button {
         border: 0;
         font-weight: bk.$font-weight-semibold;
@@ -57,13 +85,18 @@
         padding-top: 0;
       }
     }
-
+    
     .bk-banner__close-button {
+      flex-shrink: 0;
+      
       color: bk.$theme-banner-icon-default;
       font-size: 1.2em;
       padding: bk.$spacing-1;
     }
-
+    
+    
+    // Variants
+    /*
     &.bk-banner--informational {
       background-color: bk.$theme-banner-informational-background-default;
       border-color: bk.$theme-banner-informational-border-default;
@@ -71,7 +104,7 @@
         color: bk.$color-blueberry-400;
       }
     }
-
+    
     &.bk-banner--success {
       background-color: bk.$theme-banner-success-background-default;
       border-color: bk.$theme-banner-success-border-default;
@@ -79,7 +112,7 @@
         color: bk.$color-apple-400;
       }
     }
-
+    
     &.bk-banner--warning {
       background-color: bk.$theme-banner-warning-background-default;
       border-color: bk.$theme-banner-warning-border-default;
@@ -87,13 +120,14 @@
         color: bk.$color-orange-400;
       }
     }
-
-    &.bk-banner--alert {
+    
+    &.bk-banner--error {
       background-color: bk.$theme-banner-alert-background-default;
       border-color: bk.$theme-banner-alert-border-default;
       .bk-banner__icon {
         color: bk.$color-cherry-400;
       }
     }
+    */
   }
 }

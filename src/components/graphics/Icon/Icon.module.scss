@@ -2,13 +2,14 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+@use 'sass:math';
 @use '../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
   .bk-icon {
     @include bk.component-base(bk-icon);
     
-    --bk-icon-size: 1.125em; // For example: if 1em ~ 16px, an icon by default would be ~18px
+    --bk-icon-size: 1.3em; // For example: if 1em ~ 14px, an icon by default would be ~18px
     --bk-icon-accent-color: color-mix(in sRGB, currentColor 30%, transparent);
     
     box-sizing: content-box; // Use content-box so that we can set a padding on an icon without it shrinking the width
@@ -18,7 +19,12 @@
     flex: none; // Prevent icons from shrinking or growing in flexbox
     
     display: inline-flex;
+    
     width: var(--bk-icon-size);
+    // https://github.com/stylelint-scss/stylelint-scss/issues/1080
+    /* stylelint-disable-next-line scss/no-global-function-names */
+    width: round(var(--bk-icon-size), 1px);
+    
     aspect-ratio: 1; // Baklava icon pack all have square aspect ratio
     fill: currentColor; // Use the current font color by default
     

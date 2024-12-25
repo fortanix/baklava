@@ -36,7 +36,6 @@ const componentTemplate = {
         > Add `ComponentProps<>` to the props if you want the consumer to be able to pass additional properties through
           to the underlying element. Can be a tag (e.g. `'div'`) or another component (e.g. `typeof OtherComponent`).
       - ```
-        role="presentation"
         {...propsRest}
         className={cx('bk', 'my-classname', className)
         ```
@@ -78,7 +77,6 @@ const componentTemplate = {
       const { unstyled = false, variant, ...propsRest } = props;
       return (
         <{{{element-type}}}
-          role="presentation"
           {...propsRest}
           className={cx({
             bk: true,
@@ -163,9 +161,9 @@ const componentTemplate = {
     |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
     |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
     
-    import type { Meta, StoryObj } from '@storybook/react';
-    
     import * as React from 'react';
+    
+    import type { Meta, StoryObj } from '@storybook/react';
     
     import { {{{component-name}}} } from './{{{component-name}}}.tsx';
     
