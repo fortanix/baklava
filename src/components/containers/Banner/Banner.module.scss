@@ -71,7 +71,7 @@
     
     .bk-banner__actions {
       display: flex;
-      flex-flow: row-reverse wrap;
+      flex-direction: row-reverse;
       align-items: center;
       gap: bk.$spacing-1 bk.$spacing-7;
       
@@ -102,6 +102,9 @@
         color: bk.$theme-banner-icon-default;
       }
     }
+    
+    // Allow actions to wrap if there is a long message
+    &:has(.bk-banner__message) .bk-banner__actions { flex-wrap: wrap; }
     
     // Variants
     &.bk-banner--informational {
