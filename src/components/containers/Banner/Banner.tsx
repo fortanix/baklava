@@ -54,13 +54,10 @@ export type BannerProps = Omit<ComponentProps<'div'>, 'title'> & {
   /** The message to display. Optional. */
   message?: undefined | React.ReactNode,
   
-  /** Whether the banner can be closed. Optional. Defaults to false. */
-  closeButton?: undefined | boolean,
-  
-  /** Action to perform on close */
+  /** If specified, a close action is displayed. Defines the action to perform on close. */
   onClose?: undefined | (() => void),
   
-  /** Any additional actions to be shown in the banner, e.g. an action button. */
+  /** Any additional actions to be shown in the banner. */
   actions?: undefined | React.ReactNode,
 };
 
@@ -73,7 +70,6 @@ export const Banner = (props: BannerProps) => {
     variant = 'informational',
     title = '',
     message,
-    closeButton = false,
     onClose,
     actions = null,
     ...propsRest
@@ -103,8 +99,8 @@ export const Banner = (props: BannerProps) => {
       </div>
       
       <div className={cl['bk-banner__actions']}>
-        {closeButton &&
-          <Button unstyled className={cl['bk-banner__close-button']} onPress={onClose} aria-label="Close banner">
+        {onClose &&
+          <Button unstyled className={cl['bk-banner__action-close']} onPress={onClose} aria-label="Close banner">
             <Icon icon="cross"/>
           </Button>
         }

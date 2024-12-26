@@ -73,12 +73,12 @@
       display: flex;
       flex-direction: row-reverse;
       align-items: center;
-      gap: bk.$spacing-1 bk.$spacing-7;
+      gap: bk.$spacing-3 bk.$spacing-7;
       
       > * {
         // Keep each item to a max of 1lh, so that in the case of all items being on one line, all the items
         // are properly aligned with the title (which implicitly has height `1lh`).
-        max-height: 1lh;
+        height: 1lh;
       }
       
       .bk-banner__action {
@@ -93,12 +93,10 @@
         }
       }
       
-      .bk-banner__close-button {
+      .bk-banner__action-close {
         flex: none;
         
         display: flex;
-        
-        font-size: 1.2em;
         color: bk.$theme-banner-icon-default;
       }
     }

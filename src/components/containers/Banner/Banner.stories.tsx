@@ -51,7 +51,7 @@ export const BannerStandard: Story = {};
 
 export const BannerWithCloseButton: Story = {
   args: {
-    closeButton: true,
+    onClose: () => {},
   },
   render: (args) => <BannerWithCloseState {...args}/>,
 };
@@ -59,14 +59,14 @@ export const BannerWithCloseButton: Story = {
 export const BannerWithMessage: Story = {
   args: {
     message: 'This is the main message of the banner.',
-    closeButton: true,
+    onClose: () => {},
   },
 };
 
 export const BannerWithButton: Story = {
   args: {
     message: 'Message text',
-    closeButton: true,
+    onClose: () => {},
     actions: <BannerActionExample/>,
   },
 };
@@ -75,7 +75,7 @@ export const BannerWithButton: Story = {
 export const BannerWithTitleOverflow: Story = {
   args: {
     title: loremIpsum(),
-    closeButton: true,
+    onClose: () => {},
     actions: <BannerActionExample/>,
   },
 };
@@ -83,7 +83,7 @@ export const BannerWithTitleOverflow: Story = {
 export const BannerWithTextWrap: Story = {
   args: {
     message: <LoremIpsum/>,
-    closeButton: true,
+    onClose: () => {},
     actions: <BannerActionExample/>,
   },
 };
@@ -92,7 +92,7 @@ export const BannerWithTitleOverflowAndTextWrap: Story = {
   args: {
     title: loremIpsum(),
     message: <LoremIpsum/>,
-    closeButton: true,
+    onClose: () => {},
     actions: <BannerActionExample/>,
   },
 };
@@ -102,7 +102,7 @@ export const BannerInformational: Story = {
     variant: 'informational',
     title: loremIpsum(),
     message: <LoremIpsum/>,
-    closeButton: true,
+    onClose: () => {},
     actions: <BannerActionExample/>,
   },
 };
@@ -112,7 +112,7 @@ export const BannerSuccess: Story = {
     variant: 'success',
     title: loremIpsum(),
     message: <LoremIpsum/>,
-    closeButton: true,
+    onClose: () => {},
     actions: <BannerActionExample/>,
   },
 };
@@ -122,7 +122,7 @@ export const BannerWarning: Story = {
     variant: 'warning',
     title: loremIpsum(),
     message: <LoremIpsum/>,
-    closeButton: true,
+    onClose: () => {},
     actions: <BannerActionExample/>,
   },
 };
@@ -132,7 +132,7 @@ export const BannerError: Story = {
     variant: 'error',
     title: loremIpsum(),
     message: <LoremIpsum/>,
-    closeButton: true,
+    onClose: () => {},
     actions: <BannerActionExample/>,
   },
 };
