@@ -98,127 +98,41 @@ export const BannerWithTitleOverflowAndTextWrap: Story = {
 };
 
 export const BannerInformational: Story = {
-  name: 'Success',
   args: {
-    title: 'Banner title',
-    closeButton: true,
     variant: 'informational',
+    title: loremIpsum(),
+    message: <LoremIpsum/>,
+    closeButton: true,
+    actions: <BannerActionExample/>,
   },
 };
 
 export const BannerSuccess: Story = {
-  name: 'Success',
   args: {
-    title: 'Banner title',
+    variant: 'success',
+    title: loremIpsum(),
+    message: <LoremIpsum/>,
     closeButton: true,
-    variant: 'success',
-  },
-};
-
-export const BannerSuccessWithNoCloseButton: Story = {
-  name: 'Success with no close button',
-  args: {
-    title: 'Banner title',
-    closeButton: false,
-    variant: 'success',
-  },
-};
-
-export const BannerSuccessWithMessage: Story = {
-  name: 'Success with message',
-  args: {
-    title: 'Banner title',
-    message: 'Message',
-    closeButton: true,
-    variant: 'success',
-  },
-};
-
-export const BannerSuccessWithButton: Story = {
-  name: 'Success with button',
-  args: {
-    title: 'Banner',
-    message: 'Message text',
-    closeButton: true,
-    variant: 'success',
     actions: <BannerActionExample/>,
   },
 };
 
 export const BannerWarning: Story = {
-  name: 'Warning',
   args: {
-    title: 'Banner title',
+    variant: 'warning',
+    title: loremIpsum(),
+    message: <LoremIpsum/>,
     closeButton: true,
-    variant: 'warning',
-  },
-};
-
-export const BannerWarningWithNoCloseButton: Story = {
-  name: 'Warning with no close button',
-  args: {
-    title: 'Banner title',
-    closeButton: false,
-    variant: 'warning',
-  },
-};
-
-export const BannerWarningWithMessage: Story = {
-  name: 'Warning with message',
-  args: {
-    title: 'Banner title',
-    message: 'Message',
-    closeButton: true,
-    variant: 'warning',
-  },
-};
-
-export const BannerWarningWithButton: Story = {
-  name: 'Warning with button',
-  args: {
-    title: 'Banner',
-    message: 'Message text',
-    closeButton: true,
-    variant: 'warning',
     actions: <BannerActionExample/>,
   },
 };
 
-export const BannerAlert: Story = {
-  name: 'Alert',
+export const BannerError: Story = {
   args: {
-    title: 'Banner title',
+    variant: 'error',
+    title: loremIpsum(),
+    message: <LoremIpsum/>,
     closeButton: true,
-    variant: 'error',
-  },
-};
-
-export const BannerAlertWithNoCloseButton: Story = {
-  name: 'Alert with no close button',
-  args: {
-    title: 'Banner title',
-    closeButton: false,
-    variant: 'error',
-  },
-};
-
-export const BannerAlertWithMessage: Story = {
-  name: 'Alert with message',
-  args: {
-    title: 'Banner title',
-    message: 'Message',
-    closeButton: true,
-    variant: 'error',
-  },
-};
-
-export const BannerAlertWithButton: Story = {
-  name: 'Alert with button',
-  args: {
-    title: 'Banner',
-    message: 'Message text',
-    closeButton: true,
-    variant: 'error',
     actions: <BannerActionExample/>,
   },
 };

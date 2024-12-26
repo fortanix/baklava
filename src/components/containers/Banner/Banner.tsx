@@ -81,7 +81,9 @@ export const Banner = (props: BannerProps) => {
   
   return (
     <div
-      role="alert" // Note: if the banner is not time-sensitive, this may need to be overridden (depends on use case)
+      // Note: `role=alert` implies the banner is time-sensitive. If the banner is not time-sensitive, this may need to
+      // be overridden with a more appropriate role (depends on use case).
+      role="alert"
       {...propsRest}
       className={cx(
         'bk',
@@ -100,13 +102,14 @@ export const Banner = (props: BannerProps) => {
         }
       </div>
       
-      {actions}
-      
-      {closeButton &&
-        <Button className={cl['bk-banner__close-button']} onPress={onClose} aria-label="Close banner">
-          <Icon icon="cross"/>
-        </Button>
-      }
+      <div className={cl['bk-banner__actions']}>
+        {closeButton &&
+          <Button unstyled className={cl['bk-banner__close-button']} onPress={onClose} aria-label="Close banner">
+            <Icon icon="cross"/>
+          </Button>
+        }
+        {actions}
+      </div>
     </div>
   );
 };

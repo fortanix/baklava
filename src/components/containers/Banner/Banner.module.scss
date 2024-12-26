@@ -11,7 +11,7 @@
     --bk-banner-color-foreground: #{bk.$theme-banner-informational-border-default};
     --bk-banner-color-background: #{bk.$theme-banner-informational-background-default};
     --bk-banner-border-radius: #{bk.$radius-2};
-    --bk-banner-indent: 30px;
+    --bk-banner-indent: #{bk.$spacing-9};
     
     overflow: hidden;
     
@@ -26,7 +26,8 @@
     
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
+    gap: bk.$spacing-4;
     
     min-width: 0;
     
@@ -41,10 +42,9 @@
       display: flex;
       flex-flow: row wrap;
       gap: bk.$spacing-1;
-      //@include bk.text-one-line;
       
       .bk-banner__title {
-        margin-inline-start: calc(-1 * var(--bk-banner-indent));
+        margin-inline-start: calc(-1 * (bk.$spacing-2 + 1.125em));
         
         min-width: 0;
         display: flex;
@@ -52,16 +52,14 @@
         gap: bk.$spacing-2;
         align-items: center;
         
-        //@include bk.text-one-line;
         font-weight: bk.$font-weight-semibold;
+        
+        .bk-banner__title__icon {
+          color: var(--bk-banner-color-foreground);
+        }
         
         .bk-banner__title__text {
           @include bk.text-one-line;
-        }
-        
-        .bk-banner__title__icon {
-          flex-shrink: 0;
-          color: var(--bk-banner-color-foreground);
         }
       }
       
@@ -70,64 +68,56 @@
       }
     }
     
-    .bk-banner__button {
-      padding: 0;
-      margin-right: bk.$spacing-5;
-    }
-    
-    .bk-banner__action {
-      height: bk.$spacing-5;
+    .bk-banner__actions {
+      display: flex;
+      flex-flow: row-reverse wrap;
+      align-items: center;
+      gap: bk.$spacing-1 bk.$spacing-7;
       
-      button {
-        border: 0;
-        font-weight: bk.$font-weight-semibold;
-        padding-bottom: 0;
-        padding-top: 0;
+      > * {
+        // Keep each item to a max of 1lh, so that in the case of all items being on one line, all the items
+        // are properly aligned with the title (which implicitly has height `1lh`).
+        max-height: 1lh;
+      }
+      
+      .bk-banner__action {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        
+        button {
+          border: 0;
+          font-weight: bk.$font-weight-semibold;
+          padding: 0;
+        }
+      }
+      
+      .bk-banner__close-button {
+        flex: none;
+        
+        display: flex;
+        
+        font-size: 1.2em;
+        color: bk.$theme-banner-icon-default;
       }
     }
-    
-    .bk-banner__close-button {
-      flex-shrink: 0;
-      
-      color: bk.$theme-banner-icon-default;
-      font-size: 1.2em;
-      padding: bk.$spacing-1;
-    }
-    
     
     // Variants
-    /*
     &.bk-banner--informational {
-      background-color: bk.$theme-banner-informational-background-default;
-      border-color: bk.$theme-banner-informational-border-default;
-      .bk-banner__icon {
-        color: bk.$color-blueberry-400;
-      }
+      --bk-banner-color-foreground: #{bk.$theme-banner-informational-border-default};
+      --bk-banner-color-background: #{bk.$theme-banner-informational-background-default};
     }
-    
-    &.bk-banner--success {
-      background-color: bk.$theme-banner-success-background-default;
-      border-color: bk.$theme-banner-success-border-default;
-      .bk-banner__icon {
-        color: bk.$color-apple-400;
-      }
-    }
-    
     &.bk-banner--warning {
-      background-color: bk.$theme-banner-warning-background-default;
-      border-color: bk.$theme-banner-warning-border-default;
-      .bk-banner__icon {
-        color: bk.$color-orange-400;
-      }
+      --bk-banner-color-foreground: #{bk.$theme-banner-warning-border-default};
+      --bk-banner-color-background: #{bk.$theme-banner-warning-background-default};
     }
-    
     &.bk-banner--error {
-      background-color: bk.$theme-banner-alert-background-default;
-      border-color: bk.$theme-banner-alert-border-default;
-      .bk-banner__icon {
-        color: bk.$color-cherry-400;
-      }
+      --bk-banner-color-foreground: #{bk.$theme-banner-alert-border-default};
+      --bk-banner-color-background: #{bk.$theme-banner-alert-background-default};
     }
-    */
+    &.bk-banner--success {
+      --bk-banner-color-foreground: #{bk.$theme-banner-success-border-default};
+      --bk-banner-color-background: #{bk.$theme-banner-success-background-default};
+    }
   }
 }
