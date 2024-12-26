@@ -44,7 +44,8 @@
       gap: bk.$spacing-1;
       
       .bk-banner__title {
-        margin-inline-start: calc(-1 * (bk.$spacing-2 + 1.125em));
+        $icon-size: 1.3em;
+        margin-inline-start: calc(-1 * (bk.$spacing-2 + $icon-size));
         
         min-width: 0;
         display: flex;
