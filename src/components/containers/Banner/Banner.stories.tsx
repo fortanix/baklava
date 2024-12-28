@@ -55,7 +55,7 @@ export default {
     layout: 'padded',
   },
   decorators: [
-    Story => <LayoutDecorator size="large" resize="inline"><Story/></LayoutDecorator>,
+    Story => <LayoutDecorator size="large" /*resize="inline"*/><Story/></LayoutDecorator>,
   ],
   tags: ['autodocs'],
   args: {},
@@ -67,6 +67,12 @@ const ExampleActionButton = () =>
   <Banner.ActionButton onPress={() => alert('clicked')}>Button</Banner.ActionButton>;
 const ExampleActionIcon = () =>
   <Banner.ActionIcon label="Copy" onPress={() => alert('clicked')}><Icon icon="copy"/></Banner.ActionIcon>;
+const ExampleActions = () => (
+  <>
+    <ExampleActionButton/>
+    <ExampleActionIcon/>
+  </>
+);
 
 
 export const BannerStandard: Story = {
@@ -112,12 +118,7 @@ export const BannerWithMultipleActions: Story = {
   args: {
     children: 'A banner with two actions.',
     onClose: () => {},
-    actions: (
-      <>
-        <ExampleActionButton/>
-        <ExampleActionIcon/>
-      </>
-    ),
+    actions: <ExampleActions/>,
   },
 };
 
@@ -142,29 +143,19 @@ export const BannerWithTextWrap: Story = {
   args: {
     children: <LoremIpsum/>,
     onClose: () => {},
-    actions: (
-      <>
-        <ExampleActionButton/>
-        <ExampleActionIcon/>
-      </>
-    ),
-  },
-};
+    actions: <ExampleActions/>,
+      },
+    };
 
-export const BannerWithTitleOverflowAndTextWrap: Story = {
-  ...storyDescription(dedent`
+    export const BannerWithTitleOverflowAndTextWrap: Story = {
+      ...storyDescription(dedent`
     This shows both the title truncation and message wrap at the same time.
   `),
   args: {
     title: loremIpsum(),
     children: <LoremIpsum/>,
     onClose: () => {},
-    actions: (
-      <>
-        <ExampleActionButton/>
-        <ExampleActionIcon/>
-      </>
-    ),
+    actions: <ExampleActions/>,
   },
 };
 
@@ -199,7 +190,7 @@ export const BannerInformational: Story = {
     title: loremIpsum(),
     children: <LoremIpsum/>,
     onClose: () => {},
-    actions: <ExampleActionButton/>,
+    actions: <ExampleActions/>,
   },
 };
 
@@ -210,7 +201,7 @@ export const BannerSuccess: Story = {
     title: loremIpsum(),
     children: <LoremIpsum/>,
     onClose: () => {},
-    actions: <ExampleActionButton/>,
+    actions: <ExampleActions/>,
   },
 };
 
@@ -221,7 +212,7 @@ export const BannerWarning: Story = {
     title: loremIpsum(),
     children: <LoremIpsum/>,
     onClose: () => {},
-    actions: <ExampleActionButton/>,
+    actions: <ExampleActions/>,
   },
 };
 
@@ -232,7 +223,7 @@ export const BannerError: Story = {
     title: loremIpsum(),
     children: <LoremIpsum/>,
     onClose: () => {},
-    actions: <ExampleActionButton/>,
+    actions: <ExampleActions/>,
   },
 };
 
