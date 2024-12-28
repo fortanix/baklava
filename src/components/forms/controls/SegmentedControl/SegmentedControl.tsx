@@ -28,10 +28,10 @@ export type SegmentedControlProps = React.PropsWithChildren<ComponentProps<'ul'>
   defaultValue: string,
   
   /** Whether segmented control is disabled or not */
-  disabled?: boolean,
+  disabled?: undefined | boolean,
   
   /** Event handler for segmented-control button change events. */
-  onChange?: (option: string) => void,
+  onChange?: undefined | ((option: string) => void),
 }>;
 /**
  * Set of buttons to switch between various options.

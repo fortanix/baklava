@@ -10,7 +10,7 @@ import * as React from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { Icon } from '../../graphics/Icon/Icon.tsx';
-import { Alert } from '../../containers/Alert/Alert.tsx';
+import { Banner } from '../../containers/Banner/Banner.tsx';
 
 import { Button } from './Button.tsx';
 
@@ -40,10 +40,12 @@ export default {
     Story => (
       <ErrorBoundary
         FallbackComponent={({ error, resetErrorBoundary }) =>
-          <Alert kind="error" style={{ width: '80cqi' }}>
-            <p>Error: {error?.message}</p>
-            <p><Button variant="tertiary" label="Reset" onClick={resetErrorBoundary}/></p>
-          </Alert>
+          <Banner variant="error" style={{ width: '60cqi' }}
+            title="Error"
+            actions={<Banner.ActionButton label="Reset" onPress={resetErrorBoundary}/>}
+          >
+            {error?.message}
+          </Banner>
         }
       >
         <Story/>

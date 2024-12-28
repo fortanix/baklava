@@ -21,6 +21,9 @@ export type TooltipProps = React.PropsWithChildren<ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
+  /** Whether this tooltip should be rendered compact (minimal padding). */
+  compact?: undefined | boolean,
+  
   /** Whether you want the component to have a fixed width. If unset, it will have dynamic size. */
   size?: undefined | TooltipSize,
   
@@ -30,7 +33,16 @@ export type TooltipProps = React.PropsWithChildren<ComponentProps<'div'> & {
 /**
  * A tooltip. Used by `TooltipProvider` to display a tooltip popover.
  */
-export const Tooltip = ({ children, unstyled = false, arrow, size = undefined, ...propsRest }: TooltipProps) => {
+export const Tooltip = (props: TooltipProps) => {
+  const {
+    children,
+    unstyled = false,
+    compact = false,
+    arrow,
+    size = undefined,
+    ...propsRest
+  } = props;
+  
   const arrowClassNames = ((): ClassNameArgument => {
     if (!arrow) { return; }
     
@@ -51,6 +63,7 @@ export const Tooltip = ({ children, unstyled = false, arrow, size = undefined, .
         {
           bk: true,
           [cl['bk-tooltip']]: !unstyled,
+          [cl['bk-tooltip--compact']]: compact,
           [cl['bk-tooltip--small']]: size === 'small',
           [cl['bk-tooltip--medium']]: size === 'medium',
           [cl['bk-tooltip--large']]: size === 'large',

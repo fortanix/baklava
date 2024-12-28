@@ -20,14 +20,31 @@ export const loremIpsum = (params: { short?: boolean } = {}): string => {
 };
 
 export type LoremIpsumProps = ComponentProps<'article'> & {
+  unstyled?: undefined | boolean,
   short?: undefined | boolean,
   paragraphs?: undefined | number,
 };
 export const LoremIpsum = (props: LoremIpsumProps) => {
-  const { short = false, paragraphs = 1, ...propsRest } = props;
+  const { unstyled, short = false, paragraphs = 1, ...propsRest } = props;
   
   if (!Number.isSafeInteger(paragraphs) || paragraphs < 1) {
     throw new Error(`Invalid amount of paragraphs: ${paragraphs}`);
+  }
+  
+  const renderParagraphs = () => {
+    return (
+      <>
+        {short
+          ? <p>{loremIpsum({ short: true })}</p>
+          // biome-ignore lint/suspicious/noArrayIndexKey: No other key available.
+          : Array.from({ length: paragraphs }).map((_, index) => <p key={index}>{loremIpsum()}</p>)
+        }
+      </>
+    );
+  };
+  
+  if (unstyled) {
+    return <>{renderParagraphs()}</>;
   }
   
   return (
@@ -35,11 +52,7 @@ export const LoremIpsum = (props: LoremIpsumProps) => {
       {...propsRest}
       className={cx('bk-body-text', propsRest.className)}
     >
-      {short
-        ? <p>{loremIpsum({ short: true })}</p>
-        // biome-ignore lint/suspicious/noArrayIndexKey: No other key available.
-        : Array.from({ length: paragraphs }).map((_, index) => <p key={index}>{loremIpsum()}</p>)
-      }
+      {renderParagraphs()}
     </article>
   );
 };

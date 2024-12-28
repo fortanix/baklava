@@ -9,7 +9,7 @@ import { delay } from '../../../../util/time.ts';
 import * as React from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-import { Alert } from '../../../containers/Alert/Alert.tsx';
+import { Banner } from '../../../containers/Banner/Banner.tsx';
 import { Form } from '../Form/Form.tsx';
 import { InputField } from '../../fields/InputField/InputField.tsx';
 import { FormLayout } from '../../../../layouts/FormLayout/FormLayout.tsx';
@@ -40,10 +40,12 @@ const StoryMeta = {
     Story => (
       <ErrorBoundary
         FallbackComponent={({ error, resetErrorBoundary }) =>
-          <Alert kind="error" style={{ width: '80cqi' }}>
-            <p>Error: {error?.message}</p>
-            <p><SubmitButton variant="tertiary" label="Reset" onClick={resetErrorBoundary}/></p>
-          </Alert>
+          <Banner variant="error" style={{ width: '60cqi' }}
+            title="Error"
+            actions={<Banner.ActionButton label="Reset" onPress={resetErrorBoundary}/>}
+          >
+            {error?.message}
+          </Banner>
         }
       >
         <Form nestable>

@@ -14,6 +14,7 @@
     --bk-banner-indent: #{bk.$spacing-9};
     
     overflow: hidden;
+    overflow-y: scroll;
     
     padding-block: bk.$spacing-2;
     padding-inline: bk.$spacing-4 - bk.$radius-2;
@@ -71,30 +72,26 @@
     
     .bk-banner__actions {
       display: flex;
-      flex-direction: row-reverse;
+      flex-direction: row;
       align-items: center;
-      gap: bk.$spacing-3 bk.$spacing-7;
+      gap: bk.$spacing-3 calc(bk.$spacing-7 / 2);
       
-      > * {
+      > button {
         // Keep each item to a max of 1lh, so that in the case of all items being on one line, all the items
         // are properly aligned with the title (which implicitly has height `1lh`).
         height: 1lh;
       }
       
       .bk-banner__action {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
+        flex: none;
         
-        button {
-          border: 0;
-          font-weight: bk.$font-weight-semibold;
-          padding: 0;
-        }
+        .bk-banner__action--button { --keep: ; }
+        .bk-banner__action--icon { --keep: ; }
       }
       
       .bk-banner__action-close {
         flex: none;
+        margin-inline-start: calc(bk.$spacing-7 / 2); // Total gap should be `bk.$spacing-7`
         
         display: flex;
         color: bk.$theme-banner-icon-default;
@@ -121,5 +118,9 @@
       --bk-banner-color-foreground: #{bk.$theme-banner-success-border-default};
       --bk-banner-color-background: #{bk.$theme-banner-success-background-default};
     }
+  }
+  
+  .bk-banner + .bk-banner {
+    margin-block-start: bk.$spacing-2;
   }
 }

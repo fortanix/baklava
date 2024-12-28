@@ -225,25 +225,30 @@
 }
 
 @mixin styles {
-  /* Use a separate layer for body-text so that we can `revert-layer` */
+  // Use a separate layer for body-text so that we can `revert-layer`
   @layer baklava.body-text {
-    /*
-    XXX `@scope` does not yet have browser support
-    @scope (.bk-body-text) to (.bk, .isolate) { /* Do not leak .bk-body-text styling into components * /
+    // Do not leak .bk-body-text styling into components
+    // FIXME: browser support for `@scope` is not quite there yet (but we can't do `@supports at-rule()` yet either)
+    @scope (.bk-body-text) to (.isolate, .bk:not(.bk-body-text)) {
       :scope {
         @include bk.component-base(bk-body-text);
-        @mixin bk-body-text;
+        @include body-text;
       }
     }
-    */
+    
+    /*
+    // Note: without @scope we can only achieve shallow donut selectors, not arbitrary nesting
+    // See: https://css-tricks.com/solved-by-css-donuts-scopes
     
     .bk-body-text {
       @include bk.component-base(bk-body-text);
       @include body-text;
     }
     
-    .bk-body-text .bk {
+    // Note: need the `#specificity#hack` to make sure we override everything in this layer
+    :is(.bk:not(.bk-body-text) *, #specificity#hack) {
       all: revert-layer;
     }
+    */
   }
 }

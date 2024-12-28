@@ -6,7 +6,7 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Alert } from '../Alert/Alert.tsx';
+import { Banner } from '../Banner/Banner.tsx';
 
 import { Panel } from './Panel.tsx';
 
@@ -36,9 +36,9 @@ export const Standard: Story = {};
 export const Stacked: Story = {
   render: (args) => (
     <div style={{ display: 'flex', flexFlow: 'column', gap: '1.2rem' }}>
-      <Alert kind="info">
+      <Banner variant="info" title="Note:">
         Panels have no margin by default. Use a flex/grid container to space the panels.
-      </Alert>
+      </Banner>
       <Panel {...args}><Panel.Heading>Panel 1</Panel.Heading></Panel>
       <Panel {...args}><Panel.Heading>Panel 2</Panel.Heading></Panel>
     </div>

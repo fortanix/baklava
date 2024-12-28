@@ -33,8 +33,16 @@ export const mergeRefs = <T>(
       if (typeof inputRef === 'function') {
         inputRef(ref);
       } else if (inputRef) {
-        (inputRef as React.MutableRefObject<T | null>).current = ref;
+        inputRef.current = ref;
       }
     });
   };
+};
+
+/**
+ * Utility function that takes a React ID (as returned by `useId()`), and converts it to a CSS custom
+ * identifier. React IDs by default contain colons, which makes them unsuitable for use as CSS identifiers.
+ */
+export const idToCssIdent = (id: string) => {
+  return `--${id.replaceAll(':', '')}`;
 };

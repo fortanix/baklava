@@ -16,7 +16,10 @@
     cursor: pointer;
     
     margin: 0;
-    padding: calc(bk.$spacing-2 - 0.125lh) bk.$spacing-3; /* Note: compensate for line-height difference with Figma */
+    padding: 0;
+    &:not(.bk-button--compact) {
+      padding: calc(bk.$spacing-2 - 0.125lh) bk.$spacing-3; /* Note: compensate for line-height difference with Figma */
+    }
     
     /* Transparent border for consistency with other variants that have a border */
     border: bk.$size-1 solid transparent;
@@ -67,7 +70,7 @@
       --bk-button-color-contrast: #{bk.$theme-button-primary-text-non-active};
       cursor: not-allowed;
     }
-
+    
     @media (prefers-reduced-motion: no-preference) {
       transition: none 150ms ease-in-out;
       transition-property: border, background, color;
