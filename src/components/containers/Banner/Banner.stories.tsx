@@ -2,13 +2,11 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { dedent } from 'ts-dedent';
 import * as React from 'react';
 import { idToCssIdent } from '../../../util/reactUtil.ts';
 import { startViewTransition } from '../../../util/reactDomUtil.ts';
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { storyDescription } from '../../../util/storybook/storybookUtil.ts';
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 import { loremIpsum, LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
@@ -82,11 +80,11 @@ export const BannerStandard: Story = {
   },
 };
 
+/**
+ * If the `onClose` prop is given, the component will be rendered with a close button. It is up to the consumer
+ * to handle the close event and (for example) hide the `Banner`.
+ */
 export const BannerWithCloseButton: Story = {
-  ...storyDescription(dedent`
-    If the \`onClose\` prop is given, the component will be rendered with a close button. It is up to the consumer
-    to handle the close event and (for example) hide the \`Banner\`.
-  `),
   args: {
     title: `Banner title`,
     children: `A banner with a close button to hide the banner.`,
@@ -100,10 +98,8 @@ export const BannerWithTitleOnly: Story = {
   },
 };
 
+/** You can specify additional custom actions to be displayed in the banner using `Banner.ActionButton`. */
 export const BannerWithAction: Story = {
-  ...storyDescription(dedent`
-    You can specify additional custom actions to be displayed in the banner.
-  `),
   args: {
     children: 'A banner with a button action.',
     onClose: () => {},
@@ -111,10 +107,8 @@ export const BannerWithAction: Story = {
   },
 };
 
+/** Besides text buttons, you can also render icon buttons as actions using `Banner.ActionIcon`. */
 export const BannerWithMultipleActions: Story = {
-  ...storyDescription(dedent`
-    Besides text buttons, you can also render icon buttons as actions.
-  `),
   args: {
     children: 'A banner with two actions.',
     onClose: () => {},
@@ -122,11 +116,8 @@ export const BannerWithMultipleActions: Story = {
   },
 };
 
-
+/** The title should always fit on a single line, if it overflows it should be truncated. */
 export const BannerWithTitleOverflow: Story = {
-  ...storyDescription(dedent`
-    The title should always fit on a single line, if it overflows it should be truncated.
-  `),
   args: {
     title: loremIpsum(),
     onClose: () => {},
@@ -134,23 +125,21 @@ export const BannerWithTitleOverflow: Story = {
   },
 };
 
+/**
+ * In a compact banner, if the message is too long to be displayed in one line, it should automatically wrap and move
+ * down to below the title. Note that the message won't extend below the buttons, if you need this behavior you must
+ * explicitly set `compact` to `false`.
+ */
 export const BannerWithTextWrap: Story = {
-  ...storyDescription(dedent`
-    In a compact banner, if the message is too long to be displayed in one line, it should automatically wrap and move
-    down to below the title. Note that the message won't extend below the buttons, if you need this behavior you must
-    explicitly set \`compact\` to \`false\`.
-  `),
   args: {
     children: <LoremIpsum/>,
     onClose: () => {},
     actions: <ExampleActions/>,
-      },
-    };
+  },
+};
 
-    export const BannerWithTitleOverflowAndTextWrap: Story = {
-      ...storyDescription(dedent`
-    This shows both the title truncation and message wrap at the same time.
-  `),
+/** This shows both the title truncation and message wrap at the same time. */
+export const BannerWithTitleOverflowAndTextWrap: Story = {
   args: {
     title: loremIpsum(),
     children: <LoremIpsum/>,
@@ -159,10 +148,8 @@ export const BannerWithTextWrap: Story = {
   },
 };
 
+/** Banners should always look visually light themed, even when the context is in dark mode. */
 export const BannerWithThemedContent: Story = {
-  ...storyDescription(dedent`
-    Banner should always look visually light themed, even when the context is in dark mode.
-  `),
   args: {
     title: 'Banner with themed content',
     compact: false,
@@ -227,8 +214,8 @@ export const BannerError: Story = {
   },
 };
 
+/** By default, subsequent banners are spaced out. To disable this, set `trimmed` to `true`. */
 export const BannersStacked: Story = {
-  ...storyDescription(`By default, subsequent banners are spaced out. To disable this, use \`trimmed\`.`),
   render: args => (
     <>
       <BannerControlled {...args} variant="info" onClose={() => {}}/>
@@ -239,8 +226,8 @@ export const BannersStacked: Story = {
   ),
 };
 
+/** If `trimmed` is enabled, no exterior spacing is applied. */
 export const BannersStackedTrimmed: Story = {
-  ...storyDescription(`If \`trimmed\` is enabled, no exterior spacing is applied.`),
   render: args => (
     <>
       <BannerControlled trimmed {...args} variant="info" onClose={() => {}}/>
