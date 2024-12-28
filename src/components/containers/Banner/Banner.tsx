@@ -42,8 +42,7 @@ export type ActionButtonProps = ComponentProps<typeof Button>;
  */
 export const ActionButton = (props: ActionButtonProps) => {
   return (
-    <Button
-      compact
+    <Button trimmed
       {...props}
       className={cx(cl['bk-banner__action'], cl['bk-banner__action--button'], props.className)}
     />
@@ -63,8 +62,7 @@ export type ActionIconProps = ComponentProps<typeof Button> & {
 export const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
   return (
     <TooltipProvider compact tooltip={typeof tooltip !== 'undefined' ? tooltip : buttonProps.label}>
-      <Button
-        compact
+      <Button trimmed
         {...buttonProps}
         className={cx(cl['bk-banner__action'], cl['bk-banner__action--icon'], buttonProps.className)}
       />
@@ -77,11 +75,17 @@ export type BannerProps = Omit<ComponentProps<'div'>, 'title'> & {
   /** Whether the component should include the default styling. Defaults to false. */
   unstyled?: undefined | boolean,
   
+  /** Whether to trim this component (strip any spacing around the element). */
+  trimmed?: undefined | boolean,
+  
+  /** Whether to attempt to display the banner as a single line. */
+  compact?: undefined | boolean,
+  
   /** Which variant to display, which changes the color and left icon. Defaults to "info". */
   variant?: undefined | BannerVariant,
   
-  /** The title of the banner. Required. */
-  title: React.ReactNode,
+  /** The title of the banner. Optional. */
+  title?: undefined | React.ReactNode,
   
   /** If specified, a close action is displayed. Defines the action to perform on close. */
   onClose?: undefined | (() => void),
@@ -90,12 +94,14 @@ export type BannerProps = Omit<ComponentProps<'div'>, 'title'> & {
   actions?: undefined | React.ReactNode,
 };
 /**
- * An inline banner that displays a message to the user.
+ * An inline banner that displays a message to the user, usually of a time-sensitive nature.
  */
 export const Banner = Object.assign(
   (props: BannerProps) => {
     const {
       unstyled = false,
+      trimmed = false,
+      compact = true,
       variant = 'info',
       title = '',
       onClose,
@@ -103,6 +109,22 @@ export const Banner = Object.assign(
       children,
       ...propsRest
     } = props;
+    
+    const renderTitle = () => {
+      if (title) { return title; }
+      
+      switch (variant) {
+        case 'info': return 'Info';
+        case 'warning': return 'Warning';
+        case 'error': return 'Error';
+        case 'success': return 'Success';
+        default: return assertUnreachable(variant);
+      }
+    };
+    
+    const renderMessage = () => {
+      return <article className={cx('bk-body-text', cl['bk-banner__message'])}>{children}</article>;
+    };
     
     return (
       <div
@@ -112,36 +134,42 @@ export const Banner = Object.assign(
         {...propsRest}
         className={cx(
           'bk',
-          'bk-theme--light',
           { [cl['bk-banner']]: !unstyled },
+          { [cl['bk-banner--trimmed']]: trimmed },
           { [cl[`bk-banner--${variant}`]]: variant },
           propsRest.className,
         )}
       >
-        <div className={cx(cl['bk-banner__content'])}>
-          <strong className={cx(cl['bk-banner__title'])}>
-            <BannerVariantIcon variant={variant} className={cx(cl['bk-banner__title__icon'])}/>
-            <span className={cx(cl['bk-banner__title__text'])}>{title}</span>
-          </strong>
-          {children &&
-            <div className={cx('bk-body-text', cl['bk-banner__message'])}>{children}</div>
-          }
-        </div>
-        
-        <div className={cx(cl['bk-banner__actions'])}>
-          {actions}
-        </div>
-        {onClose &&
-          <div className={cx(cl['bk-banner__actions'])}>
-            <ActionIcon
-              label="Close banner"
-              tooltip={null}
-              className={cx(cl['bk-banner__action-close'])}
-              onPress={onClose}
-            >
-              <Icon icon="cross"/>
-            </ActionIcon>
+        {/* Apply `bk-theme--light` on all children (but not the box itself). */}
+        <header className={cx('bk-theme--light', cl['bk-banner__header'])}>
+          <div className={cx(cl['bk-banner__header__text'])}>
+            <strong className={cx(cl['bk-banner__title'])}>
+              <BannerVariantIcon variant={variant} className={cx(cl['bk-banner__title__icon'])}/>
+              <span className={cx(cl['bk-banner__title__text'])}>{renderTitle()}</span>
+            </strong>
+            {compact && children &&
+              <div className={cx('bk-body-text', cl['bk-banner__message--compact'])}>{children}</div>
+            }
           </div>
+          
+          <div className={cx(cl['bk-banner__actions'])}>
+            {actions}
+            
+            {onClose &&
+              <ActionIcon
+                label="Close banner"
+                tooltip={null}
+                className={cx(cl['bk-banner__action-close'])}
+                onPress={onClose}
+              >
+                <Icon icon="cross"/>
+              </ActionIcon>
+            }
+          </div>
+        </header>
+        
+        {!compact && children &&
+          <article className={cx('bk-body-text', 'bk-theme--light', cl['bk-banner__message'])}>{children}</article>
         }
       </div>
     );

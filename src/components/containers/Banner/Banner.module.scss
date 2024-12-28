@@ -26,83 +26,88 @@
     background: var(--bk-banner-color-background);
     
     display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    gap: bk.$spacing-4;
-    
-    min-width: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: bk.$spacing-2;
     
     @include bk.font(bk.$font-family-body, bk.$font-weight-regular, bk.$font-size-m);
     line-height: bk.$line-height-m;
     color: bk.$theme-banner-text-default;
     
-    .bk-banner__content {
-      margin-inline-end: auto; // Space between text and actions
-      
-      min-width: 0;
+    .bk-banner__header {
       display: flex;
-      flex-flow: row wrap;
-      gap: bk.$spacing-1;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: bk.$spacing-4;
       
-      .bk-banner__title {
-        $icon-size: 1.3em;
-        margin-inline-start: calc(-1 * (bk.$spacing-2 + $icon-size));
+      .bk-banner__header__text {
+        margin-inline-end: auto; // Space between text and actions
         
         min-width: 0;
         display: flex;
-        flex-direction: row;
-        gap: bk.$spacing-2;
-        align-items: center;
+        flex-flow: row wrap;
+        gap: bk.$spacing-1;
         
-        font-weight: bk.$font-weight-semibold;
-        
-        .bk-banner__title__icon {
-          color: var(--bk-banner-color-foreground);
+        .bk-banner__title {
+          $icon-size: 1.3em;
+          margin-inline-start: calc(-1 * (bk.$spacing-2 + $icon-size));
+          
+          min-width: 0;
+          display: flex;
+          flex-direction: row;
+          gap: bk.$spacing-2;
+          align-items: center;
+          
+          font-weight: bk.$font-weight-semibold;
+          
+          .bk-banner__title__icon {
+            color: var(--bk-banner-color-foreground);
+          }
+          
+          .bk-banner__title__text {
+            @include bk.text-one-line;
+          }
         }
         
-        .bk-banner__title__text {
-          @include bk.text-one-line;
+        .bk-banner__message--compact {
+          --keep: ;
         }
       }
-      
-      .bk-banner__message {
-        --keep: ;
-      }
-    }
-    
-    .bk-banner__actions {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: bk.$spacing-3 calc(bk.$spacing-7 / 2);
-      
-      > button {
-        // Keep each item to a max of 1lh, so that in the case of all items being on one line, all the items
-        // are properly aligned with the title (which implicitly has height `1lh`).
-        height: 1lh;
-      }
-      
-      .bk-banner__action {
-        flex: none;
-        
-        .bk-banner__action--button { --keep: ; }
-        .bk-banner__action--icon { --keep: ; }
-      }
-      
-      .bk-banner__action-close {
-        flex: none;
-        margin-inline-start: calc(bk.$spacing-7 / 2); // Total gap should be `bk.$spacing-7`
-        
+      .bk-banner__actions {
         display: flex;
-        color: bk.$theme-banner-icon-default;
+        flex-direction: row;
+        align-items: center;
+        gap: bk.$spacing-3 calc(bk.$spacing-7 / 2);
+        
+        > button {
+          // Keep each item to a max of 1lh, so that in the case of all items being on one line, all the items
+          // are properly aligned with the title (which implicitly has height `1lh`).
+          height: 1lh;
+        }
+        
+        .bk-banner__action {
+          flex: none;
+          
+          .bk-banner__action--button { --keep: ; }
+          .bk-banner__action--icon { --keep: ; }
+        }
+        
+        .bk-banner__action-close {
+          flex: none;
+          margin-inline-start: calc(bk.$spacing-7 / 2); // Total gap should be `bk.$spacing-7`
+          
+          display: flex;
+          color: bk.$theme-banner-icon-default;
+        }
       }
     }
     
-    // Allow actions to wrap if there is a long message
-    &:has(.bk-banner__message) .bk-banner__actions { flex-wrap: wrap; }
+    .bk-banner__message {
+      --keep: ;
+    }
     
     // Variants
-    &.bk-banner--informational {
+    &.bk-banner--info {
       --bk-banner-color-foreground: #{bk.$theme-banner-informational-border-default};
       --bk-banner-color-background: #{bk.$theme-banner-informational-background-default};
     }
@@ -120,7 +125,7 @@
     }
   }
   
-  .bk-banner + .bk-banner {
+  .bk-banner + .bk-banner:not(.bk-banner--trimmed) {
     margin-block-start: bk.$spacing-2;
   }
 }

@@ -76,7 +76,7 @@ export const SegmentedControl = (props: SegmentedControlProps) => {
   return (
     <ul
       {...propsRest}
-      role="tablist"
+      role="radiogroup"
       className={cx({
         bk: true,
         [cl['bk-segmented-control']]: !unstyled,
@@ -85,16 +85,16 @@ export const SegmentedControl = (props: SegmentedControlProps) => {
     >
       {formattedOptions.map((option, index) =>
         // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
-        <li key={index} className={cl['bk-segmented-control__item']}>
+        <li key={index} role="presentation" className={cl['bk-segmented-control__item']}>
           <Button
-            role="tab"
+            role="radio"
             unstyled
             className={cx({
               [cl['bk-segmented-control__toggle']]: true,
             }, option.className)}
             aria-label={option.label}
             label={option.label}
-            onClick={() => { handleClick(option.value); } }
+            onPress={() => { handleClick(option.value); } }
             aria-checked={selectedOption === option.value ? 'true' : 'false'}
           />
         </li>

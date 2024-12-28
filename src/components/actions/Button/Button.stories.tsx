@@ -25,7 +25,6 @@ export default {
     design: { type: 'figma', url: 'https://www.figma.com/design/ymWCnsGfIsC2zCz17Ur11Z/Design-System-UX?node-id=4599-156236&m=dev' },
   },
   tags: ['autodocs'],
-  argTypes: {},
   args: {
     unstyled: false,
     label: 'Button',

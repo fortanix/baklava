@@ -48,11 +48,10 @@ const preview = {
             [
               'Panel',
               'Card',
+              'Banner',
               'Dialog',
               'Disclosure',
               'Accordion',
-              'Alert',
-              'Banner',
             ],
             'actions',
             [

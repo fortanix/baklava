@@ -17,7 +17,7 @@
     
     margin: 0;
     padding: 0;
-    &:not(.bk-button--compact) {
+    &:not(.bk-button--trimmed) {
       padding: calc(bk.$spacing-2 - 0.125lh) bk.$spacing-3; /* Note: compensate for line-height difference with Figma */
     }
     

@@ -20,8 +20,8 @@ export type ButtonProps = React.PropsWithChildren<Omit<ComponentProps<'button'>,
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
-  /** Whether this tooltip should be rendered compact (minimal padding). */
-  compact?: undefined | boolean,
+  /** Whether to trim this component (strip any spacing around the element). */
+  trimmed?: undefined | boolean,
   
   /**
    * The label of the button. Additional UI elements may be added, e.g. a loading indicator. If full control over
@@ -51,7 +51,7 @@ export const Button = (props: ButtonProps) => {
   const {
     children,
     unstyled = false,
-    compact = false,
+    trimmed = false,
     label,
     nonactive = false,
     variant = 'tertiary',
@@ -128,7 +128,7 @@ export const Button = (props: ButtonProps) => {
       className={cx({
         bk: true,
         [cl['bk-button']]: !unstyled,
-        [cl['bk-button--compact']]: compact,
+        [cl['bk-button--trimmed']]: trimmed,
         [cl['bk-button--primary']]: variant === 'primary',
         [cl['bk-button--secondary']]: variant === 'secondary',
         [cl['bk-button--nonactive']]: isNonactive,
