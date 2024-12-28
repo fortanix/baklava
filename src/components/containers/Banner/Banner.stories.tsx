@@ -51,6 +51,7 @@ export default {
   component: Banner,
   parameters: {
     layout: 'padded',
+    design: { type: 'figma', url: 'https://www.figma.com/design/ymWCnsGfIsC2zCz17Ur11Z/Design-System-UX?node-id=4573-147249&m=dev' },
   },
   decorators: [
     Story => <LayoutDecorator size="large" /*resize="inline"*/><Story/></LayoutDecorator>,

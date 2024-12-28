@@ -88,8 +88,10 @@
         .bk-banner__action {
           flex: none;
           
-          .bk-banner__action--button { --keep: ; }
-          .bk-banner__action--icon { --keep: ; }
+          color: bk.$theme-banner-text-link;
+          
+          &.bk-banner__action--button { font-weight: bk.$font-weight-semibold; }
+          &.bk-banner__action--icon { --keep: ; }
         }
         
         .bk-banner__action-close {
