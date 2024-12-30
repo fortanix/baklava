@@ -17,7 +17,6 @@ import cl from './Dialog.module.scss';
 
 export { cl as DialogClassNames };
 
-
 export type ActionIconProps = ComponentProps<typeof Button> & {
   /** There must be `label` on an icon-only button, for accessibility. */
   label: Required<ComponentProps<typeof Button>>['label'],

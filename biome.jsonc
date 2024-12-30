@@ -33,6 +33,12 @@
       "style": {
         "useImportType": "off",
         "noUnusedTemplateLiteral": "off"
+      },
+      "a11y": {
+        // Putting `tabindex` on non-interactive elements is often necessary, for example for scrolling content.
+        // https://ux.stackexchange.com/questions/119952/when-is-it-wrong-to-put-tabindex-0-on-non-interactive-content
+        // https://stackoverflow.com/questions/53597209/tabindex-on-el-that-are-interactive-under-certain-conditions
+        "noNoninteractiveTabindex": "off"
       }
     }
   }
