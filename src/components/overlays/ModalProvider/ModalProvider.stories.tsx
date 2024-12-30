@@ -5,8 +5,10 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
+import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { Button } from '../../actions/Button/Button.tsx';
+import { Dialog } from '../../containers/Dialog/Dialog.tsx';
 
 import { ModalProvider } from './ModalProvider.tsx';
 
@@ -31,6 +33,14 @@ export default {
 export const ModalProviderStandard: Story = {
   args: {
     children: activate => <Button variant="primary" label="Open modal" onPress={activate}/>,
-    content: ref => <dialog open ref={ref}>Content</dialog>,
+    content: ({ close, ...props }) =>
+      <Dialog {...props} onCloseAction={close}><LoremIpsum paragraphs={5}/></Dialog>,
+  },
+};
+
+export const ModalProviderWithBasicDialog: Story = {
+  args: {
+    children: activate => <Button variant="primary" label="Open modal" onPress={activate}/>,
+    content: props => <dialog {...props}>Content</dialog>,
   },
 };

@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 
-import { useControlledDialog } from './useControlledDialog.ts';
+import { useControlledDialog, type ControlledDialogProps } from './useControlledDialog.ts';
 
 import cl from './ModalProvider.module.scss';
 
@@ -17,7 +17,7 @@ export type ModalProviderProps = {
   children: (activate: () => void) => React.ReactNode,
   
   /** The content to be shown in the modal overlay. */
-  content: (ref: React.RefCallback<HTMLDialogElement>) => React.ReactNode,
+  content: (props: ControlledDialogProps) => React.ReactNode,
 };
 /**
  * Provider around a trigger (e.g. button) to display a modal overlay on trigger activation.
@@ -29,11 +29,13 @@ export const ModalProvider = (props: ModalProviderProps) => {
   const activate = React.useCallback(() => { setActive(true); }, []);
   const deactivate = React.useCallback(() => { setActive(false); }, []);
   
-  const dialogRef = useControlledDialog(active, deactivate);
+  const dialogProps = useControlledDialog(active, deactivate, {
+    allowUserClose: true,
+  });
   
   return (
     <>
-      {active && content(dialogRef)}
+      {active && content(dialogProps)}
       {children(activate)}
     </>
   );
