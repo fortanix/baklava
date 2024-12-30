@@ -5,28 +5,37 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
+import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 
-import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
-import { Button } from '../../actions/Button/Button.tsx';
+import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
+
 import { Dialog } from './Dialog.tsx';
 
 
-type ButtonArgs = React.ComponentProps<typeof Dialog>;
-type Story = StoryObj<ButtonArgs>;
+type DialogArgs = React.ComponentProps<typeof Dialog>;
+type Story = StoryObj<DialogArgs>;
 
 export default {
+  tags: ['autodocs'],
   component: Dialog,
   parameters: {
     layout: 'padded',
   },
-  tags: ['autodocs'],
-  argTypes: {
-  },
-} satisfies Meta<ButtonArgs>;
+  decorators: [
+    Story => <LayoutDecorator size="large" style={{ maxHeight: '15lh' }}><Story/></LayoutDecorator>,
+  ],
+} satisfies Meta<DialogArgs>;
 
 
-export const Standard: Story = {
+export const DialogStandard: Story = {
   args: {
-    children: <>Dialog content</>,
+    children: <LoremIpsum paragraphs={3}/>,
+  },
+};
+
+export const DialogWithClose: Story = {
+  args: {
+    children: <LoremIpsum paragraphs={3}/>,
+    onClose: () => {},
   },
 };

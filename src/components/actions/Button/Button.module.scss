@@ -51,11 +51,12 @@
       color: var(--bk-button-color-contrast);
     }
     
+    @include bk.focus-outset;
+    
     /* States */
     /* NOTE: the ordering here is important, more important rules must come later (in case of multiple states) */
     &:is(:focus-visible, :global(.pseudo-focus-visible)) {
       --bk-button-color-accent: #{bk.$theme-button-primary-background-focused};
-      @include bk.focus-outline-close;
     }
     &:is(:hover, :global(.pseudo-hover)) {
       --bk-button-color-accent: #{bk.$theme-button-primary-background-hover};

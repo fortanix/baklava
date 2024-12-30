@@ -1,4 +1,7 @@
 
+import { dedent } from 'ts-dedent';
+
+
 /** @type {import('stylelint').Config} */
 export default {
   extends: 'stylelint-config-standard-scss',
@@ -50,11 +53,30 @@ export default {
     // Disallow `&` selector concatenation to be forward-compatible with native CSS
     'selector-disallowed-list': [
       ['/&__/', '/&--/'],
-      { message: (selector) => `Do not use '&'-concatenation in selectors, this conflicts with native CSS` },
+      {
+        message: (selector) => dedent`
+          Do not use '&'-concatenation in selectors, this conflicts with native CSS. Found: ${selector}.
+        `,
+      },
     ],
     
     // Properties
     //'declaration-no-important': true, // No !important
+    'declaration-property-value-disallowed-list': [
+      {
+        // Disallow auto/scroll. This requires a tabindex="0" for accessibility, which should be handled through the
+        // `useScroller()` hook instead.
+        '/^overflow(-x|-y)?/': ['auto', 'scroll'],
+      },
+      {
+        message: (selector, value) => {
+          if (selector.match(/overflow/)) {
+            return `Do not declare '${selector}: ${value}' directly, use the useScroller() hook instead.`;
+          }
+          return `The rule '${selector}: ${value}' is disallowed, see stylelint config for more information.`;
+        },
+      },
+    ],
     
     // Expressions
     //...

@@ -8,8 +8,7 @@
 @layer baklava.components {
   .bk-modal {
     @include bk.component-base(bk-modal);
-    
-    @include Panel.bk-panel;
+    @include Panel.panel; // Reuse styling from `Panel`
     
     /* --bk-modal-background-color: color-mix(in srgb, var(--bk-panel-background-color) 80%, transparent); */
     --bk-modal-background-color:  var(--bk-panel-background-color);

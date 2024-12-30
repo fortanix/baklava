@@ -8,26 +8,23 @@
 @layer baklava.components {
   .bk-dialog {
     @include bk.component-base(bk-dialog);
-    @include Panel.bk-panel;
+    @include Panel.panel; // Reuse styling from `Panel`
     
-    /* --bk-dialog-background-color: color-mix(in srgb, var(--bk-panel-background-color) 80%, transparent); */
-    --bk-dialog-background-color:  var(--bk-panel-background-color);
+    --bk-dialog-background-color: var(--bk-panel-background-color);
+    --bk-dialog-padding-block: #{bk.$spacing-8};
+    --bk-dialog-padding-inline: #{bk.$spacing-8};
     
-    --bk-dialog-inset: calc(var(--bk-sizing-3) + var(--bk-sizing-2));
-    
-    position: static;
-    
-    margin: auto;
-    padding: 0;
-    width: var(--bk-sizing-9);
+    width: bk.rem-from-px(584); // FIXME
     max-width: calc(100% - 6px - 2em);
     height: fit-content;
     min-height: 60%;
     max-height: calc(100% - 6px - 2em);
     
-    box-shadow: 0 8px 10px 1px rgba(0 0 0 / 14%), 0 3px 14px 2px rgba(0 0 0 / 12%), 0 5px 5px -3px rgba(0 0 0 / 3%);
-    background-color: var(--bk-dialog-background-color);
-    border-radius: var(--bk-sizing-2);
+    margin: 0;
+    padding: 0; // Do not apply padding on the outermost container (do it on the lower level elements instead)
+    
+    //box-shadow: 0 8px 10px 1px rgba(0 0 0 / 14%), 0 3px 14px 2px rgba(0 0 0 / 12%), 0 5px 5px -3px rgba(0 0 0 / 3%);
+    border-radius: bk.$radius-3;
     
     display: flex;
     flex-direction: column;
@@ -35,37 +32,33 @@
     .bk-dialog__header {
       position: sticky;
       top: 0;
-      padding: var(--bk-sizing-2) var(--bk-dialog-inset);
+      z-index: 1;
+      
+      padding-block: var(--bk-dialog-padding-block) 0;
+      padding-inline: var(--bk-dialog-padding-inline);
       
       background: var(--bk-dialog-background-color);
       
       --header-shadow-size: calc(var(--bk-sizing-1) / 2);
-      box-shadow: 0 var(--header-shadow-size) 0 0 rgba(0 0 0 / 12%);
+      //box-shadow: 0 var(--header-shadow-size) 0 0 rgba(0 0 0 / 12%);
       /* Clip everything except the bottom shadow (-1px for weird clipping behavior with scroll) */
-      clip-path: inset(-1px -1px calc(-1 * var(--header-shadow-size)) -1px);
+      //clip-path: inset(-1px -1px calc(-1 * var(--header-shadow-size)) -1px);
       
       display: flex;
       flex-direction: row;
       align-items: baseline;
       
-      h1 {
-        font-size: 1.4rem;
-        font-weight: 300;
-        text-transform: uppercase;
-      }
-      
-      :nth-child(1 of :global(.action)) {
-        margin-left: auto;
-      }
-      :global(.action) {
-        align-self: center;
+      .bk-dialog__action { --keep: ; }
+      :nth-child(1 of .bk-dialog__action) { // FIXME: not getting parsed by lightningcss?
+        margin-inline-start: auto;
       }
     }
     
     .bk-dialog__content {
       flex: 1; /* Make sure we cover all available space */
-      padding: var(--bk-dialog-inset);
-      padding-top: var(--bk-sizing-3);
+      
+      margin-block: bk.$spacing-7 bk.$spacing-9;
+      padding-inline: var(--bk-dialog-padding-inline);
     }
     
     .bk-dialog__actions {
@@ -78,7 +71,12 @@
     }
     
     
-    /* Variant: slide out */
+    // Focus
+    @include bk.focus-outset;
+    
+    
+    // Variant: slide out
+    /*
     --dialog-slide-out-inset: var(--bk-sizing-3);
     &:is(.bk-dialog--slide-out-left, .bk-dialog--slide-out-right) {
       position: fixed;
@@ -116,6 +114,7 @@
         overflow: auto;
       }
     }
+    */
     
     
     /* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#animating_dialogs */
