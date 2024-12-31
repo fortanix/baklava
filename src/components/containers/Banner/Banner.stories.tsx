@@ -25,7 +25,7 @@ const BannerControlled = (props: React.ComponentProps<typeof Banner>) => {
   const viewTransitionName = idToCssIdent(React.useId());
   const [isVisible, setIsVisible] = React.useState(true);
   
-  // Use a view transition to get an exit animation in supported browsers
+  // Use a view transition to get an exit animation (in supported browsers)
   const handleClose = React.useCallback(() => {
     startViewTransition(() => {
       setIsVisible(false);
@@ -57,7 +57,9 @@ export default {
     Story => <LayoutDecorator size="large" /*resize="inline"*/><Story/></LayoutDecorator>,
   ],
   tags: ['autodocs'],
-  args: {},
+  args: {
+    onClose: () => {},
+  },
   render: (args) => <BannerControlled {...args}/>,
 } satisfies Meta<BannerArgs>;
 
@@ -89,7 +91,7 @@ export const BannerWithCloseButton: Story = {
   args: {
     title: `Banner title`,
     children: `A banner with a close button to hide the banner.`,
-    onClose: () => {},
+    showCloseAction: true,
   },
 };
 
@@ -103,7 +105,7 @@ export const BannerWithTitleOnly: Story = {
 export const BannerWithAction: Story = {
   args: {
     children: 'A banner with a button action.',
-    onClose: () => {},
+    showCloseAction: true,
     actions: <ExampleActionButton/>,
   },
 };
@@ -112,7 +114,7 @@ export const BannerWithAction: Story = {
 export const BannerWithMultipleActions: Story = {
   args: {
     children: 'A banner with two actions.',
-    onClose: () => {},
+    showCloseAction: true,
     actions: <ExampleActions/>,
   },
 };
@@ -121,7 +123,7 @@ export const BannerWithMultipleActions: Story = {
 export const BannerWithTitleOverflow: Story = {
   args: {
     title: loremIpsum(),
-    onClose: () => {},
+    showCloseAction: true,
     actions: <ExampleActionButton/>,
   },
 };
@@ -134,7 +136,7 @@ export const BannerWithTitleOverflow: Story = {
 export const BannerWithTextWrap: Story = {
   args: {
     children: <LoremIpsum/>,
-    onClose: () => {},
+    showCloseAction: true,
     actions: <ExampleActions/>,
   },
 };
@@ -144,7 +146,7 @@ export const BannerWithTitleOverflowAndTextWrap: Story = {
   args: {
     title: loremIpsum(),
     children: <LoremIpsum/>,
-    onClose: () => {},
+    showCloseAction: true,
     actions: <ExampleActions/>,
   },
 };
@@ -177,7 +179,7 @@ export const BannerInformational: Story = {
     compact: false,
     title: loremIpsum(),
     children: <LoremIpsum/>,
-    onClose: () => {},
+    showCloseAction: true,
     actions: <ExampleActions/>,
   },
 };
@@ -188,7 +190,7 @@ export const BannerSuccess: Story = {
     compact: false,
     title: loremIpsum(),
     children: <LoremIpsum/>,
-    onClose: () => {},
+    showCloseAction: true,
     actions: <ExampleActions/>,
   },
 };
@@ -199,7 +201,7 @@ export const BannerWarning: Story = {
     compact: false,
     title: loremIpsum(),
     children: <LoremIpsum/>,
-    onClose: () => {},
+    showCloseAction: true,
     actions: <ExampleActions/>,
   },
 };
@@ -210,7 +212,7 @@ export const BannerError: Story = {
     compact: false,
     title: loremIpsum(),
     children: <LoremIpsum/>,
-    onClose: () => {},
+    showCloseAction: true,
     actions: <ExampleActions/>,
   },
 };

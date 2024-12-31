@@ -87,7 +87,10 @@ export type BannerProps = Omit<ComponentProps<'div'>, 'title'> & {
   /** The title of the banner. Optional. */
   title?: undefined | React.ReactNode,
   
-  /** If specified, a close action is displayed. Defines the action to perform on close. */
+  /** If specified, a close action is displayed. Default: false. */
+  showCloseAction?: undefined | boolean,
+  
+  /** Callback that is called when the user requests the banner to close. */
   onClose?: undefined | (() => void),
   
   /** Any additional actions to be shown in the banner. */
@@ -104,11 +107,16 @@ export const Banner = Object.assign(
       compact = true,
       variant = 'info',
       title = '',
+      showCloseAction = false,
       onClose,
       actions = null,
       children,
       ...propsRest
     } = props;
+    
+    if (showCloseAction && typeof onClose !== 'function') {
+      console.error(`Missing prop in <Banner/>: 'onClose' function`);
+    }
     
     const renderTitle = () => {
       if (title) { return title; }
@@ -120,10 +128,6 @@ export const Banner = Object.assign(
         case 'success': return 'Success';
         default: return assertUnreachable(variant);
       }
-    };
-    
-    const renderMessage = () => {
-      return <article className={cx('bk-body-text', cl['bk-banner__message'])}>{children}</article>;
     };
     
     return (
@@ -155,7 +159,7 @@ export const Banner = Object.assign(
           <div className={cx(cl['bk-banner__actions'])}>
             {actions}
             
-            {onClose &&
+            {showCloseAction &&
               <ActionIcon
                 label="Close banner"
                 tooltip={null}
