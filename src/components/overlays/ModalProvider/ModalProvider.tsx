@@ -14,7 +14,7 @@ export { cl as ModalProviderClassNames };
 
 export type ModalProviderProps = {
   /** The trigger that activates the modal overlay. */
-  children: (activate: () => void) => React.ReactNode,
+  children: (triggerProps: { active: boolean, activate: () => void }) => React.ReactNode,
   
   /** The content to be shown in the modal overlay. */
   content: (props: ControlledDialogProps) => React.ReactNode,
@@ -31,6 +31,8 @@ export const ModalProvider = (props: ModalProviderProps) => {
   const [active, setActive] = React.useState(activeDefault);
   const activate = React.useCallback(() => { setActive(true); }, []);
   
+  const triggerProps = { active, activate };
+  
   const dialogProps = useControlledDialog({
     active,
     onActiveStateChange: setActive,
@@ -40,7 +42,7 @@ export const ModalProvider = (props: ModalProviderProps) => {
   return (
     <>
       {active && content(dialogProps)}
-      {children(activate)}
+      {children(triggerProps)}
     </>
   );
 };

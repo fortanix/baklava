@@ -32,15 +32,15 @@ export default {
 
 export const ModalProviderStandard: Story = {
   args: {
-    children: activate => <Button variant="primary" label="Open modal" onPress={activate}/>,
+    children: ({ activate }) => <Button variant="primary" label="Open modal" onPress={activate}/>,
     content: ({ close, dialogProps }) =>
-      <Dialog {...dialogProps} onCloseAction={close}><LoremIpsum paragraphs={5}/></Dialog>,
+      <Dialog {...dialogProps} title="Modal dialog" onRequestClose={close}><LoremIpsum paragraphs={5}/></Dialog>,
   },
 };
 
 export const ModalProviderWithBasicDialog: Story = {
   args: {
-    children: activate => <Button variant="primary" label="Open modal" onPress={activate}/>,
+    children: ({ activate }) => <Button variant="primary" label="Open modal" onPress={activate}/>,
     content: ({ close, dialogProps }) => <dialog {...dialogProps}>Content</dialog>,
   },
 };
