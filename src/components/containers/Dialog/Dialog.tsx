@@ -17,37 +17,6 @@ import cl from './Dialog.module.scss';
 
 export { cl as DialogClassNames };
 
-/*
-const useClickOutside = <E extends HTMLElement>(ref: React.RefObject<E>, callback: () => void) => {
-  const handleEvent = React.useCallback((event: React.PointerEvent<E>) => {
-    if (ref && ref.current) {
-      if (ref.current.contains(event.target as Node)) {
-        React.setState({ hasClickedOutside: false });
-      } else {
-        React.setState({ hasClickedOutside: true });
-      }
-    }
-  }, [ref]);
-  
-  React.useEffect(() => {
-    if (!window.PointerEvent) { return; }
-    
-    document.addEventListener('pointerdown', handleEvent);
-    
-    return () => {
-      if (window.PointerEvent) {
-        document.removeEventListener('pointerdown', handleEvent);
-      } else {
-        document.removeEventListener('mousedown', handleEvent);
-        document.removeEventListener('touchstart', handleEvent);
-      }
-    }
-  }, []);
-
-  return [ref, hasClickedOutside];
-};
-*/
-
 
 export type ActionIconProps = ComponentProps<typeof Button> & {
   /** There must be `label` on an icon-only button, for accessibility. */
@@ -71,11 +40,20 @@ export const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
 };
 
 export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
-  /** Whether the component should include the default styling. Defaults to false. */
+  /** Whether the component should include the default styling. Default: false. */
   unstyled?: undefined | boolean,
   
-  /** If specified, a close action is displayed. Defines the action to perform on close. */
-  onClose?: undefined | (() => void),
+  /** Whether the dialog should be displayed as a flat panel (no shadows/borders/rounding). Default: false. */
+  flat?: undefined | boolean,
+  
+  /** The title of the dialog, to be displayed in the dialog header. */
+  title: React.ReactNode,
+  
+  /** If specified, a close action is displayed. Default: true. */
+  showCloseAction?: undefined | boolean,
+  
+  /** Callback that is called when the user requests the dialog to close. */
+  onRequestClose?: undefined | (() => void), // Note: cannot name this `onClose`, dialog already has an `onClose` prop
 };
 /**
  * The Dialog component displays an interaction with the user, for example a confirmation, or a form to be submitted.
@@ -84,65 +62,19 @@ export const Dialog = (props: DialogProps) => {
   const {
     children,
     unstyled = false,
-    onClose,
+    flat = false,
+    title,
+    showCloseAction = true,
+    onRequestClose,
     ...propsRest
   } = props;
   
   const dialogRef = React.useRef<HTMLDialogElement>(null);
   const scroller = useScroller();
   
-  const active = false; // FIXME
-  
-  /*
-  // Sync the `active` flag with the DOM dialog
-  React.useEffect(() => {
-    const dialog = dialogRef.current;
-    if (dialog === null) { return; }
-    
-    if (active && !dialog.open) {
-      dialog.showDialog();
-    } else if (!active && dialog.open) {
-      dialog.close();
-    }
-  }, [active]);
-  */
-  
-  // Sync the dialog close event with the `active` flag
-  const handleCloseEvent = React.useCallback((event: Event): void => {
-    const dialog = dialogRef.current;
-    if (dialog === null) { return; }
-    
-    if (active && event.target === dialog) {
-      onClose();
-    }
-  }, [active, onClose]);
-  
-  React.useEffect(() => {
-    const dialog = dialogRef.current;
-    if (dialog === null) { return; }
-    
-    dialog.addEventListener('close', handleCloseEvent);
-    return () => { dialog.removeEventListener('close', handleCloseEvent); };
-  }, [handleCloseEvent]);
-  
-  const close = React.useCallback(() => {
-    onClose();
-  }, [onClose]);
-  
-  const handleDialogClick = React.useCallback((event: React.MouseEvent<HTMLDialogElement>) => {
-    propsRest.onClick?.(event);
-    
-    if (event.defaultPrevented) { return; }
-    
-    const dialog = dialogRef.current;
-    if (dialog !== null && event.target === dialog) {
-      // Note: clicking the backdrop just results in an event where the target is the `<dialog>` element. In order to
-      // distinguish between the backdrop and the dialog content, we assume that the `<dialog>` is fully covered by
-      // another element. In our case, `bk-dialog__content` must cover the whole `<dialog>` otherwise this will not
-      // work.
-      close();
-    }
-  }, [close, propsRest.onClick]);
+  if (showCloseAction && typeof onRequestClose !== 'function') {
+    console.error(`Missing prop in <Dialog/>: 'onRequestClose' function`);
+  }
   
   return (
     <dialog
@@ -153,20 +85,20 @@ export const Dialog = (props: DialogProps) => {
       className={cx(
         'bk',
         { [cl['bk-dialog']]: !unstyled },
+        { [cl['bk-dialog--flat']]: flat },
         scroller.className,
         propsRest.className,
       )}
-      onClick={handleDialogClick}
     >
       <header className={cx(cl['bk-dialog__header'])}>
-        <H5>Title</H5>
+        <H5>{title}</H5>
         
-        {typeof onClose === 'function' &&
+        {showCloseAction &&
           <ActionIcon
             label="Close dialog"
             tooltip={null}
             className={cx(cl['bk-dialog__action'], cl['bk-dialog__action-close'])}
-            onPress={onClose}
+            onPress={onRequestClose}
           >
             <Icon icon="cross"/>
           </ActionIcon>

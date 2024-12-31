@@ -14,17 +14,21 @@
     --bk-dialog-padding-block: #{bk.$spacing-8};
     --bk-dialog-padding-inline: #{bk.$spacing-8};
     
-    width: bk.rem-from-px(584); // FIXME
-    max-width: calc(100% - 6px - 2em);
-    height: fit-content;
-    min-height: 60%;
-    max-height: calc(100% - 6px - 2em);
+    // width: bk.rem-from-px(584); // FIXME
+    // max-width: calc(100% - 6px - 2em);
+    // height: fit-content;
+    // min-height: 60%;
+    // max-height: calc(100% - 6px - 2em);
     
     margin: 0;
     padding: 0; // Do not apply padding on the outermost container (do it on the lower level elements instead)
     
     //box-shadow: 0 8px 10px 1px rgba(0 0 0 / 14%), 0 3px 14px 2px rgba(0 0 0 / 12%), 0 5px 5px -3px rgba(0 0 0 / 3%);
     border-radius: bk.$radius-3;
+    &.bk-dialog--flat {
+      border: none;
+      border-radius: 0;
+    }
     
     display: flex;
     flex-direction: column;
@@ -70,54 +74,23 @@
       gap: 0.8rem;
     }
     
-    
-    // Focus
+    // State: focus
     @include bk.focus-outset;
+  }
+  
+  // Default styling for when a dialog is used as a modal (through `dialog.showModal()`)
+  .bk-dialog:modal {
+    position: fixed;
+    inset: 0;
+    //place-self: center; // Doesn't have browser support yet, use `margin: auto` instead
+    margin: auto;
+    
+    // https://css-tip.com/center-max-width
+    //max-height: 95svh;
+    //margin-inline: max(1rem, 50% - 100ch/2);
     
     
-    // Variant: slide out
-    /*
-    --dialog-slide-out-inset: var(--bk-sizing-3);
-    &:is(.bk-dialog--slide-out-left, .bk-dialog--slide-out-right) {
-      position: fixed;
-      inset: 0;
-      margin: 0;
-      width: 60vw;
-      height: auto;
-      max-height: 100%;
-      
-      &.bk-dialog--slide-out-left {
-        right: auto;
-        transform-origin: center left;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-      }
-      &.bk-dialog--slide-out-right {
-        left: auto;
-        transform-origin: center right;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-      }
-      
-      opacity: 1;
-      transform: scaleX(0);
-      &:modal {
-        transform: scaleX(1);
-        
-        @starting-style {
-          opacity: 1;
-          transform: scaleX(0);
-        }
-      }
-      
-      .bk-dialog__content {
-        overflow: auto;
-      }
-    }
-    */
-    
-    
-    /* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#animating_dialogs */
+    // Ref: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#animating_dialogs
     
     &:not([open]) {
       opacity: 0;
@@ -127,35 +100,33 @@
         scale 1ms ease-out,
         overlay 1ms ease-out allow-discrete,
         display 1ms ease-out allow-discrete;
-      transition-duration: 200ms; /* Exit transition duration */
+      transition-duration: 200ms; // Exit transition duration
     }
     
-    &:modal {
-      display: flex;
-      opacity: 1;
-      scale: 1 1;
-      transition-duration: 120ms; /* Enter transition duration */
-      transition-timing-function: ease-in;
-      
-      @starting-style {
-        opacity: 0;
-        scale: 1.05 1.05;
-      }
+    display: flex;
+    opacity: 1;
+    scale: 1 1;
+    transition-duration: 120ms; /* Enter transition duration */
+    transition-timing-function: ease-in;
+    
+    @starting-style {
+      opacity: 0;
+      scale: 1.05 1.05;
     }
   }
   
-  /* Note: `::backdrop` cannot be nested/scoped (at least in Chrome v120) */
+  // Note: cannot nest anything inside a pseudo-elements like `::backdrop`
   .bk-dialog::backdrop {
-    --transition-time: 200ms;
+    --bk-dialog-backdrop-transition-dur: 600ms;//200ms;
     background-color: rgb(0 0 0 / 0%);
     transition:
-      display var(--transition-time) allow-discrete,
-      overlay var(--transition-time) allow-discrete,
-      background-color var(--transition-time);
+      display var(--bk-dialog-backdrop-transition-dur) allow-discrete,
+      overlay var(--bk-dialog-backdrop-transition-dur) allow-discrete,
+      background-color var(--bk-dialog-backdrop-transition-dur);
   }
   .bk-dialog:modal::backdrop {
     background-color: rgb(0 0 0 / 20%);
-    backdrop-filter: blur(5px); /* Should be in px, not rem (blur effect should be constant) */
+    backdrop-filter: blur(5px); // Should be in px, not rem (blur effect should be constant)
   }
   @starting-style {
     .bk-dialog:modal::backdrop {

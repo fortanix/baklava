@@ -24,6 +24,10 @@ export default {
   decorators: [
     Story => <LayoutDecorator size="large" style={{ maxHeight: '15lh' }}><Story/></LayoutDecorator>,
   ],
+  args: {
+    title: 'Dialog title',
+    onRequestClose: () => {},
+  },
 } satisfies Meta<DialogArgs>;
 
 
@@ -36,6 +40,22 @@ export const DialogStandard: Story = {
 export const DialogWithClose: Story = {
   args: {
     children: <LoremIpsum paragraphs={3}/>,
-    onClose: () => {},
+    showCloseAction: true,
+  },
+};
+
+export const DialogWithFocus: Story = {
+  args: {
+    className: 'pseudo-focus-visible',
+    children: <LoremIpsum paragraphs={3}/>,
+    showCloseAction: true,
+  },
+};
+
+export const DialogFlat: Story = {
+  args: {
+    children: <LoremIpsum paragraphs={3}/>,
+    flat: true,
+    showCloseAction: true,
   },
 };
