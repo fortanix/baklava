@@ -18,18 +18,22 @@ export type ModalProviderProps = {
   
   /** The content to be shown in the modal overlay. */
   content: (props: ControlledDialogProps) => React.ReactNode,
+  
+  /** Whether the modal should be active by default. */
+  activeDefault?: undefined | boolean,
 };
 /**
  * Provider around a trigger (e.g. button) to display a modal overlay on trigger activation.
  */
 export const ModalProvider = (props: ModalProviderProps) => {
-  const { children, content } = props;
+  const { children, content, activeDefault = false } = props;
   
-  const [active, setActive] = React.useState(false);
+  const [active, setActive] = React.useState(activeDefault);
   const activate = React.useCallback(() => { setActive(true); }, []);
-  const deactivate = React.useCallback(() => { setActive(false); }, []);
   
-  const dialogProps = useControlledDialog(active, deactivate, {
+  const dialogProps = useControlledDialog({
+    active,
+    onActiveStateChange: setActive,
     allowUserClose: true,
   });
   

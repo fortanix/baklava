@@ -17,11 +17,11 @@ type ModalProviderArgs = React.ComponentProps<typeof ModalProvider>;
 type Story = StoryObj<ModalProviderArgs>;
 
 export default {
+  tags: ['autodocs'],
   component: ModalProvider,
   parameters: {
     layout: 'fullscreen',
   },
-  tags: ['autodocs'],
   argTypes: {
   },
   args: {
@@ -33,14 +33,14 @@ export default {
 export const ModalProviderStandard: Story = {
   args: {
     children: activate => <Button variant="primary" label="Open modal" onPress={activate}/>,
-    content: ({ close, ...props }) =>
-      <Dialog {...props} onCloseAction={close}><LoremIpsum paragraphs={5}/></Dialog>,
+    content: ({ close, dialogProps }) =>
+      <Dialog {...dialogProps} onCloseAction={close}><LoremIpsum paragraphs={5}/></Dialog>,
   },
 };
 
 export const ModalProviderWithBasicDialog: Story = {
   args: {
     children: activate => <Button variant="primary" label="Open modal" onPress={activate}/>,
-    content: props => <dialog {...props}>Content</dialog>,
+    content: ({ close, dialogProps }) => <dialog {...dialogProps}>Content</dialog>,
   },
 };

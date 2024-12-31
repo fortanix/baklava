@@ -2,7 +2,13 @@
 import * as React from 'react';
 
 
-export type UseControlledDialogOptions = {
+export type UseControlledDialogArgs = {
+  /** Whether the dialog is currently active. */
+  active: boolean,
+  
+  /** A callback that will be called when the dialog changes active state. */
+  onActiveStateChange: (active: boolean) => void,
+  
   /**
    * Whether to allow the user to close the modal through the browser (e.g. with the Escape key). Disabling this may
    * be useful in cases where we need the user to stay in the modal (e.g. pending confirmation, pending form submit).
@@ -13,25 +19,35 @@ export type UseControlledDialogOptions = {
   shouldCloseOnBackdropClick?: undefined | boolean,
 };
 
-export type ControlledDialogProps = React.ComponentProps<'dialog'> & {
+export type ControlledDialogProps = {
   close: () => void,
+  dialogProps: React.ComponentProps<'dialog'>,
 };
 
 /**
  * Control the activation state of the given `<dialog>` element through the given `active` boolean.
  */
-export const useControlledDialog = (
-  active: boolean,
-  onDeactivate: () => void,
-  options?: undefined | UseControlledDialogOptions,
-): ControlledDialogProps => {
+export const useControlledDialog = (args: UseControlledDialogArgs): ControlledDialogProps => {
   const {
+    active,
+    onActiveStateChange,
     allowUserClose = true,
     shouldCloseOnBackdropClick = true,
-  } = options ?? {};
+  } = args;
   
   const dialogRef = React.useRef<HTMLDialogElement>(null);
   //const lastActiveElementRef = React.useRef<Element>(null);
+  
+  const requestDialogClose = React.useCallback(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) { console.warn(`Unable to close dialog: reference does not exist.`); return; }
+    
+    try {
+      dialog.close();
+    } catch (error: unknown) {
+      console.error(`Failed to close dialog`, error);
+    }
+  }, []);
   
   // Sync active state with <dialog> DOM state
   React.useEffect(() => {
@@ -48,12 +64,12 @@ export const useControlledDialog = (
         dialog.showModal();
       } catch (error: unknown) {
         console.error(`Unable to open modal dialog`, error);
-        onDeactivate();
+        onActiveStateChange(false);
       }
     } else if (!active && isDialogOpen) {
       dialog.close();
     }
-  }, [active, onDeactivate]);
+  }, [active, onActiveStateChange]);
   
   // Handle dialog `close` event
   const handleDialogClose = React.useCallback(() => {
@@ -66,9 +82,10 @@ export const useControlledDialog = (
     }
     */
     
-    onDeactivate(); // Sync with the consumer
-  }, [onDeactivate]);
+    onActiveStateChange(false); // Sync with the consumer
+  }, [onActiveStateChange]);
   
+  // Handle dialog `click` event
   const handleDialogClick = React.useCallback((event: React.MouseEvent<HTMLDialogElement>) => {
     const dialog: HTMLDialogElement = event.currentTarget;
     const target: EventTarget = event.target;
@@ -92,24 +109,24 @@ export const useControlledDialog = (
     }
   }, [allowUserClose, shouldCloseOnBackdropClick]);
   
+  // Handle dialog `keydown` event
   const handleDialogKeyDown = React.useCallback((event: React.KeyboardEvent<HTMLDialogElement>) => {
     if (event.key === 'Escape' && !allowUserClose) {
       event.preventDefault();
     }
   }, [allowUserClose]);
   
-  const dialogProps: ControlledDialogProps = {
-    ref: dialogRef,
-    open: undefined, // Leave the `open` attribute to the browser to manage
-    
-    onClose: handleDialogClose,
-    // Note: we don't need keyboard accessibility for this `onClick`, the backdrop is not (and should not be) an
-    // interactive element. This is a visual only convenience, screen readers should use the other close mechanisms.
-    onClick: shouldCloseOnBackdropClick ? handleDialogClick : undefined,
-    onKeyDown: handleDialogKeyDown,
-    
-    close: () => { dialogRef.current?.close(); },
+  return {
+    close: requestDialogClose,
+    dialogProps: {
+      ref: dialogRef,
+      open: undefined, // Leave the `open` attribute to the browser to manage
+      
+      onClose: handleDialogClose,
+      // Note: we don't need keyboard accessibility for this `onClick`, the backdrop is not (and should not be) an
+      // interactive element. This is a visual only convenience, screen readers should use the other close mechanisms.
+      onClick: shouldCloseOnBackdropClick ? handleDialogClick : undefined,
+      onKeyDown: handleDialogKeyDown,
+    },
   };
-  
-  return dialogProps;
 };
