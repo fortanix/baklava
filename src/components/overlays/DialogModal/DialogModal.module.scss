@@ -1,0 +1,28 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-dialog-modal {
+    @include bk.component-base(bk-dialog-modal);
+    
+    &.bk-dialog-modal--full-screen {
+      // FIXME: test this on mobile for potential overflow/shifting. May need to use `dvh`/`dvw` instead?
+      inset: 0;
+      margin: 0;
+      width: auto;
+      height: auto;
+    }
+    
+    &.bk-dialog-modal--slide-over {
+      inset: 0;
+      margin: 0;
+      width: auto;
+      height: auto;
+      
+      margin-inline-start: 20vw;
+    }
+  }
+}
