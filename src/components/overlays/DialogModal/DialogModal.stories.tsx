@@ -6,6 +6,8 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { Button } from '../../actions/Button/Button.tsx';
+
 import { DialogModal } from './DialogModal.tsx';
 
 
@@ -21,6 +23,7 @@ export default {
   argTypes: {},
   args: {
     title: 'Modal dialog',
+    trigger: ({ active, activate }) => <Button variant="primary" label="Open modal" onPress={activate}/>,
   },
   render: (args) => <DialogModal {...args}/>,
 } satisfies Meta<DialogModalArgs>;

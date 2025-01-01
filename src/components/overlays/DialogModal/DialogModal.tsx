@@ -21,15 +21,26 @@ export type DialogModalProps = ComponentProps<typeof Dialog> & {
   /** How to display the modal in the viewport. Default: 'center'. */
   display?: undefined | 'center' | 'full-screen' | 'slide-over',
   
+  /** The size of the modal. Applies to modals with `display="center"`. */
+  size?: undefined | 'small' | 'medium' | 'large',
+  
+  /** The modal trigger. */
   trigger: ModalProviderProps['children'],
   
+  /** Any additional props to pass to the modal provider. */
   providerProps?: undefined | Omit<ModalProviderProps, 'children'>,
 };
 /**
  * A dialog component displayed as a modal when activating the given trigger.
  */
 export const DialogModal = (props: DialogModalProps) => {
-  const { unstyled = false, display = 'center', ...propsRest } = props;
+  const {
+    children,
+    trigger,
+    unstyled = false,
+    display = 'center',
+    ...propsRest
+  } = props;
   
   return (
     <ModalProvider
@@ -48,12 +59,12 @@ export const DialogModal = (props: DialogModalProps) => {
             dialogProps.className,
             propsRest.className,
           )}
-        />
+        >
+          {children}
+        </Dialog>
       }
     >
-      {({ active, activate }) =>
-        <Button variant="primary" label="Open modal" onPress={activate}/>
-      }
+      {trigger}
     </ModalProvider>
   );
 };

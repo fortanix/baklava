@@ -4,9 +4,79 @@
 
 @use '../../../styling/defs.scss' as bk;
 
+@mixin dialog-entry-exit($entry-dur: 200ms, $exit-dur: 180ms) {
+  transition-property: overlay, display, opacity, scale;
+  transition-behavior: allow-discrete;
+  transition-duration: $exit-dur; // Exit
+  transition-timing-function: ease-out; // Exit
+  
+  // Open state styling
+  opacity: 1;
+  scale: 1;
+  
+  // Entry transition styling
+  @starting-style {
+    transition-duration: $entry-dur;
+    transition-timing-function: ease-in;
+    opacity: 0;
+    scale: 1.1;
+  }
+  
+  // Exit transition styling
+  &:not([open]) {
+    opacity: 0;
+    scale: 0.98;
+  }
+  
+  
+  $blur: 2px; // Should be in px, not rem (blur effect should be constant)
+  &::backdrop {
+    transition-property: overlay, display, background-color, backdrop-filter;
+    transition-behavior: allow-discrete;
+    transition-duration: $exit-dur; // Exit
+    transition-timing-function: ease-out; // Exit
+    
+    // Open state styling
+    background-color: light-dark(rgb(0 0 0 / 10%), rgb(0 0 0 / 20%));
+    backdrop-filter: blur($blur) opacity(1);
+    
+    // Entry transition styling
+    @starting-style {
+      transition-duration: $entry-dur;
+      transition-timing-function: ease-in;
+      background-color: transparent;
+      backdrop-filter: blur($blur) opacity(0);
+    }
+  }
+  // Exit transition styling
+  // Note: cannot nest the following inside `::backdrop`, since `:not()` needs to apply to the dialog not `::backdrop`
+  &:not([open])::backdrop {
+    background-color: transparent;
+    backdrop-filter: blur($blur) opacity(0);
+  }
+}
+
 @layer baklava.components {
   .bk-dialog-modal {
     @include bk.component-base(bk-dialog-modal);
+    
+    // Basic modal positioning
+    position: fixed;
+    inset: 0;
+    
+    // Entry and exit animations
+    @include dialog-entry-exit;
+    
+    
+    //
+    // Display variants
+    //
+    
+    &.bk-dialog-modal--center {
+      margin: auto;
+      width: fit-content;
+      height: fit-content;
+    }
     
     &.bk-dialog-modal--full-screen {
       // FIXME: test this on mobile for potential overflow/shifting. May need to use `dvh`/`dvw` instead?
