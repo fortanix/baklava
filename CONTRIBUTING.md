@@ -18,13 +18,12 @@ format `<username>/<date>-<summary>`, for example `mkrause/241129-upgrade-depend
 
 To create a new release:
 
-- Create a release branch named `release/vx.y.z`.
-
-- Submit a release PR:
+- Release PR:
+  - Create a release branch named `release/vx.y.z`.
   - Bump the version in `package.json.js`.
   - Run `npm run install-project` to update the `package.json` and `package-lock.json` files.
+  - Commit the changes, the commit message should be "Release vx.y.z".
   - Create a new PR targeting the `master` branch.
-  - The commit message should be of the form "Release vx.y.z".
   - The title of the release PR should be of the form "Release vx.y.z"
 
 - Once the PR is merged, create a new GitHub release:
