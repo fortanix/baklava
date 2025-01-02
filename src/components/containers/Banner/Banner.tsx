@@ -25,10 +25,10 @@ type BannerVariantIconProps = Omit<IconProps, 'icon'> & {
 const BannerVariantIcon = ({ variant, ...propsRest }: BannerVariantIconProps) => {
   const icon = ((): IconName => {
     switch (variant) {
-      case 'info': return 'info';
+      case 'info': return 'info-filled';
       case 'warning': return 'warning';
-      case 'error': return 'status-failed';
-      case 'success': return 'status-success';
+      case 'error': return 'status-failed-filled';
+      case 'success': return 'status-success-filled';
       default: return assertUnreachable(variant);
     }
   })();
