@@ -1,5 +1,5 @@
 
-import { classNames as cx, type ClassNameArgument } from '../../util/componentUtil.tsx';
+import { classNames as cx } from '../../util/componentUtil.tsx';
 
 import cl from './Scroller.module.scss';
 
@@ -11,7 +11,8 @@ type UseScrollerArgs = {
 
 type ScrollerProps = {
   tabIndex: number,
-  className: ClassNameArgument,
+  // Note: don't use `ClassNameArgument`, because that forces all consumers to apply `cx()`
+  className?: undefined | string,
 };
 
 /**
