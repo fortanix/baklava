@@ -1,5 +1,5 @@
 
-import { classNames as cx } from '../../util/componentUtil.tsx';
+import { classNames as cx } from '../../util/componentUtil.ts';
 
 import cl from './Scroller.module.scss';
 
