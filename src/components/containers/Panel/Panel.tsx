@@ -4,6 +4,7 @@
 
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
+import { useScroller } from '../../../layouts/util/Scroller.tsx';
 
 import { H4 } from '../../../typography/Heading/Heading.tsx';
 
@@ -28,13 +29,16 @@ export type PanelProps = React.PropsWithChildren<ComponentProps<'section'> & {
 export const Panel = Object.assign(
   (props: PanelProps) => {
     const { children, unstyled = false, ...propsRest } = props;
+    const scrollerProps = useScroller();
     
     return (
       <section
+        {...scrollerProps}
         {...propsRest}
         className={cx(
           'bk',
           { [cl['bk-panel']]: !unstyled },
+          scrollerProps.className,
           propsRest.className,
         )}
       >

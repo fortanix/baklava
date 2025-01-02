@@ -219,7 +219,7 @@
     font-size: bk.$font-size-s;
     
     .bk-tooltip__content {
-      overflow-y: auto;
+      --keep: ;
     }
     
     .bk-tooltip__title {

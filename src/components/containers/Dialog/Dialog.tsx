@@ -70,7 +70,7 @@ export const Dialog = (props: DialogProps) => {
   } = props;
   
   const dialogRef = React.useRef<HTMLDialogElement>(null);
-  const scroller = useScroller();
+  const scrollerProps = useScroller();
   
   if (showCloseAction && typeof onRequestClose !== 'function') {
     console.error(`Missing prop in <Dialog/>: 'onRequestClose' function`);
@@ -79,14 +79,14 @@ export const Dialog = (props: DialogProps) => {
   return (
     <dialog
       open
-      {...scroller}
+      {...scrollerProps}
       {...propsRest}
       ref={mergeRefs(dialogRef, propsRest.ref)}
       className={cx(
         'bk',
         { [cl['bk-dialog']]: !unstyled },
         { [cl['bk-dialog--flat']]: flat },
-        scroller.className,
+        scrollerProps.className,
         propsRest.className,
       )}
     >

@@ -37,6 +37,8 @@ export const Standard: Story = {
         <Select.Option optionKey="option-4" label="Option 4"/>
         <Select.Option optionKey="option-5" label="Option 5"/>
         <Select.Option optionKey="option-6" label="Option 6"/>
+        <Select.Option optionKey="option-7" label="Option 7"/>
+        <Select.Option optionKey="option-8" label="Option 8"/>
       </>
     ),
   },

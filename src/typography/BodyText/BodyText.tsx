@@ -23,7 +23,7 @@ export const BodyText = ({ unstyled, ...propsRest }: BodyTextProps) => {
       {...propsRest}
       className={cx({
         bk: true,
-        ['bk-body-text']: !unstyled,
+        'bk-body-text': !unstyled,
       }, propsRest.className)}
     />
   );

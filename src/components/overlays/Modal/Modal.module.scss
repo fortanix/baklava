@@ -85,7 +85,8 @@
     }
     .bk-modal__content {
       flex: 1; /* Make sure we cover all available space */
-      overflow: auto;
+      // stylelint-disable-next-line declaration-property-value-disallowed-list
+      overflow: auto; // FIXME
     }
 
     transition:
@@ -132,7 +133,8 @@
       }
       
       .bk-modal__content {
-        overflow: auto;
+        // stylelint-disable-next-line declaration-property-value-disallowed-list
+        overflow: auto; // FIXME
       }
     }
     

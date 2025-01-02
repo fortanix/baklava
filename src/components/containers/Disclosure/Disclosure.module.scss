@@ -8,6 +8,7 @@
 @layer baklava.components {
   @keyframes bk-disclosure-scroller {
     0% { overflow-y: hidden; }
+    // stylelint-disable-next-line declaration-property-value-disallowed-list
     100% { overflow-y: auto; }
   }
   
@@ -146,8 +147,9 @@
         max-height: calc(var(--bk-disclosure-max-height) - var(--summary-height) - var(--padding-height));
       }
       &[open] .bk-disclosure__content {
-        // Apply the `overflow-y: auto` immediately, since there is no animation
         animation: none;
+        // Apply the `overflow-y: auto` immediately, since there is no animation
+        // stylelint-disable-next-line declaration-property-value-disallowed-list
         overflow-y: auto;
       }
     }

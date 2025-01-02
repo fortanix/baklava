@@ -4,6 +4,7 @@
 
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
+import { useScroller } from '../../../layouts/util/Scroller.tsx';
 
 import { Icon } from '../../graphics/Icon/Icon.tsx';
 
@@ -30,6 +31,9 @@ export type DisclosureProps = Omit<ComponentProps<'details'>, 'title'> & {
 export const Disclosure = (props: DisclosureProps) => {
   const { unstyled = false, title, summaryProps = {}, contentProps = {}, children, ...propsRest } = props;
   
+  // Note: we need to apply `overflow-y: auto` dynamically, so do not apply scroller styling here
+  const scrollerProps = useScroller({ includeStyling: false });
+  
   /*
   Some notes on accessibility of `<details>`:
   - https://www.scottohara.me/blog/2022/09/12/details-summary.html (2022)
@@ -52,7 +56,11 @@ export const Disclosure = (props: DisclosureProps) => {
         </span>
         <Icon icon="caret-down" className={cl['bk-disclosure__collapse-icon']}/>
       </summary>
-      <div {...contentProps} className={cx(cl['bk-disclosure__content'], contentProps.className)}>
+      <div
+        {...scrollerProps}
+        {...contentProps}
+        className={cx(cl['bk-disclosure__content'], contentProps.className)}
+      >
         {children}
       </div>
     </details>
