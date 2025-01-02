@@ -261,3 +261,20 @@ export const CustomContentWithIconAfter: Story = {
     </>,
   },
 };
+
+/**
+ * Buttons come with some padding around the text. If you want to trim this, set `trimmed="true"`. This can be
+ * useful, for example when you want to control the height of the button, or make it fit a single line height.
+ */
+export const ButtonTrimmed: Story = {
+  ...Tertiary,
+  args: {
+    ...Tertiary.args,
+    trimmed: true,
+    children: <>
+      Trimmed button
+      <Icon icon="caret-down" className="icon"/>
+    </>,
+    style: { background: 'light-dark(white, black)' },
+  },
+};
