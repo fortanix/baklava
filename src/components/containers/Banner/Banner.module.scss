@@ -14,7 +14,7 @@
     --bk-banner-indent: #{bk.$spacing-9};
     
     overflow: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     
     padding-block: bk.$spacing-2;
     padding-inline: bk.$spacing-4 - bk.$radius-2;
