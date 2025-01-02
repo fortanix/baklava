@@ -4,46 +4,20 @@
 
 @use '../../../styling/defs.scss' as bk;
 
-@mixin dialog-entry-exit($entry-dur: 200ms, $exit-dur: 180ms) {
-  transition-property: overlay, display, opacity, scale;
-  transition-behavior: allow-discrete;
-  transition-duration: $exit-dur; // Exit
-  transition-timing-function: ease-out; // Exit
-  
-  // Open state styling
-  opacity: 1;
-  scale: 1;
-  
-  // Entry transition styling
-  @starting-style {
-    transition-duration: $entry-dur;
-    transition-timing-function: ease-in;
-    opacity: 0;
-    scale: 1.1;
-  }
-  
-  // Exit transition styling
-  &:not([open]) {
-    opacity: 0;
-    scale: 0.98;
-  }
-  
-  
-  $blur: 2px; // Should be in px, not rem (blur effect should be constant)
+// Note: `$blur` should be in px, not rem (blur effect should be independent of any font size scaling)
+@mixin dialog-backdrop($entry-dur: 200ms, $exit-dur: 180ms, $blur: 2px) {
   &::backdrop {
     transition-property: overlay, display, background-color, backdrop-filter;
+    transition-timing-function: linear;
     transition-behavior: allow-discrete;
-    transition-duration: $exit-dur; // Exit
-    transition-timing-function: ease-out; // Exit
     
     // Open state styling
     background-color: light-dark(rgb(0 0 0 / 10%), rgb(0 0 0 / 20%));
     backdrop-filter: blur($blur) opacity(1);
     
     // Entry transition styling
+    transition-duration: $entry-dur;
     @starting-style {
-      transition-duration: $entry-dur;
-      transition-timing-function: ease-in;
       background-color: transparent;
       backdrop-filter: blur($blur) opacity(0);
     }
@@ -51,21 +25,78 @@
   // Exit transition styling
   // Note: cannot nest the following inside `::backdrop`, since `:not()` needs to apply to the dialog not `::backdrop`
   &:not([open])::backdrop {
+    transition-duration: $exit-dur;
     background-color: transparent;
     backdrop-filter: blur($blur) opacity(0);
   }
 }
 
+@mixin dialog-fade-in($entry-dur: 200ms, $exit-dur: 180ms, $scale: 1) {
+  transition-property: overlay, display, opacity, scale;
+  transition-timing-function: ease-out;
+  transition-behavior: allow-discrete;
+  
+  // Open state styling
+  opacity: 1;
+  scale: 1;
+  
+  // Entry transition styling
+  transition-duration: $entry-dur;
+  @starting-style {
+    opacity: 0;
+    scale: $scale;
+  }
+  
+  // Exit transition styling
+  &:not([open]) {
+    transition-duration: $exit-dur;
+    transition-timing-function: ease-in;
+    opacity: 0;
+    scale: calc(1 - (($scale - 1) * 0.2)); // Multiply by 0.2 to make the scale out effect a bit more subtle
+  }
+}
+
+@mixin dialog-slide-over($entry-dur: 200ms, $exit-dur: 180ms) {
+  transition-property: overlay, display, translate;
+  transition-timing-function: ease-out;
+  transition-behavior: allow-discrete;
+  
+  // Open state styling
+  translate: 0;
+  
+  // Entry transition styling
+  transition-duration: $entry-dur;
+  @starting-style {
+    translate: 80vw 0;
+  }
+  
+  // Exit transition styling
+  &:not([open]) {
+    transition-duration: $exit-dur;
+    transition-timing-function: ease-in;
+    translate: 80vw 0;
+  }
+}
+
+
 @layer baklava.components {
   .bk-dialog-modal {
     @include bk.component-base(bk-dialog-modal);
     
+    --bk-dialog-modal-entry-dur: 200ms;
+    --bk-dialog-modal-exit-dur: 180ms;
+    --bk-dialog-modal-fade-scale: 1;
+    
     // Basic modal positioning
     position: fixed;
     inset: 0;
+    max-width: 100vw;
+    max-height: 100vh;
     
-    // Entry and exit animations
-    @include dialog-entry-exit;
+    @include dialog-backdrop(
+      $entry-dur: var(--bk-dialog-modal-entry-dur),
+      $exit-dur: var(--bk-dialog-modal-exit-dur),
+    );
     
     
     //
@@ -76,6 +107,26 @@
       margin: auto;
       width: fit-content;
       height: fit-content;
+      
+      @include dialog-fade-in(
+        $entry-dur: var(--bk-dialog-modal-entry-dur),
+        $exit-dur: var(--bk-dialog-modal-exit-dur),
+        $scale: var(--bk-dialog-modal-fade-scale),
+      );
+      
+      max-height: calc(100vh - 5vw); // The larger the viewport width, the more breathing room in height
+      &.bk-dialog-modal--small {
+        --bk-dialog-modal-fade-scale: 1.05;
+        max-width: 30vw;
+      }
+      &.bk-dialog-modal--medium {
+        --bk-dialog-modal-fade-scale: 1.04;
+        max-width: 50vw;
+      }
+      &.bk-dialog-modal--large {
+        --bk-dialog-modal-fade-scale: 1.03;
+        max-width: 60vw;
+      }
     }
     
     &.bk-dialog-modal--full-screen {
@@ -84,6 +135,13 @@
       margin: 0;
       width: auto;
       height: auto;
+      
+      --bk-dialog-modal-entry-dur: 120ms;
+      --bk-dialog-modal-exit-dur: 120ms;
+      @include dialog-fade-in(
+        $entry-dur: var(--bk-dialog-modal-entry-dur),
+        $exit-dur: var(--bk-dialog-modal-exit-dur),
+      );
     }
     
     &.bk-dialog-modal--slide-over {
@@ -93,6 +151,13 @@
       height: auto;
       
       margin-inline-start: 20vw;
+      
+      --bk-dialog-modal-entry-dur: 300ms;
+      --bk-dialog-modal-exit-dur: 250ms;
+      @include dialog-slide-over(
+        $entry-dur: var(--bk-dialog-modal-entry-dur),
+        $exit-dur: var(--bk-dialog-modal-exit-dur),
+      );
     }
   }
 }

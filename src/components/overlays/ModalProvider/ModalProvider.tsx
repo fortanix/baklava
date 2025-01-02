@@ -4,7 +4,8 @@
 
 import * as React from 'react';
 
-import { useControlledDialog, type ControlledDialogProps } from './useControlledDialog.ts';
+import { useDebounce } from '../../../util/hooks/useDebounce.ts';
+import { useControlledDialog, type ControlledDialogProps } from '../../util/Dialog/useControlledDialog.ts';
 
 import cl from './ModalProvider.module.scss';
 
@@ -21,16 +22,30 @@ export type ModalProviderProps = {
   
   /** Whether the modal should be active by default. */
   activeDefault?: undefined | boolean,
+  
+  /** How long to keep the dialog in the DOM for exit animation purposes. Default: 2 seconds. */
+  exitAnimationDelay?: undefined | number,
 };
 /**
  * Provider around a trigger (e.g. button) to display a modal overlay on trigger activation.
  */
 export const ModalProvider = (props: ModalProviderProps) => {
-  const { children, content, activeDefault = false } = props;
+  const {
+    children,
+    content,
+    activeDefault = false,
+    exitAnimationDelay = 100_000,
+  } = props;
   
-  const [active, setActive] = React.useState(activeDefault);
-  const activate = React.useCallback(() => { setActive(true); }, []);
+  const [active, setActiveInternal] = React.useState(activeDefault);
+  const [activeWithDelay, setActiveWithDelay] = useDebounce(active, exitAnimationDelay);
   
+  const setActive = React.useCallback((active: boolean) => {
+    setActiveInternal(active);
+    if (active) { setActiveWithDelay(true); } // Skip the delay when activating (should only be for deactivation)
+  }, [setActiveWithDelay]);
+  
+  const activate = React.useCallback(() => { setActive(true); }, [setActive]);
   const triggerProps = { active, activate };
   
   const dialogProps = useControlledDialog({
@@ -41,7 +56,7 @@ export const ModalProvider = (props: ModalProviderProps) => {
   
   return (
     <>
-      {active && content(dialogProps)}
+      {activeWithDelay && content(dialogProps)}
       {children(triggerProps)}
     </>
   );

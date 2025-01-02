@@ -5,6 +5,7 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
+import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { Button } from '../../actions/Button/Button.tsx';
 
@@ -24,12 +25,24 @@ export default {
   args: {
     title: 'Modal dialog',
     trigger: ({ active, activate }) => <Button variant="primary" label="Open modal" onPress={activate}/>,
+    children: <LoremIpsum paragraphs={15}/>,
   },
   render: (args) => <DialogModal {...args}/>,
 } satisfies Meta<DialogModalArgs>;
 
 
-export const DialogModalStandard: Story = {
+export const DialogModalStandard: Story = {};
+
+export const DialogModalSmall: Story = {
+  args: {
+    size: 'small',
+  },
+};
+
+export const DialogModalLarge: Story = {
+  args: {
+    size: 'large',
+  },
 };
 
 export const DialogModalFullScreen: Story = {

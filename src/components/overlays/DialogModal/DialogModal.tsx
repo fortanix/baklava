@@ -21,7 +21,7 @@ export type DialogModalProps = ComponentProps<typeof Dialog> & {
   /** How to display the modal in the viewport. Default: 'center'. */
   display?: undefined | 'center' | 'full-screen' | 'slide-over',
   
-  /** The size of the modal. Applies to modals with `display="center"`. */
+  /** The size of the modal. Note: does not apply to full screen modals. */
   size?: undefined | 'small' | 'medium' | 'large',
   
   /** The modal trigger. */
@@ -39,6 +39,7 @@ export const DialogModal = (props: DialogModalProps) => {
     trigger,
     unstyled = false,
     display = 'center',
+    size = 'medium',
     ...propsRest
   } = props;
   
@@ -56,6 +57,9 @@ export const DialogModal = (props: DialogModalProps) => {
             { [cl['bk-dialog-modal--center']]: display === 'center' },
             { [cl['bk-dialog-modal--full-screen']]: display === 'full-screen' },
             { [cl['bk-dialog-modal--slide-over']]: display === 'slide-over' },
+            { [cl['bk-dialog-modal--small']]: size === 'small' },
+            { [cl['bk-dialog-modal--medium']]: size === 'medium' },
+            { [cl['bk-dialog-modal--large']]: size === 'large' },
             dialogProps.className,
             propsRest.className,
           )}
