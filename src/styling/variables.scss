@@ -104,7 +104,8 @@ $font-size-xxl: math.div(28, 14) * 1rem !default; // ~28px
 $font-size-xxxl: math.div(42, 14) * 1rem !default; // ~42px
 
 // Line heights
-$line-height-s: normal; // Depends on the font (note: currently used in the Figma, should replace with a fixed value)
+$line-height-s: 1.4;
+$line-height-m: 1.6; // Roughly corresponds to `normal` for many fonts
 
 // Border radius
 //OLD

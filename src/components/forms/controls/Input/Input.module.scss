@@ -13,7 +13,7 @@
     border: 0 solid var(--bk-input-accent-color);
     border-bottom-width: 1px;
     
-    line-height: 1.6;
+    line-height: bk.$line-height-m;
     
     &::placeholder {
       color: color-mix(in sRGB, currentColor 60%, transparent);

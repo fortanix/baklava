@@ -25,7 +25,7 @@ export type DisclosureProps = Omit<ComponentProps<'details'>, 'title'> & {
   contentProps?: undefined | Omit<ComponentProps<'div'>, 'children'>,
 };
 /**
- * An disclosure, i.e. a collapsible container.
+ * A disclosure, i.e. a collapsible container.
  */
 export const Disclosure = (props: DisclosureProps) => {
   const { unstyled = false, title, summaryProps = {}, contentProps = {}, children, ...propsRest } = props;

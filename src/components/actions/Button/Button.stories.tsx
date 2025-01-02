@@ -10,7 +10,7 @@ import * as React from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { Icon } from '../../graphics/Icon/Icon.tsx';
-import { Alert } from '../../containers/Alert/Alert.tsx';
+import { Banner } from '../../containers/Banner/Banner.tsx';
 
 import { Button } from './Button.tsx';
 
@@ -25,7 +25,6 @@ export default {
     design: { type: 'figma', url: 'https://www.figma.com/design/ymWCnsGfIsC2zCz17Ur11Z/Design-System-UX?node-id=4599-156236&m=dev' },
   },
   tags: ['autodocs'],
-  argTypes: {},
   args: {
     unstyled: false,
     label: 'Button',
@@ -40,10 +39,12 @@ export default {
     Story => (
       <ErrorBoundary
         FallbackComponent={({ error, resetErrorBoundary }) =>
-          <Alert kind="error" style={{ width: '80cqi' }}>
-            <p>Error: {error?.message}</p>
-            <p><Button variant="tertiary" label="Reset" onClick={resetErrorBoundary}/></p>
-          </Alert>
+          <Banner variant="error" style={{ width: '60cqi' }}
+            title="Error"
+            actions={<Banner.ActionButton label="Reset" onPress={resetErrorBoundary}/>}
+          >
+            {error?.message}
+          </Banner>
         }
       >
         <Story/>
@@ -258,5 +259,22 @@ export const CustomContentWithIconAfter: Story = {
       Button with icon
       <Icon icon="caret-down" className="icon"/>
     </>,
+  },
+};
+
+/**
+ * Buttons come with some padding around the text. If you want to trim this, set `trimmed="true"`. This can be
+ * useful, for example when you want to control the height of the button, or make it fit a single line height.
+ */
+export const ButtonTrimmed: Story = {
+  ...Tertiary,
+  args: {
+    ...Tertiary.args,
+    trimmed: true,
+    children: <>
+      Trimmed button
+      <Icon icon="caret-down" className="icon"/>
+    </>,
+    style: { background: 'light-dark(white, black)' },
   },
 };

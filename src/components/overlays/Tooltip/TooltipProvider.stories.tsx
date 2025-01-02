@@ -10,7 +10,6 @@ import { Draggable } from '../../../util/drag.ts';
 import { TooltipProvider } from './TooltipProvider.tsx';
 import { TooltipIcon, TooltipItem, TooltipTitle } from './Tooltip.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
-import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
 
 

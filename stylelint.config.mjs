@@ -56,6 +56,9 @@ export default {
     // Properties
     //'declaration-no-important': true, // No !important
     
+    // Expressions
+    //...
+    
     // CSS extensions (e.g. CSS modules, or future CSS)
     //'property-no-unknown': [true, { ignoreProperties: [] }],
     //'scss/at-rule-no-unknown': [true, { ignoreAtRules: [] }],

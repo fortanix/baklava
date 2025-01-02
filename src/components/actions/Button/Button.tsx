@@ -20,6 +20,9 @@ export type ButtonProps = React.PropsWithChildren<Omit<ComponentProps<'button'>,
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
+  /** Whether to trim this component (strip any spacing around the element). */
+  trimmed?: undefined | boolean,
+  
   /**
    * The label of the button. Additional UI elements may be added, e.g. a loading indicator. If full control over
    * the button content is desired, use `children` instead, this overrides the `label`.
@@ -48,6 +51,7 @@ export const Button = (props: ButtonProps) => {
   const {
     children,
     unstyled = false,
+    trimmed = false,
     label,
     nonactive = false,
     variant = 'tertiary',
@@ -112,14 +116,19 @@ export const Button = (props: ButtonProps) => {
     buttonType = 'submit';
   }
   
+  // If both children and label are specified, use the `label` as the accessible name by default
+  const accessibleName = typeof children !== 'undefined' && label ? label : undefined;
+  
   return (
     <button
+      aria-label={accessibleName}
       {...propsRest}
       type={buttonType} // Not overridable
       disabled={!isInteractive}
       className={cx({
         bk: true,
         [cl['bk-button']]: !unstyled,
+        [cl['bk-button--trimmed']]: trimmed,
         [cl['bk-button--primary']]: variant === 'primary',
         [cl['bk-button--secondary']]: variant === 'secondary',
         [cl['bk-button--nonactive']]: isNonactive,

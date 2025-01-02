@@ -12,11 +12,13 @@ import cl from './LayoutDecorator.module.scss';
  */
 export type LayoutDecoratorProps = ComponentProps<'div'> & {
   size?: undefined | 'small' | 'medium' | 'large',
+  resize?: undefined | 'none' | 'inline' | 'block' | 'both',
 };
 export const LayoutDecorator = (props: LayoutDecoratorProps) => {
   const {
     children,
     size = 'medium',
+    resize = 'none',
     ...propsRest
   } = props;
   
@@ -27,8 +29,10 @@ export const LayoutDecorator = (props: LayoutDecoratorProps) => {
         { [cl['util-layout-decorator']]: true },
         { [cl['util-layout-decorator--small']]: size === 'small' },
         { [cl['util-layout-decorator--large']]: size === 'large' },
+        { [cl['util-layout-decorator--resizable']]: resize !== 'none' },
         propsRest.className,
       )}
+      style={{ resize, ...(propsRest.style ?? {}) }}
     >
       {children}
     </div>

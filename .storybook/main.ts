@@ -31,6 +31,7 @@ const config: StorybookConfig = {
   typescript: {
     reactDocgen: 'react-docgen-typescript',
     reactDocgenTypescriptOptions: {
+      tsconfigPath: './tsconfig.app.json', // https://github.com/storybookjs/storybook/issues/30015
       shouldExtractLiteralValuesFromEnum: true,
       shouldRemoveUndefinedFromOptional: true, // Prevent issues with props of type `undefined | T`
     },

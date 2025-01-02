@@ -73,7 +73,7 @@ export const Option = (props: OptionProps) => {
   );
 };
 
-export type SelectProps = ComponentProps<typeof Button> & {
+export type SelectProps = Omit<ComponentProps<typeof Button>, 'children'> & {
   children: React.ReactElement<typeof Option> | Array<React.ReactElement<typeof Option>>,
   
   /** Whether this component should be unstyled. */
