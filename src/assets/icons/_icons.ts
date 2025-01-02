@@ -66,7 +66,7 @@ export const icons = {
   'services': {},
   'settings': {},
   'solutions': {},
-  'status-cancel': {},
+  'status-canceled': {},
   'status-failed-filled': {},
   'status-failed': {},
   'status-success-filled': {},
@@ -75,6 +75,7 @@ export const icons = {
   'user-authentication': {},
   'user-profile': {},
   'user': {},
+  'warning-filled': {},
   'warning': {},
   'workflow': {},
 } as const satisfies Record<string, IconDef>;
