@@ -16,7 +16,7 @@
   }
   
   @media (prefers-reduced-motion: no-preference) {
-    transition: outline 80ms ease-in-out;
+    //transition: outline 80ms ease-in-out; // FIXME: this breaks any `transition` set in a lower layer
   }
 }
 
@@ -32,7 +32,7 @@
     inset $w $w var(--bk-focus-color-anim),
     inset $w calc(-1 * $w) var(--bk-focus-color-anim),
     inset calc(-1 * $w) $w var(--bk-focus-color-anim),
-    inset calc(-1 * $w) calc(-1 * $w) var(--bk-focus-color-anim);
+    inset calc(-1 * $w) calc(-1 * $w) var(--bk-focus-color-anim) if($override-layer, !important, null);
   
   // Add `.pseudo-focus-visible` for visual testing purposes
   &:focus-visible, &.pseudo-focus-visible {
@@ -40,7 +40,7 @@
   }
   
   @media (prefers-reduced-motion: no-preference) {
-    transition: box-shadow 80ms ease-in-out;
+    //transition: box-shadow 80ms ease-in-out; // FIXME: this breaks any `transition` set in a lower layer
   }
 }
 
@@ -59,16 +59,17 @@
 
 @mixin styles {
   :root {
-    --bk-focus-outline-width: 2px;
-    //--bk-focus-outline-color: ... // See `theming.scss`
+    // See `theming.scss`
+    //--bk-focus-outline-width
+    //--bk-focus-outline-color
   }
   
   $elements-with-inset: div, section, dialog;
   :is(#{$elements-with-inset}) {
-    @include focus-inset($override-layer: '');
+    @include focus-inset($override-layer: false);
   }
   :not(#{$elements-with-inset}) {
-    @include focus-outset($override-layer: '');
+    @include focus-outset($override-layer: false);
   }
   
   *:has(:target) {
