@@ -50,6 +50,8 @@
       
       .bk-dialog__header__actions {
         margin-inline-start: auto;
+        
+        .bk-dialog__header-action-close { --keep: ; }
       }
     }
     
@@ -76,6 +78,10 @@
       flex-direction: row;
       align-items: center;
       gap: bk.$spacing-4;
+      
+      .bk-dialog__action { --keep: ; }
+      .bk-dialog__action--icon { --keep: ; }
+      .bk-dialog__action--button { --keep: ; }
     }
     
     // State: focus

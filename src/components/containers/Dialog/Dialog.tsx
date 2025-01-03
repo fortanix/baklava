@@ -7,7 +7,7 @@ import { mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import { useScroller } from '../../../layouts/util/Scroller.tsx';
 
-import { type IconName, type IconProps, Icon } from '../../graphics/Icon/Icon.tsx';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { H5 } from '../../../typography/Heading/Heading.tsx';
 import { TooltipProvider } from '../../overlays/Tooltip/TooltipProvider.tsx';
@@ -129,7 +129,7 @@ export const Dialog = Object.assign(
                   autoFocus
                   label="Close dialog"
                   tooltip={null}
-                  className={cx(cl['bk-dialog__action'], cl['bk-dialog__action-close'])}
+                  className={cx(cl['bk-dialog__header-action-close'])}
                   onPress={onRequestClose}
                 >
                   <Icon icon="cross"/>
@@ -151,6 +151,7 @@ export const Dialog = Object.assign(
     );
   },
   {
+    ActionButton,
     CancelAction,
   },
 );
