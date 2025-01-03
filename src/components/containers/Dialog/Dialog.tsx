@@ -129,7 +129,7 @@ export const Dialog = Object.assign(
                   autoFocus
                   label="Close dialog"
                   tooltip={null}
-                  className={cx(cl['bk-dialog__action'], cl['bk-dialog__action-close'])}
+                  className={cx(cl['bk-dialog__header-action-close'])}
                   onPress={onRequestClose}
                 >
                   <Icon icon="cross"/>
