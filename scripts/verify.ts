@@ -94,6 +94,7 @@ export const runVerifySource = async (args: ScriptArgs) => {
     ...await readSourceFiles(pathUtil.join(rootPath, 'src')),
   ];
   
+  let foundMissing = false;
   for (const filePath of filePaths) {
     const shouldIgnore = [
       filePath.startsWith(pathUtil.join(rootPath, 'src/styling/lib')),
@@ -107,9 +108,15 @@ export const runVerifySource = async (args: ScriptArgs) => {
     const hasLicenseHeader = firstChunk.includes('Copyright (c) Fortanix');
     
     if (!hasLicenseHeader) {
+      foundMissing = true;
       logger.error(`Missing license header in ${filePath}`);
     }
   }
+  
+  if (foundMissing) {
+    throw new Error(`verify:source - Found issues in source files`);
+  }
+  logger.log('verify:source - No issues found');
 };
 
 export const runVerifyBuild = async (args: ScriptArgs) => {
