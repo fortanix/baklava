@@ -1,0 +1,16 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@layer baklava.overrides {
+  .bk-util-scroller {
+    // stylelint-disable-next-line declaration-property-value-disallowed-list
+    &.bk-util-scroller--vertical { overflow-y: auto; }
+    
+    // stylelint-disable-next-line declaration-property-value-disallowed-list
+    &.bk-util-scroller--horizontal { overflow-x: auto; }
+    
+    // stylelint-disable-next-line declaration-property-value-disallowed-list
+    &.bk-util-scroller--both { overflow: auto; }
+  }
+}

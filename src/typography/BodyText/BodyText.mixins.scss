@@ -153,6 +153,8 @@
     > code {
       padding: 10px;
       display: block;
+      // Note: we don't control the code here, so can't use `useScroller()`. Consumer needs to add the tabindex.
+      // stylelint-disable-next-line declaration-property-value-disallowed-list
       overflow-x: auto;
     }
   }

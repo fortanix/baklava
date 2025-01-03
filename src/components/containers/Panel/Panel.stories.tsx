@@ -5,6 +5,7 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
+import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { Banner } from '../Banner/Banner.tsx';
 
@@ -24,7 +25,12 @@ export default {
   argTypes: {},
   args: {
     unstyled: false,
-    children: <Panel.Heading>Panel</Panel.Heading>,
+    children: (
+      <>
+        <Panel.Heading>Panel</Panel.Heading>
+        <LoremIpsum paragraphs={3}/>
+      </>
+    ),
   },
   render: (args) => <Panel {...args}/>,
 } satisfies Meta<PanelArgs>;
@@ -43,4 +49,10 @@ export const Stacked: Story = {
       <Panel {...args}><Panel.Heading>Panel 2</Panel.Heading></Panel>
     </div>
   ),
+};
+
+export const PanelWithScroll: Story = {
+  args: {
+    style: { maxHeight: '8lh' },
+  },
 };

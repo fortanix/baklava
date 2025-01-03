@@ -5,28 +5,59 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
+import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
+import { loremIpsum, LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
-import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
+
 import { Dialog } from './Dialog.tsx';
 
 
-type ButtonArgs = React.ComponentProps<typeof Dialog>;
-type Story = StoryObj<ButtonArgs>;
+type DialogArgs = React.ComponentProps<typeof Dialog>;
+type Story = StoryObj<DialogArgs>;
 
 export default {
+  tags: ['autodocs'],
   component: Dialog,
   parameters: {
     layout: 'padded',
   },
-  tags: ['autodocs'],
-  argTypes: {
-  },
-} satisfies Meta<ButtonArgs>;
-
-
-export const Standard: Story = {
+  decorators: [
+    Story => <LayoutDecorator size="large" style={{ maxHeight: '20lh' }}><Story/></LayoutDecorator>,
+  ],
   args: {
-    children: <>Dialog content</>,
+    title: 'Dialog title',
+    children: <LoremIpsum paragraphs={3}/>,
+    actions: (
+      <Button variant="primary" label="Submit"/>
+    ),
+    onRequestClose: () => {},
+  },
+} satisfies Meta<DialogArgs>;
+
+
+export const DialogStandard: Story = {};
+
+export const DialogWithoutClose: Story = {
+  args: {
+    showCloseIcon: false,
+  },
+};
+
+export const DialogWithFocus: Story = {
+  args: {
+    className: 'pseudo-focus-visible',
+  },
+};
+
+export const DialogWithTitleOverflow: Story = {
+  args: {
+    title: loremIpsum(),
+  },
+};
+
+export const DialogFlat: Story = {
+  args: {
+    flat: true,
   },
 };

@@ -1,7 +1,9 @@
 
 import { dedent } from 'ts-dedent';
 import { parseArgs } from 'node:util';
+import * as pathUtil from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { type PathLike, createReadStream } from 'node:fs';
 import * as fs from 'node:fs/promises';
 import { exec } from 'node:child_process';
 import { AsyncLocalStorage } from 'node:async_hooks';
@@ -33,15 +35,44 @@ type ScriptArgs = {
 // Common
 //
 
-const getCurrentGitBranch = () => new Promise<string>((resolve, reject) => {
-  return exec('git rev-parse --abbrev-ref HEAD', (err, stdout, stderr) => {
-    if (err) {
-      reject(`Failed to determine current git branch: ${err}`);
-    } else if (typeof stdout === 'string') {
-      resolve(stdout.trim());
+// Return a relative path to the given absolute path, relative to the current CWD
+const rel = (absolutePath: string): string => {
+  return pathUtil.relative(process.cwd(), absolutePath);
+};
+
+const readFirstNBytes = async (path: PathLike, n: number): Promise<Buffer> => {
+  const chunks = [];
+  for await (let chunk of createReadStream(path, { start: 0, end: n-1 })) {
+    chunks.push(chunk);
+  }
+  return Buffer.concat(chunks);
+};
+
+const readSourceFiles = async (rootPath: string) => {
+  const paths = await fs.readdir(rootPath, { recursive: true });
+  
+  const files: Array<string> = [];
+  for await (const pathRel of paths) {
+    const path = pathUtil.resolve(pathUtil.join(rootPath, pathRel));
+    const stat = await fs.lstat(path);
+    if (!stat.isFile()) { continue; }
+    
+    const fileName = pathUtil.basename(path);
+    const fileExt = pathUtil.extname(fileName);
+    const fileExtFull = fileExt === '' ? '' : '.' + fileName.split('.').slice(1).join('.');
+    const isSourceFile = [
+      ['.js', '.jsx', '.ts', '.tsx', '.css', '.scss'].includes(fileExt),
+      !['.d.ts'].includes(fileExtFull),
+      !path.includes('node_modules'),
+    ].every(Boolean);
+    
+    if (isSourceFile) {
+      files.push(pathUtil.resolve(path));
     }
-  });
-});
+  }
+  
+  return files;
+};
 
 const readDistCss = async () => {
   const path = fileURLToPath(new URL('../dist/lib.css', import.meta.url));
@@ -52,6 +83,41 @@ const readDistCss = async () => {
 //
 // Commands
 //
+
+export const runVerifySource = async (args: ScriptArgs) => {
+  const { logger } = getServices();
+  
+  const rootPath = fileURLToPath(new URL('..', import.meta.url));
+  
+  const filePaths = [
+    pathUtil.resolve('./plopfile.ts'),
+    ...await readSourceFiles(pathUtil.join(rootPath, 'src')),
+  ];
+  
+  let foundMissing = false;
+  for (const filePath of filePaths) {
+    const shouldIgnore = [
+      filePath.startsWith(pathUtil.join(rootPath, 'src/styling/lib')),
+      filePath.startsWith(pathUtil.join(rootPath, 'src/styling/generated')),
+      filePath === pathUtil.join(rootPath, 'src/assets/icons/_icons.ts'),
+    ].some(Boolean);
+    
+    if (shouldIgnore) { continue; }
+    
+    const firstChunk = (await readFirstNBytes(filePath, 100)).toString();
+    const hasLicenseHeader = firstChunk.includes('Copyright (c) Fortanix');
+    
+    if (!hasLicenseHeader) {
+      foundMissing = true;
+      logger.error(`Missing license header in ${filePath}`);
+    }
+  }
+  
+  if (foundMissing) {
+    throw new Error(`verify:source - Found issues in source files`);
+  }
+  logger.log('verify:source - No issues found');
+};
 
 export const runVerifyBuild = async (args: ScriptArgs) => {
   const { logger } = getServices();
@@ -79,6 +145,7 @@ const printUsage = () => {
     Usage: verify.ts <cmd> <...args>
     
     Commands:
+      - verify:source
       - verify:build
   `);
 };
@@ -111,6 +178,7 @@ export const run = async (argsRaw: Array<string>): Promise<void> => {
     
     const argsForCommand: ScriptArgs = { ...args, positionals: args.positionals.slice(1) };
     switch (command) {
+      case 'verify:source': await runVerifySource(argsForCommand); break;
       case 'verify:build': await runVerifyBuild(argsForCommand); break;
       default:
         logger.error(`Unknown command '${command}'\n`);

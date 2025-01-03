@@ -13,8 +13,7 @@
     --bk-banner-border-radius: #{bk.$radius-2};
     --bk-banner-indent: #{bk.$spacing-9};
     
-    overflow: hidden;
-    overflow-y: auto;
+    overflow: hidden; // Banners shouldn't scroll (max height on a banner doesn't really make sense)
     
     padding-block: bk.$spacing-2;
     padding-inline: bk.$spacing-4 - bk.$radius-2;

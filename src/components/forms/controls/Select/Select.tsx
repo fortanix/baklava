@@ -2,18 +2,18 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import cl from './Select.module.scss';
-import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import * as React from 'react';
-
-import { useListNavigation, useInteractions } from '@floating-ui/react';
+import { mergeRefs } from '../../../../util/reactUtil.ts';
+import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
+import { useScroller } from '../../../../layouts/util/Scroller.tsx';
 import { usePopover } from '../../../util/Popover/Popover.tsx';
+import { useListNavigation, useInteractions } from '@floating-ui/react';
 
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 import { Input } from '../Input/Input.tsx';
 
-import { mergeRefs } from '../../../../util/reactUtil.ts';
+import cl from './Select.module.scss';
 
 
 export { cl as SelectClassNames };
@@ -49,6 +49,7 @@ export type OptionProps = React.PropsWithChildren<ComponentProps<typeof Button> 
  */
 export const Option = (props: OptionProps) => {
   const { optionKey, label, ...propsRest } = props;
+  
   const { selectedOption, selectOption, getItemProps } = useSelectContext();
   
   const option: OptionDef = { optionKey, label };
@@ -89,6 +90,7 @@ export const Select = Object.assign(
   (props: SelectProps) => {
     const { children, unstyled = false, searchable, ...propsRest } = props;
     
+    const scrollerProps = useScroller();
     const selectedRef = React.useRef<React.ComponentRef<'button'>>(null);
     const [selected, setSelected] = React.useState<null | OptionDef>(null);
     
@@ -151,12 +153,12 @@ export const Select = Object.assign(
         <ul
           ref={refs.setFloating}
           data-placement={placement}
+          {...scrollerProps}
           {...getFloatingProps({
             popover: 'manual',
             style: floatingStyles,
-            className: cl['bk-select__dropdown'],
+            className: cx(cl['bk-select__dropdown'], scrollerProps.className),
           })}
-          tabIndex={undefined} // Overwrite `tabIndex={-1}` so that we don't allow programmatic focus
         >
           {children}
         </ul>

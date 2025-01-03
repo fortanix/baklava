@@ -22,7 +22,6 @@
   .bk-select__dropdown {
     min-width: $bk-select-min-width;
     max-height: 18rem;
-    overflow-y: auto;
     
     background: bk.$theme-dropdown-menu-menu-background-default;
     border: 1px solid bk.$theme-dropdown-menu-menu-border-default;

@@ -2,129 +2,156 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { classNames as cx, type ClassNameArgument } from '../../../util/componentUtil.ts';
 import * as React from 'react';
+import { mergeRefs } from '../../../util/reactUtil.ts';
+import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
+import { useScroller } from '../../../layouts/util/Scroller.tsx';
 
+import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
+import { H5 } from '../../../typography/Heading/Heading.tsx';
+import { TooltipProvider } from '../../overlays/Tooltip/TooltipProvider.tsx';
 
 import cl from './Dialog.module.scss';
 
 
 export { cl as DialogClassNames };
 
-/*
-const useClickOutside = <E extends HTMLElement>(ref: React.RefObject<E>, callback: () => void) => {
-  const handleEvent = React.useCallback((event: React.PointerEvent<E>) => {
-    if (ref && ref.current) {
-      if (ref.current.contains(event.target as Node)) {
-        React.setState({ hasClickedOutside: false });
-      } else {
-        React.setState({ hasClickedOutside: true });
-      }
-    }
-  }, [ref]);
+type ActionIconProps = ComponentProps<typeof Button> & {
+  /** There must be `label` on an icon-only button, for accessibility. */
+  label: Required<ComponentProps<typeof Button>>['label'],
   
-  React.useEffect(() => {
-    if (!window.PointerEvent) { return; }
-    
-    document.addEventListener('pointerdown', handleEvent);
-    
-    return () => {
-      if (window.PointerEvent) {
-        document.removeEventListener('pointerdown', handleEvent);
-      } else {
-        document.removeEventListener('mousedown', handleEvent);
-        document.removeEventListener('touchstart', handleEvent);
-      }
-    }
-  }, []);
-
-  return [ref, hasClickedOutside];
+  /** Optional custom tooltip text, if different from `label`. */
+  tooltip?: undefined | ComponentProps<typeof TooltipProvider>['tooltip'],
 };
-*/
-
-
-export type DialogProps = React.PropsWithChildren<{
-  unstyled?: boolean,
-  active: boolean,
-  className?: ClassNameArgument,
-  onClose: () => void,
-}>;
-
 /**
- * Dialog component.
+ * An action that is rendered as just an icon.
  */
-export const Dialog = ({ children, unstyled, className, active, onClose }: DialogProps) => {
-  const dialogRef = React.useRef<HTMLDialogElement>(null);
-  
-  /*
-  // Sync the `active` flag with the DOM dialog
-  React.useEffect(() => {
-    const dialog = dialogRef.current;
-    if (dialog === null) { return; }
-    
-    if (active && !dialog.open) {
-      dialog.showDialog();
-    } else if (!active && dialog.open) {
-      dialog.close();
-    }
-  }, [active]);
-  */
-  
-  // Sync the dialog close event with the `active` flag
-  const handleCloseEvent = React.useCallback((event: Event): void => {
-    const dialog = dialogRef.current;
-    if (dialog === null) { return; }
-    
-    if (active && event.target === dialog) {
-      onClose();
-    }
-  }, [active, onClose]);
-  React.useEffect(() => {
-    const dialog = dialogRef.current;
-    if (dialog === null) { return; }
-    
-    dialog.addEventListener('close', handleCloseEvent);
-    return () => { dialog.removeEventListener('close', handleCloseEvent); };
-  }, [handleCloseEvent]);
-  
-  const close = React.useCallback(() => {
-    onClose();
-  }, [onClose]);
-  
-  const handleDialogClick = React.useCallback((event: React.MouseEvent) => {
-    const dialog = dialogRef.current;
-    if (dialog !== null && event.target === dialog) {
-      // Note: clicking the backdrop just results in an event where the target is the `<dialog>` element. In order to
-      // distinguish between the backdrop and the dialog content, we assume that the `<dialog>` is fully covered by
-      // another element. In our case, `bk-dialog__content` must cover the whole `<dialog>` otherwise this will not work.
-      close();
-    }
-  }, [close]);
-  
+const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
   return (
-    <dialog
-      open
-      ref={dialogRef}
-      className={cx({
-        bk: true,
-        [cl['bk-dialog']]: !unstyled,
-      }, className)}
-      onClick={handleDialogClick}
-    >
-      <header className={cl['bk-dialog__header']}>
-        <h1>Title</h1>
-        {/* <button autoFocus className="action" onClick={close}>✕</button> */}
-      </header>
-      
-      <section className={cx(cl['bk-dialog__content'], 'body-text')}>
-        {children}
-      </section>
-      
-      <footer className={cx(cl['bk-dialog__actions'])}>
-        <Button autoFocus variant="secondary" label="Cancel"/>
-        <Button variant="primary" label="Submit"/>
-      </footer>
-    </dialog>
+    <TooltipProvider compact tooltip={typeof tooltip !== 'undefined' ? tooltip : buttonProps.label}>
+      <Button unstyled
+        {...buttonProps}
+        className={cx(cl['bk-dialog__action'], cl['bk-dialog__action--icon'], buttonProps.className)}
+      />
+    </TooltipProvider>
   );
 };
+
+type ActionButtonProps = ComponentProps<typeof Button> & {
+  /** Optional tooltip text. */
+  tooltip?: undefined | ComponentProps<typeof TooltipProvider>['tooltip'],
+};
+/**
+ * An action that is rendered as just an icon.
+ */
+const ActionButton = ({ tooltip = null, ...buttonProps }: ActionButtonProps) => {
+  return (
+    <TooltipProvider compact tooltip={typeof tooltip !== 'undefined' ? tooltip : null}>
+      <Button unstyled
+        {...buttonProps}
+        className={cx(cl['bk-dialog__action'], cl['bk-dialog__action--button'], buttonProps.className)}
+      />
+    </TooltipProvider>
+  );
+};
+
+const CancelAction = (props: ComponentProps<typeof Button>) =>
+  <Button variant="secondary" label="Cancel" {...props}/>;
+
+export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
+  /** Whether the component should include the default styling. Default: false. */
+  unstyled?: undefined | boolean,
+  
+  /** Whether the dialog should be displayed as a flat panel (no shadows/borders/rounding). Default: false. */
+  flat?: undefined | boolean,
+  
+  /** The title of the dialog, to be displayed in the dialog header. */
+  title: React.ReactNode,
+  
+  /** If specified, a close icon is displayed in the header. Default: true. */
+  showCloseIcon?: undefined | boolean,
+  
+  /** If specified, a close action is displayed in the footer. Default: true. */
+  showCancelAction?: undefined | boolean,
+  
+  /** Callback that is called when the user requests the dialog to close. */
+  onRequestClose?: undefined | (() => void), // Note: cannot name this `onClose`, dialog already has an `onClose` prop
+  
+  /** Any additional actions to be shown in the dialog. */
+  actions?: undefined | React.ReactNode,
+};
+/**
+ * The Dialog component displays an interaction with the user, for example a confirmation, or a form to be submitted.
+ */
+export const Dialog = Object.assign(
+  (props: DialogProps) => {
+    const {
+      children,
+      unstyled = false,
+      flat = false,
+      title,
+      showCloseIcon = true,
+      showCancelAction = true,
+      onRequestClose,
+      actions,
+      ...propsRest
+    } = props;
+    
+    const dialogRef = React.useRef<HTMLDialogElement>(null);
+    const scrollerProps = useScroller();
+    
+    if ((showCloseIcon || showCancelAction) && typeof onRequestClose !== 'function') {
+      console.error(`Missing prop in <Dialog/>: 'onRequestClose' function`);
+    }
+    
+    return (
+      <dialog
+        open
+        {...scrollerProps}
+        {...propsRest}
+        ref={mergeRefs(dialogRef, propsRest.ref)}
+        className={cx(
+          'bk',
+          { [cl['bk-dialog']]: !unstyled },
+          { [cl['bk-dialog--flat']]: flat },
+          scrollerProps.className,
+          propsRest.className,
+        )}
+      >
+        <form>
+          <header className={cx(cl['bk-dialog__header'])}>
+            <H5 className={cx(cl['bk-dialog__header__title'])}>{title}</H5>
+            
+            <div className={cx(cl['bk-dialog__header__actions'])}>
+              {showCloseIcon &&
+                <ActionIcon
+                  autoFocus
+                  label="Close dialog"
+                  tooltip={null}
+                  className={cx(cl['bk-dialog__header-action-close'])}
+                  onPress={onRequestClose}
+                >
+                  <Icon icon="cross"/>
+                </ActionIcon>
+              }
+            </div>
+          </header>
+          
+          <section className={cx(cl['bk-dialog__content'], 'bk-body-text')}>
+            {children}
+          </section>
+          
+          <footer className={cx(cl['bk-dialog__actions'])}>
+            {showCancelAction && <CancelAction/>}
+            {actions}
+          </footer>
+        </form>
+      </dialog>
+    );
+  },
+  {
+    ActionButton,
+    CancelAction,
+  },
+);

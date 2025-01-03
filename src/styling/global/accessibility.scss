@@ -2,31 +2,45 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@mixin focus-outline-close() {
-  /* Override accessibility layer */
-  outline: 2px solid var(--bk-focus-outline-color) !important;
-  outline-offset: 0 !important;
-}
-
-// Mixin to configure a focus outline which is inside the element rather than outside
-@mixin focus-inset() {
-  --bk-focus-inset-outline-color: transparent; // Start transparent for animation purposes
+// Configure an element with a focus outline outset from the element.
+@mixin focus-outset($override-layer: true) {
+  --bk-focus-color-anim: transparent; // Start transparent for animation purposes
   
-  $w: var(--bk-focus-outline-width, 2px);
-  box-shadow: // Note: add one for each corner so that we get proper inner border radii
-    inset $w $w var(--bk-focus-inset-outline-color),
-    inset $w calc(-1 * $w) var(--bk-focus-inset-outline-color),
-    inset calc(-1 * $w) $w var(--bk-focus-inset-outline-color),
-    inset calc(-1 * $w) calc(-1 * $w) var(--bk-focus-inset-outline-color);
+  box-shadow: none if($override-layer, !important, null); // Remove focus-inset, if any
   
-  // Add `pseudo-focus-visible` for visual testing purposes
-  &:global(:is(:focus-visible, .pseudo-focus-visible)) {
-    outline: none !important; /* Override accessibility layer */
-    --bk-focus-inset-outline-color: var(--bk-focus-outline-color);
+  outline: var(--bk-focus-outline-width) solid var(--bk-focus-color-anim) if($override-layer, !important, null);
+  
+  // Add `.pseudo-focus-visible` for visual testing purposes
+  &:focus-visible, &.pseudo-focus-visible {
+    --bk-focus-color-anim: var(--bk-focus-outline-color);
   }
   
   @media (prefers-reduced-motion: no-preference) {
-    transition: box-shadow 120ms ease-in-out;
+    //transition: outline 80ms ease-in-out; // FIXME: this breaks any `transition` set in a lower layer
+  }
+}
+
+// Configure an element with a focus outline inset into the element. This can be useful for elements
+// that have overflow hidden and thus can't have an exterior outline.
+@mixin focus-inset($override-layer: true) {
+  --bk-focus-color-anim: transparent; // Start transparent for animation purposes
+  
+  outline: none if($override-layer, !important, null); // Remove focus-outset, if any
+  
+  $w: var(--bk-focus-outline-width);
+  box-shadow: // Note: add one for each corner so that we get proper inner border radii
+    inset $w $w var(--bk-focus-color-anim),
+    inset $w calc(-1 * $w) var(--bk-focus-color-anim),
+    inset calc(-1 * $w) $w var(--bk-focus-color-anim),
+    inset calc(-1 * $w) calc(-1 * $w) var(--bk-focus-color-anim) if($override-layer, !important, null);
+  
+  // Add `.pseudo-focus-visible` for visual testing purposes
+  &:focus-visible, &.pseudo-focus-visible {
+    --bk-focus-color-anim: var(--bk-focus-outline-color);
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    //transition: box-shadow 80ms ease-in-out; // FIXME: this breaks any `transition` set in a lower layer
   }
 }
 
@@ -45,23 +59,25 @@
 
 @mixin styles {
   :root {
-    --bk-focus-outline-width: 2px;
-    //--bk-focus-outline-color: ... // See `theming.scss`
+    // See `theming.scss`
+    //--bk-focus-outline-width
+    //--bk-focus-outline-color
   }
   
-  *:focus-visible {
-    /* outline: calc(var(--bk-sizing-1) / 2) solid color-contrast(var(--bk-page-color-background) vs white, black); */
-    outline: 2px solid var(--bk-focus-outline-color);
-    outline-offset: 3px;
-    /* box-shadow: 0 0 0 3px var(--bk-focus-outline-color); */
+  $elements-with-inset: div, section, dialog;
+  :is(#{$elements-with-inset}) {
+    @include focus-inset($override-layer: false);
+  }
+  :not(#{$elements-with-inset}) {
+    @include focus-outset($override-layer: false);
   }
   
   *:has(:target) {
-    /* Add enough scroll padding so anchors don't get hidden */
+    // Add enough scroll padding so anchors don't get hidden
     scroll-padding-top: calc(var(--bk-layout-header-height) + var(--bk-sizing-2));
   }
   
-  /* https://www.smashingmagazine.com/2021/10/respecting-users-motion-preferences */
+  // https://www.smashingmagazine.com/2021/10/respecting-users-motion-preferences
   @media screen and (prefers-reduced-motion: reduce), (update: slow) {
     * {
       animation-duration: 0.001ms !important;
