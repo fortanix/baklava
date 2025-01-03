@@ -16,7 +16,7 @@
     backdrop-filter: blur($blur) opacity(1);
     
     // Entry transition styling
-    transition-duration: $entry-dur;
+    @media (prefers-reduced-motion: no-preference) { transition-duration: $entry-dur; }
     @starting-style {
       background-color: transparent;
       backdrop-filter: blur($blur) opacity(0);
@@ -25,7 +25,7 @@
   // Exit transition styling
   // Note: cannot nest the following inside `::backdrop`, since `:not()` needs to apply to the dialog not `::backdrop`
   &:not([open])::backdrop {
-    transition-duration: $exit-dur;
+    @media (prefers-reduced-motion: no-preference) { transition-duration: $exit-dur; }
     background-color: transparent;
     backdrop-filter: blur($blur) opacity(0);
   }
@@ -41,7 +41,7 @@
   scale: 1;
   
   // Entry transition styling
-  transition-duration: $entry-dur;
+  @media (prefers-reduced-motion: no-preference) { transition-duration: $entry-dur; }
   @starting-style {
     opacity: 0;
     scale: $scale;
@@ -49,7 +49,7 @@
   
   // Exit transition styling
   &:not([open]) {
-    transition-duration: $exit-dur;
+    @media (prefers-reduced-motion: no-preference) { transition-duration: $exit-dur; }
     transition-timing-function: ease-in;
     opacity: 0;
     scale: calc(1 - (($scale - 1) * 0.2)); // Multiply by 0.2 to make the scale out effect a bit more subtle
@@ -67,14 +67,14 @@
   translate: 0;
   
   // Entry transition styling
-  transition-duration: $entry-dur;
+  @media (prefers-reduced-motion: no-preference) { transition-duration: $entry-dur; }
   @starting-style {
     translate: ($dir * 80vi) 0;
   }
   
   // Exit transition styling
   &:not([open]) {
-    transition-duration: $exit-dur;
+    @media (prefers-reduced-motion: no-preference) { transition-duration: $exit-dur; }
     transition-timing-function: ease-in;
     translate: ($dir * 80vi) 0;
   }
