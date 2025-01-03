@@ -17,7 +17,7 @@ import cl from './Dialog.module.scss';
 
 export { cl as DialogClassNames };
 
-export type ActionIconProps = ComponentProps<typeof Button> & {
+type ActionIconProps = ComponentProps<typeof Button> & {
   /** There must be `label` on an icon-only button, for accessibility. */
   label: Required<ComponentProps<typeof Button>>['label'],
   
@@ -27,7 +27,7 @@ export type ActionIconProps = ComponentProps<typeof Button> & {
 /**
  * An action that is rendered as just an icon.
  */
-export const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
+const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
   return (
     <TooltipProvider compact tooltip={typeof tooltip !== 'undefined' ? tooltip : buttonProps.label}>
       <Button unstyled
@@ -37,6 +37,27 @@ export const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
     </TooltipProvider>
   );
 };
+
+type ActionButtonProps = ComponentProps<typeof Button> & {
+  /** Optional tooltip text. */
+  tooltip?: undefined | ComponentProps<typeof TooltipProvider>['tooltip'],
+};
+/**
+ * An action that is rendered as just an icon.
+ */
+const ActionButton = ({ tooltip = null, ...buttonProps }: ActionButtonProps) => {
+  return (
+    <TooltipProvider compact tooltip={typeof tooltip !== 'undefined' ? tooltip : null}>
+      <Button unstyled
+        {...buttonProps}
+        className={cx(cl['bk-dialog__action'], cl['bk-dialog__action--button'], buttonProps.className)}
+      />
+    </TooltipProvider>
+  );
+};
+
+const CancelAction = (props: ComponentProps<typeof Button>) =>
+  <Button variant="secondary" label="Cancel" {...props}/>;
 
 export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   /** Whether the component should include the default styling. Default: false. */
@@ -48,70 +69,88 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   /** The title of the dialog, to be displayed in the dialog header. */
   title: React.ReactNode,
   
-  /** If specified, a close action is displayed. Default: true. */
-  showCloseAction?: undefined | boolean,
+  /** If specified, a close icon is displayed in the header. Default: true. */
+  showCloseIcon?: undefined | boolean,
+  
+  /** If specified, a close action is displayed in the footer. Default: true. */
+  showCancelAction?: undefined | boolean,
   
   /** Callback that is called when the user requests the dialog to close. */
   onRequestClose?: undefined | (() => void), // Note: cannot name this `onClose`, dialog already has an `onClose` prop
+  
+  /** Any additional actions to be shown in the dialog. */
+  actions?: undefined | React.ReactNode,
 };
 /**
  * The Dialog component displays an interaction with the user, for example a confirmation, or a form to be submitted.
  */
-export const Dialog = (props: DialogProps) => {
-  const {
-    children,
-    unstyled = false,
-    flat = false,
-    title,
-    showCloseAction = true,
-    onRequestClose,
-    ...propsRest
-  } = props;
-  
-  const dialogRef = React.useRef<HTMLDialogElement>(null);
-  const scrollerProps = useScroller();
-  
-  if (showCloseAction && typeof onRequestClose !== 'function') {
-    console.error(`Missing prop in <Dialog/>: 'onRequestClose' function`);
-  }
-  
-  return (
-    <dialog
-      open
-      {...scrollerProps}
-      {...propsRest}
-      ref={mergeRefs(dialogRef, propsRest.ref)}
-      className={cx(
-        'bk',
-        { [cl['bk-dialog']]: !unstyled },
-        { [cl['bk-dialog--flat']]: flat },
-        scrollerProps.className,
-        propsRest.className,
-      )}
-    >
-      <header className={cx(cl['bk-dialog__header'])}>
-        <H5>{title}</H5>
-        
-        {showCloseAction &&
-          <ActionIcon
-            label="Close dialog"
-            tooltip={null}
-            className={cx(cl['bk-dialog__action'], cl['bk-dialog__action-close'])}
-            onPress={onRequestClose}
-          >
-            <Icon icon="cross"/>
-          </ActionIcon>
-        }
-      </header>
-      
-      <section className={cx(cl['bk-dialog__content'], 'bk-body-text')}>
-        {children}
-      </section>
-      
-      {/* <footer className={cx(cl['bk-dialog__actions'])}>
-        <Button autoFocus variant="secondary" label="Cancel"/>
-        <Button variant="primary" label="Submit"/>
-      </footer> */}
-    </dialog>
-  );
-};
+export const Dialog = Object.assign(
+  (props: DialogProps) => {
+    const {
+      children,
+      unstyled = false,
+      flat = false,
+      title,
+      showCloseIcon = true,
+      showCancelAction = true,
+      onRequestClose,
+      actions,
+      ...propsRest
+    } = props;
+    
+    const dialogRef = React.useRef<HTMLDialogElement>(null);
+    const scrollerProps = useScroller();
+    
+    if ((showCloseIcon || showCancelAction) && typeof onRequestClose !== 'function') {
+      console.error(`Missing prop in <Dialog/>: 'onRequestClose' function`);
+    }
+    
+    return (
+      <dialog
+        open
+        {...scrollerProps}
+        {...propsRest}
+        ref={mergeRefs(dialogRef, propsRest.ref)}
+        className={cx(
+          'bk',
+          { [cl['bk-dialog']]: !unstyled },
+          { [cl['bk-dialog--flat']]: flat },
+          scrollerProps.className,
+          propsRest.className,
+        )}
+      >
+        <form>
+          <header className={cx(cl['bk-dialog__header'])}>
+            <H5 className={cx(cl['bk-dialog__header__title'])}>{title}</H5>
+            
+            <div className={cx(cl['bk-dialog__header__actions'])}>
+              {showCloseIcon &&
+                <ActionIcon
+                  autoFocus
+                  label="Close dialog"
+                  tooltip={null}
+                  className={cx(cl['bk-dialog__action'], cl['bk-dialog__action-close'])}
+                  onPress={onRequestClose}
+                >
+                  <Icon icon="cross"/>
+                </ActionIcon>
+              }
+            </div>
+          </header>
+          
+          <section className={cx(cl['bk-dialog__content'], 'bk-body-text')}>
+            {children}
+          </section>
+          
+          <footer className={cx(cl['bk-dialog__actions'])}>
+            {showCancelAction && <CancelAction/>}
+            {actions}
+          </footer>
+        </form>
+      </dialog>
+    );
+  },
+  {
+    CancelAction,
+  },
+);

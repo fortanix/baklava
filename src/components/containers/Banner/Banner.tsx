@@ -36,11 +36,11 @@ const BannerVariantIcon = ({ variant, ...propsRest }: BannerVariantIconProps) =>
 };
 
 
-export type ActionButtonProps = ComponentProps<typeof Button>;
+type ActionButtonProps = ComponentProps<typeof Button>;
 /**
  * A customized version of the `<Button/>` component specifically meant to be used for banner actions.
  */
-export const ActionButton = (props: ActionButtonProps) => {
+const ActionButton = (props: ActionButtonProps) => {
   return (
     <Button trimmed
       {...props}
@@ -49,7 +49,7 @@ export const ActionButton = (props: ActionButtonProps) => {
   );
 };
 
-export type ActionIconProps = ComponentProps<typeof Button> & {
+type ActionIconProps = ComponentProps<typeof Button> & {
   /** There must be `label` on an icon-only button, for accessibility. */
   label: Required<ComponentProps<typeof Button>>['label'],
   
@@ -59,7 +59,7 @@ export type ActionIconProps = ComponentProps<typeof Button> & {
 /**
  * An action that is rendered as just an icon.
  */
-export const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
+const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
   return (
     <TooltipProvider compact tooltip={typeof tooltip !== 'undefined' ? tooltip : buttonProps.label}>
       <Button trimmed

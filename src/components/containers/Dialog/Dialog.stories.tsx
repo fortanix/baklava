@@ -6,8 +6,9 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
+import { loremIpsum, LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
-import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
+import { Button } from '../../actions/Button/Button.tsx';
 
 import { Dialog } from './Dialog.tsx';
 
@@ -22,40 +23,41 @@ export default {
     layout: 'padded',
   },
   decorators: [
-    Story => <LayoutDecorator size="large" style={{ maxHeight: '15lh' }}><Story/></LayoutDecorator>,
+    Story => <LayoutDecorator size="large" style={{ maxHeight: '20lh' }}><Story/></LayoutDecorator>,
   ],
   args: {
     title: 'Dialog title',
+    children: <LoremIpsum paragraphs={3}/>,
+    actions: (
+      <Button variant="primary" label="Submit"/>
+    ),
     onRequestClose: () => {},
   },
 } satisfies Meta<DialogArgs>;
 
 
-export const DialogStandard: Story = {
-  args: {
-    children: <LoremIpsum paragraphs={3}/>,
-  },
-};
+export const DialogStandard: Story = {};
 
-export const DialogWithClose: Story = {
+export const DialogWithoutClose: Story = {
   args: {
-    children: <LoremIpsum paragraphs={3}/>,
-    showCloseAction: true,
+    showCloseIcon: false,
   },
 };
 
 export const DialogWithFocus: Story = {
   args: {
     className: 'pseudo-focus-visible',
-    children: <LoremIpsum paragraphs={3}/>,
-    showCloseAction: true,
+  },
+};
+
+export const DialogWithTitleOverflow: Story = {
+  args: {
+    title: loremIpsum(),
   },
 };
 
 export const DialogFlat: Story = {
   args: {
-    children: <LoremIpsum paragraphs={3}/>,
     flat: true,
-    showCloseAction: true,
   },
 };

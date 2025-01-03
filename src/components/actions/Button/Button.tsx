@@ -122,7 +122,7 @@ export const Button = (props: ButtonProps) => {
   // context. Use `SubmitButton` instead.
   // biome-ignore lint/suspicious/noExplicitAny: `type` is not in the public type but can be there for internal use
   const type: unknown = (propsRest as any).type;
-  let buttonType: undefined | 'submit' = undefined;
+  let buttonType: 'button' | 'submit' = 'button';
   
   if (type === 'submit') {
     throw new Error(`Button component cannot have type 'submit', use SubmitButton instead.`);

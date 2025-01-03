@@ -17,7 +17,6 @@
     margin: 0;
     padding: 0; // Do not apply padding on the outermost container (do it on the lower level elements instead)
     
-    //box-shadow: 0 8px 10px 1px rgba(0 0 0 / 14%), 0 3px 14px 2px rgba(0 0 0 / 12%), 0 5px 5px -3px rgba(0 0 0 / 3%);
     border-radius: bk.$radius-3;
     &.bk-dialog--flat {
       border: none;
@@ -36,40 +35,47 @@
       top: 0;
       z-index: 1;
       
-      padding-block: var(--bk-dialog-padding-block) 0;
+      padding-block: var(--bk-dialog-padding-block) (bk.$spacing-7 / 2);
       padding-inline: var(--bk-dialog-padding-inline);
-      
       background: var(--bk-dialog-background-color);
-      
-      --header-shadow-size: calc(var(--bk-sizing-1) / 2);
-      //box-shadow: 0 var(--header-shadow-size) 0 0 rgba(0 0 0 / 12%);
-      /* Clip everything except the bottom shadow (-1px for weird clipping behavior with scroll) */
-      //clip-path: inset(-1px -1px calc(-1 * var(--header-shadow-size)) -1px);
       
       display: flex;
       flex-direction: row;
-      align-items: baseline;
+      align-items: center;
+      gap: bk.$spacing-4;
       
-      .bk-dialog__action { --keep: ; }
-      :nth-child(1 of .bk-dialog__action) { // XXX https://github.com/parcel-bundler/lightningcss/issues/883
+      .bk-dialog__header__title {
+        @include bk.text-one-line;
+      }
+      
+      .bk-dialog__header__actions {
         margin-inline-start: auto;
       }
     }
     
     .bk-dialog__content {
-      flex: 1; /* Make sure we cover all available space */
+      flex: 1;
       
-      margin-block: bk.$spacing-7 bk.$spacing-9;
+      margin-block: (bk.$spacing-7 / 2) (bk.$spacing-7 / 2);
       padding-inline: var(--bk-dialog-padding-inline);
     }
     
     .bk-dialog__actions {
-      padding: var(--bk-dialog-inset);
-      padding-top: 0;
+      position: sticky;
+      bottom: 0;
+      z-index: 1;
+      
+      padding-block: (bk.$spacing-7 / 2) bk.$spacing-9;
+      padding-inline: var(--bk-dialog-padding-inline);
+      // In Figma, actions have an indent. But that might be only if the content itself has an indent, need to check.
+      //padding-inline-start: calc(var(--bk-dialog-padding-inline) + bk.$spacing-8);
+      
+      background: var(--bk-dialog-background-color);
       
       display: flex;
       flex-direction: row;
-      gap: 0.8rem;
+      align-items: center;
+      gap: bk.$spacing-4;
     }
     
     // State: focus
