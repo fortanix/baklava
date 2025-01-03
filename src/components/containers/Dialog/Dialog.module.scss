@@ -35,7 +35,7 @@
       top: 0;
       z-index: 1;
       
-      padding-block: var(--bk-dialog-padding-block) (bk.$spacing-7 / 2);
+      padding-block: var(--bk-dialog-padding-block) calc(bk.$spacing-7 / 2);
       padding-inline: var(--bk-dialog-padding-inline);
       background: var(--bk-dialog-background-color);
       
@@ -58,7 +58,7 @@
     .bk-dialog__content {
       flex: 1;
       
-      margin-block: (bk.$spacing-7 / 2) (bk.$spacing-7 / 2);
+      margin-block: calc(bk.$spacing-7 / 2) calc(bk.$spacing-7 / 2);
       padding-inline: var(--bk-dialog-padding-inline);
     }
     
@@ -67,7 +67,7 @@
       bottom: 0;
       z-index: 1;
       
-      padding-block: (bk.$spacing-7 / 2) bk.$spacing-9;
+      padding-block: calc(bk.$spacing-7 / 2) bk.$spacing-9;
       padding-inline: var(--bk-dialog-padding-inline);
       // In Figma, actions have an indent. But that might be only if the content itself has an indent, need to check.
       //padding-inline-start: calc(var(--bk-dialog-padding-inline) + bk.$spacing-8);
