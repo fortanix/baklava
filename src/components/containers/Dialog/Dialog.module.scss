@@ -14,6 +14,10 @@
     --bk-dialog-padding-block: #{bk.$spacing-8};
     --bk-dialog-padding-inline: #{bk.$spacing-8};
     
+    // The default `auto` inherits from the parent, which we do not want. In the future if `contain: user-select`
+    // becomes supported, we could use that instead.
+    user-select: text;
+    
     margin: 0;
     padding: 0; // Do not apply padding on the outermost container (do it on the lower level elements instead)
     
@@ -22,6 +26,8 @@
       border: none;
       border-radius: 0;
     }
+    background: var(--bk-dialog-background-color);
+    color: bk.$theme-modal-text-default;
     
     display: flex;
     flex-direction: column;

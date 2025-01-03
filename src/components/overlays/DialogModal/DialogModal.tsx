@@ -2,10 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
-import { Button } from '../../actions/Button/Button.tsx';
 import { Dialog } from '../../containers/Dialog/Dialog.tsx';
 import { ModalProvider, type ModalProviderProps } from '../ModalProvider/ModalProvider.tsx';
 
@@ -20,6 +18,9 @@ export type DialogModalProps = ComponentProps<typeof Dialog> & {
   
   /** How to display the modal in the viewport. Default: 'center'. */
   display?: undefined | 'center' | 'full-screen' | 'slide-over',
+  
+  /** If `display` is `slide-over`, from which side the modal should originate. */
+  slideOverPosition?: undefined | 'left' | 'right',
   
   /** The size of the modal. Note: does not apply to full screen modals. */
   size?: undefined | 'small' | 'medium' | 'large',
@@ -39,6 +40,7 @@ export const DialogModal = (props: DialogModalProps) => {
     trigger,
     unstyled = false,
     display = 'center',
+    slideOverPosition = 'right',
     size = 'medium',
     ...propsRest
   } = props;
@@ -49,14 +51,18 @@ export const DialogModal = (props: DialogModalProps) => {
         <Dialog
           flat={['full-screen', 'slide-over'].includes(display)}
           {...dialogProps}
+          showCloseIcon
+          autoFocusClose
           onRequestClose={close}
           {...propsRest}
           className={cx(
-            { bk: true },
+            'bk',
             { [cl['bk-dialog-modal']]: !unstyled },
             { [cl['bk-dialog-modal--center']]: display === 'center' },
             { [cl['bk-dialog-modal--full-screen']]: display === 'full-screen' },
             { [cl['bk-dialog-modal--slide-over']]: display === 'slide-over' },
+            { [cl['bk-dialog-modal--slide-over--left']]: slideOverPosition === 'left' },
+            { [cl['bk-dialog-modal--slide-over--right']]: slideOverPosition === 'right' },
             { [cl['bk-dialog-modal--small']]: size === 'small' },
             { [cl['bk-dialog-modal--medium']]: size === 'medium' },
             { [cl['bk-dialog-modal--large']]: size === 'large' },

@@ -60,7 +60,7 @@ const CancelAction = (props: ComponentProps<typeof Button>) =>
   <Button variant="secondary" label="Cancel" {...props}/>;
 
 export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
-  /** Whether the component should include the default styling. Default: false. */
+  /** Whether this component should be unstyled. Default: false. */
   unstyled?: undefined | boolean,
   
   /** Whether the dialog should be displayed as a flat panel (no shadows/borders/rounding). Default: false. */
@@ -80,6 +80,9 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   
   /** Any additional actions to be shown in the dialog. */
   actions?: undefined | React.ReactNode,
+  
+  /** Whether to set autofocus on the close button. Default: false. */
+  autoFocusClose?: undefined | boolean,
 };
 /**
  * The Dialog component displays an interaction with the user, for example a confirmation, or a form to be submitted.
@@ -95,6 +98,7 @@ export const Dialog = Object.assign(
       showCancelAction = true,
       onRequestClose,
       actions,
+      autoFocusClose = false,
       ...propsRest
     } = props;
     
@@ -119,34 +123,32 @@ export const Dialog = Object.assign(
           propsRest.className,
         )}
       >
-        <form>
-          <header className={cx(cl['bk-dialog__header'])}>
-            <H5 className={cx(cl['bk-dialog__header__title'])}>{title}</H5>
-            
-            <div className={cx(cl['bk-dialog__header__actions'])}>
-              {showCloseIcon &&
-                <ActionIcon
-                  autoFocus
-                  label="Close dialog"
-                  tooltip={null}
-                  className={cx(cl['bk-dialog__header-action-close'])}
-                  onPress={onRequestClose}
-                >
-                  <Icon icon="cross"/>
-                </ActionIcon>
-              }
-            </div>
-          </header>
+        <header className={cx(cl['bk-dialog__header'])}>
+          <H5 className={cx(cl['bk-dialog__header__title'])}>{title}</H5>
           
-          <section className={cx(cl['bk-dialog__content'], 'bk-body-text')}>
-            {children}
-          </section>
-          
-          <footer className={cx(cl['bk-dialog__actions'])}>
-            {showCancelAction && <CancelAction/>}
-            {actions}
-          </footer>
-        </form>
+          <div className={cx(cl['bk-dialog__header__actions'])}>
+            {showCloseIcon &&
+              <ActionIcon
+                autoFocus={autoFocusClose}
+                label="Close dialog"
+                tooltip={null}
+                className={cx(cl['bk-dialog__header-action-close'])}
+                onPress={onRequestClose}
+              >
+                <Icon icon="cross"/>
+              </ActionIcon>
+            }
+          </div>
+        </header>
+        
+        <section className={cx(cl['bk-dialog__content'], 'bk-body-text')}>
+          {children}
+        </section>
+        
+        <footer className={cx(cl['bk-dialog__actions'])}>
+          {showCancelAction && <CancelAction/>}
+          {actions}
+        </footer>
       </dialog>
     );
   },

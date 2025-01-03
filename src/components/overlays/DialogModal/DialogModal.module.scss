@@ -56,7 +56,9 @@
   }
 }
 
-@mixin dialog-slide-over($entry-dur: 200ms, $exit-dur: 180ms) {
+@mixin dialog-slide-over($entry-dur: 200ms, $exit-dur: 180ms, $origin: right) {
+  $dir: if($origin==right, 1, -1);
+  
   transition-property: overlay, display, translate;
   transition-timing-function: ease-out;
   transition-behavior: allow-discrete;
@@ -67,14 +69,14 @@
   // Entry transition styling
   transition-duration: $entry-dur;
   @starting-style {
-    translate: 80vw 0;
+    translate: ($dir * 80vi) 0;
   }
   
   // Exit transition styling
   &:not([open]) {
     transition-duration: $exit-dur;
     transition-timing-function: ease-in;
-    translate: 80vw 0;
+    translate: ($dir * 80vi) 0;
   }
 }
 
@@ -90,8 +92,8 @@
     // Basic modal positioning
     position: fixed;
     inset: 0;
-    max-width: 100vw;
-    max-height: 100vh;
+    max-width: 100vi;
+    max-height: 100vb;
     
     @include dialog-backdrop(
       $entry-dur: var(--bk-dialog-modal-entry-dur),
@@ -114,23 +116,23 @@
         $scale: var(--bk-dialog-modal-fade-scale),
       );
       
-      max-height: calc(100vh - 5vw); // The larger the viewport width, the more breathing room in height
+      max-height: calc(100vb - 5vi); // The larger the viewport width, the more breathing room in height
       &.bk-dialog-modal--small {
         --bk-dialog-modal-fade-scale: 1.05;
-        max-width: 30vw;
+        max-width: 30vi;
       }
       &.bk-dialog-modal--medium {
         --bk-dialog-modal-fade-scale: 1.04;
-        max-width: 50vw;
+        max-width: 50vi;
       }
       &.bk-dialog-modal--large {
         --bk-dialog-modal-fade-scale: 1.03;
-        max-width: 60vw;
+        max-width: 60vi;
       }
     }
     
     &.bk-dialog-modal--full-screen {
-      // FIXME: test this on mobile for potential overflow/shifting. May need to use `dvh`/`dvw` instead?
+      // FIXME: test this on mobile for potential overflow/shifting. May need to use `dvb`/`dvi` instead?
       inset: 0;
       margin: 0;
       width: auto;
@@ -150,14 +152,24 @@
       width: auto;
       height: auto;
       
-      margin-inline-start: 20vw;
-      
       --bk-dialog-modal-entry-dur: 300ms;
       --bk-dialog-modal-exit-dur: 250ms;
-      @include dialog-slide-over(
-        $entry-dur: var(--bk-dialog-modal-entry-dur),
-        $exit-dur: var(--bk-dialog-modal-exit-dur),
-      );
+      &.bk-dialog-modal--slide-over--left {
+        margin-inline-end: 20vi;
+        @include dialog-slide-over(
+          $entry-dur: var(--bk-dialog-modal-entry-dur),
+          $exit-dur: var(--bk-dialog-modal-exit-dur),
+          $origin: left,
+        );
+      }
+      &.bk-dialog-modal--slide-over--right {
+        margin-inline-start: 20vi;
+        @include dialog-slide-over(
+          $entry-dur: var(--bk-dialog-modal-entry-dur),
+          $exit-dur: var(--bk-dialog-modal-exit-dur),
+          $origin: right,
+        );
+      }
     }
   }
 }
