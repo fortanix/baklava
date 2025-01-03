@@ -49,7 +49,6 @@ export const DialogModalFullScreen: Story = {
   args: {
     display: 'full-screen',
     title: 'Full screen modal dialog',
-    showCloseAction: true,
   },
 };
 
@@ -57,6 +56,16 @@ export const DialogModalSlideOver: Story = {
   args: {
     display: 'slide-over',
     title: 'Slide over modal dialog',
-    showCloseAction: true,
+  },
+};
+
+export const ConfirmationDialog: Story = {
+  args: {
+    trigger: ({ active, activate }) => <Button variant="primary" label="Delete" onPress={activate}/>,
+    display: 'center',
+    size: 'small',
+    title: 'Confirmation',
+    children: <>Are you sure you want to delete this item?</>,
+    actions: <DialogModal.SubmitAction label="Delete" onPress={() => { window.alert('Confirmed'); }}/>,
   },
 };

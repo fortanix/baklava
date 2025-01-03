@@ -13,6 +13,8 @@ import cl from './DialogModal.module.scss';
 export { cl as DialogModalClassNames };
 
 export type DialogModalProps = ComponentProps<typeof Dialog> & {
+  modalRef?: undefined | React.RefObject<null | React.ComponentRef<typeof ModalProvider>>,
+  
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -34,47 +36,57 @@ export type DialogModalProps = ComponentProps<typeof Dialog> & {
 /**
  * A dialog component displayed as a modal when activating the given trigger.
  */
-export const DialogModal = (props: DialogModalProps) => {
-  const {
-    children,
-    trigger,
-    unstyled = false,
-    display = 'center',
-    slideOverPosition = 'right',
-    size = 'medium',
-    ...propsRest
-  } = props;
-  
-  return (
-    <ModalProvider
-      content={({ close, dialogProps }) =>
-        <Dialog
-          flat={['full-screen', 'slide-over'].includes(display)}
-          {...dialogProps}
-          showCloseIcon
-          autoFocusClose
-          onRequestClose={close}
-          {...propsRest}
-          className={cx(
-            'bk',
-            { [cl['bk-dialog-modal']]: !unstyled },
-            { [cl['bk-dialog-modal--center']]: display === 'center' },
-            { [cl['bk-dialog-modal--full-screen']]: display === 'full-screen' },
-            { [cl['bk-dialog-modal--slide-over']]: display === 'slide-over' },
-            { [cl['bk-dialog-modal--slide-over--left']]: slideOverPosition === 'left' },
-            { [cl['bk-dialog-modal--slide-over--right']]: slideOverPosition === 'right' },
-            { [cl['bk-dialog-modal--small']]: size === 'small' },
-            { [cl['bk-dialog-modal--medium']]: size === 'medium' },
-            { [cl['bk-dialog-modal--large']]: size === 'large' },
-            dialogProps.className,
-            propsRest.className,
-          )}
-        >
-          {children}
-        </Dialog>
-      }
-    >
-      {trigger}
-    </ModalProvider>
-  );
-};
+export const DialogModal = Object.assign(
+  (props: DialogModalProps) => {
+    const {
+      children,
+      modalRef,
+      trigger,
+      unstyled = false,
+      display = 'center',
+      slideOverPosition = 'right',
+      size = 'medium',
+      ...propsRest
+    } = props;
+    
+    return (
+      <ModalProvider
+        ref={modalRef}
+        content={({ close, dialogProps }) =>
+          <Dialog
+            flat={['full-screen', 'slide-over'].includes(display)}
+            {...dialogProps}
+            showCloseIcon
+            autoFocusClose
+            onRequestClose={close}
+            {...propsRest}
+            className={cx(
+              'bk',
+              { [cl['bk-dialog-modal']]: !unstyled },
+              { [cl['bk-dialog-modal--center']]: display === 'center' },
+              { [cl['bk-dialog-modal--full-screen']]: display === 'full-screen' },
+              { [cl['bk-dialog-modal--slide-over']]: display === 'slide-over' },
+              { [cl['bk-dialog-modal--slide-over--left']]: slideOverPosition === 'left' },
+              { [cl['bk-dialog-modal--slide-over--right']]: slideOverPosition === 'right' },
+              { [cl['bk-dialog-modal--small']]: size === 'small' },
+              { [cl['bk-dialog-modal--medium']]: size === 'medium' },
+              { [cl['bk-dialog-modal--large']]: size === 'large' },
+              dialogProps.className,
+              propsRest.className,
+            )}
+          >
+            {children}
+          </Dialog>
+        }
+      >
+        {trigger}
+      </ModalProvider>
+    );
+  },
+  {
+    Action: Dialog.Action,
+    ActionIcon: Dialog.ActionIcon,
+    CancelAction: Dialog.CancelAction,
+    SubmitAction: Dialog.SubmitAction,
+  },
+);

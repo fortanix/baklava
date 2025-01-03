@@ -17,47 +17,43 @@ import cl from './Dialog.module.scss';
 
 export { cl as DialogClassNames };
 
-type ActionIconProps = ComponentProps<typeof Button> & {
+type ActionProps = ComponentProps<typeof Button> & {
+  /** Optional tooltip text. */
+  tooltip?: undefined | ComponentProps<typeof TooltipProvider>['tooltip'],
+};
+/**
+ * An action button to be displayed in the dialog footer.
+ */
+const Action = ({ tooltip = null, ...buttonProps }: ActionProps) => {
+  return (
+    <TooltipProvider compact tooltip={typeof tooltip !== 'undefined' ? tooltip : null}>
+      <Button
+        {...buttonProps}
+        className={cx(cl['bk-dialog__action'], buttonProps.className)}
+      />
+    </TooltipProvider>
+  );
+};
+
+type ActionIconProps = Omit<ActionProps, 'label'> & {
   /** There must be `label` on an icon-only button, for accessibility. */
   label: Required<ComponentProps<typeof Button>>['label'],
-  
-  /** Optional custom tooltip text, if different from `label`. */
-  tooltip?: undefined | ComponentProps<typeof TooltipProvider>['tooltip'],
 };
 /**
  * An action that is rendered as just an icon.
  */
 const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
   return (
-    <TooltipProvider compact tooltip={typeof tooltip !== 'undefined' ? tooltip : buttonProps.label}>
-      <Button unstyled
-        {...buttonProps}
-        className={cx(cl['bk-dialog__action'], cl['bk-dialog__action--icon'], buttonProps.className)}
-      />
-    </TooltipProvider>
+    <Action unstyled
+      {...buttonProps}
+      tooltip={typeof tooltip !== 'undefined' ? tooltip : buttonProps.label}
+      className={cx(cl['bk-dialog__action--icon'], buttonProps.className)}
+    />
   );
 };
 
-type ActionButtonProps = ComponentProps<typeof Button> & {
-  /** Optional tooltip text. */
-  tooltip?: undefined | ComponentProps<typeof TooltipProvider>['tooltip'],
-};
-/**
- * An action that is rendered as just an icon.
- */
-const ActionButton = ({ tooltip = null, ...buttonProps }: ActionButtonProps) => {
-  return (
-    <TooltipProvider compact tooltip={typeof tooltip !== 'undefined' ? tooltip : null}>
-      <Button unstyled
-        {...buttonProps}
-        className={cx(cl['bk-dialog__action'], cl['bk-dialog__action--button'], buttonProps.className)}
-      />
-    </TooltipProvider>
-  );
-};
-
-const CancelAction = (props: ComponentProps<typeof Button>) =>
-  <Button variant="secondary" label="Cancel" {...props}/>;
+const CancelAction = (props: ActionProps) => <Action variant="secondary" label="Cancel" {...props}/>;
+const SubmitAction = (props: ActionProps) => <Action variant="primary" label="Submit" {...props}/>;
 
 export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   /** Whether this component should be unstyled. Default: false. */
@@ -153,7 +149,9 @@ export const Dialog = Object.assign(
     );
   },
   {
-    ActionButton,
+    Action,
+    ActionIcon,
     CancelAction,
+    SubmitAction,
   },
 );

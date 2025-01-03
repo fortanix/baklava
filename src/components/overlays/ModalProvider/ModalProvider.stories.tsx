@@ -44,3 +44,22 @@ export const ModalProviderWithBasicDialog: Story = {
     content: ({ close, dialogProps }) => <dialog {...dialogProps}>Content</dialog>,
   },
 };
+
+const ModalProviderWithRefControlled = (props: React.ComponentProps<typeof ModalProvider>) => {
+  const ref = React.useRef<React.ComponentRef<typeof ModalProvider>>(null);
+  
+  React.useEffect(() => {
+    globalThis.setTimeout(() => {
+      ref.current?.activate();
+    }, 1000);
+  });
+  
+  return <ModalProvider ref={ref} {...props}/>;
+};
+export const ModalProviderWithRef: Story = {
+  render: args => <ModalProviderWithRefControlled {...args}/>,
+  args: {
+    children: () => <>Modal will open automatically</>,
+    content: ({ dialogProps }) => <dialog {...dialogProps}>This modal was opened through a ref.</dialog>,
+  }
+};

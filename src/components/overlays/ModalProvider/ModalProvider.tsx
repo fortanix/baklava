@@ -13,7 +13,14 @@ import cl from './ModalProvider.module.scss';
 export { cl as ModalProviderClassNames };
 
 
+export type ModalProviderRef = {
+  activate: () => void,
+  deactivate: () => void,
+};
+
 export type ModalProviderProps = {
+  ref?: undefined | React.RefObject<null | ModalProviderRef>,
+  
   /** The trigger that activates the modal overlay. */
   children: (triggerProps: { active: boolean, activate: () => void }) => React.ReactNode,
   
@@ -31,10 +38,11 @@ export type ModalProviderProps = {
  */
 export const ModalProvider = (props: ModalProviderProps) => {
   const {
+    ref,
     children,
     content,
     activeDefault = false,
-    exitAnimationDelay = 100_000,
+    exitAnimationDelay = 3000, // ms
   } = props;
   
   const [active, setActiveInternal] = React.useState(activeDefault);
@@ -46,6 +54,7 @@ export const ModalProvider = (props: ModalProviderProps) => {
   }, [setActiveWithDelay]);
   
   const activate = React.useCallback(() => { setActive(true); }, [setActive]);
+  const deactivate = React.useCallback(() => { setActive(false); }, [setActive]);
   const triggerProps = { active, activate };
   
   const dialogProps = useControlledDialog({
@@ -53,6 +62,11 @@ export const ModalProvider = (props: ModalProviderProps) => {
     onActiveStateChange: setActive,
     allowUserClose: true,
   });
+  
+  React.useImperativeHandle(ref, () => ({
+    activate,
+    deactivate,
+  }), [activate, deactivate]);
   
   return (
     <>
