@@ -64,7 +64,7 @@ const componentTemplate = {
       /** Whether this component should be unstyled. */
       unstyled?: undefined | boolean,
       
-      /** Some property specific to \`{{{component-name}}}\` */
+      /** Some property specific to \`{{{component-name}}}\`. */
       variant?: undefined | 'x' | 'y',
     }>;
     {{"\\n"~}}
@@ -173,12 +173,11 @@ const componentTemplate = {
     
     export default {
       component: {{{component-name}}},
+      tags: ['autodocs'],
       parameters: {
         layout: '{{storybook-layout}}',
       },
-      tags: ['autodocs'],
-      argTypes: {
-      },
+      argTypes: {},
       args: {
         children: 'Example',
       },
@@ -186,8 +185,12 @@ const componentTemplate = {
     } satisfies Meta<{{{component-name}}}Args>;
     
     
-    export const Standard: Story = {
-      name: '{{{component-name}}}',
+    export const {{{component-name}}}Standard: Story = {};
+    
+    export const {{{component-name}}}WithVariant: Story = {
+      args: {
+        variant: 'x',
+      },
     };
   ` + '\n',
 };

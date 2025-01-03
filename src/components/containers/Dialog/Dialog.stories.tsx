@@ -28,9 +28,7 @@ export default {
   args: {
     title: 'Dialog title',
     children: <LoremIpsum paragraphs={3}/>,
-    actions: (
-      <Button variant="primary" label="Submit"/>
-    ),
+    actions: <Dialog.SubmitAction/>,
     onRequestClose: () => {},
   },
 } satisfies Meta<DialogArgs>;

@@ -72,7 +72,7 @@ const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
 
 
 export type BannerProps = Omit<ComponentProps<'div'>, 'title'> & {
-  /** Whether the component should include the default styling. Defaults to false. */
+  /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
   /** Whether to trim this component (strip any spacing around the element). */

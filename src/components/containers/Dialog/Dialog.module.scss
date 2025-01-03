@@ -14,6 +14,10 @@
     --bk-dialog-padding-block: #{bk.$spacing-8};
     --bk-dialog-padding-inline: #{bk.$spacing-8};
     
+    // The default `auto` inherits from the parent, which we do not want. In the future if `contain: user-select`
+    // becomes supported, we could use that instead.
+    user-select: text;
+    
     margin: 0;
     padding: 0; // Do not apply padding on the outermost container (do it on the lower level elements instead)
     
@@ -22,6 +26,8 @@
       border: none;
       border-radius: 0;
     }
+    background: var(--bk-dialog-background-color);
+    color: bk.$theme-modal-text-default;
     
     display: flex;
     flex-direction: column;
@@ -35,7 +41,7 @@
       top: 0;
       z-index: 1;
       
-      padding-block: var(--bk-dialog-padding-block) (bk.$spacing-7 / 2);
+      padding-block: var(--bk-dialog-padding-block) calc(bk.$spacing-7 / 2);
       padding-inline: var(--bk-dialog-padding-inline);
       background: var(--bk-dialog-background-color);
       
@@ -58,7 +64,7 @@
     .bk-dialog__content {
       flex: 1;
       
-      margin-block: (bk.$spacing-7 / 2) (bk.$spacing-7 / 2);
+      margin-block: calc(bk.$spacing-7 / 2) calc(bk.$spacing-7 / 2);
       padding-inline: var(--bk-dialog-padding-inline);
     }
     
@@ -67,7 +73,7 @@
       bottom: 0;
       z-index: 1;
       
-      padding-block: (bk.$spacing-7 / 2) bk.$spacing-9;
+      padding-block: calc(bk.$spacing-7 / 2) bk.$spacing-9;
       padding-inline: var(--bk-dialog-padding-inline);
       // In Figma, actions have an indent. But that might be only if the content itself has an indent, need to check.
       //padding-inline-start: calc(var(--bk-dialog-padding-inline) + bk.$spacing-8);
@@ -81,7 +87,6 @@
       
       .bk-dialog__action { --keep: ; }
       .bk-dialog__action--icon { --keep: ; }
-      .bk-dialog__action--button { --keep: ; }
     }
     
     // State: focus

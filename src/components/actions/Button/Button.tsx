@@ -33,8 +33,15 @@ export type ButtonProps = React.PropsWithChildren<Omit<ComponentProps<'button'>,
   variant?: undefined | 'primary' | 'secondary' | 'tertiary',
   
   /**
+   * Whether the button is disabled. This is meant for essentially permanent disabled buttons, not for buttons that
+   * are just temporarily non-interactive. Use `nonactive` for the latter. Disabled buttons cannot be focused.
+   */
+  disabled?: undefined | boolean,
+  
+  /**
    * Whether the button is in "nonactive" state. This is a variant of `disabled`, but instead of completely graying
-   * out the button, it only becomes a muted variation of the button's appearance. When true, also implies `disabled`.
+   * out the button, it only becomes a muted variation of the button's appearance. Nonactive buttons are useful for
+   * temporarily states such as while an action is currently ongoing. Nonactive buttons are still focusable.
    */
   nonactive?: undefined | boolean,
   
@@ -53,6 +60,7 @@ export const Button = (props: ButtonProps) => {
     unstyled = false,
     trimmed = false,
     label,
+    disabled = false,
     nonactive = false,
     variant = 'tertiary',
     onPress,
@@ -63,23 +71,30 @@ export const Button = (props: ButtonProps) => {
   const [isPressPending, startPressTransition] = React.useTransition();
   
   const isPending = isPressPending;
-  const isInteractive = !propsRest.disabled && !nonactive && !isPending;
+  const isInteractive = !disabled && !nonactive && !isPending;
   const isNonactive = nonactive || isPending;
   
   const handlePress = React.useCallback(() => {
     if (typeof onPress !== 'function') { return; }
     
-    startPressTransition(async () => {
-      await Promise.race([onPress(), timeout(asyncTimeout)]);
-    });
+    const onPressResult = onPress();
+    
+    // Note: do not start a transition unless `onPress` is actually async, because otherwise sync press actions
+    // will cause a brief rerender with disabled state and loading indicator, which messes with things like
+    // button focus.
+    if (onPressResult instanceof Promise) {
+      startPressTransition(async () => {
+        await Promise.race([onPressResult, timeout(asyncTimeout)]);
+      });
+    }
   }, [onPress, asyncTimeout]);
   
   const handleClick = React.useCallback(async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    if (!isInteractive) { return; }
+    
     // `onClick` should not be used in most cases, only if the consumer needs low level control over click events.
     // Instead, use `onPress` or a `<form>` component with `action`.
     props.onClick?.(event); // Call this first, to allow cancellation
-    
-    if (!isInteractive) { return; }
     
     if (typeof onPress === 'function') {
       event.preventDefault();
@@ -122,9 +137,10 @@ export const Button = (props: ButtonProps) => {
   return (
     <button
       aria-label={accessibleName}
+      aria-disabled={!isInteractive}
+      disabled={disabled}
       {...propsRest}
       type={buttonType} // Not overridable
-      disabled={!isInteractive}
       className={cx({
         bk: true,
         [cl['bk-button']]: !unstyled,

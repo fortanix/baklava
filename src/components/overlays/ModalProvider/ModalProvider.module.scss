@@ -1,0 +1,35 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-modal-provider {
+    @include bk.component-base(bk-modal-provider);
+    
+    --bk-modal-provider-background-color: light-dark(#{bk.$color-neutral-700}, #{bk.$color-neutral-50});
+    --bk-modal-provider-text-color: light-dark(#{bk.$color-neutral-50}, #{bk.$color-neutral-700});
+    
+    cursor: default;
+    
+    max-width: 30rem;
+    max-height: 8lh;
+    
+    margin: bk.$sizing-s;
+    padding: bk.$sizing-s;
+    border-radius: bk.$sizing-s;
+    background: var(--bk-modal-provider-background-color);
+    
+    @include bk.text-layout;
+    color: var(--bk-modal-provider-text-color);
+    @include bk.font(bk.$font-family-body);
+    font-size: bk.$font-size-m;
+    
+    @media (prefers-reduced-motion: no-preference) {
+      --transition-duration: 150ms;
+      transition:
+        opacity var(--transition-duration) ease-out;
+    }
+  }
+}
