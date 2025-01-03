@@ -19,7 +19,7 @@ export default {
   component: DialogModal,
   tags: ['autodocs'],
   parameters: {
-    layout: 'fullscreen',
+    layout: 'padded',
   },
   argTypes: {},
   args: {
@@ -27,7 +27,7 @@ export default {
     trigger: ({ active, activate }) => <Button variant="primary" label="Open modal" onPress={activate}/>,
     children: <LoremIpsum paragraphs={15}/>,
   },
-  render: (args) => <DialogModal {...args}/>,
+  render: (args) => <><LoremIpsum paragraphs={2}/> <DialogModal {...args}/> <LoremIpsum paragraphs={2}/></>,
 } satisfies Meta<DialogModalArgs>;
 
 
