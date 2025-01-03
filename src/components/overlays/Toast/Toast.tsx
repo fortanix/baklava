@@ -127,7 +127,7 @@ const success = ({ title, message, options = {} }: NotifyProps) => {
     className: cx(cl['bk-toast--success'], className),
     bodyClassName: cx(cl['bk-toast__body'], bodyClassName),
     progressClassName: cx(cl['bk-toast__progress-bar--success']),
-    icon: <Icon icon="status-success" className={cx(cl['bk-toast__icon--success'])} />,
+    icon: <Icon icon="status-success-filled" className={cx(cl['bk-toast__icon--success'])} />,
     closeButton: closeButton === true ? <CloseToastButton /> : closeButton,
     ...restOptions,
   };
@@ -142,7 +142,7 @@ const info = ({ title, message, options = {} }: NotifyProps) => {
     className: cx(cl['bk-toast--info'], className),
     bodyClassName: cx(cl['bk-toast__body'], bodyClassName),
     progressClassName: cx(cl['bk-toast__progress-bar--info']),
-    icon: <Icon icon="warning" className={cx(cl['bk-toast__icon--info'])} />,
+    icon: <Icon icon="info-filled" className={cx(cl['bk-toast__icon--info'])} />,
     closeButton: closeButton === true ? <CloseToastButton /> : closeButton,
     ...restOptions,
   };
@@ -166,7 +166,7 @@ const error = ({ title, message, options = {} }: NotifyProps) => {
     className: cx(cl['bk-toast--error'], className),
     bodyClassName: cx(cl['bk-toast__body'], bodyClassName),
     progressClassName: cx(cl['bk-toast__progress-bar--error']),
-    icon: <Icon icon="status-failed" className={cx(cl['bk-toast__icon--error'])} />,
+    icon: <Icon icon="status-failed-filled" className={cx(cl['bk-toast__icon--error'])} />,
     closeButton: closeButton === true ? <CloseToastButton /> : closeButton,
     ...restOptions,
   };

@@ -313,7 +313,7 @@ const createIconsManifest = async (args: ScriptArgs) => {
     export const icons = {
     ${icons.map(iconName => `  '${iconName}': {},`).join('\n')}
     } as const satisfies Record<string, IconDef>;
-  `;
+  ` + '\n';
   
   const manifestPath = path.join(pathIconsSource, '_icons.ts');
   logger.info(`Writing file: ${manifestPath}`);
