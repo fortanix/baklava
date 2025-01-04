@@ -12,7 +12,6 @@ import cl from './ModalProvider.module.scss';
 
 export { cl as ModalProviderClassNames };
 
-
 // Use an active state, but with a delay in unmounting to allow exit transitions time to animate
 export const useActiveWithUnmountDelay = (
   active: boolean,

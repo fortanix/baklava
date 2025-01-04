@@ -65,9 +65,19 @@ export const DialogModalFullScreen: Story = {
   },
 };
 
-export const DialogModalSlideOver: Story = {
+export const DialogModalSlideOverRight: Story = {
   args: {
     display: 'slide-over',
+    size: 'large',
+    slideOverPosition: 'right',
+    title: 'Slide over modal dialog',
+  },
+};
+export const DialogModalSlideOverLeft: Story = {
+  args: {
+    display: 'slide-over',
+    size: 'medium',
+    slideOverPosition: 'left',
     title: 'Slide over modal dialog',
   },
 };
