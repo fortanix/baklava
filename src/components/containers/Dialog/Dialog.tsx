@@ -141,10 +141,12 @@ export const Dialog = Object.assign(
           {children}
         </section>
         
-        <footer className={cx(cl['bk-dialog__actions'])}>
-          {showCancelAction && <CancelAction/>}
-          {actions}
-        </footer>
+        {(showCancelAction || actions) &&
+          <footer className={cx(cl['bk-dialog__actions'])}>
+            {showCancelAction && <CancelAction/>}
+            {actions}
+          </footer>
+        }
       </dialog>
     );
   },

@@ -99,12 +99,12 @@ export const DialogModalWithRef: Story = {
 
 const DialogModalControlledWithSubject = (props: React.ComponentProps<typeof DialogModal>) => {
   type Subject = { name: string };
-  const modal = DialogModal.useModalRefWithSubject<null | Subject>(null);
+  const modal = DialogModal.useModalWithSubject<null | Subject>(null);
   
   return (
     <article className="bk-body-text">
       {modal.subject &&
-        <DialogModal {...props} modalRef={modal.modalRef} title={modal.subject.name}>
+        <DialogModal {...modal.props} {...props} title={modal.subject.name}>
           Details about {modal.subject.name} here.
         </DialogModal>
       }
@@ -123,13 +123,39 @@ export const DialogModalWithSubject: Story = {
   render: (args) => <DialogModalControlledWithSubject {...args}/>,
 };
 
-export const ConfirmationDialog: Story = {
+const DialogModalControlledConfirmation = (props: React.ComponentProps<typeof DialogModal>) => {
+  type Subject = { name: string };
+  const deleteConfirmer = DialogModal.useConfirmationModal<null | Subject>(null, {
+    onConfirm() { globalThis.alert('Confirmed'); },
+    onCancel() { globalThis.alert('Canceled'); },
+  });
+  
+  return (
+    <article className="bk-body-text">
+      {deleteConfirmer.subject &&
+        <DialogModal {...deleteConfirmer.props} {...props} title={deleteConfirmer.subject.name}>
+          Are you sure you want to delete "{deleteConfirmer.subject.name}"?
+        </DialogModal>
+      }
+      
+      <p>A single details modal will be used, filled in with the subject based on which name was pressed.</p>
+      
+      <p>
+        <Button variant="primary" label="Delete Item 1"
+          onPress={() => { deleteConfirmer.activateWith({ name: 'Item 1' }); }}
+        />
+      </p>
+      <p>
+        <Button variant="primary" label="Delete Item 2"
+          onPress={() => { deleteConfirmer.activateWith({ name: 'Item 2' }); }}
+        />
+      </p>
+    </article>
+  );
+};
+export const DialogModalConfirmation: Story = {
   args: {
-    trigger: ({ activate }) => <Button variant="primary" label="Delete" onPress={activate}/>,
-    display: 'center',
-    size: 'small',
-    title: 'Confirmation',
-    children: <>Are you sure you want to delete this item?</>,
-    actions: <DialogModal.SubmitAction label="Delete" onPress={() => { window.alert('Confirmed'); }}/>,
+    trigger: undefined,
   },
+  render: (args) => <DialogModalControlledConfirmation {...args}/>,
 };

@@ -15,23 +15,6 @@ import cl from './DialogModal.module.scss';
 
 export { cl as DialogModalClassNames };
 
-export const useModalRefWithSubject = <S,>(subjectInitial: S | (() => S), activeInitial = false) => {
-  const modalRef = ModalProvider.useRef(null);
-  const [subject, setSubject] = React.useState(subjectInitial);
-  
-  return {
-    modalRef,
-    subject,
-    activateWith: (subject: S | (() => S)) => {
-      // Use flushSync() to force the modal to render, in case the modal rendering is conditional
-      // on the subject being set.
-      flushSync(() => { setSubject(subject); });
-      
-      modalRef.current?.activate();
-    },
-  };
-};
-
 export type DialogModalProps = Omit<React.ComponentProps<typeof Dialog>, 'children'> & {
   /** Content of the modal. If a function, will be passed a dialog controller. */
   children?: React.ReactNode | ModalProviderProps['dialog'],
@@ -66,6 +49,60 @@ export type DialogModalProps = Omit<React.ComponentProps<typeof Dialog>, 'childr
   /** Any additional props to pass to the modal provider. */
   providerProps?: undefined | Omit<ModalProviderProps, 'children'>,
 };
+
+export type ModalWithSubject<S> = {
+  props: Partial<DialogModalProps>,
+  subject: S,
+  activateWith: (subject: S | (() => S)) => void,
+};
+/**
+ * Utility hook to get a reference to a `DialogModal` for imperative usage. To open, you can call `activate()`, or
+ * `activateWith()` if you want to include some subject data to be shown in the modal.
+ */
+export const useModalWithSubject = <S,>(subjectInitial: S | (() => S)): ModalWithSubject<S> => {
+  const modalRef = ModalProvider.useRef(null);
+  const [subject, setSubject] = React.useState(subjectInitial);
+  
+  return {
+    props: { modalRef },
+    subject,
+    activateWith: (subject: S | (() => S)) => {
+      // Use flushSync() to force the modal to render, in case the modal rendering is conditional
+      // on the subject being set.
+      flushSync(() => { setSubject(subject); });
+      
+      modalRef.current?.activate();
+    },
+  };
+};
+
+/**
+ * Similar to `useModalWithSubject`, but will be preconfigured for usage as a confirmation modal.
+ */
+export const useConfirmationModal = <S,>(
+  subjectInitial: S | (() => S),
+  config: { onConfirm: () => void, onCancel?: undefined | (() => void) },
+) => {
+  const modal = useModalWithSubject(subjectInitial);
+  return {
+    ...modal,
+    props: {
+      ...modal.props,
+      display: 'center' as const,
+      size: 'small' as const,
+      allowUserClose: false, // Force the user to explicitly select an action
+      title: 'Confirm',
+      children: 'Are you sure you want to perform this action?',
+      actions: (
+        <>
+          <Dialog.CancelAction label="Cancel" onPress={config.onCancel}/>
+          <Dialog.SubmitAction label="Confirm" onPress={config.onConfirm}/>
+        </>
+      ),
+    },
+  };
+};
+
 /**
  * A dialog component displayed as a modal when activating the given trigger.
  */
@@ -125,7 +162,8 @@ export const DialogModal = Object.assign(
   },
   {
     useModalRef: ModalProvider.useRef,
-    useModalRefWithSubject,
+    useModalWithSubject,
+    useConfirmationModal,
     Action: Dialog.Action,
     ActionIcon: Dialog.ActionIcon,
     CancelAction: Dialog.CancelAction,
