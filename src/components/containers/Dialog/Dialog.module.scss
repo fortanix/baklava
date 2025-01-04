@@ -70,10 +70,10 @@
     
     .bk-dialog__actions {
       position: sticky;
-      bottom: 0;
+      bottom: -1px; // -1px to prevent bleed through due to pixel rounding
       z-index: 1;
       
-      padding-block: calc(bk.$spacing-7 / 2) bk.$spacing-9;
+      padding-block: calc(bk.$spacing-7 / 2) calc(bk.$spacing-9 + 1px); // 1px to compensate for `bottom: -1px`
       padding-inline: var(--bk-dialog-padding-inline);
       // In Figma, actions have an indent. But that might be only if the content itself has an indent, need to check.
       //padding-inline-start: calc(var(--bk-dialog-padding-inline) + bk.$spacing-8);
