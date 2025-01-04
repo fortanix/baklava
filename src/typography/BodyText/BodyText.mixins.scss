@@ -221,7 +221,7 @@
     }
   }
   
-  > :first-child {
+  > :nth-child(1 of :not([hidden], dialog)) {
     margin-block-start: 0;
   }
 }

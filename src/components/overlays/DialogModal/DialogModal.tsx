@@ -2,8 +2,10 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import * as React from 'react';
+import { flushSync } from 'react-dom';
 import { mergeRefs } from '../../../util/reactUtil.ts';
-import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
+import { classNames as cx } from '../../../util/componentUtil.ts';
 
 import { Dialog } from '../../containers/Dialog/Dialog.tsx';
 import { ModalProvider, type ModalProviderProps } from '../ModalProvider/ModalProvider.tsx';
@@ -11,15 +13,34 @@ import { ModalProvider, type ModalProviderProps } from '../ModalProvider/ModalPr
 import cl from './DialogModal.module.scss';
 
 
-type Test = React.ComponentProps<typeof Dialog>['ref'];
-
 export { cl as DialogModalClassNames };
 
-export type DialogModalProps = ComponentProps<typeof Dialog> & {
-  modalRef?: undefined | React.Ref<React.ComponentRef<typeof ModalProvider>>,
+export const useModalRefWithSubject = <S,>(subjectInitial: S | (() => S), activeInitial = false) => {
+  const modalRef = ModalProvider.useRef(null);
+  const [subject, setSubject] = React.useState(subjectInitial);
+  
+  return {
+    modalRef,
+    subject,
+    activateWith: (subject: S | (() => S)) => {
+      // Use flushSync() to force the modal to render, in case the modal rendering is conditional
+      // on the subject being set.
+      flushSync(() => { setSubject(subject); });
+      
+      modalRef.current?.activate();
+    },
+  };
+};
+
+export type DialogModalProps = Omit<React.ComponentProps<typeof Dialog>, 'children'> & {
+  /** Content of the modal. If a function, will be passed a dialog controller. */
+  children?: React.ReactNode | ModalProviderProps['dialog'],
   
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
+  
+  /** Whether the modal should be active by default. Default: false. */
+  activeDefault?: undefined | boolean,
   
   /** How to display the modal in the viewport. Default: 'center'. */
   display?: undefined | 'center' | 'full-screen' | 'slide-over',
@@ -39,6 +60,9 @@ export type DialogModalProps = ComponentProps<typeof Dialog> & {
   /** Whether to allow users to close the dialog manually. */
   allowUserClose?: undefined | boolean,
   
+  /** A reference to the modal, for imperative control. */
+  modalRef?: undefined | React.Ref<React.ComponentRef<typeof ModalProvider>>,
+  
   /** Any additional props to pass to the modal provider. */
   providerProps?: undefined | Omit<ModalProviderProps, 'children'>,
 };
@@ -49,27 +73,30 @@ export const DialogModal = Object.assign(
   (props: DialogModalProps) => {
     const {
       children,
-      modalRef,
       unstyled = false,
+      activeDefault = false,
       display = 'center',
       slideOverPosition = 'right',
       size = 'medium',
       trigger = () => null,
       allowUserClose = true,
+      modalRef,
       providerProps,
       ...propsRest
     } = props;
     
     return (
       <ModalProvider
+        activeDefault={activeDefault}
         allowUserClose={allowUserClose}
-        dialog={({ close, dialogProps }) =>
+        dialog={dialogController =>
           <Dialog
             flat={['full-screen', 'slide-over'].includes(display)}
-            {...dialogProps}
+            {...dialogController.dialogProps}
             showCloseIcon={allowUserClose}
             autoFocusClose={allowUserClose}
-            onRequestClose={allowUserClose ? close : undefined}
+            showCancelAction={allowUserClose}
+            onRequestClose={allowUserClose ? dialogController.close : undefined}
             {...propsRest}
             className={cx(
               'bk',
@@ -82,11 +109,11 @@ export const DialogModal = Object.assign(
               { [cl['bk-dialog-modal--small']]: size === 'small' },
               { [cl['bk-dialog-modal--medium']]: size === 'medium' },
               { [cl['bk-dialog-modal--large']]: size === 'large' },
-              dialogProps.className,
+              dialogController.dialogProps.className,
               propsRest.className,
             )}
           >
-            {children}
+            {typeof children === 'function' ? children(dialogController) : children}
           </Dialog>
         }
         {...providerProps}
@@ -98,6 +125,7 @@ export const DialogModal = Object.assign(
   },
   {
     useModalRef: ModalProvider.useRef,
+    useModalRefWithSubject,
     Action: Dialog.Action,
     ActionIcon: Dialog.ActionIcon,
     CancelAction: Dialog.CancelAction,

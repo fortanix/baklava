@@ -24,7 +24,7 @@ export default {
   argTypes: {},
   args: {
     title: 'Modal dialog',
-    trigger: ({ active, activate }) => <Button variant="primary" label="Open modal" onPress={activate}/>,
+    trigger: ({ activate }) => <Button variant="primary" label="Open modal" onPress={activate}/>,
     children: <LoremIpsum paragraphs={15}/>,
   },
   render: (args) => <><LoremIpsum paragraphs={2}/> <DialogModal {...args}/> <LoremIpsum paragraphs={2}/></>,
@@ -32,6 +32,19 @@ export default {
 
 
 export const DialogModalStandard: Story = {};
+
+export const DialogModalNoncloseable: Story = {
+  args: {
+    activeDefault: true,
+    allowUserClose: false,
+    children: ({ close }) => (
+      <article className="bk-body-text">
+        <p>It should not be possible to close this dialog, except through the following button:</p>
+        <p><Button variant="primary" label="Force close" onPress={close}/></p>
+      </article>
+    ),
+  },
+};
 
 export const DialogModalSmall: Story = {
   args: {
@@ -59,7 +72,7 @@ export const DialogModalSlideOver: Story = {
   },
 };
 
-const DialogModalAutoOpen = (props: React.ComponentProps<typeof DialogModal>) => {
+const DialogModalControlledWithRef = (props: React.ComponentProps<typeof DialogModal>) => {
   const ref = DialogModal.useModalRef(null);
   
   // biome-ignore lint/correctness/useExhaustiveDependencies: want to only trigger this once
@@ -79,14 +92,40 @@ export const DialogModalWithRef: Story = {
   render: (args) => (
     <>
       A modal will automatically open after 2 seconds.
-      <DialogModalAutoOpen {...args}/>
+      <DialogModalControlledWithRef {...args}/>
     </>
   ),
 };
 
+const DialogModalControlledWithSubject = (props: React.ComponentProps<typeof DialogModal>) => {
+  type Subject = { name: string };
+  const modal = DialogModal.useModalRefWithSubject<null | Subject>(null);
+  
+  return (
+    <article className="bk-body-text">
+      {modal.subject &&
+        <DialogModal {...props} modalRef={modal.modalRef} title={modal.subject.name}>
+          Details about {modal.subject.name} here.
+        </DialogModal>
+      }
+      
+      <p>A single details modal will be used, filled in with the subject based on which name was pressed.</p>
+      
+      <p><Button variant="primary" label="Open: Alice" onPress={() => { modal.activateWith({ name: 'Alice' }); }}/></p>
+      <p><Button variant="primary" label="Open: Bob" onPress={() => { modal.activateWith({ name: 'Bob' }); }}/></p>
+    </article>
+  );
+};
+export const DialogModalWithSubject: Story = {
+  args: {
+    trigger: undefined,
+  },
+  render: (args) => <DialogModalControlledWithSubject {...args}/>,
+};
+
 export const ConfirmationDialog: Story = {
   args: {
-    trigger: ({ active, activate }) => <Button variant="primary" label="Delete" onPress={activate}/>,
+    trigger: ({ activate }) => <Button variant="primary" label="Delete" onPress={activate}/>,
     display: 'center',
     size: 'small',
     title: 'Confirmation',

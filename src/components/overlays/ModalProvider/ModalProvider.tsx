@@ -48,7 +48,7 @@ export type ModalProviderProps = {
   /** The dialog to be shown in the modal overlay. */
   dialog: (props: ModalDialogProps) => React.ReactNode,
   
-  /** Whether the modal should be active by default. */
+  /** Whether the modal should be active by default. Default: false. */
   activeDefault?: undefined | boolean,
   
   /** Whether to allow users to close the modal manually. */
