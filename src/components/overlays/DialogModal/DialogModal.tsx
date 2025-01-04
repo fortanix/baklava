@@ -81,7 +81,11 @@ export const useModalWithSubject = <S,>(subjectInitial: S | (() => S)): ModalWit
  */
 export const useConfirmationModal = <S,>(
   subjectInitial: S | (() => S),
-  config: { onConfirm: () => void, onCancel?: undefined | (() => void) },
+  config: {
+    actionLabel?: undefined | string,
+    onConfirm: () => void,
+    onCancel?: undefined | (() => void)
+  },
 ) => {
   const modal = useModalWithSubject(subjectInitial);
   return {
@@ -96,7 +100,7 @@ export const useConfirmationModal = <S,>(
       actions: (
         <>
           <Dialog.CancelAction label="Cancel" onPress={config.onCancel}/>
-          <Dialog.SubmitAction label="Confirm" onPress={config.onConfirm}/>
+          <Dialog.SubmitAction label={config.actionLabel || 'Confirm'} onPress={config.onConfirm}/>
         </>
       ),
     },

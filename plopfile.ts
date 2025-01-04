@@ -78,12 +78,13 @@ const componentTemplate = {
       return (
         <{{{element-type}}}
           {...propsRest}
-          className={cx({
-            bk: true,
-            [cl['bk-{{{kebabCase component-name}}}']]: !unstyled,
-            [cl['bk-{{{kebabCase component-name}}}--x']]: variant === 'x',
-            [cl['bk-{{{kebabCase component-name}}}--y']]: variant === 'y',
-          }, propsRest.className)}
+          className={cx(
+            'bk',
+            { [cl['bk-{{{kebabCase component-name}}}']]: !unstyled },
+            { [cl['bk-{{{kebabCase component-name}}}--x']]: variant === 'x' },
+            { [cl['bk-{{{kebabCase component-name}}}--y']]: variant === 'y' },
+            propsRest.className,
+          )}
         />
       );
     };

@@ -15,20 +15,20 @@ export { cl as ModalProviderClassNames };
 
 // Use an active state, but with a delay in unmounting to allow exit transitions time to animate
 export const useActiveWithUnmountDelay = (
-  activeDefault: boolean | (() => boolean),
+  active: boolean,
+  setActive: React.Dispatch<React.SetStateAction<boolean>>,
   unmountDelay = 3000, /*ms*/
-): [boolean, boolean, React.Dispatch<React.SetStateAction<boolean>>] => {
-  const [active, setActive] = React.useState(activeDefault);
+): [boolean, React.Dispatch<React.SetStateAction<boolean>>] => {
   const [shouldMount, setShouldMount] = useDebounce(active, unmountDelay);
   
   const setActiveWithUnmountDelay = React.useCallback((active: React.SetStateAction<boolean>) => {
     setActive(active);
     if (active) { setShouldMount(true); } // Skip the delay when activating (should only be for deactivation)
-  }, [setShouldMount]);
+  }, [setActive, setShouldMount]);
   
   React.useDebugValue(`Active: ${active} / Mounted: ${shouldMount}`);
   
-  return [active, shouldMount, setActiveWithUnmountDelay];
+  return [shouldMount, setActiveWithUnmountDelay];
 };
 
 export type ModalRef = {
@@ -43,12 +43,18 @@ export type ModalProviderProps = {
   ref?: undefined | React.Ref<ModalRef>,
   
   /** The trigger that activates the modal overlay. */
-  children: (triggerProps: { active: boolean, activate: () => void }) => React.ReactNode,
+  children?: undefined | ((triggerProps: { active: boolean, activate: () => void }) => React.ReactNode),
   
   /** The dialog to be shown in the modal overlay. */
   dialog: (props: ModalDialogProps) => React.ReactNode,
   
-  /** Whether the modal should be active by default. Default: false. */
+  /** Whether the modal is active. Use this if you want the modal to be a controlled component. */
+  active?: undefined | boolean,
+  
+  /** If the modal is a controlled component, this callback will be called when the active state should change. */
+  onActiveChange?: undefined | React.Dispatch<React.SetStateAction<boolean>>,
+  
+  /** If uncontrolled, specifies whether the modal should be active by default. Default: false. */
   activeDefault?: undefined | boolean,
   
   /** Whether to allow users to close the modal manually. */
@@ -71,13 +77,16 @@ export const ModalProvider = Object.assign(
       unmountDelay = 3000, // ms
     } = props;
     
-    const [active, shouldMount, setActive] = useActiveWithUnmountDelay(activeDefault, unmountDelay);
+    const [activeUncontrolled, setActiveUncontrolled] = React.useState(activeDefault);
+    const active = typeof props.active !== 'undefined' ? props.active : activeUncontrolled;
+    const setActive = typeof props.onActiveChange !== 'undefined' ? props.onActiveChange : setActiveUncontrolled;
+    const [shouldMount, setActiveWithDelay] = useActiveWithUnmountDelay(active, setActive, unmountDelay);
     
     const modalRef = React.useMemo<ModalRef>(() => ({
-      active,
-      activate: () => { setActive(true); },
-      deactivate: () => { setActive(false); },
-    }), [active, setActive]);
+      active: active,
+      activate: () => { setActiveWithDelay(true); },
+      deactivate: () => { setActiveWithDelay(false); },
+    }), [active, setActiveWithDelay]);
     
     React.useImperativeHandle(ref, () => modalRef, [modalRef]);
     
@@ -89,7 +98,7 @@ export const ModalProvider = Object.assign(
     return (
       <>
         {shouldMount && dialog(dialogProps)}
-        {children(modalRef)}
+        {typeof children === 'function' ? children(modalRef) : children}
       </>
     );
   },

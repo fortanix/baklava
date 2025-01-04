@@ -168,6 +168,7 @@ const packageConfig = {
     'react': '^19.0.0',
     'react-dom': '^19.0.0',
     'react-error-boundary': '^4.1.2',
+    //'@uidotdev/usehooks': '^2.4.1',
     
     '@floating-ui/react': '^0.26.28',
     'react-toastify': '^10.0.6',

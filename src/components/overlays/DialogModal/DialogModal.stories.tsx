@@ -23,7 +23,7 @@ export default {
   },
   argTypes: {},
   args: {
-    title: 'Modal dialog',
+    title: 'Modal Dialog',
     trigger: ({ activate }) => <Button variant="primary" label="Open modal" onPress={activate}/>,
     children: <LoremIpsum paragraphs={15}/>,
   },
@@ -126,6 +126,7 @@ export const DialogModalWithSubject: Story = {
 const DialogModalControlledConfirmation = (props: React.ComponentProps<typeof DialogModal>) => {
   type Subject = { name: string };
   const deleteConfirmer = DialogModal.useConfirmationModal<null | Subject>(null, {
+    actionLabel: 'Delete',
     onConfirm() { globalThis.alert('Confirmed'); },
     onCancel() { globalThis.alert('Canceled'); },
   });
@@ -133,7 +134,7 @@ const DialogModalControlledConfirmation = (props: React.ComponentProps<typeof Di
   return (
     <article className="bk-body-text">
       {deleteConfirmer.subject &&
-        <DialogModal {...deleteConfirmer.props} {...props} title={deleteConfirmer.subject.name}>
+        <DialogModal {...deleteConfirmer.props} {...props} title="Confirm Delete">
           Are you sure you want to delete "{deleteConfirmer.subject.name}"?
         </DialogModal>
       }

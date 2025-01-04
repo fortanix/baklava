@@ -58,7 +58,7 @@ export const useModalDialog = (
   }, []);
   
   // Sync active state with <dialog> DOM state
-  React.useEffect(() => {
+  const sync = () => {
     const dialog = dialogRef.current;
     if (!dialog) { return; } // Nothing to sync with
     
@@ -83,7 +83,9 @@ export const useModalDialog = (
         controller.activate();
       }
     }
-  }, [controller]);
+  };
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `controller` is used in `sync`
+  React.useEffect(sync, [controller]);
   
   // The `beforetoggle` event can be used to detect when a modal opens. Note: browser support is poor currently, but
   // it's okay since we generally control the activation, not the user. In non-supporting browsers, if someone were to
@@ -151,10 +153,17 @@ export const useModalDialog = (
     }
   }, [allowUserClose]);
   
+  // Sync when the ref changes. This helps prevent time issues where `active` is set to `true`, but the dialog is not
+  // yet mounted (and thus the ref is `null`). In that case our sync useEffect will be too early.
+  const dialogRefCallback: React.RefCallback<HTMLDialogElement> = (ref) => {
+    dialogRef.current = ref;
+    sync();
+  };
+  
   return {
     close: requestDialogClose,
     dialogProps: {
-      ref: dialogRef,
+      ref: dialogRefCallback,
       open: undefined, // Do not set `open`, leave it to the browser to manage automatically
       
       onBeforeToggle: handleDialogBeforeToggle,
