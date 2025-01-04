@@ -13,7 +13,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-right: -$caret-width;
+    margin-right: calc(-1 * $caret-width);
   }
 
   .bk-date-picker--input {
@@ -25,7 +25,7 @@
     width: $caret-width;
     height: $caret-width;
     position: relative;
-    left: -$caret-width;
+    left: calc(-1 * $caret-width);
     top: bk.rem-from-px(-1);
   }
 
