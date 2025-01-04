@@ -109,7 +109,11 @@ export const useModalDialog = (
   
   // Handle dialog `close` event. This event is called when the dialog has already been closed (cannot be canceled).
   // https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/close_event
-  const handleDialogClose = React.useCallback(() => {
+  const handleDialogClose = React.useCallback((event: React.SyntheticEvent<HTMLDialogElement>) => {
+    // Stop this event from closing parent dialog elements
+    // XXX `close` events shouldn't bubble, but at least in Chrome v131 it seems like it does?
+    event.stopPropagation();
+    
     /*
     // XXX This is probably not necessary, browsers do this out of the box already
     // Restore focus to last active element before the user opened the modal

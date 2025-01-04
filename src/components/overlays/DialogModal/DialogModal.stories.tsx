@@ -33,6 +33,22 @@ export default {
 
 export const DialogModalStandard: Story = {};
 
+export const DialogModalNested: Story = {
+  args: {
+    title: 'Modal with a submodal',
+    className: 'outer',
+    children: (
+      <DialogModal
+        className="inner"
+        title="Submodal"
+        trigger={({ activate }) => <Button variant="primary" label="Open submodal" onPress={activate}/>}
+      >
+        This is a submodal. Closing this modal should keep the outer modal still open.
+      </DialogModal>
+    ),
+  },
+};
+
 export const DialogModalNoncloseable: Story = {
   args: {
     activeDefault: true,
