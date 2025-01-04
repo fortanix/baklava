@@ -116,18 +116,20 @@
         $scale: var(--bk-dialog-modal-fade-scale),
       );
       
-      max-height: calc(100vb - 5vi); // The larger the viewport width, the more breathing room in height
+      // The larger the viewport width, the more breathing room in height
+      max-height: calc(100vb - min(5vi, 3lh));
+      
       &.bk-dialog-modal--small {
         --bk-dialog-modal-fade-scale: 1.05;
-        max-width: 30vi;
+        max-width: 60ch;
       }
       &.bk-dialog-modal--medium {
         --bk-dialog-modal-fade-scale: 1.04;
-        max-width: 50vi;
+        max-width: 100ch;
       }
       &.bk-dialog-modal--large {
         --bk-dialog-modal-fade-scale: 1.03;
-        max-width: 60vi;
+        max-width: 140ch;
       }
     }
     

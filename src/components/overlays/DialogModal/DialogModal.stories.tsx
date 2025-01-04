@@ -59,6 +59,31 @@ export const DialogModalSlideOver: Story = {
   },
 };
 
+const DialogModalAutoOpen = (props: React.ComponentProps<typeof DialogModal>) => {
+  const ref = DialogModal.useModalRef(null);
+  
+  // biome-ignore lint/correctness/useExhaustiveDependencies: want to only trigger this once
+    React.useEffect(() => {
+    globalThis.setTimeout(() => {
+      ref.current?.activate();
+    }, 2000);
+  }, []);
+  
+  return <DialogModal modalRef={ref} {...props}/>;
+};
+export const DialogModalWithRef: Story = {
+  args: {
+    trigger: undefined,
+    children: 'This modal was automatically opened through a ref.',
+  },
+  render: (args) => (
+    <>
+      A modal will automatically open after 2 seconds.
+      <DialogModalAutoOpen {...args}/>
+    </>
+  ),
+};
+
 export const ConfirmationDialog: Story = {
   args: {
     trigger: ({ active, activate }) => <Button variant="primary" label="Delete" onPress={activate}/>,

@@ -5,7 +5,7 @@
 import * as React from 'react';
 
 import { useDebounce } from '../../../util/hooks/useDebounce.ts';
-import { useControlledDialog, type ControlledDialogProps } from '../../util/Dialog/useControlledDialog.ts';
+import { useModalDialog, type ModalDialogProps } from '../../util/Dialog/useModalDialog.ts';
 
 import cl from './ModalProvider.module.scss';
 
@@ -13,65 +13,87 @@ import cl from './ModalProvider.module.scss';
 export { cl as ModalProviderClassNames };
 
 
-export type ModalProviderRef = {
+// Use an active state, but with a delay in unmounting to allow exit transitions time to animate
+export const useActiveWithUnmountDelay = (
+  activeDefault: boolean | (() => boolean),
+  unmountDelay = 3000, /*ms*/
+): [boolean, boolean, React.Dispatch<React.SetStateAction<boolean>>] => {
+  const [active, setActive] = React.useState(activeDefault);
+  const [shouldMount, setShouldMount] = useDebounce(active, unmountDelay);
+  
+  const setActiveWithUnmountDelay = React.useCallback((active: React.SetStateAction<boolean>) => {
+    setActive(active);
+    if (active) { setShouldMount(true); } // Skip the delay when activating (should only be for deactivation)
+  }, [setShouldMount]);
+  
+  React.useDebugValue(`Active: ${active} / Mounted: ${shouldMount}`);
+  
+  return [active, shouldMount, setActiveWithUnmountDelay];
+};
+
+export type ModalRef = {
+  active: boolean,
   activate: () => void,
   deactivate: () => void,
 };
 
+export const useRef = React.useRef<ModalRef>;
+
 export type ModalProviderProps = {
-  ref?: undefined | React.RefObject<null | ModalProviderRef>,
+  ref?: undefined | React.Ref<ModalRef>,
   
   /** The trigger that activates the modal overlay. */
   children: (triggerProps: { active: boolean, activate: () => void }) => React.ReactNode,
   
-  /** The content to be shown in the modal overlay. */
-  content: (props: ControlledDialogProps) => React.ReactNode,
+  /** The dialog to be shown in the modal overlay. */
+  dialog: (props: ModalDialogProps) => React.ReactNode,
   
   /** Whether the modal should be active by default. */
   activeDefault?: undefined | boolean,
   
-  /** How long to keep the dialog in the DOM for exit animation purposes. Default: 2 seconds. */
-  exitAnimationDelay?: undefined | number,
+  /** Whether to allow users to close the modal manually. */
+  allowUserClose?: undefined | boolean,
+  
+  /** How long to keep the dialog in the DOM for exit animation purposes. Default: 3 seconds. */
+  unmountDelay?: undefined | number,
 };
 /**
  * Provider around a trigger (e.g. button) to display a modal overlay on trigger activation.
  */
-export const ModalProvider = (props: ModalProviderProps) => {
-  const {
-    ref,
-    children,
-    content,
-    activeDefault = false,
-    exitAnimationDelay = 3000, // ms
-  } = props;
-  
-  const [active, setActiveInternal] = React.useState(activeDefault);
-  const [activeWithDelay, setActiveWithDelay] = useDebounce(active, exitAnimationDelay);
-  
-  const setActive = React.useCallback((active: boolean) => {
-    setActiveInternal(active);
-    if (active) { setActiveWithDelay(true); } // Skip the delay when activating (should only be for deactivation)
-  }, [setActiveWithDelay]);
-  
-  const activate = React.useCallback(() => { setActive(true); }, [setActive]);
-  const deactivate = React.useCallback(() => { setActive(false); }, [setActive]);
-  const triggerProps = { active, activate };
-  
-  const dialogProps = useControlledDialog({
-    active,
-    onActiveStateChange: setActive,
-    allowUserClose: true,
-  });
-  
-  React.useImperativeHandle(ref, () => ({
-    activate,
-    deactivate,
-  }), [activate, deactivate]);
-  
-  return (
-    <>
-      {activeWithDelay && content(dialogProps)}
-      {children(triggerProps)}
-    </>
-  );
-};
+export const ModalProvider = Object.assign(
+  (props: ModalProviderProps) => {
+    const {
+      ref,
+      children,
+      dialog,
+      activeDefault = false,
+      allowUserClose = false,
+      unmountDelay = 3000, // ms
+    } = props;
+    
+    const [active, shouldMount, setActive] = useActiveWithUnmountDelay(activeDefault, unmountDelay);
+    
+    const modalRef = React.useMemo<ModalRef>(() => ({
+      active,
+      activate: () => { setActive(true); },
+      deactivate: () => { setActive(false); },
+    }), [active, setActive]);
+    
+    React.useImperativeHandle(ref, () => modalRef, [modalRef]);
+    
+    const dialogProps = useModalDialog(modalRef, {
+      allowUserClose,
+      shouldCloseOnBackdropClick: allowUserClose,
+    });
+    
+    return (
+      <>
+        {shouldMount && dialog(dialogProps)}
+        {children(modalRef)}
+      </>
+    );
+  },
+  {
+    useRef,
+  },
+);

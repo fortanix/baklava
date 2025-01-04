@@ -2,6 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import { mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
 import { Dialog } from '../../containers/Dialog/Dialog.tsx';
@@ -10,10 +11,12 @@ import { ModalProvider, type ModalProviderProps } from '../ModalProvider/ModalPr
 import cl from './DialogModal.module.scss';
 
 
+type Test = React.ComponentProps<typeof Dialog>['ref'];
+
 export { cl as DialogModalClassNames };
 
 export type DialogModalProps = ComponentProps<typeof Dialog> & {
-  modalRef?: undefined | React.RefObject<null | React.ComponentRef<typeof ModalProvider>>,
+  modalRef?: undefined | React.Ref<React.ComponentRef<typeof ModalProvider>>,
   
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
@@ -27,8 +30,14 @@ export type DialogModalProps = ComponentProps<typeof Dialog> & {
   /** The size of the modal. Note: does not apply to full screen modals. */
   size?: undefined | 'small' | 'medium' | 'large',
   
-  /** The modal trigger. */
-  trigger: ModalProviderProps['children'],
+  /**
+   * A modal trigger to render. Will be passed an `activate` callback to open the modal. Optional, if not specified
+   * you can manually trigger the modal through `modalRef` instead.
+   */
+  trigger?: undefined | ModalProviderProps['children'],
+  
+  /** Whether to allow users to close the dialog manually. */
+  allowUserClose?: undefined | boolean,
   
   /** Any additional props to pass to the modal provider. */
   providerProps?: undefined | Omit<ModalProviderProps, 'children'>,
@@ -41,24 +50,26 @@ export const DialogModal = Object.assign(
     const {
       children,
       modalRef,
-      trigger,
       unstyled = false,
       display = 'center',
       slideOverPosition = 'right',
       size = 'medium',
+      trigger = () => null,
+      allowUserClose = true,
+      providerProps,
       ...propsRest
     } = props;
     
     return (
       <ModalProvider
-        ref={modalRef}
-        content={({ close, dialogProps }) =>
+        allowUserClose={allowUserClose}
+        dialog={({ close, dialogProps }) =>
           <Dialog
             flat={['full-screen', 'slide-over'].includes(display)}
             {...dialogProps}
-            showCloseIcon
-            autoFocusClose
-            onRequestClose={close}
+            showCloseIcon={allowUserClose}
+            autoFocusClose={allowUserClose}
+            onRequestClose={allowUserClose ? close : undefined}
             {...propsRest}
             className={cx(
               'bk',
@@ -78,12 +89,15 @@ export const DialogModal = Object.assign(
             {children}
           </Dialog>
         }
+        {...providerProps}
+        ref={mergeRefs(modalRef, providerProps?.ref)}
       >
         {trigger}
       </ModalProvider>
     );
   },
   {
+    useModalRef: ModalProvider.useRef,
     Action: Dialog.Action,
     ActionIcon: Dialog.ActionIcon,
     CancelAction: Dialog.CancelAction,

@@ -5,41 +5,46 @@
 import * as React from 'react';
 
 
-export type UseControlledDialogArgs = {
-  /** Whether the dialog is currently active. */
+export type ModalDialogController = {
+  /** Whether the dialog should be active. */
   active: boolean,
-  
-  /** A callback that will be called when the dialog changes active state. */
-  onActiveStateChange: (active: boolean) => void,
-  
+  /** Notify that the dialog has been opened. Change must be respected (otherwise no longer in sync). */
+  activate: () => void,
+  /** Notify that the dialog has been closed. Change must be respected (otherwise no longer in sync). */
+  deactivate: () => void,
+};
+
+export type UseModalDialogOptions = {
   /**
    * Whether to allow the user to close the modal through the browser (e.g. with the Escape key). Disabling this may
-   * be useful in cases where we need the user to stay in the modal (e.g. pending confirmation, pending form submit).
+   * be useful in cases where we need the user to stay in the modal (e.g. form validation, mandatory onboarding flows).
+   * Note: closing cannot be always be prevented (e.g. browser may force the dialog to close, or closed through JS).
    */
   allowUserClose?: undefined | boolean,
   
-  /** Whether the user clicking the backdrop should close the modal. */
+  /** Whether the user clicking the backdrop should close the modal. Only valid if `allowUserClose` is true. */
   shouldCloseOnBackdropClick?: undefined | boolean,
 };
 
-export type ControlledDialogProps = {
+export type ModalDialogProps = {
   close: () => void,
   dialogProps: React.ComponentProps<'dialog'>,
 };
 
-/**
- * Control the activation state of the given `<dialog>` element through the given `active` boolean.
+/*
+ * A utility hook to control the state of a <dialog> element used as a modal (with `.showModal()`).
  */
-export const useControlledDialog = (args: UseControlledDialogArgs): ControlledDialogProps => {
+export const useModalDialog = (
+  controller: ModalDialogController,
+  options: UseModalDialogOptions,
+): ModalDialogProps => {
   const {
-    active,
-    onActiveStateChange,
     allowUserClose = true,
     shouldCloseOnBackdropClick = true,
-  } = args;
+  } = options;
   
   const dialogRef = React.useRef<HTMLDialogElement>(null);
-  //const lastActiveElementRef = React.useRef<Element>(null);
+  //const lastActiveElementRef = React.useRef<Element>(null); // Note: browsers track this automatically now
   
   const requestDialogClose = React.useCallback(() => {
     const dialog = dialogRef.current;
@@ -55,26 +60,53 @@ export const useControlledDialog = (args: UseControlledDialogArgs): ControlledDi
   // Sync active state with <dialog> DOM state
   React.useEffect(() => {
     const dialog = dialogRef.current;
-    if (!dialog) { return; }
+    if (!dialog) { return; } // Nothing to sync with
     
-    const isDialogOpen = dialog.matches(':modal');
-    if (active && !isDialogOpen) {
+    const isDialogOpenModal = dialog.open && dialog.matches(':modal');
+    
+    if (controller.active && !isDialogOpenModal) { // Should be active but isn't
       // Save a reference to the last focused element before opening the modal
       //lastActiveElementRef.current = document.activeElement;
       
       try {
-        dialog.open = false; // Make sure the <dialog> does not already have a non-modal `open`
+        dialog.open = false; // Make sure the dialog is not open as a non-modal (i.e. through `.show()`)
         dialog.showModal();
       } catch (error: unknown) {
         console.error(`Unable to open modal dialog`, error);
-        onActiveStateChange(false);
+        controller.deactivate();
       }
-    } else if (!active && isDialogOpen) {
-      dialog.close();
+    } else if (!controller.active && isDialogOpenModal) { // Should not be active but is
+      try {
+        dialog.close();
+      } catch (error: unknown) {
+        console.error(`Unable to close modal dialog`, error);
+        controller.activate();
+      }
     }
-  }, [active, onActiveStateChange]);
+  }, [controller]);
   
-  // Handle dialog `close` event
+  // The `beforetoggle` event can be used to detect when a modal opens. Note: browser support is poor currently, but
+  // it's okay since we generally control the activation, not the user. In non-supporting browsers, if someone were to
+  // // manually call `.showModal()` through devtools they could potentially cause a desync.
+  // https://caniuse.com/mdn-api_htmlelement_toggle_event_dialog_elements
+  const handleDialogBeforeToggle = React.useCallback((event: React.ToggleEvent<HTMLDialogElement>) => {
+    if (event.newState === 'open') {
+      controller.activate();
+    }
+  }, [controller]);
+  
+  // Handle dialog `cancel` event. This event is called when the user requests the dialog to close (e.g. with Escape
+  // key). Can be canceled, though browsers do not always respect the cancelation (e.g. Chrome still closes when the
+  // Escape key is hit twice).
+  // https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/close_event
+  const handleDialogCancel = React.useCallback((event: React.SyntheticEvent<HTMLDialogElement>) => {
+    if (!allowUserClose) {
+      event.preventDefault();
+    }
+  }, [allowUserClose]);
+  
+  // Handle dialog `close` event. This event is called when the dialog has already been closed (cannot be canceled).
+  // https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/close_event
   const handleDialogClose = React.useCallback(() => {
     /*
     // XXX This is probably not necessary, browsers do this out of the box already
@@ -85,8 +117,8 @@ export const useControlledDialog = (args: UseControlledDialogArgs): ControlledDi
     }
     */
     
-    onActiveStateChange(false); // Sync with the consumer
-  }, [onActiveStateChange]);
+    controller.deactivate(); // Sync with the controller
+  }, [controller]);
   
   // Handle dialog `click` event
   const handleDialogClick = React.useCallback((event: React.MouseEvent<HTMLDialogElement>) => {
@@ -108,9 +140,9 @@ export const useControlledDialog = (args: UseControlledDialogArgs): ControlledDi
     }
     
     if (allowUserClose && shouldCloseOnBackdropClick && isClickOnBackdrop) {
-      dialog.close();
+      controller.deactivate();
     }
-  }, [allowUserClose, shouldCloseOnBackdropClick]);
+  }, [controller, allowUserClose, shouldCloseOnBackdropClick]);
   
   // Handle dialog `keydown` event
   const handleDialogKeyDown = React.useCallback((event: React.KeyboardEvent<HTMLDialogElement>) => {
@@ -123,8 +155,10 @@ export const useControlledDialog = (args: UseControlledDialogArgs): ControlledDi
     close: requestDialogClose,
     dialogProps: {
       ref: dialogRef,
-      open: undefined, // Leave the `open` attribute to the browser to manage
+      open: undefined, // Do not set `open`, leave it to the browser to manage automatically
       
+      onBeforeToggle: handleDialogBeforeToggle,
+      onCancel: handleDialogCancel,
       onClose: handleDialogClose,
       // Note: we don't need keyboard accessibility for this `onClick`, the backdrop is not (and should not be) an
       // interactive element. This is a visual only convenience, screen readers should use the other close mechanisms.

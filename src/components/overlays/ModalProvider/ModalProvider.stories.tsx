@@ -33,7 +33,7 @@ export default {
 export const ModalProviderStandard: Story = {
   args: {
     children: ({ activate }) => <Button variant="primary" label="Open modal" onPress={activate}/>,
-    content: ({ close, dialogProps }) =>
+    dialog: ({ close, dialogProps }) =>
       <Dialog {...dialogProps} title="Modal dialog" onRequestClose={close}><LoremIpsum paragraphs={5}/></Dialog>,
   },
 };
@@ -41,25 +41,26 @@ export const ModalProviderStandard: Story = {
 export const ModalProviderWithBasicDialog: Story = {
   args: {
     children: ({ activate }) => <Button variant="primary" label="Open modal" onPress={activate}/>,
-    content: ({ close, dialogProps }) => <dialog {...dialogProps}>Content</dialog>,
+    dialog: ({ close, dialogProps }) => <dialog {...dialogProps}>Content</dialog>,
   },
 };
 
-const ModalProviderWithRefControlled = (props: React.ComponentProps<typeof ModalProvider>) => {
-  const ref = React.useRef<React.ComponentRef<typeof ModalProvider>>(null);
+const ModalProviderAutoOpen = (props: React.ComponentProps<typeof ModalProvider>) => {
+  const ref = ModalProvider.useRef(null);
   
-  React.useEffect(() => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: want to only trigger this once
+    React.useEffect(() => {
     globalThis.setTimeout(() => {
       ref.current?.activate();
-    }, 1000);
-  });
+    }, 2000);
+  }, []);
   
   return <ModalProvider ref={ref} {...props}/>;
 };
 export const ModalProviderWithRef: Story = {
-  render: args => <ModalProviderWithRefControlled {...args}/>,
+  render: args => <ModalProviderAutoOpen {...args}/>,
   args: {
-    children: () => <>Modal will open automatically</>,
-    content: ({ dialogProps }) => <dialog {...dialogProps}>This modal was opened through a ref.</dialog>,
+    children: () => <>Modal will open automatically after 2 seconds.</>,
+    dialog: ({ dialogProps }) => <dialog {...dialogProps}>This modal was opened through a ref.</dialog>,
   }
 };
