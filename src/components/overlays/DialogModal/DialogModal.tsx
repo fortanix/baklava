@@ -2,6 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import type { NonUndefined } from '../../../util/types.ts';
+
 import * as React from 'react';
 import { flushSync } from 'react-dom';
 import { mergeRefs } from '../../../util/reactUtil.ts';
@@ -52,16 +54,22 @@ export type DialogModalProps = Omit<React.ComponentProps<typeof Dialog>, 'childr
 
 export type ModalWithSubject<S> = {
   props: Partial<DialogModalProps>,
-  subject: S,
+  subject: undefined | S,
   activateWith: (subject: S | (() => S)) => void,
 };
 /**
  * Utility hook to get a reference to a `DialogModal` for imperative usage. To open, you can call `activate()`, or
  * `activateWith()` if you want to include some subject data to be shown in the modal.
  */
-export const useModalWithSubject = <S,>(subjectInitial: S | (() => S)): ModalWithSubject<S> => {
+export const useModalWithSubject = <S,>(
+  config?: undefined | {
+    subjectInitial?: undefined | S | (() => undefined | S),
+  },
+): ModalWithSubject<S> => {
+  const { subjectInitial } = config ?? {};
+  
   const modalRef = ModalProvider.useRef(null);
-  const [subject, setSubject] = React.useState(subjectInitial);
+  const [subject, setSubject] = React.useState<undefined | S>(subjectInitial);
   
   return {
     props: { modalRef },
@@ -80,14 +88,15 @@ export const useModalWithSubject = <S,>(subjectInitial: S | (() => S)): ModalWit
  * Similar to `useModalWithSubject`, but will be preconfigured for usage as a confirmation modal.
  */
 export const useConfirmationModal = <S,>(
-  subjectInitial: S | (() => S),
   config: {
+    subjectInitial?: undefined | S | (() => undefined | S),
     actionLabel?: undefined | string,
-    onConfirm: () => void,
-    onCancel?: undefined | (() => void)
+    onConfirm: (subject: NonUndefined<S>) => void,
+    onCancel?: undefined | ((subject: NonUndefined<S>) => void)
   },
 ) => {
-  const modal = useModalWithSubject(subjectInitial);
+  const { subjectInitial, actionLabel, onConfirm, onCancel } = config;
+  const modal = useModalWithSubject({ subjectInitial });
   return {
     ...modal,
     props: {
@@ -102,8 +111,26 @@ export const useConfirmationModal = <S,>(
       children: 'Are you sure you want to perform this action?',
       actions: (
         <>
-          <Dialog.CancelAction label="Cancel" onPress={config.onCancel}/>
-          <Dialog.SubmitAction label={config.actionLabel || 'Confirm'} onPress={config.onConfirm}/>
+          <Dialog.CancelAction label="Cancel"
+            onPress={() => {
+              const subject = modal.subject;
+              if (typeof subject === 'undefined') {
+                console.error(`Unexpected: missing subject in confirmation`);
+                return;
+              }
+              onCancel?.(subject);
+            }}
+          />
+          <Dialog.SubmitAction label={actionLabel || 'Confirm'}
+            onPress={() => {
+              const subject = modal.subject;
+              if (typeof subject === 'undefined') {
+                console.error(`Unexpected: missing subject in confirmation`);
+                return;
+              }
+              onConfirm(subject);
+            }}
+          />
         </>
       ),
     },

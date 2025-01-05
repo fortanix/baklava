@@ -121,7 +121,7 @@ export const DialogModalWithRef: Story = {
 
 const DialogModalControlledWithSubject = (props: React.ComponentProps<typeof DialogModal>) => {
   type Subject = { name: string };
-  const modal = DialogModal.useModalWithSubject<null | Subject>(null);
+  const modal = DialogModal.useModalWithSubject<Subject>();
   
   return (
     <article className="bk-body-text">
@@ -147,10 +147,11 @@ export const DialogModalWithSubject: Story = {
 
 const DialogModalControlledConfirmation = (props: React.ComponentProps<typeof DialogModal>) => {
   type Subject = { name: string };
-  const deleteConfirmer = DialogModal.useConfirmationModal<null | Subject>(null, {
+  const [deleted, setDeleted] = React.useState(new Set());
+  const deleteConfirmer = DialogModal.useConfirmationModal<Subject>({
     actionLabel: 'Delete',
-    onConfirm() { globalThis.alert('Confirmed'); },
-    onCancel() { globalThis.alert('Canceled'); },
+    onConfirm(subject) { setDeleted(deleted => new Set([...deleted, subject.name])); },
+    onCancel(subject) { console.log(`Canceled deleting ${subject.name}`); },
   });
   
   return (
@@ -164,12 +165,16 @@ const DialogModalControlledConfirmation = (props: React.ComponentProps<typeof Di
       <p>A single details modal will be used, filled in with the subject based on which name was pressed.</p>
       
       <p>
-        <Button variant="primary" label="Delete Item 1"
+        <Button variant="primary"
+          label={deleted.has('Item 1') ? 'Deleted' : `Delete Item 1`}
+          disabled={deleted.has('Item 1')}
           onPress={() => { deleteConfirmer.activateWith({ name: 'Item 1' }); }}
         />
       </p>
       <p>
-        <Button variant="primary" label="Delete Item 2"
+        <Button variant="primary"
+          label={deleted.has('Item 2') ? 'Deleted' : `Delete Item 2`}
+          disabled={deleted.has('Item 2')}
           onPress={() => { deleteConfirmer.activateWith({ name: 'Item 2' }); }}
         />
       </p>
