@@ -61,6 +61,7 @@ export const ModalProviderWithRef: Story = {
   render: args => <ModalProviderAutoOpen {...args}/>,
   args: {
     children: () => <>Modal will open automatically after 2 seconds.</>,
-    dialog: ({ dialogProps }) => <dialog {...dialogProps}>This modal was opened through a ref.</dialog>,
+    dialog: ({ dialogProps }) =>
+      <dialog aria-modal="true" {...dialogProps}>This modal was opened through a ref.</dialog>,
   }
 };

@@ -57,7 +57,7 @@ export const DialogModalNested: Story = {
   },
 };
 
-export const DialogModalNoncloseable: Story = {
+export const DialogModalUncloseable: Story = {
   args: {
     activeDefault: true,
     allowUserClose: false,

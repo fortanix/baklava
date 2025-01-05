@@ -92,6 +92,9 @@ export const useConfirmationModal = <S,>(
     ...modal,
     props: {
       ...modal.props,
+      // A confirmation modal must use the `role="alertdialog"` rather than the default `role="dialog"`.
+      // See: https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/alertdialog_role
+      role: 'alertdialog',
       display: 'center' as const,
       size: 'small' as const,
       allowUserClose: false, // Force the user to explicitly select an action
@@ -133,12 +136,13 @@ export const DialogModal = Object.assign(
         shouldCloseOnBackdropClick={display !== 'full-screen'}
         dialog={dialogController =>
           <Dialog
-            flat={[/*'full-screen', */'slide-over'].includes(display)}
+            aria-modal="true"
+            flat={['slide-over'].includes(display)}
             {...dialogController.dialogProps}
             showCloseIcon={allowUserClose}
             autoFocusClose={allowUserClose}
             showCancelAction={allowUserClose}
-            onRequestClose={allowUserClose ? dialogController.close : undefined}
+            onRequestClose={dialogController.close}
             {...propsRest}
             className={cx(
               'bk',

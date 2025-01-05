@@ -38,10 +38,11 @@
     
     .bk-dialog__header {
       position: sticky;
-      top: 0;
+      top: -1px; // -1px to prevent bleed through due to pixel rounding
       z-index: 1;
       
       padding-block: var(--bk-dialog-padding-block) calc(bk.$spacing-7 / 2);
+      padding-block-start: calc(var(--bk-dialog-padding-block) + 1px); // 1px to compensate for `top: -1px`
       padding-inline: var(--bk-dialog-padding-inline);
       background: var(--bk-dialog-background-color);
       
@@ -62,6 +63,7 @@
     }
     
     .bk-dialog__content {
+      scroll-margin-top: 100lh; // Workaround for an issue where the content scroll behind the header on focus
       flex: 1;
       
       margin-block: calc(bk.$spacing-7 / 2) calc(bk.$spacing-7 / 2);
@@ -91,5 +93,12 @@
     
     // State: focus
     @include bk.focus-outset;
+    // .bk-dialog__content {
+    //   @include bk.focus-hidden;
+    // }
+    // @include bk.focus-hidden;
+    // &:has(.bk-dialog__content:focus-visible), .pseudo-focus-visible {
+    //   @include bk.focus-outset($selector: '&');
+    // }
   }
 }

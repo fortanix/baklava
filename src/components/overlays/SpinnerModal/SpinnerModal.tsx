@@ -44,7 +44,7 @@ export const SpinnerModal = (props: SpinnerModalProps) => {
       allowUserClose={false}
       unmountDelay={0} // No exit animation, once done we want the spinner away as fast as possible
       dialog={({ dialogProps }) =>
-        <dialog {...dialogProps} inert>
+        <dialog {...dialogProps} inert aria-modal="true">
           <Spinner
             size="large"
             {...propsRest}
