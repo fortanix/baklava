@@ -20,7 +20,7 @@ type UseScrollerArgs = {
 };
 
 type ScrollerProps = {
-  tabIndex: number,
+  tabIndex?: undefined | number,
   // Note: don't use `ClassNameArgument`, because that forces all consumers to apply `cx()`
   className?: undefined | string,
 };
