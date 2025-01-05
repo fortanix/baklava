@@ -59,6 +59,9 @@ export type ModalProviderProps = {
   /** Whether to allow users to close the modal manually. */
   allowUserClose?: undefined | boolean,
   
+  /** Whether clicking on the backdrop should close the modal. Default: true */
+  shouldCloseOnBackdropClick?: undefined | boolean,
+  
   /** How long to keep the dialog in the DOM for exit animation purposes. Default: 3 seconds. */
   unmountDelay?: undefined | number,
 };
@@ -72,7 +75,8 @@ export const ModalProvider = Object.assign(
       children,
       dialog,
       activeDefault = false,
-      allowUserClose = false,
+      allowUserClose = true,
+      shouldCloseOnBackdropClick = true,
       unmountDelay = 3000, // ms
     } = props;
     
@@ -91,7 +95,7 @@ export const ModalProvider = Object.assign(
     
     const dialogProps = useModalDialog(modalRef, {
       allowUserClose,
-      shouldCloseOnBackdropClick: allowUserClose,
+      shouldCloseOnBackdropClick,
     });
     
     return (

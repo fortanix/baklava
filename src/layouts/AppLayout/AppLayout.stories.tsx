@@ -2,11 +2,9 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import cx, { type Argument as ClassNameArgument } from 'classnames';
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, within } from '@storybook/test';
 
 import { OverflowTester } from '../../util/storybook/OverflowTester.tsx';
 import { Header } from './Header/Header.tsx';
@@ -17,13 +15,13 @@ import { Nav } from './Nav/Nav.tsx';
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { Link } from '../../components/actions/Link/Link.tsx';
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
-import { Modal } from '../../components/overlays/Modal/Modal.tsx';
+import { DialogModal } from '../../components/overlays/DialogModal/DialogModal.tsx';
 import { UserMenu } from './Header/UserMenu.tsx';
 
-import { AppLayout } from './AppLayout.tsx';
 import { SolutionSelector } from './Header/SolutionSelector.tsx';
 import { AccountSelector } from './Header/AccountSelector.tsx';
 import { Breadcrumbs } from './Breadcrumbs/Breadcrumbs.tsx';
+import { AppLayout } from './AppLayout.tsx';
 
 
 type AppLayoutArgs = React.ComponentProps<typeof AppLayout>;
@@ -40,21 +38,6 @@ export default {
   render: args => <AppLayout {...args}/>,
 } satisfies Meta<AppLayoutArgs>;
 
-
-type ModalWithTriggerProps = Omit<React.ComponentProps<typeof Modal>, 'active' | 'onClose'> & {
-  triggerLabel?: string,
-  content?: React.ComponentProps<typeof Modal>['children'],
-};
-const ModalWithTrigger = ({ triggerLabel = 'Open modal', content, ...modalProps }: ModalWithTriggerProps) => {
-  const [active, setActive] = React.useState(false);
-  const onClose = React.useCallback(() => { setActive(false); }, [setActive]);
-  return (
-    <>
-      <Button variant="primary" onPress={() => { setActive(true); }}>{triggerLabel}</Button>
-      <Modal children={content} {...modalProps} active={active} onClose={onClose}/>
-    </>
-  );
-};
 
 export const Standard: Story = {
   args: {
@@ -97,9 +80,12 @@ export const Standard: Story = {
           <Panel>
             <Panel.Heading>Panel</Panel.Heading>
             
-            <ModalWithTrigger>
-              <ModalWithTrigger/>
-            </ModalWithTrigger>
+            <DialogModal
+              title="Modal"
+              trigger={({ activate }) => <Button variant="primary" label="Open modal" onPress={() => { activate(); }}/>}
+            >
+              Test
+            </DialogModal>
           </Panel>
           <OverflowTester/>
         </main>

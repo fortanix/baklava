@@ -63,10 +63,13 @@ const preview = {
             ],
             'overlays',
             [
+              'ModalProvider',
+              'SpinnerModal',
+              'DialogModal',
               'Tooltip',
               'TooltipProvider',
-              'Dropdown',
-              'Modal',
+              'DropdownMenu',
+              'Toast',
             ],
             'lists',
             [

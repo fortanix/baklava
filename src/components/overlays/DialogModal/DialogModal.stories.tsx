@@ -33,6 +33,14 @@ export default {
 
 export const DialogModalStandard: Story = {};
 
+export const DialogModalSmall: Story = {
+  args: { size: 'small' },
+};
+
+export const DialogModalLarge: Story = {
+  args: { size: 'large' },
+};
+
 export const DialogModalNested: Story = {
   args: {
     title: 'Modal with a submodal',
@@ -59,18 +67,6 @@ export const DialogModalNoncloseable: Story = {
         <p><Button variant="primary" label="Force close" onPress={close}/></p>
       </article>
     ),
-  },
-};
-
-export const DialogModalSmall: Story = {
-  args: {
-    size: 'small',
-  },
-};
-
-export const DialogModalLarge: Story = {
-  args: {
-    size: 'large',
   },
 };
 

@@ -31,6 +31,29 @@
   }
 }
 
+@mixin dialog-backdrop-opaque($entry-dur: 200ms, $exit-dur: 180ms) {
+  &::backdrop {
+    transition-property: overlay, display, background-color;
+    transition-timing-function: linear;
+    transition-behavior: allow-discrete;
+    
+    // Open state styling
+    background-color: bk.$theme-page-default;
+    
+    // Entry transition styling
+    @media (prefers-reduced-motion: no-preference) { transition-duration: $entry-dur; }
+    @starting-style {
+      background-color: transparent;
+    }
+  }
+  // Exit transition styling
+  // Note: cannot nest the following inside `::backdrop`, since `:not()` needs to apply to the dialog not `::backdrop`
+  &:not([open])::backdrop {
+    @media (prefers-reduced-motion: no-preference) { transition-duration: $exit-dur; }
+    background-color: transparent;
+  }
+}
+
 @mixin dialog-fade-in($entry-dur: 200ms, $exit-dur: 180ms, $scale: 1) {
   transition-property: overlay, display, opacity, scale;
   transition-timing-function: ease-out;
@@ -100,10 +123,12 @@
     max-width: 100vi;
     max-height: 100vb;
     
-    @include dialog-backdrop(
-      $entry-dur: var(--bk-dialog-modal-entry-dur),
-      $exit-dur: var(--bk-dialog-modal-exit-dur),
-    );
+    &:not(.bk-dialog-modal--full-screen) {
+      @include dialog-backdrop(
+        $entry-dur: var(--bk-dialog-modal-entry-dur),
+        $exit-dur: var(--bk-dialog-modal-exit-dur),
+      );
+    }
     
     
     //
@@ -140,7 +165,7 @@
     
     &.bk-dialog-modal--full-screen {
       // FIXME: test this on mobile for potential overflow/shifting. May need to use `dvb`/`dvi` instead?
-      inset: 0;
+      inset: 1rem;
       margin: 0;
       width: auto;
       height: auto;
@@ -148,6 +173,11 @@
       --bk-dialog-modal-entry-dur: 120ms;
       --bk-dialog-modal-exit-dur: 120ms;
       @include dialog-fade-in(
+        $entry-dur: var(--bk-dialog-modal-entry-dur),
+        $exit-dur: var(--bk-dialog-modal-exit-dur),
+      );
+      
+      @include dialog-backdrop-opaque(
         $entry-dur: var(--bk-dialog-modal-entry-dur),
         $exit-dur: var(--bk-dialog-modal-exit-dur),
       );

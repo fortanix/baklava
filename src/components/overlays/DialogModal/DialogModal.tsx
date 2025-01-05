@@ -130,9 +130,10 @@ export const DialogModal = Object.assign(
       <ModalProvider
         activeDefault={activeDefault}
         allowUserClose={allowUserClose}
+        shouldCloseOnBackdropClick={display !== 'full-screen'}
         dialog={dialogController =>
           <Dialog
-            flat={['full-screen', 'slide-over'].includes(display)}
+            flat={[/*'full-screen', */'slide-over'].includes(display)}
             {...dialogController.dialogProps}
             showCloseIcon={allowUserClose}
             autoFocusClose={allowUserClose}
