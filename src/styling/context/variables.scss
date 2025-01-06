@@ -1,0 +1,18 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@mixin styles {
+  :root {
+    /* Sizings */
+    --bk-sizing-1: 0.25rem;
+    --bk-sizing-2: 0.5rem;
+    --bk-sizing-3: 1rem;
+    --bk-sizing-4: 2rem;
+    --bk-sizing-5: 4rem;
+    --bk-sizing-6: 8rem;
+    --bk-sizing-7: 16rem;
+    --bk-sizing-8: 32rem;
+    --bk-sizing-9: 64rem;
+  }
+}

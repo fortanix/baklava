@@ -1,0 +1,19 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-time-picker {
+    @include bk.component-base(bk-time-picker);
+    line-height: 1.8;
+  }
+
+  .bk-time-picker--input {
+    color: bk.$theme-form-text-default;
+    line-height: 1.5;
+    // A manual size increase to accommodate the clock icon without clipping the text.
+    width: bk.rem-from-px(94);
+  }
+}

@@ -6,7 +6,7 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Alert } from '../Alert/Alert.tsx';
+import { Banner } from '../Banner/Banner.tsx';
 
 import { Card } from './Card.tsx';
 
@@ -57,9 +57,9 @@ export const Multiple: Story = {
   decorators: [
     Story => (
       <div style={{ width: '70vw', display: 'flex', flexFlow: 'column', gap: '1.2rem' }}>
-        <Alert kind="info">
+        <Banner variant="info" title="Note:">
           Cards have no margin by default. Use a flex/grid container to space the cards.
-        </Alert>
+        </Banner>
         <Story/>
       </div>
     ),

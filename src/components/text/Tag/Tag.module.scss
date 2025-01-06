@@ -15,18 +15,16 @@
     align-items: center;
     font-size: bk.$font-size-xs;
     padding: bk.$size-2 bk.$spacing-2 bk.$size-3;
+    flex-shrink: 0;
 
     &.bk-tag--with-close-button {
       padding-right: 0;
     }
 
     .bk-tag__icon {
-      --icon-size: 7px;
-
-      width: var(--icon-size);
-      height: var(--icon-size);
-      color: bk.$theme-tag-icon-default;
       cursor: pointer;
+      font-size: 1.2em;
+      color: bk.$theme-tag-icon-default;
       padding: bk.$size-2 bk.$spacing-2 bk.$size-2 bk.$spacing-2;
     }
   }

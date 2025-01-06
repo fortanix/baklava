@@ -14,9 +14,13 @@
     align-self: flex-start;
     
     cursor: pointer;
+    user-select: none;
     
     margin: 0;
-    padding: calc(bk.$spacing-2 - 0.125lh) bk.$spacing-3; /* Note: compensate for line-height difference with Figma */
+    padding: 0;
+    &:not(.bk-button--trimmed) {
+      padding: calc(bk.$spacing-2 - 0.125lh) bk.$spacing-3; /* Note: compensate for line-height difference with Figma */
+    }
     
     /* Transparent border for consistency with other variants that have a border */
     border: bk.$size-1 solid transparent;
@@ -48,11 +52,12 @@
       color: var(--bk-button-color-contrast);
     }
     
+    @include bk.focus-outset;
+    
     /* States */
     /* NOTE: the ordering here is important, more important rules must come later (in case of multiple states) */
     &:is(:focus-visible, :global(.pseudo-focus-visible)) {
       --bk-button-color-accent: #{bk.$theme-button-primary-background-focused};
-      @include bk.focus-outline-close;
     }
     &:is(:hover, :global(.pseudo-hover)) {
       --bk-button-color-accent: #{bk.$theme-button-primary-background-hover};
@@ -67,7 +72,7 @@
       --bk-button-color-contrast: #{bk.$theme-button-primary-text-non-active};
       cursor: not-allowed;
     }
-
+    
     @media (prefers-reduced-motion: no-preference) {
       transition: none 150ms ease-in-out;
       transition-property: border, background, color;

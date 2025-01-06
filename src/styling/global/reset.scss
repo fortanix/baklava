@@ -1,0 +1,105 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use 'sass:meta';
+
+@mixin styles {
+  @include meta.load-css('../lib/reset.css');
+  
+  
+  /* Custom reset overrides */
+  
+  // :focus-visible {
+  //   /* outline: calc(var(--bk-sizing-1) / 2) solid color-contrast(var(--bk-page-color-background) vs white, black); */
+  //   /*
+  //   Note:
+  //     - The following should be overridable by components (e.g. `outline-offset` might not always look good)
+  //     - Focusable elements should never use `outline` for any other purpose than focus outline
+  //     - Use `px` rather than `rem` because these should not scale dynamically
+  //   */
+  //   /* outline: 3px solid var(--bk-focus-outline-color); */
+  //   /* outline-offset: 3px; */
+  //   /* border-radius: 3px; */
+  // }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    :has(:target) {
+      /* Add enough scroll padding so anchors don't get hidden */
+      scroll-padding-top: calc(var(--bk-layout-header-height) + var(--bk-sizing-2));
+    }
+  }
+  
+  
+  
+  
+  /* https://www.youtube.com/watch?v=cCAtD_BAHNw */
+  @media (prefers-reduced-motion: no-preference) {
+    :has(:target) {
+      scroll-behavior: smooth;
+      scroll-padding-top: 1rem;
+    }
+  }
+  
+  button {
+    cursor: pointer;
+  }
+  
+  /*
+  input, select, textarea {
+    -webkit-appearance: revert;
+    appearance: revert;
+  }
+  */
+  
+  
+  // Note: we assume that all styling for dialog (including `:modal` and `:backdrop`) has been hard reset.
+  // `the-new-css-reset` has an exception for `dialog:modal`, but we don't want this exception, so here we unset all.
+  dialog, dialog:modal, dialog::backdrop {
+    all: unset;
+    display: revert;
+    box-sizing: border-box;
+  }
+  
+  // Re-apply a few sensible defaults for dialogs. For reference, see the default user agent styling rules here:
+  // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css
+  dialog {
+    display: block;
+    position: static;
+    
+    &:not([open]) {
+      display: none;
+    }
+  }
+  /*
+  Note: the `:modal` pseudo-class applies when the modal is in the top layer *and* currently open. That means that it
+  stops applying during an exit transition, which will break the styling. The upcoming `:open` pseudo-class doesn't
+  resolve this either. Chrome internally has a `:-internal-dialog-in-top-layer` pseudo-class for this, but it's not
+  exposed.
+  
+  We can work around this by applying the modal styling on `dialog` regardless of `:modal`. However, that breaks
+  regular (non-modal) styling. It is essentially impossible to generically style dialog elements without knowing
+  whether it's going to be used as a modal or not, if we also want exit transitions.
+  
+  This reset assumes you do *not* apply an exit transition. If you do want an exit transition, you must also apply
+  the `position: fixed` (etc.) styling on the base `dialog`.
+  
+  - https://github.com/w3c/csswg-drafts/issues/9912 - "User-agent styles for top layer transitions"
+  - https://github.com/whatwg/html/pull/9387#issuecomment-1599722425
+  - https://issues.chromium.org/issues/40270744 - `:-internal-dialog-in-top-layer`
+  */
+  dialog:modal {
+    position: fixed;
+    inset: 0;
+    
+    margin: auto;
+    //place-self: center; // In the future can use this instead of `margin: auto`
+    width: fit-content;
+    height: fit-content;
+  }
+  dialog::backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0 0 0 / 10%);
+  }
+}

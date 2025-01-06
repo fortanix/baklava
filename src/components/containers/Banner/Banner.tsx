@@ -2,124 +2,184 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import { assertUnreachable } from '../../../util/types.ts';
+
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
-import cl from './Banner.module.scss';
-import { Icon, type IconName } from '../../graphics/Icon/Icon.tsx';
+import { type IconName, type IconProps, Icon } from '../../graphics/Icon/Icon.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
+import { TooltipProvider } from '../../overlays/Tooltip/TooltipProvider.tsx';
+
+import cl from './Banner.module.scss';
 
 
 export { cl as BannerClassNames };
 
-type BannerIconProps = React.PropsWithChildren<ComponentProps<'div'> & {
-  variant: 'informational' | 'warning' | 'alert' | 'success',
-}>;
-const BannerIcon = (props: BannerIconProps) => {
-  const { variant } = props;
+type BannerVariant = 'info' | 'warning' | 'error' | 'success';
+
+type BannerVariantIconProps = Omit<IconProps, 'icon'> & {
+  icon?: IconProps['icon'], // Make optional
+  variant: BannerVariant,
+};
+const BannerVariantIcon = ({ variant, ...propsRest }: BannerVariantIconProps) => {
   const icon = ((): IconName => {
     switch (variant) {
-      case 'informational': return 'info';
+      case 'info': return 'info-filled';
       case 'warning': return 'warning';
-      case 'alert': return 'status-failed';
-      case 'success': return 'status-success';
+      case 'error': return 'status-failed-filled';
+      case 'success': return 'status-success-filled';
+      default: return assertUnreachable(variant);
     }
   })();
-  return (<Icon icon={icon} />);
+  return <Icon icon={icon} {...propsRest}/>;
 };
 
-export type BannerProps = React.PropsWithChildren<ComponentProps<'div'> & {
-  /**
-   * Whether the component should include the default styling. Defaults to false.
-   */
+
+type ActionButtonProps = ComponentProps<typeof Button>;
+/**
+ * A customized version of the `<Button/>` component specifically meant to be used for banner actions.
+ */
+const ActionButton = (props: ActionButtonProps) => {
+  return (
+    <Button trimmed
+      {...props}
+      className={cx(cl['bk-banner__action'], cl['bk-banner__action--button'], props.className)}
+    />
+  );
+};
+
+type ActionIconProps = ComponentProps<typeof Button> & {
+  /** There must be `label` on an icon-only button, for accessibility. */
+  label: Required<ComponentProps<typeof Button>>['label'],
+  
+  /** Optional custom tooltip text, if different from `label`. */
+  tooltip?: undefined | ComponentProps<typeof TooltipProvider>['tooltip'],
+};
+/**
+ * An action that is rendered as just an icon.
+ */
+const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
+  return (
+    <TooltipProvider compact tooltip={typeof tooltip !== 'undefined' ? tooltip : buttonProps.label}>
+      <Button trimmed
+        {...buttonProps}
+        className={cx(cl['bk-banner__action'], cl['bk-banner__action--icon'], buttonProps.className)}
+      />
+    </TooltipProvider>
+  );
+};
+
+
+export type BannerProps = Omit<ComponentProps<'div'>, 'title'> & {
+  /** Whether the component should include the default styling. Defaults to false. */
   unstyled?: undefined | boolean,
-
-  /**
-   * Which variant to display, which changes the color and left icon. Defaults to "informational".
-   */
-  variant?: undefined | 'informational' | 'success' | 'warning' | 'alert',
-
-  /**
-   * The message to displayed on the banner. Mandatory.
-   */
-  title: string,
-
-  /**
-   * A sub message to be displayed next to the title. Optional.
-   */
-  subtitle?: undefined | string,
   
-  /**
-   * Whether the banner can be closed. Optional. Defaults to false.
-   */
-  closeButton?: boolean,
+  /** Whether to trim this component (strip any spacing around the element). */
+  trimmed?: undefined | boolean,
   
-  /**
-   * Any additional actions to be shown in the banner, such as a button.
-   */
+  /** Whether to attempt to display the banner as a single line. */
+  compact?: undefined | boolean,
+  
+  /** Which variant to display, which changes the color and left icon. Defaults to "info". */
+  variant?: undefined | BannerVariant,
+  
+  /** The title of the banner. Optional. */
+  title?: undefined | React.ReactNode,
+  
+  /** If specified, a close action is displayed. Default: false. */
+  showCloseAction?: undefined | boolean,
+  
+  /** Callback that is called when the user requests the banner to close. */
+  onClose?: undefined | (() => void),
+  
+  /** Any additional actions to be shown in the banner. */
   actions?: undefined | React.ReactNode,
-}>;
-
+};
 /**
- * A banner component, similar to a toast.
+ * An inline banner that displays a message to the user, usually of a time-sensitive nature.
  */
-export const Banner = (props: BannerProps) => {
-  const {
-    unstyled = false,
-    variant = 'informational',
-    title = '',
-    subtitle = '',
-    closeButton = false,
-    actions = null,
-    ...propsRest
-  } = props;
-
-  const [isClosed, setIsClosed] = React.useState(false);
-
-  if (isClosed) {
-    return null;
-  }
-
-  return (
-    <div
-      role="presentation"
-      {...propsRest}
-      className={cx({
-        bk: true,
-        [cl['bk-banner']]: !unstyled,
-        [cl[`bk-banner--${variant}`]]: variant,
-      }, propsRest.className)}
-    >
-      <span className={cl['bk-banner__icon']}>
-        <BannerIcon variant={variant} />
-      </span>
-      <strong className={cl['bk-banner__title']}>{title}</strong>
-      {subtitle && (
-        <span className={cl['bk-banner__subtitle']}>{subtitle}</span>
-      )}
+export const Banner = Object.assign(
+  (props: BannerProps) => {
+    const {
+      unstyled = false,
+      trimmed = false,
+      compact = true,
+      variant = 'info',
+      title = '',
+      showCloseAction = false,
+      onClose,
+      actions = null,
+      children,
+      ...propsRest
+    } = props;
+    
+    if (showCloseAction && typeof onClose !== 'function') {
+      console.error(`Missing prop in <Banner/>: 'onClose' function`);
+    }
+    
+    const renderTitle = () => {
+      if (title) { return title; }
       
-      {actions}
-      {closeButton && (
-        <Button
-          className={cl['bk-banner__close-button']}
-          onClick={() => setIsClosed(true)}
-        >
-          <Icon icon="cross" />
-        </Button>
-      )}
-    </div>
-  );
-};
-
-export type BannerActionProps = React.PropsWithChildren<ComponentProps<'div'>>;
-
-/**
- * A wrapper component, intended to easily add some styling to children's `<Button/>`'s. UX expects that such buttons are `<Button variant="tertiary"/>`.
- */
-export const BannerAction = (props: BannerActionProps) => {
-  return (
-    <div className={cl['bk-banner__action']}>
-      {props.children}
-    </div>
-  );
-};
+      switch (variant) {
+        case 'info': return 'Info';
+        case 'warning': return 'Warning';
+        case 'error': return 'Error';
+        case 'success': return 'Success';
+        default: return assertUnreachable(variant);
+      }
+    };
+    
+    return (
+      <div
+        // Note: `role=alert` implies the banner is time-sensitive. If the banner is not time-sensitive, this may need
+        // to be overridden with a more appropriate role (depends on use case).
+        role="alert"
+        {...propsRest}
+        className={cx(
+          'bk',
+          { [cl['bk-banner']]: !unstyled },
+          { [cl['bk-banner--trimmed']]: trimmed },
+          { [cl[`bk-banner--${variant}`]]: variant },
+          propsRest.className,
+        )}
+      >
+        {/* Apply `bk-theme--light` on all children (but not the box itself). */}
+        <header className={cx('bk-theme--light', cl['bk-banner__header'])}>
+          <div className={cx(cl['bk-banner__header__text'])}>
+            <strong className={cx(cl['bk-banner__title'])}>
+              <BannerVariantIcon variant={variant} className={cx(cl['bk-banner__title__icon'])}/>
+              <span className={cx(cl['bk-banner__title__text'])}>{renderTitle()}</span>
+            </strong>
+            {compact && children &&
+              <div className={cx('bk-body-text', cl['bk-banner__message--compact'])}>{children}</div>
+            }
+          </div>
+          
+          <div className={cx(cl['bk-banner__actions'])}>
+            {actions}
+            
+            {showCloseAction &&
+              <ActionIcon
+                label="Close banner"
+                tooltip={null}
+                className={cx(cl['bk-banner__action-close'])}
+                onPress={onClose}
+              >
+                <Icon icon="cross"/>
+              </ActionIcon>
+            }
+          </div>
+        </header>
+        
+        {!compact && children &&
+          <article className={cx('bk-body-text', 'bk-theme--light', cl['bk-banner__message'])}>{children}</article>
+        }
+      </div>
+    );
+  },
+  {
+    ActionButton,
+    ActionIcon,
+  },
+);

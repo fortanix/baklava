@@ -2,7 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@use '../Heading/Heading.mixins.scss' as Heading;
+@use '../../styling/defs.scss' as bk;
+@use '../Heading/Heading.mixins.scss' as heading;
 
 
 /* Match either the current context (&), or a descendent of it */
@@ -13,7 +14,7 @@
   }
 }
 
-@mixin bk-body-text {
+@mixin body-text {
   --bk-body-text-line-height: 1.6;
   --bk-body-block-spacing: 0.8lh;
   
@@ -25,12 +26,12 @@
   hyphens: auto;
   line-height: var(--bk-body-text-line-height);
   
-  @include self-or-descendent(h1) { @include Heading.h1; }
-  @include self-or-descendent(h2) { @include Heading.h2; }
-  @include self-or-descendent(h3) { @include Heading.h3; }
-  @include self-or-descendent(h4) { @include Heading.h4; }
-  @include self-or-descendent(h5) { @include Heading.h5; }
-  @include self-or-descendent(h6) { @include Heading.h6; }
+  @include self-or-descendent(h1) { @include heading.h1; }
+  @include self-or-descendent(h2) { @include heading.h2; }
+  @include self-or-descendent(h3) { @include heading.h3; }
+  @include self-or-descendent(h4) { @include heading.h4; }
+  @include self-or-descendent(h5) { @include heading.h5; }
+  @include self-or-descendent(h6) { @include heading.h6; }
   
   @include self-or-descendent(p) { margin-block-start: var(--bk-body-block-spacing); }
   
@@ -40,7 +41,7 @@
     border-top: 1px solid #dbdbdb;
   }
   
-  @include self-or-descendent(":is(button, input, textarea)") {
+  @include self-or-descendent(':is(button, input, textarea)') {
     transition:
       background-color 0.1s linear,
       border-color 0.1s linear,
@@ -48,13 +49,13 @@
       box-shadow 0.1s linear,
       transform 0.1s ease;
   }
-  @include self-or-descendent(":is(b, strong, th)") {
+  @include self-or-descendent(':is(b, strong, th)') {
     font-weight: 600;
   }
-  @include self-or-descendent(":is(u)") {
+  @include self-or-descendent(':is(u)') {
     text-decoration: underline;
   }
-  @include self-or-descendent(":is(i, em)") {
+  @include self-or-descendent(':is(i, em)') {
     font-style: italic;
   }
   
@@ -152,6 +153,8 @@
     > code {
       padding: 10px;
       display: block;
+      // Note: we don't control the code here, so can't use `useScroller()`. Consumer needs to add the tabindex.
+      // stylelint-disable-next-line declaration-property-value-disallowed-list
       overflow-x: auto;
     }
   }
@@ -220,5 +223,34 @@
   
   > :first-child {
     margin-block-start: 0;
+  }
+}
+
+@mixin styles {
+  // Use a separate layer for body-text so that we can `revert-layer`
+  @layer baklava.body-text {
+    // Do not leak .bk-body-text styling into components
+    // FIXME: browser support for `@scope` is not quite there yet (but we can't do `@supports at-rule()` yet either)
+    @scope (.bk-body-text) to (.isolate, .bk:not(.bk-body-text)) {
+      :scope {
+        @include bk.component-base(bk-body-text);
+        @include body-text;
+      }
+    }
+    
+    /*
+    // Note: without @scope we can only achieve shallow donut selectors, not arbitrary nesting
+    // See: https://css-tricks.com/solved-by-css-donuts-scopes
+    
+    .bk-body-text {
+      @include bk.component-base(bk-body-text);
+      @include body-text;
+    }
+    
+    // Note: need the `#specificity#hack` to make sure we override everything in this layer
+    :is(.bk:not(.bk-body-text) *, #specificity#hack) {
+      all: revert-layer;
+    }
+    */
   }
 }

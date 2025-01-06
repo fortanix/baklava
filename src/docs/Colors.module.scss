@@ -2,7 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@use '../styling/context/theming_mixins.scss' as theming;
+@use '../styling/context/theming.scss' as theming;
 
 @layer storybook {
   .primitive-colors {
@@ -29,14 +29,15 @@
           justify-content: end;
           
           color: black;
+          /* color: color-contrast(var(--color) vs #171717, #e5e5e5); // Insufficient browser support */
+          /* color: white; mix-blend-mode: difference; // Works but results in some ugly colors */
+          color: lch(from var(--color) calc((49.44 - l) * infinity) 0 0); // https://codepen.io/devongovett/pen/QwLbRrW
+          
           font-size: 0.8rem;
           
           dt, dd {
             all: unset;
-            /* color: color-contrast(var(--color) vs black, white); // Insufficient browser support */
-            /* color: white; mix-blend-mode: difference; */
-            
-            color: var(--contrast);
+            color: inherit;
           }
           dt {
             font-weight: 600;

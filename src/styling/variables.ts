@@ -5,6 +5,10 @@
 import variablesText from './variables.scss?raw';
 
 
+/*
+Some utilities to parse out information from `variables.scss` in order to use them in TypeScript code.
+*/
+
 type Variables = Record<string, string>;
 const variables = [...variablesText.matchAll(/\$(.+):(.+)(?:!default).*;/g)].reduce<Variables>(
   (variables, [match, variableName, variableValue]) => {
@@ -12,38 +16,6 @@ const variables = [...variablesText.matchAll(/\$(.+):(.+)(?:!default).*;/g)].red
       variables[variableName.trim()] = variableValue.trim();
     }
     return variables;
-  },
-  {},
-);
-
-
-type VariableName = string;
-
-type Color = { category: string, weight: number, color: string };
-type Colors = Record<VariableName, Color>;
-export const colors = Object.entries(variables).reduce<Colors>(
-  (colors, [variableName, value]) => {
-    const match = variableName.match(/^color-(.+)-(\d+)$/);
-    if (!match) { return colors; }
-    
-    const [_, category, weight] = match;
-    if (typeof category === 'undefined' || typeof weight === 'undefined') { throw new Error(`Expected match`); }
-    
-    colors[variableName] = { category, weight: Number(weight), color: value };
-    return colors;
-  },
-  {},
-);
-
-// Group colors by category
-type ColorsByCategory = Record<VariableName, Record<string, Color>>;
-export const colorsByCategory = Object.values(colors).reduce<ColorsByCategory>(
-  (colorsByCategory, { category, weight, color }) => {
-    colorsByCategory[category] = Object.assign(
-      colorsByCategory[category] ?? {},
-      { [`${category}-${weight}`]: { category, weight: Number(weight), color } },
-    );
-    return colorsByCategory;
   },
   {},
 );
@@ -57,7 +29,13 @@ export const fontSizes = Object.entries(variables).reduce<FontSizes>(
     const [_, sizeQualifier] = match;
     if (typeof sizeQualifier === 'undefined') { throw new Error(`Expected match`); }
     
-    fontSizes[variableName] = { sizeQualifier, sizeInRem: Number(value.replace('rem', '')) };
+    const sizeMatches = value.match(/math\.div\((\d+), (\d+)\)/);
+    if (!sizeMatches) { throw new Error(`Unable to parse size: ${value}`); }
+    
+    fontSizes[variableName] = {
+      sizeQualifier,
+      sizeInRem: Number(sizeMatches[1]) / Number(sizeMatches[2]),
+    };
     return fontSizes;
   },
   {},

@@ -13,7 +13,7 @@
     /* Make sure the content does not have any extra space (e.g. under the line) due to baseline alignment */
     display: flex;
     
-    > input {
+    .bk-select__input {
       min-width: $bk-select-min-width;
       caret-color: transparent; /* FIXME: find better way to manage the input state */
     }
@@ -22,7 +22,6 @@
   .bk-select__dropdown {
     min-width: $bk-select-min-width;
     max-height: 18rem;
-    overflow-y: auto;
     
     background: bk.$theme-dropdown-menu-menu-background-default;
     border: 1px solid bk.$theme-dropdown-menu-menu-border-default;

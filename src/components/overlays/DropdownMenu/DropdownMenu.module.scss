@@ -12,10 +12,11 @@
     
     --bk-dropdown-menu-transition-duration: 150ms;
     
+    overflow: hidden;
+    
     min-width: $bk-dropdown-menu-min-width;
     max-height: 18rem;
     padding-bottom: 8px;
-    overflow-y: auto;
     
     background: bk.$theme-dropdown-menu-menu-background-default;
     border: 1px solid bk.$theme-dropdown-menu-menu-border-default;
@@ -89,10 +90,6 @@
         font-size: 14px;
         line-height: 24px;
         
-        &:focus-visible {
-          @include bk.focus-inset;
-        }
-        
         display: flex;
         align-items: center;
         gap: bk.$spacing-3;
@@ -100,6 +97,8 @@
         .bk-dropdown-menu__item__icon {
           font-size: 1.4em;
         }
+        
+        @include bk.focus-inset;
       }
     }
     

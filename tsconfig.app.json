@@ -1,0 +1,61 @@
+{
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    
+    // Emission
+    "noEmit": true, // Do not emit by default (only type check)
+    //"emitDeclarationOnly": false,
+    "target": "ES2023", // JavaScript language version to emit
+    "module": "ESNext", // The type of file to emit (CommonJS/ESM/etc.)
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    
+    // Imports
+    "moduleResolution": "bundler", // Resolve import specifiers like bundlers (allows explicit file extensions)
+    "moduleDetection": "force", // Enforce that we're always using ESM
+    "isolatedModules": true, // Restrict language features not compatible with tools like babel
+    "allowImportingTsExtensions": true, // Allow importing `.ts` extensions
+    "allowJs": true, // If `true` allows to import `.js` files
+    "resolveJsonModule": true, // Allow importing `.json` files
+    "forceConsistentCasingInFileNames": true, // Do not allow case-insensitive import file name matching
+    "paths": {
+      //"@": ["./src"],
+    },
+    
+    // Type checking
+    "lib": ["ES2024", "DOM", "DOM.Iterable"], // Library declaration files to include (globally)
+    "skipLibCheck": true, // Do not type check declaration files (for performance)
+    "noErrorTruncation": true,
+    
+    // Language
+    "strict": true,
+    "exactOptionalPropertyTypes": true,
+    "noUncheckedIndexedAccess": true,
+    "useDefineForClassFields": true, // Use latest ES spec version of class fields
+    "jsx": "react-jsx",
+    
+    // Linting
+    //"noUnusedLocals": true,
+    //"noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    
+    // Check CSS module class names in the IDE
+    "plugins": [{
+      "name": "typescript-plugin-css-modules",
+      "options": {
+        //"classnameTransform": "camelCase",
+        //"goToDefinition": true,
+      },
+    }],
+  },
+  "include": [
+    "app",
+    "src",
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts",
+    "src/components/navigations/Tabs/Tabs.stories.tsx", // FIXME: need to fix a few type errors
+  ],
+}

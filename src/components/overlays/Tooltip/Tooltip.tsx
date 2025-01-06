@@ -3,8 +3,9 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { assertUnreachable } from '../../../util/types.ts';
-import { ClassNameArgument, classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import * as React from 'react';
+import { ClassNameArgument, classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
+import { useScroller } from '../../../layouts/util/Scroller.tsx';
 
 import { Icon, IconProps } from '../../graphics/Icon/Icon.tsx';
 
@@ -21,6 +22,9 @@ export type TooltipProps = React.PropsWithChildren<ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
+  /** Whether this tooltip should be rendered compact (minimal padding). */
+  compact?: undefined | boolean,
+  
   /** Whether you want the component to have a fixed width. If unset, it will have dynamic size. */
   size?: undefined | TooltipSize,
   
@@ -30,7 +34,18 @@ export type TooltipProps = React.PropsWithChildren<ComponentProps<'div'> & {
 /**
  * A tooltip. Used by `TooltipProvider` to display a tooltip popover.
  */
-export const Tooltip = ({ children, unstyled = false, arrow, size = undefined, ...propsRest }: TooltipProps) => {
+export const Tooltip = (props: TooltipProps) => {
+  const {
+    children,
+    unstyled = false,
+    compact = false,
+    arrow,
+    size = undefined,
+    ...propsRest
+  } = props;
+  
+  const scrollerProps = useScroller();
+  
   const arrowClassNames = ((): ClassNameArgument => {
     if (!arrow) { return; }
     
@@ -48,18 +63,17 @@ export const Tooltip = ({ children, unstyled = false, arrow, size = undefined, .
       role="tooltip" // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/tooltip_role
       {...propsRest}
       className={cx(
-        {
-          bk: true,
-          [cl['bk-tooltip']]: !unstyled,
-          [cl['bk-tooltip--small']]: size === 'small',
-          [cl['bk-tooltip--medium']]: size === 'medium',
-          [cl['bk-tooltip--large']]: size === 'large',
-        },
+        'bk',
+        { [cl['bk-tooltip']]: !unstyled, },
+        { [cl['bk-tooltip--compact']]: compact },
+        { [cl['bk-tooltip--small']]: size === 'small' },
+        { [cl['bk-tooltip--medium']]: size === 'medium' },
+        { [cl['bk-tooltip--large']]: size === 'large' },
         arrowClassNames,
         propsRest.className,
       )}
     >
-      <div className={cx(cl['bk-tooltip__content'], 'bk-body-text')}>
+      <div {...scrollerProps} className={cx(cl['bk-tooltip__content'], 'bk-body-text', scrollerProps.className)}>
         {children}
       </div>
     </div>

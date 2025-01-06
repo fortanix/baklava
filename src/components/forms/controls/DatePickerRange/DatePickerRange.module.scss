@@ -1,0 +1,20 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+@use '../../../../styling/lib/react-datepicker.scss';
+
+@layer baklava.components {
+  .bk-date-picker-range {
+    @include bk.component-base(bk-date-picker-range);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .bk-date-picker-range--input {
+    width: bk.rem-from-px(134);
+    color: bk.$theme-form-text-default;
+  }
+}

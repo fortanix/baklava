@@ -5,6 +5,7 @@
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import * as React from 'react';
 
+import { Button } from '../../actions/Button/Button.tsx';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
 
 import cl from './Tag.module.scss';
@@ -46,7 +47,9 @@ export const Tag = (props: TagProps) => {
     >
       {content}
       {onRemove && (
-        <Icon icon="cross" className={cl['bk-tag__icon']} onClick={onRemove}/>
+        <Button unstyled onPress={onRemove} aria-label="Remove tag">
+          <Icon icon="cross" className={cl['bk-tag__icon']}/>
+        </Button>
       )}
     </div>
   );

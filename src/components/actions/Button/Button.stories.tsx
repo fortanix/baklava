@@ -10,7 +10,7 @@ import * as React from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 import { Icon } from '../../graphics/Icon/Icon.tsx';
-import { Alert } from '../../containers/Alert/Alert.tsx';
+import { Banner } from '../../containers/Banner/Banner.tsx';
 
 import { Button } from './Button.tsx';
 
@@ -22,10 +22,9 @@ export default {
   component: Button,
   parameters: {
     layout: 'centered',
-    design: { type: 'figma', url: 'https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fdesign%2FnOF5w9LfPiJabQD5yPzCEp%2F2024-Design-System-UX%3Fnode-id%3D327%253A6150%26t%3DjsTF1ykn6P4yp2et-1' },
+    design: { type: 'figma', url: 'https://www.figma.com/design/ymWCnsGfIsC2zCz17Ur11Z/Design-System-UX?node-id=4599-156236&m=dev' },
   },
   tags: ['autodocs'],
-  argTypes: {},
   args: {
     unstyled: false,
     label: 'Button',
@@ -40,10 +39,12 @@ export default {
     Story => (
       <ErrorBoundary
         FallbackComponent={({ error, resetErrorBoundary }) =>
-          <Alert kind="error" style={{ width: '80cqi' }}>
-            <p>Error: {error?.message}</p>
-            <p><Button variant="tertiary" label="Reset" onClick={resetErrorBoundary}/></p>
-          </Alert>
+          <Banner variant="error" style={{ width: '60cqi' }}
+            title="Error"
+            actions={<Banner.ActionButton label="Reset" onPress={resetErrorBoundary}/>}
+          >
+            {error?.message}
+          </Banner>
         }
       >
         <Story/>
@@ -258,5 +259,22 @@ export const CustomContentWithIconAfter: Story = {
       Button with icon
       <Icon icon="caret-down" className="icon"/>
     </>,
+  },
+};
+
+/**
+ * Buttons come with some padding around the text. If you want to trim this, set `trimmed="true"`. This can be
+ * useful, for example when you want to control the height of the button, or make it fit a single line height.
+ */
+export const ButtonTrimmed: Story = {
+  ...Tertiary,
+  args: {
+    ...Tertiary.args,
+    trimmed: true,
+    children: <>
+      Trimmed button
+      <Icon icon="caret-down" className="icon"/>
+    </>,
+    style: { background: 'light-dark(white, black)' },
   },
 };

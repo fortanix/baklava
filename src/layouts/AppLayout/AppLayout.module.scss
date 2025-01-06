@@ -56,9 +56,7 @@
       > [slot='actions'] { grid-column: account-actions-start / user-actions-end; }
       
       > [slot='logo'] {
-        &:focus-visible {
-          @include bk.focus-inset;
-        }
+        @include bk.focus-inset;
       }
     }
     

@@ -2,19 +2,14 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import * as React from 'react';
 import { mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
-import * as React from 'react';
 
 import { useListNavigation, type Placement } from '@floating-ui/react';
 import { usePopover } from '../../util/Popover/Popover.tsx';
 
-import { DropdownMenuContext, type OptionKey, type OptionDef, Action, Option, DropdownMenu } from './DropdownMenu.tsx';
-
-import cl from './DropdownMenuProvider.module.scss';
-
-
-export { cl as DropdownMenuClassNames };
+import { DropdownMenuContext, type OptionDef, Action, Option, DropdownMenu } from './DropdownMenu.tsx';
 
 
 export type AnchorRenderArgs = {
@@ -47,7 +42,7 @@ export const DropdownMenuProvider = Object.assign(
   (props: DropdownMenuProviderProps) => {
     const { children, unstyled = false, items, placement = 'bottom', enablePreciseTracking, ...propsRest } = props;
     
-    const selectedRef = React.useRef<React.ElementRef<typeof Option>>(null);
+    const selectedRef = React.useRef<React.ComponentRef<typeof Option>>(null);
     const [selected, setSelected] = React.useState<null | OptionDef>(null);
     
     const listRef = React.useRef([]);
@@ -120,7 +115,6 @@ export const DropdownMenuProvider = Object.assign(
     };
     
     return (
-      // @ts-ignore React 19
       <DropdownMenuContext value={context}>
         {renderAnchor()}
         
@@ -131,36 +125,11 @@ export const DropdownMenuProvider = Object.assign(
             ...propsRest,
             className: cx(propsRest.className),
           })}
-          tabIndex={undefined}
           ref={mergeRefs<HTMLUListElement>(refs.setFloating, propsRest.ref)}
           data-placement={placementEffective}
         >
           {items}
         </DropdownMenu>
-        {/* <Button variant="primary"
-          {...propsRest}
-          className={cx(
-            'bk',
-            { [cl['bk-dropdown']]: !unstyled },
-            propsRest.className,
-          )}
-          {...getReferenceProps()}
-          ref={mergeRefs(selectedRef, refs.setReference as any)}
-        >
-          {context.selectedOption ? `Selected: ${context.selectedOption}` : 'Open dropdown'}
-        </Button> */}
-        {/* <ul
-          ref={refs.setFloating}
-          data-placement={placement}
-          {...getFloatingProps({
-            popover: 'manual',
-            style: floatingStyles,
-            className: cl['bk-dropdown__dropdown'],
-          })}
-          tabIndex={undefined} // Overwrite `tabIndex={-1}` so that we don't allow programmatic focus
-        >
-          {children}
-        </ul> */}
       </DropdownMenuContext>
     );
   },

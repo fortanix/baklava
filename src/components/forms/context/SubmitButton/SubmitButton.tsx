@@ -87,7 +87,7 @@ export const SubmitButton = (props: SubmitButtonProps) => {
       variant="primary" // Primary by default
       form={formContext.formId}
       {...propsButton}
-      // @ts-ignore We're using an invalid `type` on purpose here, this is meant to be used internally only.
+      // @ts-expect-error We're using an invalid `type` on purpose here, this is meant to be used internally only.
       type={internalSubmitSymbol}
       disabled={isDisabled}
       onClick={handleClick}

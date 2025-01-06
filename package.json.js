@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 
 const packageConfig = {
   name: '@fortanix/baklava',
-  version: '1.0.0-beta-20241206',
+  version: '1.0.0-beta-20250102',
   license: 'MPL-2.0',
   author: 'Fortanix',
   description: 'Fortanix Baklava design system',
@@ -30,8 +30,17 @@ const packageConfig = {
       //'require': './dist/baklava.cjs',
       'default': './dist/baklava.js',
     },
+    // Expose variables for use in consumer components
     './styling/variables.scss': {
       'default': './src/styling/variables.scss',
+    },
+    // Expose mixins for use in consumer components
+    './styling/defs.scss': {
+      'default': './src/styling/defs.scss',
+    },
+    // Expose layer ordering, since consumers may want to explicitly emit these first (see note in README.md)
+    './styling/layers.scss': {
+      'default': './src/styling/layers.scss',
     },
   },
   
@@ -46,6 +55,7 @@ const packageConfig = {
     'plop': 'NODE_OPTIONS="--import tsx" plop',
     'import': 'tsx scripts/import.ts',
     'automate': 'tsx scripts/automate.ts',
+    'verify': 'tsx scripts/verify.ts',
     
     // Library
     //'lib:build': '',
@@ -53,24 +63,35 @@ const packageConfig = {
     // App
     'serve:dev': 'vite --config=./vite.config.ts serve',
     //'build': 'vite --config=./vite.config.ts --emptyOutDir build && cp src/types/vite-env.d.ts dist && echo \'{"name": "@fortanix/baklava","main": "./baklava.js"}\' > dist/package.json',
-    'build': 'vite --config=./vite.config.ts --emptyOutDir build',
+    'build': 'tsc -b && vite --config=./vite.config.ts build && npm run verify verify:build',
     
     // Storybook
     'storybook:serve': 'storybook dev -p 6006',
     'storybook:build': 'storybook build --docs',
+    'chromatic': 'npx chromatic', // Must be run with `CHROMATIC_PROJECT_TOKEN` env variable (secret)
     
     // Static analysis
-    'check:types': 'tsc --noEmit',
+    'check:types': 'tsc -b',
     'lint:style': `stylelint 'src/**/*.scss'`,
     'lint:script': 'biome lint',
     'lint': 'npm run lint:style; npm run lint:script',
     
     // Test
     // Note: use `vitest run --root=. src/...` to run a single test file
-    'test:unit': 'vitest run --root=.', // Need to specify `--root=.` since the vite root is set to `./app`
-    'test': 'npm run check:types; npm run lint:style; npm run test:unit',
+    //'test:unit': 'vitest run --root=.', // Need to specify `--root=.` since the vite root is set to `./app`
+    'test': 'npm run check:types && npm run lint:style', // TODO: add `lint:script`, `test:unit`
     'test-ui': 'vitest --ui',
     'coverage': 'vitest run --coverage',
+    
+    // Browser automation tests
+    // https://github.com/storybookjs/test-runner?tab=readme-ov-file#2-running-against-locally-built-storybooks-in-ci
+    'test:storybook': 'test-storybook --failOnConsole --browsers chromium', // For text only: FORCE_COLOR=false
+    'test:storybook-ci': `
+      npx playwright install --with-deps chromium\
+        && npx concurrently -k -s first -n "SB,TEST" -c "magenta,blue"\
+          "npm run storybook:build --quiet && npx http-server storybook-static --port 6006 --silent"\
+          "npx wait-on tcp:6006 && npm run test:storybook"
+    `,
     
     // Shorthands
     'start': 'npm run storybook:serve',
@@ -103,6 +124,7 @@ const packageConfig = {
     // Testing
     'vitest': '^2.1.8',
     '@vitest/ui': '^2.1.8',
+    'axe-playwright': '^2.0.3',
     
     // Storybook
     'storybook': '^8.4.7',
@@ -110,12 +132,14 @@ const packageConfig = {
     '@storybook/react-vite': '^8.4.7',
     '@storybook/blocks': '^8.4.7',
     '@storybook/test': '^8.4.7',
+    '@storybook/test-runner': '^0.21.0',
     '@storybook/addon-essentials': '^8.4.7',
     '@storybook/addon-a11y': '^8.4.7',
     '@storybook/addon-interactions': '^8.4.7',
     '@storybook/addon-links': '^8.4.7',
     '@storybook/addon-storysource': '^8.4.7',
     '@storybook/addon-designs': '^8.0.4',
+    'chromatic': '^11.20.0',
     '@chromatic-com/storybook': '^3.2.2', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     'storybook-dark-mode': '^4.0.2',
@@ -125,8 +149,7 @@ const packageConfig = {
     // Styling
     'vite-css-modules': '^1.6.0',
     'typescript-plugin-css-modules': '^5.0.1',
-    'sass-embedded': '^1.82.0',
-    'postcss-color-contrast': '^1.1.0',
+    'sass-embedded': '^1.83.0',
     'lightningcss': '^1.28.2',
     
     // React
@@ -161,6 +184,7 @@ const packageConfig = {
     'react-hook-form': '^7.54.0',
     
     'optics-ts': '^2.4.1',
+    "react-datepicker": "^7.5.0",
   },
   peerDependencies: {
     'react': '>= 19.0.0',
@@ -175,6 +199,11 @@ const packageConfig = {
     },
     // Issue: https://github.com/storybookjs/icons/issues/34
     '@storybook/icons': {
+      'react': '$react',
+      'react-dom': '$react-dom',
+    },
+    // Issue: https://github.com/Hacker0x01/react-datepicker/issues/5273
+    'react-datepicker': {
       'react': '$react',
       'react-dom': '$react-dom',
     },

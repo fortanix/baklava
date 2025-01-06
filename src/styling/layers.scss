@@ -1,0 +1,24 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/* Cascade layer ordering */
+
+/*
+Note: this ordering must be emitted before any other CSS rules, because browsers determine the layering order by which
+layers are specified first. Take particular care that in Sass, `@import` rules are hoisted, and so any `@import` may
+break our layering order [1]. `@import` is deprecated anyway, so we should not use it anywhere.
+
+References:
+- [1] https://github.com/sass/sass/issues/3842
+*/
+
+@mixin styles {
+  @layer normalize, reset, baklava, app, accessibility, storybook;
+  @layer baklava.base, baklava.body-text, baklava.theming, baklava.components, baklava.overrides;
+}
+
+/*
+In production Storybook builds it is hard to guarantee style ordering, so we also inject this list at the top
+of `preview-head.html`.
+*/

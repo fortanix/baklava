@@ -2,8 +2,9 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import * as React from 'react';
+import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
+import { useScroller } from '../../../layouts/util/Scroller.tsx';
 
 import { type IconName, Icon } from '../../graphics/Icon/Icon.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
@@ -53,6 +54,7 @@ export type ActionProps = React.PropsWithChildren<ComponentProps<typeof Button> 
  */
 export const Action = (props: ActionProps) => {
   const { itemKey, label, icon, onActivate, ...propsRest } = props;
+  
   const context = useDropdownMenuContext();
   const { optionProps, selectedOption, selectOption } = context;
   
@@ -139,12 +141,17 @@ export const DropdownMenu = Object.assign(
   (props: DropdownMenuProps) => {
     const { children, unstyled = false, ...propsRest } = props;
     
+    const scrollerProps = useScroller();
+    
     return (
       <ul
+        {...scrollerProps}
         {...propsRest}
         className={cx(
           'bk',
           { [cl['bk-dropdown-menu']]: !unstyled },
+          scrollerProps.className,
+          propsRest.className,
         )}
       >
         {children}

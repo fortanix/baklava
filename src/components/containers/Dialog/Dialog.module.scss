@@ -8,159 +8,83 @@
 @layer baklava.components {
   .bk-dialog {
     @include bk.component-base(bk-dialog);
-    @include Panel.bk-panel;
+    @include Panel.panel; // Reuse styling from `Panel`
     
-    /* --bk-dialog-background-color: color-mix(in srgb, var(--bk-panel-background-color) 80%, transparent); */
-    --bk-dialog-background-color:  var(--bk-panel-background-color);
+    --bk-dialog-background-color: var(--bk-panel-background-color);
+    --bk-dialog-padding-block: #{bk.$spacing-8};
+    --bk-dialog-padding-inline: #{bk.$spacing-8};
     
-    --bk-dialog-inset: calc(var(--bk-sizing-3) + var(--bk-sizing-2));
+    margin: 0;
+    padding: 0; // Do not apply padding on the outermost container (do it on the lower level elements instead)
     
-    position: static;
-    
-    margin: auto;
-    padding: 0;
-    width: var(--bk-sizing-9);
-    max-width: calc(100% - 6px - 2em);
-    height: fit-content;
-    min-height: 60%;
-    max-height: calc(100% - 6px - 2em);
-    
-    box-shadow: 0 8px 10px 1px rgba(0 0 0 / 14%), 0 3px 14px 2px rgba(0 0 0 / 12%), 0 5px 5px -3px rgba(0 0 0 / 3%);
-    background-color: var(--bk-dialog-background-color);
-    border-radius: var(--bk-sizing-2);
+    border-radius: bk.$radius-3;
+    &.bk-dialog--flat {
+      border: none;
+      border-radius: 0;
+    }
     
     display: flex;
     flex-direction: column;
     
+    &:not([open]) {
+      display: none;
+    }
+    
     .bk-dialog__header {
       position: sticky;
       top: 0;
-      padding: var(--bk-sizing-2) var(--bk-dialog-inset);
+      z-index: 1;
       
+      padding-block: var(--bk-dialog-padding-block) (bk.$spacing-7 / 2);
+      padding-inline: var(--bk-dialog-padding-inline);
       background: var(--bk-dialog-background-color);
-      
-      --header-shadow-size: calc(var(--bk-sizing-1) / 2);
-      box-shadow: 0 var(--header-shadow-size) 0 0 rgba(0 0 0 / 12%);
-      /* Clip everything except the bottom shadow (-1px for weird clipping behavior with scroll) */
-      clip-path: inset(-1px -1px calc(-1 * var(--header-shadow-size)) -1px);
       
       display: flex;
       flex-direction: row;
-      align-items: baseline;
+      align-items: center;
+      gap: bk.$spacing-4;
       
-      h1 {
-        font-size: 1.4rem;
-        font-weight: 300;
-        text-transform: uppercase;
+      .bk-dialog__header__title {
+        @include bk.text-one-line;
       }
       
-      :nth-child(1 of :global(.action)) {
-        margin-left: auto;
-      }
-      :global(.action) {
-        align-self: center;
+      .bk-dialog__header__actions {
+        margin-inline-start: auto;
+        
+        .bk-dialog__header-action-close { --keep: ; }
       }
     }
     
     .bk-dialog__content {
-      flex: 1; /* Make sure we cover all available space */
-      padding: var(--bk-dialog-inset);
-      padding-top: var(--bk-sizing-3);
+      flex: 1;
+      
+      margin-block: (bk.$spacing-7 / 2) (bk.$spacing-7 / 2);
+      padding-inline: var(--bk-dialog-padding-inline);
     }
     
     .bk-dialog__actions {
-      padding: var(--bk-dialog-inset);
-      padding-top: 0;
+      position: sticky;
+      bottom: 0;
+      z-index: 1;
+      
+      padding-block: (bk.$spacing-7 / 2) bk.$spacing-9;
+      padding-inline: var(--bk-dialog-padding-inline);
+      // In Figma, actions have an indent. But that might be only if the content itself has an indent, need to check.
+      //padding-inline-start: calc(var(--bk-dialog-padding-inline) + bk.$spacing-8);
+      
+      background: var(--bk-dialog-background-color);
       
       display: flex;
       flex-direction: row;
-      gap: 0.8rem;
-    }
-    
-    
-    /* Variant: slide out */
-    --dialog-slide-out-inset: var(--bk-sizing-3);
-    &:is(.bk-dialog--slide-out-left, .bk-dialog--slide-out-right) {
-      position: fixed;
-      inset: 0;
-      margin: 0;
-      width: 60vw;
-      height: auto;
-      max-height: 100%;
+      align-items: center;
+      gap: bk.$spacing-4;
       
-      &.bk-dialog--slide-out-left {
-        right: auto;
-        transform-origin: center left;
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
-      }
-      &.bk-dialog--slide-out-right {
-        left: auto;
-        transform-origin: center right;
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
-      }
-      
-      opacity: 1;
-      transform: scaleX(0);
-      &:modal {
-        transform: scaleX(1);
-        
-        @starting-style {
-          opacity: 1;
-          transform: scaleX(0);
-        }
-      }
-      
-      .bk-dialog__content {
-        overflow: auto;
-      }
+      .bk-dialog__action { --keep: ; }
+      .bk-dialog__action--icon { --keep: ; }
+      .bk-dialog__action--button { --keep: ; }
     }
     
-    
-    /* https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#animating_dialogs */
-    
-    &:not([open]) {
-      opacity: 0;
-      scale: 0.98 0.98;
-      transition:
-        opacity 1ms ease-out,
-        scale 1ms ease-out,
-        overlay 1ms ease-out allow-discrete,
-        display 1ms ease-out allow-discrete;
-      transition-duration: 200ms; /* Exit transition duration */
-    }
-    
-    &:modal {
-      display: flex;
-      opacity: 1;
-      scale: 1 1;
-      transition-duration: 120ms; /* Enter transition duration */
-      transition-timing-function: ease-in;
-      
-      @starting-style {
-        opacity: 0;
-        scale: 1.05 1.05;
-      }
-    }
-  }
-  
-  /* Note: `::backdrop` cannot be nested/scoped (at least in Chrome v120) */
-  .bk-dialog::backdrop {
-    --transition-time: 200ms;
-    background-color: rgb(0 0 0 / 0%);
-    transition:
-      display var(--transition-time) allow-discrete,
-      overlay var(--transition-time) allow-discrete,
-      background-color var(--transition-time);
-  }
-  .bk-dialog:modal::backdrop {
-    background-color: rgb(0 0 0 / 20%);
-    backdrop-filter: blur(5px); /* Should be in px, not rem (blur effect should be constant) */
-  }
-  @starting-style {
-    .bk-dialog:modal::backdrop {
-      background-color: rgb(0 0 0 / 0%);
-    }
+    // State: focus
+    @include bk.focus-outset;
   }
 }

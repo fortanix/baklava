@@ -44,6 +44,8 @@ export const Standard: Story = {
         <DropdownMenuProvider.Option optionKey="option-4" label="Option 4"/>
         <DropdownMenuProvider.Option optionKey="option-5" label="Option 5"/>
         <DropdownMenuProvider.Option optionKey="option-6" label="Option 6"/>
+        <DropdownMenuProvider.Option optionKey="option-7" label="Option 7"/>
+        <DropdownMenuProvider.Option optionKey="option-8" label="Option 8"/>
       </>
     ),
   },

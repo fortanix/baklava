@@ -14,7 +14,6 @@ import { DARK_MODE_EVENT_NAME, UPDATE_DARK_MODE_EVENT_NAME } from 'storybook-dar
 import { DocsContainer, Title, Subtitle, Description, Primary, Controls, Stories } from '@storybook/blocks';
 
 
-
 const channel = addons.getChannel();
 const preview = {
   parameters: {
@@ -49,8 +48,10 @@ const preview = {
             [
               'Panel',
               'Card',
-              'Alert',
+              'Banner',
               'Dialog',
+              'Disclosure',
+              'Accordion',
             ],
             'actions',
             [
@@ -162,6 +163,20 @@ const preview = {
       darkClass: 'bk-theme--dark',
       classTarget: 'html',
       stylePreview: true,
+    },
+    
+    // https://storybook.js.org/docs/8.5/writing-tests/accessibility-testing
+    // https://github.com/dequelabs/axe-core/blob/develop/doc/rule-descriptions.md
+    a11y: {
+      config: {
+        // Format: { id: <rule-name>, enabled: <boolean>, selector: <css-selector> }
+        rules: [
+          // Known accessibility issues (need to fix these)
+          //{ id: 'color-contrast', selector: '*:not(button[class*=primary])' },
+        ],
+      },
+      // Axe's options parameter
+      options: {},
     },
   },
 } satisfies Preview;

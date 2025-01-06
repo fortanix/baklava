@@ -4,24 +4,24 @@
 
 @use '../../../styling/defs.scss' as bk;
 
-@mixin bk-panel($name: bk-panel) {
+@mixin panel($name: bk-panel) {
   --bk-panel-background-color: #{bk.$theme-card-background-default};
   --bk-panel-border-color: #{bk.$theme-card-border-default};
   
   overflow: hidden;
   
   min-height: 4rem;
-  padding: 22px 26px;
+  padding: 22px 26px; // FIXME
   background: var(--bk-panel-background-color);
-  border: 1px solid var(--bk-panel-border-color);
-  border-radius: 6px;
+  border: bk.rem-from-px(1) solid var(--bk-panel-border-color);
+  border-radius: bk.$radius-3;
 }
 
 
 @layer baklava.components {
   .bk-panel {
     @include bk.component-base(bk-panel);
-    @include bk-panel;
+    @include panel;
     
     .bk-panel__heading {
       margin-bottom: 0.8lh;

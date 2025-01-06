@@ -1,17 +1,22 @@
 
+import { dedent } from 'ts-dedent';
+
+
 /** @type {import('stylelint').Config} */
 export default {
-  'extends': 'stylelint-config-standard-scss',
+  extends: 'stylelint-config-standard-scss',
   
-  'ignoreFiles': [
+  ignoreFiles: [
     'node_modules/**/*',
     'dist/**/*',
   ],
   
-  'rules': {
-    // Override `stylelint-config-standard-scss` rules
-    'scss/load-partial-extension': 'always',
-    'scss/load-partial-extension': 'always',
+  // Override `stylelint-config-standard-scss` rules
+  rules: {
+    // Modules
+    'scss/load-partial-extension': 'always', // Must include the file extension
+    
+    // Formatting
     'comment-empty-line-before': null,
     'comment-whitespace-inside': null,
     'scss/comment-no-empty': null,
@@ -30,6 +35,9 @@ export default {
     'number-max-precision': null,
     'color-hex-length': null,
     'scss/operator-no-unspaced': null,
+    'scss/dollar-variable-empty-line-before': null,
+    
+    // Selectors
     'selector-class-pattern': [
 			'^([a-z][a-z0-9]*)((-|--|_|__)[a-z0-9]+)*$',
 			{ message: (selector) => `Expected class selector "${selector}" to be in BEM format` },
@@ -42,27 +50,56 @@ export default {
       true,
       { ignoreSelectors: ['::-webkit-input-placeholder', '/-moz-.*/'] },
     ],
-    'scss/dollar-variable-empty-line-before': null,
-    
-    'property-no-unknown': [
-      true,
-      { ignoreProperties: ['position-try-fallbacks'] },
-    ],
-    'scss/at-rule-no-unknown': [
-      true,
-      { ignoreAtRules: ['scope', 'position-try'] },
-    ],
-    'selector-pseudo-class-no-unknown': [
-      true,
-      { ignorePseudoClasses: ['modal', 'global', 'local'] },
-    ],
-    
     // Disallow `&` selector concatenation to be forward-compatible with native CSS
     'selector-disallowed-list': [
       ['/&__/', '/&--/'],
-      { message: (selector) => `Do not use '&'-concatenation in selectors, this conflicts with native CSS` },
+      {
+        message: (selector) => dedent`
+          Do not use '&'-concatenation in selectors, this conflicts with native CSS. Found: ${selector}.
+        `,
+      },
     ],
+    
+    // Properties
+    //'declaration-no-important': true, // No !important
+    'declaration-property-value-disallowed-list': [
+      {
+        // Disallow auto/scroll. This requires a tabindex="0" for accessibility, which should be handled through the
+        // `useScroller()` hook instead.
+        '/^overflow(-x|-y)?/': ['auto', 'scroll'],
+      },
+      {
+        message: (selector, value) => {
+          if (selector.match(/overflow/)) {
+            return `Do not declare '${selector}: ${value}' directly, use the useScroller() hook instead.`;
+          }
+          return `The rule '${selector}: ${value}' is disallowed, see stylelint config for more information.`;
+        },
+      },
+    ],
+    
+    // Expressions
+    //...
+    
+    // CSS extensions (e.g. CSS modules, or future CSS)
+    //'property-no-unknown': [true, { ignoreProperties: [] }],
+    //'scss/at-rule-no-unknown': [true, { ignoreAtRules: [] }],
+    'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ['global', 'local'] }],
+    'selector-pseudo-element-no-unknown': [true, { ignorePseudoElements: ['details-content'] }],
     
     'no-descending-specificity': null, // Does not work properly with a lot of nesting (see docs page also)
   },
+  
+  overrides: [
+    {
+      files: ['*.scss', '**/*.scss'],
+      
+      // Rules to apply only to Sass and not to CSS
+      rules: {
+        'at-rule-disallowed-list': [
+          'import', // @import in Sass is deprecated (in vanilla CSS this is still fine)
+        ],
+      }
+    }
+  ]
 };

@@ -20,11 +20,11 @@ export type TooltipProviderProps = Omit<TooltipProps, 'children'> & {
   children?: ((getReferenceProps: GetReferenceProps) => React.ReactNode) | React.ReactNode,
   
   /**
-   * The tooltip message. If nullish, the tooltip will not be shown at all. This is useful in case the tooltip should
+   * The tooltip message. If `null`, the tooltip will not be shown at all. This is useful in case the tooltip should
    * be shown conditionally.
    */
-  tooltip?: null | React.ReactNode,
-
+  tooltip: null | React.ReactNode,
+  
   /** Where to show the tooltip relative to the anchor. */
   // here we are not using Placement as exposed from Popover because Tooltip only supports a subset of Popover's default placements.
   placement?: undefined | 'top' | 'bottom' | 'left' | 'right',
@@ -125,6 +125,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     return (
       <Tooltip
         {...floatingProps}
+        {...tooltipProps}
         ref={mergeRefs<HTMLDivElement>(refs.setFloating, tooltipProps.ref)}
         className={cx(
           floatingProps.className as ClassNameArgument,

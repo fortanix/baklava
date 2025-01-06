@@ -2,9 +2,12 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+@use 'sass:math';
+
 @forward './variables.scss';
-@forward './fonts_mixins.scss';
-@forward './context/theming_mixins.scss';
+@forward './global/fonts.scss' hide styles;
+@forward './global/accessibility.scss' hide styles;
+@forward './context/theming.scss' hide styles;
 
 @use './variables.scss' as vars;
 
@@ -38,6 +41,12 @@
   hyphens: auto;
 }
 
+@mixin text-one-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 @mixin flex-center() {
   display: flex;
   align-items: center;
@@ -49,12 +58,6 @@
   overflow: hidden; // Prevent child items from "bleeding through" the rounded borders
 }
 
-@mixin focus-outline-close() {
-  /* Override accessibility layer */
-  outline: 2px solid var(--bk-focus-outline-color) !important;
-  outline-offset: 0 !important;
-}
-@mixin focus-inset() {
-  outline: none !important; /* Override accessibility layer */
-  box-shadow: inset 2px 2px var(--bk-focus-outline-color), inset -2px -2px var(--bk-focus-outline-color);
+@function rem-from-px($size-in-px) {
+  @return math.div($size-in-px, 14) * 1rem;
 }

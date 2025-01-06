@@ -5,8 +5,9 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
+import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
-import { Alert } from '../Alert/Alert.tsx';
+import { Banner } from '../Banner/Banner.tsx';
 
 import { Panel } from './Panel.tsx';
 
@@ -24,7 +25,12 @@ export default {
   argTypes: {},
   args: {
     unstyled: false,
-    children: <Panel.Heading>Panel</Panel.Heading>,
+    children: (
+      <>
+        <Panel.Heading>Panel</Panel.Heading>
+        <LoremIpsum paragraphs={3}/>
+      </>
+    ),
   },
   render: (args) => <Panel {...args}/>,
 } satisfies Meta<PanelArgs>;
@@ -36,11 +42,17 @@ export const Standard: Story = {};
 export const Stacked: Story = {
   render: (args) => (
     <div style={{ display: 'flex', flexFlow: 'column', gap: '1.2rem' }}>
-      <Alert kind="info">
+      <Banner variant="info" title="Note:">
         Panels have no margin by default. Use a flex/grid container to space the panels.
-      </Alert>
+      </Banner>
       <Panel {...args}><Panel.Heading>Panel 1</Panel.Heading></Panel>
       <Panel {...args}><Panel.Heading>Panel 2</Panel.Heading></Panel>
     </div>
   ),
+};
+
+export const PanelWithScroll: Story = {
+  args: {
+    style: { maxHeight: '8lh' },
+  },
 };
