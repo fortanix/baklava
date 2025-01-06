@@ -38,7 +38,7 @@
     // https://royalfig.github.io/fluid-typography-calculator
     //font-size: clamp(0.8rem, 0.76rem + 0.19999999999999996vw, 1rem);
     // https://utopia.fyi/type/calculator?c=320,12,1.2,1440,14,1.25,4,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12
-    font-size: clamp(0.75rem, 0.7143rem + 0.1786vi, 0.875rem); // 1rem ~ 14px at 1440px max viewport size
+    font-size: round(clamp(0.75rem, 0.7143rem + 0.1786vi, 0.875rem), 1px); // 1rem ~ 14px at 1440px max viewport size
     
     /* https://css-tricks.com/how-to-tame-line-height-in-css/ */
     line-height: 1.6;

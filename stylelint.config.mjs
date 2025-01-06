@@ -79,7 +79,8 @@ export default {
     ],
     
     // Expressions
-    //...
+    // Workaround for `round()`, re-enable once https://github.com/stylelint-scss/stylelint-scss/pull/1097 lands
+    'scss/no-global-function-names': null,
     
     // CSS extensions (e.g. CSS modules, or future CSS)
     //'property-no-unknown': [true, { ignoreProperties: [] }],
