@@ -49,7 +49,7 @@ const ModalProviderAutoOpen = (props: React.ComponentProps<typeof ModalProvider>
   const ref = ModalProvider.useRef(null);
   
   // biome-ignore lint/correctness/useExhaustiveDependencies: want to only trigger this once
-    React.useEffect(() => {
+  React.useEffect(() => {
     globalThis.setTimeout(() => {
       ref.current?.activate();
     }, 2000);

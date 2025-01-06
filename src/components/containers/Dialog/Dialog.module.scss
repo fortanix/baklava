@@ -93,12 +93,5 @@
     
     // State: focus
     @include bk.focus-outset;
-    // .bk-dialog__content {
-    //   @include bk.focus-hidden;
-    // }
-    // @include bk.focus-hidden;
-    // &:has(.bk-dialog__content:focus-visible), .pseudo-focus-visible {
-    //   @include bk.focus-outset($selector: '&');
-    // }
   }
 }

@@ -8,8 +8,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 import { loremIpsum, LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
-import { Button } from '../../actions/Button/Button.tsx';
-
 import { Dialog } from './Dialog.tsx';
 
 
