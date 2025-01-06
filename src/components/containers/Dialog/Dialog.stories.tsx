@@ -8,8 +8,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 import { loremIpsum, LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
-import { Button } from '../../actions/Button/Button.tsx';
-
 import { Dialog } from './Dialog.tsx';
 
 
@@ -28,9 +26,7 @@ export default {
   args: {
     title: 'Dialog title',
     children: <LoremIpsum paragraphs={3}/>,
-    actions: (
-      <Button variant="primary" label="Submit"/>
-    ),
+    actions: <Dialog.SubmitAction/>,
     onRequestClose: () => {},
   },
 } satisfies Meta<DialogArgs>;

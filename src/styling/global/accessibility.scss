@@ -2,17 +2,25 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+@mixin focus-hidden($override-layer: true) {
+  --bk-focus-color-anim: transparent; // Start transparent for animation purposes
+  
+  &, &.pseudo-focus-visible {
+    box-shadow: none if($override-layer, !important, null);
+    outline: none if($override-layer, !important, null);
+  }
+}
+
 // Configure an element with a focus outline outset from the element.
-@mixin focus-outset($override-layer: true) {
+@mixin focus-outset($selector: '&:focus-visible, &.pseudo-focus-visible', $override-layer: true) {
   --bk-focus-color-anim: transparent; // Start transparent for animation purposes
   
   box-shadow: none if($override-layer, !important, null); // Remove focus-inset, if any
-  
   outline: var(--bk-focus-outline-width) solid var(--bk-focus-color-anim) if($override-layer, !important, null);
   
-  // Add `.pseudo-focus-visible` for visual testing purposes
-  &:focus-visible, &.pseudo-focus-visible {
-    --bk-focus-color-anim: var(--bk-focus-outline-color);
+  // Should add `.pseudo-focus-visible` here for visual testing purposes
+  #{$selector} {
+    --bk-focus-color-anim: var(--bk-focus-outline-color) #{if($override-layer, !important, null)};
   }
   
   @media (prefers-reduced-motion: no-preference) {
@@ -22,7 +30,7 @@
 
 // Configure an element with a focus outline inset into the element. This can be useful for elements
 // that have overflow hidden and thus can't have an exterior outline.
-@mixin focus-inset($override-layer: true) {
+@mixin focus-inset($selector: '&:focus-visible, &.pseudo-focus-visible', $override-layer: true) {
   --bk-focus-color-anim: transparent; // Start transparent for animation purposes
   
   outline: none if($override-layer, !important, null); // Remove focus-outset, if any
@@ -35,7 +43,7 @@
     inset calc(-1 * $w) calc(-1 * $w) var(--bk-focus-color-anim) if($override-layer, !important, null);
   
   // Add `.pseudo-focus-visible` for visual testing purposes
-  &:focus-visible, &.pseudo-focus-visible {
+  #{$selector} {
     --bk-focus-color-anim: var(--bk-focus-outline-color);
   }
   

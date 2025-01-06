@@ -4,6 +4,8 @@
 
 @layer baklava.overrides {
   .bk-util-scroller {
+    overscroll-behavior: none;
+    
     // stylelint-disable-next-line declaration-property-value-disallowed-list
     &.bk-util-scroller--vertical { overflow-y: auto; }
     

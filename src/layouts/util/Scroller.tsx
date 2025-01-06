@@ -8,12 +8,19 @@ import cl from './Scroller.module.scss';
 
 
 type UseScrollerArgs = {
+  /**
+   * Set this to true if you know for sure there is a focusable child inside the scroller that can be used
+   * for keyboard scrolling purposes. If true, this scroller will not be made focusable. Default: false.
+   */
+  hasFocusableChild?: undefined | boolean,
+  /** Whether to include scroller styling automatically. Default: true. */
   includeStyling?: undefined | boolean,
+  /** Which direction(s) can be scrolled in. Default: vertical. */
   scrollDirection?: undefined | 'vertical' | 'horizontal' | 'both',
 };
 
 type ScrollerProps = {
-  tabIndex: number,
+  tabIndex?: undefined | number,
   // Note: don't use `ClassNameArgument`, because that forces all consumers to apply `cx()`
   className?: undefined | string,
 };
@@ -25,6 +32,7 @@ type ScrollerProps = {
  */
 export const useScroller = (args: UseScrollerArgs = {}): ScrollerProps => {
   const {
+    hasFocusableChild = false,
     includeStyling = true,
     scrollDirection = 'vertical',
   } = args;
@@ -37,7 +45,7 @@ export const useScroller = (args: UseScrollerArgs = {}): ScrollerProps => {
   );
   
   return {
-    tabIndex: 0,
+    tabIndex: hasFocusableChild ? undefined : 0,
     className: includeStyling ? className : undefined,
   };
 };

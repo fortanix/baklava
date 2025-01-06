@@ -17,50 +17,66 @@ import cl from './Dialog.module.scss';
 
 export { cl as DialogClassNames };
 
-type ActionIconProps = ComponentProps<typeof Button> & {
+
+export type DialogContext = {
+  close: () => void,
+};
+export const DialogContext = React.createContext<null | DialogContext>(null);
+export const useDialogContext = () => {
+  const context = React.use(DialogContext);
+  if (context === null) { throw new Error(`Cannot read DialogContext: missing provider.`); }
+  return context;
+};
+
+
+type ActionProps = ComponentProps<typeof Button> & {
+  /** Optional tooltip text. */
+  tooltip?: undefined | ComponentProps<typeof TooltipProvider>['tooltip'],
+};
+/**
+ * An action button to be displayed in the dialog footer.
+ */
+const Action = ({ tooltip = null, ...buttonProps }: ActionProps) => {
+  return (
+    <TooltipProvider compact tooltip={typeof tooltip !== 'undefined' ? tooltip : null}>
+      <Button
+        {...buttonProps}
+        className={cx(cl['bk-dialog__action'], buttonProps.className)}
+      />
+    </TooltipProvider>
+  );
+};
+
+type ActionIconProps = Omit<ActionProps, 'label'> & {
   /** There must be `label` on an icon-only button, for accessibility. */
   label: Required<ComponentProps<typeof Button>>['label'],
-  
-  /** Optional custom tooltip text, if different from `label`. */
-  tooltip?: undefined | ComponentProps<typeof TooltipProvider>['tooltip'],
 };
 /**
  * An action that is rendered as just an icon.
  */
 const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
   return (
-    <TooltipProvider compact tooltip={typeof tooltip !== 'undefined' ? tooltip : buttonProps.label}>
-      <Button unstyled
-        {...buttonProps}
-        className={cx(cl['bk-dialog__action'], cl['bk-dialog__action--icon'], buttonProps.className)}
-      />
-    </TooltipProvider>
+    <Action unstyled
+      {...buttonProps}
+      tooltip={typeof tooltip !== 'undefined' ? tooltip : buttonProps.label}
+      className={cx(cl['bk-dialog__action--icon'], buttonProps.className)}
+    />
   );
 };
 
-type ActionButtonProps = ComponentProps<typeof Button> & {
-  /** Optional tooltip text. */
-  tooltip?: undefined | ComponentProps<typeof TooltipProvider>['tooltip'],
+const CancelAction = (props: ActionProps) => {
+  const context = useDialogContext();
+  const handlePress = () => { props.onPress?.(); context.close(); };
+  return <Action variant="secondary" label="Cancel" {...props} onPress={handlePress}/>;
 };
-/**
- * An action that is rendered as just an icon.
- */
-const ActionButton = ({ tooltip = null, ...buttonProps }: ActionButtonProps) => {
-  return (
-    <TooltipProvider compact tooltip={typeof tooltip !== 'undefined' ? tooltip : null}>
-      <Button unstyled
-        {...buttonProps}
-        className={cx(cl['bk-dialog__action'], cl['bk-dialog__action--button'], buttonProps.className)}
-      />
-    </TooltipProvider>
-  );
+const SubmitAction = (props: ActionProps) => {
+  const context = useDialogContext();
+  const handlePress = () => { props.onPress?.(); context.close(); };
+  return <Action variant="primary" label="Submit" {...props} onPress={handlePress}/>;
 };
-
-const CancelAction = (props: ComponentProps<typeof Button>) =>
-  <Button variant="secondary" label="Cancel" {...props}/>;
 
 export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
-  /** Whether the component should include the default styling. Default: false. */
+  /** Whether this component should be unstyled. Default: false. */
   unstyled?: undefined | boolean,
   
   /** Whether the dialog should be displayed as a flat panel (no shadows/borders/rounding). Default: false. */
@@ -80,6 +96,9 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   
   /** Any additional actions to be shown in the dialog. */
   actions?: undefined | React.ReactNode,
+  
+  /** Whether to set autofocus on the close button. Default: false. */
+  autoFocusClose?: undefined | boolean,
 };
 /**
  * The Dialog component displays an interaction with the user, for example a confirmation, or a form to be submitted.
@@ -95,38 +114,47 @@ export const Dialog = Object.assign(
       showCancelAction = true,
       onRequestClose,
       actions,
+      autoFocusClose = false,
       ...propsRest
     } = props;
     
+    const dialogId = React.useId();
     const dialogRef = React.useRef<HTMLDialogElement>(null);
-    const scrollerProps = useScroller();
+    const scrollerProps = useScroller(); // FIXME: add `{ hasFocusableChild: true }`?
     
     if ((showCloseIcon || showCancelAction) && typeof onRequestClose !== 'function') {
       console.error(`Missing prop in <Dialog/>: 'onRequestClose' function`);
     }
     
+    const dialogContext = React.useMemo<DialogContext>(() => ({
+      close: onRequestClose ?? (() => { console.warn('Missing `onRequestClose` callback.'); })
+    }), [onRequestClose]);
+    
     return (
-      <dialog
-        open
-        {...scrollerProps}
-        {...propsRest}
-        ref={mergeRefs(dialogRef, propsRest.ref)}
-        className={cx(
-          'bk',
-          { [cl['bk-dialog']]: !unstyled },
-          { [cl['bk-dialog--flat']]: flat },
-          scrollerProps.className,
-          propsRest.className,
-        )}
-      >
-        <form>
+      <DialogContext value={dialogContext}>
+        <dialog
+          open
+          //role="dialog" // Default role. Change this to `role="alertdialog"` for things like confirmation modals.
+          aria-labelledby={`${dialogId}-title`}
+          aria-describedby={`${dialogId}-content`}
+          {...scrollerProps}
+          {...propsRest}
+          ref={mergeRefs(dialogRef, propsRest.ref)}
+          className={cx(
+            'bk',
+            { [cl['bk-dialog']]: !unstyled },
+            { [cl['bk-dialog--flat']]: flat },
+            scrollerProps.className,
+            propsRest.className,
+          )}
+        >
           <header className={cx(cl['bk-dialog__header'])}>
-            <H5 className={cx(cl['bk-dialog__header__title'])}>{title}</H5>
+            <H5 id={`${dialogId}-title`} className={cx(cl['bk-dialog__header__title'])}>{title}</H5>
             
             <div className={cx(cl['bk-dialog__header__actions'])}>
               {showCloseIcon &&
                 <ActionIcon
-                  autoFocus
+                  autoFocus={autoFocusClose}
                   label="Close dialog"
                   tooltip={null}
                   className={cx(cl['bk-dialog__header-action-close'])}
@@ -138,20 +166,30 @@ export const Dialog = Object.assign(
             </div>
           </header>
           
-          <section className={cx(cl['bk-dialog__content'], 'bk-body-text')}>
+          <section
+            id={`${dialogId}-content`} // Used with `aria-describedby`
+            role="document" // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/document_role
+            // FIXME: make this focusable instead of the <dialog> as per guidelines on MDN?
+            //tabIndex={0}
+            className={cx(cl['bk-dialog__content'], 'bk-body-text')}
+          >
             {children}
           </section>
           
-          <footer className={cx(cl['bk-dialog__actions'])}>
-            {showCancelAction && <CancelAction/>}
-            {actions}
-          </footer>
-        </form>
-      </dialog>
+          {(showCancelAction || actions) &&
+            <footer className={cx(cl['bk-dialog__actions'])}>
+              {showCancelAction && <CancelAction/>}
+              {actions}
+            </footer>
+          }
+        </dialog>
+      </DialogContext>
     );
   },
   {
-    ActionButton,
+    Action,
+    ActionIcon,
     CancelAction,
+    SubmitAction,
   },
 );

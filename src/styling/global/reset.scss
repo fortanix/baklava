@@ -58,6 +58,10 @@
     all: unset;
     display: revert;
     box-sizing: border-box;
+    
+    // Issue: if the parent has `user-select: none` (e.g. button), then the dialog will inherit this by default.
+    // In the future, if `contain: user-select` is implemented, we could use that instead.
+    user-select: text;
   }
   
   // Re-apply a few sensible defaults for dialogs. For reference, see the default user agent styling rules here:
@@ -81,13 +85,14 @@
   whether it's going to be used as a modal or not, if we also want exit transitions.
   
   This reset assumes you do *not* apply an exit transition. If you do want an exit transition, you must also apply
-  the `position: fixed` (etc.) styling on the base `dialog`.
+  the `position: fixed` (etc.) styling on the base `dialog`. Or you can use `aria-model="true"` and opt in to base
+  styling that way.
   
   - https://github.com/w3c/csswg-drafts/issues/9912 - "User-agent styles for top layer transitions"
   - https://github.com/whatwg/html/pull/9387#issuecomment-1599722425
   - https://issues.chromium.org/issues/40270744 - `:-internal-dialog-in-top-layer`
   */
-  dialog:modal {
+  dialog[aria-modal='true'], dialog:modal {
     position: fixed;
     inset: 0;
     
@@ -95,10 +100,11 @@
     //place-self: center; // In the future can use this instead of `margin: auto`
     width: fit-content;
     height: fit-content;
-  }
-  dialog::backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0 0 0 / 10%);
+    
+    &::backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0 0 0 / 20%);
+    }
   }
 }
