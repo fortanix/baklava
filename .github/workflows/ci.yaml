@@ -30,3 +30,4 @@ jobs:
     #- run: npm run build --if-present
     - run: npm run verify verify:source
     - run: npm test
+    - run: cd tests/installation && npm ci && npm test

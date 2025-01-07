@@ -110,7 +110,7 @@ const packageConfig = {
     // Build
     'vite': '^5.4.11', // Cannot use vite v6, blocked by https://github.com/privatenumber/vite-css-modules/issues/13
     '@vitejs/plugin-react': '^4.3.4',
-    'vite-plugin-dts': '^4.3.0',
+    'vite-plugin-dts': '^4.4.0',
     'vite-plugin-lib-inject-css': '^2.1.1',
     'vite-plugin-svg-icons': '^2.0.1',
     
@@ -200,6 +200,7 @@ const packageConfig = {
       'react': '$react',
       'react-dom': '$react-dom',
     },
+    'typescript': '^5.7.2',
   },
 };
 
