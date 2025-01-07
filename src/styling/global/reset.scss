@@ -58,10 +58,6 @@
     all: unset;
     display: revert;
     box-sizing: border-box;
-    
-    // Issue: if the parent has `user-select: none` (e.g. button), then the dialog will inherit this by default.
-    // In the future, if `contain: user-select` is implemented, we could use that instead.
-    user-select: text;
   }
   
   // Re-apply a few sensible defaults for dialogs. For reference, see the default user agent styling rules here:
@@ -70,8 +66,16 @@
     display: block;
     position: static;
     
+    // Issue: if the parent has `user-select: none` (e.g. button), then the dialog will inherit this by default.
+    // In the future, if `contain: user-select` is implemented, we could use that instead.
+    user-select: text;
+    
     &:not([open]) {
       display: none;
+    }
+    
+    &::backdrop {
+      user-select: none; // Without this, clicking on the backdrop selects the dialog text in Firefox
     }
   }
   /*

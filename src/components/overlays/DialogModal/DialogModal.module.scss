@@ -25,7 +25,12 @@
   // Exit transition styling
   // Note: cannot nest the following inside `::backdrop`, since `:not()` needs to apply to the dialog not `::backdrop`
   &:not([open])::backdrop {
-    @media (prefers-reduced-motion: no-preference) { transition-duration: $exit-dur; }
+    transition-duration: 0ms;
+    @supports (overlay: auto) { // Only in supported browsers
+      @media (prefers-reduced-motion: no-preference) {
+        transition-duration: $exit-dur;
+      }
+    }
     background-color: transparent;
     backdrop-filter: blur($blur) opacity(0);
   }
@@ -49,7 +54,12 @@
   // Exit transition styling
   // Note: cannot nest the following inside `::backdrop`, since `:not()` needs to apply to the dialog not `::backdrop`
   &:not([open])::backdrop {
-    @media (prefers-reduced-motion: no-preference) { transition-duration: $exit-dur; }
+    transition-duration: 0ms;
+    @supports (overlay: auto) { // Only in supported browsers
+      @media (prefers-reduced-motion: no-preference) {
+        transition-duration: $exit-dur;
+      }
+    }
     background-color: transparent;
   }
 }
@@ -72,7 +82,12 @@
   
   // Exit transition styling
   &:not([open]) {
-    @media (prefers-reduced-motion: no-preference) { transition-duration: $exit-dur; }
+    transition-duration: 0ms;
+    @supports (overlay: auto) { // Only in supported browsers
+      @media (prefers-reduced-motion: no-preference) {
+        transition-duration: $exit-dur;
+      }
+    }
     transition-timing-function: ease-in;
     opacity: 0;
     scale: calc(1 - (($scale - 1) * 0.2)); // Multiply by 0.2 to make the scale out effect a bit more subtle
@@ -102,7 +117,12 @@
   
   // Exit transition styling
   &:not([open]) {
-    @media (prefers-reduced-motion: no-preference) { transition-duration: $exit-dur; }
+    transition-duration: 0ms;
+    @supports (overlay: auto) { // Only in supported browsers
+      @media (prefers-reduced-motion: no-preference) {
+        transition-duration: $exit-dur;
+      }
+    }
     transition-timing-function: ease-in;
     translate: calc($dir * $size * 100vi) 0;
   }
@@ -116,6 +136,8 @@
     --bk-dialog-modal-entry-dur: 200ms;
     --bk-dialog-modal-exit-dur: 180ms;
     --bk-dialog-modal-fade-scale: 1;
+    
+    overflow: hidden;
     
     // Basic modal positioning
     position: fixed;
