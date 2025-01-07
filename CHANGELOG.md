@@ -1,6 +1,4 @@
 
 # Change Log
 
-**v1.0.0**
-
-* Initial release.
+See [releases](https://github.com/fortanix/baklava/releases).

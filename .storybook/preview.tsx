@@ -26,7 +26,6 @@ const preview = {
             'Colors',
             'Typography',
             'Iconography',
-            'Change log',
           ],
           'typography',
           [
