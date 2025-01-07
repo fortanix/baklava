@@ -40,3 +40,18 @@ To create a new release:
   - Hit "Publish the release".
 
 - Once the release has been created, a GitHub Actions workflow will automatically run to publish this release to npm.
+
+
+**Script:**
+
+```console
+VERSION=x.y.z
+git co -b release/v${VERSION}
+sed -i '' "s/version: '.*'/version: '${VERSION}'/" package.json.js
+npm run install-project
+git add package.json.js package.json package-lock.json
+git ci -m "Release v${VERSION}"
+git push -u origin HEAD
+npm run automate github:create-release-pr
+# Follow instructions from above command
+```
