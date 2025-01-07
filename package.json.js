@@ -200,7 +200,6 @@ const packageConfig = {
       'react': '$react',
       'react-dom': '$react-dom',
     },
-    'typescript': '^5.7.2',
   },
 };
 
