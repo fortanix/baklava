@@ -5,7 +5,7 @@
     // Emission
     "noEmit": true, // Do not emit by default (only type check)
     //"emitDeclarationOnly": false,
-    "target": "ES2023", // JavaScript language version to emit
+    "target": "ESNext", // JavaScript language version to emit
     "module": "ESNext", // The type of file to emit (CommonJS/ESM/etc.)
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
@@ -23,7 +23,7 @@
     },
     
     // Type checking
-    "lib": ["ES2024", "DOM", "DOM.Iterable"], // Library declaration files to include (globally)
+    "lib": ["ES2023", "DOM", "DOM.Iterable"], // Library declaration files to include (globally)
     "skipLibCheck": true, // Do not type check declaration files (for performance)
     "noErrorTruncation": true,
     

@@ -1,0 +1,21 @@
+
+import path from 'node:path';
+
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [
+    react(),
+    
+    // Handle SVG sprite icons
+    createSvgIconsPlugin({
+      iconDirs: [path.resolve(__dirname, 'node_modules/@fortanix/baklava/src/assets/icons')],
+      symbolId: 'baklava-icon-[name]',
+      inject: 'body-last',
+      customDomId: 'baklava-icon-sprite',
+    }),
+  ],
+});
