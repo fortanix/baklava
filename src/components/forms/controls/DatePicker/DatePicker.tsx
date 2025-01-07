@@ -5,7 +5,7 @@
 import * as React from 'react';
 import ReactDatePicker from 'react-datepicker';
 
-import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../../util/componentUtil.ts';
+import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Input } from '../Input/Input.tsx';
@@ -14,15 +14,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import cl from './DatePicker.module.scss';
 
 
-type GenericProps = {
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
-
-  /** An optional class name to be appended to the class list. */
-  className?: undefined | ClassNameArgument,
-};
-
-type ReactDatePickerProps = Omit<ComponentProps<typeof ReactDatePicker>, 'onChange'> & {
+type DatePickerProps = Omit<ComponentProps<typeof ReactDatePicker>, 'onChange'> & {
   // Note: need to disable the following features in order to use `ReactDatePicker` as a plain date picker.
   selectsRange?: never,
   selectsMultiple?: never,
@@ -31,11 +23,11 @@ type ReactDatePickerProps = Omit<ComponentProps<typeof ReactDatePicker>, 'onChan
   selected: Date | null,
 };
 
-export type DatePickerProps = GenericProps & ReactDatePickerProps;
-
+/**
+ * Date picker form control.
+ */
 export const DatePicker = (props: DatePickerProps) => {
   const {
-    unstyled = false,
     className,
     dateFormat = 'MM/dd/yyyy',
     placeholderText = 'MM/DD/YYYY',
@@ -45,20 +37,20 @@ export const DatePicker = (props: DatePickerProps) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
   return (
-    <div className={cx(
-      'bk',
-      { [cl['bk-date-picker']]: !unstyled },
-      className,
-    )}>
+    <div
+      className={cx(
+        'bk',
+        cl['bk-date-picker'],
+        className,
+      )}
+    >
       <ReactDatePicker
         dateFormat={dateFormat}
         placeholderText={placeholderText}
         showIcon
         icon={<Icon icon="calendar"/>}
         customInput={
-          <Input className={cx(
-            { [cl['bk-date-picker--input']]: !unstyled },
-          )}/>
+          <Input className={cx([cl['bk-date-picker--input']])}/>
         }
         onCalendarClose={() => setIsOpen(false)}
         onCalendarOpen={() => setIsOpen(true)}

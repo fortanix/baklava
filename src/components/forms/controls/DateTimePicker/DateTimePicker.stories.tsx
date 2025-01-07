@@ -28,15 +28,15 @@ export default {
 
 export const Standard: Story = {
   render: (args) => {
-    const [date, setDate] = React.useState<Date | null>(new Date(2024, 10, 12, 9, 41));
+    const [date, setDate] = React.useState<null | Date>(new Date(2024, 10, 12, 9, 41));
 
     return (
       // with a fixed height to avoid hiding the bottom part of the calendar
-      <div style={{height: '500px'}}>
+      <div style={{ height: '500px' }}>
         <DateTimePicker
           {...args}
           date={date}
-          onChange={(date: Date | null) => setDate(date)}
+          onChange={(date: null | Date) => setDate(date)}
         />
         <p>Date selected: {date?.toDateString()} - {date?.toTimeString()}</p>
       </div>
