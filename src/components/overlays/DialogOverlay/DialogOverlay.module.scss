@@ -118,25 +118,51 @@
     @include bk.component-base(bk-dialog-overlay);
     
     &:not([open]) {
-      display: block !important;
+      display: flex;
     }
     
     &:popover-open {
+      --bk-dialog-overlay-entry-dur: 200ms;
+      --bk-dialog-overlay-exit-dur: 120ms;
+      --bk-dialog-overlay-fade-scale: 1;
+      
       // Basic positioning
       position: fixed;
       inset: 0;
       max-width: 100vi;
       max-height: 100vb;
       
-      @include dialog-slide-over;
-    }
-    
-    &::backdrop {
-      display: block;
-      position: fixed;
-      inset: 0;
-      background-color: light-dark(rgb(0 0 0 / 10%), rgb(0 0 0 / 20%));
-      backdrop-filter: blur(2px) opacity(1);
+      &.bk-dialog-overlay--center {
+        margin: auto;
+        width: fit-content;
+        height: fit-content;
+        
+        @include dialog-fade-in(
+          $entry-dur: var(--bk-dialog-overlay-entry-dur),
+          $exit-dur: var(--bk-dialog-overlay-exit-dur),
+          $scale: var(--bk-dialog-overlay-fade-scale),
+        );
+        
+        // The larger the viewport width, the more breathing room in height
+        max-height: calc(100vb - min(5vi, 3lh));
+        
+        &.bk-dialog-overlay--small {
+          --bk-dialog-overlay-fade-scale: 1.05;
+          max-width: 60ch;
+        }
+        &.bk-dialog-overlay--medium {
+          --bk-dialog-overlay-fade-scale: 1.04;
+          max-width: 100ch;
+        }
+        &.bk-dialog-overlay--large {
+          --bk-dialog-overlay-fade-scale: 1.03;
+          max-width: 140ch;
+        }
+      }
+      
+      &.bk-dialog-overlay--slide-over {
+        @include dialog-slide-over;
+      }
     }
   }
 }

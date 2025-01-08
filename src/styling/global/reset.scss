@@ -111,4 +111,17 @@
       background: rgba(0 0 0 / 20%);
     }
   }
+  
+  
+  /* Popovers */
+  [popover] {
+    // Workaround for Chrome issue: https://issues.chromium.org/issues/388538944
+    // Assumes there are no elements with a higher `z-index` in the (non-top layer) document, which we should avoid
+    // doing anyway. We don't want to do `infinity` because we want to allow other top layer elements to be higher.
+    //z-index: 100; // XXX we can also work around this by using `open={false}` with popovers.
+    
+    &:not(:popover-open) {
+      display: none;
+    }
+  }
 }

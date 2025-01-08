@@ -4,31 +4,13 @@
 
 import * as React from 'react';
 
-import { useDebounce } from '../../../util/hooks/useDebounce.ts';
-import { useModalDialog, type ModalDialogProps } from '../../util/Dialog/useModalDialog.ts';
+import { useDelayedUnmount } from '../../../util/hooks/useDelayedUnmount.ts';
+import { type ModalDialogProps, useModalDialog } from '../../util/Dialog/useModalDialog.ts';
 
 import cl from './ModalProvider.module.scss';
 
 
 export { cl as ModalProviderClassNames };
-
-// Use an active state, but with a delay in unmounting to allow exit transitions time to animate
-export const useActiveWithUnmountDelay = (
-  active: boolean,
-  setActive: React.Dispatch<React.SetStateAction<boolean>>,
-  unmountDelay = 3000, /*ms*/
-): [boolean, React.Dispatch<React.SetStateAction<boolean>>] => {
-  const [shouldMount, setShouldMount] = useDebounce(active, unmountDelay);
-  
-  const setActiveWithUnmountDelay = React.useCallback((active: React.SetStateAction<boolean>) => {
-    setActive(active);
-    if (active) { setShouldMount(true); } // Skip the delay when activating (should only be for deactivation)
-  }, [setActive, setShouldMount]);
-  
-  React.useDebugValue(`Active: ${active} / Mounted: ${shouldMount}`);
-  
-  return [shouldMount, setActiveWithUnmountDelay];
-};
 
 export type ModalRef = {
   active: boolean,
@@ -83,7 +65,7 @@ export const ModalProvider = Object.assign(
     const [activeUncontrolled, setActiveUncontrolled] = React.useState(activeDefault);
     const active = typeof props.active !== 'undefined' ? props.active : activeUncontrolled;
     const setActive = typeof props.onActiveChange !== 'undefined' ? props.onActiveChange : setActiveUncontrolled;
-    const [shouldMount, setActiveWithDelay] = useActiveWithUnmountDelay(active, setActive, unmountDelay);
+    const [shouldMount, setActiveWithDelay] = useDelayedUnmount(active, setActive, unmountDelay);
     
     const modalRef = React.useMemo<ModalRef>(() => ({
       active: active,

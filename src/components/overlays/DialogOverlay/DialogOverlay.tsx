@@ -3,50 +3,116 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
+import { mergeRefs } from '../../../util/reactUtil.ts';
+import { classNames as cx } from '../../../util/componentUtil.ts';
 
 import { Dialog } from '../../containers/Dialog/Dialog.tsx';
-import { usePopover } from '../../util/Popover/usePopover.ts';
+import { type PopoverProviderProps, PopoverProvider } from '../../util/overlays/PopoverProvider.tsx';
 
 import cl from './DialogOverlay.module.scss';
 
 
 export { cl as DialogOverlayClassNames };
 
-export type DialogOverlayProps = React.PropsWithChildren<ComponentProps<typeof Dialog> & {
-}>;
-/**
- * A dialog rendered as an overlay.
- */
-export const DialogOverlay = (props: DialogOverlayProps) => {
-  const { ...propsRest } = props;
+type PopoverProviderPropsDialog = PopoverProviderProps<HTMLDialogElement>;
+
+export type DialogOverlayProps = Omit<React.ComponentProps<typeof Dialog>, 'children'> & {
+  /** Content of the popover. If a function, will be passed a dialog controller. */
+  children?: React.ReactNode | PopoverProviderPropsDialog['popover'],
   
-  const dialogRef = React.useRef<React.ComponentRef<typeof Dialog>>(null);
-  React.useEffect(() => {
-    // window.dialogRef = dialogRef;
-    // dialogRef.current?.showPopover();
-  }, []);
+  /** Whether this component should be unstyled. */
+  unstyled?: undefined | boolean,
   
-  const popoverProps = usePopover({
-    active: true,
-    activate: () => {},
-    deactivate: () => {},
-  }, {});
+  /** Whether the popover should be active by default. Default: false. */
+  activeDefault?: undefined | boolean,
   
-  return (
-    <Dialog
-      ref={dialogRef}
-      open={false}
-      flat
-      popover="manual"
-      onRequestClose={() => { dialogRef.current?.hidePopover(); }}
-      {...popoverProps.dialogProps}
-      {...propsRest}
-      className={cx(
-        'bk',
-        cl['bk-dialog-overlay'],
-        propsRest.className,
-      )}
-    />
-  );
+  /** How to display the popover in the viewport. Default: 'center'. */
+  display?: undefined | 'center' | 'full-screen' | 'slide-over',
+  
+  /** If `display` is `slide-over`, from which side the popover should originate. */
+  slideOverPosition?: undefined | 'left' | 'right',
+  
+  /** The size of the popover. Note: does not apply to full screen popovers. */
+  size?: undefined | 'small' | 'medium' | 'large',
+  
+  /**
+   * A popover trigger to render. Will be passed an `activate` callback to open the popover. Optional, if not specified
+   * you can manually trigger the popover through `popoverRef` instead.
+   */
+  trigger?: undefined | PopoverProviderPropsDialog['children'],
+  
+  /** Whether to allow users to close the dialog manually. */
+  allowUserClose?: undefined | boolean,
+  
+  /** A reference to the popover, for imperative control. */
+  popoverRef?: undefined | React.Ref<React.ComponentRef<typeof PopoverProvider>>,
+  
+  /** Any additional props to pass to the popover provider. */
+  providerProps?: undefined | Omit<PopoverProviderPropsDialog, 'children'>,
 };
+
+/**
+ * A dialog component displayed as a popover when activating the given trigger.
+ */
+export const DialogOverlay = Object.assign(
+  (props: DialogOverlayProps) => {
+    const {
+      children,
+      unstyled = false,
+      activeDefault = false,
+      display = 'center',
+      slideOverPosition = 'right',
+      size = 'medium',
+      trigger = () => null,
+      allowUserClose = true,
+      popoverRef,
+      providerProps,
+      ...propsRest
+    } = props;
+    
+    return (
+      <PopoverProvider<HTMLDialogElement>
+        activeDefault={activeDefault}
+        popover={popoverController =>
+          <Dialog
+            open={false} // Make sure `open` is not set to avoid https://issues.chromium.org/issues/388538944
+            flat={['slide-over'].includes(display)}
+            {...popoverController.popoverProps}
+            showCloseIcon={allowUserClose}
+            autoFocusClose={allowUserClose}
+            showCancelAction={allowUserClose}
+            onRequestClose={popoverController.close}
+            {...propsRest}
+            className={cx(
+              'bk',
+              { [cl['bk-dialog-overlay']]: !unstyled },
+              { [cl['bk-dialog-overlay--center']]: display === 'center' },
+              { [cl['bk-dialog-overlay--full-screen']]: display === 'full-screen' },
+              { [cl['bk-dialog-overlay--slide-over']]: display === 'slide-over' },
+              { [cl['bk-dialog-overlay--slide-over--left']]: slideOverPosition === 'left' },
+              { [cl['bk-dialog-overlay--slide-over--right']]: slideOverPosition === 'right' },
+              { [cl['bk-dialog-overlay--small']]: size === 'small' },
+              { [cl['bk-dialog-overlay--medium']]: size === 'medium' },
+              { [cl['bk-dialog-overlay--large']]: size === 'large' },
+              popoverController.popoverProps.className,
+              propsRest.className,
+            )}
+          >
+            {typeof children === 'function' ? children(popoverController) : children}
+          </Dialog>
+        }
+        {...providerProps}
+        ref={mergeRefs(popoverRef, providerProps?.ref)}
+      >
+        {trigger}
+      </PopoverProvider>
+    );
+  },
+  {
+    usePopoverRef: PopoverProvider.useRef,
+    Action: Dialog.Action,
+    ActionIcon: Dialog.ActionIcon,
+    CancelAction: Dialog.CancelAction,
+    SubmitAction: Dialog.SubmitAction,
+  },
+);

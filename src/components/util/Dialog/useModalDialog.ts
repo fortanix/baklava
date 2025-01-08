@@ -36,12 +36,12 @@ export type ModalDialogProps = {
  */
 export const useModalDialog = (
   controller: ModalDialogController,
-  options?: undefined | UseModalDialogOptions,
+  options: undefined | UseModalDialogOptions = {},
 ): ModalDialogProps => {
   const {
     allowUserClose = true,
     shouldCloseOnBackdropClick = true,
-  } = options ?? {};
+  } = options;
   
   const dialogRef = React.useRef<HTMLDialogElement>(null);
   //const lastActiveElementRef = React.useRef<Element>(null); // Note: browsers track this automatically now
@@ -68,6 +68,8 @@ export const useModalDialog = (
       // Save a reference to the last focused element before opening the modal
       //lastActiveElementRef.current = document.activeElement;
       
+      // Note: `showModal()` may throw, for example if the dialog is already open as a non-modal (through `.show()`),
+      // or as a popover (through `.showPopover()`).
       try {
         dialog.open = false; // Make sure the dialog is not open as a non-modal (i.e. through `.show()`)
         dialog.showModal();
@@ -76,12 +78,7 @@ export const useModalDialog = (
         controller.deactivate();
       }
     } else if (!controller.active && isDialogOpenModal) { // Should not be active but is
-      try {
-        dialog.close();
-      } catch (error: unknown) {
-        console.error(`Unable to close modal dialog`, error);
-        controller.activate();
-      }
+      requestDialogClose();
     }
   };
   // biome-ignore lint/correctness/useExhaustiveDependencies: `controller` is used in `sync`
@@ -160,7 +157,7 @@ export const useModalDialog = (
   }, [allowUserClose]);
   
   // Sync when the ref changes. This helps prevent time issues where `active` is set to `true`, but the dialog is not
-  // yet mounted (and thus the ref is `null`). In that case our sync useEffect will be too early.
+  // yet mounted (and thus the ref is `null`). In that case our sync `useEffect` will be too early.
   const dialogRefCallback: React.RefCallback<HTMLDialogElement> = (ref) => {
     dialogRef.current = ref;
     sync();

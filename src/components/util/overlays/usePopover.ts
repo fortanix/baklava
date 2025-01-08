@@ -1,0 +1,96 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+import * as React from 'react';
+
+
+export type PopoverController = {
+  /** Whether the popover should be active. */
+  active: boolean,
+  /** Notify that the popover has been opened. Change must be respected (otherwise no longer in sync). */
+  activate: () => void,
+  /** Notify that the popover has been closed. Change must be respected (otherwise no longer in sync). */
+  deactivate: () => void,
+};
+
+export type UsePopoverOptions = {
+};
+
+export type PopoverProps<E extends HTMLElement> = {
+  close: () => void,
+  popoverProps: React.DetailedHTMLProps<React.HTMLAttributes<E>, E>,
+};
+
+/*
+ * A utility hook to control the state of a <popover> element used as a modal (with `.showModal()`).
+ */
+export const usePopover = <E extends HTMLElement>(
+  controller: PopoverController,
+  options: undefined | UsePopoverOptions = {},
+): PopoverProps<E> => {
+  //const {} = options ?? {};
+  
+  const popoverRef = React.useRef<E>(null);
+  
+  const requestPopoverClose = React.useCallback(() => {
+    const popover = popoverRef.current;
+    if (!popover) { console.warn(`Unable to close popover: reference does not exist.`); return; }
+    
+    try {
+      popover.hidePopover();
+    } catch (error: unknown) {
+      console.error(`Failed to close popover`, error);
+    }
+  }, []);
+  
+  // Sync active state with popover DOM state
+  const sync = () => {
+    const popover = popoverRef.current;
+    if (!popover) { return; } // Nothing to sync with
+    
+    const isPopoverOpen = popover.matches(':popover-open');
+    if (controller.active && !isPopoverOpen) { // Should be active but isn't
+      // Note: `showPopover()` can throw in some rare circumstances
+      try {
+        popover.showPopover();
+      } catch (error: unknown) {
+        console.error(`Unable to open modal popover`, error);
+        controller.deactivate();
+      }
+    } else if (!controller.active && isPopoverOpen) { // Should not be active but is
+      requestPopoverClose();
+    }
+  };
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Lists dependencies used in `sync`
+  React.useEffect(sync, [controller.active, controller.deactivate, requestPopoverClose]);
+  
+  // Handle popover `close` event. This event is called when the popover has already been closed (cannot be canceled).
+  // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/close_event
+  const handlePopoverToggle = React.useCallback((event: React.ToggleEvent<E>) => {
+    // Sync with the controller
+    if (event.newState === 'open') {
+      controller.activate();
+    } else {
+      controller.deactivate();
+    }
+  }, [controller.activate, controller.deactivate]);
+  
+  // Sync when the ref changes. This helps prevent time issues where `active` is set to `true`, but the popover is not
+  // yet mounted (and thus the ref is `null`). In that case our sync `useEffect` will be too early.
+  const popoverRefCallback: React.RefCallback<E> = (ref) => {
+    popoverRef.current = ref;
+    sync();
+  };
+  
+  return {
+    close: requestPopoverClose,
+    popoverProps: {
+      ref: popoverRefCallback,
+      
+      popover: 'auto', // FIXME: make configurable
+      //onBeforeToggle: handlePopoverBeforeToggle,
+      onToggle: handlePopoverToggle,
+    },
+  };
+};

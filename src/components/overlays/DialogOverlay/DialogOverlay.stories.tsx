@@ -24,20 +24,39 @@ export default {
   argTypes: {},
   args: {
     title: 'Title',
-    children:           <DialogModal
-    title="Modal"
-    trigger={({ activate }) => <Button label="Open modal" onPress={activate}/>}
-  >
-    Test
-  </DialogModal>,
+    children: 'Content',
   },
-  render: (args) => <><LoremIpsum paragraphs={5}/><DialogOverlay {...args}/></>,
+  render: (args) => (
+    <>
+      <LoremIpsum paragraphs={5}/>
+      <DialogOverlay {...args}
+        trigger={({ activate }) => <Button variant="primary" label="Open popover 1" onPress={activate}/>}
+      />
+      <br/>
+      <br/>
+      <DialogOverlay {...args}
+        trigger={({ activate }) => <Button variant="primary" label="Open popover 2" onPress={activate}/>}
+      />
+    </>
+  ),
 } satisfies Meta<DialogOverlayArgs>;
 
 
-export const DialogOverlayStandard: Story = {};
-
-export const DialogOverlayWithVariant: Story = {
+export const DialogOverlayStandard: Story = {
   args: {
+    display: 'slide-over',
+  },
+};
+
+export const DialogOverlayWithNestedModal: Story = {
+  args: {
+    children: (
+      <DialogModal
+        title="Modal"
+        trigger={({ activate }) => <Button variant="primary" label="Open modal" onPress={activate}/>}
+      >
+        Modal nested inside a popover.
+      </DialogModal>
+    ),
   },
 };

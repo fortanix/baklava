@@ -134,7 +134,7 @@
     @include bk.component-base(bk-dialog-modal);
     
     --bk-dialog-modal-entry-dur: 200ms;
-    --bk-dialog-modal-exit-dur: 180ms;
+    --bk-dialog-modal-exit-dur: 120ms;
     --bk-dialog-modal-fade-scale: 1;
     
     overflow: hidden;
