@@ -5,7 +5,7 @@
 import * as React from 'react';
 
 
-export type ModalDialogController = {
+export type PopoverController = {
   /** Whether the dialog should be active. */
   active: boolean,
   /** Notify that the dialog has been opened. Change must be respected (otherwise no longer in sync). */
@@ -14,7 +14,7 @@ export type ModalDialogController = {
   deactivate: () => void,
 };
 
-export type UseModalDialogOptions = {
+export type UsePopoverOptions = {
   /**
    * Whether to allow the user to close the modal through the browser (e.g. with the Escape key). Disabling this may
    * be useful in cases where we need the user to stay in the modal (e.g. form validation, mandatory onboarding flows).
@@ -26,18 +26,18 @@ export type UseModalDialogOptions = {
   shouldCloseOnBackdropClick?: undefined | boolean,
 };
 
-export type ModalDialogProps = {
+export type PopoverProps = {
   close: () => void,
-  dialogProps: React.ComponentProps<'dialog'>,
+  popoverProps: React.ComponentProps<'div'>,
 };
 
 /*
  * A utility hook to control the state of a <dialog> element used as a modal (with `.showModal()`).
  */
-export const useModalDialog = (
-  controller: ModalDialogController,
-  options?: undefined | UseModalDialogOptions,
-): ModalDialogProps => {
+export const usePopover = (
+  controller: PopoverController,
+  options?: undefined | UsePopoverOptions,
+): PopoverProps => {
   const {
     allowUserClose = true,
     shouldCloseOnBackdropClick = true,
@@ -62,15 +62,14 @@ export const useModalDialog = (
     const dialog = dialogRef.current;
     if (!dialog) { return; } // Nothing to sync with
     
-    const isDialogOpenModal = dialog.open && dialog.matches(':modal');
-    
+    const isDialogOpenModal = dialog.matches(':popover-open');
     if (controller.active && !isDialogOpenModal) { // Should be active but isn't
       // Save a reference to the last focused element before opening the modal
       //lastActiveElementRef.current = document.activeElement;
       
       try {
         dialog.open = false; // Make sure the dialog is not open as a non-modal (i.e. through `.show()`)
-        dialog.showModal();
+        dialog.showPopover();
       } catch (error: unknown) {
         console.error(`Unable to open modal dialog`, error);
         controller.deactivate();
@@ -146,8 +145,6 @@ export const useModalDialog = (
     }
     
     if (allowUserClose && shouldCloseOnBackdropClick && isClickOnBackdrop) {
-      event.stopPropagation();
-      event.preventDefault();
       controller.deactivate();
     }
   }, [controller, allowUserClose, shouldCloseOnBackdropClick]);
