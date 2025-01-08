@@ -146,6 +146,8 @@ export const useModalDialog = (
     }
     
     if (allowUserClose && shouldCloseOnBackdropClick && isClickOnBackdrop) {
+      event.stopPropagation();
+      event.preventDefault();
       controller.deactivate();
     }
   }, [controller, allowUserClose, shouldCloseOnBackdropClick]);
