@@ -27,6 +27,7 @@ export type UseModalDialogOptions = {
 };
 
 export type ModalDialogProps = {
+  internalDialogRef: React.RefObject<null | HTMLDialogElement>,
   close: () => void,
   dialogProps: React.ComponentProps<'dialog'>,
 };
@@ -165,6 +166,7 @@ export const useModalDialog = (
   
   return {
     close: requestDialogClose,
+    internalDialogRef: dialogRef, // Note: should not pass this to the dialog `ref`, use `dialogProps.ref` instead
     dialogProps: {
       ref: dialogRefCallback,
       open: undefined, // Do not set `open`, leave it to the browser to manage automatically

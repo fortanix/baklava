@@ -4,8 +4,11 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-
 import { classNames as cx, type ClassNameArgument } from '../../../util/componentUtil.ts';
+import { useActiveModal } from '../../util/Dialog/ModalContext.tsx';
+
+import { Toaster } from 'sonner';
+
 import {
   toast,
   ToastContainer as ToastifyContainer,
@@ -210,23 +213,26 @@ export const ToastProvider = (props: ToastProviderProps) => {
     ...propsRest
   } = props;
   
+  const activeModal = useActiveModal();
+  
   return (
     <>
       {children}
       {ReactDOM.createPortal(
-        <ToastifyContainer
-          className={cx(
-            {
-              bk: true,
-              [cl['bk-toast']]: !unstyled,
-            },
-            className,
-          )}
-          hideProgressBar={!showProgressBar}
-          closeButton={hasCloseButton && <CloseToastButton/>}
-          {...propsRest}
-        />,
-        window.document.body,
+        <Toaster/>,
+        // <ToastifyContainer
+        //   className={cx(
+        //     {
+        //       bk: true,
+        //       [cl['bk-toast']]: !unstyled,
+        //     },
+        //     className,
+        //   )}
+        //   hideProgressBar={!showProgressBar}
+        //   closeButton={hasCloseButton && <CloseToastButton/>}
+        //   {...propsRest}
+        // />,
+        activeModal ?? window.document.body,
       )}
     </>
   );

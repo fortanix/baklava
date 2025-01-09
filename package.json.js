@@ -171,7 +171,8 @@ const packageConfig = {
     //'@uidotdev/usehooks': '^2.4.1',
     
     '@floating-ui/react': '^0.26.28',
-    'react-toastify': '^10.0.6',
+    'react-toastify': '^11.0.2',
+    'sonner': '^1.7.1',
     
     'effect': '^3.11.3',
     'react-hook-form': '^7.54.0',

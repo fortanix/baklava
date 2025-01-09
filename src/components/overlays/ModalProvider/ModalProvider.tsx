@@ -6,6 +6,7 @@ import * as React from 'react';
 
 import { useDelayedUnmount } from '../../../util/hooks/useDelayedUnmount.ts';
 import { type ModalDialogProps, useModalDialog } from '../../util/Dialog/useModalDialog.ts';
+import { useModalContext } from '../../util/Dialog/ModalContext.tsx';
 
 import cl from './ModalProvider.module.scss';
 
@@ -68,7 +69,7 @@ export const ModalProvider = Object.assign(
     const [shouldMount, setActiveWithDelay] = useDelayedUnmount(active, setActive, unmountDelay);
     
     const modalRef = React.useMemo<ModalRef>(() => ({
-      active: active,
+      active,
       activate: () => { setActiveWithDelay(true); },
       deactivate: () => { setActiveWithDelay(false); },
     }), [active, setActiveWithDelay]);
@@ -79,6 +80,7 @@ export const ModalProvider = Object.assign(
       allowUserClose,
       shouldCloseOnBackdropClick,
     });
+    useModalContext(active, dialogProps.internalDialogRef);
     
     return (
       <>
