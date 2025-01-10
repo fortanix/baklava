@@ -172,7 +172,6 @@ const packageConfig = {
     
     '@floating-ui/react': '^0.26.28',
     'react-toastify': '^11.0.2',
-    'sonner': '^1.7.1',
     
     'effect': '^3.11.3',
     'react-hook-form': '^7.54.0',

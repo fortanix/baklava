@@ -9,7 +9,7 @@ import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { ModelProvider } from '../../util/Dialog/ModalContext.tsx';
 import { ToastProvider, notify } from '../Toast/Toast.tsx';
-import { toast } from 'sonner';
+
 import { Button } from '../../actions/Button/Button.tsx';
 
 import { DialogModal } from './DialogModal.tsx';
@@ -96,7 +96,7 @@ export const DialogModalWithToast: Story = {
     className: 'outer',
     children: (
       <>
-        <Button variant="primary" onPress={() => { toast('test'); }}>
+        <Button variant="primary" onPress={() => { notify.info({ title: 'Info', message: 'Test notification', options: { autoClose: 9999999999 } }); }}>
           Trigger toast notification
         </Button>
         <DialogModal
@@ -105,7 +105,7 @@ export const DialogModalWithToast: Story = {
           trigger={({ activate }) => <Button variant="primary" label="Open submodal" onPress={activate}/>}
         >
           <p>Test rendering toast notifications over the modal:</p>
-          <Button variant="primary" onPress={() => { toast('test 2'); }}>
+          <Button variant="primary" onPress={() => { notify.info({ title: 'Info', message: 'Test notification', options: { autoClose: 9999999999 } }); }}>
             Trigger toast notification
           </Button>
         </DialogModal>

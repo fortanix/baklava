@@ -7,8 +7,6 @@ import * as ReactDOM from 'react-dom';
 import { classNames as cx, type ClassNameArgument } from '../../../util/componentUtil.ts';
 import { useActiveModal } from '../../util/Dialog/ModalContext.tsx';
 
-import { Toaster } from 'sonner';
-
 import {
   toast,
   ToastContainer as ToastifyContainer,
@@ -126,6 +124,7 @@ const success = ({ title, message, options = {} }: NotifyProps) => {
   const { className, bodyClassName, actions, closeButton = false, ...restOptions } = options;
   const content = <ToastMessage title={title} message={message} options={options} />;
   const updatedOptions: ToastifyOptions = {
+    containerId: 'bk-toast-container',
     autoClose: 5000,
     className: cx(cl['bk-toast--success'], className),
     bodyClassName: cx(cl['bk-toast__body'], bodyClassName),
@@ -141,6 +140,7 @@ const info = ({ title, message, options = {} }: NotifyProps) => {
   const { className, bodyClassName, actions, closeButton = false, ...restOptions } = options;
   const content = <ToastMessage title={title} message={message} options={options} />;
   const updatedOptions: ToastifyOptions = {
+    containerId: 'bk-toast-container',
     autoClose: 5000,
     className: cx(cl['bk-toast--info'], className),
     bodyClassName: cx(cl['bk-toast__body'], bodyClassName),
@@ -165,6 +165,7 @@ const error = ({ title, message, options = {} }: NotifyProps) => {
     />
   );
   const updatedOptions: ToastifyOptions = {
+    containerId: 'bk-toast-container',
     autoClose: 5000,
     className: cx(cl['bk-toast--error'], className),
     bodyClassName: cx(cl['bk-toast__body'], bodyClassName),
@@ -214,24 +215,31 @@ export const ToastProvider = (props: ToastProviderProps) => {
   } = props;
   
   const activeModal = useActiveModal();
+  const containerRef: React.RefCallback<HTMLElement> = (element) => {
+    if (element) {
+      element.showPopover();
+    }
+  };
   
   return (
     <>
       {children}
       {ReactDOM.createPortal(
-        <Toaster/>,
-        // <ToastifyContainer
-        //   className={cx(
-        //     {
-        //       bk: true,
-        //       [cl['bk-toast']]: !unstyled,
-        //     },
-        //     className,
-        //   )}
-        //   hideProgressBar={!showProgressBar}
-        //   closeButton={hasCloseButton && <CloseToastButton/>}
-        //   {...propsRest}
-        // />,
+        <div ref={containerRef} popover="manual">
+          <ToastifyContainer
+            containerId="bk-toast-container"
+            className={cx(
+              {
+                bk: true,
+                [cl['bk-toast']]: !unstyled,
+              },
+              className,
+            )}
+            hideProgressBar={!showProgressBar}
+            closeButton={hasCloseButton && <CloseToastButton/>}
+            {...propsRest}
+          />
+        </div>,
         activeModal ?? window.document.body,
       )}
     </>

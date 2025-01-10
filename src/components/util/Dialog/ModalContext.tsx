@@ -53,10 +53,8 @@ export const useModalContext = (active: boolean, dialogRef: React.RefObject<null
   React.useEffect(() => {
     if (context === null) { throw new Error(`Cannot read ModalContext: missing provider.`); }
     if (active) {
-      console.log(`active ${id}`);
       context.activate(ref);
     } else {
-      console.log(`deactive ${id}`);
       context.deactivate(ref);
     }
   }, [active]);
