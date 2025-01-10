@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 
 const packageConfig = {
   name: '@fortanix/baklava',
-  version: '1.0.0-beta-20250102',
+  version: '1.0.0-beta-20250107',
   license: 'MPL-2.0',
   author: 'Fortanix',
   description: 'Fortanix Baklava design system',
@@ -116,8 +116,8 @@ const packageConfig = {
     
     // Static analysis
     'typescript': '^5.7.2',
-    '@types/node': '^22.10.1',
-    'stylelint': '^16.11.0',
+    '@types/node': '^22.10.5',
+    'stylelint': '^16.12.0',
     'stylelint-config-standard-scss': '^14.0.0',
     '@biomejs/biome': '^1.9.4',
     
@@ -139,22 +139,22 @@ const packageConfig = {
     '@storybook/addon-links': '^8.4.7',
     '@storybook/addon-storysource': '^8.4.7',
     '@storybook/addon-designs': '^8.0.4',
-    'chromatic': '^11.20.0',
-    '@chromatic-com/storybook': '^3.2.2', // Chromatic integration for Storybook
+    'chromatic': '^11.22.0',
+    '@chromatic-com/storybook': '^3.2.3', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     'storybook-dark-mode': '^4.0.2',
-    '@percy/cli': '^1.30.4',
+    '@percy/cli': '^1.30.6',
     '@percy/storybook': '^6.0.3',
     
     // Styling
     'vite-css-modules': '^1.6.0',
     'typescript-plugin-css-modules': '^5.0.1',
-    'sass-embedded': '^1.83.0',
+    'sass-embedded': '^1.83.1',
     'lightningcss': '^1.28.2',
     
     // React
-    '@types/react': '^19.0.1',
-    '@types/react-dom': '^19.0.1',
+    '@types/react': '^19.0.3',
+    '@types/react-dom': '^19.0.2',
   },
   
   // Dependencies needed when running the generated build
@@ -167,17 +167,17 @@ const packageConfig = {
     'classnames': '^2.5.1',
     'react': '^19.0.0',
     'react-dom': '^19.0.0',
-    'react-error-boundary': '^4.1.2',
+    'react-error-boundary': '^5.0.0',
     //'@uidotdev/usehooks': '^2.4.1',
     
     '@floating-ui/react': '^0.26.28',
     'react-toastify': '^11.0.2',
+    'react-datepicker': '^7.6.0',
     
-    'effect': '^3.11.3',
-    'react-hook-form': '^7.54.0',
+    'effect': '^3.12.1',
+    'react-hook-form': '^7.54.2',
     
     'optics-ts': '^2.4.1',
-    "react-datepicker": "^7.5.0",
   },
   peerDependencies: {
     'react': '>= 19.0.0',
