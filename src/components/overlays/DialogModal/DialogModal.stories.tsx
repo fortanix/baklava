@@ -7,11 +7,13 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
-import { ToastProvider, notify } from '../Toast/Toast.tsx';
+import { ToastProvider } from '../ToastContainer/ToastContainer.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 
 import { DialogModal } from './DialogModal.tsx';
 
+
+const notify = () => {};
 
 type DialogModalArgs = React.ComponentProps<typeof DialogModal>;
 type Story = StoryObj<DialogModalArgs>;

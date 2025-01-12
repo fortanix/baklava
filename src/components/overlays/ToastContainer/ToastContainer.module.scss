@@ -1,0 +1,88 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-toast {
+    cursor: pointer;
+    user-select: none; // Text selection does not make sense given that clicking the toast closes it
+    
+    flex-shrink: 0;
+    
+    /*&:not(:nth-last-child(1 of :not([hidden]))) { ... } */
+    
+    width: 40ch;
+    box-shadow: 0.15em 0.15em 0.4em rgb(0 0 0 / 50%);
+    
+    transition-duration: 400ms;
+    transition-property: display, translate, opacity;
+    transition-behavior: allow-discrete;
+    transition-timing-function: var(--ease-spring-1);
+    --transition: all 0.7s allow-discrete;
+    
+    --translate: 0px;
+    --opacity: 1;
+    
+    @starting-style {
+      translate: 100%;
+      opacity: 0;
+    }
+    &.bk-toast--skip-entry { // Skip the entry animation
+      transition-duration: 0ms;
+    }
+    
+    &[hidden] {
+      transition-duration: 200ms;
+      transition-timing-function: var(--ease-elastic-in-1);
+      opacity: 0;
+      translate: 100%;
+    }
+  }
+  
+  .bk-toast-container {
+    --ease-spring-1: linear(
+      0,
+      0.006,
+      0.025 2.8%,
+      0.101 6.1%,
+      0.539 18.9%,
+      0.721 25.3%,
+      0.849 31.5%,
+      0.937 38.1%,
+      0.968 41.8%,
+      0.991 45.7%,
+      1.006 50.1%,
+      1.015 55%,
+      1.017 63.9%,
+      1.001
+    );
+    --ease-elastic-out-1: cubic-bezier(0.5, 0.75, 0.75, 1.25);
+    
+    @include bk.component-base(bk-toast-container);
+    
+    overflow: visible; // Allow overflow, for entry/exit animation overshoot
+    
+    position: fixed;
+    inset: 0;
+    left: auto;
+    margin: 1rem;
+    width: min-content;
+    height: min-content;
+    max-width: 100vi;
+    max-height: 90vb;
+    
+    background: transparent;
+    
+    display: flex;
+    flex-direction: column-reverse;
+    row-gap: 1lh;
+    
+    @media (prefers-reduced-motion: no-preference) {
+      --transition-duration: 150ms;
+      transition:
+        opacity var(--transition-duration) ease-out;
+    }
+  }
+}
