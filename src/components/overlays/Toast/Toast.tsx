@@ -5,7 +5,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { classNames as cx, type ClassNameArgument } from '../../../util/componentUtil.ts';
-import { useActiveModal } from '../../util/Dialog/ModalContext.tsx';
+import { useActiveModalDialog } from '../../util/overlays/modal/ModalDialogProvider.tsx';
 
 import {
   toast,
@@ -214,7 +214,7 @@ export const ToastProvider = (props: ToastProviderProps) => {
     ...propsRest
   } = props;
   
-  const activeModal = useActiveModal();
+  const activeModal = useActiveModalDialog();
   const containerRef: React.RefCallback<HTMLElement> = (element) => {
     if (element) {
       element.showPopover();

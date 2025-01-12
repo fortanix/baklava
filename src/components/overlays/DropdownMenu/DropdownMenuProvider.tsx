@@ -7,9 +7,9 @@ import { mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
 import { useListNavigation, type Placement } from '@floating-ui/react';
-import { usePopover } from '../../util/Popover/Popover.tsx';
+import { useFloatingElement } from '../../util/overlays/floating-ui/useFloatingElement.tsx';
 
-import { DropdownMenuContext, type OptionDef, Action, Option, DropdownMenu } from './DropdownMenu.tsx';
+import { DropdownMenuContext, type OptionDef, Option, Action, DropdownMenu } from './DropdownMenu.tsx';
 
 
 export type AnchorRenderArgs = {
@@ -55,7 +55,7 @@ export const DropdownMenuProvider = Object.assign(
       getFloatingProps,
       getItemProps,
       setIsOpen,
-    } = usePopover({
+    } = useFloatingElement({
       placement: placement,
       offset: 8,
       floatingUiFlipOptions: {

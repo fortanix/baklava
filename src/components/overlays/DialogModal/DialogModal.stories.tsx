@@ -7,9 +7,7 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
-import { ModelProvider } from '../../util/Dialog/ModalContext.tsx';
 import { ToastProvider, notify } from '../Toast/Toast.tsx';
-
 import { Button } from '../../actions/Button/Button.tsx';
 
 import { DialogModal } from './DialogModal.tsx';
@@ -69,9 +67,6 @@ export const DialogModalSlideOverLeft: Story = {
 };
 
 export const DialogModalNested: Story = {
-  decorators: [
-    Story => <ModelProvider><Story/></ModelProvider>,
-  ],
   args: {
     title: 'Modal with a submodal',
     className: 'outer',
@@ -89,7 +84,7 @@ export const DialogModalNested: Story = {
 
 export const DialogModalWithToast: Story = {
   decorators: [
-    Story => <ModelProvider><ToastProvider><Story/></ToastProvider></ModelProvider>,
+    Story => <ToastProvider><Story/></ToastProvider>,
   ],
   args: {
     title: 'Modal with a submodal',

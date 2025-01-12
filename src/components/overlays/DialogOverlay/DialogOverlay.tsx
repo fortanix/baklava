@@ -7,7 +7,7 @@ import { mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx } from '../../../util/componentUtil.ts';
 
 import { Dialog } from '../../containers/Dialog/Dialog.tsx';
-import { type PopoverProviderProps, PopoverProvider } from '../../util/overlays/PopoverProvider.tsx';
+import { type PopoverProviderProps, PopoverProvider } from '../../util/overlays/popover/PopoverProvider.tsx';
 
 import cl from './DialogOverlay.module.scss';
 

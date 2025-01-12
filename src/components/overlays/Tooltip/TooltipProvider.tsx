@@ -7,7 +7,7 @@ import { classNames as cx, type ClassNameArgument } from '../../../util/componen
 import { mergeRefs } from '../../../util/reactUtil.ts';
 import * as React from 'react';
 
-import { usePopover, usePopoverArrow } from '../../util/Popover/Popover.tsx';
+import { useFloatingElement, useFloatingElementArrow } from '../../util/overlays/floating-ui/useFloatingElement.tsx';
 import { type TooltipProps, TooltipClassNames, Tooltip } from './Tooltip.tsx';
 
 
@@ -67,7 +67,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     getReferenceProps,
     getFloatingProps,
     placement: activePlacement,
-  } = usePopover({
+  } = useFloatingElement({
     action: 'hover',
     placement,
     offset: 14,
@@ -75,7 +75,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     boundary,
     ...(arrowRef.current ? { arrowRef:  arrowRef as React.RefObject<HTMLElement> } : {}),
   });
-  const arrow = usePopoverArrow({ context });
+  const arrow = useFloatingElementArrow({ context });
   
   // Call event listeners, if any
   React.useLayoutEffect(() => {
