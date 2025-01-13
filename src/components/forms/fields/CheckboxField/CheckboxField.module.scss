@@ -32,9 +32,8 @@
     .bk-checkbox-field__label__content {
       color: bk.$theme-text-label-default;
       cursor: pointer;
-      position: relative;
+      font-size: bk.$font-size-m;
       margin-left: bk.$spacing-2;
-      top: -2px;
     }
 
     .bk-checkbox-field__sublabel {
