@@ -32,9 +32,9 @@
     .bk-radio-field__label__content {
       color: bk.$theme-text-label-default;
       cursor: pointer;
+      font-size: bk.$font-size-m;
       position: relative;
       padding-left: bk.$spacing-2;
-      top: -2px;
     }
 
     .bk-radio-field__sublabel {
