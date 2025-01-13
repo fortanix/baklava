@@ -19,7 +19,7 @@
     transition-duration: 400ms;
     transition-property: display, translate, opacity;
     transition-behavior: allow-discrete;
-    transition-timing-function: var(--ease-spring-1);
+    transition-timing-function: var(--bk-toast-ease-entry);
     --transition: all 0.7s allow-discrete;
     
     --translate: 0px;
@@ -29,20 +29,21 @@
       translate: 100%;
       opacity: 0;
     }
-    &.bk-toast--skip-entry { // Skip the entry animation
+    &.bk-toast--skip-entry { // If applied, we skip the entry animation
       transition-duration: 0ms;
     }
     
     &[hidden] {
       transition-duration: 200ms;
-      transition-timing-function: var(--ease-elastic-in-1);
+      transition-timing-function: var(--bk-toast-ease-exit);
       opacity: 0;
       translate: 100%;
     }
   }
   
-  .bk-toast-container {
-    --ease-spring-1: linear(
+  .bk-toaster {
+    // Source: `--ease-spring-1` from open-props
+    --bk-toast-ease-entry: linear(
       0,
       0.006,
       0.025 2.8%,
@@ -58,9 +59,10 @@
       1.017 63.9%,
       1.001
     );
-    --ease-elastic-out-1: cubic-bezier(0.5, 0.75, 0.75, 1.25);
+    // Source: `--ease-elastic-out-1` from open-props
+    --bk-toast-ease-exit: cubic-bezier(0.5, 0.75, 0.75, 1.25);
     
-    @include bk.component-base(bk-toast-container);
+    @include bk.component-base(bk-toaster);
     
     overflow: visible; // Allow overflow, for entry/exit animation overshoot
     

@@ -7,13 +7,11 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
-import { ToastProvider } from '../ToastContainer/ToastContainer.tsx';
+import { notify } from '../ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 
 import { DialogModal } from './DialogModal.tsx';
 
-
-const notify = () => {};
 
 type DialogModalArgs = React.ComponentProps<typeof DialogModal>;
 type Story = StoryObj<DialogModalArgs>;
@@ -85,15 +83,12 @@ export const DialogModalNested: Story = {
 };
 
 export const DialogModalWithToast: Story = {
-  decorators: [
-    Story => <ToastProvider><Story/></ToastProvider>,
-  ],
   args: {
     title: 'Modal with a submodal',
     className: 'outer',
     children: (
       <>
-        <Button variant="primary" onPress={() => { notify.info({ title: 'Info', message: 'Test notification', options: { autoClose: 9999999999 } }); }}>
+        <Button variant="primary" onPress={() => { notify({ title: 'Info', message: 'Test notification', options: { autoClose: 9999999999 } }); }}>
           Trigger toast notification
         </Button>
         <DialogModal
@@ -102,7 +97,7 @@ export const DialogModalWithToast: Story = {
           trigger={({ activate }) => <Button variant="primary" label="Open submodal" onPress={activate}/>}
         >
           <p>Test rendering toast notifications over the modal:</p>
-          <Button variant="primary" onPress={() => { notify.info({ title: 'Info', message: 'Test notification', options: { autoClose: 9999999999 } }); }}>
+          <Button variant="primary" onPress={() => { notify({ title: 'Info', message: 'Test notification', options: { autoClose: 9999999999 } }); }}>
             Trigger toast notification
           </Button>
         </DialogModal>

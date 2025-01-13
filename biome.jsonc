@@ -29,7 +29,8 @@
       "recommended": true,
       "complexity": {
         "noBannedTypes": "off",
-        "noForEach": "off"
+        "noForEach": "off",
+        "useOptionalChain": "off"
       },
       "style": {
         "useImportType": "off",

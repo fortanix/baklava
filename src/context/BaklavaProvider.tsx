@@ -5,12 +5,15 @@
 import * as React from 'react';
 
 import { ModalDialogProvider } from '../components/util/overlays/modal/ModalDialogProvider.tsx';
+import { ToastProvider } from '../components/overlays/ToastProvider/ToastProvider.tsx';
 
 
 export const BaklavaProvider = (props: React.PropsWithChildren) => {
   return (
     <ModalDialogProvider>
-      {props.children}
+      <ToastProvider global>
+        {props.children}
+      </ToastProvider>
     </ModalDialogProvider>
   );
 };

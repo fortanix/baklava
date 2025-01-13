@@ -6,14 +6,14 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { ToastContainer } from './ToastContainer.tsx';
+import { ToastProvider } from './ToastProvider.tsx';
 
 
-type ToastContainerArgs = React.ComponentProps<typeof ToastContainer>;
-type Story = StoryObj<ToastContainerArgs>;
+type ToastProviderArgs = React.ComponentProps<typeof ToastProvider>;
+type Story = StoryObj<ToastProviderArgs>;
 
 export default {
-  component: ToastContainer,
+  component: ToastProvider,
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
@@ -21,8 +21,8 @@ export default {
   argTypes: {},
   args: {
   },
-  render: (args) => <ToastContainer {...args}/>,
-} satisfies Meta<ToastContainerArgs>;
+  render: (args) => <ToastProvider {...args}/>,
+} satisfies Meta<ToastProviderArgs>;
 
 
-export const ToastContainerStandard: Story = {};
+export const ToastProviderStandard: Story = {};
