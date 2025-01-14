@@ -49,8 +49,8 @@ export type CheckboxFieldProps = ComponentProps<typeof Checkbox> & {
   /** A label to be displayed after the checkbox. */
   label: string,
   
-  /** An optional supporting copy to be displayed under the label. */
-  sublabel?: undefined | string,
+  /** Additional supporting text to be displayed under the label. Optional. */
+  description?: undefined | string,
   
   /** An optional title. */
   title?: undefined | string,
@@ -81,7 +81,7 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
   const {
     unstyled = false,
     label = '',
-    sublabel,
+    description,
     title,
     titleOptional,
     titleTooltip,
@@ -116,9 +116,9 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
           {label}
         </span>
       </label>
-      {sublabel && (
-        <div className={cl['bk-checkbox-field__sublabel']}>{sublabel}</div>
-      )}
+      {description &&
+        <div className={cl['bk-checkbox-field__description']}>{description}</div>
+      }
     </div>
   );
 };

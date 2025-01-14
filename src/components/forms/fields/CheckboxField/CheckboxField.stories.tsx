@@ -66,9 +66,9 @@ export const CheckboxFieldWithLabelWithTitleWithTooltipWithOptional: Story = {
   },
 };
 
-export const CheckboxFieldWithLabelAndSublabel: Story = {
+export const CheckboxFieldWithLabelAndDescription: Story = {
   args: {
     label: 'Label',
-    sublabel: 'Supporting copy',
+    description: 'Additional description',
   },
 };
