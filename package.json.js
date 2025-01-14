@@ -185,6 +185,7 @@ const packageConfig = {
   peerDependenciesMeta: {},
   optionalDependencies: {
     '@rollup/rollup-linux-x64-gnu': '^4.30.1', // https://github.com/vitejs/vite/discussions/15532#discussioncomment-8527272
+    'sass-embedded-linux-x64': '^1.83.4',
   },
   overrides: {
     // Issue: https://github.com/storybookjs/addon-designs/issues/246

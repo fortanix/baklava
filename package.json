@@ -122,7 +122,8 @@
   },
   "peerDependenciesMeta": {},
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "^4.30.1"
+    "@rollup/rollup-linux-x64-gnu": "^4.30.1",
+    "sass-embedded-linux-x64": "^1.83.4"
   },
   "overrides": {
     "@storybook/addon-designs": {
