@@ -32,6 +32,16 @@ export default {
 } satisfies Meta<DialogModalArgs>;
 
 
+let count = 1;
+const notifyTest = () => {
+  notify({
+    // biome-ignore lint/style/noNonNullAssertion: Will not be undefined.
+    variant: (['success', 'info', 'error', 'warning'] as const)[count % 4]!,
+    title: `Test ${count++}`,
+    message: 'Test notification',
+  });
+};
+
 export const DialogModalStandard: Story = {};
 
 export const DialogModalSmall: Story = {
@@ -88,7 +98,7 @@ export const DialogModalWithToast: Story = {
     className: 'outer',
     children: (
       <>
-        <Button variant="primary" onPress={() => { notify({ title: 'Info', message: 'Test notification', options: { autoClose: 9999999999 } }); }}>
+        <Button variant="primary" onPress={() => { notifyTest(); }}>
           Trigger toast notification
         </Button>
         <DialogModal
@@ -97,7 +107,7 @@ export const DialogModalWithToast: Story = {
           trigger={({ activate }) => <Button variant="primary" label="Open submodal" onPress={activate}/>}
         >
           <p>Test rendering toast notifications over the modal:</p>
-          <Button variant="primary" onPress={() => { notify({ title: 'Info', message: 'Test notification', options: { autoClose: 9999999999 } }); }}>
+          <Button variant="primary" onPress={() => { notifyTest(); }}>
             Trigger toast notification
           </Button>
         </DialogModal>

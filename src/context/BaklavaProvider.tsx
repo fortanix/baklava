@@ -5,8 +5,25 @@
 import * as React from 'react';
 
 import { ModalDialogProvider } from '../components/util/overlays/modal/ModalDialogProvider.tsx';
-import { ToastProvider } from '../components/overlays/ToastProvider/ToastProvider.tsx';
+import { ToastProvider, notify } from '../components/overlays/ToastProvider/ToastProvider.tsx';
 
+
+// Debug utility for toast notifications
+let addedTestNotify = false;
+if (!addedTestNotify && process.env.NODE_ENV === 'development') {
+  let count = 1;
+  window.addEventListener('keydown', event => {
+    if (event.key === 't') {
+      notify({
+        // biome-ignore lint/style/noNonNullAssertion: Will not be undefined.
+        variant: (['success', 'info', 'error', 'warning'] as const)[count % 4]!,
+        title: `Test ${count++}`,
+        message: 'Test notification',
+      });
+    }
+  });
+  addedTestNotify = true;
+}
 
 export const BaklavaProvider = (props: React.PropsWithChildren) => {
   return (

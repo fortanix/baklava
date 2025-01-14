@@ -86,5 +86,7 @@
       transition:
         opacity var(--transition-duration) ease-out;
     }
+    
+    @include bk.focus-hidden;
   }
 }

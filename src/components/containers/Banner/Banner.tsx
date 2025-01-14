@@ -45,6 +45,10 @@ const ActionButton = (props: ActionButtonProps) => {
     <Button trimmed
       {...props}
       className={cx(cl['bk-banner__action'], cl['bk-banner__action--button'], props.className)}
+      onClick={event => {
+        event.stopPropagation(); // Prevent this from triggering any click handlers on the Banner itself (e.g. toasts)
+        props.onClick?.(event);
+      }}
     />
   );
 };
@@ -65,6 +69,10 @@ const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
       <Button trimmed
         {...buttonProps}
         className={cx(cl['bk-banner__action'], cl['bk-banner__action--icon'], buttonProps.className)}
+        onClick={event => {
+          event.stopPropagation(); // Prevent this from triggering any click handlers on the Banner itself (e.g. toasts)
+          buttonProps.onClick?.(event);
+        }}
       />
     </TooltipProvider>
   );

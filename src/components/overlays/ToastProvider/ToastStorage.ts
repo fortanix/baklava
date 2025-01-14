@@ -4,22 +4,48 @@ import * as React from 'react';
 import { type BannerVariant } from '../../containers/Banner/Banner.tsx';
 
 
-const entryAnimationDelay = 400;
-const exitAnimationDelay = 200;
-const autoCloseTime = 5000; // Should be higher than `entryAnimationDelay`
+type TimeoutHandle = number;
 
 export type ToastId = string;
-export type ToastDescriptor = { variant: BannerVariant, title: string, message: React.ReactNode };
-export type ToastMetadata = { entryAnimationFinished: boolean, dismissed: boolean };
-export type ToastStorage = Record<ToastId, { metadata: ToastMetadata, descriptor: ToastDescriptor }>;
+export type ToastDescriptor = {
+  variant: BannerVariant,
+  title: string,
+  message: React.ReactNode,
+};
 
+export type ToastObservableOptions = {
+  entryAnimationDelay?: number /*ms*/,
+  exitAnimationDelay?: number /*ms*/,
+  autoCloseTime?: number /*ms*/, // Should be higher than `entryAnimationDelay`
+};
+export type ToastMetadata = {
+  openedAt: Date,
+  dismissed: boolean,
+  autoCloseHandle: TimeoutHandle,
+};
+export type ToastWithMetadata = { metadata: ToastMetadata, descriptor: ToastDescriptor };
+export type ToastStorage = Readonly<Record<ToastId, ToastWithMetadata>>;
 export type ToastSubscriber = (toasts: ToastStorage) => void;
+
+/**
+ * Observable for the currently active toasts. Subscribers will be notified when the state changes.
+ */
 export class ToastsObservable {
+  #options: Required<ToastObservableOptions>;
+  
+  #idCounter = 0; // Maintain a count for automatic ID generation
   #toasts: ToastStorage = Object.create(null);
-  #idCounter = 0; // Maintain a count for ID generation
   #subscribers: Set<ToastSubscriber> = new Set();
   
-  toasts() { return this.#toasts; }
+  constructor(options: ToastObservableOptions = {}) {
+    this.#options = {
+      entryAnimationDelay: options.entryAnimationDelay ?? 400,
+      exitAnimationDelay: options.exitAnimationDelay ?? 200,
+      autoCloseTime: options.autoCloseTime ?? 2000,
+    };
+  }
+  
+  toasts() { return { ...this.#toasts }; }
   
   /** Subscribe to this observable. Returns a function to unsubscribe. */
   subscribe(subscriber: ToastSubscriber): () => void {
@@ -53,22 +79,43 @@ export class ToastsObservable {
     return toastKey.replace(/^toast-/, '');
   }
   
+  getToastById(toastId: ToastId): null | ToastWithMetadata {
+    const toastKey = this.keyFromId(toastId);
+    return this.#toasts[toastKey] ?? null;
+  }
+  
+  updateToastMetadata(toastId: ToastId, updater: (metadata: ToastMetadata) => ToastMetadata) {
+    const toast = this.getToastById(toastId);
+    if (!toast) { throw new Error(`Missing toast: ${toastId}`); }
+    
+    this.#toasts = {
+      ...this.#toasts,
+      [this.keyFromId(toastId)]: { ...toast, metadata: updater(toast.metadata) },
+    };
+  }
+  
   dismissToast(toastId: ToastId) {
     const toastKey = this.keyFromId(toastId);
+    const toast = this.getToastById(toastId);
+    if (!toast) { return; } // If the toast doesn't exist (anymore), ignore
     
     // Note: make sure to do an immutable update, otherwise this may not cause a rerender downstream
-    const toast = this.#toasts[toastKey];
     if (typeof toast !== 'undefined') {
-      this.#toasts = { ...this.#toasts, [toastKey]: { ...toast, metadata: { ...toast.metadata, dismissed: true } } };
+      this.updateToastMetadata(toastId, metadata => ({ ...metadata, dismissed: true }));
       this.publish();
     }
     
     // Clean up garbage data after the exit animation has had a chance to complete
     window.setTimeout(() => {
-      this.#toasts = { ...this.#toasts };
-      delete this.#toasts[toastKey];
+      const toasts = { ...this.#toasts };
+      delete toasts[toastKey];
+      this.#toasts = toasts;
       this.publish();
-    }, exitAnimationDelay);
+    }, this.#options.exitAnimationDelay);
+  }
+  
+  scheduleClose(toastId: ToastId, closeTime: number /*ms*/): TimeoutHandle {
+    return window.setTimeout(() => { this.dismissToast(toastId); }, closeTime);
   }
   
   announceToast(toastId: ToastId, toast: ToastDescriptor) {
@@ -82,27 +129,42 @@ export class ToastsObservable {
       delete toasts[toastKey];
     }
     
-    // Add the new toast
-    toasts[toastKey] = { metadata: { entryAnimationFinished: false, dismissed: false }, descriptor: toast };
+    // Schedule autoclose
+    const autoCloseTime = Math.max(this.#options.autoCloseTime, this.#options.entryAnimationDelay);
+    const autoCloseHandle = this.scheduleClose(toastId, autoCloseTime);
     
-    // Mark entry animation finished
-    window.setTimeout(() => {
-      const toast = this.#toasts[toastKey];
-      if (typeof toast !== 'undefined') {
-        this.#toasts = {
-          ...this.#toasts,
-          [toastKey]: { ...toast, metadata: { ...toast.metadata, entryAnimationFinished: true } },
-        };
-        this.publish();
-      }
-    }, entryAnimationDelay);
+    // Add the new toast
+    toasts[toastKey] = {
+      metadata: { openedAt: new Date(), dismissed: false, autoCloseHandle },
+      descriptor: toast,
+    };
     
     this.#toasts = toasts;
     this.publish();
+  }
+  
+  shouldSkipEntryAnimation(toastId: ToastId) {
+    const toastKey = this.keyFromId(toastId);
+    const toast = this.#toasts[toastKey];
+    if (typeof toast === 'undefined') { return; }
     
-    // Schedule autoclose
-    window.setTimeout(() => {
-      this.dismissToast(toastId);
-    }, autoCloseTime);
+    const openedAt: Date = toast.metadata.openedAt;
+    return (new Date().valueOf() - openedAt.valueOf()) >= this.#options.entryAnimationDelay;
+  }
+  
+  // If the user hovers over the toast, keep it 
+  onInterestStart(toastId: ToastId) {
+    const toastKey = this.keyFromId(toastId);
+    const toast = this.#toasts[toastKey];
+    if (typeof toast === 'undefined') { return; }
+    
+    window.clearTimeout(toast.metadata.autoCloseHandle);
+  }
+  
+  onInterestEnd(toastId: ToastId) {
+    const autoCloseTime = Math.max(this.#options.autoCloseTime, this.#options.entryAnimationDelay);
+    const autoCloseHandle = this.scheduleClose(toastId, autoCloseTime);
+    this.updateToastMetadata(toastId, metadata => ({ ...metadata, autoCloseHandle }));
+    this.publish();
   }
 }
