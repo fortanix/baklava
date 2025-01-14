@@ -71,6 +71,7 @@ const preview = {
               'ModalProvider',
               'SpinnerModal',
               'DialogModal',
+              'DialogOverlay',
               'ToastProvider',
               'Tooltip',
               'TooltipProvider',

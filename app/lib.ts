@@ -65,6 +65,7 @@ export { Tab, Tabs } from '../src/components/navigations/Tabs/Tabs.tsx';
 export { ModalProvider } from '../src/components/overlays/ModalProvider/ModalProvider.tsx';
 export { SpinnerModal } from '../src/components/overlays/SpinnerModal/SpinnerModal.tsx';
 export { DialogModal } from '../src/components/overlays/DialogModal/DialogModal.tsx';
+export { DialogOverlay } from '../src/components/overlays/DialogOverlay/DialogOverlay.tsx';
 export { DropdownMenu } from '../src/components/overlays/DropdownMenu/DropdownMenu.tsx';
 export { DropdownMenuProvider } from '../src/components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
 export { ToastProvider, notify } from '../src/components/overlays/ToastProvider/ToastProvider.tsx';

@@ -30,12 +30,12 @@ export default {
     <>
       <LoremIpsum paragraphs={5}/>
       <DialogOverlay {...args}
-        trigger={({ activate }) => <Button variant="primary" label="Open popover 1" onPress={activate}/>}
+        trigger={({ activate }) => <Button variant="primary" label="Open overlay 1" onPress={activate}/>}
       />
       <br/>
       <br/>
       <DialogOverlay {...args}
-        trigger={({ activate }) => <Button variant="primary" label="Open popover 2" onPress={activate}/>}
+        trigger={({ activate }) => <Button variant="primary" label="Open overlay 2" onPress={activate}/>}
       />
     </>
   ),
