@@ -1,27 +1,30 @@
 
+import { Timer } from '../../../util/time.ts';
 import * as React from 'react';
 
 import { type BannerVariant } from '../../containers/Banner/Banner.tsx';
 
 
-type TimeoutHandle = number;
-
 export type ToastId = string;
+export type ToastOptions = {
+  autoClose: false | number /*ms*/, // Time after which to automatically close the toast, or `false` if none
+};
 export type ToastDescriptor = {
   variant: BannerVariant,
-  title: string,
   message: React.ReactNode,
+  title?: undefined | string,
+  options?: undefined | ToastOptions,
 };
 
 export type ToastObservableOptions = {
   entryAnimationDelay?: number /*ms*/,
   exitAnimationDelay?: number /*ms*/,
-  autoCloseTime?: number /*ms*/, // Should be higher than `entryAnimationDelay`
+  autoCloseDelay?: number /*ms*/, // Should be higher than `entryAnimationDelay`
 };
 export type ToastMetadata = {
   openedAt: Date,
   dismissed: boolean,
-  autoCloseHandle: TimeoutHandle,
+  autoCloseTimer: null | Timer,
 };
 export type ToastWithMetadata = { metadata: ToastMetadata, descriptor: ToastDescriptor };
 export type ToastStorage = Readonly<Record<ToastId, ToastWithMetadata>>;
@@ -41,7 +44,7 @@ export class ToastsObservable {
     this.#options = {
       entryAnimationDelay: options.entryAnimationDelay ?? 400,
       exitAnimationDelay: options.exitAnimationDelay ?? 200,
-      autoCloseTime: options.autoCloseTime ?? 5000,
+      autoCloseDelay: options.autoCloseDelay ?? 5000,
     };
   }
   
@@ -50,6 +53,7 @@ export class ToastsObservable {
   /** Subscribe to this observable. Returns a function to unsubscribe. */
   subscribe(subscriber: ToastSubscriber): () => void {
     this.#subscribers.add(subscriber);
+    subscriber(this.#toasts); // Publish the current state
     return () => {
       this.#subscribers.delete(subscriber);
     };
@@ -114,8 +118,8 @@ export class ToastsObservable {
     }, this.#options.exitAnimationDelay);
   }
   
-  scheduleClose(toastId: ToastId, closeTime: number /*ms*/): TimeoutHandle {
-    return window.setTimeout(() => { this.dismissToast(toastId); }, closeTime);
+  scheduleClose(toastId: ToastId, closeDelay: number /*ms*/): Timer {
+    return new Timer(() => { this.dismissToast(toastId); }, closeDelay);
   }
   
   announceToast(toastId: ToastId, toast: ToastDescriptor) {
@@ -129,13 +133,17 @@ export class ToastsObservable {
       delete toasts[toastKey];
     }
     
-    // Schedule autoclose
-    const autoCloseTime = Math.max(this.#options.autoCloseTime, this.#options.entryAnimationDelay);
-    const autoCloseHandle = this.scheduleClose(toastId, autoCloseTime);
+    // Schedule autoclose, if configured
+    let autoCloseTimer: null | Timer = null;
+    const autoCloseDelay: false | number = toast.options?.autoClose ?? this.#options.autoCloseDelay;
+    if (autoCloseDelay && autoCloseDelay > 0) {
+      const autoCloseDelayMax = Math.max(autoCloseDelay, this.#options.entryAnimationDelay);
+      autoCloseTimer = this.scheduleClose(toastId, autoCloseDelayMax);
+    }
     
     // Add the new toast
     toasts[toastKey] = {
-      metadata: { openedAt: new Date(), dismissed: false, autoCloseHandle },
+      metadata: { openedAt: new Date(), dismissed: false, autoCloseTimer },
       descriptor: toast,
     };
     
@@ -152,19 +160,33 @@ export class ToastsObservable {
     return (new Date().valueOf() - openedAt.valueOf()) >= this.#options.entryAnimationDelay;
   }
   
-  // If the user hovers over the toast, keep it 
-  onInterestStart(toastId: ToastId) {
+  pauseAutoClose(toastId: ToastId) {
     const toastKey = this.keyFromId(toastId);
     const toast = this.#toasts[toastKey];
     if (typeof toast === 'undefined') { return; }
     
-    window.clearTimeout(toast.metadata.autoCloseHandle);
+    const autoCloseTimer = toast.metadata.autoCloseTimer;
+    autoCloseTimer?.pause(); // Pause the auto-close timer, if any
   }
   
-  onInterestEnd(toastId: ToastId) {
-    const autoCloseTime = Math.max(this.#options.autoCloseTime, this.#options.entryAnimationDelay);
-    const autoCloseHandle = this.scheduleClose(toastId, autoCloseTime);
-    this.updateToastMetadata(toastId, metadata => ({ ...metadata, autoCloseHandle }));
-    this.publish();
+  resumeAutoClose(toastId: ToastId) {
+    const toastKey = this.keyFromId(toastId);
+    const toast = this.#toasts[toastKey];
+    if (typeof toast === 'undefined') { return; }
+    
+    const autoCloseTimer = toast.metadata.autoCloseTimer;
+    autoCloseTimer?.resume(); // Resume the auto-close timer, if any
+  }
+  
+  onPageVisible() {
+    for (const toastKey of Object.keys(this.#toasts)) {
+      this.resumeAutoClose(this.idFromKey(toastKey));
+    }
+  }
+  
+  onPageHide() {
+    for (const toastKey of Object.keys(this.#toasts)) {
+      this.pauseAutoClose(this.idFromKey(toastKey));
+    }
   }
 }

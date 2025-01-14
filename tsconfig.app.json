@@ -24,6 +24,7 @@
     
     // Type checking
     "lib": ["ES2023", "DOM", "DOM.Iterable"], // Library declaration files to include (globally)
+    "types": [], // https://stackoverflow.com/questions/59322550/disable-types-node-in-tsconfig
     "skipLibCheck": true, // Do not type check declaration files (for performance)
     "noErrorTruncation": true,
     

@@ -6,6 +6,7 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
 import { ButtonAsLink } from './ButtonAsLink.tsx';
 
 
@@ -22,7 +23,7 @@ export default {
   args: {
     unstyled: false,
     label: 'Button',
-    onPress: () => { window.alert('Pressed'); }
+    onPress: () => { notify.success('You pressed the button.'); },
   },
   render: (args) => <ButtonAsLink {...args}/>,
 } satisfies Meta<ButtonAsLinkArgs>;

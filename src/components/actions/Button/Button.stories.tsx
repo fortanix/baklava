@@ -9,6 +9,7 @@ import { delay } from '../../../util/time.ts';
 import * as React from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
+import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Banner } from '../../containers/Banner/Banner.tsx';
 
@@ -31,9 +32,7 @@ export default {
     variant: 'primary',
     nonactive: false,
     disabled: false,
-    onPress() {
-      alert('Click');
-    },
+    onPress: () => { notify.success('You pressed the button.'); },
   },
   decorators: [
     Story => (

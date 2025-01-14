@@ -67,10 +67,9 @@ export { SpinnerModal } from '../src/components/overlays/SpinnerModal/SpinnerMod
 export { DialogModal } from '../src/components/overlays/DialogModal/DialogModal.tsx';
 export { DropdownMenu } from '../src/components/overlays/DropdownMenu/DropdownMenu.tsx';
 export { DropdownMenuProvider } from '../src/components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
-export { type ToastContent, ToastProvider, ToastMessage } from '../src/components/overlays/Toast/Toast.tsx';
+export { ToastProvider, notify } from '../src/components/overlays/ToastProvider/ToastProvider.tsx';
 export { Tooltip } from '../src/components/overlays/Tooltip/Tooltip.tsx';
 export { TooltipProvider } from '../src/components/overlays/Tooltip/TooltipProvider.tsx';
-export { notify } from '../src/components/overlays/Toast/Toast.tsx';
 
 /**
  * Layouts

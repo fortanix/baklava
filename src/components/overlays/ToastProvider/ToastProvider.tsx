@@ -9,7 +9,7 @@ import { mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
 import { Icon } from '../../graphics/Icon/Icon.tsx';
-import { Banner } from '../../containers/Banner/Banner.tsx';
+import { type BannerVariant, Banner } from '../../containers/Banner/Banner.tsx';
 import { useActiveModalDialog } from '../../util/overlays/modal/ModalDialogProvider.tsx';
 
 import { type ToastDescriptor, type ToastStorage, ToastsObservable } from './ToastStorage.ts';
@@ -19,9 +19,25 @@ import cl from './ToastProvider.module.scss';
 
 export { cl as ToasterClassNames };
 
-export const createToastNotifier = (toastsObservable: ToastsObservable) => (toast: ToastDescriptor) => {
-  const toastId = toastsObservable.uniqueId();
-  toastsObservable.announceToast(toastId, toast);
+export type { ToastDescriptor };
+
+export const createToastNotifier = (toastsObservable: ToastsObservable) => {
+  const notify = (toast: ToastDescriptor) => {
+    const toastId = toastsObservable.uniqueId();
+    toastsObservable.announceToast(toastId, toast);
+  };
+  const notifyVariant = (variant: BannerVariant, toast: string | Omit<ToastDescriptor, 'variant'>) => {
+    const descriptor: ToastDescriptor = typeof toast === 'string'
+      ? { variant, message: toast }
+      : { ...toast, variant };
+    notify(descriptor);
+  };
+  return Object.assign(notify, {
+    info: (toast: string | Omit<ToastDescriptor, 'variant'>) => notifyVariant('info', toast),
+    warning: (toast: string | Omit<ToastDescriptor, 'variant'>) => notifyVariant('warning', toast),
+    error: (toast: string | Omit<ToastDescriptor, 'variant'>) => notifyVariant('error', toast),
+    success: (toast: string | Omit<ToastDescriptor, 'variant'>) => notifyVariant('success', toast),
+  });
 };
 
 export const Toast = (props: React.ComponentProps<typeof Banner>) => {
@@ -94,6 +110,19 @@ export const Toaster = (props: ToasterProps) => {
     });
   }, [toastsObservable]);
   
+  // Pause auto-close when the page is not currently visible by the user
+  const handleVisibilityChange = React.useCallback(() => {
+    if (document.visibilityState === 'visible') {
+      toastsObservable.onPageVisible();
+    } else {
+      toastsObservable.onPageHide();
+    }
+  }, [toastsObservable]);
+  React.useEffect(() => {
+    window.document.addEventListener('visibilitychange', handleVisibilityChange, false);
+    return () => { window.document.removeEventListener('visibilitychange', handleVisibilityChange); };
+  }, [handleVisibilityChange]);
+  
   // Ref callback to enforce that the Toaster is always rendered as a popover
   const enforcePopoverOpen: React.RefCallback<React.ComponentRef<'section'>> = container => {
     if (container && container.isConnected && !container.matches(`:popover-open`)) {
@@ -142,10 +171,10 @@ export const Toaster = (props: ToasterProps) => {
               event.stopPropagation();
               toastsObservable.dismissToast(toastId);
             }}
-            onMouseEnter={event => { event.stopPropagation(); toastsObservable.onInterestStart(toastId); }}
-            onTouchStart={event => { event.stopPropagation(); toastsObservable.onInterestStart(toastId); }}
-            onMouseLeave={event => { event.stopPropagation(); toastsObservable.onInterestEnd(toastId); }}
-            onTouchEnd={event => { event.stopPropagation(); toastsObservable.onInterestEnd(toastId); }}
+            onMouseEnter={event => { event.stopPropagation(); toastsObservable.pauseAutoClose(toastId); }}
+            onTouchStart={event => { event.stopPropagation(); toastsObservable.pauseAutoClose(toastId); }}
+            onMouseLeave={event => { event.stopPropagation(); toastsObservable.resumeAutoClose(toastId); }}
+            onTouchEnd={event => { event.stopPropagation(); toastsObservable.resumeAutoClose(toastId); }}
           >
             {toast.message}
           </Toast>
@@ -167,7 +196,6 @@ export const useToastContext = (): ToastContext => {
 // A single global instance, to be used with `<ToastProvider global/>`
 export const globalToastsObservable = new ToastsObservable();
 export const notify = createToastNotifier(globalToastsObservable);
-Object.assign(window, { notify }); // TEMP
 
 type ToastProviderProps = React.PropsWithChildren<{ global?: boolean }>;
 export const ToastProvider = ({ global = false, children }: ToastProviderProps) => {

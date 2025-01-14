@@ -51,10 +51,10 @@ export const useEffectOnce = (fn: () => void) => {
   const isCalledRef = React.useRef(false);
   
   // biome-ignore lint/correctness/useExhaustiveDependencies: Should run only once
-    React.useEffect(() => {
+  React.useEffect(() => {
     if (!isCalledRef.current) {
       isCalledRef.current = true;
       fn();
     }
   }, []);
-}
+};

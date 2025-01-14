@@ -87,7 +87,7 @@ export const useModalDialog = (
   
   // The `beforetoggle` event can be used to detect when a modal opens. Note: browser support is poor currently, but
   // it's okay since we generally control the activation, not the user. In non-supporting browsers, if someone were to
-  // // manually call `.showModal()` through devtools they could potentially cause a desync.
+  // manually call `.showModal()` through devtools they could potentially cause a desync.
   // https://caniuse.com/mdn-api_htmlelement_toggle_event_dialog_elements
   const handleDialogBeforeToggle = React.useCallback((event: React.ToggleEvent<HTMLDialogElement>) => {
     if (event.newState === 'open') {

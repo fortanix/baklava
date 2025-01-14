@@ -8,6 +8,7 @@
   .bk-toast {
     cursor: pointer;
     user-select: none; // Text selection does not make sense given that clicking the toast closes it
+    touch-action: none;
     
     flex-shrink: 0;
     

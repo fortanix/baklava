@@ -10,7 +10,7 @@ import { ToastProvider, notify } from '../components/overlays/ToastProvider/Toas
 
 // Debug utility for toast notifications
 let addedTestNotify = false;
-if (!addedTestNotify && process.env.NODE_ENV === 'development') {
+if (!addedTestNotify && import.meta.env.MODE === 'development') {
   let count = 1;
   window.addEventListener('keydown', event => {
     if (event.key === 't') {

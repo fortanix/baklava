@@ -171,7 +171,6 @@ const packageConfig = {
     //'@uidotdev/usehooks': '^2.4.1',
     
     '@floating-ui/react': '^0.26.28',
-    'react-toastify': '^11.0.2',
     'react-datepicker': '^7.6.0',
     
     'effect': '^3.12.1',

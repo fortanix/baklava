@@ -71,10 +71,10 @@ const preview = {
               'ModalProvider',
               'SpinnerModal',
               'DialogModal',
+              'ToastProvider',
               'Tooltip',
               'TooltipProvider',
               'DropdownMenu',
-              'Toast',
             ],
             'lists',
             [
