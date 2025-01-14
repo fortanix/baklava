@@ -19,8 +19,6 @@
     margin: -1 * bk.$spacing-5 -1 * bk.$spacing-2;
 
     >.skeleton-row {
-      display: block;
-      height: 1.5rem;
       border-bottom: 1px solid bk.$theme-rule-default;
       gap: 2 * bk.$spacing-5;
       margin: bk.$spacing-1 0;
@@ -29,7 +27,7 @@
       align-items: center;
       .skeleton-cell {
         flex: 1;
-        &:after{
+        &::after{
           content:" ";
           background-color: bk.$theme-rule-default;
           height: bk.$spacing-2;
