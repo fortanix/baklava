@@ -27,13 +27,13 @@
     .bk-checkbox-field__label {
       display: flex;
       align-items: center;
+      column-gap: bk.$spacing-2;
     }
     
     .bk-checkbox-field__label__content {
       color: bk.$theme-text-label-default;
       cursor: pointer;
       font-size: bk.$font-size-m;
-      margin-left: bk.$spacing-2;
     }
     
     .bk-checkbox-field__description {
