@@ -16,10 +16,10 @@ export { cl as RadioFieldClassNames };
 
 export type RadioTitleProps = React.PropsWithChildren<{
   className?: ClassNameArgument,
-
+  
   /** Whether to display the optional observation on title. */
   optional?: undefined | boolean,
-
+  
   /** An optional tooltip to be displayed on an info icon next to the title. */
   titleTooltip?: undefined | string,
 }>;
@@ -45,33 +45,33 @@ export const RadioFieldTitle = ({ className, children, optional, titleTooltip }:
 export type RadioFieldProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-
+  
   /** A label to be displayed after the radio button. */
   label: string,
-
-  /** An optional supporting copy to be displayed under the label. */
-  sublabel?: undefined | string,
-
+  
+  /** Additional supporting text to be displayed under the label. Optional. */
+  description?: undefined | string,
+  
   /** An optional title. */
   title?: undefined | string,
-
+  
   /** An optional tooltip to be displayed on an info icon next to the title. */
   titleTooltip?: undefined | string,
-
+  
   /** Whether to display the optional observation on title. */
   optional?: undefined | boolean,
-
+  
   /** Whether the radio is selected by default. Passed down to Radio component. */
   defaultChecked?: undefined | boolean,
-
+  
   /** Whether the radio is selected. Passed down to Radio component. */
   checked?: undefined | boolean,
-
+  
   /** Whether the radio is disabled. Passed down to Radio component. */
   disabled?: undefined | boolean,
-
+  
   /** The onChange event for the radio. Passed down to Radio component. */
-  onChange?: (e: React.FormEvent) => void,
+  onChange?: undefined | ((event: React.FormEvent) => void),
 };
 
 /**
@@ -81,13 +81,13 @@ export const RadioField = (props: RadioFieldProps) => {
   const {
     unstyled = false,
     label = '',
-    sublabel,
+    description,
     title,
     optional,
     titleTooltip,
     className,
   } = props;
-
+  
   return (
     <div className={cx(
       'bk',
@@ -102,7 +102,7 @@ export const RadioField = (props: RadioFieldProps) => {
           {title}
         </RadioFieldTitle>
       )}
-      {/* biome ignore lint/a11y/noLabelWithoutControl: the `<Checkbox>` will resolve to an `<input>` */}
+      {/* biome-ignore lint/a11y/noLabelWithoutControl: the `<Radio>` will resolve to an `<input>` */}
       <label className={cl['bk-radio-field__label']}>
         <Radio
           checked={props.checked}
@@ -114,9 +114,9 @@ export const RadioField = (props: RadioFieldProps) => {
           {label}
         </span>
       </label>
-      {sublabel && (
-        <div className={cl['bk-radio-field__sublabel']}>{sublabel}</div>
-      )}
+      {description &&
+        <div className={cl['bk-radio-field__description']}>{description}</div>
+      }
     </div>
   );
 };

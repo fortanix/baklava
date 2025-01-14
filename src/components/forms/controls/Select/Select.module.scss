@@ -6,6 +6,7 @@
 
 @layer baklava.components {
   $bk-select-min-width: 14rem;
+  $bk-caret-size: 17px;
   
   .bk-select {
     @include bk.component-base(bk-select);
@@ -13,14 +14,25 @@
     /* Make sure the content does not have any extra space (e.g. under the line) due to baseline alignment */
     display: flex;
     
+    --bk-input-accent-color: #{bk.$theme-form-rule-default};
+    border: 0 solid var(--bk-input-accent-color);
+    border-bottom-width: 1px;
+    
+    height: 24px;
+    
     .bk-select__input {
       min-width: $bk-select-min-width;
       caret-color: transparent; /* FIXME: find better way to manage the input state */
+      border: none;
+    }
+    
+    &.bk-select--open .bk-select__input__arrow {
+      rotate: 0.5turn;
     }
   }
   
   .bk-select__dropdown {
-    min-width: $bk-select-min-width;
+    min-width: calc($bk-select-min-width + $bk-caret-size);
     max-height: 18rem;
     
     background: bk.$theme-dropdown-menu-menu-background-default;
@@ -48,6 +60,10 @@
       
       &:not(:first-child) {
         border-top: 1px solid bk.$theme-dropdown-menu-menu-border-default;
+      }
+      
+      &:last-child {
+        padding-bottom: bk.$spacing-2;
       }
       
       &:hover {
@@ -88,7 +104,7 @@
   }
   
   .bk-select__option {
-    padding: 8px 14px;
+    padding: 8px 14px 8px 26px;
     
     @include bk.font(bk.$font-family-body);
     font-size: 14px;

@@ -66,9 +66,9 @@ export const RadioFieldWithLabelWithTitleWithTooltipWithOptional: Story = {
   },
 };
 
-export const RadioFieldWithLabelAndSublabel: Story = {
+export const RadioFieldWithLabelAndDescription: Story = {
   args: {
     label: 'Label',
-    sublabel: 'Supporting copy',
+    description: 'Additional description',
   },
 };
