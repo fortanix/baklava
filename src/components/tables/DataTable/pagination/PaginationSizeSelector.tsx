@@ -10,7 +10,7 @@ import { DropdownMenuProvider } from '../../../overlays/DropdownMenu/DropdownMen
 
 import { useTable } from '../DataTableContext.tsx';
 
-// import './PaginationSizeSelector.scss';
+import './PaginationSizeSelector.scss';
 
 
 export type PageSizeOption = number;
@@ -21,7 +21,7 @@ type PaginationSizeSelectorProps = {
   pageSizeLabel?: string | undefined,
 };
 export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
-  const { pageSizeOptions = defaultPageSizeOptions, pageSizeLabel = 'Items per page' } = props;
+  const { pageSizeOptions = defaultPageSizeOptions, pageSizeLabel = 'Rows per page' } = props;
 
   const { table } = useTable();
 
@@ -30,6 +30,7 @@ export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
       {pageSizeLabel}:
 
       <DropdownMenuProvider
+        className="page-size-selector__dropdown"
         items={pageSizeOptions.map((pageSize) => (
           <DropdownMenuProvider.Action
             key={pageSize.toString()}
@@ -44,7 +45,7 @@ export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
       >
         {({ props }) => (
           <Button
-            variant="primary"
+            variant="tertiary"
             {...props()}
             className="page-size-selector__button"
           >

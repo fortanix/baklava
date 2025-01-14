@@ -36,5 +36,9 @@
         --bk-input-accent-color: #{bk.$theme-form-rule-error};
       }
     }
+    > div {
+      flex: 1;
+      width: 100%;
+    }
   }
 }

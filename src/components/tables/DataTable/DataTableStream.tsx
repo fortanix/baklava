@@ -21,6 +21,7 @@ import { useCustomFilters } from './plugins/useCustomFilters';
 // import './DataTableStream.scss';
 import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
+import { PlaceholderEmptyAction } from '../../graphics/PlaceholderEmpty/PlaceholderEmpty.tsx';
 
 
 export * from './DataTableContext';
@@ -30,6 +31,7 @@ export {
   DataTablePlaceholderEmpty,
   DataTablePlaceholderError,
   DataTablePlaceholderEndOfTable,
+  PlaceholderEmptyAction,
 } from './table/DataTablePlaceholder';
 
 
@@ -507,8 +509,8 @@ export const DataTableStream = ({
   return (
     <DataTableAsync
       className={cx(
-        { 'bkl-data-table-stream': true },
-        { 'bkl-data-table-stream--loading': isLoading },
+        { 'bk-data-table-stream': true },
+        { 'bk-data-table-stream--loading': isLoading },
         className,
       )}
       status={status}
@@ -517,9 +519,11 @@ export const DataTableStream = ({
       placeholderError={
         <DataTablePlaceholderError
           actions={
-            <Button variant="primary" onClick={() => { reload(); }}>
-              Retry
-            </Button>
+            <PlaceholderEmptyAction>
+              <Button variant="primary" className="bk-button--with-icon" onClick={() => { reload(); }}>
+                Retry
+              </Button>
+            </PlaceholderEmptyAction>
           }
         />
       }

@@ -2,17 +2,9 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-// @use '../../../../style/variables.scss' as bkl;
+@use '../../../../styling/defs.scss' as bk;
 
-.bkl-data-table-row-select {
-  width: bkl.$sizing-7 + bkl.$sizing-1;
-  max-width: bkl.$sizing-7 + bkl.$sizing-1;
-  
-  .bkl-data-table-row-select__header {
-    margin-bottom: bkl.$sizing-m;
-  }
-  
-  .bkl-data-table-row-select__cell {
-    margin-bottom: bkl.$sizing-m;
-  }
+.bk-data-table-row-select {
+  width: bk.$spacing-11;
+  max-width: bk.$spacing-11;
 }

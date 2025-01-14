@@ -7,6 +7,7 @@ import { classNames as cx, ClassNameArgument } from '../../../util/componentUtil
 import { useEffectAsync } from '../util/hooks.ts';
 
 import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
+import { PlaceholderEmptyAction } from '../../graphics/PlaceholderEmpty/PlaceholderEmpty.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 
 import * as ReactTable from 'react-table';
@@ -16,12 +17,14 @@ import { DataTablePlaceholderError } from './table/DataTablePlaceholder';
 import { DataTableAsync } from './table/DataTable';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
 
-// import './DataTableLazy.scss';
+import './DataTableLazy.scss';
 
 
 export * from './DataTableContext';
 export { Pagination };
 export { DataTablePlaceholderEmpty, DataTablePlaceholderError } from './table/DataTablePlaceholder';
+export { PlaceholderEmptyAction } from '../../graphics/PlaceholderEmpty/PlaceholderEmpty.tsx';
+
 export { Search, MultiSearch } from './DataTableEager'; // FIXME: move to a common module
 
 export interface ReactTableOptions<D extends object> extends ReactTable.TableOptions<D> {
@@ -270,8 +273,8 @@ export const DataTableLazy = ({ className, footer, ...propsRest }: DataTableLazy
   return (
     <DataTableAsync
       className={cx(
-        { 'bkl-data-table-lazy': true },
-        { 'bkl-data-table-lazy--loading': isLoading },
+        { 'bk-data-table-lazy': true },
+        { 'bk-data-table-lazy--loading': isLoading },
         className,
       )}
       status={status}
@@ -280,9 +283,11 @@ export const DataTableLazy = ({ className, footer, ...propsRest }: DataTableLazy
       placeholderError={
         <DataTablePlaceholderError
           actions={
-            <Button variant="primary" className="bkl-button--with-icon" onClick={() => { reload(); }}>
-              <Icon icon="accounts"/> Retry
-            </Button>
+            <PlaceholderEmptyAction>
+              <Button variant="primary" className="bk-button--with-icon" onClick={() => { reload(); }}>
+                Retry
+              </Button>
+            </PlaceholderEmptyAction>
           }
         />
       }

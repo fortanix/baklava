@@ -6,6 +6,7 @@ import type * as React from 'react';
 import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../../util/componentUtil.ts';
 import type * as ReactTable from 'react-table';
 
+import { useScroller } from '../../../../layouts/util/Scroller.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 
 import {
@@ -15,7 +16,7 @@ import {
 } from './DataTablePlaceholder.tsx';
 import type { DataTableStatus } from '../DataTableContext.tsx';
 
-//import './DataTable.scss';
+import './DataTable.scss';
 
 
 // Note: `placeholder` is included in `table` props as part of "Standard HTML Attributes", but it's not actually a
@@ -47,7 +48,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
     <table
       {...table.getTableProps()}
       {...propsRest}
-      className={cx('bkl-data-table__table', props.className)}
+      className={cx('bk-data-table__table', props.className)}
     >
       {columnGroups}
       
@@ -92,7 +93,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
       </thead>
       <tbody {...table.getTableBodyProps()}>
         {typeof placeholder !== 'undefined' &&
-          <tr className="bkl-data-table__placeholder">
+          <tr className="bk-data-table__placeholder">
             <td colSpan={table.visibleColumns.length}>
               {placeholder}
             </td>
@@ -102,8 +103,8 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
           table.prepareRow(row);
           const { key: rowKey, ...rowProps } = row.getRowProps();
           return (
-            <tr key={rowKey} {...rowProps}>
-              {/*<td className="bkl-table__row__select">
+            <tr key={rowKey} {...rowProps} className={cx(rowProps.className, {'selected' : row.isSelected})}>
+              {/*<td className="bk-table__row__select">
                 <input type="checkbox"
                   checked={row.isSelected}
                   onClick={() => { row.toggleRowSelected(); }}
@@ -121,7 +122,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
           );
         })}
         {typeof endOfTablePlaceholder !== 'undefined' &&
-          <tr className="bkl-data-table__placeholder bkl-data-table__placeholder--row">
+          <tr className="bk-data-table__placeholder bk-data-table__placeholder--row">
             <td colSpan={table.visibleColumns.length}>
               {endOfTablePlaceholder}
             </td>
@@ -160,7 +161,7 @@ export const DataTableSync = <D extends object>(props: DataTableSyncProps<D>) =>
   } = props;
   
   const isEmpty = status.ready && props.table.page.length === 0;
-  
+  const scrollProps = useScroller({ scrollDirection: 'horizontal' });
   const renderPlaceholder = (): React.ReactNode => {
     if (!status.ready) {
       return placeholderSkeleton;
@@ -174,7 +175,8 @@ export const DataTableSync = <D extends object>(props: DataTableSyncProps<D>) =>
   // Note: the wrapper div isn't really necessary, but we include it for structural consistency with `DataTableAsync`
   return (
     <div
-      className={cx('bkl-data-table bkl-data-table--sync', className)}
+      {...scrollProps}
+      className={cx('bk-data-table bk-data-table--sync', className, scrollProps.className)}
     >
       <DataTable
         {...propsRest}
@@ -213,6 +215,7 @@ export const DataTableAsync = <D extends object>(props: DataTableAsyncProps<D>) 
   const isFailed = status.error !== null;
   const isLoading = status.loading;
   const isEmpty = status.ready && table.page.length === 0;
+  const scrollProps = useScroller({ scrollDirection: 'horizontal' });
   
   const renderPlaceholder = (): React.ReactNode => {
     if (isFailed) {
@@ -230,7 +233,8 @@ export const DataTableAsync = <D extends object>(props: DataTableAsyncProps<D>) 
   
   return (
     <div
-      className={cx('bkl-data-table bkl-data-table--async', props.className)}
+      {...scrollProps}
+      className={cx('bk-data-table bk-data-table--async', props.className, scrollProps.className)}
     >
       {children}
       

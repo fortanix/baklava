@@ -27,7 +27,6 @@ export const Input = ({ unstyled = false, type = 'text', ...propsRest }: InputPr
   }
   
   return (
-    <div>
       <input
         {...propsRest}
         type={type}
@@ -36,6 +35,5 @@ export const Input = ({ unstyled = false, type = 'text', ...propsRest }: InputPr
           [cl['bk-input']]: !unstyled,
         }, propsRest.className)}
       />
-    </div>
   );
 };

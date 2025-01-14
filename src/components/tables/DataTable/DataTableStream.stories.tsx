@@ -97,7 +97,7 @@ const DataTableStreamTemplate = (props : dataTeableLazyTemplateProps) => {
   );
 
   return (
-    <Panel className={'bkl-data-table'}>
+    <Panel className={'bk-data-table'}>
       <DataTableStream.TableProviderStream
         {...props}
         columns={columns}
@@ -108,7 +108,18 @@ const DataTableStreamTemplate = (props : dataTeableLazyTemplateProps) => {
       >
         <DataTableStream.Search />
         <DataTableStream.DataTableStream
-          placeholderEmpty={'placeholder'}
+          placeholderEmpty={
+            <DataTableStream.DataTablePlaceholderEmpty
+              icon="file"
+              title="No users"
+              actions={
+                <DataTableStream.PlaceholderEmptyAction>
+                  <Button variant="secondary" onClick={() => {}}>Action 1</Button>
+                  <Button variant="primary" onClick={() => {}}>Action 2</Button>
+                </DataTableStream.PlaceholderEmptyAction>
+              }
+            />
+          }
           {...props}
         />
       </DataTableStream.TableProviderStream>

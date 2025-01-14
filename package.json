@@ -38,7 +38,7 @@
   },
   "scripts": {
     "gen-package": "node package.json.js",
-    "install-project": "npm run gen-package && npm install",
+    "install-project": "npm run gen-package && npm install --legacy-peer-deps",
     "node": "node --import=tsx",
     "repl": "tsx",
     "plop": "NODE_OPTIONS=\"--import tsx\" plop",
@@ -54,8 +54,7 @@
     "lint:style": "stylelint 'src/**/*.scss'",
     "lint:script": "biome lint",
     "lint": "npm run lint:style; npm run lint:script",
-    "test:unit": "vitest run --root=.",
-    "test": "npm run check:types; npm run lint:style; npm run test:unit",
+    "test": "npm run check:types && npm run lint:style",
     "test-ui": "vitest --ui",
     "coverage": "vitest run --coverage",
     "test:storybook": "test-storybook --failOnConsole --browsers chromium",

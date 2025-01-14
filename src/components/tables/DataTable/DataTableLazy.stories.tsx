@@ -59,13 +59,13 @@ const DataTableLazyTemplate = (props: dataTeableLazyTemplateProps) => {
         <DataTableLazy.DataTableLazy
           placeholderEmpty={
             <DataTableLazy.DataTablePlaceholderEmpty
-              icon="user"
-              placeholderMessage="No users"
+              icon="file"
+              title="No users"
               actions={
-                <>
-                  <Button variant="primary" onClick={() => {}}>Create new</Button>
-                  <Button variant="secondary" onClick={() => {}}>Import</Button>
-                </>
+                <DataTableLazy.PlaceholderEmptyAction>
+                  <Button variant="secondary" onClick={() => {}}>Action 1</Button>
+                  <Button variant="primary" onClick={() => {}}>Action 2</Button>
+                </DataTableLazy.PlaceholderEmptyAction>
               }
             />
           }

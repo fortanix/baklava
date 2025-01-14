@@ -5,110 +5,61 @@
 import * as React from 'react';
 import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../../util/componentUtil.ts';
 import { type IconName, isIconName, Icon, type IconProps } from '../../../graphics/Icon/Icon.tsx';
+import { PlaceholderEmpty, type PlaceholderEmptyProps } from '../../../graphics/PlaceholderEmpty/PlaceholderEmpty.tsx';
+import { useTable } from '../DataTableContext.tsx';
 
-//import './DataTablePlaceholder.scss';
+export {
+  PlaceholderEmptyAction,
+} from '../../../graphics/PlaceholderEmpty/PlaceholderEmpty.tsx';
 
-
-type DataTablePlaceholderProps = ComponentProps<'div'> & {
-  icon?: IconName | React.ReactNode,
-  classNameIcon?: ClassNameArgument,
-  classNameMessage?: ClassNameArgument,
-  classNameActions?: ClassNameArgument,
-  placeholderMessage: React.ReactNode,
-  actions?: React.ReactNode,
-};
-export const DataTablePlaceholder = (props: DataTablePlaceholderProps) => {
-  const { icon, classNameIcon, classNameMessage, classNameActions, placeholderMessage, actions, ...propsRest } = props;
-  
-  const decoration = React.useMemo(() => ({ type: 'background-circle' } as const), []);
-  const renderStandardIcon = (icon: IconProps['icon']): React.ReactNode => {
-    return (
-      <Icon decoration={decoration} icon={icon} className={cx('bk-table-placeholder__icon', classNameIcon)}/>
-    );
-  };
-  
-  const renderIcon = (): React.ReactNode => {
-    if (typeof icon === 'string' && isIconName(icon)) {
-      return renderStandardIcon(icon);
-    }
-    return renderStandardIcon('file');
-  };
-  
-  return (
-    <div {...propsRest} className={cx('bk-table-placeholder', propsRest.className)}>
-      {renderIcon()}
-      
-      <p className={cx('bk-table-placeholder__message', classNameMessage)}>
-        {placeholderMessage}
-      </p>
-      
-      {actions &&
-        <p className={cx('bk-table-placeholder__actions', classNameActions)}>
-          {actions}
-        </p>
-      }
-    </div>
-  );
-};
+import './DataTablePlaceholder.scss';
 
 
 // Loading skeleton (when there's no data to show yet)
 type DataTablePlaceholderSkeletonProps = { className?: ClassNameArgument };
 export const DataTablePlaceholderSkeleton = (props: DataTablePlaceholderSkeletonProps) => {
+  // TODO: WIP for Skeleton loader (shadow per cell), maybe needs shimmer
+  const { table } = useTable();
   return (
     <div className={cx('bk-table-placeholder bk-table-placeholder--skeleton', props.className)}>
       {Array.from({ length: 6 }).map((_, index) =>
         // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
-        <span key={index} className="skeleton-row"/>,
+        <span key={index} className="skeleton-row">
+          {table.columns.map((_, index) =>
+            // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
+            <span key={index} className="skeleton-cell" />
+          )}
+        </span>,
       )}
     </div>
   );
 };
 
-
 // Empty table (ready but no data)
-type DataTablePlaceholderEmptyProps = Omit<DataTablePlaceholderProps, 'placeholderMessage'> & {
+type DataTablePlaceholderEmptyProps = Omit<PlaceholderEmptyProps, 'title'> & {
   // Make `placeholderMessage` optional
-  placeholderMessage?: DataTablePlaceholderProps['placeholderMessage'],
+  title?: PlaceholderEmptyProps['title'],
 };
 export const DataTablePlaceholderEmpty = (props: DataTablePlaceholderEmptyProps) => {
   return (
-    <DataTablePlaceholder
-      placeholderMessage="No items"
+    <PlaceholderEmpty
+      title="No items"
       {...props}
-      className={cx('bk-table-placeholder--empty', props.className)}
+      className={cx('bk-table-placeholder bk-table-placeholder--empty', props.className)}
     />
   );
 };
 
-
-type DataTableErrorIconProps = Omit<IconProps, 'icon'> & {
-  icon?: IconProps['icon'],
-};
-export const DataTableErrorIcon = (props: DataTableErrorIconProps) => {
-  const decoration = React.useMemo(() => ({ type: 'background-circle' } as const), []);
-  return (
-    <div className="bk-table-placeholder--error__error-icon">
-      <Icon icon="cross" className="icon-cross"/>
-      <Icon decoration={decoration} icon="file"
-        {...props}
-        className={cx('bk-table-placeholder__icon', props.className)}
-      />
-    </div>
-  );
-};
-
-type DataTablePlaceholderErrorProps = Omit<DataTablePlaceholderProps, 'placeholderMessage'> & {
+type DataTablePlaceholderErrorProps = Omit<PlaceholderEmptyProps, 'title'> & {
   // Make `placeholderMessage` optional
-  placeholderMessage?: React.ComponentProps<typeof DataTablePlaceholder>['placeholderMessage'],
+  title?: React.ComponentProps<typeof PlaceholderEmpty>['title'],
 };
 export const DataTablePlaceholderError = (props: DataTablePlaceholderErrorProps) => {
   return (
-    <DataTablePlaceholder
-      icon={<DataTableErrorIcon/>}
-      placeholderMessage="Failed to load items"
+    <PlaceholderEmpty
+      title="Failed to load items"
       {...props}
-      className={cx('bk-table-placeholder--error', props.className)}
+      className={cx('bk-table-placeholder bk-table-placeholder--error', props.className)}
     />
   );
 };
@@ -127,7 +78,7 @@ export const DataTableRowPlaceholder = (props: DataTableRowPlaceholderProps) => 
   
   const renderStandardIcon = (icon: IconProps['icon']): React.ReactNode => {
     return (
-      <Icon icon={icon} className={cx('bk-table-row-placeholder__icon', classNameIcon)}/>
+      <Icon icon={icon} className={cx('bk-table-row-placeholder__icon', classNameIcon)} />
     );
   };
   

@@ -2,14 +2,13 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-// @use '../../../style/variables.scss' as bkl;
-@use '../../../style/mixins.scss' as mixins;
+@use '../../../styling/defs.scss' as bk;
 
 
-@mixin data-table-loading() {
+@mixin data-table-loading {
   position: relative;
   
-  .bkl-loader {
+  .bk-loader {
     position: absolute;
     top: calc(50% - (80px / 2));
     left: calc(50% - (80px / 2));
@@ -26,16 +25,16 @@
     right: 0;
     bottom: 0;
     left: 0;
-    background: rgba(bkl.$dark-color-1, 0.2);
-    border-radius: bkl.$border-radius-ms;
+    background: rgba(bk.$dark-color-1, 0.2);
+    border-radius: bk.$border-radius-ms;
   }
   */
   
-  .bkl-data-table__table tbody {
+  .bk-data-table__table tbody {
     opacity: 0.6;
   }
 }
 
-.bkl-data-table-lazy--loading {
-  @include data-table-loading();
+.bk-data-table-lazy--loading {
+  @include data-table-loading;
 }

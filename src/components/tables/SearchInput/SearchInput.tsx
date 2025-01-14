@@ -9,19 +9,19 @@ import { classNames as cx } from '../../../util/componentUtil.ts';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Input } from '../../forms/controls/Input/Input.tsx';
 
-// import './SearchInput.scss';
+import './SearchInput.scss';
 
 
 export type SearchInputProps = React.ComponentPropsWithoutRef<typeof Input>;
 export const SearchInput = (props: SearchInputProps) => {
   return (
-    <div className={cx('bkl-input--search', props.className)}>
+    <div className={cx('bk-search', props.className)}>
       <Icon name="search" icon="search"
-        className="bkl-input--search__icon"
+        className="bk-search__icon"
       />
       <Input
         placeholder="Search"
-        className="bkl-input--search__input"
+        className="bk-search__input"
         {...props}
       />
     </div>

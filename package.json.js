@@ -47,7 +47,9 @@ const packageConfig = {
   scripts: {
     // Utilities
     'gen-package': 'node package.json.js', // Update `package.json`
-    'install-project': 'npm run gen-package && npm install', // Project-specific version of `npm install`
+    // Currently we are forced to use --legacy-peer-deps due to react-table version (relies on older version of react)
+    // TODO: Remove --legacy-peer-deps after updating react-table to v8
+    'install-project': 'npm run gen-package && npm install --legacy-peer-deps', // Project-specific version of `npm install`
     
     // CLI
     'node': 'node --import=tsx',

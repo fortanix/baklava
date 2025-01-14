@@ -11,7 +11,7 @@ import { Button } from '../../../actions/Button/Button.tsx';
 import { type PageSizeOption, PaginationSizeSelector } from './PaginationSizeSelector.tsx';
 import { useTable } from '../DataTableContext.tsx';
 
-// import './PaginationStream.scss';
+import './PaginationStream.scss';
 
 
 type IconDoubleChevronLeftProps = React.ComponentPropsWithoutRef<'span'> & {
@@ -20,10 +20,7 @@ type IconDoubleChevronLeftProps = React.ComponentPropsWithoutRef<'span'> & {
 const IconDoubleChevronLeft = ({ iconProps = {}, ...props }: IconDoubleChevronLeftProps) => {
   return (
     <span className="icon-double-chevron-left" {...props}>
-      <Icon name="chevron-left" icon="accounts" className="icon"
-        {...iconProps}
-      />
-      <Icon name="chevron-left" icon="accounts" className="icon"
+      <Icon name="chevron-left" icon="page-backward" className="icon"
         {...iconProps}
       />
     </span>
@@ -47,21 +44,23 @@ export const PaginationStreamPager = ({ pageSizeOptions }: PaginationStreamPager
       </Button>
       
       <Button
+        variant="tertiary"
         className={cx('pager__nav pager__nav--prev', { 'disabled': !table.canPreviousPage })}
         onClick={() => { table.previousPage(); }}
         disabled={!table.canPreviousPage}
       >
-        <Icon name="chevron-left" icon={"accounts"} className="icon"/>
+        <Icon name="chevron-left" icon={"caret-left"} className="icon"/>
         Previous
       </Button>
       
-      <Button variant="primary"
+      <Button 
+        variant="tertiary"
         className={cx('pager__nav pager__nav--next', { 'disabled': !table.canNextPage })}
         onClick={() => { table.nextPage(); }}
         disabled={!table.canNextPage}
       >
         Next
-        <Icon name="chevron-right" icon="accounts" className="icon"/>
+        <Icon name="chevron-right" icon="caret-right" className="icon"/>
       </Button>
     </div>
   );

@@ -2,76 +2,54 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-// @use '../../../../style/variables.scss' as bkl;
-// @use '../../../../style/mixins.scss' as mixins;
+@use '../../../../styling/defs.scss' as bk;
 
 
 .pagination {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: bkl.$sizing-m;
-  
-  color: bkl.$neutral-color-3;
-  @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
-  font-size: bkl.$font-size-s;
+  gap: bk.$spacing-6;
+  font-weight: bk.$font-weight-regular;
+  font-size: bk.$font-size-s;
   
   .pager.pager--indexed {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    
-    .pager__nav {
-      font-size: 0.6rem;
-      
-      @include mixins.circle(2.4rem);
-      padding: bkl.$sizing-2;
-      background: bkl.$accent-color;
-      color: bkl.$light-color-1;
-      
+    gap: bk.$spacing-1;
+    padding-left: bk.$spacing-6;
+    border-left: bk.$size-1 solid bk.$theme-pagination-border-default;
+
+    .pager__nav {      
       &:not(.disabled) {
         cursor: pointer;
       }
       &.disabled {
-        background: rgba(bkl.$dark-color-2, 0.34);
+        opacity: 0.34;
       }
     }
-    
-    .pager__indices {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      
-      li {
-        user-select: none;
-        
-        padding: 3px 7px;
-        color: #4D758C;
-        
-        &:not(.pager__indices__separator) {
-          border-radius: bkl.$border-radius-s;
-          
-          transition: background-color 150ms ease-in;
-          &:hover {
-            background-color: rgba(bkl.$neutral-color-4, 0.5);
-          }
-          &.active {
-            background-color: bkl.$neutral-color-4;
-          }
-          &:not(.active) {
-            cursor: pointer;
-          }
-        }
-        &.pager__indices__separator {
-          padding-inline: 0;
-        }
-      }
+  }
+  .pagination__page-input{
+    text-align: center;
+    border: bk.$size-1 solid bk.$theme-pagination-border-default;
+    border-radius: bk.$size-2;
+    appearance: textfield;
+    min-width: bk.$spacing-8;
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      appearance: none;
+      margin: 0;
     }
+  }
+  .pagination-main{
+    display: flex;
+    gap: bk.$spacing-1;
+    align-items: center;
   }
 }
 
 
-@media only screen and (max-width: 1100px) {
+@media only screen and (max-width <= 1100px) {
   .pagination {
     justify-content: flex-start;
     flex-wrap: wrap;

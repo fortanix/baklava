@@ -127,7 +127,7 @@ declare module 'react-table' {
   
   interface BaklavaCustomColumnInterface {
     className?: string,
-    style?: object,
+    style?: CSSProperties | undefined,
   }
   export interface ColumnInterface<D>
     extends UseFiltersColumnOptions<D>,

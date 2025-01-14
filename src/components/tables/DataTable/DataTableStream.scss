@@ -6,6 +6,6 @@
 @use './DataTableLazy.scss' as dataTableLazy;
 
 
-.bkl-data-table-stream--loading {
-  @include dataTableLazy.data-table-loading();
+.bk-data-table-stream--loading {
+  @include dataTableLazy.data-table-loading;
 }

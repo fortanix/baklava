@@ -230,7 +230,7 @@ export const Filters = (props: FiltersProps) => {
     
     return (
       <Tag
-        className="bkl-multi-search__filter"
+        className="bk-multi-search__filter"
         onRemove={() => { onRemoveFilter?.(index); }}
         content={content}
       />
@@ -264,7 +264,7 @@ export const Filters = (props: FiltersProps) => {
     
     return (
       <Tag
-        className="bkl-multi-search__filter"
+        className="bk-multi-search__filter"
         onRemove={() => { onRemoveFilter?.(index); }}
         content={
           fieldNameLabel
@@ -322,7 +322,7 @@ export const Filters = (props: FiltersProps) => {
     return (
       <Tag
         key={Random.generateRandomId()}
-        className="bkl-multi-search__filter"
+        className="bk-multi-search__filter"
         onRemove={() => { onRemoveFilter?.(index); }}
         content={
           fieldNameLabel
@@ -339,7 +339,7 @@ export const Filters = (props: FiltersProps) => {
 
   const renderActions = () => {
     return filters.length > 0 && (
-      <div className="bkl-multi-search__filter-actions">
+      <div className="bk-multi-search__filter-actions">
         <span
           // biome-ignore lint/a11y/useSemanticElements: <explanation>
           role="button"
@@ -359,8 +359,8 @@ export const Filters = (props: FiltersProps) => {
   }
   
   return (
-    <div className="bkl-multi-search__filters">
-      <div className="bkl-multi-search__filters-wrapper">
+    <div className="bk-multi-search__filters">
+      <div className="bk-multi-search__filters-wrapper">
         {filters.map(renderFilter)}
       </div>
       {renderActions()}
@@ -451,22 +451,22 @@ export type SuggestionProps = Omit<ComponentProps<'div'>, 'children'> & {
 //     return (
 //       <div
 //         ref={setPopperElement}
-//         className={cx('bkl-dropdown', className, {
-//           'bkl-dropdown--primary': primary,
-//           'bkl-dropdown--secondary': secondary,
-//           'bkl-dropdown--basic': basic,
-//           'bkl-dropdown--with-arrow': withArrow,
+//         className={cx('bk-dropdown', className, {
+//           'bk-dropdown--primary': primary,
+//           'bk-dropdown--secondary': secondary,
+//           'bk-dropdown--basic': basic,
+//           'bk-dropdown--with-arrow': withArrow,
 //         })}
 //         style={popper.styles.popper}
 //         {...popper.attributes.popper}
 //       >
-//         <ul className="bkl-dropdown__menu" role="menu" aria-labelledby="menubutton">
+//         <ul className="bk-dropdown__menu" role="menu" aria-labelledby="menubutton">
 //           {typeof children === 'function'
 //             ? children({ close: onClose })
 //             : renderDropdownItems(children as React.ReactElement)
 //           }
 //         </ul>
-//         {withArrow && <div className="bkl-dropdown__arrow" ref={setArrowElement} style={popper.styles.arrow}/>}
+//         {withArrow && <div className="bk-dropdown__arrow" ref={setArrowElement} style={popper.styles.arrow}/>}
 //       </div>
 //     );
 //   };
@@ -560,20 +560,20 @@ export const SearchInput = (props: SearchInputProps) => {
       // biome-ignore lint/a11y/useSemanticElements: <explanation>
       role="button"
       tabIndex={0}
-      className={cx('bkl-search-input', className, { 'bkl-search-input--active': isFocused })}
+      className={cx('bk-search-input', className, { 'bk-search-input--active': isFocused })}
       onClick={onWrapperClick}
       onKeyDown={onWrapperKeyDown}
     >
-      <Icon icon="search" className="bkl-search-input__search-icon"/>
+      <Icon icon="search" className="bk-search-input__search-icon"/>
       {field &&
-        <span className="bkl-search-input__search-key">
+        <span className="bk-search-input__search-key">
           {field.label}{operator}{subOperator} {key ? `${key} =` : ''}
         </span>
       }
       <Input
         ref={mergeRefs(props.ref, inputRef)}
         placeholder={renderPlaceholder()}
-        className="bkl-search-input__input"
+        className="bk-search-input__input"
         onKeyDown={onKeyDown}
         onFocus={handleFocus}
         onBlur={handleBlur}
@@ -691,24 +691,24 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
   const renderMultiSelectAlternatives = () => (
     <>
       <CheckboxGroup
-        className="bkl-multi-search__alternatives-group"
+        className="bk-multi-search__alternatives-group"
       >
         {Object.entries(alternatives || {}).map(([alternativesName, { label }], index) => (
           <CheckboxGroup.CheckboxField
             key={alternativesName}
             label={label}
             checked={selectedAlternatives.includes(alternativesName)}
-            className="bkl-dropdown__menu-item"
+            className="bk-dropdown__menu-item"
             onChange={(event) => { onSelectionChange(alternativesName, event.target.checked); }}
           />
         ))}
       </CheckboxGroup>
       {!arrayValidation.isValid && arrayValidation.message && (
-        <span className="bkl-multi-search__dropdown-error-msg">
+        <span className="bk-multi-search__dropdown-error-msg">
           {arrayValidation.message}
         </span>
       )}
-      <div className="bkl-multi-search__alternatives-action">
+      <div className="bk-multi-search__alternatives-action">
         <Button
           variant="primary"
           onPress={onSelectionComplete}
@@ -735,7 +735,7 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
   return (
     <></>
     // <Suggestions
-    //   className="bkl-multi-search__alternatives"
+    //   className="bk-multi-search__alternatives"
     //   active={isActive}
     //   // popperOptions={popperOptions}
     //   elementRef={inputRef}
@@ -911,8 +911,8 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
   
   const renderDateTimeRangePicker = () => (
     <>
-      <div className="bkl-multi-search__date-time-group">
-        <div className="bkl-multi-search__date-time-label"><span>Start Date</span></div>
+      <div className="bk-multi-search__date-time-group">
+        <div className="bk-multi-search__date-time-label"><span>Start Date</span></div>
         {/* <DateTimePicker
           dateTime={startDateTime}
           onChange={setStartDateTime}
@@ -922,8 +922,8 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
         /> */}
       </div>
 
-      <div className="bkl-multi-search__date-time-group">
-        <div className="bkl-multi-search__date-time-label"><span>End Date</span></div>
+      <div className="bk-multi-search__date-time-group">
+        <div className="bk-multi-search__date-time-label"><span>End Date</span></div>
         {/* <DateTimePicker
           dateTime={endDateTime}
           onChange={setEndDateTime}
@@ -936,13 +936,13 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
       {!dateTimeRangeValidation.isValid
           && dateTimeRangeValidation.message
           && (
-            <span className="bkl-multi-search__dropdown-error-msg">
+            <span className="bk-multi-search__dropdown-error-msg">
               {dateTimeRangeValidation.message}
             </span>
           )
         }
         
-      <div className="bkl-multi-search__date-time-action">
+      <div className="bk-multi-search__date-time-action">
         <Button
           variant="primary"
           onPress={onSelectionComplete}
@@ -956,7 +956,7 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
 
   const renderDateTimePicker = () => (
     <>
-      <div className="bkl-multi-search__date-time-group">
+      <div className="bk-multi-search__date-time-group">
         {/* <DateTimePicker
           dateTime={dateTime}
           onChange={setDateTime}
@@ -966,7 +966,7 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
         /> */}
       </div>
 
-      <div className="bkl-multi-search__date-time-action">
+      <div className="bk-multi-search__date-time-action">
         <Button
           variant="primary"
           onPress={onSelectionComplete}
@@ -981,7 +981,7 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
   return (
     <></>
     // <Suggestions
-    //   className="bkl-multi-search__date-time"
+    //   className="bk-multi-search__date-time"
     //   active={isActive}
     //   popperOptions={popperOptions}
     //   elementRef={inputRef}
@@ -1049,7 +1049,7 @@ const SuggestedKeysDropdown = (props: SuggestedKeysDropdownProps) => {
 
   const renderSuggestedKeyInput = () => (
     <Input
-      className="bkl-dropdown__menu-item bkl-multi-search__suggested-key-input"
+      className="bk-dropdown__menu-item bk-multi-search__suggested-key-input"
       placeholder="Enter a custom key"
       value={suggestedKeyValue}
       onChange={onInputChange}
@@ -1060,7 +1060,7 @@ const SuggestedKeysDropdown = (props: SuggestedKeysDropdownProps) => {
   return (
     <></>
     // <Suggestions
-    //   className="bkl-multi-search__suggested-keys"
+    //   className="bk-multi-search__suggested-keys"
     //   active={isActive}
     //   // popperOptions={popperOptions}
     //   elementRef={inputRef}
@@ -1119,7 +1119,7 @@ const OperatorsDropdown = (props: OperatorsDropdownProps) => {
   return (
     <></>
     // <Suggestions
-    //   className="bkl-multi-search__operators"
+    //   className="bk-multi-search__operators"
     //   active={isActive}
     //   // popperOptions={popperOptions}
     //   elementRef={inputRef}
@@ -1659,7 +1659,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
   };
   
   return (
-    <div className={cx('bkl-multi-search', className)}>
+    <div className={cx('bk-multi-search', className)}>
       {renderSearchInput()}
       {renderFieldsDropdown()}
       {renderAlternativesDropdown()}
@@ -1668,7 +1668,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
       {renderOperatorsDropdown()}
       {renderSubOperatorsDropdown()}
       {!validatorResponse.isValid && validatorResponse.message && (
-        <span className="bkl-multi-search__error-msg">
+        <span className="bk-multi-search__error-msg">
           {validatorResponse.message}
         </span>
       )}
