@@ -24,7 +24,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
+    - run: npm ci --legacy-peer-deps
     #- run: npm run build --if-present
     - run: npm run test:storybook-ci
       continue-on-error: true # Not enforced for now
