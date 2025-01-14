@@ -16,11 +16,11 @@
     align-items: stretch;
     justify-content: space-around;
     gap: 1rem;
-    margin: -1 * bk.$spacing-5 -1 * bk.$spacing-2;
+    margin: -#{bk.$spacing-5} -#{bk.$spacing-2};
 
     >.skeleton-row {
       border-bottom: 1px solid bk.$theme-rule-default;
-      gap: 2 * bk.$spacing-5;
+      gap: calc(2 * #{bk.$spacing-5});
       margin: bk.$spacing-1 0;
       height: bk.$spacing-10;
       display: flex;
