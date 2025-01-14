@@ -41,7 +41,7 @@ export class ToastsObservable {
     this.#options = {
       entryAnimationDelay: options.entryAnimationDelay ?? 400,
       exitAnimationDelay: options.exitAnimationDelay ?? 200,
-      autoCloseTime: options.autoCloseTime ?? 2000,
+      autoCloseTime: options.autoCloseTime ?? 5000,
     };
   }
   
