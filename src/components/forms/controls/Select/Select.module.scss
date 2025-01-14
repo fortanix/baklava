@@ -17,13 +17,17 @@
     --bk-input-accent-color: #{bk.$theme-form-rule-default};
     border: 0 solid var(--bk-input-accent-color);
     border-bottom-width: 1px;
-
+    
     height: 24px;
-
+    
     .bk-select__input {
       min-width: $bk-select-min-width;
       caret-color: transparent; /* FIXME: find better way to manage the input state */
       border: none;
+    }
+    
+    &.bk-select--open .bk-select__input__arrow {
+      rotate: 0.5turn;
     }
   }
   
