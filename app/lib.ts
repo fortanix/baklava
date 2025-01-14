@@ -62,9 +62,11 @@ export { Stepper } from '../src/components/navigations/Stepper/Stepper.tsx';
 export { Tab, Tabs } from '../src/components/navigations/Tabs/Tabs.tsx';
 
 // Overlays
+export { ModalProvider } from '../src/components/overlays/ModalProvider/ModalProvider.tsx';
+export { SpinnerModal } from '../src/components/overlays/SpinnerModal/SpinnerModal.tsx';
+export { DialogModal } from '../src/components/overlays/DialogModal/DialogModal.tsx';
 export { DropdownMenu } from '../src/components/overlays/DropdownMenu/DropdownMenu.tsx';
 export { DropdownMenuProvider } from '../src/components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
-export { Modal } from '../src/components/overlays/Modal/Modal.tsx';
 export { type ToastContent, ToastProvider, ToastMessage } from '../src/components/overlays/Toast/Toast.tsx';
 export { Tooltip } from '../src/components/overlays/Tooltip/Tooltip.tsx';
 export { TooltipProvider } from '../src/components/overlays/Tooltip/TooltipProvider.tsx';

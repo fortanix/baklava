@@ -4,7 +4,7 @@
 
 /* Source: https://github.com/wojtekmaj/merge-refs/tree/main */
 
-import type * as React from 'react';
+import * as React from 'react';
 
 /**
  * A function that merges React refs into one.
@@ -46,3 +46,15 @@ export const mergeRefs = <T>(
 export const idToCssIdent = (id: string) => {
   return `--${id.replaceAll(':', '')}`;
 };
+
+export const useEffectOnce = (fn: () => void) => {
+  const isCalledRef = React.useRef(false);
+  
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Should run only once
+    React.useEffect(() => {
+    if (!isCalledRef.current) {
+      isCalledRef.current = true;
+      fn();
+    }
+  }, []);
+}

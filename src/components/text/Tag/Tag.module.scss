@@ -7,25 +7,30 @@
 @layer baklava.components {
   .bk-tag {
     @include bk.component-base(bk-tag);
-
-    background: bk.$theme-tag-background-default;
+    
+    flex-shrink: 0;
+    
+    padding: bk.$size-2 bk.$spacing-2;
     border-radius: bk.$size-2;
+    background: bk.$theme-tag-background-default;
     color: bk.$theme-tag-text-default;
+    
     display: flex;
     align-items: center;
+    column-gap: bk.$spacing-2;
     font-size: bk.$font-size-xs;
-    padding: bk.$size-2 bk.$spacing-2 bk.$size-3;
-    flex-shrink: 0;
-
-    &.bk-tag--with-close-button {
-      padding-right: 0;
-    }
-
-    .bk-tag__icon {
-      cursor: pointer;
-      font-size: 1.2em;
+    
+    --bk-tag--with-close-button { --keep: ; }
+    
+    .bk-tag__action {
+      font-size: 0.9em;
       color: bk.$theme-tag-icon-default;
-      padding: bk.$size-2 bk.$spacing-2 bk.$size-2 bk.$spacing-2;
+      
+      display: flex;
+      
+      .bk-tag__icon {
+        display: block;
+      }
     }
   }
 }

@@ -45,6 +45,10 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  
+  // Add a little bit of padding to prevent parts of characters getting cut off in some browsers. For example,
+  // try the letter "J" and view it in Safari, the bottom extender of the "J" overflows the text box and gets cut off.
+  padding-inline: 0.3ch;
 }
 
 @mixin flex-center() {
@@ -59,5 +63,5 @@
 }
 
 @function rem-from-px($size-in-px) {
-  @return math.div($size-in-px, 14) * 1rem;
+  @return round(math.div($size-in-px, 14) * 1rem, 1px);
 }

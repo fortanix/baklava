@@ -79,13 +79,14 @@ export default {
     ],
     
     // Expressions
-    //...
+    // Workaround for `round()`, re-enable once https://github.com/stylelint-scss/stylelint-scss/pull/1097 lands
+    'scss/no-global-function-names': null,
     
     // CSS extensions (e.g. CSS modules, or future CSS)
     //'property-no-unknown': [true, { ignoreProperties: [] }],
     //'scss/at-rule-no-unknown': [true, { ignoreAtRules: [] }],
     'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ['global', 'local'] }],
-    'selector-pseudo-element-no-unknown': [true, { ignorePseudoElements: ['details-content'] }],
+    'selector-pseudo-element-no-unknown': [true, { ignorePseudoElements: [] }],
     
     'no-descending-specificity': null, // Does not work properly with a lot of nesting (see docs page also)
   },

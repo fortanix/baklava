@@ -42,5 +42,9 @@
   "include": [
     "vite.config.ts",
     "scripts/**/*",
+    "tests/**/*",
   ],
+  "exclude": [
+    "tests/installation/**/*",
+  ]
 }

@@ -47,7 +47,7 @@ export const Tag = (props: TagProps) => {
     >
       {content}
       {onRemove && (
-        <Button unstyled onPress={onRemove} aria-label="Remove tag">
+        <Button unstyled onPress={onRemove} aria-label="Remove tag" className={cl['bk-tag__action']}>
           <Icon icon="cross" className={cl['bk-tag__icon']}/>
         </Button>
       )}

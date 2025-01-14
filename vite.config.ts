@@ -50,10 +50,10 @@ export default defineConfig({
       root: '../', //vite.root + ../ = ./ = (dts.root)
       staticImport: true,
       insertTypesEntry: true,
-      rollupTypes: true,
+      //rollupTypes: true, // Issue: https://github.com/qmhc/vite-plugin-dts/issues/399
       
       //include: [path.resolve(__dirname, 'app')],
-      tsconfigPath: path.resolve(__dirname, 'tsconfig.json'),
+      tsconfigPath: path.resolve(__dirname, 'tsconfig.app.json'),
     }),
   ],
   

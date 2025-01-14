@@ -43,13 +43,8 @@ export const Standard: Story = {
           {...args}
           selected={startDate}
           onChange={onChange}
-          // There is a bug for startDate and endDate on the original library;
-          // it was already merged to master, but not released yet.
-          // https://github.com/Hacker0x01/react-datepicker/pull/5260
-          // biome-ignore lint/suspicious/noExplicitAny: bug in library, see above
-          startDate={startDate as any}
-          // biome-ignore lint/suspicious/noExplicitAny: bug in library, see above
-          endDate={endDate as any}
+          startDate={startDate}
+          endDate={endDate}
           inline={true}
         />
         {/* with a fixed width to avoid content moving around while selecting */}

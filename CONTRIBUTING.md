@@ -40,3 +40,30 @@ To create a new release:
   - Hit "Publish the release".
 
 - Once the release has been created, a GitHub Actions workflow will automatically run to publish this release to npm.
+
+
+**Script:**
+
+```shell
+VERSION=x.y.z
+git co -b release/v${VERSION}
+sed -i '' "s/version: '.*'/version: '${VERSION}'/" package.json.js
+npm run install-project
+git add package.json.js package.json package-lock.json
+git ci -m "Release v${VERSION}"
+git push -u origin HEAD
+npm run automate github:create-release-pr
+# Follow instructions from above command
+```
+
+## Publishing to npm
+
+To publish to npm:
+
+```shell
+npm publish --scope=@fortanix --access=public --dry-run # --tag=beta
+```
+
+Set the --tag as appropriate: beta for beta releases, or remove the --tag if you want to publish a stable release. Remove the --dry-run once you’ve confirmed there are no issues.
+
+**Note: you rarely need to do this manually. Instead, see the "Release workflow" above, which will trigger an npm publish automatically upon creation of a GitHub release.**
