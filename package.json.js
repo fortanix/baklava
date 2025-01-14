@@ -183,6 +183,9 @@ const packageConfig = {
     'react-dom': '>= 19.0.0',
   },
   peerDependenciesMeta: {},
+  optionalDependencies: {
+    '@rollup/rollup-linux-x64-gnu': '^4.30.1', // https://github.com/vitejs/vite/discussions/15532#discussioncomment-8527272
+  },
   overrides: {
     // Issue: https://github.com/storybookjs/addon-designs/issues/246
     '@storybook/addon-designs': {
