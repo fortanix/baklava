@@ -15,7 +15,6 @@ import { useTable } from "../DataTableContext.tsx";
 
 import "./Pagination.scss";
 
-
 type PaginationProps = {
 	pageSizeOptions?: Array<PageSizeOption>;
 };
@@ -23,18 +22,18 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
 	const { table } = useTable();
 
 	/*
-    Available pagination state:
-    - table.state.pageIndex
-    - table.state.pageSize
-    - table.canPreviousPage
-    - table.canNextPage
-    - table.pageOptions
-    - table.pageCount
-    - table.gotoPage
-    - table.nextPage
-    - table.previousPage
-    - table.setPageSize
-  */
+	Available pagination state:
+	- table.state.pageIndex
+	- table.state.pageSize
+	- table.canPreviousPage
+	- table.canNextPage
+	- table.pageOptions
+	- table.pageCount
+	- table.gotoPage
+	- table.nextPage
+	- table.previousPage
+	- table.setPageSize
+	*/
 
 	return (
 		<div className="pagination">
