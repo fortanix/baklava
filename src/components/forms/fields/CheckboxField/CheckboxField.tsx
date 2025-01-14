@@ -45,31 +45,31 @@ export const CheckboxFieldTitle = ({ className, children, titleOptional, titleTo
 export type CheckboxFieldProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-
+  
   /** A label to be displayed after the checkbox. */
   label: string,
-
-  /** An optional supporting copy to be displayed under the label. */
-  sublabel?: undefined | string,
-
+  
+  /** Additional supporting text to be displayed under the label. Optional. */
+  description?: undefined | string,
+  
   /** An optional title. */
   title?: undefined | string,
-
+  
   /** An optional tooltip to be displayed on an info icon next to the title. */
   titleTooltip?: undefined | string,
-
+  
   /** Whether to display the optional observation on title. */
   titleOptional?: undefined | boolean,
-
+  
   /** Whether the checkbox is checked by default. Passed down to Checkbox component. */
   defaultChecked?: undefined | boolean,
-
+  
   /** Whether the checkbox is checked. Passed down to Checkbox component. */
   checked?: undefined | boolean,
-
+  
   /** Whether the checkbox is disabled. Passed down to Checkbox component. */
   disabled?: undefined | boolean,
-
+  
   /** The onChange event for the checkbox. Passed down to Checkbox component. */
   onChange?: (e: React.FormEvent) => void,
 };
@@ -81,13 +81,13 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
   const {
     unstyled = false,
     label = '',
-    sublabel,
+    description,
     title,
     titleOptional,
     titleTooltip,
     className,
   } = props;
-
+  
   return (
     <div className={cx(
       'bk',
@@ -102,7 +102,7 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
           {title}
         </CheckboxFieldTitle>
       )}
-      {/* biome ignore lint/a11y/noLabelWithoutControl: the `<Checkbox>` will resolve to an `<input>` */}
+      {/* biome-ignore lint/a11y/noLabelWithoutControl: the `<Checkbox>` will resolve to an `<input>` */}
       <label className={cl['bk-checkbox-field__label']}>
         <Checkbox
           checked={props.checked}
@@ -114,9 +114,9 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
           {label}
         </span>
       </label>
-      {sublabel && (
-        <div className={cl['bk-checkbox-field__sublabel']}>{sublabel}</div>
-      )}
+      {description &&
+        <div className={cl['bk-checkbox-field__description']}>{description}</div>
+      }
     </div>
   );
 };

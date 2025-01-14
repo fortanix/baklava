@@ -104,6 +104,7 @@ export const Select = Object.assign(
       getReferenceProps,
       getFloatingProps,
       getItemProps,
+      isOpen,
       setIsOpen,
     } = useFloatingElement({
       placement: 'bottom',
@@ -139,6 +140,7 @@ export const Select = Object.assign(
           className={cx(
             'bk',
             { [cl['bk-select']]: !unstyled },
+            { [cl['bk-select--open']]: isOpen },
             propsRest.className,
           )}
           {...getReferenceProps()}
@@ -151,7 +153,7 @@ export const Select = Object.assign(
             value={selected === null ? '' : selected.label}
             onChange={() => {}}
           />
-          <Icon icon="caret-down"/>
+          <Icon icon="caret-down" className={cl['bk-select__input__arrow']}/>
         </Button>
         <ul
           ref={refs.setFloating}
