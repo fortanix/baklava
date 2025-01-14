@@ -1,0 +1,38 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-textarea {
+    @include bk.component-base(bk-textarea);
+    
+    --bk-textarea-border-color: #{bk.$theme-text-area-border-default};
+    
+    border: 1px solid var(--bk-textarea-border-color);
+    border-radius: bk.$radius-1;
+    color: bk.$theme-text-area-text-default;
+    padding: bk.$spacing-3;
+    
+    &--automatic-resize {
+      field-sizing: content;
+    }
+    
+    &:focus, &.pseudo-focused {
+      outline: none !important;
+      
+      color: bk.$theme-text-area-text-focused;
+      --bk-textarea-border-color: #{bk.$theme-text-area-border-focused};
+    }
+    
+    &:disabled {
+      color: bk.$theme-text-area-text-disabled;
+      --bk-textarea-border-color: #{bk.$theme-text-area-border-disabled};
+    }
+    
+    &--invalid {
+      --bk-textarea-border-color: #{bk.$theme-text-area-border-error};
+    }
+  }
+}
