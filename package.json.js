@@ -47,9 +47,7 @@ const packageConfig = {
   scripts: {
     // Utilities
     'gen-package': 'node package.json.js', // Update `package.json`
-    // Currently we are forced to use --legacy-peer-deps due to react-table version (relies on older version of react)
-    // TODO: Remove --legacy-peer-deps after updating react-table to v8
-    'install-project': 'npm run gen-package && npm install --legacy-peer-deps', // Project-specific version of `npm install`
+    'install-project': 'npm run gen-package && npm install', // Project-specific version of `npm install`
     
     // CLI
     'node': 'node --import=tsx',
@@ -205,6 +203,11 @@ const packageConfig = {
     },
     // Issue: https://github.com/Hacker0x01/react-datepicker/issues/5273
     'react-datepicker': {
+      'react': '$react',
+      'react-dom': '$react-dom',
+    },
+    // TODO: Revisit after updating react-table to v8
+    'react-table': {
       'react': '$react',
       'react-dom': '$react-dom',
     },

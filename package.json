@@ -38,7 +38,7 @@
   },
   "scripts": {
     "gen-package": "node package.json.js",
-    "install-project": "npm run gen-package && npm install --legacy-peer-deps",
+    "install-project": "npm run gen-package && npm install",
     "node": "node --import=tsx",
     "repl": "tsx",
     "plop": "NODE_OPTIONS=\"--import tsx\" plop",
@@ -135,6 +135,10 @@
       "react-dom": "$react-dom"
     },
     "react-datepicker": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    },
+    "react-table": {
       "react": "$react",
       "react-dom": "$react-dom"
     }
