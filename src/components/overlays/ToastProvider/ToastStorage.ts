@@ -10,7 +10,7 @@ import { type BannerVariant } from '../../containers/Banner/Banner.tsx';
 
 export type ToastId = string;
 export type ToastOptions = {
-  autoClose: false | number /*ms*/, // Time after which to automatically close the toast, or `false` if none
+  autoClose?: undefined | false | number /*ms*/, // Time after which to automatically close the toast
 };
 export type ToastDescriptor = {
   variant: BannerVariant,

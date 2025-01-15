@@ -7,6 +7,7 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
+import { notify } from '../ToastProvider/ToastProvider.tsx';
 import { DialogOverlay } from './DialogOverlay.tsx';
 import { DialogModal } from '../DialogModal/DialogModal.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
@@ -50,6 +51,7 @@ export const DialogOverlayStandard: Story = {
 
 export const DialogOverlayWithNestedModal: Story = {
   args: {
+    display: 'slide-over',
     children: (
       <DialogModal
         title="Modal"
@@ -57,6 +59,17 @@ export const DialogOverlayWithNestedModal: Story = {
       >
         Modal nested inside a popover.
       </DialogModal>
+    ),
+  },
+};
+
+export const DialogOverlayWithToast: Story = {
+  args: {
+    display: 'slide-over',
+    children: (
+      <Button variant="primary" label="Trigger notification"
+        onPress={() => notify.info('This notification should be above the overlay.', { autoClose: false })}
+      />
     ),
   },
 };

@@ -12,7 +12,7 @@ import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { type BannerVariant, Banner } from '../../containers/Banner/Banner.tsx';
 import { useActiveModalDialog } from '../../util/overlays/modal/ModalDialogProvider.tsx';
 
-import { type ToastDescriptor, type ToastStorage, ToastsObservable } from './ToastStorage.ts';
+import { type ToastDescriptor, type ToastOptions, type ToastStorage, ToastsObservable } from './ToastStorage.ts';
 
 import cl from './ToastProvider.module.scss';
 
@@ -26,17 +26,25 @@ export const createToastNotifier = (toastsObservable: ToastsObservable) => {
     const toastId = toastsObservable.uniqueId();
     toastsObservable.announceToast(toastId, toast);
   };
-  const notifyVariant = (variant: BannerVariant, toast: string | Omit<ToastDescriptor, 'variant'>) => {
+  const notifyVariant = (
+    variant: BannerVariant,
+    toast: string | Omit<ToastDescriptor, 'variant'>,
+    options?: undefined | ToastOptions,
+  ) => {
     const descriptor: ToastDescriptor = typeof toast === 'string'
-      ? { variant, message: toast }
-      : { ...toast, variant };
+      ? { variant, message: toast, options }
+      : { ...toast, variant, options: { ...toast.options, ...(options ?? {}) } };
     notify(descriptor);
   };
   return Object.assign(notify, {
-    info: (toast: string | Omit<ToastDescriptor, 'variant'>) => notifyVariant('info', toast),
-    warning: (toast: string | Omit<ToastDescriptor, 'variant'>) => notifyVariant('warning', toast),
-    error: (toast: string | Omit<ToastDescriptor, 'variant'>) => notifyVariant('error', toast),
-    success: (toast: string | Omit<ToastDescriptor, 'variant'>) => notifyVariant('success', toast),
+    info: (toast: string | Omit<ToastDescriptor, 'variant'>, options?: undefined | ToastOptions) =>
+      notifyVariant('info', toast, options),
+    warning: (toast: string | Omit<ToastDescriptor, 'variant'>, options?: undefined | ToastOptions) =>
+      notifyVariant('warning', toast, options),
+    error: (toast: string | Omit<ToastDescriptor, 'variant'>, options?: undefined | ToastOptions) =>
+      notifyVariant('error', toast, options),
+    success: (toast: string | Omit<ToastDescriptor, 'variant'>, options?: undefined | ToastOptions) =>
+      notifyVariant('success', toast, options),
   });
 };
 

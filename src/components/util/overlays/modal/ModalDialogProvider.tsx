@@ -3,6 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
+import { useEffectOnce } from '../../../../util/reactUtil.ts';
 
 
 export type ModalDialogReference = {
@@ -46,15 +47,9 @@ export const useModalDialogContext = (active: boolean, dialogRef: React.RefObjec
   const context = React.use(ModalDialogContext);
   
   const id = React.useId();
-  const ref = { id, dialogRef };
+  const ref = React.useMemo(() => ({ id, dialogRef }), [id, dialogRef]);
   
-  // biome-ignore lint/correctness/useExhaustiveDependencies: want to run only on mount/unmount
-  React.useEffect(() => {
-    if (context === null) { throw new Error(`Cannot read ModalDialogContext: missing provider.`); }
-    return () => context.deactivate(ref);
-  }, []);
-  
-  // biome-ignore lint/correctness/useExhaustiveDependencies: want to run only on mount/unmount
+  // When `active` changes, sync up with the context
   React.useEffect(() => {
     if (context === null) { throw new Error(`Cannot read ModalDialogContext: missing provider.`); }
     if (active) {
@@ -62,7 +57,13 @@ export const useModalDialogContext = (active: boolean, dialogRef: React.RefObjec
     } else {
       context.deactivate(ref);
     }
-  }, [active]);
+  }, [context, active, ref]);
+  
+  // On unmount, deactivate
+  useEffectOnce(() => {
+    if (context === null) { throw new Error(`Cannot read ModalDialogContext: missing provider.`); }
+    return () => context.deactivate(ref);
+  });  
 };
 
 export const useActiveModalDialog = (): null | HTMLDialogElement => {
