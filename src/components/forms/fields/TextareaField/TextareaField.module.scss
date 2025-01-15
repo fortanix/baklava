@@ -16,7 +16,7 @@
       @include bk.font(bk.$font-family-body, bk.$font-weight-semibold);
       cursor: default;
     }
-    
+
     .bk-textarea-field__label__optional {
       @include bk.font(bk.$font-family-body, bk.$font-weight-regular, bk.$font-size-xs);
       margin-left: bk.rem-from-px(4);
@@ -25,7 +25,7 @@
     .bk-textarea-field__control {
       --empty: ; // Prevent empty class from being removed
     }
-    
+
     .bk-textarea-field__hint {
       @include bk.font(bk.$font-family-body, bk.$font-weight-regular, bk.$font-size-xs);
     }

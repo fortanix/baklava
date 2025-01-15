@@ -22,13 +22,13 @@ export type TextareaFieldProps = Omit<ComponentProps<'textarea'>, 'value'> & {
 
   /** Props for the `<label>` element, if `label` is defined. */
   labelProps?: undefined | ComponentProps<'label'>,
-  
+
   /** Whether to display (Optional) next to the label. */
   optional?: undefined | boolean,
 
   /** Props for the wrapper element. */
   wrapperProps?: undefined | ComponentProps<'div'>,
-  
+
   /** Text to be displayed under the textarea element. */
   hint?: undefined | string,
 };
@@ -46,10 +46,10 @@ export const TextareaField = (props: TextareaFieldProps) => {
     hint = '',
     ...textareaProps
   } = props;
-  
+
   const controlId = React.useId();
   const formContext = useFormContext();
-  
+
   return (
     <div
       {...wrapperProps}
@@ -80,4 +80,4 @@ export const TextareaField = (props: TextareaFieldProps) => {
       )}
     </div>
   );
-}
+};
