@@ -18,16 +18,15 @@ import './DataTablePlaceholder.scss';
 // Loading skeleton (when there's no data to show yet)
 type DataTablePlaceholderSkeletonProps = { className?: ClassNameArgument };
 export const DataTablePlaceholderSkeleton = (props: DataTablePlaceholderSkeletonProps) => {
-  // TODO: WIP for Skeleton loader (shadow per cell), maybe needs shimmer
   const { table } = useTable();
   return (
     <div className={cx('bk-table-placeholder bk-table-placeholder--skeleton', props.className)}>
       {Array.from({ length: 6 }).map((_, index) =>
         // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
         <span key={index} className="skeleton-row">
-          {table.columns.map((_, index) =>
+          {table.visibleColumns.map((col, index) =>
             // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
-            <span key={index} className="skeleton-cell" />
+            <span key={index} className={cx("skeleton-cell", `skeleton-cell__${col.id}`)} />
           )}
         </span>,
       )}

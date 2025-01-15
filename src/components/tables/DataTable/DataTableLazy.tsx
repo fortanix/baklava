@@ -293,7 +293,7 @@ export const DataTableLazy = ({ className, footer, ...propsRest }: DataTableLazy
       }
       {...propsRest}
     >
-      {showLoadingIndicator && <Spinner />}
+      {showLoadingIndicator && <Spinner size="medium" className="table-spinner" />}
     </DataTableAsync>
   );
 };

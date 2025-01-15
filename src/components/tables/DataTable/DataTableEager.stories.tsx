@@ -9,12 +9,15 @@ import React from 'react';
 import { delay } from '../util/async_util.ts';
 import { type User, generateData } from '../util/generateData.ts';
 import { useEffectAsync } from '../util/hooks.ts';
+import { sortDateTime } from '../util/sorting_util.ts';
 import * as Filtering from './filtering/Filtering.ts';
 import type { Fields, FilterQuery } from '../MultiSearch/filterQuery.ts';
 
 import { Panel } from '../../containers/Panel/Panel.tsx';
 import * as DataTablePlugins from './plugins/useRowSelectColumn.tsx';
 import * as DataTableEager from './DataTableEager.tsx';
+
+import './DataTableEager.stories.scss';
 
 
 const columns = [
@@ -25,6 +28,7 @@ const columns = [
     Cell: ({ value }: { value: string }) => value,
     disableSortBy: false,
     disableGlobalFilter: false,
+    className: 'user-table__column',
   },
   {
     id: 'email',
@@ -32,6 +36,7 @@ const columns = [
     Header: 'Email',
     disableSortBy: false,
     disableGlobalFilter: false,
+    className: 'user-table__column',
   },
   {
     id: 'company',
@@ -39,6 +44,7 @@ const columns = [
     Header: 'Company',
     disableSortBy: false,
     disableGlobalFilter: false,
+    className: 'user-table__column',
   },
   {
     id: 'joinDate',
@@ -47,7 +53,9 @@ const columns = [
     Cell: ({ value }: { value: Date }) =>
       value.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
     disableSortBy: false,
+    sortType: sortDateTime,
     disableGlobalFilter: false,
+    className: 'user-table__column',
   },
 ];
 
@@ -212,6 +220,54 @@ export const WithFilter = {
   args: {
     columns,
     items: generateData({ numItems: 45 }),
+  },
+  render: (args: dataTeableEagerTemplateProps) => <DataTableEagerWithFilterTemplate {...args} />,
+};
+
+const moreColumns = [
+  ...columns, 
+  {
+    id: 'dummy_1',
+    accessor: (user: User) => user.name,
+    Header: 'Name',
+    Cell: ({ value }: { value: string }) => value,
+    disableSortBy: false,
+    disableGlobalFilter: true,
+  },
+  {
+    id: 'dummy_2',
+    accessor: (user: User) => user.email,
+    Header: 'Email',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+  },
+  {
+    id: 'dummy_3',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+  },
+  {
+    id: 'dummy_4',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+  },
+  {
+    id: 'dummy_5',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+  },
+];
+export const WithScroll = {
+  args: {
+    columns: moreColumns,
+    items: generateData({ numItems: 45 }),
+    className: 'teas'
   },
   render: (args: dataTeableEagerTemplateProps) => <DataTableEagerWithFilterTemplate {...args} />,
 };

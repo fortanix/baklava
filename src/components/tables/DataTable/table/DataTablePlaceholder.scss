@@ -16,20 +16,19 @@
     align-items: stretch;
     justify-content: space-around;
     gap: 1rem;
-    margin: -#{bk.$spacing-5} -#{bk.$spacing-2};
-
+    margin: calc(-1 * bk.$spacing-5) calc(-1 * bk.$spacing-2);
     >.skeleton-row {
       border-bottom: 1px solid bk.$theme-rule-default;
-      gap: calc(2 * #{bk.$spacing-5});
       margin: bk.$spacing-1 0;
       height: bk.$spacing-10;
       display: flex;
       align-items: center;
       .skeleton-cell {
         flex: 1;
+        padding-left: bk.$spacing-2;
         &::after{
           content:" ";
-          background-color: bk.$theme-rule-default;
+          @include bk.shimmer($baseColor: bk.$theme-rule-default, $highlightColor: bk.$theme-table-text-body-default);
           height: bk.$spacing-2;
           border-radius: bk.$border-radius-xl;
           display: block;

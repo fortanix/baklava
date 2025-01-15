@@ -7,32 +7,34 @@ import { classNames as cx } from '../../../util/componentUtil.ts';
 
 
 import * as ReactTable from 'react-table';
-import { type DataTableStatus, type TableContextState, createTableContext, useTable } from './DataTableContext';
-import { PaginationStream } from './pagination/PaginationStream';
-import { DataTablePlaceholderError } from './table/DataTablePlaceholder';
-import { DataTableAsync } from './table/DataTable';
+import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
+import { PlaceholderEmptyAction } from '../../graphics/PlaceholderEmpty/PlaceholderEmpty.tsx';
+import { Button } from '../../actions/Button/Button.tsx';
+import { type DataTableStatus, type TableContextState, createTableContext, useTable } from './DataTableContext.tsx';
+import { PaginationStream } from './pagination/PaginationStream.tsx';
+import { DataTablePlaceholderError } from './table/DataTablePlaceholder.tsx';
+
+import { DataTableAsync } from './table/DataTable.tsx';
 
 import type { FilterQuery } from '../MultiSearch/filterQuery.ts';
 
 // Table plugins
-import { useCustomFilters } from './plugins/useCustomFilters';
+import { useCustomFilters } from './plugins/useCustomFilters.tsx';
 
 // Styles
-// import './DataTableStream.scss';
-import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
-import { Button } from '../../actions/Button/Button.tsx';
-import { PlaceholderEmptyAction } from '../../graphics/PlaceholderEmpty/PlaceholderEmpty.tsx';
+import './DataTableStream.scss';
 
 
-export * from './DataTableContext';
+
+export * from './DataTableContext.tsx';
 export { PaginationStream };
-export { Search, MultiSearch } from './DataTableEager'; // FIXME: move to a common module
+export { Search, MultiSearch } from './DataTableEager.tsx'; // FIXME: move to a common module
 export {
   DataTablePlaceholderEmpty,
   DataTablePlaceholderError,
   DataTablePlaceholderEndOfTable,
   PlaceholderEmptyAction,
-} from './table/DataTablePlaceholder';
+} from './table/DataTablePlaceholder.tsx';
 
 
 export interface ReactTableOptions<D extends object> extends ReactTable.TableOptions<D> {
@@ -534,7 +536,7 @@ export const DataTableStream = ({
       }
       {...propsRest}
     >
-      {showLoadingIndicator && <Spinner />}
+      {showLoadingIndicator && <Spinner size="medium" className="table-spinner" />}
     </DataTableAsync>
   );
 };

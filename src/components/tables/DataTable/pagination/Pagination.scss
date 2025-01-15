@@ -21,10 +21,10 @@
     border-left: bk.$size-1 solid bk.$theme-pagination-border-default;
 
     .pager__nav {      
-      &:not(.disabled) {
+      &:not(:disabled) {
         cursor: pointer;
       }
-      &.disabled {
+      &:disabled {
         opacity: 0.34;
       }
     }
@@ -34,7 +34,7 @@
     border: bk.$size-1 solid bk.$theme-pagination-border-default;
     border-radius: bk.$size-2;
     appearance: textfield;
-    min-width: bk.$spacing-8;
+    width: bk.$spacing-8;
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
       appearance: none;

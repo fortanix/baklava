@@ -2,6 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import React from "react";
 import cx from "classnames";
 
 import { Icon } from "../../../graphics/Icon/Icon.tsx";
@@ -14,13 +15,14 @@ import {
 import { useTable } from "../DataTableContext.tsx";
 
 import "./Pagination.scss";
+import { Button } from "../../../actions/Button/Button.tsx";
 
 type PaginationProps = {
   pageSizeOptions?: Array<PageSizeOption>;
 };
 export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
   const { table } = useTable();
-
+  const [pageIndexIndicator, setPageIndexIndicator] = React.useState<number>(1);
   /*
   Available pagination state:
   - table.state.pageIndex
@@ -40,48 +42,82 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
       <PaginationSizeSelector pageSizeOptions={pageSizeOptions} />
 
       <div className="pager pager--indexed">
-        <Icon
-          icon="page-backward"
-          className={cx("pager__nav pager__nav--prev", {
-            disabled: !table.canPreviousPage,
-          })}
-          onClick={() => table.gotoPage(0)}
-        />
-        <div className="pagination-main">
+        <Button
+          unstyled
+          disabled={!table.canPreviousPage}
+          className="pager__nav"
+          onClick={() => {
+            table.gotoPage(0)
+            setPageIndexIndicator(1);
+          }}
+        >
           <Icon
-            icon="caret-left"
-            className={cx("pager__nav pager__nav--prev", {
-              disabled: !table.canPreviousPage,
-            })}
-            onClick={table.previousPage}
+            icon="page-backward"
+            className={cx("pager__nav--prev")}
           />
+        </Button>
+        <div className="pagination-main">
+          <Button
+            unstyled
+            disabled={!table.canPreviousPage}
+            className="pager__nav"
+            onClick={() => {
+              table.previousPage();
+              setPageIndexIndicator(pageIndexIndicator - 1);
+            }}
+          >
+            <Icon
+              icon="caret-left"
+              className={cx("pager__nav--prev")}
+            />
+          </Button>
+
           <Input
             type="number"
             className="pagination__page-input"
-            value={table.state.pageIndex + 1}
+            value={pageIndexIndicator}
             max={table.pageCount}
-            min={1}
-            onChange={(event) =>
-              table.gotoPage(Number.parseInt(event.target.value) - 1)
-            }
+            onChange={(event) => setPageIndexIndicator(Number.parseInt(event.target.value))}
+            onBlur={(event) => {
+              if(pageIndexIndicator > 0 && pageIndexIndicator <= table.pageCount){
+                table.gotoPage(pageIndexIndicator - 1);
+              } else {
+                table.gotoPage(table.state.pageIndex);
+                setPageIndexIndicator(table.state.pageIndex + 1);
+              }
+            }}
           />
           of {table.pageCount}
-          <Icon
-            icon="caret-right"
-            className={cx("pager__nav pager__nav--next", {
-              disabled: !table.canNextPage,
-            })}
-            onClick={table.nextPage}
-          />
+          <Button
+            unstyled
+            disabled={!table.canNextPage}
+            className="pager__nav"
+            onClick={() => {
+              table.nextPage();
+              setPageIndexIndicator(pageIndexIndicator + 1);
+            }}
+          >
+            <Icon
+              icon="caret-right"
+              className={cx("pager__nav--next")}
+            />
+          </Button>
         </div>
-        <Icon
-          name="chevron-right"
-          icon="page-forward"
-          className={cx("pager__nav pager__nav--next", {
-            disabled: !table.canNextPage,
-          })}
-          onClick={() => table.gotoPage(table.pageCount - 1)}
-        />
+        <Button
+          unstyled
+          disabled={!table.canNextPage}
+          className="pager__nav"
+          onClick={() => {
+            table.gotoPage(table.pageCount - 1)
+            setPageIndexIndicator(table.pageCount);
+          }}
+        >
+          <Icon
+            name="chevron-right"
+            icon="page-forward"
+            className={cx("pager__nav--next")}
+          />
+        </Button>
       </div>
     </div>
   );

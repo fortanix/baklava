@@ -5,6 +5,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 
 import { delay } from '../util/async_util.ts';
+import { sortDateTime } from '../util/sorting_util.ts';
 import { generateData, type User } from '../util/generateData.ts';
 
 import { Button } from '../../actions/Button/Button.tsx';
@@ -157,6 +158,7 @@ const columnDefinitions = [
     Header: 'Joined',
     Cell: ({ value }: { value: Date }) =>
       value.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+    sortType: sortDateTime,
     disableSortBy: false,
     disableGlobalFilter: true,
   },

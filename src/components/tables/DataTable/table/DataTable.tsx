@@ -47,7 +47,6 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
   return (
     <table
       {...table.getTableProps()}
-      {...propsRest}
       className={cx('bk-data-table__table', props.className)}
     >
       {columnGroups}
@@ -68,8 +67,8 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
             
             return (
               <th
-                key={headerKey}
                 {...headerProps}
+                key={headerKey}
                 title={undefined} // Unset the default `title` from `getHeaderProps()`
               >
                 <div className="column-header"> {/* Wrapper element needed to serve as flex container */}
@@ -103,7 +102,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
           table.prepareRow(row);
           const { key: rowKey, ...rowProps } = row.getRowProps();
           return (
-            <tr key={rowKey} {...rowProps} className={cx(rowProps.className, {'selected' : row.isSelected})}>
+            <tr {...rowProps} key={rowKey} className={cx(rowProps.className, {'selected' : row.isSelected})}>
               {/*<td className="bk-table__row__select">
                 <input type="checkbox"
                   checked={row.isSelected}
@@ -113,7 +112,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
               {row.cells.map(cell => {
                 const { key: cellKey, ...cellProps } = cell.getCellProps();
                 return (
-                  <td key={cellKey} {...cellProps}>
+                  <td {...cellProps} key={cellKey}>
                     {cell.render('Cell')}
                   </td>
                 );
