@@ -32,7 +32,6 @@ export { Search, MultiSearch } from './DataTableEager.tsx'; // FIXME: move to a 
 export {
   DataTablePlaceholderEmpty,
   DataTablePlaceholderError,
-  DataTablePlaceholderEndOfTable,
   PlaceholderEmptyAction,
 } from './table/DataTablePlaceholder.tsx';
 

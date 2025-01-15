@@ -188,7 +188,7 @@ export const DataTableSync = <D extends object>(props: DataTableSyncProps<D>) =>
 DataTableSync.displayName = 'DataTableSync';
 
 
-type DataTableAsyncProps<D extends object> = DataTableProps<D> & {
+export type DataTableAsyncProps<D extends object> = DataTableProps<D> & {
   classNameTable?: ClassNameArgument,
   status: DataTableStatus,
   placeholderSkeleton?: React.ReactNode,

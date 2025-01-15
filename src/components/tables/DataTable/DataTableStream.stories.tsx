@@ -10,6 +10,8 @@ import { generateData, type User } from '../util/generateData.ts';
 
 import { Button } from '../../actions/Button/Button.tsx';
 import { Panel } from '../../containers/Panel/Panel.tsx';
+import { Banner } from '../../containers/Banner/Banner.tsx';
+import type { DataTableAsyncProps } from './table/DataTable.tsx';
 import * as DataTableStream from './DataTableStream.tsx';
 
 export default {
@@ -41,8 +43,8 @@ type UserPageState = {
   offsetApprovalRequests: number,
 };
 type dataTeableLazyTemplateProps = DataTableStream.TableProviderStreamProps<User> &
-{ delay: number, items: Array<User>, endOfStream: boolean };
-const DataTableStreamTemplate = (props : dataTeableLazyTemplateProps) => {
+{ delay: number, items: Array<User>, endOfStream: boolean, dataTableProps: DataTableAsyncProps<User> };
+const DataTableStreamTemplate = ({dataTableProps, ...props} : dataTeableLazyTemplateProps) => {
   const columns = useMemo(() => props.columns, [props.columns]);
   const items = useMemo(() => props.items, [props.items]);
   const delayQuery = props.delay ?? null;
@@ -121,7 +123,7 @@ const DataTableStreamTemplate = (props : dataTeableLazyTemplateProps) => {
               }
             />
           }
-          {...props}
+          {...dataTableProps}
         />
       </DataTableStream.TableProviderStream>
     </Panel>
@@ -229,7 +231,7 @@ export const WithEndOfTablePlaceholder = {
     columns: columnDefinitions,
     items: generateData({ numItems: 15 }),
     dataTableProps: {
-      placeholderEndOfTable: 'I have no idea',
+      placeholderEndOfTable: <Banner variant="info">You have reached the end of the table</Banner>
     },
   },
   render: (args: dataTeableLazyTemplateProps) => <DataTableStreamTemplate {...args} />,

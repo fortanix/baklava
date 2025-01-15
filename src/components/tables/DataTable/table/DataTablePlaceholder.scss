@@ -38,25 +38,3 @@
     }
   }
 }
-// TODO: Figure this thing out
-// .bk-table-row-placeholder {
-//   @include bk.component-base(bk-table-row-placeholder);
-
-//   background: hsla(37, 91%, 55%, 0.04);
-//   border: 1px solid #F5A623;
-//   padding: bk.$sizing-3 (
-//     bk.$sizing-4 + bk.$sizing-1
-//   );
-//   height: 5.2rem;
-//   display: flex;
-//   align-items: center;
-
-//   .bk-table-row-placeholder__icon {
-//     color: #F5A623;
-//     margin-right: bk.$sizing-4 + bk.$sizing-1;
-//   }
-
-//   .bk-table-row-placeholder__message {
-//     color: rgba(12, 12, 34, 0.87);
-//   }
-// }
