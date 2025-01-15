@@ -76,7 +76,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: bk.$spacing-3 calc(bk.$spacing-7 / 2);
+        gap: bk.$spacing-3 calc(bk.$spacing-6 / 2);
         
         > button {
           // Keep each item to a max of 1lh, so that in the case of all items being on one line, all the items
@@ -99,7 +99,7 @@
         
         .bk-banner__action-close {
           flex: none;
-          margin-inline-start: calc(bk.$spacing-7 / 2); // Total gap should be `bk.$spacing-7`
+          margin-inline-start: calc(bk.$spacing-6 / 2); // Total gap should be `bk.$spacing-6`
           
           display: flex;
           color: bk.$theme-banner-icon-default;
