@@ -19,7 +19,7 @@ export type ToastDescriptor = {
   options?: undefined | ToastOptions,
 };
 
-export type ToastObservableOptions = {
+export type ToastStoreOptions = {
   entryAnimationDelay?: number /*ms*/,
   exitAnimationDelay?: number /*ms*/,
   autoCloseDelay?: number /*ms*/, // Should be higher than `entryAnimationDelay`
@@ -31,19 +31,19 @@ export type ToastMetadata = {
 };
 export type ToastWithMetadata = { metadata: ToastMetadata, descriptor: ToastDescriptor };
 export type ToastStorage = Readonly<Record<ToastId, ToastWithMetadata>>;
-export type ToastSubscriber = (toasts: ToastStorage) => void;
+export type ToastSubscriber = (this: ToastStore, toasts: ToastStorage) => void;
 
 /**
- * Observable for the currently active toasts. Subscribers will be notified when the state changes.
+ * Store for the currently active toasts. Can be subscribed to to get notified when the state changes.
  */
-export class ToastsObservable {
-  #options: Required<ToastObservableOptions>;
+export class ToastStore {
+  #options: Required<ToastStoreOptions>;
   
   #idCounter = 0; // Maintain a count for automatic ID generation
   #toasts: ToastStorage = Object.create(null);
   #subscribers: Set<ToastSubscriber> = new Set();
   
-  constructor(options: ToastObservableOptions = {}) {
+  constructor(options: ToastStoreOptions = {}) {
     this.#options = {
       entryAnimationDelay: options.entryAnimationDelay ?? 400,
       exitAnimationDelay: options.exitAnimationDelay ?? 200,
@@ -53,10 +53,10 @@ export class ToastsObservable {
   
   toasts() { return { ...this.#toasts }; }
   
-  /** Subscribe to this observable. Returns a function to unsubscribe. */
+  /** Subscribe to updates on the store (observable pattern). Returns a function to unsubscribe. */
   subscribe(subscriber: ToastSubscriber): () => void {
     this.#subscribers.add(subscriber);
-    subscriber(this.#toasts); // Publish the current state
+    subscriber.call(this, this.#toasts); // Publish the current state
     return () => {
       this.#subscribers.delete(subscriber);
     };
@@ -65,7 +65,7 @@ export class ToastsObservable {
   /** Publish the current state to all subscribers. */
   publish() {
     for (const subscriber of this.#subscribers) {
-      subscriber(this.#toasts);
+      subscriber.call(this, this.#toasts);
     }
   }
   

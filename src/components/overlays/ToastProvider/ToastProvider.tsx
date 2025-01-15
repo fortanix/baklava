@@ -10,9 +10,9 @@ import { classNames as cx, type ComponentProps } from '../../../util/componentUt
 
 import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { type BannerVariant, Banner } from '../../containers/Banner/Banner.tsx';
-import { useActiveModalDialog } from '../../util/overlays/modal/ModalDialogProvider.tsx';
+import { ModalDialogContext, useModalDialogContext, useActiveModalDialog } from '../../util/overlays/modal/ModalDialogProvider.tsx';
 
-import { type ToastDescriptor, type ToastOptions, type ToastStorage, ToastsObservable } from './ToastStorage.ts';
+import { type ToastDescriptor, type ToastOptions, type ToastStorage, ToastStore } from './ToastStore.ts';
 
 import cl from './ToastProvider.module.scss';
 
@@ -21,10 +21,10 @@ export { cl as ToasterClassNames };
 
 export type { ToastDescriptor };
 
-export const createToastNotifier = (toastsObservable: ToastsObservable) => {
+export const createToastNotifier = (toastStore: ToastStore) => {
   const notify = (toast: ToastDescriptor) => {
-    const toastId = toastsObservable.uniqueId();
-    toastsObservable.announceToast(toastId, toast);
+    const toastId = toastStore.uniqueId();
+    toastStore.announceToast(toastId, toast);
   };
   const notifyVariant = (
     variant: BannerVariant,
@@ -102,45 +102,58 @@ export type ToasterProps = React.PropsWithChildren<ComponentProps<'section'>>;
  */
 export const Toaster = (props: ToasterProps) => {
   const { ...propsRest } = props;
-  const { toastsObservable } = useToastContext();
+  const { toastStore } = useToastContext();
   
-  // Cache the toasts we read from the observable.
-  // Note: initialize function must read the toasts synchronously from the observable, we cannot wait until the
-  // first `subscribe()` kicks in, because then we spend one render cycle without state (which causes flickering).
-  const [toasts, setToasts] = React.useState<ToastStorage>(() => toastsObservable.toasts());
+  // Cache the toasts we read from the store.
+  // Note: initialize function must read the toasts synchronously from the store, we cannot wait until the first
+  // `subscribe()` kicks in, because then we spend one render cycle without state (which causes flickering).
+  const [toasts, setToasts] = React.useState<ToastStorage>(() => toastStore.toasts());
   
   React.useEffect(() => {
-    return toastsObservable.subscribe(toasts => {
+    return toastStore.subscribe(toasts => {
       // XXX View transitions cause some issues, e.g. click events don't fire while the transition is happening
       //startViewTransition(() => {
         setToasts(toasts);
       //});
     });
-  }, [toastsObservable]);
+  }, [toastStore]);
   
   // Pause auto-close when the page is not currently visible by the user
   const handleVisibilityChange = React.useCallback(() => {
     if (document.visibilityState === 'visible') {
-      toastsObservable.onPageVisible();
+      toastStore.onPageVisible();
     } else {
-      toastsObservable.onPageHide();
+      toastStore.onPageHide();
     }
-  }, [toastsObservable]);
+  }, [toastStore]);
   React.useEffect(() => {
     window.document.addEventListener('visibilitychange', handleVisibilityChange, false);
     return () => { window.document.removeEventListener('visibilitychange', handleVisibilityChange); };
   }, [handleVisibilityChange]);
   
-  // Ref callback to enforce that the Toaster is always rendered as a popover
-  const enforcePopoverOpen: React.RefCallback<React.ComponentRef<'section'>> = container => {
-    if (container && container.isConnected && !container.matches(`:popover-open`)) {
+  const containerRef = React.useRef<null | React.ComponentRef<'section'>>(null);
+  const openPopover = React.useCallback((container: null | HTMLElement) => {
+    if (container && container.isConnected) {
       try {
+        container.hidePopover();
         container.showPopover();
       } catch (error: unknown) {
         console.error(`Failed to open Toaster`, error);
       }
     }
+  }, []);
+  
+  // Ref callback to enforce that the Toaster is always rendered as a popover
+  const enforcePopoverOpen: React.RefCallback<React.ComponentRef<'section'>> = container => {
+    containerRef.current = container;
+    openPopover(container);
   };
+  
+  const modalDialogContext = React.use(ModalDialogContext);
+  React.useEffect(() => {
+    if (modalDialogContext === null) { throw new Error(`Cannot read ModalDialogContext: missing provider.`); }
+    return modalDialogContext.modalDialogStack.subscribe(() => { openPopover(containerRef.current); });
+  }, [modalDialogContext, openPopover]);
   
   return (
     <section
@@ -159,12 +172,12 @@ export const Toaster = (props: ToasterProps) => {
       )}
     >
       {Object.entries(toasts).map(([toastKey, { metadata, descriptor: toast }]) => {
-        const toastId = toastsObservable.idFromKey(toastKey);
+        const toastId = toastStore.idFromKey(toastKey);
         return (
           <Toast
             key={toastKey}
             className={cx({
-              [cl['bk-toast--skip-entry']]: toastsObservable.shouldSkipEntryAnimation(toastId),
+              [cl['bk-toast--skip-entry']]: toastStore.shouldSkipEntryAnimation(toastId),
             })}
             variant={toast.variant}
             title={toast.title}
@@ -173,16 +186,16 @@ export const Toaster = (props: ToasterProps) => {
               <ToastCopyAction toast={toast}/>
             }
             onClose={() => {
-              toastsObservable.dismissToast(toastId);
+              toastStore.dismissToast(toastId);
             }}
             onClick={event => {
               event.stopPropagation();
-              toastsObservable.dismissToast(toastId);
+              toastStore.dismissToast(toastId);
             }}
-            onMouseEnter={event => { event.stopPropagation(); toastsObservable.pauseAutoClose(toastId); }}
-            onTouchStart={event => { event.stopPropagation(); toastsObservable.pauseAutoClose(toastId); }}
-            onMouseLeave={event => { event.stopPropagation(); toastsObservable.resumeAutoClose(toastId); }}
-            onTouchEnd={event => { event.stopPropagation(); toastsObservable.resumeAutoClose(toastId); }}
+            onMouseEnter={event => { event.stopPropagation(); toastStore.pauseAutoClose(toastId); }}
+            onTouchStart={event => { event.stopPropagation(); toastStore.pauseAutoClose(toastId); }}
+            onMouseLeave={event => { event.stopPropagation(); toastStore.resumeAutoClose(toastId); }}
+            onTouchEnd={event => { event.stopPropagation(); toastStore.resumeAutoClose(toastId); }}
           >
             {toast.message}
           </Toast>
@@ -193,7 +206,7 @@ export const Toaster = (props: ToasterProps) => {
 };
 
 
-export type ToastContext = { toastsObservable: ToastsObservable, notify: (toast: ToastDescriptor) => void };
+export type ToastContext = { toastStore: ToastStore, notify: (toast: ToastDescriptor) => void };
 export const ToastContext = React.createContext<null | ToastContext>(null);
 export const useToastContext = (): ToastContext => {
   const context = React.use(ToastContext);
@@ -202,8 +215,8 @@ export const useToastContext = (): ToastContext => {
 };
 
 // A single global instance, to be used with `<ToastProvider global/>`
-export const globalToastsObservable = new ToastsObservable();
-export const notify = createToastNotifier(globalToastsObservable);
+export const globalToastStore = new ToastStore();
+export const notify = createToastNotifier(globalToastStore);
 
 type ToastProviderProps = React.PropsWithChildren<{ global?: boolean }>;
 export const ToastProvider = ({ global = false, children }: ToastProviderProps) => {
@@ -213,13 +226,13 @@ export const ToastProvider = ({ global = false, children }: ToastProviderProps) 
   // subtree will be rerendered on every change. Use the Observable pattern instead.
   // https://www.fullstory.com/blog/why-fullstory-uses-observables-in-react
   
-  const toastsObservableRef = React.useRef<null | ToastsObservable>(global ? globalToastsObservable : null);
-  const toastsObservable = toastsObservableRef.current ?? new ToastsObservable(); // Lazy initialization
+  const toastStoreRef = React.useRef<null | ToastStore>(global ? globalToastStore : null);
+  const toastStore = toastStoreRef.current ?? new ToastStore(); // Lazy initialization
   
   const toastContext = React.useMemo(() => ({
-    toastsObservable,
-    notify: createToastNotifier(toastsObservable),
-  }), [toastsObservable]);
+    toastStore,
+    notify: createToastNotifier(toastStore),
+  }), [toastStore]);
   
   return (
     <ToastContext value={toastContext}>
