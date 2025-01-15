@@ -494,7 +494,7 @@ export const DataTableStream = ({
   };
 
   const renderLoadMoreResults = () => {
-    return <Button onClick={loadMore}>Load more results</Button>;
+    return <Button trimmed onClick={loadMore}>Load more results</Button>;
   };
 
   // Use `<Pagination/>` by default, unless the table is empty (in which case there are "zero" pages)
