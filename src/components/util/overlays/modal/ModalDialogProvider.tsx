@@ -66,16 +66,6 @@ export const ModalDialogProvider = (props: React.PropsWithChildren) => {
   const modalDialogStackRef = React.useRef<null | ModalDialogStackObservable>(null);
   const modalDialogStack = modalDialogStackRef.current ?? new ModalDialogStackObservable(); // Lazy initialize
   
-  // const context = React.useMemo<ModalDialogContext>(() => ({
-  //   activeModal: instances.at(-1)?.dialogRef.current ?? null,
-  //   activate: (ref: ModalDialogReference) => {
-  //     //setInstances(instances => [...instances.filter(inst => inst.id !== ref.id), ref]);
-  //   },
-  //   deactivate: (ref: ModalDialogReference) => {
-  //     //setInstances(instances => instances.filter(inst => inst.id !== ref.id));
-  //   },
-  // }), [instances]);
-  
   const context = React.useMemo<ModalDialogContext>(() => ({ modalDialogStack }), [modalDialogStack]);
   
   return (
@@ -116,9 +106,12 @@ export const useActiveModalDialog = (): null | HTMLDialogElement => {
   React.useEffect(() => {
     if (context === null) { throw new Error(`Cannot read ModalDialogContext: missing provider.`); }
     return context.modalDialogStack.subscribe(function() {
-      setActiveModalDialog(this.activeModalDialog());
+      const newActiveModalDialog = this.activeModalDialog();
+      if (newActiveModalDialog !== activeModalDialog) {
+        setActiveModalDialog(newActiveModalDialog);
+      }
     });
-  }, [context]);
+  }, [context, activeModalDialog]);
   
   return activeModalDialog?.dialogRef?.current ?? null;
 };

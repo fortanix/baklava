@@ -239,7 +239,7 @@ export const ToastProvider = ({ global = false, children }: ToastProviderProps) 
       {children}
       {createPortal(<Toaster/>, activeModalDialog ?? window.document.body)}
     </ToastContext>
-  )
+  );
 };
 
 export const useNotify = () => {
