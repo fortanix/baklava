@@ -87,7 +87,11 @@
         .bk-banner__action {
           flex: none;
           
-          color: bk.$theme-banner-text-link;
+          color: bk.$theme-banner-text-link-default;
+          
+          &:hover {
+            color: bk.$theme-banner-text-link-hover;
+          }
           
           &.bk-banner__action--button { font-weight: bk.$font-weight-semibold; }
           &.bk-banner__action--icon { --keep: ; }
