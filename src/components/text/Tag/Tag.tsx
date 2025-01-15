@@ -41,7 +41,6 @@ export const Tag = (props: TagProps) => {
       className={cx(
         'bk',
         { [cl['bk-tag']]: !unstyled },
-        { [cl['bk-tag--with-close-button']]: !!onRemove },
         propsRest.className,
       )}
     >
