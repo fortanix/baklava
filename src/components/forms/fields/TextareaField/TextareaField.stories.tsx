@@ -2,22 +2,21 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { delay } from '../../../../util/time.ts';
 
 import type { Meta, StoryObj } from '@storybook/react';
 import { userEvent, fireEvent, within } from '@storybook/test';
-
 import * as React from 'react';
 
-import { Textarea } from './Textarea.tsx';
+import { Form } from '../../context/Form/Form.tsx';
 
-import cl from './Textarea.module.scss';
+import { TextareaField } from './TextareaField.tsx';
 
-type TextareaArgs = React.ComponentProps<typeof Textarea>;
+
+type TextareaArgs = React.ComponentProps<typeof TextareaField>;
 type Story = StoryObj<TextareaArgs>;
 
 export default {
-  component: Textarea,
+  component: TextareaField,
   parameters: {
     layout: 'centered',
   },
@@ -25,32 +24,33 @@ export default {
   argTypes: {
   },
   args: {
+    label: 'Label',
     placeholder: 'Example',
   },
   decorators: [
-    Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
+    Story => <Form><Story/></Form>,
   ],
-  render: (args) => <Textarea {...args}/>,
+  render: (args) => <TextareaField {...args}/>,
 } satisfies Meta<TextareaArgs>;
 
-export const Standard: Story = {
-};
+export const Standard: Story = {};
 
-export const Focused: Story = {
+export const Optional: Story = {
   args: {
-    className: cl['pseudo-focused'],
-  }
-};
-
-export const Disabled: Story = {
-  args: {
-    disabled: true,
+    optional: true,
   },
 };
 
-export const Invalid: Story = {
+export const WithHint: Story = {
   args: {
-    invalid: true,
+    hint: 'Hint/error',
+  },
+};
+
+export const OptionalWithHint: Story = {
+  args: {
+    optional: true,
+    hint: 'Hint/error',
   },
 };
 
@@ -63,11 +63,6 @@ that
 spans
 several
 lines`,
-  },
-};
-
-export const AutomaticResize: Story = {
-  args: {
-    automaticResize: true,
+    hint: 'Hint/error',
   },
 };
