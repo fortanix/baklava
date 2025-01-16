@@ -1,0 +1,51 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-text-area {
+    @include bk.component-base(bk-textarea);
+    
+    @include bk.focus-hidden;
+
+    --bk-text-area-border-color: #{bk.$theme-text-area-border-filled};
+
+    border: bk.rem-from-px(1) solid var(--bk-text-area-border-color);
+    border-radius: bk.$radius-1;
+    color: bk.$theme-text-area-text-filled;
+    padding: bk.$spacing-3;
+    
+    &::placeholder {
+      color: bk.$theme-text-area-text-default;
+    }
+    
+    &:placeholder-shown {
+      --bk-text-area-border-color: #{bk.$theme-text-area-border-default};
+    }
+
+    &:disabled {
+      color: bk.$theme-text-area-text-disabled;
+      --bk-text-area-border-color: #{bk.$theme-text-area-border-disabled};
+    }
+  }
+
+  .bk-text-area--invalid, .bk-text-area--invalid:placeholder-shown {
+    --bk-text-area-border-color: #{bk.$theme-text-area-border-error};
+  }
+  
+  .bk-text-area:focus,
+  .bk-text-area.pseudo-focused,
+  .bk-text-area--invalid:focus,
+  .bk-text-area--invalid.pseudo-focused,
+  .bk-text-area--invalid:placeholder-shown:focus,
+  .bk-text-area--invalid:placeholder-shown.pseudo-focused {
+    color: bk.$theme-text-area-text-focused;
+    --bk-text-area-border-color: #{bk.$theme-text-area-border-focused};
+  }
+
+  .bk-text-area--automatic-resize {
+    field-sizing: content;
+  }
+}

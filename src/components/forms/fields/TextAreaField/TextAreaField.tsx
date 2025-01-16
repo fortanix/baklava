@@ -6,36 +6,45 @@ import { classNames as cx, type ComponentProps } from '../../../../util/componen
 import * as React from 'react';
 
 import { useFormContext } from '../../context/Form/Form.tsx';
-import { Input } from '../../controls/Input/Input.tsx';
+import { TextArea } from '../../controls/TextArea/TextArea.tsx';
 
-import cl from './InputField.module.scss';
+import cl from './TextAreaField.module.scss';
 
 
-export { cl as InputFieldClassNames };
+export { cl as TextAreaFieldClassNames };
 
-export type InputFieldProps = Omit<ComponentProps<'input'>, 'value'> & {
+export type TextAreaFieldProps = Omit<ComponentProps<'textarea'>, 'value'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
-  /** Label for the input. */
+  /** Label for the textarea. */
   label?: undefined | React.ReactNode,
 
   /** Props for the `<label>` element, if `label` is defined. */
   labelProps?: undefined | ComponentProps<'label'>,
 
+  /** Whether to display (Optional) next to the label. */
+  optional?: undefined | boolean,
+
   /** Props for the wrapper element. */
   wrapperProps?: undefined | ComponentProps<'div'>,
+
+  /** Text to be displayed under the textarea element. */
+  hint?: undefined | string,
 };
+
 /**
- * Input field.
+ * TextArea field.
  */
-export const InputField = (props: InputFieldProps) => {
+export const TextAreaField = (props: TextAreaFieldProps) => {
   const {
     unstyled = false,
     label,
     labelProps = {},
     wrapperProps = {},
-    ...inputProps
+    optional = false,
+    hint = '',
+    ...textareaProps
   } = props;
 
   const controlId = React.useId();
@@ -46,25 +55,29 @@ export const InputField = (props: InputFieldProps) => {
       {...wrapperProps}
       className={cx(
         'bk',
-        { [cl['bk-input-field']]: !unstyled },
+        { [cl['bk-text-area-field']]: !unstyled },
         wrapperProps.className,
       )}
     >
-      {label &&
+      {label && (
         <label
           htmlFor={controlId}
           {...labelProps}
-          className={cx(cl['bk-input-field__label'], labelProps.className)}
+          className={cx(cl['bk-text-area-field__label'], labelProps.className)}
         >
           {label}
+          {optional && (<span className={cl['bk-text-area-field__label__optional']}>(Optional)</span>)}
         </label>
-      }
-      <Input
-        {...inputProps}
+      )}
+      <TextArea
+        {...textareaProps}
         id={controlId}
         form={formContext.formId}
-        className={cx(cl['bk-input-field__control'], inputProps.className)}
+        className={cx(cl['bk-text-area-field__control'], textareaProps.className)}
       />
+      {hint && (
+        <p className={cl['bk-text-area-field__hint']}>{hint}</p>
+      )}
     </div>
   );
 };
