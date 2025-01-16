@@ -3,10 +3,14 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 @use '../../../styling/defs.scss' as bk;
-@use './DataTableLazy.scss' as dataTableLazy;
+@use './DataTableLazy.module.scss' as dataTableLazy;
 
 @layer baklava.components {
-  .bk-data-table-eager--loading {
-    @include dataTableLazy.data-table-loading;
+  .bk-data-table-eager {
+    @include bk.component-base(bk-data-table-eager);
+    
+    &.bk-data-table-eager--loading {
+      @include dataTableLazy.data-table-loading;
+    }
   }
 }

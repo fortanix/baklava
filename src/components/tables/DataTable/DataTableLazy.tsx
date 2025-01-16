@@ -16,7 +16,7 @@ import { Pagination } from './pagination/Pagination';
 import { DataTablePlaceholderError } from './table/DataTablePlaceholder';
 import { DataTableAsync } from './table/DataTable';
 
-import './DataTableLazy.scss';
+import cl from './DataTableLazy.module.scss';
 
 
 export * from './DataTableContext.tsx';
@@ -272,8 +272,8 @@ export const DataTableLazy = ({ className, footer, ...propsRest }: DataTableLazy
   return (
     <DataTableAsync
       className={cx(
-        { 'bk-data-table-lazy': true },
-        { 'bk-data-table-lazy--loading': isLoading },
+        cl['bk-data-table-lazy'],
+        { [cl['bk-data-table-lazy--loading']]: isLoading },
         className,
       )}
       status={status}
@@ -283,7 +283,7 @@ export const DataTableLazy = ({ className, footer, ...propsRest }: DataTableLazy
         <DataTablePlaceholderError
           actions={
             <PlaceholderEmptyAction>
-              <Button variant="primary" className="bk-button--with-icon" onPress={() => { reload(); }}>
+              <Button variant="primary" onPress={() => { reload(); }}>
                 Retry
               </Button>
             </PlaceholderEmptyAction>
@@ -292,7 +292,7 @@ export const DataTableLazy = ({ className, footer, ...propsRest }: DataTableLazy
       }
       {...propsRest}
     >
-      {showLoadingIndicator && <Spinner size="medium" className="table-spinner" />}
+      {showLoadingIndicator && <Spinner size="large" className={cx(cl['table-spinner'])}/>}
     </DataTableAsync>
   );
 };

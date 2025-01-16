@@ -8,6 +8,7 @@
 @layer baklava.components {  
   .bk-pagination {
     @include bk.component-base(bk-pagination);
+    
     display: flex;
     align-items: center;
     justify-content: flex-end;

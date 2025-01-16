@@ -7,20 +7,24 @@
 
 @mixin data-table-loading {
   position: relative;
-
+  
   .table-spinner {
     position: absolute;
     top: calc(50% - (80px / 2));
     left: calc(50% - (80px / 2));
   }
-
+  
   .bk-data-table__table tbody {
     opacity: 0.6;
   }
 }
 
 @layer baklava.components {
-  .bk-data-table-lazy--loading {
-    @include data-table-loading;
+  .bk-data-table-lazy {
+    @include bk.component-base(bk-data-table-lazy);
+    
+    &.bk-data-table-lazy--loading {
+      @include data-table-loading;
+    }
   }
 }

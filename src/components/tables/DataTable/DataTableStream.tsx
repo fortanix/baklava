@@ -21,7 +21,7 @@ import type { FilterQuery } from '../MultiSearch/filterQuery.ts';
 import { useCustomFilters } from './plugins/useCustomFilters.tsx';
 
 // Styles
-import './DataTableStream.scss';
+import cl from './DataTableStream.module.scss';
 
 
 export * from './DataTableContext.tsx';
@@ -508,8 +508,8 @@ export const DataTableStream = ({
   return (
     <DataTableAsync
       className={cx(
-        { 'bk-data-table-stream': true },
-        { 'bk-data-table-stream--loading': isLoading },
+        cl['bk-data-table-stream'],
+        { [cl['bk-data-table-stream--loading']]: isLoading },
         className,
       )}
       status={status}
@@ -519,7 +519,7 @@ export const DataTableStream = ({
         <DataTablePlaceholderError
           actions={
             <PlaceholderEmptyAction>
-              <Button variant="primary" className="bk-button--with-icon" onPress={() => { reload(); }}>
+              <Button variant="primary" onPress={() => { reload(); }}>
                 Retry
               </Button>
             </PlaceholderEmptyAction>
@@ -533,7 +533,7 @@ export const DataTableStream = ({
       }
       {...propsRest}
     >
-      {showLoadingIndicator && <Spinner size="medium" className="table-spinner" />}
+      {showLoadingIndicator && <Spinner size="large" className={cx(cl['table-spinner'])}/>}
     </DataTableAsync>
   );
 };

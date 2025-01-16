@@ -12,7 +12,7 @@ import { SearchInput } from '../SearchInput/SearchInput.tsx';
 import { MultiSearch as MultiSearchInput } from '../MultiSearch/MultiSearch.tsx';
 import { DataTableSync } from './table/DataTable.tsx';
 
-import './DataTableEager.scss';
+import cl from './DataTableEager.module.scss';
 
 export * from './DataTableContext.tsx';
 export { Pagination };
@@ -163,8 +163,8 @@ export const DataTableEager = ({ children, className, footer, ...propsRest }: Da
       footer={footerWithFallback}
       {...propsRest}
       className={cx(
-        'bk-data-table-eager',
-        { 'bk-data-table-eager--loading': !status.ready },
+        cl['bk-data-table-eager'],
+        { [cl['bk-data-table-eager--loading']]: !status.ready },
         className,
       )}
       table={table}

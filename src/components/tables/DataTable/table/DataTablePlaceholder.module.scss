@@ -4,10 +4,8 @@
 
 @use '../../../../styling/defs.scss' as bk;
 
-@layer baklava.components {  
+@layer baklava.components {
   .bk-table-placeholder {
-    @include bk.component-base(bk-table-placeholder);
-    
     &:not(.bk-table-placeholder--skeleton) {
       padding: bk.$spacing-14 bk.$spacing-2;
     }
@@ -39,5 +37,8 @@
         }
       }
     }
+    
+    &.bk-table-placeholder--empty { --keep: ; }
+    &.bk-table-placeholder--error { --keep: ; }
   }
 }

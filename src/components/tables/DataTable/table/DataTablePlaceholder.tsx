@@ -3,8 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../../util/componentUtil.ts';
-import { type IconName, isIconName, Icon, type IconProps } from '../../../graphics/Icon/Icon.tsx';
+import { classNames as cx, type ClassNameArgument } from '../../../../util/componentUtil.ts';
 import { PlaceholderEmpty, type PlaceholderEmptyProps } from '../../../graphics/PlaceholderEmpty/PlaceholderEmpty.tsx';
 import { useTable } from '../DataTableContext.tsx';
 
@@ -12,7 +11,7 @@ export {
   PlaceholderEmptyAction,
 } from '../../../graphics/PlaceholderEmpty/PlaceholderEmpty.tsx';
 
-import './DataTablePlaceholder.scss';
+import cl from './DataTablePlaceholder.module.scss';
 
 
 // Loading skeleton (when there's no data to show yet)
@@ -20,13 +19,13 @@ type DataTablePlaceholderSkeletonProps = { className?: ClassNameArgument };
 export const DataTablePlaceholderSkeleton = (props: DataTablePlaceholderSkeletonProps) => {
   const { table } = useTable();
   return (
-    <div className={cx('bk-table-placeholder bk-table-placeholder--skeleton', props.className)}>
+    <div className={cx(cl['bk-table-placeholder'], cl['bk-table-placeholder--skeleton'], props.className)}>
       {Array.from({ length: 6 }).map((_, index) =>
         // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
-        <span key={index} className="skeleton-row">
+        <span key={index} className={cx(cl['skeleton-row'])}>
           {table.visibleColumns.map((col, index) =>
             // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
-            <span key={index} className={cx("skeleton-cell", `skeleton-cell__${col.id}`)} />
+            <span key={index} className={cx(cl['skeleton-cell'])}/>
           )}
         </span>,
       )}
@@ -44,7 +43,7 @@ export const DataTablePlaceholderEmpty = (props: DataTablePlaceholderEmptyProps)
     <PlaceholderEmpty
       title="No items"
       {...props}
-      className={cx('bk-table-placeholder bk-table-placeholder--empty', props.className)}
+      className={cx(cl['bk-table-placeholder'], cl['bk-table-placeholder--empty'], props.className)}
     />
   );
 };
@@ -58,7 +57,7 @@ export const DataTablePlaceholderError = (props: DataTablePlaceholderErrorProps)
     <PlaceholderEmpty
       title="Failed to load items"
       {...props}
-      className={cx('bk-table-placeholder bk-table-placeholder--error', props.className)}
+      className={cx(cl['bk-table-placeholder'], cl['bk-table-placeholder--error'], props.className)}
     />
   );
 };
