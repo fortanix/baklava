@@ -70,3 +70,11 @@ export const AutomaticResize: Story = {
     automaticResize: true,
   },
 };
+
+export const AutomaticHorizontalResize: Story = {
+  args: {
+    automaticResize: true,
+    defaultValue: longText,
+    style: { width: 300 },
+  }
+};
