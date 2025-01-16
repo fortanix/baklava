@@ -22,13 +22,13 @@ type PaginationSizeSelectorProps = {
 };
 export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
   const { pageSizeOptions = defaultPageSizeOptions, pageSizeLabel = 'Rows per page' } = props;
-
+  
   const { table } = useTable();
-
+  
   return (
     <div className="bk-page-size-selector">
       {pageSizeLabel}:
-
+      
       <DropdownMenuProvider
         className="page-size-selector__dropdown"
         items={pageSizeOptions.map((pageSize) => (
@@ -50,9 +50,7 @@ export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
             className="page-size-selector__button"
           >
             {table.state.pageSize}
-            <Icon name="arrow-drop-down" icon="caret-down"
-              className="icon-caret"
-            />
+            <Icon icon="caret-down" className="icon-caret"/>
           </Button>
         )}
       </DropdownMenuProvider>

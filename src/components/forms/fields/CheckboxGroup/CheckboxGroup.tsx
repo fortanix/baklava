@@ -13,7 +13,7 @@ import { CheckboxField } from '../CheckboxField/CheckboxField.tsx';
 export { cl as CheckboxGroupClassNames };
 
 export type CheckboxGroupProps = ComponentProps<'div'> & {
-  direction?: undefined | 'vertical' | 'horizontal';
+  direction?: undefined | 'vertical' | 'horizontal',
 };
 
 /**

@@ -19,7 +19,7 @@ import './Pagination.scss';
 
 
 type PaginationProps = {
-  pageSizeOptions?: Array<PageSizeOption>;
+  pageSizeOptions?: Array<PageSizeOption>,
 };
 export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
   const { table } = useTable();

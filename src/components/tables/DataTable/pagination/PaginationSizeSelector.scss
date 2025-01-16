@@ -5,37 +5,37 @@
 @use '../../../../styling/defs.scss' as bk;
 
 
-@layer baklava.components {  
-.bk-page-size-selector {
-  @include bk.component-base(bk-page-size-selector);
-  flex: none;
-  display: flex;
-  align-items: center;
-  gap: bk.$spacing-1;
-  
-  .page-size-selector__page-size {
-    user-select: none;
+@layer baklava.components {
+  .bk-page-size-selector {
+    @include bk.component-base(bk-page-size-selector);
     flex: none;
     display: flex;
     align-items: center;
-
-    .icon-caret {
-      width: 0.8em;
+    gap: bk.$spacing-1;
+    
+    .page-size-selector__page-size {
+      user-select: none;
+      flex: none;
+      display: flex;
+      align-items: center;
+      
+      .icon-caret {
+        width: 0.8em;
+      }
     }
-  }
-
-  .page-size-selector__button {
-    color: bk.$theme-pagination-text-default;
-    padding: 0;
-  }
-
-  .page-size-selector__dropdown {
-    min-width: bk.$spacing-10;
-
-    li button {
-      justify-content: center;
-
+    
+    .page-size-selector__button {
+      color: bk.$theme-pagination-text-default;
+      padding: 0;
+    }
+    
+    .page-size-selector__dropdown {
+      min-width: bk.$spacing-10;
+      
+      li button {
+        justify-content: center;
+      }
     }
   }
 }
-}
+
