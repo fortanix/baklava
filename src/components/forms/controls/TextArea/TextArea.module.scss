@@ -12,7 +12,7 @@
 
     --bk-text-area-border-color: #{bk.$theme-text-area-border-default};
 
-    border: 1px solid var(--bk-text-area-border-color);
+    border: bk.rem-from-px(1) solid var(--bk-text-area-border-color);
     border-radius: bk.$radius-1;
     color: bk.$theme-text-area-text-default;
     padding: bk.$spacing-3;
