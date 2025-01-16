@@ -4,7 +4,11 @@
 
 @use '../../../../styling/defs.scss' as bk;
 
-.bk-data-table-row-select {
-  width: bk.$spacing-11;
-  max-width: bk.$spacing-11;
+@layer baklava.components {
+  .bk-data-table-row-select {
+    @include bk.component-base(bk-data-table-row-select);
+    
+    width: bk.$spacing-11;
+    max-width: bk.$spacing-11;
+  }
 }

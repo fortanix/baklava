@@ -23,7 +23,6 @@ export type TagProps = Omit<ComponentProps<'div'>, 'content' | 'children'> & {
   /** Callback to remove the tag. If set, display a close icon, otherwise it is hidden. */
   onRemove?: () => void,
 };
-type Test = ComponentProps<'div'>['content'];
 /**
  * A tag component.
  */

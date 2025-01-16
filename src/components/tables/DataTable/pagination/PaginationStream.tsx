@@ -49,7 +49,7 @@ export const PaginationStreamPager = ({ pageSizeOptions }: PaginationStreamPager
         onPress={() => { table.previousPage(); }}
         disabled={!table.canPreviousPage}
       >
-        <Icon name="chevron-left" icon={"caret-left"} className="icon"/>
+        <Icon name="chevron-left" icon="caret-left" className="icon"/>
         Previous
       </Button>
       

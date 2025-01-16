@@ -49,10 +49,11 @@
       align-items: center;
     }
   }
-}
-@media only screen and (width <= 1100px) {
-  .bk-pagination {
-    justify-content: flex-start;
-    flex-wrap: wrap;
+  
+  @media only screen and (width <= 1100px) {
+    .bk-pagination {
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
   }
 }
