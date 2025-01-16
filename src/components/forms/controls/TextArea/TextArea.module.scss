@@ -25,11 +25,6 @@
       --bk-text-area-border-color: #{bk.$theme-text-area-border-default};
     }
 
-    &:focus, &.pseudo-focused {
-      color: bk.$theme-text-area-text-focused;
-      --bk-text-area-border-color: #{bk.$theme-text-area-border-focused};
-    }
-
     &:disabled {
       color: bk.$theme-text-area-text-disabled;
       --bk-text-area-border-color: #{bk.$theme-text-area-border-disabled};
@@ -38,12 +33,16 @@
 
   .bk-text-area--invalid, .bk-text-area--invalid:placeholder-shown {
     --bk-text-area-border-color: #{bk.$theme-text-area-border-error};
-    
-    // repeat again focus status, so invalid fields can appear focused
-    &:focus, &.pseudo-focused {
-      color: bk.$theme-text-area-text-focused;
+  }
+  
+  .bk-text-area:focus,
+  .bk-text-area.pseudo-focused,
+  .bk-text-area--invalid:focus,
+  .bk-text-area--invalid.pseudo-focused,
+  .bk-text-area--invalid:placeholder-shown:focus,
+  .bk-text-area--invalid:placeholder-shown.pseudo-focused {
+    color: bk.$theme-text-area-text-focused;
       --bk-text-area-border-color: #{bk.$theme-text-area-border-focused};
-    }
   }
 
   .bk-text-area--automatic-resize {
