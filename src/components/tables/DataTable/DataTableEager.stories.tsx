@@ -114,6 +114,7 @@ const DataTableEagerTemplate = (props: dataTeableEagerTemplateProps) => {
         columns={memoizedColumns}
         items={memoizedItems}
         getRowId={(item: User) => item.id}
+        plugins={[DataTablePlugins.useRowSelectColumn]}
       >
         <DataTableEager.Search />
         <DataTableEager.DataTableEager status={{ error: null, loading: false, ready: true }} />
@@ -195,13 +196,13 @@ export const MultiplePagesLarge = {
   render: (args: dataTeableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
 };
 
-export const WithFilter = {
-  args: {
-    columns,
-    items: generateData({ numItems: 45 }),
-  },
-  render: (args: dataTeableEagerTemplateProps) => <DataTableEagerWithFilterTemplate {...args} />,
-};
+// export const WithFilter = {
+//   args: {
+//     columns,
+//     items: generateData({ numItems: 45 }),
+//   },
+//   render: (args: dataTeableEagerTemplateProps) => <DataTableEagerWithFilterTemplate {...args} />,
+// };
 
 const moreColumns = [
   ...columns, 
@@ -242,11 +243,11 @@ const moreColumns = [
     disableGlobalFilter: true,
   },
 ];
-export const WithScroll = {
-  args: {
-    columns: moreColumns,
-    items: generateData({ numItems: 45 }),
-    className: 'teas'
-  },
-  render: (args: dataTeableEagerTemplateProps) => <DataTableEagerWithFilterTemplate {...args} />,
-};
+// FIXME: example with horizontal scroll
+// export const WithScroll = {
+//   args: {
+//     columns: moreColumns,
+//     items: generateData({ numItems: 45 }),
+//   },
+//   render: (args: dataTeableEagerTemplateProps) => <DataTableEagerWithFilterTemplate {...args} />,
+// };

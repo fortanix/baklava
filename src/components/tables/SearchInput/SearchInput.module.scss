@@ -8,15 +8,14 @@
   .bk-search {
     @include bk.component-base(bk-search);
     display: flex;
-
+    
     .bk-search__input {
       flex: 1;
       padding-left: bk.$spacing-7;
     }
-
+    
     .bk-search__icon {
       position: absolute;
-      font-size: 14px;
       left: 0;
       bottom: bk.$spacing-1;
     }
