@@ -1,0 +1,33 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-text-area-field {
+    @include bk.component-base(bk-text-area-field);
+
+    display: flex;
+    flex-direction: column;
+    gap: bk.rem-from-px(4);
+
+    .bk-text-area-field__label {
+      @include bk.font(bk.$font-family-body, bk.$font-weight-semibold);
+      cursor: default;
+    }
+
+    .bk-text-area-field__label__optional {
+      @include bk.font(bk.$font-family-body, bk.$font-weight-regular, bk.$font-size-xs);
+      margin-left: bk.rem-from-px(4);
+    }
+
+    .bk-text-area-field__control {
+      --empty: ; // Prevent empty class from being removed
+    }
+
+    .bk-text-area-field__hint {
+      @include bk.font(bk.$font-family-body, bk.$font-weight-regular, bk.$font-size-xs);
+    }
+  }
+}

@@ -12,6 +12,7 @@
     
     padding: bk.$size-2 bk.$spacing-2;
     border-radius: bk.$size-2;
+    border: bk.rem-from-px(1) solid bk.$theme-tag-border-default;
     background: bk.$theme-tag-background-default;
     color: bk.$theme-tag-text-default;
     
