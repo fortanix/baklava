@@ -38,7 +38,12 @@ spans
 several
 lines`;
 
-export const Standard: Story = {
+export const Placeholder: Story = {};
+
+export const Filled: Story = {
+  args: {
+    defaultValue: 'Some text',
+  },
 };
 
 export const Focused: Story = {
@@ -71,10 +76,18 @@ export const AutomaticResize: Story = {
   },
 };
 
-export const AutomaticHorizontalResize: Story = {
+export const AutomaticVerticalResize: Story = {
   args: {
     automaticResize: true,
     defaultValue: longText,
     style: { width: 300 },
-  }
+  },
+};
+
+export const AutomaticHorizontalResize: Story = {
+  args: {
+    automaticResize: true,
+    defaultValue: longText,
+    style: { height: 100 },
+  },
 };
