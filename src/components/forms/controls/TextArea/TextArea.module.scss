@@ -42,7 +42,7 @@
   .bk-text-area--invalid:placeholder-shown:focus,
   .bk-text-area--invalid:placeholder-shown.pseudo-focused {
     color: bk.$theme-text-area-text-focused;
-      --bk-text-area-border-color: #{bk.$theme-text-area-border-focused};
+    --bk-text-area-border-color: #{bk.$theme-text-area-border-focused};
   }
 
   .bk-text-area--automatic-resize {
