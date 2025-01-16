@@ -21,17 +21,19 @@
       gap: bk.$spacing-1;
       padding-left: bk.$spacing-6;
       border-left: bk.$size-1 solid bk.$theme-pagination-border-default;
-  
-      .pager__nav {      
-        &:not(:disabled) {
+      
+      .pager__nav {
+        display: flex;
+        
+        &:not(:global(.nonactive)) {
           cursor: pointer;
         }
-        &:disabled {
+        &:global(.nonactive) {
           opacity: 0.34;
         }
       }
     }
-    .pagination__page-input{
+    .pagination__page-input {
       text-align: center;
       border: bk.$size-1 solid bk.$theme-pagination-border-default;
       border-radius: bk.$size-2;
@@ -43,7 +45,7 @@
         margin: 0;
       }
     }
-    .pagination-main{
+    .pagination-main {
       display: flex;
       gap: bk.$spacing-1;
       align-items: center;

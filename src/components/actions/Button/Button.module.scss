@@ -15,15 +15,17 @@
     user-select: none;
     
     margin: 0;
-    padding: 0;
-    &:not(.bk-button--trimmed) {
-      padding: calc(bk.$spacing-2 - 0.125lh) bk.$spacing-3; /* Note: compensate for line-height difference with Figma */
-    }
+    padding: calc(bk.$spacing-2 - 0.125lh) bk.$spacing-3; /* Note: compensate for line-height difference with Figma */
     
     /* Transparent border for consistency with other variants that have a border */
     border: bk.$size-1 solid transparent;
     border-radius: bk.$radius-s;
     background: transparent;
+    
+    &.bk-button--trimmed {
+      padding: 0;
+      border: none;
+    }
     
     display: inline-flex;
     flex-flow: row wrap;

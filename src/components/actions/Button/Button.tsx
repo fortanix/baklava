@@ -147,8 +147,9 @@ export const Button = (props: ButtonProps) => {
         [cl['bk-button--trimmed']]: trimmed,
         [cl['bk-button--primary']]: variant === 'primary',
         [cl['bk-button--secondary']]: variant === 'secondary',
-        [cl['bk-button--nonactive']]: isNonactive,
         [cl['bk-button--disabled']]: !isInteractive,
+        [cl['bk-button--nonactive']]: isNonactive,
+        'nonactive': isNonactive, // Global class name so that consumers can style nonactive states
       }, props.className)}
       onClick={handleClick}
     >

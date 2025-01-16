@@ -15,7 +15,7 @@ import {
 } from './PaginationSizeSelector.tsx';
 import { useTable } from '../DataTableContext.tsx';
 
-import './Pagination.scss';
+import cl from './Pagination.module.scss';
 
 
 type PaginationProps = {
@@ -39,47 +39,41 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
   */
 
   return (
-    <div className="bk-pagination">
+    <div className={cx(cl['bk-pagination'])}>
       <PaginationSizeSelector pageSizeOptions={pageSizeOptions} />
 
-      <div className="pager pager--indexed">
+      <div className={cx(cl['pager'], cl['pager--indexed'])}>
         <Button
           unstyled
-          disabled={!table.canPreviousPage}
-          className="pager__nav"
+          nonactive={!table.canPreviousPage}
+          className={cx(cl['pager__nav'])}
           onPress={() => {
             table.gotoPage(0)
             setPageIndexIndicator(1);
           }}
         >
-          <Icon
-            icon="page-backward"
-            className={cx("pager__nav--prev")}
-          />
+          <Icon icon="page-backward"/>
         </Button>
-        <div className="pagination-main">
+        <div className={cx(cl['pagination-main'])}>
           <Button
             unstyled
-            disabled={!table.canPreviousPage}
-            className="pager__nav"
+            nonactive={!table.canPreviousPage}
+            className={cx(cl['pager__nav'])}
             onPress={() => {
               table.previousPage();
               setPageIndexIndicator(pageIndexIndicator - 1);
             }}
           >
-            <Icon
-              icon="caret-left"
-              className={cx("pager__nav--prev")}
-            />
+            <Icon icon="caret-left"/>
           </Button>
 
           <Input
             type="number"
-            className="pagination__page-input"
+            className={cx(cl['pagination__page-input'])}
             value={pageIndexIndicator}
             max={table.pageCount}
             onChange={(event) => setPageIndexIndicator(Number.parseInt(event.target.value))}
-            onBlur={(event) => {
+            onBlur={() => {
               if(pageIndexIndicator > 0 && pageIndexIndicator <= table.pageCount){
                 table.gotoPage(pageIndexIndicator - 1);
               } else {
@@ -88,36 +82,29 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
               }
             }}
           />
-          of {table.pageCount}
+          of {Math.max(table.pageCount, 1)}
           <Button
             unstyled
-            disabled={!table.canNextPage}
-            className="pager__nav"
+            nonactive={!table.canNextPage}
+            className={cx(cl['pager__nav'])}
             onPress={() => {
               table.nextPage();
               setPageIndexIndicator(pageIndexIndicator + 1);
             }}
           >
-            <Icon
-              icon="caret-right"
-              className={cx("pager__nav--next")}
-            />
+            <Icon icon="caret-right"/>
           </Button>
         </div>
         <Button
           unstyled
-          disabled={!table.canNextPage}
-          className="pager__nav"
+          nonactive={!table.canNextPage}
+          className={cx(cl['pager__nav'])}
           onPress={() => {
             table.gotoPage(table.pageCount - 1)
             setPageIndexIndicator(table.pageCount);
           }}
         >
-          <Icon
-            name="chevron-right"
-            icon="page-forward"
-            className={cx("pager__nav--next")}
-          />
+          <Icon icon="page-forward"/>
         </Button>
       </div>
     </div>

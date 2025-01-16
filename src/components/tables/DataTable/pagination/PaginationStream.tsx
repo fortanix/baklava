@@ -11,21 +11,8 @@ import { Button } from '../../../actions/Button/Button.tsx';
 import { type PageSizeOption, PaginationSizeSelector } from './PaginationSizeSelector.tsx';
 import { useTable } from '../DataTableContext.tsx';
 
-import './PaginationStream.scss';
+import cl from './PaginationStream.module.scss';
 
-
-type IconDoubleChevronLeftProps = React.ComponentPropsWithoutRef<'span'> & {
-  iconProps?: Partial<React.ComponentPropsWithRef<typeof Icon>>,
-};
-const IconDoubleChevronLeft = ({ iconProps = {}, ...props }: IconDoubleChevronLeftProps) => {
-  return (
-    <span className="icon-double-chevron-left" {...props}>
-      <Icon name="chevron-left" icon="page-backward" className="icon"
-        {...iconProps}
-      />
-    </span>
-  );
-};
 
 type PaginationStreamPagerProps = {
   pageSizeOptions?: PageSizeOption,
@@ -34,33 +21,33 @@ export const PaginationStreamPager = ({ pageSizeOptions }: PaginationStreamPager
   const { table } = useTable();
   
   return (
-    <div className="pagination__pager">
-      <Button
-        className={cx('pager__nav pager__nav--first', { 'disabled': !table.canPreviousPage })}
+    <div className={cx(cl['pagination__pager'])}>
+      <Button unstyled
+        className={cx(cl['pager__nav'], cl['pager__nav--first'])}
         onPress={() => { table.gotoPage(0); }}
-        disabled={!table.canPreviousPage}
+        nonactive={!table.canPreviousPage}
       >
-        <IconDoubleChevronLeft/>
+        <Icon icon="page-backward"/>
       </Button>
       
-      <Button
+      <Button trimmed
         variant="tertiary"
-        className={cx('pager__nav pager__nav--prev', { 'disabled': !table.canPreviousPage })}
+        className={cx(cl['pager__nav'], cl['pager__nav--prev'])}
         onPress={() => { table.previousPage(); }}
-        disabled={!table.canPreviousPage}
+        nonactive={!table.canPreviousPage}
       >
-        <Icon name="chevron-left" icon="caret-left" className="icon"/>
+        <Icon icon="caret-left"/>
         Previous
       </Button>
       
-      <Button 
+      <Button trimmed
         variant="tertiary"
-        className={cx('pager__nav pager__nav--next', { 'disabled': !table.canNextPage })}
+        className={cx(cl['pager__nav'], cl['pager__nav--next'])}
         onPress={() => { table.nextPage(); }}
-        disabled={!table.canNextPage}
+        nonactive={!table.canNextPage}
       >
         Next
-        <Icon name="chevron-right" icon="caret-right" className="icon"/>
+        <Icon icon="caret-right"/>
       </Button>
     </div>
   );
@@ -73,9 +60,9 @@ type PaginationStreamProps = {
 };
 export const PaginationStream = ({ renderLoadMoreResults, pageSizeOptions, pageSizeLabel }: PaginationStreamProps) => {
   return (
-    <div className="bk-pagination bk-pagination--stream">
+    <div className={cx(cl['bk-pagination'], cl['bk-pagination--stream'])}>
       {renderLoadMoreResults && (
-        <div className="pagination__load-more-action">{renderLoadMoreResults?.()}</div>
+        <div className={cx(cl['pagination__load-more-action'])}>{renderLoadMoreResults?.()}</div>
       )}
       <PaginationSizeSelector pageSizeOptions={pageSizeOptions} pageSizeLabel={pageSizeLabel}/>
       <PaginationStreamPager/>
