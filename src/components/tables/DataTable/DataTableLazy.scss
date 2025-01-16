@@ -13,12 +13,14 @@
     top: calc(50% - (80px / 2));
     left: calc(50% - (80px / 2));
   }
-  
+
   .bk-data-table__table tbody {
     opacity: 0.6;
   }
 }
 
-.bk-data-table-lazy--loading {
-  @include data-table-loading;
+@layer baklava.components {
+  .bk-data-table-lazy--loading {
+    @include data-table-loading;
+  }
 }

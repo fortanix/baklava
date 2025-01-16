@@ -20,7 +20,7 @@ import { Icon } from '../../graphics/Icon/Icon.tsx';
 import './DataTableLazy.scss';
 
 
-export * from './DataTableContext';
+export * from './DataTableContext.tsx';
 export { Pagination };
 export { DataTablePlaceholderEmpty, DataTablePlaceholderError } from './table/DataTablePlaceholder';
 export { PlaceholderEmptyAction } from '../../graphics/PlaceholderEmpty/PlaceholderEmpty.tsx';
@@ -284,7 +284,7 @@ export const DataTableLazy = ({ className, footer, ...propsRest }: DataTableLazy
         <DataTablePlaceholderError
           actions={
             <PlaceholderEmptyAction>
-              <Button variant="primary" className="bk-button--with-icon" onClick={() => { reload(); }}>
+              <Button variant="primary" className="bk-button--with-icon" onPress={() => { reload(); }}>
                 Retry
               </Button>
             </PlaceholderEmptyAction>

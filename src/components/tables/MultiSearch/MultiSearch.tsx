@@ -346,7 +346,7 @@ export const Filters = (props: FiltersProps) => {
           tabIndex={0}
           className="clear-all"
           onKeyDown={onRemoveAllFilters}
-          onClick={onRemoveAllFilters}
+          onPress={onRemoveAllFilters}
         >
           Clear all
         </span>
@@ -561,7 +561,7 @@ export const SearchInput = (props: SearchInputProps) => {
       role="button"
       tabIndex={0}
       className={cx('bk-search-input', className, { 'bk-search-input--active': isFocused })}
-      onClick={onWrapperClick}
+      onPress={onWrapperClick}
       onKeyDown={onWrapperKeyDown}
     >
       <Icon icon="search" className="bk-search-input__search-icon"/>
@@ -1350,7 +1350,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
       onKeyDown={onInputKeyDown}
       onChange={onInputChange}
       onFocus={onSearchInputFocus}
-      onClick={onClick}
+      onPress={onClick}
       disabled={disabled}
     />
   );
@@ -1395,7 +1395,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
         inputRef={inputRef}
         fields={fields}
         // popperOptions={popperOptions}
-        onClick={onFieldClick}
+        onPress={onFieldClick}
         onOutsideClick={onOutsideClick}
       />
     );
@@ -1594,7 +1594,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
         inputRef={inputRef}
         operators={field.operators}
         // popperOptions={popperOptions}
-        onClick={onOperatorClick}
+        onPress={onOperatorClick}
         onOutsideClick={onOutsideClick}
         operatorInfo={field.operatorInfo}
       />

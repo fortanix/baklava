@@ -7,43 +7,37 @@
 @use './Pagination.scss';
 
 
-.icon-double-chevron-left {
-  display: flex;
-  align-items: center;
-  
-  // Add some slight kerning
-  .icon:last-of-type {
-    margin-left: -0.1em;
-  }
-}
+@layer baklava.components {
+  .bk-pagination--stream {
+    @include bk.component-base(bk-pagination-stream);
 
-.pagination--stream {
-  .pagination__load-more-action {
-    display: flex;
-    align-items: center;
-    margin-right: auto;
-  }
+    .pagination__load-more-action {
+      display: flex;
+      align-items: center;
+      margin-right: auto;
+    }
 
-  .pagination__pager {
-    display: flex;
-    align-items: center;
-    gap: bk.$spacing-5;
-    padding-left: bk.$spacing-6;
-    border-left: bk.$size-1 solid bk.$theme-pagination-border-default;
+    .pagination__pager {
+      display: flex;
+      align-items: center;
+      gap: bk.$spacing-5;
+      padding-left: bk.$spacing-6;
+      border-left: bk.$size-1 solid bk.$theme-pagination-border-default;
 
-    .pager__nav {
-      color: bk.$theme-pagination-text-default;
-      padding-left: 0;
-      padding-right: 0;
+      .pager__nav {
+        color: bk.$theme-pagination-text-default;
+        padding-left: 0;
+        padding-right: 0;
 
-      &.disabled {
-        opacity: 0.4;
-      }
+        &.disabled {
+          opacity: 0.4;
+        }
 
-      &.pager__nav--prev,
-      &.pager__nav--next {
-        display: flex;
-        align-items: center;
+        &.pager__nav--prev,
+        &.pager__nav--next {
+          display: flex;
+          align-items: center;
+        }
       }
     }
   }

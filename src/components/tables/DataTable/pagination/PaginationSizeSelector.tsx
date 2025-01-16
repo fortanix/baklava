@@ -26,7 +26,7 @@ export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
   const { table } = useTable();
 
   return (
-    <div className="page-size-selector">
+    <div className="bk-page-size-selector">
       {pageSizeLabel}:
 
       <DropdownMenuProvider

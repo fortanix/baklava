@@ -117,8 +117,8 @@ const DataTableStreamTemplate = ({dataTableProps, ...props} : dataTeableLazyTemp
               title="No users"
               actions={
                 <DataTableStream.PlaceholderEmptyAction>
-                  <Button variant="secondary" onClick={() => {}}>Action 1</Button>
-                  <Button variant="primary" onClick={() => {}}>Action 2</Button>
+                  <Button variant="secondary" onPress={() => {}}>Action 1</Button>
+                  <Button variant="primary" onPress={() => {}}>Action 2</Button>
                 </DataTableStream.PlaceholderEmptyAction>
               }
             />
@@ -231,7 +231,7 @@ export const WithEndOfTablePlaceholder = {
     columns: columnDefinitions,
     items: generateData({ numItems: 15 }),
     dataTableProps: {
-      placeholderEndOfTable: <Banner variant="info">You have reached the end of the table</Banner>
+      placeholderEndOfTable: <Banner variant="info" title="You have reached the end of the table" />
     },
   },
   render: (args: dataTeableLazyTemplateProps) => <DataTableStreamTemplate {...args} />,

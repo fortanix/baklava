@@ -494,7 +494,7 @@ export const DataTableStream = ({
   };
 
   const renderLoadMoreResults = () => {
-    return <Button trimmed onClick={loadMore}>Load more results</Button>;
+    return <Button trimmed onPress={loadMore}>Load more results</Button>;
   };
 
   // Use `<Pagination/>` by default, unless the table is empty (in which case there are "zero" pages)
@@ -521,7 +521,7 @@ export const DataTableStream = ({
         <DataTablePlaceholderError
           actions={
             <PlaceholderEmptyAction>
-              <Button variant="primary" className="bk-button--with-icon" onClick={() => { reload(); }}>
+              <Button variant="primary" className="bk-button--with-icon" onPress={() => { reload(); }}>
                 Retry
               </Button>
             </PlaceholderEmptyAction>

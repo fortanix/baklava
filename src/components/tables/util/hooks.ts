@@ -14,7 +14,7 @@ export const usePrevious = <T>(value: T) => {
 };
 
 export const useEffectAsync = (effect: () => Promise<unknown>, inputs?: undefined | React.DependencyList): void => {
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <We rely on user deps; adding effect triggers unwanted re-runs>
   React.useEffect(() => {
     effect();
   }, inputs);

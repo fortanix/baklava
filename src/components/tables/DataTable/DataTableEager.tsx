@@ -14,7 +14,7 @@ import { DataTableSync } from './table/DataTable.tsx';
 
 import './DataTableEager.scss';
 
-export * from './DataTableContext';
+export * from './DataTableContext.tsx';
 export { Pagination };
 export { DataTablePlaceholderEmpty, DataTablePlaceholderError } from './table/DataTablePlaceholder';
 

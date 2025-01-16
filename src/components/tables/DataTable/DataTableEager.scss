@@ -5,7 +5,8 @@
 @use '../../../styling/defs.scss' as bk;
 @use './DataTableLazy.scss' as dataTableLazy;
 
-
-.bk-data-table-eager--loading {
-  @include dataTableLazy.data-table-loading;
+@layer baklava.components {
+  .bk-data-table-eager--loading {
+    @include dataTableLazy.data-table-loading;
+  }
 }

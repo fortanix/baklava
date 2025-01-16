@@ -196,26 +196,6 @@ export const MultiplePagesLarge = {
   render: (args: dataTeableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
 };
 
-export const SlowNetwork = {
-  args: {
-    columns,
-    items: generateData({ numItems: 1000 }),
-    delay: 1500,
-    isReady: false,
-  },
-  render: (args: dataTeableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
-};
-
-export const InfiniteDelay = {
-  args: {
-    columns,
-    items: generateData({ numItems: 10 }),
-    delay: Number.POSITIVE_INFINITY,
-    isReady: false,
-  },
-  render: (args: dataTeableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
-};
-
 export const WithFilter = {
   args: {
     columns,

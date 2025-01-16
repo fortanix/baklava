@@ -37,7 +37,7 @@ export const PaginationStreamPager = ({ pageSizeOptions }: PaginationStreamPager
     <div className="pagination__pager">
       <Button
         className={cx('pager__nav pager__nav--first', { 'disabled': !table.canPreviousPage })}
-        onClick={() => { table.gotoPage(0); }}
+        onPress={() => { table.gotoPage(0); }}
         disabled={!table.canPreviousPage}
       >
         <IconDoubleChevronLeft/>
@@ -46,7 +46,7 @@ export const PaginationStreamPager = ({ pageSizeOptions }: PaginationStreamPager
       <Button
         variant="tertiary"
         className={cx('pager__nav pager__nav--prev', { 'disabled': !table.canPreviousPage })}
-        onClick={() => { table.previousPage(); }}
+        onPress={() => { table.previousPage(); }}
         disabled={!table.canPreviousPage}
       >
         <Icon name="chevron-left" icon={"caret-left"} className="icon"/>
@@ -56,7 +56,7 @@ export const PaginationStreamPager = ({ pageSizeOptions }: PaginationStreamPager
       <Button 
         variant="tertiary"
         className={cx('pager__nav pager__nav--next', { 'disabled': !table.canNextPage })}
-        onClick={() => { table.nextPage(); }}
+        onPress={() => { table.nextPage(); }}
         disabled={!table.canNextPage}
       >
         Next
@@ -73,7 +73,7 @@ type PaginationStreamProps = {
 };
 export const PaginationStream = ({ renderLoadMoreResults, pageSizeOptions, pageSizeLabel }: PaginationStreamProps) => {
   return (
-    <div className="pagination pagination--stream">
+    <div className="bk-pagination bk-pagination--stream">
       {renderLoadMoreResults && (
         <div className="pagination__load-more-action">{renderLoadMoreResults?.()}</div>
       )}

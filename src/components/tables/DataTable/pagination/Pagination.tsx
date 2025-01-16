@@ -38,7 +38,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
   */
 
   return (
-    <div className="pagination">
+    <div className="bk-pagination">
       <PaginationSizeSelector pageSizeOptions={pageSizeOptions} />
 
       <div className="pager pager--indexed">
@@ -46,7 +46,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
           unstyled
           disabled={!table.canPreviousPage}
           className="pager__nav"
-          onClick={() => {
+          onPress={() => {
             table.gotoPage(0)
             setPageIndexIndicator(1);
           }}
@@ -61,7 +61,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
             unstyled
             disabled={!table.canPreviousPage}
             className="pager__nav"
-            onClick={() => {
+            onPress={() => {
               table.previousPage();
               setPageIndexIndicator(pageIndexIndicator - 1);
             }}
@@ -92,7 +92,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
             unstyled
             disabled={!table.canNextPage}
             className="pager__nav"
-            onClick={() => {
+            onPress={() => {
               table.nextPage();
               setPageIndexIndicator(pageIndexIndicator + 1);
             }}
@@ -107,7 +107,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
           unstyled
           disabled={!table.canNextPage}
           className="pager__nav"
-          onClick={() => {
+          onPress={() => {
             table.gotoPage(table.pageCount - 1)
             setPageIndexIndicator(table.pageCount);
           }}
