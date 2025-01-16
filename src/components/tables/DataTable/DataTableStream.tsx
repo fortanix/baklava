@@ -5,7 +5,6 @@
 import * as React from 'react';
 import { classNames as cx } from '../../../util/componentUtil.ts';
 
-
 import * as ReactTable from 'react-table';
 import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
 import { PlaceholderEmptyAction } from '../../graphics/PlaceholderEmpty/PlaceholderEmpty.tsx';
@@ -23,7 +22,6 @@ import { useCustomFilters } from './plugins/useCustomFilters.tsx';
 
 // Styles
 import './DataTableStream.scss';
-
 
 
 export * from './DataTableContext.tsx';

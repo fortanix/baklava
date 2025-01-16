@@ -3,7 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { classNames as cx, ClassNameArgument } from '../../../util/componentUtil.ts';
+import { classNames as cx } from '../../../util/componentUtil.ts';
 import { useEffectAsync } from '../util/hooks.ts';
 
 import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
@@ -15,7 +15,6 @@ import { type DataTableStatus, type TableContextState, createTableContext, useTa
 import { Pagination } from './pagination/Pagination';
 import { DataTablePlaceholderError } from './table/DataTablePlaceholder';
 import { DataTableAsync } from './table/DataTable';
-import { Icon } from '../../graphics/Icon/Icon.tsx';
 
 import './DataTableLazy.scss';
 

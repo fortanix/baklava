@@ -2,7 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import React, { useState, useMemo, useCallback } from 'react';
+import * as React from 'react';
 
 import { delay } from '../util/async_util.ts';
 import { type User, generateData } from '../util/generateData.ts';
@@ -22,13 +22,16 @@ export default {
 
 type dataTeableLazyTemplateProps = DataTableLazy.TableProviderLazyProps<User> & { delay: number, items: Array<User> };
 const DataTableLazyTemplate = (props: dataTeableLazyTemplateProps) => {
-  const columns = useMemo(() => props.columns, [props.columns]);
-  const items = useMemo(() => props.items, [props.items]);
+  const columns = React.useMemo(() => props.columns, [props.columns]);
+  const items = React.useMemo(() => props.items, [props.items]);
   const delayQuery = props.delay ?? null;
 
-  const [itemsProcessed, setItemsProcessed] = useState<DataTableLazy.DataTableQueryResult<User>>({ total: 0, itemsPage: [] });
+  const [itemsProcessed, setItemsProcessed] = React.useState<DataTableLazy.DataTableQueryResult<User>>({
+    total: 0,
+    itemsPage: [],
+  });
 
-  const query: DataTableLazy.DataTableQuery<User> = useCallback(
+  const query: DataTableLazy.DataTableQuery<User> = React.useCallback(
     async ({ pageIndex, pageSize }) => {
       if (delayQuery === Number.POSITIVE_INFINITY) return new Promise(() => {}); // Infinite delay
       if (delayQuery === -1) throw new Error('Failed'); // Simulate failure

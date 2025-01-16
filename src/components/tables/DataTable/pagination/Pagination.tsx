@@ -2,20 +2,21 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import React from "react";
-import cx from "classnames";
+import * as React from 'react';
+import { classNames as cx } from '../../../../util/componentUtil.ts';
 
-import { Icon } from "../../../graphics/Icon/Icon.tsx";
-import { Input } from "../../../forms/controls/Input/Input.tsx";
+import { Icon } from '../../../graphics/Icon/Icon.tsx';
+import { Input } from '../../../forms/controls/Input/Input.tsx';
+import { Button } from '../../../actions/Button/Button.tsx';
 
 import {
   type PageSizeOption,
   PaginationSizeSelector,
-} from "./PaginationSizeSelector.tsx";
-import { useTable } from "../DataTableContext.tsx";
+} from './PaginationSizeSelector.tsx';
+import { useTable } from '../DataTableContext.tsx';
 
-import "./Pagination.scss";
-import { Button } from "../../../actions/Button/Button.tsx";
+import './Pagination.scss';
+
 
 type PaginationProps = {
   pageSizeOptions?: Array<PageSizeOption>;

@@ -2,7 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import React, { useState, useMemo, useCallback } from 'react';
+import * as React from 'react';
 
 import { delay } from '../util/async_util.ts';
 import { sortDateTime } from '../util/sorting_util.ts';
@@ -13,6 +13,7 @@ import { Panel } from '../../containers/Panel/Panel.tsx';
 import { Banner } from '../../containers/Banner/Banner.tsx';
 import type { DataTableAsyncProps } from './table/DataTable.tsx';
 import * as DataTableStream from './DataTableStream.tsx';
+
 
 export default {
   component: DataTableStream.DataTableStream,
@@ -45,13 +46,13 @@ type UserPageState = {
 type dataTeableLazyTemplateProps = DataTableStream.TableProviderStreamProps<User> &
 { delay: number, items: Array<User>, endOfStream: boolean, dataTableProps: DataTableAsyncProps<User> };
 const DataTableStreamTemplate = ({dataTableProps, ...props} : dataTeableLazyTemplateProps) => {
-  const columns = useMemo(() => props.columns, [props.columns]);
-  const items = useMemo(() => props.items, [props.items]);
+  const columns = React.useMemo(() => props.columns, [props.columns]);
+  const items = React.useMemo(() => props.items, [props.items]);
   const delayQuery = props.delay ?? null;
 
-  const [itemsProcessed, setItemsProcessed] = useState<Array<User>>([]);
+  const [itemsProcessed, setItemsProcessed] = React.useState<Array<User>>([]);
 
-  const query: DataTableStream.DataTableQuery<User, UserPageState | null> = useCallback(
+  const query: DataTableStream.DataTableQuery<User, UserPageState | null> = React.useCallback(
     async ({ previousItem, previousPageState, limit, orderings, globalFilter }) => {
       if (delayQuery === Number.POSITIVE_INFINITY) return new Promise(() => {}); // Infinite delay
       if (delayQuery === -1) throw new Error('Failed'); // Simulate failure

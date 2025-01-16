@@ -16,7 +16,7 @@ import './DataTableEager.scss';
 
 export * from './DataTableContext.tsx';
 export { Pagination };
-export { DataTablePlaceholderEmpty, DataTablePlaceholderError } from './table/DataTablePlaceholder';
+export { DataTablePlaceholderEmpty, DataTablePlaceholderError } from './table/DataTablePlaceholder.tsx';
 
 
 interface ReactTableOptions<D extends object> extends ReactTable.TableOptions<D> {
