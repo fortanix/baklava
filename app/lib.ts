@@ -38,7 +38,7 @@ export { Radio } from '../src/components/forms/controls/Radio/Radio.tsx';
 export { SegmentedControl } from '../src/components/forms/controls/SegmentedControl/SegmentedControl.tsx';
 export { Select } from '../src/components/forms/controls/Select/Select.tsx';
 export { Switch } from '../src/components/forms/controls/Switch/Switch.tsx';
-export { Textarea } from '../src/components/forms/controls/Textarea/Textarea.tsx';
+export { TextArea } from '../src/components/forms/controls/TextArea/TextArea.tsx';
 export { TimePicker } from '../src/components/forms/controls/TimePicker/TimePicker.tsx';
 
 // Forms > Fields
@@ -48,6 +48,7 @@ export { InputField } from '../src/components/forms/fields/InputField/InputField
 export { InputFieldWithTags } from '../src/components/forms/fields/InputFieldWithTags/InputFieldWithTags.tsx';
 export { RadioField } from '../src/components/forms/fields/RadioField/RadioField.tsx';
 export { RadioGroup } from '../src/components/forms/fields/RadioGroup/RadioGroup.tsx';
+export { TextAreaField } from '../src/components/forms/fields/TextAreaField/TextAreaField.tsx';
 
 // Graphics
 export { Icon } from '../src/components/graphics/Icon/Icon.tsx';

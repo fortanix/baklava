@@ -5,34 +5,34 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-textarea {
+  .bk-text-area {
     @include bk.component-base(bk-textarea);
+    
+    @include bk.focus-hidden;
 
-    --bk-textarea-border-color: #{bk.$theme-text-area-border-default};
+    --bk-text-area-border-color: #{bk.$theme-text-area-border-default};
 
-    border: 1px solid var(--bk-textarea-border-color);
+    border: 1px solid var(--bk-text-area-border-color);
     border-radius: bk.$radius-1;
     color: bk.$theme-text-area-text-default;
     padding: bk.$spacing-3;
 
     &:focus, &.pseudo-focused {
-      outline: none !important;
-      
       color: bk.$theme-text-area-text-focused;
-      --bk-textarea-border-color: #{bk.$theme-text-area-border-focused};
+      --bk-text-area-border-color: #{bk.$theme-text-area-border-focused};
     }
 
     &:disabled {
       color: bk.$theme-text-area-text-disabled;
-      --bk-textarea-border-color: #{bk.$theme-text-area-border-disabled};
+      --bk-text-area-border-color: #{bk.$theme-text-area-border-disabled};
     }
   }
 
-  .bk-textarea--invalid {
-    --bk-textarea-border-color: #{bk.$theme-text-area-border-error};
+  .bk-text-area--invalid {
+    --bk-text-area-border-color: #{bk.$theme-text-area-border-error};
   }
 
-  .bk-textarea--automatic-resize {
+  .bk-text-area--automatic-resize {
     field-sizing: content;
   }
 }

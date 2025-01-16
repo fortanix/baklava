@@ -4,12 +4,12 @@
 
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 
-import cl from './Textarea.module.scss';
+import cl from './TextArea.module.scss';
 
 
-export { cl as TextareaClassNames };
+export { cl as TextAreaClassNames };
 
-export type TextareaProps = Omit<ComponentProps<'textarea'>, 'type'> & {
+export type TextAreaProps = Omit<ComponentProps<'textarea'>, 'type'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
@@ -20,26 +20,27 @@ export type TextareaProps = Omit<ComponentProps<'textarea'>, 'type'> & {
    */
   automaticResize?: undefined | boolean,
 
+  /** Whether the component should be styled as invalid, i.e. having invalid content or failed validation. */
   invalid?: undefined | boolean,
 };
 
 /**
- * Textarea control.
+ * TextArea control.
  */
-export const Textarea = ({
+export const TextArea = ({
   unstyled = false,
   automaticResize = false,
   invalid = false,
   ...propsRest
-}: TextareaProps) => {
+}: TextAreaProps) => {
   return (
     <textarea
       {...propsRest}
       className={cx({
         bk: true,
-        [cl['bk-textarea']]: !unstyled,
-        [cl['bk-textarea--automatic-resize']]: automaticResize,
-        [cl['bk-textarea--invalid']]: invalid,
+        [cl['bk-text-area']]: !unstyled,
+        [cl['bk-text-area--automatic-resize']]: automaticResize,
+        [cl['bk-text-area--invalid']]: invalid,
       }, propsRest.className)}
     />
   );

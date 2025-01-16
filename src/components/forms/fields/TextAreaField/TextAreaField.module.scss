@@ -5,28 +5,28 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-textarea-field {
-    @include bk.component-base(bk-textarea-field);
+  .bk-text-area-field {
+    @include bk.component-base(bk-text-area-field);
 
     display: flex;
     flex-direction: column;
     gap: bk.rem-from-px(4);
 
-    .bk-textarea-field__label {
+    .bk-text-area-field__label {
       @include bk.font(bk.$font-family-body, bk.$font-weight-semibold);
       cursor: default;
     }
 
-    .bk-textarea-field__label__optional {
+    .bk-text-area-field__label__optional {
       @include bk.font(bk.$font-family-body, bk.$font-weight-regular, bk.$font-size-xs);
       margin-left: bk.rem-from-px(4);
     }
 
-    .bk-textarea-field__control {
+    .bk-text-area-field__control {
       --empty: ; // Prevent empty class from being removed
     }
 
-    .bk-textarea-field__hint {
+    .bk-text-area-field__hint {
       @include bk.font(bk.$font-family-body, bk.$font-weight-regular, bk.$font-size-xs);
     }
   }

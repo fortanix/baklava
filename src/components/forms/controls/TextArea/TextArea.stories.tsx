@@ -6,15 +6,15 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { Textarea } from './Textarea.tsx';
+import { TextArea } from './TextArea.tsx';
 
-import cl from './Textarea.module.scss';
+import cl from './TextArea.module.scss';
 
-type TextareaArgs = React.ComponentProps<typeof Textarea>;
-type Story = StoryObj<TextareaArgs>;
+type TextAreaArgs = React.ComponentProps<typeof TextArea>;
+type Story = StoryObj<TextAreaArgs>;
 
 export default {
-  component: Textarea,
+  component: TextArea,
   parameters: {
     layout: 'centered',
   },
@@ -27,8 +27,16 @@ export default {
   decorators: [
     Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
   ],
-  render: (args) => <Textarea {...args}/>,
-} satisfies Meta<TextareaArgs>;
+  render: (args) => <TextArea {...args}/>,
+} satisfies Meta<TextAreaArgs>;
+
+const longText = `A really
+long
+text
+that
+spans
+several
+lines`;
 
 export const Standard: Story = {
 };
@@ -53,13 +61,7 @@ export const Invalid: Story = {
 
 export const ScrollBar: Story = {
   args: {
-    defaultValue: `A really
-long
-text
-that
-spans
-several
-lines`,
+    defaultValue: longText,
   },
 };
 
