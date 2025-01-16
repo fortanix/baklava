@@ -17,27 +17,27 @@ export { cl as DialogOverlayClassNames };
 type PopoverProviderPropsDialog = PopoverProviderProps<HTMLDialogElement>;
 
 export type DialogOverlayProps = Omit<React.ComponentProps<typeof Dialog>, 'children'> & {
-  /** Content of the popover. If a function, will be passed a dialog controller. */
+  /** Content of the overlay. If a function, will be passed a dialog controller. */
   children?: React.ReactNode | PopoverProviderPropsDialog['popover'],
   
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
-  /** Whether the popover should be active by default. Default: false. */
+  /** Whether the overlay should be active by default. Default: false. */
   activeDefault?: undefined | boolean,
   
-  /** How to display the popover in the viewport. Default: 'center'. */
-  display?: undefined | 'center' | 'full-screen' | 'slide-over',
+  /** How to display the overlay in the viewport. Default: 'slide-over'. */
+  display?: undefined | 'slide-over',
   
-  /** If `display` is `slide-over`, from which side the popover should originate. */
+  /** If `display` is `slide-over`, from which side the overlay should originate. */
   slideOverPosition?: undefined | 'left' | 'right',
   
-  /** The size of the popover. Note: does not apply to full screen popovers. */
+  /** The size of the overlay. */
   size?: undefined | 'small' | 'medium' | 'large',
   
   /**
-   * A popover trigger to render. Will be passed an `activate` callback to open the popover. Optional, if not specified
-   * you can manually trigger the popover through `popoverRef` instead.
+   * A overlay trigger to render. Will be passed an `activate` callback to open the overlay. Optional, if not specified
+   * you can manually trigger the overlay through `popoverRef` instead.
    */
   trigger?: undefined | PopoverProviderPropsDialog['children'],
   
@@ -86,8 +86,6 @@ export const DialogOverlay = Object.assign(
             className={cx(
               'bk',
               { [cl['bk-dialog-overlay']]: !unstyled },
-              { [cl['bk-dialog-overlay--center']]: display === 'center' },
-              { [cl['bk-dialog-overlay--full-screen']]: display === 'full-screen' },
               { [cl['bk-dialog-overlay--slide-over']]: display === 'slide-over' },
               { [cl['bk-dialog-overlay--slide-over--left']]: slideOverPosition === 'left' },
               { [cl['bk-dialog-overlay--slide-over--right']]: slideOverPosition === 'right' },
