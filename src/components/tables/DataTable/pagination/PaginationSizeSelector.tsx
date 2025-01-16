@@ -2,7 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import type React from 'react';
+import { classNames as cx } from '../../../../util/componentUtil.ts';
 
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
@@ -10,15 +10,15 @@ import { DropdownMenuProvider } from '../../../overlays/DropdownMenu/DropdownMen
 
 import { useTable } from '../DataTableContext.tsx';
 
-import './PaginationSizeSelector.scss';
+import cl from './PaginationSizeSelector.module.scss';
 
 
 export type PageSizeOption = number;
 export const defaultPageSizeOptions: Array<PageSizeOption> = [10, 25, 50, 100];
 
 type PaginationSizeSelectorProps = {
-  pageSizeOptions?: Array<PageSizeOption> | undefined,
-  pageSizeLabel?: string | undefined,
+  pageSizeOptions?: undefined | Array<PageSizeOption>,
+  pageSizeLabel?: undefined | string,
 };
 export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
   const { pageSizeOptions = defaultPageSizeOptions, pageSizeLabel = 'Rows per page' } = props;
@@ -26,11 +26,11 @@ export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
   const { table } = useTable();
   
   return (
-    <div className="bk-page-size-selector">
+    <div className={cx(cl['bk-page-size-selector'])}>
       {pageSizeLabel}:
       
       <DropdownMenuProvider
-        className="page-size-selector__dropdown"
+        className={cx(cl['page-size-selector__dropdown'])}
         items={pageSizeOptions.map((pageSize) => (
           <DropdownMenuProvider.Action
             key={pageSize.toString()}
@@ -47,10 +47,10 @@ export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
           <Button
             variant="tertiary"
             {...props()}
-            className="page-size-selector__button"
+            className={cx(cl['page-size-selector__button'])}
           >
             {table.state.pageSize}
-            <Icon icon="caret-down" className="icon-caret"/>
+            <Icon icon="caret-down"/>
           </Button>
         )}
       </DropdownMenuProvider>
