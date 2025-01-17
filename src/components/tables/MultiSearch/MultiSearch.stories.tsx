@@ -12,7 +12,7 @@ import * as MultiSearch from './MultiSearch.tsx';
 
 export default {
   component: MultiSearch, 
-  tags: ['autodocs'],
+  tags: [], //['autodocs'],
   parameters: {
     layout: 'centered',
   },

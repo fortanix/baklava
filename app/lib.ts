@@ -74,6 +74,15 @@ export { Tooltip } from '../src/components/overlays/Tooltip/Tooltip.tsx';
 export { TooltipProvider } from '../src/components/overlays/Tooltip/TooltipProvider.tsx';
 export { notify } from '../src/components/overlays/Toast/Toast.tsx';
 
+// Tables
+export { useCustomFilters } from '../src/components/tables/DataTable/plugins/useCustomFilters.tsx';
+export { useRowSelectColumn } from '../src/components/tables/DataTable/plugins/useRowSelectColumn.tsx';
+export * as DataTableContext from '../src/components/tables/DataTable/DataTableContext.tsx';
+export * as DataTablePlaceholder from '../src/components/tables/DataTable/table/DataTablePlaceholder.tsx';
+export * as DataTableEager from '../src/components/tables/DataTable/DataTableEager.tsx';
+export * as DataTableLazy from '../src/components/tables/DataTable/DataTableLazy.tsx';
+export * as DataTableStream from '../src/components/tables/DataTable/DataTableStream.tsx';
+
 /**
  * Layouts
  */
