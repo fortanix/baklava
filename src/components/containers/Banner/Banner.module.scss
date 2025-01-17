@@ -11,12 +11,12 @@
     --bk-banner-color-foreground: #{bk.$theme-banner-informational-border-default};
     --bk-banner-color-background: #{bk.$theme-banner-informational-background-default};
     --bk-banner-border-radius: #{bk.$radius-2};
-    --bk-banner-indent: #{bk.$spacing-9};
+    --bk-banner-indent: calc(#{bk.$spacing-3} + 1.2rem + #{bk.$spacing-2}); // Spacing + icon width + spacing
     
     overflow: hidden; // Banners shouldn't scroll (max height on a banner doesn't really make sense)
     
-    padding-block: bk.$spacing-2;
-    padding-inline: calc(bk.$spacing-4 - bk.$radius-2);
+    padding-block: calc(bk.$spacing-2 * 1.25);
+    padding-inline: bk.$spacing-3;
     padding-inline-start: var(--bk-banner-indent); // Indent all of the content (e.g. for when the message wraps)
     
     border: bk.$size-1 var(--bk-banner-color-foreground) solid;
@@ -76,7 +76,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: bk.$spacing-3 calc(bk.$spacing-7 / 2);
+        gap: bk.$spacing-3 calc(bk.$spacing-6 / 2);
         
         > button {
           // Keep each item to a max of 1lh, so that in the case of all items being on one line, all the items
@@ -87,7 +87,11 @@
         .bk-banner__action {
           flex: none;
           
-          color: bk.$theme-banner-text-link;
+          color: bk.$theme-banner-text-link-default;
+          
+          &:hover {
+            color: bk.$theme-banner-text-link-hover;
+          }
           
           &.bk-banner__action--button { font-weight: bk.$font-weight-semibold; }
           &.bk-banner__action--icon { --keep: ; }
@@ -95,7 +99,7 @@
         
         .bk-banner__action-close {
           flex: none;
-          margin-inline-start: calc(bk.$spacing-7 / 2); // Total gap should be `bk.$spacing-7`
+          margin-inline-start: calc(bk.$spacing-6 / 2); // Total gap should be `bk.$spacing-6`
           
           display: flex;
           color: bk.$theme-banner-icon-default;
