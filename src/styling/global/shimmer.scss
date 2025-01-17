@@ -2,17 +2,17 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@mixin shimmer($baseColor, $highlightColor, $shimmerSize: 20rem) {
-  background-color: $baseColor;
-
+@mixin shimmer($base-color, $highlight-color) {
+  background-color: $base-color;
+  
   background-image: linear-gradient(
     90deg,
-    $baseColor 0%,
-    $highlightColor 30%,
-    $baseColor 60%
+    $base-color 0%,
+    $highlight-color 30%,
+    $base-color 60%
   );
   background-size: 200% 100%;
-
+  
   @keyframes shimmer {
     from {
       background-position: 200% 0;
@@ -21,7 +21,7 @@
       background-position: -200% 0;
     }
   }
-
+  
   animation: shimmer 3s ease-in-out;
   animation-iteration-count: infinite;
 }

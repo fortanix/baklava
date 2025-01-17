@@ -28,7 +28,8 @@
           padding-left: bk.$spacing-2;
           &::after {
             content: ' ';
-            @include bk.shimmer($baseColor: bk.$theme-rule-default, $highlightColor: bk.$theme-table-text-body-default);
+            $shimmer-highlight-color: light-dark(#CBCEDB, #767699); // FIXME: design token
+            @include bk.shimmer($base-color: bk.$theme-rule-default, $highlight-color: $shimmer-highlight-color);
             height: bk.$spacing-2;
             border-radius: bk.$border-radius-xl;
             display: block;
