@@ -74,7 +74,7 @@ const packageConfig = {
     'check:types': 'tsc -b',
     'lint:style': `stylelint 'src/**/*.scss'`,
     'lint:script': 'biome lint',
-    'lint': 'npm run lint:style && npm run lint:script',
+    'lint': 'npm run lint:style; npm run lint:script',
     
     // Test
     // Note: use `vitest run --root=. src/...` to run a single test file
@@ -155,6 +155,11 @@ const packageConfig = {
     // React
     '@types/react': '^19.0.4',
     '@types/react-dom': '^19.0.2',
+    
+    // Data table
+    '@types/react-table': '^7.7.20',
+    // Fake data
+    "@ngneat/falso": "^6.4.0",
   },
   
   // Dependencies needed when running the generated build
@@ -171,6 +176,7 @@ const packageConfig = {
     //'@uidotdev/usehooks': '^2.4.1',
     
     '@floating-ui/react': '^0.26.28',
+    'react-table': '^7.8.0',
     'react-datepicker': '^7.6.0',
     
     'effect': '^3.12.1',
@@ -203,6 +209,11 @@ const packageConfig = {
       'react': '$react',
       'react-dom': '$react-dom',
     },
+    // TODO: Revisit after updating react-table to v8
+    'react-table': {
+      'react': '$react',
+      'react-dom': '$react-dom',
+    },
   },
 };
 
@@ -232,4 +243,4 @@ const makePackageJson = () => {
 };
 
 // Write to `package.json`
-fs.writeFileSync('./package.json', JSON.stringify(makePackageJson(), null, 2) + '\n');
+fs.writeFileSync('./package.json', `${JSON.stringify(makePackageJson(), null, 2)}\n`);

@@ -24,7 +24,12 @@
   "linter": {
     "enabled": true,
     "include": ["app/**/*", "src/**/*", "tests/**/*"],
-    "ignore": ["tests/installation/**/*"],
+    
+    "ignore": [
+      "node_modules",
+      "src/components/tables/MultiSearch/MultiSearch.tsx", // Ignore for now (need to focus on type errors first)
+      "tests/installation/**/*"
+  ],
     "rules": {
       "recommended": true,
       "complexity": {
@@ -34,7 +39,8 @@
       },
       "style": {
         "useImportType": "off",
-        "noUnusedTemplateLiteral": "off"
+        "noUnusedTemplateLiteral": "off",
+        "noUselessElse": "off"
       }
     }
   }

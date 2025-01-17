@@ -27,15 +27,13 @@ export const Input = ({ unstyled = false, type = 'text', ...propsRest }: InputPr
   }
   
   return (
-    <div>
-      <input
-        {...propsRest}
-        type={type}
-        className={cx({
-          bk: true,
-          [cl['bk-input']]: !unstyled,
-        }, propsRest.className)}
-      />
-    </div>
+    <input
+      {...propsRest}
+      type={type}
+      className={cx({
+        bk: true,
+        [cl['bk-input']]: !unstyled,
+      }, propsRest.className)}
+    />
   );
 };

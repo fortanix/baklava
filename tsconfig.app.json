@@ -23,8 +23,9 @@
     },
     
     // Type checking
+    //"typeRoots": [],
+    //"types": [], // https://stackoverflow.com/questions/59322550, https://stackoverflow.com/questions/55550096
     "lib": ["ES2023", "DOM", "DOM.Iterable"], // Library declaration files to include (globally)
-    "types": [], // https://stackoverflow.com/questions/59322550/disable-types-node-in-tsconfig
     "skipLibCheck": true, // Do not type check declaration files (for performance)
     "noErrorTruncation": true,
     

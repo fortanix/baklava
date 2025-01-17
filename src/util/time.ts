@@ -2,7 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-export type TimeoutHandle = ReturnType<typeof window.setTimeout>;
+export type TimeoutHandle = number;//ReturnType<typeof window.setTimeout>; // FIXME: TS is using Node types
 
 export const delay = (timeMs: number) => {
   return new Promise(resolve => setTimeout(resolve, timeMs));

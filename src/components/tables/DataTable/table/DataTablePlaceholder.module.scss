@@ -1,0 +1,46 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-table-placeholder {
+    &:not(.bk-table-placeholder--skeleton) {
+      padding: bk.$spacing-14 bk.$spacing-2;
+    }
+    
+    &.bk-table-placeholder--skeleton {
+      align-items: stretch;
+      justify-content: space-around;
+      gap: 1rem;
+      margin: calc(-1 * bk.$spacing-5) calc(-1 * bk.$spacing-2);
+      
+      > .skeleton-row {
+        border-bottom: 1px solid bk.$theme-rule-default;
+        margin: bk.$spacing-1 0;
+        height: bk.$spacing-10;
+        display: flex;
+        align-items: center;
+        
+        .skeleton-cell {
+          flex: 1;
+          padding-left: bk.$spacing-2;
+          &::after {
+            content: ' ';
+            $shimmer-base-color: light-dark(#F8F8F8, #2D2D50); // FIXME: design token
+            $shimmer-highlight-color: light-dark(#CBCEDB, #767699); // FIXME: design token
+            @include bk.shimmer($base-color: $shimmer-base-color, $highlight-color: $shimmer-highlight-color);
+            height: bk.$spacing-2;
+            border-radius: bk.$border-radius-xl;
+            display: block;
+            width: 60%;
+          }
+        }
+      }
+    }
+    
+    &.bk-table-placeholder--empty { --keep: ; }
+    &.bk-table-placeholder--error { --keep: ; }
+  }
+}

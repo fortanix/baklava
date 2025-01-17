@@ -58,3 +58,18 @@ export const useEffectOnce = (fn: () => void) => {
     }
   }, []);
 };
+
+export const usePrevious = <T>(value: T) => {
+  const ref: React.RefObject<null | T> = React.useRef(null);
+  React.useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+};
+
+export const useEffectAsync = (effect: () => Promise<unknown>, inputs?: undefined | React.DependencyList): void => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We rely on user deps; adding effect triggers unwanted re-runs
+  React.useEffect(() => {
+    effect();
+  }, inputs);
+};

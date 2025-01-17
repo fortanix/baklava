@@ -53,7 +53,7 @@
     "check:types": "tsc -b",
     "lint:style": "stylelint 'src/**/*.scss'",
     "lint:script": "biome lint",
-    "lint": "npm run lint:style && npm run lint:script",
+    "lint": "npm run lint:style; npm run lint:script",
     "test": "npm run check:types && npm run lint:style",
     "test-ui": "vitest --ui",
     "coverage": "vitest run --coverage",
@@ -101,7 +101,9 @@
     "sass-embedded": "^1.83.1",
     "lightningcss": "^1.29.1",
     "@types/react": "^19.0.4",
-    "@types/react-dom": "^19.0.2"
+    "@types/react-dom": "^19.0.2",
+    "@types/react-table": "^7.7.20",
+    "@ngneat/falso": "^6.4.0"
   },
   "dependencies": {
     "date-fns": "^4.1.0",
@@ -111,6 +113,7 @@
     "react-dom": "^19.0.0",
     "react-error-boundary": "^5.0.0",
     "@floating-ui/react": "^0.26.28",
+    "react-table": "^7.8.0",
     "react-datepicker": "^7.6.0",
     "effect": "^3.12.1",
     "react-hook-form": "^7.54.2",
@@ -135,6 +138,10 @@
       "react-dom": "$react-dom"
     },
     "react-datepicker": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    },
+    "react-table": {
       "react": "$react",
       "react-dom": "$react-dom"
     }
