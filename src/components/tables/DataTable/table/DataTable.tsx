@@ -16,7 +16,7 @@ import {
 } from './DataTablePlaceholder.tsx';
 import type { DataTableStatus } from '../DataTableContext.tsx';
 
-import './DataTable.scss';
+import cl from './DataTable.module.scss';
 
 
 // Note: `placeholder` is included in `table` props as part of "Standard HTML Attributes", but it's not actually a
@@ -39,7 +39,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
     children,
     ...propsRest
   } = props;
-  
+
   // Currently we only support one header group
   const headerGroup: undefined | ReactTable.HeaderGroup<D> = table.headerGroups[0];
   if (!headerGroup) { return null; }
@@ -47,7 +47,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
   return (
     <table
       {...table.getTableProps()}
-      className={cx('bk-data-table__table', props.className)}
+      className={cx(cl['bk-data-table__table'], props.className)}
     >
       {columnGroups}
       
@@ -71,16 +71,17 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                 key={headerKey}
                 title={undefined} // Unset the default `title` from `getHeaderProps()`
               >
-                <div className="column-header"> {/* Wrapper element needed to serve as flex container */}
-                  <span className="column-name">
+                <div className={cx(cl['column-header'])}> {/* Wrapper element needed to serve as flex container */}
+                  <span className={cx(cl['column-name'])}>
                     {column.render('Header')}
                   </span>
                   {column.canSort &&
                     <Icon icon="caret-down"
-                      className={cx('sort-indicator',
-                        { 'sort-indicator--inactive': !column.isSorted },
-                        { 'asc': !column.isSorted || (column.isSorted && !column.isSortedDesc) },
-                        { 'desc': column.isSortedDesc },
+                      className={cx(
+                        cl['sort-indicator'],
+                        { [cl['sort-indicator--inactive']]: !column.isSorted },
+                        { [cl['asc']]: !column.isSorted || (column.isSorted && !column.isSortedDesc) },
+                        { [cl['desc']]: column.isSortedDesc },
                       )}
                     />
                   }
@@ -92,7 +93,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
       </thead>
       <tbody {...table.getTableBodyProps()}>
         {typeof placeholder !== 'undefined' &&
-          <tr className="bk-data-table__placeholder">
+          <tr className={cx(cl['bk-data-table__placeholder'])}>
             <td colSpan={table.visibleColumns.length}>
               {placeholder}
             </td>
@@ -102,7 +103,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
           table.prepareRow(row);
           const { key: rowKey, ...rowProps } = row.getRowProps();
           return (
-            <tr {...rowProps} key={rowKey} className={cx(rowProps.className, {'selected' : row.isSelected})}>
+            <tr {...rowProps} key={rowKey} className={cx(rowProps.className, { [cl['selected']]: row.isSelected })}>
               {/*<td className="bk-table__row__select">
                 <input type="checkbox"
                   checked={row.isSelected}
@@ -121,7 +122,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
           );
         })}
         {typeof endOfTablePlaceholder !== 'undefined' &&
-          <tr className="bk-data-table__placeholder bk-data-table__placeholder--row">
+          <tr className={cx(cl['bk-data-table__placeholder'], cl['bk-data-table__placeholder--row'])}>
             <td colSpan={table.visibleColumns.length}>
               {endOfTablePlaceholder}
             </td>
@@ -153,8 +154,8 @@ export const DataTableSync = <D extends object>(props: DataTableSyncProps<D>) =>
   const {
     className,
     classNameTable,
-    placeholderEmpty = <DataTablePlaceholderEmpty/>,
-    placeholderSkeleton = <DataTablePlaceholderSkeleton/>,
+    placeholderEmpty = <DataTablePlaceholderEmpty />,
+    placeholderSkeleton = <DataTablePlaceholderSkeleton />,
     status,
     ...propsRest
   } = props;
@@ -175,7 +176,7 @@ export const DataTableSync = <D extends object>(props: DataTableSyncProps<D>) =>
   return (
     <div
       {...scrollProps}
-      className={cx('bk-data-table bk-data-table--sync', className, scrollProps.className)}
+      className={cx(cl['bk-data-table'], cl['bk-data-table--sync'], className, scrollProps.className)}
     >
       <DataTable
         {...propsRest}
@@ -202,9 +203,9 @@ export const DataTableAsync = <D extends object>(props: DataTableAsyncProps<D>) 
     className,
     classNameTable,
     status,
-    placeholderSkeleton = <DataTablePlaceholderSkeleton/>,
-    placeholderEmpty = <DataTablePlaceholderEmpty/>,
-    placeholderError = <DataTablePlaceholderError/>,
+    placeholderSkeleton = <DataTablePlaceholderSkeleton />,
+    placeholderEmpty = <DataTablePlaceholderEmpty />,
+    placeholderError = <DataTablePlaceholderError />,
     placeholderEndOfTable,
     children,
     ...propsRest
@@ -233,7 +234,7 @@ export const DataTableAsync = <D extends object>(props: DataTableAsyncProps<D>) 
   return (
     <div
       {...scrollProps}
-      className={cx('bk-data-table bk-data-table--async', props.className, scrollProps.className)}
+      className={cx(cl['bk-data-table'], cl['bk-data-table--async'], props.className, scrollProps.className)}
     >
       {children}
       

@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { classNames as cx } from '../../../util/componentUtil.ts';
-import { useEffectAsync } from '../util/hooks.ts';
+import { useEffectAsync } from '../../../util/reactUtil.ts';
 
 import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
 import { PlaceholderEmptyAction } from '../../graphics/PlaceholderEmpty/PlaceholderEmpty.tsx';

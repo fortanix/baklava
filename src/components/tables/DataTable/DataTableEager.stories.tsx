@@ -5,9 +5,9 @@
 import { differenceInDays } from 'date-fns';
 import * as React from 'react';
 
+import { useEffectAsync } from '../../../util/reactUtil.ts';
 import { delay } from '../util/async_util.ts';
 import { type User, generateData } from '../util/generateData.ts';
-import { useEffectAsync } from '../util/hooks.ts';
 import { sortDateTime } from '../util/sorting_util.ts';
 import * as Filtering from './filtering/Filtering.ts';
 import type { Fields, FilterQuery } from '../MultiSearch/filterQuery.ts';
@@ -192,6 +192,16 @@ export const MultiplePagesLarge = {
   args: {
     columns,
     items: generateData({ numItems: 1000 }),
+  },
+  render: (args: dataTeableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
+};
+
+export const AsyncInitialization = {
+  args: {
+    columns,
+    items: generateData({ numItems: 1000 }),
+    delay: 1500,
+    isReady: false,
   },
   render: (args: dataTeableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
 };
