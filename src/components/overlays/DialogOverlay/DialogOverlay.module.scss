@@ -109,10 +109,6 @@
   }
 }
 
-
-
-
-
 @layer baklava.components {
   .bk-dialog-overlay {
     @include bk.component-base(bk-dialog-overlay);
@@ -132,33 +128,7 @@
       max-width: 100vi;
       max-height: 100vb;
       
-      &.bk-dialog-overlay--center {
-        margin: auto;
-        width: fit-content;
-        height: fit-content;
-        
-        @include dialog-fade-in(
-          $entry-dur: var(--bk-dialog-overlay-entry-dur),
-          $exit-dur: var(--bk-dialog-overlay-exit-dur),
-          $scale: var(--bk-dialog-overlay-fade-scale),
-        );
-        
-        // The larger the viewport width, the more breathing room in height
-        max-height: calc(100vb - min(5vi, 3lh));
-        
-        &.bk-dialog-overlay--small {
-          --bk-dialog-overlay-fade-scale: 1.05;
-          max-width: 60ch;
-        }
-        &.bk-dialog-overlay--medium {
-          --bk-dialog-overlay-fade-scale: 1.04;
-          max-width: 100ch;
-        }
-        &.bk-dialog-overlay--large {
-          --bk-dialog-overlay-fade-scale: 1.03;
-          max-width: 140ch;
-        }
-      }
+      box-shadow: rgba(0 0 0 / 35%) 0 bk.rem-from-px(5) bk.rem-from-px(15) !important;
       
       &.bk-dialog-overlay--slide-over {
         @include dialog-slide-over;

@@ -21,10 +21,7 @@ export default {
   parameters: {
     layout: 'padded',
   },
-  render: (args) => {
-    console.log('render');
-  return <><LoremIpsum paragraphs={5}/><SpinnerModal {...args}/></>;
-  },
+  render: (args) => <><LoremIpsum paragraphs={5}/><SpinnerModal {...args}/></>,
 } satisfies Meta<SpinnerModalArgs>;
 
 

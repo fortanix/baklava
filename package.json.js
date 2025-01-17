@@ -191,9 +191,8 @@ const packageConfig = {
   peerDependenciesMeta: {},
   optionalDependencies: {
     // Note: if you're hitting issues in GitHub CI where platform-specific dependencies are not found, try removing
-    // node_modules and regenerating the package-lock (see: https://github.com/npm/cli/issues/4828).
-    //'@rollup/rollup-linux-x64-gnu': '^4.30.1', // https://github.com/vitejs/vite/discussions/15532#discussioncomment-8527272
-    //'sass-embedded-linux-x64': '^1.83.4',
+    // `node_modules` and regenerating `package-lock.json` (see: https://github.com/npm/cli/issues/4828).
+    //'@rollup/rollup-linux-x64-gnu': '...', // Adding the optionalDependency works, but you'll just get other errors
   },
   overrides: {
     // Issue: https://github.com/storybookjs/addon-designs/issues/246
