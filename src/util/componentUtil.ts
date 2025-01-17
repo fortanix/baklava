@@ -5,7 +5,7 @@
 // Note: use the `dedupe` variant so that the consumer of a component can overwrite classes from the component using
 // `<MyComponent className={{ foo: false }}/>`
 import classNames from 'classnames/dedupe';
-import { type Argument as ClassNameArgument } from 'classnames';
+import type { Argument as ClassNameArgument } from 'classnames';
 
 
 export { classNames, type ClassNameArgument };

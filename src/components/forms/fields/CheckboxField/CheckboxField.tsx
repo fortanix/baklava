@@ -42,7 +42,7 @@ export const CheckboxFieldTitle = ({ className, children, titleOptional, titleTo
   </h1>
 );
 
-export type CheckboxFieldProps = ComponentProps<'div'> & {
+export type CheckboxFieldProps = ComponentProps<typeof Checkbox> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -71,7 +71,7 @@ export type CheckboxFieldProps = ComponentProps<'div'> & {
   disabled?: undefined | boolean,
   
   /** The onChange event for the checkbox. Passed down to Checkbox component. */
-  onChange?: (e: React.FormEvent) => void,
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void,
 };
 
 /**
@@ -86,6 +86,7 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
     titleOptional,
     titleTooltip,
     className,
+    ...propsRest
   } = props;
   
   return (
@@ -109,6 +110,7 @@ export const CheckboxField = (props: CheckboxFieldProps) => {
           defaultChecked={props.defaultChecked}
           disabled={props.disabled}
           onChange={props.onChange}
+          {...propsRest}
         />
         <span className={cl['bk-checkbox-field__label__content']}>
           {label}

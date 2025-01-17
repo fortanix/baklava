@@ -1,0 +1,62 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+
+@layer baklava.components {  
+  .bk-pagination {
+    @include bk.component-base(bk-pagination);
+    
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: bk.$spacing-6;
+    font-weight: bk.$font-weight-regular;
+    font-size: bk.$font-size-s;
+    
+    .pager.pager--indexed {
+      display: flex;
+      align-items: center;
+      gap: bk.$spacing-1;
+      padding-left: bk.$spacing-6;
+      border-left: bk.$size-1 solid bk.$theme-pagination-border-default;
+      
+      .pager__nav {
+        display: flex;
+        
+        &:not(:global(.nonactive)) {
+          cursor: pointer;
+        }
+        &:global(.nonactive) {
+          opacity: 0.34;
+        }
+      }
+    }
+    .pagination__page-input {
+      text-align: center;
+      border: bk.$size-1 solid bk.$theme-pagination-border-default;
+      border-radius: bk.$size-2;
+      appearance: textfield;
+      width: bk.$spacing-8;
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        appearance: none;
+        margin: 0;
+      }
+    }
+    .pagination-main {
+      display: flex;
+      gap: bk.$spacing-1;
+      align-items: center;
+    }
+  }
+  
+  @media only screen and (width <= 1100px) {
+    .bk-pagination {
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+  }
+}
