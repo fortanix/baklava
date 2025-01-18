@@ -5,12 +5,11 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import { mergeRefs } from '../../../util/reactUtil.ts';
-//import { startViewTransition } from '../../../util/reactDomUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
 import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { type BannerVariant, Banner } from '../../containers/Banner/Banner.tsx';
-import { ModalDialogContext, useModalDialogContext, useActiveModalDialog } from '../../util/overlays/modal/ModalDialogProvider.tsx';
+import { TopLayerContext, useActiveModalDialog } from '../../util/overlays/TopLayerManager.tsx';
 
 import { type ToastDescriptor, type ToastOptions, type ToastStorage, ToastStore } from './ToastStore.ts';
 
@@ -111,7 +110,8 @@ export const Toaster = (props: ToasterProps) => {
   
   React.useEffect(() => {
     return toastStore.subscribe(toasts => {
-      // XXX View transitions cause some issues, e.g. click events don't fire while the transition is happening
+      // FIXME: it would be nice to do this in a view transition so that things like toast shifting animates properly.
+      // However view transitions cause some issues, e.g. click events don't fire while the transition is happening.
       //startViewTransition(() => {
         setToasts(toasts);
       //});
@@ -149,7 +149,7 @@ export const Toaster = (props: ToasterProps) => {
     openPopover(container);
   };
   
-  const modalDialogContext = React.use(ModalDialogContext);
+  const modalDialogContext = React.use(TopLayerContext);
   React.useEffect(() => {
     if (modalDialogContext === null) { throw new Error(`Cannot read ModalDialogContext: missing provider.`); }
     return modalDialogContext.modalDialogStack.subscribe(() => { openPopover(containerRef.current); });
@@ -237,7 +237,11 @@ export const ToastProvider = ({ global = false, children }: ToastProviderProps) 
   return (
     <ToastContext value={toastContext}>
       {children}
-      {createPortal(<Toaster/>, activeModalDialog ?? window.document.body)}
+      {/*
+      Render the toasts in the top-most modal `<dialog>`, to work around browser limitations where only the `<dialog>`
+      element and its descendents are interactive (everything else is inert).
+      */}
+      {createPortal(<Toaster/>, activeModalDialog?.dialogRef?.current ?? window.document.body)}
     </ToastContext>
   );
 };

@@ -4,9 +4,9 @@
 
 import * as React from 'react';
 
-import { useDelayedUnmount } from '../../../util/hooks/useDelayedUnmount.ts';
-import { type ModalDialogProps, useModalDialog } from '../../util/overlays/modal/useModalDialog.ts';
-import { useModalDialogContext } from '../../util/overlays/modal/ModalDialogProvider.tsx';
+import { useDelayedUnmount } from '../../../../util/hooks/useDelayedUnmount.ts';
+import { useModalDialogTracker } from '../TopLayerManager.tsx';
+import { type ModalDialogProps, useModalDialog } from './useModalDialog.ts';
 
 import cl from './ModalProvider.module.scss';
 
@@ -80,7 +80,7 @@ export const ModalProvider = Object.assign(
       allowUserClose,
       shouldCloseOnBackdropClick,
     });
-    useModalDialogContext(active, dialogProps.internalDialogRef);
+    useModalDialogTracker(active, dialogProps.internalDialogRef);
     
     return (
       <>

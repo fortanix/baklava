@@ -10,7 +10,7 @@ import { mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx } from '../../../util/componentUtil.ts';
 
 import { Dialog } from '../../containers/Dialog/Dialog.tsx';
-import { ModalProvider, type ModalProviderProps } from '../ModalProvider/ModalProvider.tsx';
+import { ModalProvider, type ModalProviderProps } from '../../util/overlays/modal/ModalProvider.tsx';
 
 import cl from './DialogModal.module.scss';
 

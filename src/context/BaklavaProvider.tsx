@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 
-import { ModalDialogProvider } from '../components/util/overlays/modal/ModalDialogProvider.tsx';
+import { TopLayerManager } from '../components/util/overlays/TopLayerManager.tsx';
 import { ToastProvider, notify } from '../components/overlays/ToastProvider/ToastProvider.tsx';
 
 
@@ -27,10 +27,10 @@ if (!addedTestNotify && import.meta.env.MODE === 'development') {
 
 export const BaklavaProvider = (props: React.PropsWithChildren) => {
   return (
-    <ModalDialogProvider>
+    <TopLayerManager>
       <ToastProvider global>
         {props.children}
       </ToastProvider>
-    </ModalDialogProvider>
+    </TopLayerManager>
   );
 };

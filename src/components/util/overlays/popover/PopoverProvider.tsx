@@ -6,12 +6,8 @@ import * as React from 'react';
 
 import { useDelayedUnmount } from '../../../../util/hooks/useDelayedUnmount.ts';
 import { type PopoverProps, usePopover } from './usePopover.ts';
-import { usePopoverContext } from '../modal/ModalDialogProvider.tsx';
+import { usePopoverTracker } from '../TopLayerManager.tsx';
 
-//import cl from './PopoverProvider.module.scss';
-
-
-//export { cl as PopoverProviderClassNames };
 
 export type PopoverRef = {
   active: boolean,
@@ -69,7 +65,7 @@ export const PopoverProvider = Object.assign(
     React.useImperativeHandle(ref, () => popoverRef, [popoverRef]);
     
     const popoverProps = usePopover<E>(popoverRef);
-    usePopoverContext(active);
+    usePopoverTracker(active);
     
     return (
       <>
