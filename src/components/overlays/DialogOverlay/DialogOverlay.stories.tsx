@@ -24,30 +24,27 @@ export default {
   },
   argTypes: {},
   args: {
+    display: 'slide-over',
     title: 'Title',
     children: 'Content',
   },
   render: (args) => (
     <>
-      <LoremIpsum paragraphs={5}/>
+      <LoremIpsum paragraphs={3}/>
       <DialogOverlay {...args}
-        trigger={({ activate }) => <Button variant="primary" label="Open overlay 1" onPress={activate}/>}
+        trigger={({ activate }) => <Button variant="primary" label="Open overlay" onPress={activate}/>}
       />
-      <br/>
-      <br/>
-      <DialogOverlay {...args}
-        trigger={({ activate }) => <Button variant="primary" label="Open overlay 2" onPress={activate}/>}
-      />
+      <LoremIpsum paragraphs={3}/>
     </>
   ),
 } satisfies Meta<DialogOverlayArgs>;
 
 
-export const DialogOverlayStandard: Story = {
-  args: {
-    display: 'slide-over',
-  },
-};
+export const DialogOverlayStandard: Story = {};
+
+export const DialogOverlaySmall: Story = { args: { size: 'small' } };
+export const DialogOverlayMedium: Story = { args: { size: 'medium' } };
+export const DialogOverlayLarge: Story = { args: { size: 'large' } };
 
 export const DialogOverlayWithNestedModal: Story = {
   args: {

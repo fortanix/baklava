@@ -5,123 +5,133 @@
 @use 'sass:meta';
 
 @mixin styles {
-  @include meta.load-css('../lib/reset.css');
+  @layer base, overrides, popover;
   
-  /* Custom reset overrides */
-  
-  // :focus-visible {
-  //   /* outline: calc(var(--bk-sizing-1) / 2) solid color-contrast(var(--bk-page-color-background) vs white, black); */
-  //   /*
-  //   Note:
-  //     - The following should be overridable by components (e.g. `outline-offset` might not always look good)
-  //     - Focusable elements should never use `outline` for any other purpose than focus outline
-  //     - Use `px` rather than `rem` because these should not scale dynamically
-  //   */
-  //   /* outline: 3px solid var(--bk-focus-outline-color); */
-  //   /* outline-offset: 3px; */
-  //   /* border-radius: 3px; */
-  // }
-  
-  @media (prefers-reduced-motion: no-preference) {
-    :has(:target) {
-      /* Add enough scroll padding so anchors don't get hidden */
-      scroll-padding-top: calc(var(--bk-layout-header-height) + var(--bk-sizing-2));
-    }
+  @layer base {
+    @include meta.load-css('../lib/reset.css');
   }
   
-  
-  
-  
-  /* https://www.youtube.com/watch?v=cCAtD_BAHNw */
-  @media (prefers-reduced-motion: no-preference) {
-    :has(:target) {
-      scroll-behavior: smooth;
-      scroll-padding-top: 1rem;
-    }
-  }
-  
-  button {
-    cursor: pointer;
-  }
-  
-  /*
-  input, select, textarea {
-    -webkit-appearance: revert;
-    appearance: revert;
-  }
-  */
-  
-  
-  // Note: we assume that all styling for dialog (including `:modal` and `:backdrop`) has been hard reset.
-  // `the-new-css-reset` has an exception for `dialog:modal`, but we don't want this exception, so here we unset all.
-  dialog, dialog:modal, dialog::backdrop {
-    all: unset;
-    display: revert;
-    box-sizing: border-box;
-  }
-  
-  // Re-apply a few sensible defaults for dialogs. For reference, see the default user agent styling rules here:
-  // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css
-  dialog {
-    display: block;
-    position: static;
+  @layer overrides {
+    /* Custom reset overrides */
     
-    // Issue: if the parent has `user-select: none` (e.g. button), then the dialog will inherit this by default.
-    // In the future, if `contain: user-select` is implemented, we could use that instead.
-    user-select: text;
+    // :focus-visible {
+    //   /* outline: calc(var(--bk-sizing-1) / 2) solid color-contrast(var(--bk-page-color-background) vs white, black); */
+    //   /*
+    //   Note:
+    //     - The following should be overridable by components (e.g. `outline-offset` might not always look good)
+    //     - Focusable elements should never use `outline` for any other purpose than focus outline
+    //     - Use `px` rather than `rem` because these should not scale dynamically
+    //   */
+    //   /* outline: 3px solid var(--bk-focus-outline-color); */
+    //   /* outline-offset: 3px; */
+    //   /* border-radius: 3px; */
+    // }
     
-    &:not([open]) {
-      display: none;
+    @media (prefers-reduced-motion: no-preference) {
+      :has(:target) {
+        /* Add enough scroll padding so anchors don't get hidden */
+        scroll-padding-top: calc(var(--bk-layout-header-height) + var(--bk-sizing-2));
+      }
     }
     
-    &::backdrop {
-      user-select: none; // Without this, clicking on the backdrop selects the dialog text in Firefox
+    
+    
+    
+    /* https://www.youtube.com/watch?v=cCAtD_BAHNw */
+    @media (prefers-reduced-motion: no-preference) {
+      :has(:target) {
+        scroll-behavior: smooth;
+        scroll-padding-top: 1rem;
+      }
     }
-  }
-  /*
-  Note: the `:modal` pseudo-class applies when the modal is in the top layer *and* currently open. That means that it
-  stops applying during an exit transition, which will break the styling. The upcoming `:open` pseudo-class doesn't
-  resolve this either. Chrome internally has a `:-internal-dialog-in-top-layer` pseudo-class for this, but it's not
-  exposed.
-  
-  We can work around this by applying the modal styling on `dialog` regardless of `:modal`. However, that breaks
-  regular (non-modal) styling. It is essentially impossible to generically style dialog elements without knowing
-  whether it's going to be used as a modal or not, if we also want exit transitions.
-  
-  This reset assumes you do *not* apply an exit transition. If you do want an exit transition, you must also apply
-  the `position: fixed` (etc.) styling on the base `dialog`. Or you can use `aria-model="true"` and opt in to base
-  styling that way.
-  
-  - https://github.com/w3c/csswg-drafts/issues/9912 - "User-agent styles for top layer transitions"
-  - https://github.com/whatwg/html/pull/9387#issuecomment-1599722425
-  - https://issues.chromium.org/issues/40270744 - `:-internal-dialog-in-top-layer`
-  */
-  dialog[aria-modal='true'], dialog:modal {
-    position: fixed;
-    inset: 0;
     
-    margin: auto;
-    //place-self: center; // In the future can use this instead of `margin: auto`
-    width: fit-content;
-    height: fit-content;
+    button {
+      cursor: pointer;
+    }
     
-    &::backdrop {
+    /*
+    input, select, textarea {
+      -webkit-appearance: revert;
+      appearance: revert;
+    }
+    */
+    
+    
+    // Note: we assume that all styling for dialog (including `:modal` and `:backdrop`) has been hard reset.
+    // `the-new-css-reset` has an exception for `dialog:modal`, but we don't want this exception, so here we unset all.
+    dialog, dialog:modal, dialog::backdrop {
+      all: unset;
+      display: revert;
+      box-sizing: border-box;
+    }
+    
+    // Re-apply a few sensible defaults for dialogs. For reference, see the default user agent styling rules here:
+    // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css
+    dialog {
+      // Allow overriding the visible display type, without having to reimplement all the `display: none` logic
+      display: var(--dialog-display, block);
+      position: static;
+      
+      // Issue: if the parent has `user-select: none` (e.g. button), then the dialog will inherit this by default.
+      // In the future, if `contain: user-select` is implemented, we could use that instead.
+      user-select: text;
+      
+      &:where(:not([open])) {
+        display: none;
+      }
+      
+      &::backdrop {
+        user-select: none; // Without this, clicking on the backdrop selects the dialog text in Firefox
+      }
+    }
+    /*
+    Note: the `:modal` pseudo-class applies when the modal is in the top layer *and* currently open. That means that it
+    stops applying during an exit transition, which will break the styling. The upcoming `:open` pseudo-class doesn't
+    resolve this either. Chrome internally has a `:-internal-dialog-in-top-layer` pseudo-class for this, but it's not
+    exposed.
+    
+    We can work around this by applying the modal styling on `dialog` regardless of `:modal`. However, that breaks
+    regular (non-modal) styling. It is essentially impossible to generically style dialog elements without knowing
+    whether it's going to be used as a modal or not, if we also want exit transitions.
+    
+    This reset assumes you do *not* apply an exit transition. If you do want an exit transition, you must also apply
+    the `position: fixed` (etc.) styling on the base `dialog`. Or you can use `aria-model="true"` and opt in to base
+    styling that way.
+    
+    - https://github.com/w3c/csswg-drafts/issues/9912 - "User-agent styles for top layer transitions"
+    - https://github.com/whatwg/html/pull/9387#issuecomment-1599722425
+    - https://issues.chromium.org/issues/40270744 - `:-internal-dialog-in-top-layer`
+    */
+    dialog[aria-modal='true'], dialog:modal {
       position: fixed;
       inset: 0;
-      background: rgba(0 0 0 / 20%);
+      
+      margin: auto;
+      //place-self: center; // In the future can use this instead of `margin: auto`
+      width: fit-content;
+      height: fit-content;
+      
+      &::backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0 0 0 / 20%);
+      }
     }
   }
   
-  
-  /* Popovers */
-  [popover] {
-    // Workaround for Chrome issue: https://issues.chromium.org/issues/388538944
-    // Assumes there are no elements with a higher `z-index` in the (non-top layer) document, which we should avoid
-    // doing anyway. We don't want to do `infinity` because we want to allow other top layer elements to be higher.
-    //z-index: 100; // XXX we can also work around this by using `open={false}` with popovers.
-    
-    &:not(:popover-open) {
-      display: none;
+  // Popover styles should override prior definitions like those for `dialog`
+  @layer popover {
+    [popover] {
+      // Workaround for Chrome issue: https://issues.chromium.org/issues/388538944
+      // Assumes there are no elements with a higher `z-index` in the (non-top layer) document, which we should avoid
+      // doing anyway. We don't want to do `infinity` because we want to allow other top layer elements to be higher.
+      //z-index: 100; // XXX we can also work around this by using `open={false}` with popovers.
+      
+      display: var(--dialog-display);
+      
+      &:not(:popover-open) {
+        display: none;
+      }
     }
   }
 }
