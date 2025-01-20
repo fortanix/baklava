@@ -111,7 +111,8 @@ export const useConfirmationModal = <S,>(
       children: 'Are you sure you want to perform this action?',
       actions: (
         <>
-          <Dialog.CancelAction label="Cancel"
+          <Dialog.CancelAction
+            label="Cancel"
             onPress={() => {
               const subject = modal.subject;
               if (typeof subject === 'undefined') {
@@ -121,7 +122,9 @@ export const useConfirmationModal = <S,>(
               onCancel?.(subject);
             }}
           />
-          <Dialog.SubmitAction label={actionLabel || 'Confirm'}
+          <Dialog.SubmitAction
+            //autoFocus // Focus "confirm" by default?
+            label={actionLabel || 'Confirm'}
             onPress={() => {
               const subject = modal.subject;
               if (typeof subject === 'undefined') {

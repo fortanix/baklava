@@ -119,17 +119,19 @@ export const Toaster = (props: ToasterProps) => {
   }, [toastStore]);
   
   // Pause auto-close when the page is not currently visible by the user
-  const handleVisibilityChange = React.useCallback(() => {
-    if (document.visibilityState === 'visible') {
-      toastStore.onPageVisible();
-    } else {
-      toastStore.onPageHide();
-    }
-  }, [toastStore]);
   React.useEffect(() => {
-    window.document.addEventListener('visibilitychange', handleVisibilityChange, false);
-    return () => { window.document.removeEventListener('visibilitychange', handleVisibilityChange); };
-  }, [handleVisibilityChange]);
+    const controller = new AbortController();
+    
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        toastStore.onPageVisible();
+      } else {
+        toastStore.onPageHide();
+      }
+    }, { signal: controller.signal });
+    
+    return () => { controller.abort(); };
+  }, [toastStore]);
   
   const containerRef = React.useRef<null | React.ComponentRef<'section'>>(null);
   const openPopover = React.useCallback((container: null | HTMLElement) => {

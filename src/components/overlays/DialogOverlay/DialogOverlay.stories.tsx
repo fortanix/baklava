@@ -46,6 +46,36 @@ export const DialogOverlaySmall: Story = { args: { size: 'small' } };
 export const DialogOverlayMedium: Story = { args: { size: 'medium' } };
 export const DialogOverlayLarge: Story = { args: { size: 'large' } };
 
+const DialogOverlayControlledWithSubject = (props: React.ComponentProps<typeof DialogOverlay>) => {
+  type Subject = { name: string };
+  const overlay = DialogOverlay.useOverlayWithSubject<Subject>();
+  
+  return (
+    <article className="bk-body-text">
+      {overlay.subject &&
+        <DialogOverlay {...overlay.props} {...props} title={overlay.subject.name}>
+          Details about {overlay.subject.name} here.
+        </DialogOverlay>
+      }
+      
+      <p>A single details overlay will be used, filled in with the subject based on which name was pressed.</p>
+      
+      <p>
+        <Button variant="primary" label="Open: Alice" onPress={() => { overlay.activateWith({ name: 'Alice' }); }}/>
+      </p>
+      <p>
+        <Button variant="primary" label="Open: Bob" onPress={() => { overlay.activateWith({ name: 'Bob' }); }}/>
+      </p>
+    </article>
+  );
+};
+export const DialogModalWithSubject: Story = {
+  args: {
+    trigger: undefined,
+  },
+  render: (args) => <DialogOverlayControlledWithSubject {...args}/>,
+};
+
 export const DialogOverlayWithNestedModal: Story = {
   args: {
     display: 'slide-over',

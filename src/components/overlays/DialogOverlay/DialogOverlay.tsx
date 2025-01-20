@@ -3,6 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
+import { flushSync } from 'react-dom';
 import { mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx } from '../../../util/componentUtil.ts';
 
@@ -49,6 +50,38 @@ export type DialogOverlayProps = Omit<React.ComponentProps<typeof Dialog>, 'chil
   
   /** Any additional props to pass to the popover provider. */
   providerProps?: undefined | Omit<PopoverProviderPropsDialog, 'children'>,
+};
+
+export type OverlayWithSubject<S> = {
+  props: Partial<DialogOverlayProps>,
+  subject: undefined | S,
+  activateWith: (subject: S | (() => S)) => void,
+};
+/**
+ * Utility hook to get a reference to a `DialogOverlay` for imperative usage. To open, you can call `activate()`, or
+ * `activateWith()` if you want to include some subject data to be shown in the modal.
+ */
+export const useOverlayWithSubject = <S,>(
+  config?: undefined | {
+    subjectInitial?: undefined | S | (() => undefined | S),
+  },
+): OverlayWithSubject<S> => {
+  const { subjectInitial } = config ?? {};
+  
+  const popoverRef = PopoverProvider.useRef(null);
+  const [subject, setSubject] = React.useState<undefined | S>(subjectInitial);
+  
+  return {
+    props: { popoverRef },
+    subject,
+    activateWith: (subject: S | (() => S)) => {
+      // Use flushSync() to force the modal to render, in case the modal rendering is conditional
+      // on the subject being set.
+      flushSync(() => { setSubject(subject); });
+      
+      popoverRef.current?.activate();
+    },
+  };
 };
 
 /**
@@ -108,6 +141,7 @@ export const DialogOverlay = Object.assign(
   },
   {
     usePopoverRef: PopoverProvider.useRef,
+    useOverlayWithSubject,
     Action: Dialog.Action,
     ActionIcon: Dialog.ActionIcon,
     CancelAction: Dialog.CancelAction,
