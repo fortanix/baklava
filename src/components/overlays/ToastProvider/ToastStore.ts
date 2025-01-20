@@ -47,7 +47,7 @@ export class ToastStore {
     this.#options = {
       entryAnimationDelay: options.entryAnimationDelay ?? 400,
       exitAnimationDelay: options.exitAnimationDelay ?? 200,
-      autoCloseDelay: options.autoCloseDelay ?? 5000,
+      autoCloseDelay: options.autoCloseDelay ?? 8000,
     };
   }
   

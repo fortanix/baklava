@@ -31,7 +31,7 @@
     background: var(--bk-dialog-background-color);
     color: bk.$theme-modal-text-default;
     
-    --dialog-display: flex; // Note: don't set the `display` directly, see `reset.scss`
+    --dialog-display: flex; // Note: don't set the `display` directly, leave it to `reset.scss`
     flex-direction: column;
     
     .bk-dialog__header {

@@ -19,10 +19,6 @@
     transition-property: display, translate, opacity;
     transition-behavior: allow-discrete;
     transition-timing-function: var(--bk-toast-ease-entry);
-    --transition: all 0.7s allow-discrete;
-    
-    --translate: 0px;
-    --opacity: 1;
     
     @starting-style {
       translate: 100%;
