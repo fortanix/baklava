@@ -13,9 +13,15 @@ import { addons } from '@storybook/preview-api';
 import { DARK_MODE_EVENT_NAME, UPDATE_DARK_MODE_EVENT_NAME } from 'storybook-dark-mode';
 import { DocsContainer, Title, Subtitle, Description, Primary, Controls, Stories } from '@storybook/blocks';
 
+import { BaklavaProvider } from '../src/context/BaklavaProvider.tsx';
+
 
 const channel = addons.getChannel();
 const preview = {
+  decorators: [
+    Story => <BaklavaProvider><Story/></BaklavaProvider>,
+  ],
+  
   parameters: {
     options: {
       storySort: {
@@ -65,10 +71,11 @@ const preview = {
               'ModalProvider',
               'SpinnerModal',
               'DialogModal',
+              'DialogOverlay',
+              'ToastProvider',
               'Tooltip',
               'TooltipProvider',
               'DropdownMenu',
-              'Toast',
             ],
             'lists',
             [

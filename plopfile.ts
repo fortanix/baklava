@@ -125,9 +125,8 @@ const componentTemplate = {
         --bk-{{{kebabCase component-name}}}-background-color: light-dark(#{bk.$color-neutral-700}, #{bk.$color-neutral-50});
         --bk-{{{kebabCase component-name}}}-text-color: light-dark(#{bk.$color-neutral-50}, #{bk.$color-neutral-700});
         
+        overflow: hidden;
         cursor: default;
-        
-        overflow-y: auto;
         
         max-width: 30rem;
         max-height: 8lh;

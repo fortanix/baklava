@@ -16,7 +16,7 @@ import cl from './Banner.module.scss';
 
 export { cl as BannerClassNames };
 
-type BannerVariant = 'info' | 'warning' | 'error' | 'success';
+export type BannerVariant = 'info' | 'warning' | 'error' | 'success';
 
 type BannerVariantIconProps = Omit<IconProps, 'icon'> & {
   icon?: IconProps['icon'], // Make optional
@@ -26,7 +26,7 @@ const BannerVariantIcon = ({ variant, ...propsRest }: BannerVariantIconProps) =>
   const icon = ((): IconName => {
     switch (variant) {
       case 'info': return 'info-filled';
-      case 'warning': return 'warning';
+      case 'warning': return 'warning-filled';
       case 'error': return 'status-failed-filled';
       case 'success': return 'status-success-filled';
       default: return assertUnreachable(variant);
@@ -45,6 +45,10 @@ const ActionButton = (props: ActionButtonProps) => {
     <Button trimmed
       {...props}
       className={cx(cl['bk-banner__action'], cl['bk-banner__action--button'], props.className)}
+      onClick={event => {
+        event.stopPropagation(); // Prevent this from triggering any click handlers on the Banner itself (e.g. toasts)
+        props.onClick?.(event);
+      }}
     />
   );
 };
@@ -65,6 +69,10 @@ const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
       <Button trimmed
         {...buttonProps}
         className={cx(cl['bk-banner__action'], cl['bk-banner__action--icon'], buttonProps.className)}
+        onClick={event => {
+          event.stopPropagation(); // Prevent this from triggering any click handlers on the Banner itself (e.g. toasts)
+          buttonProps.onClick?.(event);
+        }}
       />
     </TooltipProvider>
   );

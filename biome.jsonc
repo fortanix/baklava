@@ -24,8 +24,9 @@
   "linter": {
     "enabled": true,
     "include": ["app/**/*", "src/**/*", "tests/**/*"],
-
+    
     "ignore": [
+      "node_modules",
       "src/components/tables/MultiSearch/MultiSearch.tsx", // Ignore for now (need to focus on type errors first)
       "tests/installation/**/*"
   ],
@@ -33,7 +34,8 @@
       "recommended": true,
       "complexity": {
         "noBannedTypes": "off",
-        "noForEach": "off"
+        "noForEach": "off",
+        "useOptionalChain": "off"
       },
       "style": {
         "useImportType": "off",

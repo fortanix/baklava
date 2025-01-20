@@ -1,0 +1,87 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@mixin dialog-slide-over($entry-dur: 200ms, $exit-dur: 180ms, $size: 0.8, $origin: right) {
+  $dir: if($origin==right, 1, -1);
+  
+  transition-property: overlay, display, translate;
+  transition-timing-function: ease-out;
+  transition-behavior: allow-discrete;
+  
+  // Open state styling
+  translate: 0;
+  @if $origin == left {
+    margin-inline-end: calc((1 - $size) * 100vi);
+  } @else if $origin == right {
+    margin-inline-start: calc((1 - $size) * 100vi);
+  }
+  
+  // Entry transition styling
+  @media (prefers-reduced-motion: no-preference) { transition-duration: $entry-dur; }
+  @starting-style {
+    translate: calc($dir * $size * 100vi) 0;
+  }
+  
+  // Exit transition styling
+  &:not(:popover-open) {
+    @media (prefers-reduced-motion: no-preference) { transition-duration: $exit-dur; }
+    transition-timing-function: ease-in;
+    translate: calc($dir * $size * 100vi) 0;
+  }
+}
+
+@layer baklava.components {
+  .bk-dialog-overlay {
+    @include bk.component-base(bk-dialog-overlay);
+    
+    --bk-dialog-overlay-entry-dur: 200ms;
+    --bk-dialog-overlay-exit-dur: 120ms;
+    --bk-dialog-overlay-fade-scale: 1;
+    
+    // Basic positioning
+    position: fixed;
+    inset: 0;
+    max-width: 100vi;
+    max-height: 100vb;
+    
+    //
+    // Display variants
+    //
+    
+    &.bk-dialog-overlay--slide-over {
+      inset: 0;
+      margin: 0;
+      width: auto;
+      height: auto;
+      
+      box-shadow: rgba(0 0 0 / 35%) 0 bk.rem-from-px(5) bk.rem-from-px(15) !important;
+      
+      --bk-dialog-overlay-slide-over-size: 0.8;
+      &.bk-dialog-overlay--small { --bk-dialog-overlay-slide-over-size: 0.3; }
+      &.bk-dialog-overlay--medium { --bk-dialog-overlay-slide-over-size: 0.5; }
+      &.bk-dialog-overlay--large { --bk-dialog-overlay-slide-over-size: 0.8; }
+      
+      --bk-dialog-overlay-entry-dur: 300ms;
+      --bk-dialog-overlay-exit-dur: 250ms;
+      &.bk-dialog-overlay--slide-over--left {
+        @include dialog-slide-over(
+          $entry-dur: var(--bk-dialog-overlay-entry-dur),
+          $exit-dur: var(--bk-dialog-overlay-exit-dur),
+          $size: var(--bk-dialog-overlay-slide-over-size),
+          $origin: left,
+        );
+      }
+      &.bk-dialog-overlay--slide-over--right {
+        @include dialog-slide-over(
+          $entry-dur: var(--bk-dialog-overlay-entry-dur),
+          $exit-dur: var(--bk-dialog-overlay-exit-dur),
+          $size: var(--bk-dialog-overlay-slide-over-size),
+          $origin: right,
+        );
+      }
+    }
+  }
+}

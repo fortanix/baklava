@@ -23,6 +23,8 @@
     },
     
     // Type checking
+    //"typeRoots": [],
+    //"types": [],
     "lib": ["ESNext"], // Library declaration files to include (globally)
     "skipLibCheck": true, // Do not type check declaration files (for performance)
     "noErrorTruncation": true,

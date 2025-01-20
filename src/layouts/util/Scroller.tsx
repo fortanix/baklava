@@ -45,6 +45,7 @@ export const useScroller = (args: UseScrollerArgs = {}): ScrollerProps => {
   );
   
   return {
+    // Discussion: https://github.com/fortanix/baklava/issues/75#issuecomment-2564578564
     tabIndex: hasFocusableChild ? undefined : 0,
     className: includeStyling ? className : undefined,
   };

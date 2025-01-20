@@ -7,7 +7,7 @@ import { mergeRefs, useEffectOnce } from '../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
 import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
-import { type ModalProviderProps, ModalProvider } from '../ModalProvider/ModalProvider.tsx';
+import { ModalProvider, type ModalProviderProps } from '../../util/overlays/modal/ModalProvider.tsx';
 
 import cl from './SpinnerModal.module.scss';
 

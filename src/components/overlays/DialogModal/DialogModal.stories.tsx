@@ -7,6 +7,7 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
+import { notify } from '../ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 
 import { DialogModal } from './DialogModal.tsx';
@@ -31,6 +32,16 @@ export default {
 } satisfies Meta<DialogModalArgs>;
 
 
+let count = 1;
+const notifyTest = () => {
+  notify({
+    // biome-ignore lint/style/noNonNullAssertion: Will not be undefined.
+    variant: (['success', 'info', 'error', 'warning'] as const)[count % 4]!,
+    title: `Test ${count++}`,
+    message: 'Test notification',
+  });
+};
+
 export const DialogModalStandard: Story = {};
 
 export const DialogModalSmall: Story = {
@@ -39,35 +50,6 @@ export const DialogModalSmall: Story = {
 
 export const DialogModalLarge: Story = {
   args: { size: 'large' },
-};
-
-export const DialogModalNested: Story = {
-  args: {
-    title: 'Modal with a submodal',
-    className: 'outer',
-    children: (
-      <DialogModal
-        className="inner"
-        title="Submodal"
-        trigger={({ activate }) => <Button variant="primary" label="Open submodal" onPress={activate}/>}
-      >
-        This is a submodal. Closing this modal should keep the outer modal still open.
-      </DialogModal>
-    ),
-  },
-};
-
-export const DialogModalUncloseable: Story = {
-  args: {
-    activeDefault: true,
-    allowUserClose: false,
-    children: ({ close }) => (
-      <article className="bk-body-text">
-        <p>It should not be possible to close this dialog, except through the following button:</p>
-        <p><Button variant="primary" label="Force close" onPress={close}/></p>
-      </article>
-    ),
-  },
 };
 
 export const DialogModalFullScreen: Story = {
@@ -91,6 +73,59 @@ export const DialogModalSlideOverLeft: Story = {
     size: 'medium',
     slideOverPosition: 'left',
     title: 'Slide over modal dialog',
+  },
+};
+
+export const DialogModalNested: Story = {
+  args: {
+    title: 'Modal with a submodal',
+    className: 'outer',
+    children: (
+      <DialogModal
+        className="inner"
+        title="Submodal"
+        trigger={({ activate }) => <Button variant="primary" label="Open submodal" onPress={activate}/>}
+      >
+        This is a submodal. Closing this modal should keep the outer modal still open.
+      </DialogModal>
+    ),
+  },
+};
+
+export const DialogModalWithToast: Story = {
+  args: {
+    title: 'Modal with a submodal',
+    className: 'outer',
+    children: (
+      <>
+        <Button variant="primary" onPress={() => { notifyTest(); }}>
+          Trigger toast notification
+        </Button>
+        <DialogModal
+          className="inner"
+          title="Submodal"
+          trigger={({ activate }) => <Button variant="primary" label="Open submodal" onPress={activate}/>}
+        >
+          <p>Test rendering toast notifications over the modal:</p>
+          <Button variant="primary" onPress={() => { notifyTest(); }}>
+            Trigger toast notification
+          </Button>
+        </DialogModal>
+      </>
+    ),
+  },
+};
+
+export const DialogModalUncloseable: Story = {
+  args: {
+    activeDefault: true,
+    allowUserClose: false,
+    children: ({ close }) => (
+      <article className="bk-body-text">
+        <p>It should not be possible to close this dialog, except through the following button:</p>
+        <p><Button variant="primary" label="Force close" onPress={close}/></p>
+      </article>
+    ),
   },
 };
 

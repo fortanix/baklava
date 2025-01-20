@@ -9,6 +9,7 @@ import { delay } from '../../../../util/time.ts';
 import * as React from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
+import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Banner } from '../../../containers/Banner/Banner.tsx';
 import { Form } from '../Form/Form.tsx';
 import { InputField } from '../../fields/InputField/InputField.tsx';
@@ -32,9 +33,7 @@ const StoryMeta = {
     label: 'Submit',
     nonactive: false,
     disabled: false,
-    onPress() {
-      alert('Click');
-    },
+    onPress: () => { notify.success('You pressed the submit button.'); },
   },
   decorators: [
     Story => (

@@ -51,16 +51,16 @@ export const useEffectOnce = (fn: () => void) => {
   const isCalledRef = React.useRef(false);
   
   // biome-ignore lint/correctness/useExhaustiveDependencies: Should run only once
-    React.useEffect(() => {
+  React.useEffect(() => {
     if (!isCalledRef.current) {
       isCalledRef.current = true;
       fn();
     }
   }, []);
-}
+};
 
 export const usePrevious = <T>(value: T) => {
-  const ref: React.MutableRefObject<null | T> = React.useRef(null);
+  const ref: React.RefObject<null | T> = React.useRef(null);
   React.useEffect(() => {
     ref.current = value;
   });
@@ -68,7 +68,7 @@ export const usePrevious = <T>(value: T) => {
 };
 
 export const useEffectAsync = (effect: () => Promise<unknown>, inputs?: undefined | React.DependencyList): void => {
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <We rely on user deps; adding effect triggers unwanted re-runs>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We rely on user deps; adding effect triggers unwanted re-runs
   React.useEffect(() => {
     effect();
   }, inputs);

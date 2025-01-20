@@ -10,7 +10,7 @@ import { mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx } from '../../../util/componentUtil.ts';
 
 import { Dialog } from '../../containers/Dialog/Dialog.tsx';
-import { ModalProvider, type ModalProviderProps } from '../ModalProvider/ModalProvider.tsx';
+import { ModalProvider, type ModalProviderProps } from '../../util/overlays/modal/ModalProvider.tsx';
 
 import cl from './DialogModal.module.scss';
 
@@ -111,7 +111,8 @@ export const useConfirmationModal = <S,>(
       children: 'Are you sure you want to perform this action?',
       actions: (
         <>
-          <Dialog.CancelAction label="Cancel"
+          <Dialog.CancelAction
+            label="Cancel"
             onPress={() => {
               const subject = modal.subject;
               if (typeof subject === 'undefined') {
@@ -121,7 +122,9 @@ export const useConfirmationModal = <S,>(
               onCancel?.(subject);
             }}
           />
-          <Dialog.SubmitAction label={actionLabel || 'Confirm'}
+          <Dialog.SubmitAction
+            //autoFocus // Focus "confirm" by default?
+            label={actionLabel || 'Confirm'}
             onPress={() => {
               const subject = modal.subject;
               if (typeof subject === 'undefined') {

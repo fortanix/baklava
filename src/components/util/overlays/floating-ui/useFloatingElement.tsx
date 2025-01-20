@@ -31,9 +31,9 @@ import {
 } from '@floating-ui/react';
 
 
-export { type Placement };
+export type { Placement };
 
-export type UsePopoverOptions = {
+export type UseFloatingElementOptions = {
   floatingUiOptions?: UseFloatingOptions,
   floatingUiFlipOptions?: FlipOptions,
   floatingUiInteractions?: (context: FloatingContext) => Array<undefined | ElementProps>,
@@ -45,7 +45,10 @@ export type UsePopoverOptions = {
   arrowRef?: React.RefObject<Element>, // Reference to the arrow element, if any
   hasDelayGroup?: undefined | boolean,
 };
-export const usePopover = (options: UsePopoverOptions = {}) => {
+/**
+ * Wrapper around `useFloating` from `floating-ui`.
+ */
+export const useFloatingElement = (options: UseFloatingElementOptions = {}) => {
   const optionsWithDefaults = {
     ...options,
     floatingUiOptions: options.floatingUiOptions ?? {},
@@ -60,6 +63,7 @@ export const usePopover = (options: UsePopoverOptions = {}) => {
   };
   
   // Memoize `action` to make sure it doesn't change, to prevent conditional use of hooks
+  // biome-ignore lint/correctness/useExhaustiveDependencies: explicitly not using `action` as a dependency
   const action = React.useMemo(() => optionsWithDefaults.action, []);
   
   const middleware: UseFloatingOptions['middleware'] = [
@@ -169,17 +173,17 @@ export const usePopover = (options: UsePopoverOptions = {}) => {
 
 // Derived from:
 // https://github.com/floating-ui/floating-ui/blob/master/packages/react/src/components/FloatingArrow.tsx
-type PopoverArrowOptions = {
+type FloatingElementArrowOptions = {
   context: FloatingContext,
   // Forces a static offset over dynamic positioning under a certain condition.
   staticOffset?: string | number | null;
 };
-type PopoverArrowResult = null | {
+type FloatingElementArrowResult = null | {
   side: Side,
   arrowX: undefined | number | string,
   arrowY: undefined | number | string,
 };
-export const usePopoverArrow = (options: PopoverArrowOptions): PopoverArrowResult => {
+export const useFloatingElementArrow = (options: FloatingElementArrowOptions): FloatingElementArrowResult => {
   const {
     context: {
       placement,

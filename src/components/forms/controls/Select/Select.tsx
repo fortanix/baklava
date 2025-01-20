@@ -6,7 +6,7 @@ import * as React from 'react';
 import { mergeRefs } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import { useScroller } from '../../../../layouts/util/Scroller.tsx';
-import { usePopover } from '../../../util/Popover/Popover.tsx';
+import { useFloatingElement } from '../../../util/overlays/floating-ui/useFloatingElement.tsx';
 import { useListNavigation, useInteractions } from '@floating-ui/react';
 
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
@@ -58,6 +58,7 @@ export const Option = (props: OptionProps) => {
   return (
     <li aria-selected={isSelected}>
       <Button unstyled
+        // FIXME: requires a parent with `role="listbox"
         role="option"
         {...propsRest}
         className={cx(
@@ -105,7 +106,7 @@ export const Select = Object.assign(
       getItemProps,
       isOpen,
       setIsOpen,
-    } = usePopover({
+    } = useFloatingElement({
       placement: 'bottom',
       floatingUiFlipOptions: {
         fallbackAxisSideDirection: 'none',
@@ -128,8 +129,10 @@ export const Select = Object.assign(
         selectedRef.current?.focus(); // Return focus
       },
       getItemProps,
-    }), [selected]);
+    }), [selected, setIsOpen, getItemProps]);
     
+    // FIXME: implement `role="listbox" and associated `aria-` attributes
+    // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
     return (
       <SelectContext.Provider value={context}>
         <Button unstyled
@@ -141,7 +144,7 @@ export const Select = Object.assign(
             propsRest.className,
           )}
           {...getReferenceProps()}
-          ref={mergeRefs(selectedRef, refs.setReference as any)}
+          ref={mergeRefs<React.ComponentRef<typeof Button>>(selectedRef, refs.setReference)}
         >
           <Input
             className={cl['bk-select__input']}

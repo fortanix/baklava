@@ -27,6 +27,7 @@ export type UseModalDialogOptions = {
 };
 
 export type ModalDialogProps = {
+  internalDialogRef: React.RefObject<null | HTMLDialogElement>,
   close: () => void,
   dialogProps: React.ComponentProps<'dialog'>,
 };
@@ -36,7 +37,7 @@ export type ModalDialogProps = {
  */
 export const useModalDialog = (
   controller: ModalDialogController,
-  options: UseModalDialogOptions,
+  options: undefined | UseModalDialogOptions = {},
 ): ModalDialogProps => {
   const {
     allowUserClose = true,
@@ -68,6 +69,8 @@ export const useModalDialog = (
       // Save a reference to the last focused element before opening the modal
       //lastActiveElementRef.current = document.activeElement;
       
+      // Note: `showModal()` may throw, for example if the dialog is already open as a non-modal (through `.show()`),
+      // or as a popover (through `.showPopover()`).
       try {
         dialog.open = false; // Make sure the dialog is not open as a non-modal (i.e. through `.show()`)
         dialog.showModal();
@@ -76,12 +79,7 @@ export const useModalDialog = (
         controller.deactivate();
       }
     } else if (!controller.active && isDialogOpenModal) { // Should not be active but is
-      try {
-        dialog.close();
-      } catch (error: unknown) {
-        console.error(`Unable to close modal dialog`, error);
-        controller.activate();
-      }
+      requestDialogClose();
     }
   };
   // biome-ignore lint/correctness/useExhaustiveDependencies: `controller` is used in `sync`
@@ -89,7 +87,7 @@ export const useModalDialog = (
   
   // The `beforetoggle` event can be used to detect when a modal opens. Note: browser support is poor currently, but
   // it's okay since we generally control the activation, not the user. In non-supporting browsers, if someone were to
-  // // manually call `.showModal()` through devtools they could potentially cause a desync.
+  // manually call `.showModal()` through devtools they could potentially cause a desync.
   // https://caniuse.com/mdn-api_htmlelement_toggle_event_dialog_elements
   const handleDialogBeforeToggle = React.useCallback((event: React.ToggleEvent<HTMLDialogElement>) => {
     if (event.newState === 'open') {
@@ -160,7 +158,7 @@ export const useModalDialog = (
   }, [allowUserClose]);
   
   // Sync when the ref changes. This helps prevent time issues where `active` is set to `true`, but the dialog is not
-  // yet mounted (and thus the ref is `null`). In that case our sync useEffect will be too early.
+  // yet mounted (and thus the ref is `null`). In that case our sync `useEffect` will be too early.
   const dialogRefCallback: React.RefCallback<HTMLDialogElement> = (ref) => {
     dialogRef.current = ref;
     sync();
@@ -168,6 +166,7 @@ export const useModalDialog = (
   
   return {
     close: requestDialogClose,
+    internalDialogRef: dialogRef, // Note: should not pass this to the dialog `ref`, use `dialogProps.ref` instead
     dialogProps: {
       ref: dialogRefCallback,
       open: undefined, // Do not set `open`, leave it to the browser to manage automatically
