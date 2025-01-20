@@ -12,6 +12,16 @@
 
 @use './variables.scss' as vars;
 
+
+@function rem-from-px($size-in-px) {
+  @return round(math.div($size-in-px, 14) * 1rem, 1px);
+}
+
+// @function fluid-size($size) {
+//   $scale: #{calc(tan(atan2($size, 1px)) * 14)};
+//   @return #{round(min($size, $scale / 768 * 100vi), 1px)};
+// }
+
 @mixin component-base($name) {
   container-name: $name;
   /* Enable content containment. This enforces that the component's content is isolated from its parents. */
@@ -61,8 +71,4 @@
 @mixin rounded($rounding: bkl.$sizing-xs) {
   border-radius: $rounding;
   overflow: hidden; // Prevent child items from "bleeding through" the rounded borders
-}
-
-@function rem-from-px($size-in-px) {
-  @return round(math.div($size-in-px, 14) * 1rem, 1px);
 }
