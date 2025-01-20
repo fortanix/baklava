@@ -11,7 +11,7 @@
   overflow: hidden;
   
   min-height: 4rem;
-  padding: 22px 26px; // FIXME
+  padding: bk.$spacing-4;
   background: var(--bk-panel-background-color);
   border: bk.rem-from-px(1) solid var(--bk-panel-border-color);
   border-radius: bk.$radius-3;
