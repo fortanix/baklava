@@ -11,7 +11,7 @@
   overflow: hidden;
   
   min-height: bk.$spacing-16;
-  padding: bk.$spacing-4;
+  padding: bk.$spacing-4 bk.$spacing-4 bk.$spacing-8;
   
   background: var(--bk-card-background-color);
   border: bk.$size-1 solid var(--bk-card-border-color);
