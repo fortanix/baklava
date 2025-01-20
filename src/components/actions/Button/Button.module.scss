@@ -32,7 +32,7 @@
     align-items: center;
     gap: 0.3ch;
     
-    @include bk.font(bk.$font-family-display, bk.$font-weight-medium);
+    @include bk.font(bk.$font-family-display, bk.$font-weight-semibold);
     /* letter-spacing: 0.1ch; */
     text-transform: uppercase;
     
