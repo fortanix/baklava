@@ -12,8 +12,6 @@
     
     flex-shrink: 0;
     
-    /*&:not(:nth-last-child(1 of :not([hidden]))) { ... } */
-    
     width: 40ch;
     box-shadow: 0.15em 0.15em 0.4em rgb(0 0 0 / 50%);
     
@@ -84,8 +82,7 @@
     
     @media (prefers-reduced-motion: no-preference) {
       --transition-duration: 150ms;
-      transition:
-        opacity var(--transition-duration) ease-out;
+      transition: opacity var(--transition-duration) ease-out;
     }
     
     @include bk.focus-hidden;
