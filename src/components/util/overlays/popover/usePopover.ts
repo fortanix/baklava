@@ -15,6 +15,7 @@ export type PopoverController = {
 };
 
 export type UsePopoverOptions = {
+  popoverBehavior?: undefined | React.HTMLAttributes<unknown>['popover'],
 };
 
 export type PopoverProps<E extends HTMLElement> = {
@@ -29,7 +30,7 @@ export const usePopover = <E extends HTMLElement>(
   controller: PopoverController,
   options: undefined | UsePopoverOptions = {},
 ): PopoverProps<E> => {
-  //const {} = options ?? {};
+  const { popoverBehavior } = options ?? {};
   
   const popoverRef = React.useRef<E>(null);
   
@@ -88,8 +89,7 @@ export const usePopover = <E extends HTMLElement>(
     popoverProps: {
       ref: popoverRefCallback,
       
-      popover: 'auto', // FIXME: make configurable
-      //onBeforeToggle: handlePopoverBeforeToggle,
+      popover: popoverBehavior,
       onToggle: handlePopoverToggle,
     },
   };
