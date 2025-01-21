@@ -8,6 +8,8 @@ import '../src/styling/main.scss';
  * Components
  */
 
+export { BaklavaProvider } from '../src/context/BaklavaProvider.tsx';
+
 // Typography
 export { H1, H2, H3, H4, H5, H6 } from '../src/typography/Heading/Heading.tsx';
 
