@@ -43,6 +43,7 @@ export const Breadcrumbs = (props: BreadcrumbsProps) => {
           const isLast = index === items.length - 1;
           return (
             <li
+              // biome-ignore lint/suspicious/noArrayIndexKey: No other unique key available
               key={index}
               className={cx({
                 [cl['bk-breadcrumb-item']]: true,

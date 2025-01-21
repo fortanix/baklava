@@ -58,7 +58,7 @@ export const Tabs = (props: TabsProps) => {
   };
   
   const renderActive = (tab: TabElement) => {
-    let tabElement;
+    let tabElement: React.ReactNode;
     if (typeof tab.props.render === 'function') {
       tabElement = tab.props.render();
     } else {
