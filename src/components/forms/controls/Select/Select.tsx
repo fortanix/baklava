@@ -65,9 +65,8 @@ export const Option = (props: OptionProps) => {
           cl['bk-select__option'],
           propsRest.className,
         )}
-        {...getItemProps({
-          onClick: () => { selectOption(option); },
-        })}
+        {...getItemProps()}
+        onPress={() => { selectOption(option); }}
       >
         {label ?? propsRest.children}
       </Button>

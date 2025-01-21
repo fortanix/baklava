@@ -76,7 +76,7 @@ export const Action = (props: ActionProps) => {
           cl['bk-dropdown-menu__item--action'],
           propsRest.className,
         )}
-        onClick={() => { onActivate(context); }}
+        onPress={() => { onActivate(context); }}
       >
         {icon && <Icon icon={icon}/>}
         {label ?? propsRest.children}
@@ -121,7 +121,7 @@ export const Option = (props: OptionProps) => {
           cl['bk-dropdown-menu__item--option'],
           propsRest.className,
         )}
-        onClick={() => { selectOption(option); }}
+        onPress={() => { selectOption(option); }}
       >
         {icon && <Icon icon={icon} className={cl['bk-dropdown-menu__item__icon']}/>}
         <span className={cl['bk-dropdown-menu__item__label']}>{label ?? propsRest.children}</span>

@@ -190,10 +190,9 @@ export const Toaster = (props: ToasterProps) => {
             onClose={() => {
               toastStore.dismissToast(toastId);
             }}
-            onClick={event => {
-              event.stopPropagation();
-              toastStore.dismissToast(toastId);
-            }}
+            // Handle dismiss signals (e.g. clicking or tapping on the toast)
+            onClick={event => { event.stopPropagation(); toastStore.dismissToast(toastId); }}
+            // Handle interest signals (e.g. hovering over the toast)
             onMouseEnter={event => { event.stopPropagation(); toastStore.pauseAutoClose(toastId); }}
             onTouchStart={event => { event.stopPropagation(); toastStore.pauseAutoClose(toastId); }}
             onMouseLeave={event => { event.stopPropagation(); toastStore.resumeAutoClose(toastId); }}

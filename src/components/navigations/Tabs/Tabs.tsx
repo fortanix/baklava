@@ -83,10 +83,11 @@ export const Tabs = (props: TabsProps) => {
     <div
       {...propsRest}
       role="tablist"
-      className={cx({
-        bk: true,
-        [cl['bk-tabs']]: !unstyled,
-      }, propsRest.className)}
+      className={cx(
+        'bk',
+        { [cl['bk-tabs']]: !unstyled },
+        propsRest.className,
+      )}
     >
       <ul className={cx(cl['bk-tabs__switcher'])}>
         {tabs.map(tab => {
@@ -94,13 +95,13 @@ export const Tabs = (props: TabsProps) => {
           const isActive = tab.props.tabKey === activeKey;
           return (
             <li
+              key={tab.props.tabKey}
               role="tab"
               tabIndex={0}
-              aria-selected={isActive ? 'true': 'false'}
+              aria-selected={isActive}
               data-tab={tab.props.tabKey}
-              key={tab.props.tabKey}
               className={cx(cl['bk-tabs__switcher__tab'],tab.props.className)}
-              onClick={() => { onSwitch(tab.props.tabKey); }}
+              onClick={() => { onSwitch(tab.props.tabKey); }} // FIXME: add a Button and use that instead
             >
               {tab.props.title}
             </li>

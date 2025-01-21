@@ -8,53 +8,62 @@
   .bk-stepper {
     @include bk.component-base(bk-stepper);
     
+    --bk-stepper-indicator-size: #{bk.rem-from-px(28)};
+    display: flex;
+    
+    > ol {
+      display: contents;
+    }
+    
     &.bk-stepper--horizontal {
-      display: flex;
-      gap: bk.$spacing-9;
+      flex-direction: row;
+      column-gap: bk.$spacing-9;
     }
     
     &.bk-stepper--vertical {
-      .bk-stepper__item {
-        &:not(:first-child) {
-          margin-top: bk.$spacing-9;
+      flex-direction: column;
+      row-gap: bk.$spacing-9;
       
-          .bk-stepper__item__circle {
-            &::before {
-              position: absolute;
-              content: '';
-              width: 0;
-              height: bk.$spacing-9;
-              top: -42px;
-              left: 50%;
-              border: 0.5px solid #{bk.$theme-stepper-border-disabled};
-            }
-          }
+      // Draw a line between subsequent items
+      li + li .bk-stepper__item__indicator {
+        &::before {
+          content: '';
+          position: absolute;
+          top: calc(-1 * bk.$spacing-9 - bk.$size-2);
+          left: calc(50% - bk.$size-2 / 2);
+          width: 0;
+          height: bk.$spacing-9;
+          border-left: bk.$size-2 solid bk.$theme-stepper-border-disabled;
         }
       }
     }
     
     .bk-stepper__item {
-      display: flex;
-      align-items: center;
-      color: #{bk.$theme-stepper-text-disabled};
       cursor: pointer;
       
-      .bk-stepper__item__circle {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
+      display: flex;
+      align-items: center;
+      color: bk.$theme-stepper-text-disabled;
+      
+      .bk-stepper__item__indicator {
+        position: relative; // Needed for the vertical line `position: absolute`
+        flex-shrink: 0;
+        
         margin-right: bk.$spacing-3;
-        border: 2px solid #{bk.$theme-stepper-border-disabled};
+        aspect-ratio: 1;
+        width: var(--bk-stepper-indicator-size);
+        
+        border: bk.$size-2 solid #{bk.$theme-stepper-border-disabled};
         border-radius: 50%;
-        width: 28px;
-        height: 28px;
         font-weight: bk.$font-weight-bold;
         font-size: bk.$font-size-m;
-      }
-      
-      .bk-stepper__item__circle__icon {
-        font-size: bk.$font-size-xs;
+        
+        display: grid;
+        place-content: center;
+        
+        .bk-stepper__item__indicator__icon {
+          font-size: bk.$font-size-xs;
+        }
       }
       
       .bk-stepper__item__title {
@@ -65,22 +74,26 @@
         margin-left: bk.$spacing-2;
         font-size: bk.$font-size-xs;
       }
-             
-      &[aria-selected="true"] {
-        color: #{bk.$theme-stepper-text-selected};
-        
-        .bk-stepper__item__circle {
-          border-color: #{bk.$theme-stepper-border-default};
-          background-color: #{bk.$theme-stepper-background-default};
-          color: #{bk.$theme-stepper-text-selected-number};
-        }
-      }
+    }
+    
+    // Any steps we've already visited
+    .bk-stepper__item--checked {
+      color: bk.$theme-stepper-text-selected;
       
-      &.bk-stepper__item--checked {
-        color: #{bk.$theme-stepper-text-selected};
+      .bk-stepper__item__indicator {
+        border-color: bk.$theme-stepper-border-default;
+      }
+    }
+    
+    // The currently active step
+    [aria-current="true"] {
+      .bk-stepper__item {
+        color: bk.$theme-stepper-text-selected;
         
-        .bk-stepper__item__circle {
-          border-color: #{bk.$theme-stepper-border-default};
+        .bk-stepper__item__indicator {
+          border-color: bk.$theme-stepper-border-default;
+          background-color: bk.$theme-stepper-background-default;
+          color: bk.$theme-stepper-text-selected-number;
         }
       }
     }

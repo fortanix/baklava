@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { Stepper, Step } from './Stepper.tsx';
+import { type Step, Stepper } from './Stepper.tsx';
 
 
 type StepperArgs = React.ComponentProps<typeof Stepper>;
@@ -27,7 +27,7 @@ export default {
 const defaultSteps: Step[] = [1,2,3,4].map(index => { 
   return {
     stepKey: `${index}`,
-    title: `Step${index}`,
+    title: `Step ${index}`,
     isOptional: index === 4,
   };
 });

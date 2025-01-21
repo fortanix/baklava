@@ -58,6 +58,5 @@
   "exclude": [
     "node_modules",
     "**/*.spec.ts",
-    "src/components/navigations/Tabs/Tabs.stories.tsx", // FIXME: need to fix a few type errors
   ],
 }
