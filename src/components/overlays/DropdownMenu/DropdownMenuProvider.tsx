@@ -14,6 +14,7 @@ import { DropdownMenuContext, type OptionDef, Option, Action, DropdownMenu } fro
 
 export type AnchorRenderArgs = {
   props: (userProps?: undefined | React.HTMLProps<Element>) => Record<string, unknown>,
+  open: boolean,
   state: DropdownMenuContext,
 };
 export type DropdownMenuProviderProps = Omit<ComponentProps<typeof DropdownMenu>, 'children'> & {
@@ -54,6 +55,7 @@ export const DropdownMenuProvider = Object.assign(
       getReferenceProps,
       getFloatingProps,
       getItemProps,
+      isOpen,
       setIsOpen,
     } = useFloatingElement({
       placement: placement,
@@ -98,7 +100,7 @@ export const DropdownMenuProvider = Object.assign(
       };
       
       if (typeof children === 'function') {
-        return children({ props: anchorProps, state: context });
+        return children({ props: anchorProps, open: isOpen, state: context });
       }
       
       // If a render prop is not used, try to attach it to the element directly.

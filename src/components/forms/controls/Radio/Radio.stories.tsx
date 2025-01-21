@@ -22,7 +22,9 @@ export default {
   tags: ['autodocs'],
   argTypes: {
   },
-  args: {},
+  args: {
+    'aria-label': 'Test radio button',
+  },
   decorators: [
     Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
   ],

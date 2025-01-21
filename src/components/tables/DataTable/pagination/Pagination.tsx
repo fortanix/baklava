@@ -46,6 +46,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
         <Button
           unstyled
           nonactive={!table.canPreviousPage}
+          aria-label="Go to first page"
           className={cx(cl['pager__nav'])}
           onPress={() => {
             table.gotoPage(0)
@@ -58,6 +59,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
           <Button
             unstyled
             nonactive={!table.canPreviousPage}
+            aria-label="Go to previous page"
             className={cx(cl['pager__nav'])}
             onPress={() => {
               table.previousPage();
@@ -70,6 +72,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
           <Input
             type="number"
             className={cx(cl['pagination__page-input'])}
+            aria-label={`Current page: ${pageIndexIndicator}`}
             value={pageIndexIndicator}
             max={table.pageCount}
             onChange={(event) => setPageIndexIndicator(Number.parseInt(event.target.value))}
@@ -86,6 +89,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
           <Button
             unstyled
             nonactive={!table.canNextPage}
+            aria-label="Go to next page"
             className={cx(cl['pager__nav'])}
             onPress={() => {
               table.nextPage();
@@ -98,6 +102,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
         <Button
           unstyled
           nonactive={!table.canNextPage}
+          aria-label="Go to last page"
           className={cx(cl['pager__nav'])}
           onPress={() => {
             table.gotoPage(table.pageCount - 1)

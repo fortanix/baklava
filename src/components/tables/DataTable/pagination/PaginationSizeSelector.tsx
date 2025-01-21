@@ -43,14 +43,18 @@ export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
           />
         ))}
       >
-        {({ props }) => (
+        {({ props, open }) => (
           <Button
             variant="tertiary"
             {...props()}
-            className={cx(cl['page-size-selector__button'])}
+            aria-label={`${table.state.pageSize} rows per page`}
+            className={cx(
+              cl['page-size-selector__trigger'],
+              { [cl['page-size-selector__trigger--open']]: open },
+            )}
           >
             {table.state.pageSize}
-            <Icon icon="caret-down"/>
+            <Icon icon="caret-down" className={cx(cl['page-size-selector__trigger__icon'])}/>
           </Button>
         )}
       </DropdownMenuProvider>

@@ -149,7 +149,7 @@ export const Banner = Object.assign(
         )}
       >
         {/* Apply `bk-theme--light` on all children (but not the box itself). */}
-        <header className={cx('bk-theme--light', cl['bk-banner__header'])}>
+        <div className={cx('bk-theme--light', cl['bk-banner__header'])}>
           <div className={cx(cl['bk-banner__header__text'])}>
             <strong className={cx(cl['bk-banner__title'])}>
               <BannerVariantIcon variant={variant} className={cx(cl['bk-banner__title__icon'])}/>
@@ -174,7 +174,7 @@ export const Banner = Object.assign(
               </ActionIcon>
             }
           </div>
-        </header>
+        </div>
         
         {!compact && children &&
           <article className={cx('bk-body-text', 'bk-theme--light', cl['bk-banner__message'])}>{children}</article>
