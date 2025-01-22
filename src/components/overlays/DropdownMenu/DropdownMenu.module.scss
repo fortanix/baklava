@@ -13,6 +13,8 @@
     --bk-dropdown-menu-transition-duration: 150ms;
     
     overflow: hidden;
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list */
+    overflow-y: auto;
     
     min-width: $bk-dropdown-menu-min-width;
     max-height: 18rem;
@@ -74,7 +76,7 @@
       &:hover {
         background: bk.$theme-dropdown-menu-menu-background-hover;
       }
-      &[aria-selected="true"] {
+      &:has(> [aria-selected="true"]) {
         background: bk.$theme-dropdown-menu-menu-background-hover;
         box-shadow: inset 5px 0 bk.$theme-dropdown-menu-menu-tab-default;
       }
@@ -94,9 +96,8 @@
         align-items: center;
         gap: bk.$spacing-3;
         
-        .bk-dropdown-menu__item__icon {
-          font-size: 1.4em;
-        }
+        .bk-dropdown-menu__item__icon { font-size: 1.4em; }
+        .bk-dropdown-menu__item__label { --keep: ; }
         
         @include bk.focus-inset;
       }

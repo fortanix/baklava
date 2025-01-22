@@ -5,11 +5,11 @@ name: Storybook Tests
 
 on:
   push:
-    branches: [ "**" ]
+    branches:
+      - "master"
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:

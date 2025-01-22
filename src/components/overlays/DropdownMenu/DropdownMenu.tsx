@@ -4,7 +4,6 @@
 
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
-import { useScroller } from '../../../layouts/util/Scroller.tsx';
 
 import { type IconName, Icon } from '../../graphics/Icon/Icon.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
@@ -12,8 +11,12 @@ import { Button } from '../../actions/Button/Button.tsx';
 import cl from './DropdownMenu.module.scss';
 
 
-export { cl as DropdownMenuClassNames };
+/*
+References:
+- https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
+*/
 
+export { cl as DropdownMenuClassNames };
 
 export type OptionKey = string;
 export type OptionDef = { optionKey: OptionKey, label: string };
@@ -56,7 +59,7 @@ export const Action = (props: ActionProps) => {
   const { itemKey, label, icon, onActivate, ...propsRest } = props;
   
   const context = useDropdownMenuContext();
-  const { optionProps, selectedOption, selectOption } = context;
+  const { optionProps, selectedOption } = context;
   
   const option: OptionDef = { optionKey: itemKey, label };
   const isSelected = selectedOption === itemKey;
@@ -64,7 +67,10 @@ export const Action = (props: ActionProps) => {
   return (
     <li aria-selected={isSelected}>
       <Button unstyled
+        // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<option>` for this.
         role="option"
+        //tabIndex={-1} // Only the `role="listbox"` should be focusable, use keyboard arrows to select the option
+        data-option-key={itemKey}
         {...propsRest}
         {...optionProps?.({
           option,
@@ -73,10 +79,9 @@ export const Action = (props: ActionProps) => {
         // FIXME: merge these props with `optionProps()`
         className={cx(
           cl['bk-dropdown-menu__item'],
-          cl['bk-dropdown-menu__item--action'],
           propsRest.className,
         )}
-        onClick={() => { onActivate(context); }}
+        onPress={() => { onActivate(context); }}
       >
         {icon && <Icon icon={icon}/>}
         {label ?? propsRest.children}
@@ -107,9 +112,13 @@ export const Option = (props: OptionProps) => {
   const isSelected = selectedOption === optionKey;
   
   return (
-    <li aria-selected={isSelected}>
+    <li role="presentation">
       <Button unstyled
+        // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<option>` for this.
         role="option"
+        //tabIndex={-1} // Only the `role="listbox"` should be focusable, use keyboard arrows to select the option
+        data-option-key={optionKey}
+        aria-selected={isSelected}
         {...propsRest}
         {...optionProps?.({
           option,
@@ -118,10 +127,9 @@ export const Option = (props: OptionProps) => {
         // FIXME: merge these props with `optionProps()`
         className={cx(
           cl['bk-dropdown-menu__item'],
-          cl['bk-dropdown-menu__item--option'],
           propsRest.className,
         )}
-        onClick={() => { selectOption(option); }}
+        onPress={() => { selectOption(option); }}
       >
         {icon && <Icon icon={icon} className={cl['bk-dropdown-menu__item__icon']}/>}
         <span className={cl['bk-dropdown-menu__item__label']}>{label ?? propsRest.children}</span>
@@ -130,27 +138,34 @@ export const Option = (props: OptionProps) => {
   );
 };
 
-export type DropdownMenuProps = React.PropsWithChildren<ComponentProps<'ul'> & {
+export type DropdownMenuProps = ComponentProps<'ul'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-}>;
+  
+  /** An accessible name for this dropdown menu. Required. */
+  label: string,
+};
 /**
  * Dropdown menu with a list of selectable options.
  */
 export const DropdownMenu = Object.assign(
   (props: DropdownMenuProps) => {
-    const { children, unstyled = false, ...propsRest } = props;
+    const { children, unstyled = false, label, ...propsRest } = props;
     
-    const scrollerProps = useScroller();
-    
+    // FIXME: need to implement keyboard arrow (up/down) navigation through items, as per:
+    // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
     return (
       <ul
-        {...scrollerProps}
+        // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: Explicitly using `<ul>` as interactive.
+        // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<select>` for this purpose.
+        role="listbox"
+        aria-label={label}
+        tabIndex={0}
         {...propsRest}
+        //onKeyDown={handleKeyInput} // FIXME
         className={cx(
           'bk',
           { [cl['bk-dropdown-menu']]: !unstyled },
-          scrollerProps.className,
           propsRest.className,
         )}
       >

@@ -45,11 +45,14 @@ export const InvalidInput: Story = {
   async play({ canvasElement }) {
     const canvas = within(canvasElement);
     const input = canvas.getByPlaceholderText('Example');
+    const form = input.closest('form');
+    if (!form) { throw new Error(`Missing <form> element`); }
+    
     await delay(100);
     await userEvent.type(input, 'invalid');
     await delay(100);
     await userEvent.keyboard('{Enter}');
-    await fireEvent.submit(input.closest('form')!);
-    await userEvent.click(input.closest('form')!);
+    await fireEvent.submit(form);
+    await userEvent.click(form);
   },  
 };

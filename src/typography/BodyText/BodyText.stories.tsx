@@ -3,11 +3,13 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
+
 import type { Meta, StoryObj } from '@storybook/react';
+import { DummyLink } from '../../util/storybook/StorybookLink.tsx';
 
 import { Button } from '../../components/actions/Button/Button.tsx';
-import { Panel } from '../../components/containers/Panel/Panel.tsx';
 import { SegmentedControl } from '../../components/forms/controls/SegmentedControl/SegmentedControl.tsx';
+import { Panel } from '../../components/containers/Panel/Panel.tsx';
 
 import { BodyText } from './BodyText.tsx';
 
@@ -36,7 +38,7 @@ const SampleBodyText = () => {
       <h1>Example of body text</h1>
       <h2>Example of body text</h2>
       <p>
-        Lorem ipsum dolor sit amet, <a href="/" onClick={event => { event.preventDefault(); }}>consectetur</a> adipiscing elit. Pellentesque eget sem ut neque lobortis pharetra nec vel quam. Etiam sem neque, gravida sed pharetra ut, vehicula quis lectus. Donec ac rhoncus purus. Proin ultricies augue vitae purus feugiat, in ultrices lorem aliquet. Donec eleifend ac dolor a auctor. Cras ac suscipit nibh. Fusce tincidunt iaculis dapibus. Vivamus sit amet neque eu velit tincidunt semper. Donec at magna aliquam mi consectetur imperdiet. Donec pretium placerat quam, in sodales purus porta vitae. Phasellus nisl justo, luctus vel mi vel, sollicitudin euismod neque.
+        Lorem ipsum dolor sit amet, <DummyLink>consectetur</DummyLink> adipiscing elit. Pellentesque eget sem ut neque lobortis pharetra nec vel quam. Etiam sem neque, gravida sed pharetra ut, vehicula quis lectus. Donec ac rhoncus purus. Proin ultricies augue vitae purus feugiat, in ultrices lorem aliquet. Donec eleifend ac dolor a auctor. Cras ac suscipit nibh. Fusce tincidunt iaculis dapibus. Vivamus sit amet neque eu velit tincidunt semper. Donec at magna aliquam mi consectetur imperdiet. Donec pretium placerat quam, in sodales purus porta vitae. Phasellus nisl justo, luctus vel mi vel, sollicitudin euismod neque.
       </p>
       <p>
         Duis mollis, justo vel pretium luctus, risus sem eleifend lectus, ac convallis dolor nibh id sapien. Donec vestibulum tellus non rutrum convallis. Aenean venenatis enim in egestas lobortis. Donec mollis elit in turpis imperdiet congue vel at magna. Vestibulum bibendum, ipsum quis lobortis lobortis, lorem libero mollis sapien, sed tempus lacus nibh a nunc. Vivamus sed sem eleifend, rutrum erat eget, ultricies neque. Morbi condimentum dolor vel ipsum consectetur iaculis. Donec ornare diam at orci luctus, sed placerat quam dictum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Curabitur condimentum molestie augue. Ut vel nisl a augue ornare volutpat. Phasellus et enim in mi maximus ultricies. Integer dignissim ipsum mauris, id bibendum eros euismod et.

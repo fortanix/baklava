@@ -20,4 +20,7 @@
   "files.eol": "\n",
   "javascript.preferences.quoteStyle": "single",
   "typescript.tsdk": "node_modules/typescript/lib", // Use the TypeScript SDK from the current project
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "storybook/internal/**/*"
+  ],
 }

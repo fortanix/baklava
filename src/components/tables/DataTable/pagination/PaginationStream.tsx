@@ -23,9 +23,10 @@ export const PaginationStreamPager = ({ pageSizeOptions }: PaginationStreamPager
   return (
     <div className={cx(cl['pagination__pager'])}>
       <Button unstyled
+        aria-label="First page"
         className={cx(cl['pager__nav'], cl['pager__nav--first'])}
-        onPress={() => { table.gotoPage(0); }}
         nonactive={!table.canPreviousPage}
+        onPress={() => { table.gotoPage(0); }}
       >
         <Icon icon="page-backward"/>
       </Button>

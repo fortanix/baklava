@@ -23,6 +23,7 @@ export const AccountSelector = (props: AccountSelectorProps) => {
   
   return (
     <DropdownMenuProvider
+      label="Account selector"
       placement="bottom-start"
       items={
         <>

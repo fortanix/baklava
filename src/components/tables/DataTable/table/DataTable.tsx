@@ -107,7 +107,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
               {/*<td className="bk-table__row__select">
                 <input type="checkbox"
                   checked={row.isSelected}
-                  onClick={() => { row.toggleRowSelected(); }}
+                  onChange={() => { row.toggleRowSelected(); }}
                 />
               </td>*/}
               {row.cells.map(cell => {

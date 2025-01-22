@@ -14,9 +14,15 @@
     align-items: center;
     gap: bk.$spacing-1;
     
-    .page-size-selector__button {
+    .page-size-selector__trigger {
       color: bk.$theme-pagination-text-default;
       padding: 0;
+      
+      &.page-size-selector__trigger--open {
+        .page-size-selector__trigger__icon {
+          rotate: 0.5turn;
+        }
+      }
     }
     
     .page-size-selector__dropdown {

@@ -9,6 +9,7 @@ import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { notify } from '../ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
+import { AccountSelector } from '../../../layouts/AppLayout/Header/AccountSelector.tsx';
 
 import { DialogModal } from './DialogModal.tsx';
 
@@ -111,6 +112,18 @@ export const DialogModalWithToast: Story = {
             Trigger toast notification
           </Button>
         </DialogModal>
+      </>
+    ),
+  },
+};
+
+export const DialogModalWithDropdown: Story = {
+  args: {
+    title: 'Modal with a dropdown',
+    children: (
+      <>
+        <p>The following dropdown menu should overlay the modal (and not be cut off).</p>
+        <AccountSelector/>
       </>
     ),
   },
