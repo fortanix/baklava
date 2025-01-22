@@ -2,14 +2,15 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import type { Meta, StoryObj } from '@storybook/react';
-
-import { classNames as cx } from '../../../util/componentUtil.ts';
 import * as React from 'react';
 
+import type { Meta, StoryObj } from '@storybook/react';
+import { DummyLink } from '../../../util/storybook/StorybookLink.tsx';
 import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
+
 import { Button } from '../../actions/Button/Button.tsx';
-import { TooltipClassNames, Tooltip } from './Tooltip.tsx';
+
+import { Tooltip } from './Tooltip.tsx';
 
 
 type TooltipArgs = React.ComponentProps<typeof Tooltip>;
@@ -75,7 +76,7 @@ export const TooltipScroll: StoryObj<typeof Tooltip> = {
   render: () => (
     <Tooltip>
       <p>
-        Lorem ipsum dolor sit amet, <a href="/" onClick={event => { event.preventDefault(); }}>consectetur</a> adipiscing elit. Pellentesque eget sem ut neque lobortis pharetra nec vel quam. Etiam sem neque, gravida sed pharetra ut, vehicula quis lectus. Donec ac rhoncus purus. Proin ultricies augue vitae purus feugiat, in ultrices lorem aliquet. Donec eleifend ac dolor a auctor.
+        Lorem ipsum dolor sit amet, <DummyLink>consectetur</DummyLink> adipiscing elit. Pellentesque eget sem ut neque lobortis pharetra nec vel quam. Etiam sem neque, gravida sed pharetra ut, vehicula quis lectus. Donec ac rhoncus purus. Proin ultricies augue vitae purus feugiat, in ultrices lorem aliquet. Donec eleifend ac dolor a auctor.
       </p>
       <p>
         Cras ac suscipit nibh. Fusce tincidunt iaculis dapibus. Vivamus sit amet neque eu velit tincidunt semper. Donec at magna aliquam mi consectetur imperdiet. Donec pretium placerat quam, in sodales purus porta vitae. Phasellus nisl justo, luctus vel mi vel, sollicitudin.
@@ -103,7 +104,7 @@ const TooltipNativeAnchoringControlled = () => {
       
       <Tooltip ref={refTooltip} id={id} popover="manual" style={{ positionAnchor: anchorName }}>
         This is a tooltip with a lot of text that gives more information about the element.
-        It has a <a href="/" onClick={event => { event.preventDefault(); }}>link</a> you can focus.
+        It has a <DummyLink>link</DummyLink> you can focus.
       </Tooltip>
       <Button popoverTarget={id} variant="primary" label="Hover over me"
         style={{ anchorName }}

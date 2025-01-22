@@ -17,6 +17,7 @@ export default {
   tags: ['autodocs'],
   argTypes: {},
   args: {
+    'aria-label': 'Test switch',
     defaultChecked: true,
   },
   decorators: [

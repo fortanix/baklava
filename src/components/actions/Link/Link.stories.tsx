@@ -5,9 +5,10 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
+import { DummyLink } from '../../../util/storybook/StorybookLink.tsx';
+import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
 
 import { Link } from './Link.tsx';
-import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
 
 
 type LinkArgs = React.ComponentProps<typeof Link>;
@@ -45,7 +46,7 @@ export const Descenders: Story = {
 export const Scroll: Story = {
   render: (args) => (
     <>
-      <a id="anchor" href="/" onClick={evt => { evt.preventDefault(); }}>Anchor</a>
+      <DummyLink id="anchor">Anchor</DummyLink>
       <OverflowTester openDefault/>
       <Link {...args} href="#anchor"/>
       <OverflowTester openDefault/>

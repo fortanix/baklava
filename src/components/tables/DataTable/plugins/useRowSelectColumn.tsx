@@ -19,13 +19,13 @@ export const useRowSelectColumn = <D extends object>(hooks: ReactTable.Hooks<D>)
       Header: ({ getToggleAllPageRowsSelectedProps }) => {
         const { checked, onChange } = getToggleAllPageRowsSelectedProps();
         return (
-          <Checkbox checked={checked} onChange={onChange}/>
+          <Checkbox aria-label="Select all rows" checked={checked} onChange={onChange}/>
         );
       },
       Cell: ({ row }: ReactTable.CellProps<D, null>) => {
         const { checked, onChange } = row.getToggleRowSelectedProps();
         return (
-          <Checkbox checked={checked} onChange={onChange}/>
+          <Checkbox aria-label="Select row" checked={checked} onChange={onChange}/>
         );
       },
     },

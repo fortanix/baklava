@@ -18,7 +18,9 @@ export type HeaderProps = React.PropsWithChildren<ComponentProps<'header'> & {
 export const Header = ({ children, unstyled, ...propsRest }: HeaderProps) => {
   return (
     <header
-      role="banner"
+      // Note: `<header>` has an implicit default role of "banner", if it is not inside a `<section>` element
+      // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/header
+      //role="banner"
       {...propsRest}
       className={cx(
         'bk',

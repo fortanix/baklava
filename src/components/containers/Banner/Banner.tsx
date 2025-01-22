@@ -45,10 +45,8 @@ const ActionButton = (props: ActionButtonProps) => {
     <Button trimmed
       {...props}
       className={cx(cl['bk-banner__action'], cl['bk-banner__action--button'], props.className)}
-      onClick={event => {
-        event.stopPropagation(); // Prevent this from triggering any click handlers on the Banner itself (e.g. toasts)
-        props.onClick?.(event);
-      }}
+      // Prevent clicks from triggering any click handlers on the Banner itself (e.g. to prevent toast dismissal)
+      onClick={event => { event.stopPropagation(); props.onClick?.(event); }}
     />
   );
 };
@@ -69,10 +67,8 @@ const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
       <Button trimmed
         {...buttonProps}
         className={cx(cl['bk-banner__action'], cl['bk-banner__action--icon'], buttonProps.className)}
-        onClick={event => {
-          event.stopPropagation(); // Prevent this from triggering any click handlers on the Banner itself (e.g. toasts)
-          buttonProps.onClick?.(event);
-        }}
+        // Prevent clicks from triggering any click handlers on the Banner itself (e.g. to prevent toast dismissal)
+        onClick={event => { event.stopPropagation(); buttonProps.onClick?.(event); }}
       />
     </TooltipProvider>
   );
@@ -153,7 +149,7 @@ export const Banner = Object.assign(
         )}
       >
         {/* Apply `bk-theme--light` on all children (but not the box itself). */}
-        <header className={cx('bk-theme--light', cl['bk-banner__header'])}>
+        <div className={cx('bk-theme--light', cl['bk-banner__header'])}>
           <div className={cx(cl['bk-banner__header__text'])}>
             <strong className={cx(cl['bk-banner__title'])}>
               <BannerVariantIcon variant={variant} className={cx(cl['bk-banner__title__icon'])}/>
@@ -178,7 +174,7 @@ export const Banner = Object.assign(
               </ActionIcon>
             }
           </div>
-        </header>
+        </div>
         
         {!compact && children &&
           <article className={cx('bk-body-text', 'bk-theme--light', cl['bk-banner__message'])}>{children}</article>

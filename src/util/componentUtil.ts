@@ -4,11 +4,21 @@
 
 // Note: use the `dedupe` variant so that the consumer of a component can overwrite classes from the component using
 // `<MyComponent className={{ foo: false }}/>`
-import classNames from 'classnames/dedupe';
-import type { Argument as ClassNameArgument } from 'classnames';
+import classNamesDedupe from 'classnames/dedupe';
+import type { Argument as ClassNameArgument, ArgumentArray } from 'classnames';
 
 
-export { classNames, type ClassNameArgument };
+export type { ClassNameArgument };
+
+export const classNames = (...args: ArgumentArray): string => {
+  const className = classNamesDedupe(...args);
+  
+  if (import.meta.env.MODE === 'development' && className.split(' ').includes('undefined')) {
+    console.warn('Found `undefined` in class names list');
+  }
+  
+  return className;
+};
 
 // Version of `React.ComponentPropsWithRef` that supports `classnames` syntax for the `className` attribute. So that
 // components can take class names not just of type string, but any valid classnames `Argument`, e.g.:

@@ -14,6 +14,9 @@ const config: TestRunnerConfig = {
     await injectAxe(page);
   },
   async postVisit(page, context) {
+    // Workaround for https://github.com/dequelabs/axe-core/issues/3426
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
     // Get the entire context of a story, including parameters, args, argTypes, etc.
     const storyContext = await getStoryContext(page, context);
     

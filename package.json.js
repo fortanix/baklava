@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 
 const packageConfig = {
   name: '@fortanix/baklava',
-  version: '1.0.0-beta-20250107',
+  version: '1.0.0-beta-20250121-2',
   license: 'MPL-2.0',
   author: 'Fortanix',
   description: 'Fortanix Baklava design system',
@@ -85,7 +85,8 @@ const packageConfig = {
     
     // Browser automation tests
     // https://github.com/storybookjs/test-runner?tab=readme-ov-file#2-running-against-locally-built-storybooks-in-ci
-    'test:storybook': 'test-storybook --failOnConsole --browsers chromium', // For text only: FORCE_COLOR=false
+    'test:storybook': 'test-storybook --failOnConsole --browsers chromium --maxWorkers=1', // For text only: FORCE_COLOR=false
+    // Note: the following assumes `localhost:6006` is free, so don't run it if a dev server is already running
     'test:storybook-ci': `
       npx playwright install --with-deps chromium\
         && npx concurrently -k -s first -n "SB,TEST" -c "magenta,blue"\

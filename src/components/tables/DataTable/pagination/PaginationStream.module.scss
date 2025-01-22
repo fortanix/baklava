@@ -30,9 +30,10 @@
         padding-right: 0;
         
         display: flex;
+        font-weight: bk.$font-weight-regular;
         
         &:global(.nonactive) {
-          opacity: 0.4;
+          opacity: 0.6;
         }
         
         &.pager__nav--first { --keep: ; }

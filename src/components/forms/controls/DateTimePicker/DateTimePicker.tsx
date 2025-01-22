@@ -60,12 +60,14 @@ export const DateTimePicker = (props: DateTimePickerProps) => {
       )}
     >
       <DatePicker
+        aria-label="Date input"
         selected={date}
         onChange={onChange}
         dateFormat={dateFormat}
         placeholderText={placeholderText}
       />
       <TimePicker
+        aria-label="Time input"
         time={time}
         onUpdate={onTimeUpdate}
         className={cx(cl['bk-date-time-picker--time-picker'])}

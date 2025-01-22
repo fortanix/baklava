@@ -136,7 +136,7 @@
   
   @include self-or-descendent(a) {
     text-decoration: none;
-    color: #0076d1;
+    color: bk.$theme-text-link-default;
     
     &:hover {
       text-decoration: underline;
