@@ -21,9 +21,22 @@ Installation:
 npm install --save @fortanix/baklava
 ```
 
+Add the `BaklavaProvider` to the top level of your application, in order to enable certain features like toast
+notifications:
+
+```tsx
+import { BaklavaProvider } from '@fortanix/baklava';
+
+export const App = () => {
+  <BaklavaProvider>
+    <MyApp/>
+  </BaklavaProvider>
+};
+```
+
 To import a component:
 
-```typescript
+```tsx
 import { Button } from '@fortanix/baklava';
 ```
 
@@ -40,7 +53,7 @@ npm install --save vite-plugin-svg-icons
 
 Then, add the following to the `plugins` array in your vite config:
 
-```typescript
+```ts
 createSvgIconsPlugin({
   iconDirs: [path.resolve(__dirname, 'node_modules/@fortanix/baklava/src/assets/icons')],
   symbolId: 'baklava-icon-[name]',
@@ -51,7 +64,7 @@ createSvgIconsPlugin({
 
 Additionally, you will need to add the following import in your main entry file:
 
-```typescript
+```ts
 import 'virtual:svg-icons-register';
 ```
 
