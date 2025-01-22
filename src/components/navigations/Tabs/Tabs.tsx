@@ -30,7 +30,7 @@ export type TabsProps = React.PropsWithChildren<ComponentProps<'div'> & {
   unstyled?: undefined | boolean,
   
   /** Active key of tab. */
-  activeKey?: string,
+  activeKey?: undefined | string,
   
   /** Callback executed when active tab is changed. */
   onSwitch: (tabKey: TabKey) => void,

@@ -36,13 +36,12 @@ const defaultTabOptions: DefaultTabOption[] = [1,2,3,4].map(index => {
 
 type TabWithTriggerProps = React.PropsWithChildren<Partial<TabsArgs>> & {
   options?: undefined | Array<DefaultTabOption>,
-  defaultActiveTabKey: string,
+  defaultActiveTabKey?: undefined | string,
 };
 const TabWithTrigger = (props: TabWithTriggerProps) => {
   const { options = defaultTabOptions, defaultActiveTabKey, ...tabContext } = props;
   
-  const [activeTabKey, setActiveTabKey] = React.useState<null | string>(defaultActiveTabKey ?? null);
-  if (activeTabKey === null) { throw new Error(`Missing defaultActiveTabKey prop`); }
+  const [activeTabKey, setActiveTabKey] = React.useState<undefined | string>(defaultActiveTabKey);
   
   return (
     <Tabs onSwitch={setActiveTabKey} activeKey={activeTabKey} {...tabContext}>
