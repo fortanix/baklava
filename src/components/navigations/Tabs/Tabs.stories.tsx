@@ -35,12 +35,15 @@ const defaultTabOptions: DefaultTabOption[] = [1,2,3,4].map(index => {
 });
 
 type TabWithTriggerProps = React.PropsWithChildren<Partial<TabsArgs>> & {
-  options: DefaultTabOption[],
+  options?: undefined | Array<DefaultTabOption>,
   defaultActiveTabKey: string,
 };
 const TabWithTrigger = (props: TabWithTriggerProps) => {
   const { options = defaultTabOptions, defaultActiveTabKey, ...tabContext } = props;
-  const [activeTabKey, setActiveTabKey] = React.useState<string>(defaultActiveTabKey);
+  
+  const [activeTabKey, setActiveTabKey] = React.useState<null | string>(defaultActiveTabKey ?? null);
+  if (activeTabKey === null) { throw new Error(`Missing defaultActiveTabKey prop`); }
+  
   return (
     <Tabs onSwitch={setActiveTabKey} activeKey={activeTabKey} {...tabContext}>
       {options.map(tab => {
@@ -58,20 +61,21 @@ const TabWithTrigger = (props: TabWithTriggerProps) => {
     </Tabs>
   );
 };
+type StoryWithTrigger = StoryObj<TabWithTriggerProps>;
 
-const BaseStory: Story = {
+const BaseStory: StoryWithTrigger = {
   args: {},
   render: (args) => <TabWithTrigger {...args} />,
 };
 
-export const Standard: Story = {
-    ...BaseStory,
+export const Standard: StoryWithTrigger = {
+  ...BaseStory,
   name: 'Standard',
   args: { ...BaseStory.args },
 };
 
-export const StandardHover: Story = {
-    ...BaseStory,
+export const StandardHover: StoryWithTrigger = {
+  ...BaseStory,
   name: 'Standard [hover]',
   args: {
     ...BaseStory.args,
@@ -87,8 +91,8 @@ export const StandardHover: Story = {
   },
 };
 
-export const StandardFocus: Story = {
-    ...BaseStory,
+export const StandardFocus: StoryWithTrigger = {
+  ...BaseStory,
   name: 'Standard [focus]',
   args: {
     ...BaseStory.args,

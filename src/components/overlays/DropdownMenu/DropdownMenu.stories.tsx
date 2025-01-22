@@ -21,6 +21,7 @@ export default {
   argTypes: {
   },
   args: {
+    label: 'Test dropdown',
   },
   render: (args) => <DropdownMenu {...args}/>,
 } satisfies Meta<DropdownMenuArgs>;

@@ -17,7 +17,10 @@ export type AnchorRenderArgs = {
   open: boolean,
   state: DropdownMenuContext,
 };
-export type DropdownMenuProviderProps = Omit<ComponentProps<typeof DropdownMenu>, 'children'> & {
+export type DropdownMenuProviderProps = Omit<ComponentProps<typeof DropdownMenu>, 'children' | 'label'> & {
+  /** An accessible name for this dropdown menu. Required */
+  label: string,
+  
   /**
   * The content to render, which should contain the anchor. This should be a render prop which takes props to
   * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
@@ -41,7 +44,15 @@ export type DropdownMenuProviderProps = Omit<ComponentProps<typeof DropdownMenu>
  */
 export const DropdownMenuProvider = Object.assign(
   (props: DropdownMenuProviderProps) => {
-    const { children, unstyled = false, items, placement = 'bottom', enablePreciseTracking, ...propsRest } = props;
+    const {
+      label,
+      children,
+      unstyled = false,
+      items,
+      placement = 'bottom',
+      enablePreciseTracking,
+      ...propsRest
+    } = props;
     
     const selectedRef = React.useRef<React.ComponentRef<typeof Option>>(null);
     const [selected, setSelected] = React.useState<null | OptionDef>(null);
@@ -121,6 +132,7 @@ export const DropdownMenuProvider = Object.assign(
         {renderAnchor()}
         
         <DropdownMenu
+          label={label}
           {...getFloatingProps({
             popover: 'manual',
             style: floatingStyles,

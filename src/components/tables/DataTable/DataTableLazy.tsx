@@ -135,7 +135,7 @@ export const TableProviderLazy = <D extends object>(props: TableProviderLazyProp
   const [reloadTrigger, setReloadTrigger] = React.useState(0);
   const reload = React.useCallback(() => {
     setReloadTrigger(trigger => (trigger + 1) % 100);
-  }, [setReloadTrigger]);
+  }, []);
   
   
   // Controlled table state
@@ -179,16 +179,12 @@ export const TableProviderLazy = <D extends object>(props: TableProviderLazyProp
         return state;
       },
       useControlledState: state => {
-        return React.useMemo(
-          () => ({
-            ...state,
-            pageSize,
-          }),
-          [state, pageSize],
-        );
+        // https://react-table-v7-docs.netlify.app/docs/faq#how-can-i-manually-control-the-table-state
+        // biome-ignore lint/correctness/useExhaustiveDependencies: Recommended by the library author, see docs above.
+        return React.useMemo(() => ({ ...state, pageSize }), [state, pageSize]);
       },
       
-      // https://react-table.tanstack.com/docs/faq
+      // https://react-table-v7-docs.netlify.app/docs/faq
       //   #how-do-i-stop-my-table-state-from-automatically-resetting-when-my-data-changes
       autoResetPage: false,
       autoResetExpanded: false,
@@ -221,13 +217,14 @@ export const TableProviderLazy = <D extends object>(props: TableProviderLazyProp
     ...plugins,
   );
   
+  // The `table` reference is mutated, so cannot use it as dependency for `useMemo` directly.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: (see comment above)
   const context = React.useMemo<TableContextState<D>>(() => ({
     status,
     setStatus,
     reload,
     table,
   }), [JSON.stringify(status), reload, table.state, ...Object.values(tableOptions)]);
-  // Note: the `table` reference is mutated, so cannot use it as dependency for `useMemo` directly
   
   const TableContext = React.useMemo(() => createTableContext<D>(), []);
   
@@ -263,8 +260,8 @@ export const DataTableLazy = ({ className, footer, ...propsRest }: DataTableLazy
       // Edge case: no items and yet we are not on the first page. Navigate back to the previous page.
       table.previousPage();
     }
-  }, [status.ready, table.rows.length, table.state.pageIndex, table.canPreviousPage]);
-
+  }, [status.ready, table.rows.length, table.state.pageIndex, table.canPreviousPage, table.previousPage]);
+  
   // Use `<Pagination/>` by default, unless the table is empty (in which case there are "zero" pages)
   const footerDefault = isEmpty ? null : <Pagination/>;
   const footerWithFallback = typeof footer === 'undefined' ? footerDefault : footer;

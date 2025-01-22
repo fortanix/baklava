@@ -34,7 +34,7 @@
     "rules": {
       "recommended": true,
       "correctness": {
-        "useExhaustiveDependencies": "off"
+        //"useExhaustiveDependencies": "off"
       },
       "complexity": {
         "noBannedTypes": "off",

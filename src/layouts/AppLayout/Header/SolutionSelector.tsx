@@ -23,6 +23,7 @@ export const SolutionSelector = (props: SolutionSelectorProps) => {
   
   return (
     <DropdownMenuProvider
+      label="Solution selector"
       placement="bottom-start"
       items={
         <>

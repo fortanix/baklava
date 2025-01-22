@@ -38,6 +38,7 @@ export const UserMenu = (props: UserMenuProps) => {
   
   return (
     <DropdownMenuProvider
+      label="User menu"
       placement="bottom-end"
       items={
         <>
