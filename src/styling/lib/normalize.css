@@ -1,7 +1,11 @@
 /* stylelint-disable */
-/* Source: https://github.com/u1ui/norm.css */
+/*
+Source: https://github.com/u1ui/norm.css
+Modifications:
+  - Change `html`/`:root` to `&:root` so that we can nest all these rules inside a `.bk-root` class.
+*/
 
-:where(html) {
+:where(&:root) {
   /* Chrome rounds computed line-height:
   16px (font-size) * 1.15 (line-height) = 18.4px (line-height);
   But chrome uses 18px. So use a number that gives full pixels. (1.124 or 1.1875) */

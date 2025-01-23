@@ -80,7 +80,7 @@ a `light-dark()` expression in a variable and reuse that in a different theme. M
 }
 
 @mixin styles {
-  :root {
+  &:root {
     /* Indicates that we support both light and dark themes (in no particular order) */
     @include theme('light dark');
     

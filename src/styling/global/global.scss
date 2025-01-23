@@ -26,7 +26,7 @@
     @include isolate;
   }
   
-  :root {
+  &:root {
     @include isolate;
     
     interpolate-size: allow-keywords; // Allow transitioning width/height to `auto`

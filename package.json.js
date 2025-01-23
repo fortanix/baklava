@@ -109,6 +109,7 @@ const packageConfig = {
     'glob': '^11.0.1',
     
     // Build
+    'browserslist': '^4.24.4',
     'vite': '^5.4.11', // Cannot use vite v6, blocked by https://github.com/privatenumber/vite-css-modules/issues/13
     '@vitejs/plugin-react': '^4.3.4',
     'vite-plugin-dts': '^4.5.0',
@@ -126,6 +127,7 @@ const packageConfig = {
     'vitest': '^2.1.8',
     '@vitest/ui': '^2.1.8',
     'axe-playwright': '^2.0.3',
+    '@ngneat/falso': '^6.4.0',
     
     // Storybook
     'storybook': '^8.4.7',
@@ -159,8 +161,6 @@ const packageConfig = {
     
     // Data table
     '@types/react-table': '^7.7.20',
-    // Fake data
-    "@ngneat/falso": "^6.4.0",
   },
   
   // Dependencies needed when running the generated build

@@ -1,4 +1,10 @@
 /* stylelint-disable */
+/*
+Source: https://github.com/elad2412/the-new-css-reset
+Modifications:
+  - Change `html`/`:root` to `&:root` so that we can nest all these rules inside a `.bk-root` class.
+*/
+
 /***
   The new CSS reset - version 1.11.3 (last updated 25.08.2024)
   GitHub page: https://github.com/elad2412/the-new-css-reset
@@ -9,7 +15,7 @@
   - The "symbol *" part is to solve Firefox SVG sprite bug
   - The "html" element is excluded, otherwise a bug in Chrome breaks the CSS hyphens property (https://github.com/elad2412/the-new-css-reset/issues/36)
  */
-*:where(:not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)) {
+*:where(:not(&:root, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)) {
   all: unset;
   display: revert;
 }
@@ -22,7 +28,7 @@
 }
 
 /* Fix mobile Safari increase font-size on landscape mode */
-html {
+&:root {
   -moz-text-size-adjust: none;
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
