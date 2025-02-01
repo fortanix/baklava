@@ -146,7 +146,7 @@ const DialogModalControlledWithRef = (props: React.ComponentProps<typeof DialogM
   const ref = DialogModal.useModalRef(null);
   
   // biome-ignore lint/correctness/useExhaustiveDependencies: want to only trigger this once
-    React.useEffect(() => {
+  React.useEffect(() => {
     globalThis.setTimeout(() => {
       ref.current?.activate();
     }, 2000);
