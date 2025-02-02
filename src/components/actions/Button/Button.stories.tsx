@@ -11,6 +11,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 
 import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
+import { Card } from '../../containers/Card/Card.tsx';
 import { Banner } from '../../containers/Banner/Banner.tsx';
 
 import { Button } from './Button.tsx';
@@ -150,6 +151,29 @@ export const TertiaryDisabled: Story = {
   ...Tertiary,
   name: 'Tertiary [disabled]',
   args: { ...Tertiary.args, disabled: true },
+};
+
+export const VariantCard: Story = {
+  render: (args) => (
+    <Card style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      gridAutoFlow: 'row',
+      gap: '1rem',
+    }}>
+      <p><Button variant="card" {...args} kind="primary"/></p>
+      <p><Button variant="card" {...args} kind="primary" nonactive/></p>
+      <p><Button variant="card" {...args} kind="primary" disabled/></p>
+      
+      <p><Button variant="card" {...args} kind="secondary"/></p>
+      <p><Button variant="card" {...args} kind="secondary" nonactive/></p>
+      <p><Button variant="card" {...args} kind="secondary" disabled/></p>
+      
+      <p><Button variant="card" {...args} kind="tertiary"/></p>
+      <p><Button variant="card" {...args} kind="tertiary" nonactive/></p>
+      <p><Button variant="card" {...args} kind="tertiary" disabled/></p>
+    </Card>
+  ),
 };
 
 export const AsyncButton: Story = {

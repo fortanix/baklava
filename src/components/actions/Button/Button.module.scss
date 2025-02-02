@@ -10,7 +10,11 @@
     
     --bk-button-color-accent: #{bk.$theme-button-primary-background-default};
     --bk-button-color-contrast: #{bk.$theme-button-primary-text-default};
-        
+    &.bk-button--card {
+      --bk-button-color-accent: #{bk.$theme-button-card-primary-background-default};
+      --bk-button-color-contrast: #{bk.$theme-button-card-primary-text-default};
+    }
+    
     cursor: pointer;
     user-select: none;
     
@@ -58,19 +62,32 @@
     /* NOTE: the ordering here is important, more important rules must come later (in case of multiple states) */
     &:is(:focus-visible, :global(.pseudo-focus-visible)) {
       --bk-button-color-accent: #{bk.$theme-button-primary-background-focused};
+      
+      &.bk-button--card {
+        --bk-button-color-accent: #{bk.$theme-button-card-primary-background-focused};
+      }
     }
     &:is(:hover, :global(.pseudo-hover)) {
       --bk-button-color-accent: #{bk.$theme-button-primary-background-hover};
+      
+      &.bk-button--card {
+        --bk-button-color-accent: #{bk.$theme-button-card-primary-background-hover};
+      }
     }
     &:is(:disabled, .bk-button--disabled) {
+      cursor: not-allowed;
       --bk-button-color-accent: #{bk.$theme-button-primary-background-disabled};
       --bk-button-color-contrast: #{bk.$theme-button-primary-text-disabled};
-      cursor: not-allowed;
     }
     &.bk-button--nonactive {
+      cursor: not-allowed;
       --bk-button-color-accent: #{bk.$theme-button-primary-background-non-active};
       --bk-button-color-contrast: #{bk.$theme-button-primary-text-non-active};
-      cursor: not-allowed;
+      
+      &.bk-button--card {
+        --bk-button-color-accent: #{bk.$theme-button-card-primary-background-non-active};
+        --bk-button-color-contrast: #{bk.$theme-button-card-primary-text-non-active};
+      }
     }
     
     @media (prefers-reduced-motion: no-preference) {
