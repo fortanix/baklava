@@ -9,7 +9,8 @@
 /* Match either the current context (&), or a descendent of it */
 /* Note: only use this on single-element selectors (e.g. `p`), not on descendent selectors like `p a`. */
 @mixin self-or-descendent($selector) {
-  #{$selector}#{&}, & #{$selector} {
+  //#{$selector}#{&}, & #{$selector} {
+  :is(#{$selector}):is(&, & *) {
     @content;
   }
 }
@@ -41,7 +42,7 @@
     border-top: 1px solid #dbdbdb;
   }
   
-  @include self-or-descendent(':is(button, input, textarea)') {
+  @include self-or-descendent('button, input, textarea') {
     transition:
       background-color 0.1s linear,
       border-color 0.1s linear,
@@ -49,13 +50,13 @@
       box-shadow 0.1s linear,
       transform 0.1s ease;
   }
-  @include self-or-descendent(':is(b, strong, th)') {
+  @include self-or-descendent('b, strong, th') {
     font-weight: 600;
   }
-  @include self-or-descendent(':is(u)') {
+  @include self-or-descendent('u') {
     text-decoration: underline;
   }
-  @include self-or-descendent(':is(i, em)') {
+  @include self-or-descendent('i, em') {
     font-style: italic;
   }
   
@@ -70,19 +71,19 @@
     }
   }
   
-  @include self-or-descendent(#{address}) {
+  @include self-or-descendent(address) {
     font-style: normal;
   }
   
-  @include self-or-descendent(':is(button, input[type=submit], input[type=button], input[type=checkbox])') {
+  @include self-or-descendent('button, input[type=submit], input[type=button], input[type=checkbox]') {
     cursor: pointer;
   }
   
-  @include self-or-descendent(':is(input:not([type=checkbox]):not([type=radio]), select)') {
+  @include self-or-descendent('input:not([type=checkbox]):not([type=radio]), select') {
     display: block;
   }
   
-  @include self-or-descendent(':is(input, select, button, textarea)') {
+  @include self-or-descendent('input, select, button, textarea') {
     color: #000000;
     background-color: #efefef;
     font-family: inherit;
@@ -111,16 +112,16 @@
     resize: vertical;
   }
   
-  @include self-or-descendent(':is(button, input[type=submit], input[type=button])') {
+  @include self-or-descendent('button, input[type=submit], input[type=button]') {
     padding-right: 30px;
     padding-left: 30px;
   }
   
-  @include self-or-descendent(':is(button:hover, input[type=submit]:hover, input[type=button]:hover)') {
+  @include self-or-descendent('button:hover, input[type=submit]:hover, input[type=button]:hover') {
     background: #dddddd;
   }
   
-  @include self-or-descendent(':is(input:disabled, select:disabled, button:disabled, textarea:disabled)') {
+  @include self-or-descendent('input:disabled, select:disabled, button:disabled, textarea:disabled') {
     cursor: not-allowed;
     opacity: .5;
   }
@@ -142,14 +143,14 @@
     }
   }
   
-  @include self-or-descendent(':is(code, kbd)') {
+  @include self-or-descendent('code, kbd') {
     background: light-dark(#ccc, #333);
     padding: 5px;
     border-radius: 3px;
     font-family: var(--bk-font-family-code, monospace);
   }
   
-  @include self-or-descendent(':is(pre)') {
+  @include self-or-descendent('pre') {
     > code {
       padding: 10px;
       display: block;
@@ -163,11 +164,11 @@
     max-width: 100%;
   }
   
-  @include self-or-descendent(':is(ul, ol, dl)') {
+  @include self-or-descendent('ul, ol, dl') {
     --list-indent: 1.5ch;
     margin-block-start: var(--bk-body-block-spacing);
   }
-  @include self-or-descendent(':is(li)') {
+  @include self-or-descendent('li') {
     /* Nested lists */
     > :is(ul, ol, dl) {
       margin-left: var(--list-indent);
@@ -206,7 +207,7 @@
     width: 100%;
   }
   
-  @include self-or-descendent(':is(td, th)') {
+  @include self-or-descendent('td, th') {
     padding: 6px;
     text-align: left;
   }
@@ -221,6 +222,7 @@
     }
   }
   
+  // XXX replace this with `margin-trim` once that's available
   > :nth-child(1 of :not([hidden], dialog)) {
     margin-block-start: 0;
   }

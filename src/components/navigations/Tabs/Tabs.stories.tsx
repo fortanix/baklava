@@ -83,7 +83,7 @@ export const StandardHover: StoryWithTrigger = {
         return {
           ...option,
           className: 'pseudo-hover',
-        }
+        };
       }
       return option;
     }),

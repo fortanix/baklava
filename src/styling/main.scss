@@ -22,19 +22,21 @@
 
 @include layers.styles; // Cascade layer ordering: MUST be emitted before anything else
 
-@layer normalize { @include meta.load-css('./lib/normalize.css'); } // First, normalize styling across browsers
-@layer reset { @include reset.styles; } // Next, reset all styling to minimal base
-
-// User-oriented styling (high layer specificity in order to apply to everything by default). If a component needs
-// to override these styling (e.g. custom focus outline), then use `!important`.
-// Note: despite being in a high layer, emitted early so that it is parsed sooner.
-@layer accessibility { @include accessibility.styles; }
-
-// Baklava-specific styling
-@layer baklava.base { @include variables.styles; }
-@layer baklava.base { @include theming.styles; }
-@layer baklava.base { @include global.styles; }
-@layer baklava.body-text { @include bodytext.styles; }
-
-// Emit fonts last, because vite will inline the font files, and we don't want to block the rest of the styling
-@layer baklava.base { @include fonts.styles; }
+.bk-root {
+  @layer normalize { @include meta.load-css('./lib/normalize.css'); } // First, normalize styling across browsers
+  @layer reset { @include reset.styles; } // Next, reset all styling to minimal base
+  
+  // User-oriented styling (high layer specificity in order to apply to everything by default). If a component needs
+  // to override these styling (e.g. custom focus outline), then use `!important`.
+  // Note: despite being in a high layer, emitted early so that it is parsed sooner.
+  @layer accessibility { @include accessibility.styles; }
+  
+  // Baklava-specific styling
+  @layer baklava.base { @include variables.styles; }
+  @layer baklava.base { @include theming.styles; }
+  @layer baklava.base { @include global.styles; }
+  @layer baklava.body-text { @include bodytext.styles; }
+  
+  // Emit fonts last, because vite will inline the font files, and we don't want to block the rest of the styling
+  @layer baklava.base { @include fonts.styles; }
+}

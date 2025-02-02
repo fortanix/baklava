@@ -66,7 +66,7 @@
 }
 
 @mixin styles {
-  :root {
+  &:root {
     // See `theming.scss`
     //--bk-focus-outline-width
     //--bk-focus-outline-color
