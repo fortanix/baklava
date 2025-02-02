@@ -29,8 +29,8 @@ export type ButtonProps = React.PropsWithChildren<Omit<ComponentProps<'button'>,
    */
   label?: undefined | string,
   
-  /** What variant the button is, from higher prominance to lower. */
-  variant?: undefined | 'primary' | 'secondary' | 'tertiary',
+  /** The kind of button, from higher prominance to lower. */
+  kind?: undefined | 'primary' | 'secondary' | 'tertiary',
   
   /**
    * Whether the button is disabled. This is meant for essentially permanent disabled buttons, not for buttons that
@@ -62,7 +62,7 @@ export const Button = (props: ButtonProps) => {
     label,
     disabled = false,
     nonactive = false,
-    variant = 'tertiary',
+    kind = 'tertiary',
     onPress,
     asyncTimeout = 30_000,
     ...propsRest
@@ -145,8 +145,8 @@ export const Button = (props: ButtonProps) => {
         bk: true,
         [cl['bk-button']]: !unstyled,
         [cl['bk-button--trimmed']]: trimmed,
-        [cl['bk-button--primary']]: variant === 'primary',
-        [cl['bk-button--secondary']]: variant === 'secondary',
+        [cl['bk-button--primary']]: kind === 'primary',
+        [cl['bk-button--secondary']]: kind === 'secondary',
         [cl['bk-button--disabled']]: !isInteractive,
         [cl['bk-button--nonactive']]: isNonactive,
         'nonactive': isNonactive, // Global class name so that consumers can style nonactive states

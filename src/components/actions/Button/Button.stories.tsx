@@ -29,7 +29,7 @@ export default {
   args: {
     unstyled: false,
     label: 'Button',
-    variant: 'primary',
+    kind: 'primary',
     nonactive: false,
     disabled: false,
     onPress: () => { notify.success('You pressed the button.'); },
@@ -60,7 +60,7 @@ const BaseStory: Story = {
 
 const PrimaryStory: Story = {
   ...BaseStory,
-  args: { ...BaseStory.args, variant: 'primary' },
+  args: { ...BaseStory.args, kind: 'primary' },
 };
 
 export const PrimaryStandard: Story = {
@@ -95,7 +95,7 @@ export const PrimaryDisabled: Story = {
 export const Secondary: Story = {
   ...BaseStory,
   name: 'Secondary [standard]',
-  args: { ...BaseStory.args, variant: 'secondary' },
+  args: { ...BaseStory.args, kind: 'secondary' },
 };
 
 export const SecondaryHover: Story = {
@@ -125,7 +125,7 @@ export const SecondaryDisabled: Story = {
 export const Tertiary: Story = {
   ...BaseStory,
   name: 'Tertiary [standard]',
-  args: { ...BaseStory.args, variant: 'tertiary' },
+  args: { ...BaseStory.args, kind: 'tertiary' },
 };
 
 export const TertiaryHover: Story = {
