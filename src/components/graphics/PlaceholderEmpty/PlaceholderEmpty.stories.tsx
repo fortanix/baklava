@@ -30,8 +30,8 @@ export default {
 
 const actions = (
   <PlaceholderEmptyAction>
-    <Button variant="secondary">Button</Button>
-    <Button variant="primary">Button</Button>
+    <Button kind="secondary">Button</Button>
+    <Button kind="primary">Button</Button>
   </PlaceholderEmptyAction>
 );
 

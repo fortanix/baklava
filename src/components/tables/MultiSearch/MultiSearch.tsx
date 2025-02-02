@@ -710,7 +710,7 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
       )}
       <div className="bk-multi-search__alternatives-action">
         <Button
-          variant="primary"
+          kind="primary"
           onPress={onSelectionComplete}
           disabled={!arrayValidation.isValid}
         >
@@ -944,7 +944,7 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
         
       <div className="bk-multi-search__date-time-action">
         <Button
-          variant="primary"
+          kind="primary"
           onPress={onSelectionComplete}
           nonactive={!dateTimeRangeValidation.isValid}
         >
@@ -968,7 +968,7 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
 
       <div className="bk-multi-search__date-time-action">
         <Button
-          variant="primary"
+          kind="primary"
           onPress={onSelectionComplete}
           nonactive={!dateTimeRangeValidation.isValid}
         >

@@ -46,7 +46,7 @@ export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
       >
         {({ props, open }) => (
           <Button
-            variant="tertiary"
+            kind="tertiary"
             {...props()}
             aria-label={`${table.state.pageSize} rows per page`}
             className={cx(

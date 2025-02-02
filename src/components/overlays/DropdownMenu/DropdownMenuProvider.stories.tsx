@@ -32,7 +32,7 @@ export const Standard: Story = {
   name: 'DropdownMenuProvider',
   args: {
     children: ({ props, state }) => (
-      <Button variant="primary" {...props()}>
+      <Button kind="primary" {...props()}>
         {state.selectedOption ? `Selected: ${state.selectedOption}` : 'Open dropdown'}
       </Button>
     ),
@@ -55,7 +55,7 @@ export const WithPlacement: Story = {
   args: {
     placement: 'right',
     children: ({ props, state }) => (
-      <Button variant="primary" {...props()}>
+      <Button kind="primary" {...props()}>
         {state.selectedOption ? `Selected: ${state.selectedOption}` : 'Open dropdown placed to the right'}
       </Button>
     ),

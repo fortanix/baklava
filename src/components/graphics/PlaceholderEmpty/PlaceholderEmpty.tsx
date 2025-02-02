@@ -80,7 +80,7 @@ export const PlaceholderEmpty = (props: PlaceholderEmptyProps) => {
 export type PlaceholderEmptyActionProps = React.PropsWithChildren<ComponentProps<'div'>>;
 /**
  * A wrapper component, intended to easily add some styling to children's `<Button/>`'s. 
- * UX expects that such buttons are `<Button variant="tertiary"/>`.
+ * UX expects that such buttons are `<Button kind="tertiary"/>`.
  */
 export const PlaceholderEmptyAction = (props: PlaceholderEmptyActionProps) => {
   return (

@@ -22,7 +22,7 @@ export type ButtonAsLinkProps = React.PropsWithChildren<ComponentProps<'button'>
   label?: NonNullable<LinkProps['label']>,
   
   // Button props
-  //variant: NonNullable<ButtonProps['variant']>,
+  //kind: NonNullable<ButtonProps['kind']>,
   //nonactive: NonNullable<ButtonProps['nonactive']>,
   //disabled: NonNullable<ButtonProps['disabled']>,
   onPress?: NonNullable<ButtonProps['onPress']>,

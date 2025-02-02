@@ -280,7 +280,7 @@ export const DataTableLazy = ({ className, footer, ...propsRest }: DataTableLazy
         <DataTablePlaceholderError
           actions={
             <PlaceholderEmptyAction>
-              <Button variant="primary" onPress={() => { reload(); }}>
+              <Button kind="primary" onPress={() => { reload(); }}>
                 Retry
               </Button>
             </PlaceholderEmptyAction>
