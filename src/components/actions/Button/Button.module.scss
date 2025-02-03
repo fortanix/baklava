@@ -70,7 +70,7 @@
     &:is(:hover, :global(.pseudo-hover)) {
       --bk-button-color-accent: #{bk.$theme-button-primary-background-hover};
       
-      &.bk-button--card {
+      &:where(.bk-button--card) {
         --bk-button-color-accent: #{bk.$theme-button-card-primary-background-hover};
       }
     }
