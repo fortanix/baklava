@@ -27,9 +27,9 @@ export const AccountSelector = (props: AccountSelectorProps) => {
       placement="bottom-start"
       items={
         <>
-          <DropdownMenuProvider.Option optionKey="account-1" icon="accounts" label="Account 1"/>
-          <DropdownMenuProvider.Option optionKey="account-2" icon="accounts" label="Account 2"/>
-          <DropdownMenuProvider.Option optionKey="account-3" icon="accounts" label="Account 3"/>
+          <DropdownMenuProvider.Option optionKey="account-1" icon="account" label="Account 1"/>
+          <DropdownMenuProvider.Option optionKey="account-2" icon="account" label="Account 2"/>
+          <DropdownMenuProvider.Option optionKey="account-3" icon="account" label="Account 3"/>
         </>
       }
     >
@@ -40,11 +40,11 @@ export const AccountSelector = (props: AccountSelectorProps) => {
             className: cx('bk', { [cl['bk-account-selector']]: !unstyled }, propsRest.className),
           })}
         >
-          <Icon icon="group" className={cl['bk-account-selector__icon']}
+          <Icon icon="account" className={cx(cl['bk-account-selector__icon'])}
             decoration={{ type: 'background-circle' }}
           />
           {state.selectedOption === null ? 'Accounts' : state.selectedOption}
-          <Icon icon="caret-down"/>
+          <Icon icon="caret-down" className={cx(cl['bk-account-selector__caret'])}/>
         </Button>
       }
     </DropdownMenuProvider>

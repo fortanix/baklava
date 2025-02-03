@@ -12,7 +12,6 @@ type AppLayoutProps = React.PropsWithChildren<ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 }>;
-
 /**
  * AppLayout component.
  */

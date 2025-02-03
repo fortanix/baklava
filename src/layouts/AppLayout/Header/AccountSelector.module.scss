@@ -21,6 +21,10 @@
     
     .bk-account-selector__icon {
       --bk-icon-accent-color: #{bk.$theme-header-icon-background-default};
+      //font-size: 1.2em; // FIXME: need to make sure the overall size (with decoration) is not affected
+    }
+    .bk-account-selector__caret {
+      margin-inline-start: -0.2rem; // Compensate for visual gap in the icon itself
     }
   }
 }

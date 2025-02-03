@@ -28,7 +28,7 @@ export const UserMenu = (props: UserMenuProps) => {
     if (userName) {
       return (
         <>
-          <Icon icon="user-profile" className={cx(cl['bk-user-menu__user-icon'])}/>
+          <Icon icon="user" className={cx(cl['bk-user-menu__user-icon'])}/>
           <span className={cx(cl['bk-user-menu__user-name'])}>{userName}</span>
         </>
       );

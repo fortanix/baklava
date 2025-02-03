@@ -43,7 +43,7 @@ export const SolutionSelector = (props: SolutionSelectorProps) => {
             decoration={{ type: 'background-circle' }}
           />
           Solutions
-          <Icon icon="caret-down"/>
+          <Icon icon="caret-down" className={cl['bk-solution-selector__caret']}/>
         </Button>
       }
     </DropdownMenuProvider>

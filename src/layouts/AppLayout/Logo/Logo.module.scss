@@ -10,15 +10,15 @@
   .bk-app-logo {
     @include bk.component-base(bk-app-logo);
     container-type: inline-size;
-    width: 200px;
+    width: 200px; // FIXME
     aspect-ratio: 1 / 0.2;
     
     --icon-size: 0.16fr;
     
     place-self: center start;
     
-    // overflow: clip;
-    // user-select: none;
+    overflow: clip;
+    user-select: none;
     
     margin: 13px 10px;
     margin-bottom: 7px;
