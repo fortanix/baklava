@@ -32,7 +32,7 @@ export const PaginationStreamPager = ({ pageSizeOptions }: PaginationStreamPager
       </Button>
       
       <Button trimmed
-        variant="tertiary"
+        kind="tertiary"
         className={cx(cl['pager__nav'], cl['pager__nav--prev'])}
         onPress={() => { table.previousPage(); }}
         nonactive={!table.canPreviousPage}
@@ -42,7 +42,7 @@ export const PaginationStreamPager = ({ pageSizeOptions }: PaginationStreamPager
       </Button>
       
       <Button trimmed
-        variant="tertiary"
+        kind="tertiary"
         className={cx(cl['pager__nav'], cl['pager__nav--next'])}
         onPress={() => { table.nextPage(); }}
         nonactive={!table.canNextPage}

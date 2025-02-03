@@ -11,6 +11,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 
 import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
+import { Card } from '../../containers/Card/Card.tsx';
 import { Banner } from '../../containers/Banner/Banner.tsx';
 
 import { Button } from './Button.tsx';
@@ -29,7 +30,7 @@ export default {
   args: {
     unstyled: false,
     label: 'Button',
-    variant: 'primary',
+    kind: 'primary',
     nonactive: false,
     disabled: false,
     onPress: () => { notify.success('You pressed the button.'); },
@@ -60,7 +61,7 @@ const BaseStory: Story = {
 
 const PrimaryStory: Story = {
   ...BaseStory,
-  args: { ...BaseStory.args, variant: 'primary' },
+  args: { ...BaseStory.args, kind: 'primary' },
 };
 
 export const PrimaryStandard: Story = {
@@ -95,7 +96,7 @@ export const PrimaryDisabled: Story = {
 export const Secondary: Story = {
   ...BaseStory,
   name: 'Secondary [standard]',
-  args: { ...BaseStory.args, variant: 'secondary' },
+  args: { ...BaseStory.args, kind: 'secondary' },
 };
 
 export const SecondaryHover: Story = {
@@ -125,7 +126,7 @@ export const SecondaryDisabled: Story = {
 export const Tertiary: Story = {
   ...BaseStory,
   name: 'Tertiary [standard]',
-  args: { ...BaseStory.args, variant: 'tertiary' },
+  args: { ...BaseStory.args, kind: 'tertiary' },
 };
 
 export const TertiaryHover: Story = {
@@ -150,6 +151,29 @@ export const TertiaryDisabled: Story = {
   ...Tertiary,
   name: 'Tertiary [disabled]',
   args: { ...Tertiary.args, disabled: true },
+};
+
+export const VariantCard: Story = {
+  render: (args) => (
+    <Card style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      gridAutoFlow: 'row',
+      gap: '1rem',
+    }}>
+      <p><Button variant="card" {...args} kind="primary"/></p>
+      <p><Button variant="card" {...args} kind="primary" nonactive/></p>
+      <p><Button variant="card" {...args} kind="primary" disabled/></p>
+      
+      <p><Button variant="card" {...args} kind="secondary"/></p>
+      <p><Button variant="card" {...args} kind="secondary" nonactive/></p>
+      <p><Button variant="card" {...args} kind="secondary" disabled/></p>
+      
+      <p><Button variant="card" {...args} kind="tertiary"/></p>
+      <p><Button variant="card" {...args} kind="tertiary" nonactive/></p>
+      <p><Button variant="card" {...args} kind="tertiary" disabled/></p>
+    </Card>
+  ),
 };
 
 export const AsyncButton: Story = {

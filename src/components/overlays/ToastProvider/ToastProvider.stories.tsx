@@ -50,7 +50,7 @@ export const ToastStandard: Story = {
 export const ToastProviderWithTrigger: Story = {
   args: {
     children: (
-      <Button variant="primary" label="Notify (success)"
+      <Button kind="primary" label="Notify (success)"
         onPress={() => notify.success({ title: 'Notification title', message: 'This is a success notification.' })}
       />
     ),

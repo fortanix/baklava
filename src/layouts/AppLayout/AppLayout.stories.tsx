@@ -82,7 +82,7 @@ export const Standard: Story = {
             
             <DialogModal
               title="Modal"
-              trigger={({ activate }) => <Button variant="primary" label="Open modal" onPress={() => { activate(); }}/>}
+              trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={() => { activate(); }}/>}
             >
               Test
             </DialogModal>

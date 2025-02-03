@@ -67,8 +67,8 @@ const DataTableLazyTemplate = (props: dataTeableLazyTemplateProps) => {
               title="No users"
               actions={
                 <DataTableLazy.PlaceholderEmptyAction>
-                  <Button variant="secondary" onPress={() => {}}>Action 1</Button>
-                  <Button variant="primary" onPress={() => {}}>Action 2</Button>
+                  <Button kind="secondary" onPress={() => {}}>Action 1</Button>
+                  <Button kind="primary" onPress={() => {}}>Action 2</Button>
                 </DataTableLazy.PlaceholderEmptyAction>
               }
             />

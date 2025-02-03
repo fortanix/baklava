@@ -106,7 +106,7 @@ const TooltipNativeAnchoringControlled = () => {
         This is a tooltip with a lot of text that gives more information about the element.
         It has a <DummyLink>link</DummyLink> you can focus.
       </Tooltip>
-      <Button popoverTarget={id} variant="primary" label="Hover over me"
+      <Button popoverTarget={id} kind="primary" label="Hover over me"
         style={{ anchorName }}
         onMouseEnter={() => { refTooltip.current?.showPopover(); }}
         onMouseLeave={() => { refTooltip.current?.hidePopover(); }}

@@ -67,12 +67,12 @@ const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
 const CancelAction = (props: ActionProps) => {
   const context = useDialogContext();
   const handlePress = () => { props.onPress?.(); context.close(); };
-  return <Action variant="secondary" label="Cancel" {...props} onPress={handlePress}/>;
+  return <Action kind="secondary" label="Cancel" {...props} onPress={handlePress}/>;
 };
 const SubmitAction = (props: ActionProps) => {
   const context = useDialogContext();
   const handlePress = () => { props.onPress?.(); context.close(); };
-  return <Action variant="primary" label="Submit" {...props} onPress={handlePress}/>;
+  return <Action kind="primary" label="Submit" {...props} onPress={handlePress}/>;
 };
 
 export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {

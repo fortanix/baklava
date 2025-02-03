@@ -96,7 +96,7 @@ export const WithComponents: Story = {
           from the body text styling.
         </p>
         <p>Here is a button component:</p>
-        <Button variant="primary" label="Button"/>
+        <Button kind="primary" label="Button"/>
         
         <Panel>
           <Panel.Heading>This panel contains a nested a bk-body-text</Panel.Heading>

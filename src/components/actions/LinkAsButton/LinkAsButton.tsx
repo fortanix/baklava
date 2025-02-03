@@ -21,7 +21,7 @@ export type LinkAsButtonProps = React.PropsWithChildren<ComponentProps<'a'> & {
   label?: NonNullable<LinkProps['label']>,
   
   // Button props
-  variant?: NonNullable<ButtonProps['variant']>,
+  kind?: NonNullable<ButtonProps['kind']>,
   nonactive?: NonNullable<ButtonProps['nonactive']>,
   disabled?: NonNullable<ButtonProps['disabled']>,
 }>;
@@ -34,7 +34,7 @@ export const LinkAsButton = (props: LinkAsButtonProps) => {
   const {
     unstyled = false,
     label,
-    variant,
+    kind,
     nonactive,
     disabled,
     ...propsRest
@@ -48,8 +48,8 @@ export const LinkAsButton = (props: LinkAsButtonProps) => {
       className={cx({
         bk: true,
         [ButtonClassNames['bk-button']]: !unstyled,
-        [ButtonClassNames['bk-button--primary']]: variant === 'primary',
-        [ButtonClassNames['bk-button--secondary']]: variant === 'secondary',
+        [ButtonClassNames['bk-button--primary']]: kind === 'primary',
+        [ButtonClassNames['bk-button--secondary']]: kind === 'secondary',
         [ButtonClassNames['bk-button--nonactive']]: nonactive,
         [ButtonClassNames['bk-button--disabled']]: disabled,
       }, props.className)}
