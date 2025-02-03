@@ -8,6 +8,8 @@
   .bk-solution-selector {
     @include bk.component-base(bk-solution-selector);
     
+    user-select: none;
+    
     // Allow the element to shrink down to just the icon
     overflow: hidden;
     flex-shrink: 4; // Shrink relatively fast (since there is no important information besides the icon)
@@ -19,6 +21,9 @@
     
     .bk-solution-selector__icon {
       --bk-icon-accent-color: #{bk.$theme-header-icon-background-default};
+    }
+    .bk-solution-selector__caret {
+      margin-inline-start: -0.2rem; // Compensate for visual gap in the icon itself
     }
   }
 }
