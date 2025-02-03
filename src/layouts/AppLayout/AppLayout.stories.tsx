@@ -58,8 +58,15 @@ export const Standard: Story = {
         <div slot="sidebar" className="bk-theme--dark">
           <Sidebar className="bk-app-layout__sidebar">
             <Nav>
-              <Nav.NavItem active icon="dashboard" label="Dashboard" href="#"/>
-              <Nav.NavItem icon="dashboard" label="Groups" href="#"/>
+              <Nav.NavItem active icon="dashboard" label="Overview" href="#"/>
+              <Nav.NavItem icon="badge-assessment" label="Assessment" href="#"/>
+              <Nav.NavItem icon="services" label="Services" href="#"/>
+            </Nav>
+            <hr/>
+            <Nav>
+              <Nav.NavItem icon="cloud-accounts" label="Connections" href="#"/>
+              <Nav.NavItem icon="policy" label="Policy Center" href="#"/>
+              <Nav.NavItem icon="user-authentication" label="Authentication" href="#"/>
             </Nav>
             <OverflowTester lines={45}/>
           </Sidebar>

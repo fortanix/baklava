@@ -96,8 +96,12 @@
         align-items: center;
         gap: bk.$spacing-3;
         
-        .bk-dropdown-menu__item__icon { font-size: 1.4em; }
-        .bk-dropdown-menu__item__label { --keep: ; }
+        .bk-dropdown-menu__item__icon {
+          font-size: 1.2em;
+        }
+        .bk-dropdown-menu__item__label {
+          user-select: none;
+        }
         
         @include bk.focus-inset;
       }
