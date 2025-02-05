@@ -31,6 +31,6 @@ export default {
 export const Standard: Story = {
   name: 'Logo',
   args: {
-    style: { outline: '1px solid firebrick' },
+    //style: { outline: '1px solid firebrick' },
   },
 };
