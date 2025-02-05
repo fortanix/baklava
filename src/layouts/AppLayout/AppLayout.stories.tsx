@@ -59,13 +59,13 @@ export const Standard: Story = {
         {/* Container around the sidebar that grows to full height, allowing the sidebar to be sticky */}
         <div slot="sidebar" className="bk-theme--dark">
           <Sidebar className="bk-app-layout__sidebar">
-            <Nav>
+            <Nav aria-label="Overview and assessment">
               <Nav.NavItem active icon="dashboard" label="Overview" href="#"/>
               <Nav.NavItem icon="badge-assessment" label="Assessment" href="#"/>
               <Nav.NavItem icon="services" label="Services" href="#"/>
             </Nav>
             <hr/>
-            <Nav>
+            <Nav aria-label="Connections and policies">
               <Nav.NavItem icon="cloud-accounts" label="Connections" href="#"/>
               <Nav.NavItem icon="policy" label="Policy Center" href="#"/>
               <Nav.NavItem icon="user-authentication" label="Authentication" href="#"/>

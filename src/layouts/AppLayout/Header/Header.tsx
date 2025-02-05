@@ -8,7 +8,7 @@ import * as React from 'react';
 import cl from './Header.module.scss';
 
 
-export type HeaderProps = React.PropsWithChildren<ComponentProps<'header'> & {
+export type HeaderProps = React.PropsWithChildren<ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 }>;
@@ -17,10 +17,9 @@ export type HeaderProps = React.PropsWithChildren<ComponentProps<'header'> & {
  */
 export const Header = ({ children, unstyled, ...propsRest }: HeaderProps) => {
   return (
-    <header
-      // Note: `<header>` has an implicit default role of "banner", if it is not inside a `<section>` element
-      // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/header
-      //role="banner"
+    // Note: don't use `<header>` here, because there should only be one header landmark on the page, and that header
+    // should be the parent element that also includes the logo.
+    <div
       {...propsRest}
       className={cx(
         'bk',
@@ -28,6 +27,6 @@ export const Header = ({ children, unstyled, ...propsRest }: HeaderProps) => {
       )}
     >
       {children}
-    </header>
+    </div>
   );
 };
