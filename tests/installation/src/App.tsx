@@ -21,7 +21,7 @@ export const App = () => {
     <AppLayout>
       <header slot="header" className="bk-theme--dark">
         <Link unstyled href="#" slot="logo">
-          <Logo/>
+          <Logo subtitle="Data Security Manager" subtitleTrademark={true}/>
         </Link>
         <Header slot="actions">
           <UserMenu userName="Anand Kashyap"/>
