@@ -12,6 +12,7 @@
     --bk-app-layout-sidebar-inset: #{bk.$spacing-4}; // Allow sidebar child components to know the inset
     
     align-self: start; // https://ishadeed.com/article/position-sticky-css-grid
+    overflow: hidden;
     
     padding-block-start: bk.$spacing-6;
     padding-inline: var(--bk-app-layout-sidebar-inset);

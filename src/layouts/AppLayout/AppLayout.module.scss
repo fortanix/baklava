@@ -18,7 +18,8 @@
     @include bk.component-base(bk-app-layout);
     container-type: inline-size;
     
-    --bk-app-layout-sidebar-width-open: 220px;
+    --bk-app-layout-sidebar-width-open: #{bk.rem-from-px(220)};
+    --bk-app-layout-sidebar-width-closed: #{bk.rem-from-px(48)};
     --bk-app-layout-sidebar-width: var(--bk-app-layout-sidebar-width-open);
     
     /* Note: do not use vw/vh, because we may want to show the layout in a container (e.g. story) */
@@ -51,13 +52,18 @@
       display: grid;
       grid:
         'logo account-actions user-actions' 1fr
-        / var(--bk-app-layout-sidebar-width-open) max-content 1fr;
+        / var(--bk-app-layout-sidebar-width) max-content 1fr;
       
       > [slot='logo'] { grid-area: logo; }
       > [slot='actions'] { grid-column: account-actions-start / user-actions-end; }
       
       > [slot='logo'] {
         @include bk.focus-inset;
+        padding-inline-start: bk.$spacing-4;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
       }
     }
     

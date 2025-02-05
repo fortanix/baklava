@@ -42,7 +42,9 @@
           gap: bk.$spacing-2;
           
           .bk-nav__item__link__icon { --keep: ; }
-          .bk-nav__item__link__label { --keep: ; }
+          .bk-nav__item__link__label {
+            @include bk.text-one-line;
+          }
         }
         &[aria-current] {
           .bk-nav__item__link {

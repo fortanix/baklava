@@ -1,6 +1,7 @@
 /* Copyright (c) Fortanix, Inc.
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 /* stylelint-disable no-duplicate-selectors */
 /* stylelint-disable selector-class-pattern */
 
@@ -9,19 +10,22 @@
 @layer baklava.components {
   .bk-app-logo {
     @include bk.component-base(bk-app-logo);
-    container-type: inline-size;
-    width: 200px; // FIXME
-    aspect-ratio: 1 / 0.2;
-    
-    --icon-size: 0.16fr;
-    
-    place-self: center start;
+    container-type: size;
     
     overflow: clip;
     user-select: none;
     
-    margin: 13px 10px;
-    margin-bottom: 7px;
+    //--icon-size: 0.16fr;
+    --icon-size: 66cqb;
+    
+    height: 32px;
+    width: 200px; // FIXME
+    //aspect-ratio: 1 / 0.2;
+    
+    //margin: 13px 10px;
+    //margin-bottom: 7px;
+    
+    display: grid;
     
     > :global(._logo) {
       display: grid;
@@ -29,7 +33,7 @@
         'icon title' max-content
         'icon subtitle' 1fr
         / var(--icon-size) 1fr;
-      column-gap: 4cqi;
+      column-gap: 22cqb;
       
       > :global(._icon) { grid-area: icon; }
       > :global(._title) { grid-area: title; }
@@ -38,7 +42,8 @@
       color: bk.$theme-text-logo-default;
       
       > :global(._icon) {
-        align-self: center;
+        place-self: center end;
+        width: 66cqb;
       }
       > :global(._title), > :global(._subtitle) {
         white-space: nowrap;
@@ -47,13 +52,21 @@
       }
       > :global(._title) {
         align-self: end;
-        font-size: 9.4cqi;
+        margin-top: -0.05lh; // Tweak positioning (once `text-box: trim` is available we could prob. do away with this)
+        line-height: 1.2;
+        font-size: 55cqb;
       }
       > :global(._subtitle) {
-        align-self: start;
-        font-size: 7cqi;
+        align-self: end;
+        margin-bottom: -0.04lh;
+        line-height: 1.2;
+        font-size: 38cqb;
+        
+        > :global(._subtitle-trademark) {
+          vertical-align: top;
+          font-size: 0.7em;
+        }
       }
-      
       
       /* Fortanix logo styling */
       > :global(._title) {

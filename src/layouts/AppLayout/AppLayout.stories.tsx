@@ -20,6 +20,7 @@ import { UserMenu } from './Header/UserMenu.tsx';
 
 import { SolutionSelector } from './Header/SolutionSelector.tsx';
 import { AccountSelector } from './Header/AccountSelector.tsx';
+import { SysadminSwitcher } from './Header/SysadminSwitcher.tsx';
 import { Breadcrumbs } from './Breadcrumbs/Breadcrumbs.tsx';
 import { AppLayout } from './AppLayout.tsx';
 
@@ -45,11 +46,12 @@ export const Standard: Story = {
       <>
         <header slot="header" className="bk-theme--dark">
           <Link unstyled href="#" slot="logo">
-            <Logo/>
+            <Logo subtitle="Data Security Manager" subtitleTrademark={true}/>
           </Link>
           <Header slot="actions">
             <UserMenu userName="Anand Kashyap"/>
             {/* <UserMenu userName="Anand Kashyap – Very Long Name That Will Overflow"/> */}
+            <SysadminSwitcher className="select-action"/>
             <AccountSelector className="select-action"/>
             <SolutionSelector className="select-action"/>
           </Header>

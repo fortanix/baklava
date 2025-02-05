@@ -92,6 +92,7 @@ export { Breadcrumbs } from '../src/layouts/AppLayout/Breadcrumbs/Breadcrumbs.ts
 export { Header } from '../src/layouts/AppLayout/Header/Header.tsx';
 export { AccountSelector } from '../src/layouts/AppLayout/Header/AccountSelector.tsx';
 export { SolutionSelector } from '../src/layouts/AppLayout/Header/SolutionSelector.tsx';
+export { SysadminSwitcher } from '../src/layouts/AppLayout/Header/SysadminSwitcher.tsx';
 export { UserMenu } from '../src/layouts/AppLayout/Header/UserMenu.tsx';
 export { Logo } from '../src/layouts/AppLayout/Logo/Logo.tsx';
 export { Nav } from '../src/layouts/AppLayout/Nav/Nav.tsx';
