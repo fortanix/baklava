@@ -17,7 +17,7 @@ export const Demo = () => {
       <Header/>
       <aside className="bk-layout__sidebar">
         <Sidebar>
-          <Logo/>
+          <Logo subtitle="Data Security Manager" subtitleTrademark={true}/>
           <Nav/>
           <OverflowTester lines={45}/>
         </Sidebar>
