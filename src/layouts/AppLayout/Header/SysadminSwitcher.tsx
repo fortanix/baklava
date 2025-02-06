@@ -13,7 +13,7 @@ import cl from './SysadminSwitcher.module.scss';
 
 export { cl as SysadminSwitcherClassNames };
 
-export type SysadminSwitcherProps = ComponentProps<'button'> & {
+export type SysadminSwitcherProps = ComponentProps<typeof Button> & {
 };
 /**
  * Button to switch to the system administration view.

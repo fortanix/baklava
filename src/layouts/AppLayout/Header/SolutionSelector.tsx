@@ -14,38 +14,42 @@ import cl from './SolutionSelector.module.scss';
 
 export { cl as SolutionSelectorClassNames };
 
+const SolutionSelectorOption = (props: React.ComponentProps<typeof DropdownMenuProvider.Option>) => {
+  return <DropdownMenuProvider.Option {...props}/>;
+};
+
 export type SolutionSelectorProps = Omit<ComponentProps<typeof Button>, 'label'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 };
-export const SolutionSelector = (props: SolutionSelectorProps) => {
-  const { unstyled = false, children, ...propsRest } = props;
-  
-  return (
-    <DropdownMenuProvider
-      label="Solution selector"
-      placement="bottom-start"
-      items={
-        <>
-          <DropdownMenuProvider.Option optionKey="iam" icon="user" label="Identity & Access Management"/>
-          <DropdownMenuProvider.Option optionKey="key-insight" icon="key" label="Key Insight"/>
-        </>
-      }
-    >
-      {({ props }) =>
-        <Button unstyled
-          {...props({
-            ...propsRest,
-            className: cx('bk', { [cl['bk-solution-selector']]: !unstyled }, propsRest.className),
-          })}
-        >
-          <Icon icon="solutions" className={cl['bk-solution-selector__icon']}
-            decoration={{ type: 'background-circle' }}
-          />
-          Solutions
-          <Icon icon="caret-down" className={cl['bk-solution-selector__caret']}/>
-        </Button>
-      }
-    </DropdownMenuProvider>
-  );
-};
+export const SolutionSelector = Object.assign(
+  (props: SolutionSelectorProps) => {
+    const { unstyled = false, children, ...propsRest } = props;
+    
+    return (
+      <DropdownMenuProvider
+        label="Solution selector"
+        placement="bottom-start"
+        items={children}
+      >
+        {({ props }) =>
+          <Button unstyled
+            {...props({
+              ...propsRest,
+              className: cx('bk', { [cl['bk-solution-selector']]: !unstyled }, propsRest.className),
+            })}
+          >
+            <Icon icon="solutions" className={cl['bk-solution-selector__icon']}
+              decoration={{ type: 'background-circle' }}
+            />
+            Solutions
+            <Icon icon="caret-down" className={cl['bk-solution-selector__caret']}/>
+          </Button>
+        }
+      </DropdownMenuProvider>
+    );
+  },
+  {
+    Option: SolutionSelectorOption,
+  },
+);

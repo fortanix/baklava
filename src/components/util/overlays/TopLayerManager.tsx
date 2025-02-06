@@ -87,7 +87,7 @@ export const usePopoverTracker = (active: boolean) => {
   
   // When `active` changes, sync up with the context
   React.useEffect(() => {
-    if (context === null) { throw new Error(`Cannot read TopLayerContext: missing provider.`); }
+    if (context === null) { return; } // May sometimes become `null` even if a Provider is present in the tree?
     if (active) {
       context.modalDialogStack.publish();
     }
@@ -106,7 +106,7 @@ export const useModalDialogTracker = (active: boolean, dialogRef: React.RefObjec
   
   // When `active` changes, sync up with the context
   React.useEffect(() => {
-    if (context === null) { throw new Error(`Cannot read TopLayerContext: missing provider.`); }
+    if (context === null) { return; } // May sometimes become `null` even if a Provider is present in the tree?
     if (active) {
       context.modalDialogStack.activate(ref);
     } else {
@@ -116,9 +116,9 @@ export const useModalDialogTracker = (active: boolean, dialogRef: React.RefObjec
   
   // On unmount, deactivate
   useEffectOnce(() => {
-    if (context === null) { throw new Error(`Cannot read TopLayerContext: missing provider.`); }
+    if (context === null) { return; } // May sometimes become `null` even if a Provider is present in the tree?
     return () => context.modalDialogStack.deactivate(ref);
-  });  
+  });
 };
 
 /**
@@ -130,7 +130,7 @@ export const useActiveModalDialog = (): null | ModalDialogRef => {
   const [activeModalDialog, setActiveModalDialog] = React.useState<null | ModalDialogRef>(null);
   
   React.useEffect(() => {
-    if (context === null) { throw new Error(`Cannot read TopLayerContext: missing provider.`); }
+    if (context === null) { return; } // May sometimes become `null` even if a Provider is present in the tree?
     return context.modalDialogStack.subscribe(function() {
       const newActiveModalDialog = this.activeModalDialog();
       if (newActiveModalDialog !== activeModalDialog) {

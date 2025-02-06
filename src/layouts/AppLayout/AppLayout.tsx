@@ -8,6 +8,39 @@ import * as React from 'react';
 import cl from './AppLayout.module.scss';
 
 
+const AppLayoutHeader = ({ children }: React.PropsWithChildren) => {
+  return (
+    <header slot="header" className="bk-theme--dark">
+      {children}
+    </header>
+  );
+};
+
+const AppLayoutSidebar = ({ children }: React.PropsWithChildren) => {
+  // Container around the sidebar that grows to full height, allowing the sidebar to be sticky
+  return (
+    <div slot="sidebar" className="bk-theme--dark">
+      {children}
+    </div>
+  );
+};
+
+const AppLayoutContent = ({ children }: React.PropsWithChildren) => {
+  return (
+    <main slot="content">
+      {children}
+    </main>
+  );
+};
+
+const AppLayoutFooter = ({ children }: React.PropsWithChildren) => {
+  return (
+    <footer slot="footer">
+      {children}
+    </footer>
+  );
+};
+
 type AppLayoutProps = React.PropsWithChildren<ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
@@ -15,16 +48,24 @@ type AppLayoutProps = React.PropsWithChildren<ComponentProps<'div'> & {
 /**
  * AppLayout component.
  */
-export const AppLayout = (props: AppLayoutProps) => {
-  const { unstyled = false, ...propsRest } = props;
-  return (
-    <div
-      {...propsRest}
-      className={cx(
-        'bk',
-        { [cl['bk-app-layout']]: !unstyled },
-        propsRest.className,
-      )}
-    />
-  );
-};
+export const AppLayout = Object.assign(
+    (props: AppLayoutProps) => {
+    const { unstyled = false, ...propsRest } = props;
+    return (
+      <div
+        {...propsRest}
+        className={cx(
+          'bk',
+          { [cl['bk-app-layout']]: !unstyled },
+          propsRest.className,
+        )}
+      />
+    );
+  },
+  {
+    Header: AppLayoutHeader,
+    Sidebar: AppLayoutSidebar,
+    Content: AppLayoutContent,
+    Footer: AppLayoutFooter,
+  },
+);

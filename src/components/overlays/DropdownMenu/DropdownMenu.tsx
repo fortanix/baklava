@@ -50,7 +50,7 @@ export type ActionProps = React.PropsWithChildren<ComponentProps<typeof Button> 
   icon?: undefined | IconName,
   
   /** The event handler for when the user activates this action. */
-  onActivate: (context: DropdownMenuContext) => void,
+  onActivate: (context: DropdownMenuContext) => void | Promise<void>,
 }>;
 /**
  * A dropdown menu item that can be triggered to perform some action.
@@ -81,7 +81,21 @@ export const Action = (props: ActionProps) => {
           cl['bk-dropdown-menu__item'],
           propsRest.className,
         )}
-        onPress={() => { onActivate(context); }}
+        onPress={() => {
+          const result = onActivate(context);
+          if (result instanceof Promise) {
+            // TODO: allow some way for the `Promise` result to signal that it wants to opt out of auto close?
+            result.then(
+              () => { context.close(); },
+              reason => {
+                // Keep open
+                console.warn(`Error during dropdown menu onPress callback:`, reason);
+              },
+            );
+          } else {
+            context.close();
+          }
+        }}
       >
         {icon && <Icon icon={icon}/>}
         {label ?? propsRest.children}
@@ -100,12 +114,15 @@ export type OptionProps = React.PropsWithChildren<ComponentProps<typeof Button> 
   
   /** The icon to be displayed (if any) */
   icon?: undefined | IconName,
+  
+  /** A callback to be called when the option is selected. */
+  onSelect?: undefined | (() => void),
 }>;
 /**
  * A dropdown menu item that can be selected.
  */
 export const Option = (props: OptionProps) => {
-  const { optionKey, label, icon, ...propsRest } = props;
+  const { optionKey, label, icon, onSelect, ...propsRest } = props;
   const { selectedOption, selectOption, optionProps } = useDropdownMenuContext();
   
   const option: OptionDef = { optionKey, label };
@@ -129,7 +146,7 @@ export const Option = (props: OptionProps) => {
           cl['bk-dropdown-menu__item'],
           propsRest.className,
         )}
-        onPress={() => { selectOption(option); }}
+        onPress={() => { selectOption(option); onSelect?.(); }}
       >
         {icon && <Icon icon={icon} className={cl['bk-dropdown-menu__item__icon']}/>}
         <span className={cl['bk-dropdown-menu__item__label']}>{label ?? propsRest.children}</span>

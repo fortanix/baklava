@@ -33,8 +33,14 @@
           padding-block: bk.$spacing-2;
           
           @include bk.focus-inset;
-          &:hover, &:focus-visible {
-            background: bk.$theme-side-nav-menu-background-hover;
+          &:not(.bk-nav__item__link--disabled) {
+            &:hover, &:focus-visible {
+              background: bk.$theme-side-nav-menu-background-hover;
+            }
+          }
+          
+          &.bk-nav__item__link--disabled {
+            opacity: 0.6;
           }
           
           display: flex;
