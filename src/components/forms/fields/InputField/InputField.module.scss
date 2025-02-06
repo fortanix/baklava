@@ -10,10 +10,10 @@
 
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: bk.$spacing-2;
 
     .bk-input-field__label {
-      @include bk.font(bk.$font-family-body, bk.$font-weight-semibold);
+      @include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-m);
       cursor: default;
     }
 
