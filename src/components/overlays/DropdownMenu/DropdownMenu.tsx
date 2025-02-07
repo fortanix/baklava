@@ -98,7 +98,7 @@ export const Action = (props: ActionProps) => {
         }}
       >
         {icon && <Icon icon={icon}/>}
-        {label ?? propsRest.children}
+        {propsRest.children ?? label}
       </Button>
     </li>
   );
@@ -149,7 +149,7 @@ export const Option = (props: OptionProps) => {
         onPress={() => { selectOption(option); onSelect?.(); }}
       >
         {icon && <Icon icon={icon} className={cl['bk-dropdown-menu__item__icon']}/>}
-        <span className={cl['bk-dropdown-menu__item__label']}>{label ?? propsRest.children}</span>
+        <span className={cl['bk-dropdown-menu__item__label']}>{propsRest.children ?? label}</span>
       </Button>
     </li>
   );

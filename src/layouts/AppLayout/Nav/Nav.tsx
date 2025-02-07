@@ -60,7 +60,7 @@ export const NavItem = (props: NavItemProps) => {
           tabIndex={disabled ? -1 : undefined}
           aria-disabled={disabled}
           href={href}
-          className={cx(cl['bk-nav__item__link'], { [cl['bk-nav__item__link--disabled']]: disabled },)}
+          className={cx(cl['bk-nav__item__link'], { [cl['bk-nav__item__link--disabled']]: disabled })}
           onClick={handleClick}
         >
           {icon && <Icon className={cx(cl['bk-nav__item__link__icon'])} icon={icon}/>}
