@@ -57,7 +57,7 @@ export const Standard: Story = {
                 onActivate={() => { notify.info(`Signing out.`); }}
               />
             </UserMenu>
-            <SysadminSwitcher className="select-action"
+            <SysadminSwitcher
               onPress={() => { notify.info(`Navigating to system administration panel.`); }}
             />
             <AccountSelector className="select-action">
