@@ -14,39 +14,42 @@ import cl from './AccountSelector.module.scss';
 
 export { cl as AccountSelectorClassNames };
 
+const AccountSelectorOption = (props: React.ComponentProps<typeof DropdownMenuProvider.Option>) => {
+  return <DropdownMenuProvider.Option {...props}/>;
+};
+
 export type AccountSelectorProps = Omit<ComponentProps<typeof Button>, 'label'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 };
-export const AccountSelector = (props: AccountSelectorProps) => {
-  const { unstyled = false, children, ...propsRest } = props;
-  
-  return (
-    <DropdownMenuProvider
-      label="Account selector"
-      placement="bottom-start"
-      items={
-        <>
-          <DropdownMenuProvider.Option optionKey="account-1" icon="accounts" label="Account 1"/>
-          <DropdownMenuProvider.Option optionKey="account-2" icon="accounts" label="Account 2"/>
-          <DropdownMenuProvider.Option optionKey="account-3" icon="accounts" label="Account 3"/>
-        </>
-      }
-    >
-      {({ props, state }) =>
-        <Button unstyled
-          {...props({
-            ...propsRest,
-            className: cx('bk', { [cl['bk-account-selector']]: !unstyled }, propsRest.className),
-          })}
-        >
-          <Icon icon="group" className={cl['bk-account-selector__icon']}
-            decoration={{ type: 'background-circle' }}
-          />
-          {state.selectedOption === null ? 'Accounts' : state.selectedOption}
-          <Icon icon="caret-down"/>
-        </Button>
-      }
-    </DropdownMenuProvider>
-  );
-};
+export const AccountSelector = Object.assign(
+  (props: AccountSelectorProps) => {
+    const { unstyled = false, children, ...propsRest } = props;
+    
+    return (
+      <DropdownMenuProvider
+        label="Account selector"
+        placement="bottom-start"
+        items={children}
+      >
+        {({ props, state }) =>
+          <Button unstyled
+            {...props({
+              ...propsRest,
+              className: cx('bk', { [cl['bk-account-selector']]: !unstyled }, propsRest.className),
+            })}
+          >
+            <Icon icon="account" className={cx(cl['bk-account-selector__icon'])}
+              decoration={{ type: 'background-circle' }}
+            />
+            {state.selectedOption === null ? 'Accounts' : state.selectedOption}
+            <Icon icon="caret-down" className={cx(cl['bk-account-selector__caret'])}/>
+          </Button>
+        }
+      </DropdownMenuProvider>
+    );
+  },
+  {
+    Option: AccountSelectorOption,
+  },
+);

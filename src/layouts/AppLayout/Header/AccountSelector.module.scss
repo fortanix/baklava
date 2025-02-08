@@ -21,6 +21,20 @@
     
     .bk-account-selector__icon {
       --bk-icon-accent-color: #{bk.$theme-header-icon-background-default};
+      
+      // By default this scales based on the SVG icon size, but in this case we would like to set a fixed width
+      // and make the SVG icon size dependent on the width + padding. Reason is because we want the size to be
+      // consistent with the other icons in the header, but the icons themselves may have different sizes.
+      box-sizing: border-box;
+      aspect-ratio: 1;
+      width: bk.$spacing-9;
+      height: auto;
+      padding: 0.7em;
+    }
+    .bk-account-selector__caret {
+      // Tweak the caret positioning slightly
+      margin-inline-start: -0.2rem;
+      margin-block-end: -0.2rem;
     }
   }
 }

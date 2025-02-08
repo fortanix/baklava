@@ -9,7 +9,13 @@
     @include bk.component-base(bk-app-layout-sidebar);
     container-type: inline-size;
     
-    align-self: start; /* https://ishadeed.com/article/position-sticky-css-grid */
+    --bk-app-layout-sidebar-inset: #{bk.$spacing-4}; // Allow sidebar child components to know the inset
+    
+    align-self: start; // https://ishadeed.com/article/position-sticky-css-grid
+    overflow: hidden;
+    
+    padding-block-start: bk.$spacing-6;
+    padding-inline: var(--bk-app-layout-sidebar-inset);
     
     display: flex;
     flex-direction: column;
@@ -27,16 +33,18 @@
         cursor: pointer;
       }
       
-      /* Customize some components */
+      // Customize some components
       .bk-logo-with-text {
         margin: var(--bk-sizing-3);
         height: calc(var(--bk-sizing-4) + 18px);
       }
     }
+    
+    // Separators
+    hr {
+      margin-block: bk.$spacing-3;
+      border: none;
+      border-top: bk.rem-from-px(1) solid bk.$theme-side-nav-menu-divider-default;
+    }
   }
-}
-
-/* FIXME */
-.bk-theme--dark.bk-layout__sidebar {
-  /* background: bk.$color-brand-300; */
 }

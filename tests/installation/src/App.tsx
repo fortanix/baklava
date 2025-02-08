@@ -19,9 +19,9 @@ import {
 export const App = () => {
   return (
     <AppLayout>
-      <header slot="header" className="bk-theme--dark">
+      <AppLayout.Header>
         <Link unstyled href="#" slot="logo">
-          <Logo/>
+          <Logo subtitle="Data Security Manager" subtitleTrademark={true}/>
         </Link>
         <Header slot="actions">
           <UserMenu userName="Anand Kashyap"/>
@@ -29,17 +29,17 @@ export const App = () => {
           <AccountSelector className="select-action"/>
           <SolutionSelector className="select-action"/>
         </Header>
-      </header>
+      </AppLayout.Header>
       {/* Container around the sidebar that grows to full height, allowing the sidebar to be sticky */}
-      <div slot="sidebar" className="bk-theme--dark">
+      <AppLayout.Sidebar>
         <Sidebar className="bk-app-layout__sidebar">
           <Nav>
             <Nav.NavItem active icon="dashboard" label="Dashboard" href="#"/>
             <Nav.NavItem icon="dashboard" label="Groups" href="#"/>
           </Nav>
         </Sidebar>
-      </div>
-      <main slot="content">
+      </AppLayout.Sidebar>
+      <AppLayout.Content>
         <Icon icon="accounts"/>
         
         <Breadcrumbs
@@ -64,10 +64,10 @@ export const App = () => {
             Test
           </DialogModal>
         </Panel>
-      </main>
-      <footer slot="footer">
-        <span className="version">Version: 4.24.2343</span>
-      </footer>
+      </AppLayout.Content>
+      <AppLayout.Footer>
+        <span className="version">Version: 1.2.2343</span>
+      </AppLayout.Footer>
     </AppLayout>
   );
 };

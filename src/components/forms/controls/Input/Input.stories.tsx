@@ -33,7 +33,7 @@ export default {
 } satisfies Meta<InputArgs>;
 
 
-export const Standard: Story = {
+export const InputStandard: Story = {
 };
 
 export const InvalidInput: Story = {
@@ -55,4 +55,11 @@ export const InvalidInput: Story = {
     await fireEvent.submit(form);
     await userEvent.click(form);
   },  
+};
+
+export const InputPassword: Story = {
+  args: {
+    type: 'password',
+    value: 'example password',
+  },
 };

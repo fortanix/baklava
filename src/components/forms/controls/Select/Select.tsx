@@ -68,7 +68,7 @@ export const Option = (props: OptionProps) => {
         {...getItemProps()}
         onPress={() => { selectOption(option); }}
       >
-        {label ?? propsRest.children}
+        {propsRest.children ?? label}
       </Button>
     </li>
   );

@@ -54,12 +54,18 @@ npm install --save vite-plugin-svg-icons
 Then, add the following to the `plugins` array in your vite config:
 
 ```ts
-createSvgIconsPlugin({
-  iconDirs: [path.resolve(__dirname, 'node_modules/@fortanix/baklava/src/assets/icons')],
-  symbolId: 'baklava-icon-[name]',
-  inject: 'body-last',
-  customDomId: 'baklava-icon-sprite',
-}),
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+
+export default {
+  plugins: [
+    createSvgIconsPlugin({
+      iconDirs: [path.resolve(__dirname, 'node_modules/@fortanix/baklava/src/assets/icons')],
+      symbolId: 'baklava-icon-[name]',
+      inject: 'body-last',
+      customDomId: 'baklava-icon-sprite',
+    }),
+  ],
+};
 ```
 
 Additionally, you will need to add the following import in your main entry file:

@@ -4,68 +4,60 @@
 
 @use '../../../styling/defs.scss' as bk;
 
-// https://ryanmulligan.dev/blog/layout-breakouts/
-// https://cloudfour.com/thinks/breaking-out-with-css-grid-layout/
-@mixin grid-breakout($inset-content: bk.$spacing-2) {
-  --gap-content: #{$inset-content};
-  --size-content: calc(100% - var(--gap) * 2);
-  
-  display: grid;
-  grid-template-columns:
-    [full-start] var(--gap-content)
-    [content-start] var(--size-content) [content-end]
-    var(--gap-content) [full-end];
-}
-
 @layer baklava.components {
   .bk-nav {
     @include bk.component-base(bk-nav);
     
-    --bk-nav-inset-content: #{bk.$spacing-3};
-    //padding-block: var(--bk-nav-inset-content);
-    
-    @include grid-breakout($inset-content: var(--bk-nav-inset-content));
+    --bk-nav-inset: var(--bk-app-layout-sidebar-inset, #{bk.$spacing-4});
     
     menu {
       display: flex;
       flex-direction: column;
-      //row-gap: var(--bk-sizing-2);
+      row-gap: bk.$spacing-3;
       
       .bk-nav__item {
-        @include bk.font(bk.$font-family-display);
+        --bk-nav-item-border-size: #{bk.$spacing-1};
+        
+        @include bk.font(bk.$font-family-body, $size: bk.$font-size-m);
         
         .bk-nav__item__link {
           cursor: pointer;
           
-          /* Focus outline */
-          &:focus-visible {
-            outline: none !important;
-            box-shadow: inset 5px 0 var(--bk-focus-outline-color);
-          }
+          // Make space for the left border when in active state
+          border-left: var(--bk-nav-item-border-size) solid transparent;
           
+          // Break out of the sidebar padding to extend to the edges (for hover/active states)
+          margin-inline: calc(-1 * var(--bk-nav-inset));
+          padding-inline: var(--bk-nav-inset);
+          padding-inline-start: calc(var(--bk-nav-inset) - var(--bk-nav-item-border-size));
           padding-block: bk.$spacing-2;
           
-          &:hover {
-            background: bk.$theme-side-nav-menu-background-hover;
+          @include bk.focus-inset;
+          &:not(.bk-nav__item__link--disabled) {
+            &:hover, &:focus-visible {
+              background: bk.$theme-side-nav-menu-background-hover;
+            }
           }
           
-          grid-column: full;
+          &.bk-nav__item__link--disabled {
+            opacity: 0.6;
+          }
           
           display: flex;
           flex-direction: row;
           gap: bk.$spacing-2;
           
-          .bk-nav__item__link__icon {
-            // ignore
-          }
+          .bk-nav__item__link__icon { --keep: ; }
           .bk-nav__item__link__label {
-            // ignore
+            @include bk.text-one-line;
           }
         }
-        
         &[aria-current] {
-          border-left-width: 4px;
-          border-left-color: bk.$theme-side-nav-menu-tab-default;
+          .bk-nav__item__link {
+            background: bk.$theme-side-nav-menu-background-hover;
+            border-left-color: bk.$theme-side-nav-menu-tab-default;
+            font-weight: bk.$font-weight-semibold;
+          }
         }
       }
     }

@@ -1,20 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 28.8 42.1" style="enable-background:new 0 0 28.8 42.1;" xml:space="preserve" aria-labelledby="logo-small">
-  <style type="text/css">
-    .st0{ fill:url(#Fill-1_1_); }
-    .st1{ fill:#FFFFFF; }
-  </style>
-  <g id="Group-3">
-    <linearGradient id="Fill-1_1_" gradientUnits="userSpaceOnUse" x1="-536.7165" y1="106.2919" x2="-535.7165" y2="106.2919" gradientTransform="matrix(28.8323 0 0 41.5823 15474.7715 -4398.7603)">
-      <stop  offset="0" style="stop-color:#7C59A4"/>
-      <stop  offset="0.5244" style="stop-color:#647ABA"/>
-      <stop  offset="1" style="stop-color:#3BC5F3"/>
-    </linearGradient>
-    <path id="Fill-1" class="st0" d="M24.6,4.5h4.2V0.3h-4.2C24.6,0.3,24.6,4.5,24.6,4.5z M12.3,4.5h4.2V0.3h-4.2V4.5z M0,4.5h4.2V0.3
-      H0V4.5z M24.6,10.8h4.2V6.6h-4.2C24.6,6.6,24.6,10.8,24.6,10.8z M18.8,10.8H23V6.6h-4.2V10.8z M12.3,17.1h4.2V6.6h-4.2V17.1z
-      M5.9,36.4h4.2V6.6H5.9V36.4z M0,10.8h4.2V6.6H0V10.8z M24.6,17.1h4.2v-4.2h-4.2C24.6,12.9,24.6,17.1,24.6,17.1z M18.8,36.4H23
-      V12.9h-4.2V36.4z M0,29.4h4.2V12.9H0V29.4z M24.6,29.4h4.2V19.2h-4.2C24.6,19.2,24.6,29.4,24.6,29.4z M12.3,23.5h4.2v-4.2h-4.2
-      V23.5z M12.3,41.9h4.2V25.2h-4.2V41.9z"/>
-  </g>
+<svg width="20" height="29" viewBox="0 0 20 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M11.4368 -0.000488281H8.56292V2.9321H11.4368V-0.000488281ZM2.87388 -0.000475592H0V2.93211H2.87388V-0.000475592ZM2.87388 4.37134H0V7.30394H2.87388V4.37134ZM0 8.74301H2.87388V20.3376H0V8.74301ZM8.56292 4.37134H11.4368V11.5942H8.56292V4.37134ZM11.4368 13.0333H8.56292V15.9658H11.4368V13.0333ZM8.56292 17.4049H11.4368V28.9995H8.56292V17.4049ZM20 -0.000488281H17.1261V2.9321H20V-0.000488281ZM17.1261 4.37134H20V7.30394H17.1261V4.37134ZM20 8.74301H17.1261V20.3376H20V8.74301ZM12.8446 4.37122H15.7185V25.1708H12.8446V4.37122ZM7.15536 4.37122H4.28146V25.1708H7.15536V4.37122Z" fill="url(#paint0_linear_6350_155571)"/>
+<defs>
+<linearGradient id="paint0_linear_6350_155571" x1="0" y1="14.4871" x2="19.9655" y2="14.4871" gradientUnits="userSpaceOnUse">
+<stop stop-color="#9917FF"/>
+<stop offset="1" stop-color="#00BFFF"/>
+</linearGradient>
+</defs>
 </svg>

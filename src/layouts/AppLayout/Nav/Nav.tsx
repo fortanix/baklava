@@ -11,25 +11,61 @@ import { Icon, type IconName } from '../../../components/graphics/Icon/Icon.tsx'
 import cl from './Nav.module.scss';
 
 
-export type NavItemProps = React.PropsWithChildren<ComponentProps<'li'> & {
+export type NavItemProps = ComponentProps<'li'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
+  
+  /** A custom `Link` component. Optional. */
+  Link?: undefined | React.ComponentType<
+    Pick<React.ComponentProps<'a'>, 'tabIndex' | 'aria-disabled' | 'href' | 'className' | 'onClick'>
+  >,
   
   href?: undefined | string,
   icon?: undefined | IconName,
   label?: undefined | string,
   
+  /** Whether this nav item is the currently active one. Default: false. */
   active?: undefined | boolean,
-}>;
+  
+  /** Whether this nav item should be disabled. Default: false. */
+  disabled?: undefined | boolean,
+};
 export const NavItem = (props: NavItemProps) => {
-  const { unstyled, children, className, href, label, icon, active, ...propsRest } = props;
+  const {
+    children,
+    unstyled,
+    Link: LinkP,
+    className,
+    href,
+    label,
+    icon,
+    active = false,
+    disabled = false,
+    ...propsRest
+  } = props;
+  
+  const DefaultLink = React.useCallback((props: React.ComponentProps<typeof Link>) => <Link unstyled {...props}/>, []);
+  const LinkC = LinkP ?? DefaultLink;
+  
+  const handleClick = React.useCallback((event: React.MouseEvent<HTMLElement>) => {
+    if (disabled) {
+      event.preventDefault();
+    }
+  }, [disabled]);
+  
   const renderItem = () => {
     if (label) {
       return (
-        <Link unstyled href={href} className={cx(cl['bk-nav__item__link'])}>
+        <LinkC
+          tabIndex={disabled ? -1 : undefined}
+          aria-disabled={disabled}
+          href={href}
+          className={cx(cl['bk-nav__item__link'], { [cl['bk-nav__item__link--disabled']]: disabled })}
+          onClick={handleClick}
+        >
           {icon && <Icon className={cx(cl['bk-nav__item__link__icon'])} icon={icon}/>}
           <span className={cx(cl['bk-nav__item__link__label'])}>{label}</span>
-        </Link>
+        </LinkC>
       );
     }
     return children;
