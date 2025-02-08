@@ -61,11 +61,14 @@ export const Standard: Story = {
               onPress={() => { notify.info(`Navigating to system administration panel.`); }}
             />
             <AccountSelector className="select-action">
-              {['Account 1', 'Account 2', 'Account 3'].map(name =>
-                <AccountSelector.Option key={name} optionKey={name} icon="account" label={name}
+              {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
+                <AccountSelector.Option key={`account_${name}`} optionKey={`account_${name}`} icon="account"
+                  label={name}
                   onSelect={() => { notify.info(`Selected ${name}`); }}
                 />
               )}
+              {/* TODO: make this sticky so it's visible even if there are a lot of accounts? */}
+              <AccountSelector.Option key="action_add-account" optionKey="action_add-account" label="Add account"/>
             </AccountSelector>
             <SolutionSelector className="select-action">
               {['Identity & Access Management', 'Key Insight', 'Data Security Manager'].map(name =>
