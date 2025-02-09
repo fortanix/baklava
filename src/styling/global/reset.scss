@@ -35,14 +35,16 @@
     }
     
     
-    
-    
     /* https://www.youtube.com/watch?v=cCAtD_BAHNw */
     @media (prefers-reduced-motion: no-preference) {
       :has(:target) {
         scroll-behavior: smooth;
         scroll-padding-top: 1rem;
       }
+    }
+    
+    p {
+      overflow-wrap: break-word; // Prevent long words causing overflow
     }
     
     button {

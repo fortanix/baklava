@@ -33,7 +33,10 @@
   @include self-or-descendent(h5) { @include heading.h5; }
   @include self-or-descendent(h6) { @include heading.h6; }
   
-  @include self-or-descendent(p) { margin-block-start: var(--bk-body-block-spacing); }
+  @include self-or-descendent(p) {
+    margin-block-start: var(--bk-body-block-spacing);
+    overflow-wrap: break-word; // Allow breaking mid-word if they would otherwise cause overflow
+  }
   
   @include self-or-descendent(hr) {
     margin-block: var(--bk-sizing-3);

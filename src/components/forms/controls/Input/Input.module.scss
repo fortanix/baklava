@@ -10,31 +10,40 @@
     
     --bk-input-accent-color: #{bk.$theme-form-rule-default};
     
+    cursor: text;
     border: 0 solid var(--bk-input-accent-color);
-    border-bottom-width: 1px;
+    border-bottom-width: bk.rem-from-px(1);
     
-    line-height: bk.$line-height-m;
+    display: flex;
+    align-items: center;
+    column-gap: bk.$spacing-1;
     
-    &::placeholder {
-      color: color-mix(in sRGB, currentColor 60%, transparent);
+    > .bk-input__input {
+      line-height: bk.$line-height-m;
+      
+      @include bk.focus-hidden; // Apply focus outline on the container instead
+      
+      &::placeholder {
+        color: color-mix(in oklch, currentColor 60%, transparent);
+      }
     }
     
-    &:focus {
-      outline: none !important;
-      
+    // Consider the container focused when there is any focused element within (the input, or actions)
+    &:focus-within, &:global(.pseudo-focus) {
       --bk-input-accent-color: #{bk.$theme-form-rule-focused};
+    }
+    
+    // Style the container as an invalid input when the nested input is invalid and not currently focused.
+    // Note: allow global `.invalid` to explicitly control invalid state in addition to `:user-invalid`
+    &:not(:focus-within) {
+      &:global(.invalid), &:has(> .bk-input__input:user-invalid) {
+        --bk-input-accent-color: #{bk.$theme-form-rule-error};
+      }
     }
     
     @media (prefers-reduced-motion: no-preference) {
       transition: none 150ms;
       transition-property: background, border;
-    }
-    
-    &:not(:focus-within) {
-      /* Note: allow `.invalid` to explicitly control invalid state in addition to `:user-invalid` */
-      &:is(&:user-invalid, &:global(.invalid)) {
-        --bk-input-accent-color: #{bk.$theme-form-rule-error};
-      }
     }
   }
 }

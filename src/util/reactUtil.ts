@@ -40,11 +40,38 @@ export const mergeRefs = <T>(
 };
 
 /**
+ * Takes zero or more callbacks, and returns a new callback that applies each callback one by one. Returns the return
+ * value of the last callback.
+ */
+export const mergeCallbacks = <Args extends Array<unknown>, Return = undefined>(
+  callbacks: Array<undefined | ((...args: Args) => Return)>
+) => (...args: Args): Return => {
+  // Note: this always returns the result of the last callback. If we want to instead accumulate the return values
+  // we could consider an additional argument callback to merge an array of `Return` values into a single `Return`.
+  const returnValue = callbacks.reduce<undefined | Return>(
+    (_returnValue, callback) => { return callback?.apply(args); },
+    undefined,
+  );
+  
+  // If there is at least one callback, the return value should be an instance of `Return`. If there is no callback,
+  // then the `Return` generic will be inferred as `undefined` anyway.
+  return returnValue as Return;
+};
+
+/**
  * Utility function that takes a React ID (as returned by `useId()`), and converts it to a CSS custom
  * identifier. React IDs by default contain colons, which makes them unsuitable for use as CSS identifiers.
  */
 export const idToCssIdent = (id: string) => {
   return `--${id.replaceAll(':', '')}`;
+};
+
+export const usePrevious = <T>(value: T) => {
+  const ref: React.RefObject<null | T> = React.useRef(null);
+  React.useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
 };
 
 export const useEffectOnce = (fn: () => void) => {
@@ -57,14 +84,6 @@ export const useEffectOnce = (fn: () => void) => {
       fn();
     }
   }, []);
-};
-
-export const usePrevious = <T>(value: T) => {
-  const ref: React.RefObject<null | T> = React.useRef(null);
-  React.useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
 };
 
 export const useEffectAsync = (effect: () => Promise<unknown>, inputs?: undefined | React.DependencyList): void => {
