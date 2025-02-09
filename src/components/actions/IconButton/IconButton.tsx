@@ -37,6 +37,7 @@ export type IconButtonProps = React.PropsWithChildren<ComponentProps<typeof Butt
  */
 export const IconButton = (props: IconButtonProps) => {
   const { unstyled = false, classx, label, icon, iconProps = {}, ...propsRest } = props;
+  
   return (
     <Button
       unstyled

@@ -49,7 +49,7 @@ export const mergeCallbacks = <Args extends Array<unknown>, Return = undefined>(
   // Note: this always returns the result of the last callback. If we want to instead accumulate the return values
   // we could consider an additional argument callback to merge an array of `Return` values into a single `Return`.
   const returnValue = callbacks.reduce<undefined | Return>(
-    (_returnValue, callback) => { return callback?.apply(args); },
+    (_returnValue, callback) => { return callback?.apply(null, args); },
     undefined,
   );
   

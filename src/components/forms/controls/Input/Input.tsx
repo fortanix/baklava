@@ -15,7 +15,18 @@ import cl from './Input.module.scss';
 export { cl as InputClassNames };
 
 const InputAction = (props: React.ComponentProps<typeof IconButton>) => {
-  return <IconButton {...props}/>;
+  const preventDefault = React.useCallback((event: React.MouseEvent) => {
+    event.preventDefault();
+  }, []);
+  
+  return (
+    <IconButton
+      {...props}
+      // Prevent cursor shifting when clicking on actions (see also: https://github.com/mui/material-ui/issues/26007)
+      onMouseDown={preventDefault}
+      onMouseUp={preventDefault}
+    />
+  );
 };
 
 export type InputProps = Omit<ComponentProps<'input'>, 'type'> & {
@@ -53,8 +64,13 @@ export const Input = Object.assign(
     
     const inputRef = React.useRef<HTMLInputElement>(null);
     
-    const handleContainerClick = React.useCallback(() => {
-      inputRef.current?.focus();
+    // When the user clicks on the container, focus the input
+    const handleContainerClick = React.useCallback((event: React.MouseEvent) => {
+      // Note: make sure to exclude the input element itself, otherwise the user cannot click to move the cursor
+      if (event.target !== inputRef.current) {
+        event.preventDefault(); // Prevent the browser unfocusing the input right after this event is handled
+        inputRef.current?.focus();
+      }
     }, []);
     
     // Prevent inputs from being used as (form submit) buttons
@@ -69,15 +85,13 @@ export const Input = Object.assign(
     }
     
     return (
-      // The container is not (and should not be) interactive/focusable, the `onClick` is a visual only convenience.
-      // biome-ignore lint/a11y/useKeyWithClickEvents: See above.
       <div
         className={cx(
           'bk',
           { [cl['bk-input']]: !unstyled },
           classx,
         )}
-        onClick={mergeCallbacks([handleContainerClick, propsRest.onClick])}
+        onMouseDown={mergeCallbacks([handleContainerClick, propsRest.onMouseDown])}
       >
         {icon && <Icon icon={icon} aria-label={iconLabel}/>}
         <input
