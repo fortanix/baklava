@@ -11,5 +11,6 @@ export const InputSearch = (props: React.ComponentProps<typeof Input>) =>
   <Input
     icon="search"
     iconLabel="Search"
+    placeholder="Search"
     {...props}
   />;

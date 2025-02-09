@@ -21,7 +21,6 @@ export default {
   argTypes: {
   },
   args: {
-    placeholder: 'Example',
   },
   decorators: [
     Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
