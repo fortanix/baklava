@@ -45,13 +45,21 @@ export type InputProps = Omit<ComponentProps<'input'>, 'type'> & {
   /** The accessible name for the icon. */
   iconLabel?: undefined | string,
   
+  /** Any additional actions to show after the input control. Use `<Input.Action/>` for a preset action element. */
   actions?: undefined | React.ReactNode,
+  
+  /**
+   * Whether the textarea should resize automatically, with `field-sizing: content`.
+   * Note that browser support is still somewhat limited:
+   * https://developer.mozilla.org/en-US/docs/Web/CSS/field-sizing
+   */
+    automaticResize?: undefined | boolean,
 };
 /**
  * Input control.
  */
 export const Input = Object.assign(
-    (props: InputProps) => {
+  (props: InputProps) => {
     const {
       unstyled = false,
       classx,
@@ -59,6 +67,7 @@ export const Input = Object.assign(
       icon,
       iconLabel,
       actions,
+      automaticResize,
       ...propsRest
     } = props;
     
@@ -89,6 +98,7 @@ export const Input = Object.assign(
         className={cx(
           'bk',
           { [cl['bk-input']]: !unstyled },
+          { [cl['bk-input--automatic-resize']]: automaticResize },
           classx,
         )}
         onMouseDown={mergeCallbacks([handleContainerClick, propsRest.onMouseDown])}

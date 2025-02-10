@@ -116,7 +116,8 @@ export const Search = (props: React.ComponentPropsWithoutRef<typeof SearchInput>
   const { table } = useTable();
   
   return (
-    <SearchInput type="text"
+    <SearchInput
+      type="text"
       value={table.state.globalFilter ?? ''}
       onChange={evt => { table.setGlobalFilter(evt.target.value); }}
       {...props}

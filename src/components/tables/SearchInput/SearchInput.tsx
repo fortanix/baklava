@@ -19,7 +19,7 @@ export const SearchInput = (props: SearchInputProps) => {
       <Icon icon="search" className={cx(cl['bk-search__icon'])}/>
       <Input
         placeholder="Search"
-        className={cx(cl['bk-search__input'])}
+        classx={cx(cl['bk-search__input'])}
         {...props}
       />
     </div>

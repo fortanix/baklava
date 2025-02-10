@@ -101,3 +101,12 @@ export const InputWithTypePassword: Story = {
     value: 'example$password',
   },
 };
+
+export const InputWithAutomaticResizing: Story = {
+  args: {
+    automaticResize: true,
+    defaultValue: 'This input should automatically resize based on the content',
+    // Add an action to test whether resizing works correctly with additional UI
+    actions: <Input.Action icon="caret-down" label="Open menu" onPress={() => { notify.info('Clicked'); }}/>,
+  },
+};

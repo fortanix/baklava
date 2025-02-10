@@ -19,6 +19,8 @@
     column-gap: bk.$spacing-1;
     
     > .bk-input__input {
+      flex-grow: 1;
+      
       line-height: bk.$line-height-m;
       
       @include bk.focus-hidden; // Apply focus outline on the container instead
@@ -38,6 +40,14 @@
     &:not(:focus-within) {
       &:global(.invalid), &:has(> .bk-input__input:user-invalid) {
         --bk-input-accent-color: #{bk.$theme-form-rule-error};
+      }
+    }
+    
+    &.bk-input--automatic-resize {
+      min-width: 10ch;
+      
+      > .bk-input__input {
+        field-sizing: content;
       }
     }
     

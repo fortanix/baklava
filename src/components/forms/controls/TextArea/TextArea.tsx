@@ -13,7 +13,7 @@ export type TextAreaProps = Omit<ComponentProps<'textarea'>, 'type'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
-  /** 
+  /**
    * Whether the textarea should resize automatically, with `field-sizing: content`.
    * Note that browser support is still somewhat limited:
    * https://developer.mozilla.org/en-US/docs/Web/CSS/field-sizing
