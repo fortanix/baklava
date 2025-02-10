@@ -17,8 +17,8 @@ export type IconButtonProps = React.PropsWithChildren<ComponentProps<typeof Butt
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
-  /** Class name to apply to the outer container. */
-  classx?: undefined | ClassNameArgument,
+  /** Class name to apply to the icon. */
+  iconClassName?: undefined | ClassNameArgument,
   
   /** The accessible name for the icon. */
   label: string,
@@ -36,7 +36,7 @@ export type IconButtonProps = React.PropsWithChildren<ComponentProps<typeof Butt
  * A button where the label is just an icon.
  */
 export const IconButton = (props: IconButtonProps) => {
-  const { unstyled = false, classx, label, icon, iconProps = {}, ...propsRest } = props;
+  const { unstyled = false, className, iconClassName, label, icon, iconProps = {}, ...propsRest } = props;
   
   return (
     <Button
@@ -47,11 +47,14 @@ export const IconButton = (props: IconButtonProps) => {
       className={cx(
         'bk',
         { [cl['bk-icon-button']]: !unstyled },
-        propsRest.className,
-        classx,
+        className,
       )}
     >
-      <Icon {...iconProps} icon={icon}/>
+      <Icon
+        {...iconProps}
+        icon={icon}
+        className={cx(iconClassName)}
+      />
     </Button>
   );
 };

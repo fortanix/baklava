@@ -24,8 +24,11 @@ type InputSensitiveProps = Omit<React.ComponentProps<typeof Input>, 'ref'> & {
   allowReveal?: undefined | boolean,
 };
 /**
- * A input for sensitive text. Similar to `InputPassword`, but meant for any kind of sensitive input. Does not
- * integrate with browser password managers.
+ * A input for sensitive text. By default, the input will be masked and copying to the clipboard will not work. If
+ * `allowReveal` is true, the user will be able to reveal the contents of the input.
+ * 
+ * Note: this is not meant for passwords, use `InputPassword` for that instead. The `InputSensitive` does not integrate
+ * with password managers.
  */
 export const InputSensitive = (props: InputSensitiveProps) => {
   const { ref, allowReveal = true, ...propsRest } = props;

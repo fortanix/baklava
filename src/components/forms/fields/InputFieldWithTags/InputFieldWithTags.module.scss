@@ -7,21 +7,25 @@
 @layer baklava.components {
   .bk-input-field-with-tags {
     @include bk.component-base(input-field-with-tags);
-  }
-
-  .bk-input-field-with-tags__label {
-    @include bk.font(bk.$font-family-body, bk.$font-weight-semibold);
-    cursor: default;
-    margin-bottom: bk.$spacing-2;
-  }
-
-  .bk-input-field-with-tags__control {
-    width: 100%;
-  }
-
-  .bk-input-field-with-tags__tags {
+    
     display: flex;
-    flex-flow: row wrap;
-    gap: bk.$spacing-2;
+    flex-direction: column;
+    row-gap: bk.$spacing-2;
+    
+    .bk-input-field-with-tags__label {
+      cursor: default;
+      @include bk.font(bk.$font-family-body, bk.$font-weight-semibold);
+    }
+    
+    .bk-input-field-with-tags__control {
+      --keep: ;
+    }
+    
+    .bk-input-field-with-tags__tags {
+      flex-shrink: 0;
+      display: flex;
+      flex-flow: row wrap;
+      gap: bk.$spacing-2;
+    }
   }
 }

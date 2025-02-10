@@ -42,14 +42,16 @@
   hyphens: auto;
 }
 
-@mixin text-one-line {
+@mixin text-one-line($include-padding: true) {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   
-  // Add a little bit of padding to prevent parts of characters getting cut off in some browsers. For example,
-  // try the letter "J" and view it in Safari, the bottom extender of the "J" overflows the text box and gets cut off.
-  padding-inline: 0.3ch;
+  @if $include-padding {
+    // Add a little bit of padding to prevent parts of characters getting cut off in some browsers. For example,
+    // try the letter "J" and view it in Safari, the bottom extender of the "J" overflows the text box and gets cut off.
+    padding-inline: 0.3ch;
+  }
 }
 
 @mixin flex-center() {

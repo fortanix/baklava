@@ -5,9 +5,8 @@
 import * as React from 'react';
 import { classNames as cx } from '../../../../util/componentUtil.ts';
 
-import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Input } from '../../../forms/controls/Input/Input.tsx';
-import { Button } from '../../../actions/Button/Button.tsx';
+import { IconButton } from '../../../actions/IconButton/IconButton.tsx';
 
 import {
   type PageSizeOption,
@@ -43,34 +42,31 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
       <PaginationSizeSelector pageSizeOptions={pageSizeOptions} />
 
       <div className={cx(cl['pager'], cl['pager--indexed'])}>
-        <Button
-          unstyled
-          nonactive={!table.canPreviousPage}
-          aria-label="Go to first page"
+        <IconButton
           className={cx(cl['pager__nav'])}
+          icon="page-backward"
+          label="Go to first page"
+          nonactive={!table.canPreviousPage}
           onPress={() => {
             table.gotoPage(0)
             setPageIndexIndicator(1);
           }}
-        >
-          <Icon icon="page-backward"/>
-        </Button>
+        />
         <div className={cx(cl['pagination-main'])}>
-          <Button
-            unstyled
-            nonactive={!table.canPreviousPage}
-            aria-label="Go to previous page"
+          <IconButton
             className={cx(cl['pager__nav'])}
+            icon="caret-left"
+            label="Go to previous page"
+            nonactive={!table.canPreviousPage}
             onPress={() => {
               table.previousPage();
               setPageIndexIndicator(pageIndexIndicator - 1);
             }}
-          >
-            <Icon icon="caret-left"/>
-          </Button>
+          />
 
           <Input
             type="number"
+            automaticResize
             className={cx(cl['pagination__page-input'])}
             aria-label={`Current page: ${pageIndexIndicator}`}
             value={pageIndexIndicator}
@@ -86,31 +82,27 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
             }}
           />
           of {Math.max(table.pageCount, 1)}
-          <Button
-            unstyled
-            nonactive={!table.canNextPage}
-            aria-label="Go to next page"
+          <IconButton
             className={cx(cl['pager__nav'])}
+            icon="caret-right"
+            label="Go to next page"
+            nonactive={!table.canNextPage}
             onPress={() => {
               table.nextPage();
               setPageIndexIndicator(pageIndexIndicator + 1);
             }}
-          >
-            <Icon icon="caret-right"/>
-          </Button>
+          />
         </div>
-        <Button
-          unstyled
-          nonactive={!table.canNextPage}
-          aria-label="Go to last page"
+        <IconButton
           className={cx(cl['pager__nav'])}
+          icon="page-forward"
+          nonactive={!table.canNextPage}
+          label="Go to last page"
           onPress={() => {
             table.gotoPage(table.pageCount - 1)
             setPageIndexIndicator(table.pageCount);
           }}
-        >
-          <Icon icon="page-forward"/>
-        </Button>
+        />
       </div>
     </div>
   );

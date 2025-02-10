@@ -19,7 +19,7 @@ export type InputFieldWithTagsProps = Omit<ComponentProps<'input'>, 'value'> & {
   unstyled?: undefined | boolean,
 
   /** Label for the input. */
-  label?: undefined | React.ReactNode,
+  label?: undefined | string,
 
   /** Props for the `<label>` element, if `label` is defined. */
   labelProps?: undefined | ComponentProps<'label'>,
@@ -125,10 +125,16 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
         ref={inputRef}
       />
       <div className={cl['bk-input-field-with-tags__tags']}>
-        {tags && (
-          // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
-          tags.map((tag, idx) => <Tag key={idx} content={tag} onRemove={() => onRemoveTag(idx)}/>)
-        )}
+        {tags &&
+          tags.map((tag, idx) => (
+            <Tag
+              // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
+              key={idx}
+              content={tag}
+              onRemove={() => onRemoveTag(idx)}
+            />
+          ))
+        }
       </div>
     </div>
   );

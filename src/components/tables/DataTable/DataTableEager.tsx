@@ -6,9 +6,9 @@ import * as React from 'react';
 import { classNames as cx, type ClassNameArgument } from '../../../util/componentUtil.ts';
 import * as ReactTable from 'react-table';
 
+import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 import { type TableContextState, createTableContext, useTable } from './DataTableContext.tsx';
 import { Pagination } from './pagination/Pagination.tsx';
-import { SearchInput } from '../SearchInput/SearchInput.tsx';
 import { MultiSearch as MultiSearchInput } from '../MultiSearch/MultiSearch.tsx';
 import { DataTableSync } from './table/DataTable.tsx';
 
@@ -112,19 +112,17 @@ export const TableProviderEager = <D extends object>(props: TableProviderEagerPr
 TableProviderEager.displayName = 'TableProviderEager';
 
 
-export const Search = (props: React.ComponentPropsWithoutRef<typeof SearchInput>) => {
+export const Search = (props: React.ComponentProps<typeof InputSearch>) => {
   const { table } = useTable();
   
   return (
-    <SearchInput
-      type="text"
+    <InputSearch
       value={table.state.globalFilter ?? ''}
       onChange={evt => { table.setGlobalFilter(evt.target.value); }}
       {...props}
     />
   );
 };
-Search.displayName = 'Search';
 
 export const MultiSearch = (props: React.ComponentPropsWithoutRef<typeof MultiSearchInput>) => {
   const { table } = useTable();
@@ -140,7 +138,7 @@ export const MultiSearch = (props: React.ComponentPropsWithoutRef<typeof MultiSe
 };
 MultiSearch.displayName = 'MultiSearch';
 
-export type DataTableEagerProps = Omit<React.ComponentPropsWithRef<typeof DataTableSync>, 'table'> & {
+export type DataTableEagerProps = Omit<React.ComponentProps<typeof DataTableSync>, 'table'> & {
   children?: React.ReactNode,
   className?: ClassNameArgument,
   footer?: React.ReactNode,

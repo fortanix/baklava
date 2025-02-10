@@ -40,7 +40,7 @@ export const InputStandard: Story = {
 
 export const InputWithFocus: Story = {
   args: {
-    classx: 'pseudo-focus',
+    className: 'pseudo-focus',
   },
 };
 
@@ -48,7 +48,7 @@ export const InputInvalid: Story = {
   args: {
     required: true,
     pattern: '\d+',
-    classx: 'invalid',
+    className: 'invalid',
     value: 'invalid input',
   },
   /*

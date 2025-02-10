@@ -33,8 +33,8 @@ export type InputProps = Omit<ComponentProps<'input'>, 'type'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
-  /** Class name to apply to the outer container. */
-  classx?: undefined | ClassNameArgument,
+  /** Class name to apply to the input element. */
+  inputClassName?: undefined | ClassNameArgument,
   
   /** The type of the input. */
   type?: undefined | Exclude<ComponentProps<'input'>['type'], 'button' | 'submit' | 'reset'>,
@@ -62,7 +62,8 @@ export const Input = Object.assign(
   (props: InputProps) => {
     const {
       unstyled = false,
-      classx,
+      className,
+      inputClassName,
       type = 'text',
       icon,
       iconLabel,
@@ -99,7 +100,7 @@ export const Input = Object.assign(
           'bk',
           { [cl['bk-input']]: !unstyled },
           { [cl['bk-input--automatic-resize']]: automaticResize },
-          classx,
+          className,
         )}
         onMouseDown={mergeCallbacks([handleContainerClick, propsRest.onMouseDown])}
       >
@@ -108,7 +109,7 @@ export const Input = Object.assign(
           {...propsRest}
           ref={mergeRefs(inputRef, propsRest.ref)}
           type={type}
-          className={cx(cl['bk-input__input'], propsRest.className)}
+          className={cx(cl['bk-input__input'], inputClassName)}
         />
         {actions}
       </div>

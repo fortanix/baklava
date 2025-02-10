@@ -12,6 +12,7 @@ import { Button } from '../../actions/Button/Button.tsx';
 import { TooltipProvider } from '../../overlays/Tooltip/TooltipProvider.tsx';
 
 import cl from './Banner.module.scss';
+import { IconButton } from '../../actions/IconButton/IconButton.tsx';
 
 
 export { cl as BannerClassNames };
@@ -51,10 +52,7 @@ const ActionButton = (props: ActionButtonProps) => {
   );
 };
 
-type ActionIconProps = ComponentProps<typeof Button> & {
-  /** There must be `label` on an icon-only button, for accessibility. */
-  label: Required<ComponentProps<typeof Button>>['label'],
-  
+type ActionIconProps = ComponentProps<typeof IconButton> & {
   /** Optional custom tooltip text, if different from `label`. */
   tooltip?: undefined | ComponentProps<typeof TooltipProvider>['tooltip'],
 };
@@ -64,7 +62,7 @@ type ActionIconProps = ComponentProps<typeof Button> & {
 const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
   return (
     <TooltipProvider compact tooltip={typeof tooltip !== 'undefined' ? tooltip : buttonProps.label}>
-      <Button trimmed
+      <IconButton
         {...buttonProps}
         className={cx(cl['bk-banner__action'], cl['bk-banner__action--icon'], buttonProps.className)}
         // Prevent clicks from triggering any click handlers on the Banner itself (e.g. to prevent toast dismissal)
@@ -165,13 +163,12 @@ export const Banner = Object.assign(
             
             {showCloseAction &&
               <ActionIcon
+                icon="cross"
                 label="Close banner"
                 tooltip={null}
                 className={cx(cl['bk-banner__action-close'])}
                 onPress={onClose}
-              >
-                <Icon icon="cross"/>
-              </ActionIcon>
+              />
             }
           </div>
         </div>

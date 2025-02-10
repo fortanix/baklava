@@ -20,6 +20,7 @@
     
     > .bk-input__input {
       flex-grow: 1;
+      min-width: 0;
       
       line-height: bk.$line-height-m;
       
@@ -44,8 +45,6 @@
     }
     
     &.bk-input--automatic-resize {
-      min-width: 10ch;
-      
       > .bk-input__input {
         field-sizing: content;
       }
