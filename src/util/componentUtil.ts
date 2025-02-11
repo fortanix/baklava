@@ -20,10 +20,10 @@ export const classNames = (...args: ArgumentArray): string => {
   return className;
 };
 
-// Version of `React.ComponentPropsWithRef` that supports `classnames` syntax for the `className` attribute. So that
+// Version of `React.ComponentProps` that supports `classnames` syntax for the `className` attribute. So that
 // components can take class names not just of type string, but any valid classnames `Argument`, e.g.:
 //   `<MyComponent className={['example1', { example2: condition() }]}/>`
 export type ComponentProps<T extends React.ElementType> =
-  Omit<React.ComponentPropsWithRef<T>, 'className'> & {
+  Omit<React.ComponentProps<T>, 'className'> & {
     className?: undefined | ClassNameArgument,
   };

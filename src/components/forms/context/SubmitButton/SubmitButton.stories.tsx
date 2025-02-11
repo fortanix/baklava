@@ -103,7 +103,7 @@ export const AsyncSubmitButtonFailure: Story = {
   },
 };
 
-const FormWithAction = (props: React.ComponentPropsWithRef<'form'>) => {
+const FormWithAction = (props: React.ComponentProps<'form'>) => {
   const [error, submitAction, isPending] = React.useActionState(
     async (previousState: unknown, formData: FormData) => {
       const delay = (timeMs: number) => new Promise(resolve => window.setTimeout(resolve, timeMs));

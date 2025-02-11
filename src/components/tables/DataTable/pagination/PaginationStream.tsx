@@ -7,6 +7,7 @@ import type * as React from 'react';
 
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
+import { IconButton } from '../../../actions/IconButton/IconButton.tsx';
 
 import { type PageSizeOption, PaginationSizeSelector } from './PaginationSizeSelector.tsx';
 import { useTable } from '../DataTableContext.tsx';
@@ -22,14 +23,13 @@ export const PaginationStreamPager = ({ pageSizeOptions }: PaginationStreamPager
   
   return (
     <div className={cx(cl['pagination__pager'])}>
-      <Button unstyled
-        aria-label="First page"
+      <IconButton
         className={cx(cl['pager__nav'], cl['pager__nav--first'])}
+        icon="page-backward"
+        label="First page"
         nonactive={!table.canPreviousPage}
         onPress={() => { table.gotoPage(0); }}
-      >
-        <Icon icon="page-backward"/>
-      </Button>
+      />
       
       <Button trimmed
         kind="tertiary"

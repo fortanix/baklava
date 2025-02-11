@@ -1,0 +1,19 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-sensitive-input {
+    @include bk.component-base(bk-sensitive-input);
+    
+    &.bk-sensitive-input--revealed {
+      // Note: this property is nonstandard, but it is supported by all major browsers. There is a proposal to bring
+      // this to CSS (https://drafts.csswg.org/css-ui/#input-security), but as per discussion this may end up being
+      // a standard UA feature instead.
+      // https://developer.mozilla.org/en-US/docs/Web/CSS/-webkit-text-security
+      -webkit-text-security: square; // Note: does not have any effect if the `type` is "password"
+    }
+  }
+}

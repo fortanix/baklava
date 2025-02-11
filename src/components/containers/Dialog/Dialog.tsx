@@ -7,8 +7,8 @@ import { mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import { useScroller } from '../../../layouts/util/Scroller.tsx';
 
-import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
+import { IconButton } from '../../actions/IconButton/IconButton.tsx';
 import { H5 } from '../../../typography/Heading/Heading.tsx';
 import { TooltipProvider } from '../../overlays/Tooltip/TooltipProvider.tsx';
 
@@ -29,7 +29,7 @@ export const useDialogContext = () => {
 };
 
 
-type ActionProps = ComponentProps<typeof Button> & {
+type ActionProps = React.ComponentProps<typeof Button> & {
   /** Optional tooltip text. */
   tooltip?: undefined | ComponentProps<typeof TooltipProvider>['tooltip'],
 };
@@ -47,20 +47,21 @@ const Action = ({ tooltip = null, ...buttonProps }: ActionProps) => {
   );
 };
 
-type ActionIconProps = Omit<ActionProps, 'label'> & {
-  /** There must be `label` on an icon-only button, for accessibility. */
-  label: Required<ComponentProps<typeof Button>>['label'],
+type ActionIconProps = React.ComponentProps<typeof IconButton> & {
+  /** Optional tooltip text. */
+  tooltip?: undefined | ComponentProps<typeof TooltipProvider>['tooltip'],
 };
 /**
  * An action that is rendered as just an icon.
  */
-const ActionIcon = ({ tooltip, ...buttonProps }: ActionIconProps) => {
+const ActionIcon = ({ tooltip, ...iconButtonProps }: ActionIconProps) => {
   return (
-    <Action unstyled
-      {...buttonProps}
-      tooltip={typeof tooltip !== 'undefined' ? tooltip : buttonProps.label}
-      className={cx(cl['bk-dialog__action--icon'], buttonProps.className)}
-    />
+    <TooltipProvider compact tooltip={typeof tooltip !== 'undefined' ? tooltip : iconButtonProps.label}>
+      <IconButton
+        {...iconButtonProps}
+        className={cx(cl['bk-dialog__action--icon'], iconButtonProps.className)}
+      />
+    </TooltipProvider>
   );
 };
 
@@ -154,14 +155,13 @@ export const Dialog = Object.assign(
             <div className={cx(cl['bk-dialog__header__actions'])}>
               {showCloseIcon &&
                 <ActionIcon
+                  icon="cross"
                   autoFocus={autoFocusClose}
                   label="Close dialog"
                   tooltip={null}
                   className={cx(cl['bk-dialog__header-action-close'])}
                   onPress={onRequestClose}
-                >
-                  <Icon icon="cross"/>
-                </ActionIcon>
+                />
               }
             </div>
           </header>

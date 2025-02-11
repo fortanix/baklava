@@ -2,8 +2,9 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import type { Meta, StoryObj } from '@storybook/react';
 import * as React from 'react';
+import type { Meta, StoryObj } from '@storybook/react';
+import { loremIpsumSentence } from '../../../../util/storybook/LoremIpsum.tsx';
 
 import { Form } from '../../context/Form/Form.tsx';
 import { Card } from '../../../containers/Card/Card.tsx';
@@ -11,8 +12,8 @@ import { Card } from '../../../containers/Card/Card.tsx';
 import { InputFieldWithTags } from './InputFieldWithTags.tsx';
 
 
-type InputArgs = React.ComponentProps<typeof InputFieldWithTags>;
-type Story = StoryObj<InputArgs>;
+type InputFieldWithTagsArgs = React.ComponentProps<typeof InputFieldWithTags>;
+type Story = StoryObj<InputFieldWithTagsArgs>;
 
 export default {
   component: InputFieldWithTags,
@@ -31,37 +32,44 @@ export default {
     placeholder: 'Example',
   },
   decorators: [
-    Story => <Form><Story/></Form>,
+    Story => (
+      <Form>
+        <Card style={{width: '350px'}}>
+          <Story/>
+        </Card>
+      </Form>
+    ),
   ],
-} satisfies Meta<InputArgs>;
+} satisfies Meta<InputFieldWithTagsArgs>;
+
+const InputFieldWithTagsControlled = (props: InputFieldWithTagsArgs) => {
+  const [tags, setTags] = React.useState<Array<string>>(props.tags ?? []);
+  const [inputText, setInputText] = React.useState<string>('');
+  
+  const handleUpdate = (newInputText: string) => {
+    setInputText(newInputText);
+  };
+  const handleUpdateTags = (newTags: string[]) => {
+    setTags(newTags);
+  };
+  
+  return (
+    <InputFieldWithTags
+      tags={tags}
+      value={inputText}
+      label="Input with tags"
+      onUpdate={handleUpdate}
+      onUpdateTags={handleUpdateTags}
+      placeholder="Placeholder"
+    />
+  );
+};
 
 export const InputWithTags: Story = {
-  name: 'Input with tags (enter creates new tag, backspace erases tags)',
-  render: () => {
-    const [tags, setTags] = React.useState<Array<string>>(['Tag Title', 'Tag Title 2']);
-    const [inputText, setInputText] = React.useState<string>('Example');
+  render: () => <InputFieldWithTagsControlled tags={['Tag 1', 'Tag 2']}/>,
+};
 
-    const handleUpdate = (newInputText: string) => {
-      setInputText(newInputText);
-    };
-    const handleUpdateTags = (newTags: string[]) => {
-      setTags(newTags);
-    };
-
-    return (
-      <div>
-        <p>Enter creates new tags; backspace removes tags.</p>
-        <Card style={{width: '350px'}}>
-          <InputFieldWithTags
-            tags={tags}
-            value={inputText}
-            label={'Input with tags'}
-            onUpdate={handleUpdate}
-            onUpdateTags={handleUpdateTags}
-            placeholder="Placeholder"
-          />
-        </Card>
-      </div>
-    );
-  }
+/** Test that the component renders properly if there is a tag with a lot of content that can cause overflow. */
+export const InputWithTagsWithLongTag: Story = {
+  render: () => <InputFieldWithTagsControlled tags={['Tag 1', 'Tag 2', loremIpsumSentence]}/>,
 };

@@ -94,6 +94,11 @@ const preview = {
                 'Radio',
                 'SegmentedControl',
                 'Input',
+                [
+                  'InputSearch',
+                  'InputSensitive',
+                  'InputPassword',
+                ],
                 'TextArea',
                 'Select',
                 'DatePicker',

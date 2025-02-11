@@ -8,6 +8,7 @@
   .bk-tag {
     @include bk.component-base(bk-tag);
     
+    max-width: 100%;
     flex-shrink: 0;
     
     padding: bk.$size-2 bk.$spacing-2;
@@ -23,15 +24,13 @@
     
     --bk-tag--with-close-button { --keep: ; }
     
+    .bk-tag__content {
+      @include bk.text-one-line($include-padding: false);
+    }
+    
     .bk-tag__action {
-      font-size: 0.9em;
       color: bk.$theme-tag-icon-default;
-      
-      display: flex;
-      
-      .bk-tag__icon {
-        display: block;
-      }
+      font-size: 0.9em;
     }
   }
 }

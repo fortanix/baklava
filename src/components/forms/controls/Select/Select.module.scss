@@ -21,6 +21,7 @@
     height: 24px;
     
     .bk-select__input {
+      cursor: pointer;
       min-width: $bk-select-min-width;
       caret-color: transparent; /* FIXME: find better way to manage the input state */
       border: none;

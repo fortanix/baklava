@@ -10,7 +10,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 import { loremIpsum, LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
-import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { SegmentedControl } from '../../forms/controls/SegmentedControl/SegmentedControl.tsx';
 
@@ -67,7 +66,7 @@ export default {
 const ExampleActionButton = () =>
   <Banner.ActionButton onPress={() => alert('clicked')}>Button</Banner.ActionButton>;
 const ExampleActionIcon = () =>
-  <Banner.ActionIcon label="Copy" onPress={() => alert('clicked')}><Icon icon="copy"/></Banner.ActionIcon>;
+  <Banner.ActionIcon icon="copy" label="Copy" onPress={() => alert('clicked')}/>;
 const ExampleActions = () => (
   <>
     <ExampleActionButton/>

@@ -36,6 +36,9 @@ export { Checkbox } from '../src/components/forms/controls/Checkbox/Checkbox.tsx
 export { DatePicker } from '../src/components/forms/controls/DatePicker/DatePicker.tsx';
 export { DatePickerRange } from '../src/components/forms/controls/DatePickerRange/DatePickerRange.tsx';
 export { Input } from '../src/components/forms/controls/Input/Input.tsx';
+export { InputSearch } from '../src/components/forms/controls/Input/InputSearch.tsx';
+export { InputSensitive } from '../src/components/forms/controls/Input/InputSensitive.tsx';
+export { InputPassword } from '../src/components/forms/controls/Input/InputPassword.tsx';
 export { Radio } from '../src/components/forms/controls/Radio/Radio.tsx';
 export { SegmentedControl } from '../src/components/forms/controls/SegmentedControl/SegmentedControl.tsx';
 export { Select } from '../src/components/forms/controls/Select/Select.tsx';
