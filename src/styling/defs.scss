@@ -38,7 +38,7 @@
   /* https://blog.logrocket.com/guide-css-word-wrap-overflow-wrap-word-break/ */
   /* https://stackoverflow.com/questions/12699800/smarter-word-break-in-css */
   overflow-wrap: break-word; // Prevent long words causing overflow
-  text-wrap: pretty; // Favor better typography for text wrapping (e.g. prevent orphans
+  text-wrap: pretty; // Favor better typography for text wrapping (e.g. prevent orphans)
   hyphens: auto;
 }
 
