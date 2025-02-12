@@ -64,11 +64,14 @@
     position: fixed;
     inset: 0;
     left: auto;
-    margin: 1rem;
     width: min-content;
     height: min-content;
     max-width: 100vi;
     max-height: 90vb;
+    
+    &:not(:empty) {
+      margin: 1rem;
+    }
     
     background: transparent;
     

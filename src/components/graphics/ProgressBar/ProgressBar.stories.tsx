@@ -35,35 +35,21 @@ export const ProgressBarWithOptionalAttributes = {
 }
 
 export const ProgressBar0: Story = {
-  name: 'Progress Bar on 0%',
+  name: 'Progress bar at 0%',
   args: {
     progress: 0,
   }
 };
 
-export const ProgressBar25: Story = {
-  name: 'Progress Bar on 25%',
-  args: {
-    progress: 25,
-  }
-};
-
 export const ProgressBar50: Story = {
-  name: 'Progress Bar on 50%',
+  name: 'Progress bar at 50%',
   args: {
     progress: 50,
   }
 };
 
-export const ProgressBar75: Story = {
-  name: 'Progress Bar on 75%',
-  args: {
-    progress: 75,
-  }
-};
-
 export const ProgressBar100: Story = {
-  name: 'Progress Bar on 100%',
+  name: 'Progress bar at 100%',
   args: {
     progress: 100,
   }

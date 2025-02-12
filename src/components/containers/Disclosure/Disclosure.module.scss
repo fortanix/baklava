@@ -91,8 +91,9 @@
     // Inner wrapper for content. We cannot give `::details-content` any margin/padding because it would still be
     // visible (due to `content-visibility: hidden` still taking up space). So we use this as scroller and for spacing.
     .bk-disclosure__content {
-      margin-top: bk.$spacing-8;
-      margin-bottom: calc(bk.$spacing-8 - var(--bk-disclosure-padding-block)); // Total should equal `bk.$spacing-8`
+      margin-block:
+        bk.$spacing-8
+        calc(bk.$spacing-8 - var(--bk-disclosure-padding-block)); // Total should equal `bk.$spacing-8`
       overflow: hidden;
     }
     // Make the content scrollable when the content is open
@@ -128,9 +129,9 @@
       .bk-disclosure__content {
         // In case of overflow, since we don't the flex parent, the margin bottom here won't work.
         // Move it to `details[open]` instead.
-        margin-bottom: 0;
+        margin-block-end: 0;
       }
-      &[open] { padding-bottom: bk.$spacing-8; }
+      &[open] { padding-block-end: bk.$spacing-8; }
       
       // Fix scrolling
       // stylelint-disable-next-line no-duplicate-selectors

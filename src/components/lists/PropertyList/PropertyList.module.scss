@@ -18,15 +18,14 @@
         font-size: bk.$font-size-m;
       }
       dt {
-        margin-top: bk.$sizing-4;
-        margin-bottom: bk.$sizing-2;
+        margin-block: bk.$sizing-4 bk.$sizing-2;
         @include bk.font($family: bk.$font-family-display, $weight: bk.$font-weight-semibold);
         
         //color: bk.$color-neutral-3;
         //line-height: bk.$line-height-6;
       }
       dd {
-        margin-left: bk.$sizing-0;
+        margin-inline-start: bk.$sizing-0;
       }
     }
   }

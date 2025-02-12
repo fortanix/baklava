@@ -141,7 +141,7 @@
     padding: bk.$spacing-2;
     &:not(.bk-tooltip--compact) {
       padding: bk.$spacing-4;
-      padding-bottom: bk.$spacing-7;
+      padding-block-end: bk.$spacing-7;
     }
     
     border-radius: bk.$radius-s;
@@ -241,14 +241,13 @@
   /* Anchor positioning */
   
   @position-try --bk-tooltip-position-top {
-    margin-top: var(--bk-layout-header-height); /* Compensate for layout header */
-    margin-bottom: 6px;
+    margin-block: var(--bk-layout-header-height) 6px; /* Compensate for layout header */
     /* position-area: top; */
     bottom: anchor(top);
     justify-self: anchor-center;
   }
   @position-try --bk-tooltip-position-bottom {
-    margin-top: 6px;
+    margin-block-start: 6px;
     /* position-area: bottom; */
     justify-self: anchor-center;
     top: anchor(bottom);

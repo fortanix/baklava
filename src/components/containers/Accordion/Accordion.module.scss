@@ -16,7 +16,7 @@
     }
     .bk-accordion__item:has(+ .bk-accordion__item) {
       --bk-disclosure-border-radius-bottom: 0;
-      border-bottom-width: 0;
+      border-block-end-width: 0;
     }
   }
 }

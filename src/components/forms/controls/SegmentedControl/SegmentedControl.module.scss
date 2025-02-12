@@ -7,6 +7,7 @@
 @layer baklava.components {
   .bk-segmented-control {
     @include bk.component-base(bk-segmented-control);
+    
     display: flex;
     
     .bk-segmented-control__toggle {
@@ -19,7 +20,7 @@
       padding: bk.$spacing-1 bk.$spacing-3;
       background-color: var(--bk-segmented-control-toggle-background-color);
       border: 1px solid var(--bk-segmented-control-toggle-border-color);
-      border-left: 0;
+      border-inline-start: 0;
       
       color: var(--bk-segmented-control-toggle-text-color);
       font-weight: bk.$font-weight-semibold;
@@ -29,7 +30,7 @@
     .bk-segmented-control__item {
       &:first-child {
         .bk-segmented-control__toggle {
-          border-left: 1px solid var(--bk-segmented-control-toggle-border-color);
+          border-inline-start: 1px solid var(--bk-segmented-control-toggle-border-color);
           border-radius: 2px 0 0 2px;
         }
       }
@@ -58,7 +59,7 @@
         @include bk.focus-outset;
         &:is(:focus-visible, :global(.pseudo-focus-visible)) {
           position: relative; // Have the focused toggle render over the other toggles so that the focus is fully shown
-          border-left: 1px solid var(--bk-segmented-control-toggle-border-color);
+          border-inline-start: 1px solid var(--bk-segmented-control-toggle-border-color);
           border-radius: bk.$radius-2;
         }
       }

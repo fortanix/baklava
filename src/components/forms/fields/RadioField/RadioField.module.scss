@@ -11,16 +11,16 @@
     .bk-radio-field__title {
       color: bk.$theme-text-label-default;
       font-weight: bk.$font-weight-semibold;
-      margin-bottom: bk.$spacing-1;
+      margin-block-end: bk.$spacing-1;
       
       .bk-radio-field__title__icon {
-        margin-left: bk.$spacing-1;
+        margin-inline-start: bk.$spacing-1;
       }
       
       .bk-radio-field__title__optional {
         font-size: bk.$font-size-xs;
         font-weight: bk.$font-weight-regular;
-        margin-left: bk.$spacing-1;
+        margin-inline-start: bk.$spacing-1;
       }
     }
     
@@ -38,7 +38,7 @@
     
     .bk-radio-field__description {
       font-size: bk.$font-size-xs;
-      padding-left: 26px;
+      padding-inline-start: 26px;
     }
   }
 }
