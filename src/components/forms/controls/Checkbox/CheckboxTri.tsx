@@ -8,27 +8,27 @@ import { mergeRefs, useEffectOnce } from '../../../../util/reactUtil.ts';
 import { Checkbox } from './Checkbox.tsx';
 
 
-export type CheckboxTernaryState = boolean | 'indeterminate';
+export type CheckboxTriState = boolean | 'indeterminate';
 
-export type CheckboxTernaryProps = Omit<React.ComponentProps<typeof Checkbox>, 'checked' | 'defaultChecked'> & {
+export type CheckboxTriProps = Omit<React.ComponentProps<typeof Checkbox>, 'checked' | 'defaultChecked'> & {
   /** The default state of the checkbox at initialization time. Default: undefined. */
-  defaultChecked?: undefined | CheckboxTernaryState,
+  defaultChecked?: undefined | CheckboxTriState,
   
   /**
    * Whether the checkbox is checked, unchecked, or indeterminate (neither checked nor unchecked). The indeterminate
    * state cannot be triggered by a user, it can only be set programmatically only. Default: `undefined` (uncontrolled).
    */
-  checked?: undefined | CheckboxTernaryState,
+  checked?: undefined | CheckboxTriState,
   
   /** Callback for update events, will be called with the new state of the checkbox. */
-  onUpdate?: undefined | ((checked: CheckboxTernaryState) => void),
+  onUpdate?: undefined | ((checked: CheckboxTriState) => void),
 };
 /**
  * A variant of checkbox that allows a third "indeterminate" state meaning neither checked nor unchecked. This can be
  * useful for example for "select all" checkboxes, where the checkbox will be indeterminate if some (but not all) of
  * the items are currently checked.
  */
-export const CheckboxTernary = (props: CheckboxTernaryProps) => {
+export const CheckboxTri = (props: CheckboxTriProps) => {
   const {
     unstyled = false,
     defaultChecked,
@@ -48,7 +48,7 @@ export const CheckboxTernary = (props: CheckboxTernaryProps) => {
     // Force rerender of the component if the `indeterminate` state changed (but `checked` didn't)
     setInternalIndeterminate(event.target.indeterminate);
     
-    const checkedUpdated: CheckboxTernaryState = event.target.indeterminate ? 'indeterminate' : event.target.checked;
+    const checkedUpdated: CheckboxTriState = event.target.indeterminate ? 'indeterminate' : event.target.checked;
     props.onUpdate?.(checkedUpdated);
   }, [props.onChange, props.onUpdate]);
   

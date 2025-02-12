@@ -6,14 +6,14 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { CheckboxTernary } from './CheckboxTernary.tsx';
+import { CheckboxTri } from './CheckboxTri.tsx';
 
 
-type CheckboxTernaryArgs = React.ComponentProps<typeof CheckboxTernary>;
-type Story = StoryObj<CheckboxTernaryArgs>;
+type CheckboxTriArgs = React.ComponentProps<typeof CheckboxTri>;
+type Story = StoryObj<CheckboxTriArgs>;
 
 export default {
-  component: CheckboxTernary,
+  component: CheckboxTri,
   parameters: {
     layout: 'centered',
   },
@@ -26,35 +26,35 @@ export default {
   decorators: [
     Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
   ],
-  render: (args) => <CheckboxTernary {...args}/>,
-} satisfies Meta<CheckboxTernaryArgs>;
+  render: (args) => <CheckboxTri {...args}/>,
+} satisfies Meta<CheckboxTriArgs>;
 
 
-export const CheckboxTernaryStandard: Story = {
-  name: 'CheckboxTernary',
+export const CheckboxTriStandard: Story = {
+  name: 'CheckboxTri',
   args: {
     defaultChecked: 'indeterminate',
   },
 };
 
-export const CheckboxTernaryDisabled: Story = {
-  name: 'CheckboxTernary [disabled]',
+export const CheckboxTriDisabled: Story = {
+  name: 'CheckboxTri [disabled]',
   args: {
     disabled: true,
     defaultChecked: 'indeterminate',
   },
 };
 
-export const CheckboxTernaryFocusedIndeterminate: Story = {
-  name: 'CheckboxTernary [focused]',
+export const CheckboxTriFocusedIndeterminate: Story = {
+  name: 'CheckboxTri [focused]',
   args: {
     className: 'pseudo-focus-visible',
     defaultChecked: 'indeterminate',
   },
 };
 
-export const CheckboxTernaryFocusedDisabled: Story = {
-  name: 'CheckboxTernary [focused] [disabled]',
+export const CheckboxTriFocusedDisabled: Story = {
+  name: 'CheckboxTri [focused] [disabled]',
   args: {
     className: 'pseudo-focus-visible',
     disabled: true,
@@ -62,15 +62,15 @@ export const CheckboxTernaryFocusedDisabled: Story = {
   },
 };
 
-const CheckboxTernaryControlled = (args: CheckboxTernaryArgs) => {
+const CheckboxTriControlled = (args: CheckboxTriArgs) => {
   const shiftKeyRef = React.useRef(false);
-  const [checked, setChecked] = React.useState<CheckboxTernaryArgs['checked']>(args.defaultChecked ?? false);
+  const [checked, setChecked] = React.useState<CheckboxTriArgs['checked']>(args.defaultChecked ?? false);
   
   // XXX we could maybe turn this shift-click into a feature:
-  // `<CheckboxTernary allowUserAction="none | shift"/>`
+  // `<CheckboxTri allowUserAction="none | shift"/>`
   return (
     <div style={{ textAlign: 'center' }}>
-      <CheckboxTernary
+      <CheckboxTri
         {...args}
         checked={checked}
         onMouseDown={event => { shiftKeyRef.current = event.shiftKey; }} // For click events
@@ -87,7 +87,7 @@ const CheckboxTernaryControlled = (args: CheckboxTernaryArgs) => {
     </div>
   );
 };
-export const CheckboxTernaryControlledStory: Story = {
-  name: 'CheckboxTernary (controlled)',
-  render: (args) => <CheckboxTernaryControlled {...args} defaultChecked="indeterminate"/>,
+export const CheckboxTriControlledStory: Story = {
+  name: 'CheckboxTri (controlled)',
+  render: (args) => <CheckboxTriControlled {...args} defaultChecked="indeterminate"/>,
 };

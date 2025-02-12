@@ -33,7 +33,7 @@ export { SubmitButton } from '../src/components/forms/context/SubmitButton/Submi
 
 // Forms > Controls
 export { Checkbox } from '../src/components/forms/controls/Checkbox/Checkbox.tsx';
-export { CheckboxTernary } from '../src/components/forms/controls/Checkbox/CheckboxTernary.tsx';
+export { CheckboxTri } from '../src/components/forms/controls/Checkbox/CheckboxTri.tsx';
 export { DatePicker } from '../src/components/forms/controls/DatePicker/DatePicker.tsx';
 export { DatePickerRange } from '../src/components/forms/controls/DatePickerRange/DatePickerRange.tsx';
 export { Input } from '../src/components/forms/controls/Input/Input.tsx';
