@@ -72,6 +72,7 @@ const CheckboxTriControlled = (args: CheckboxTriArgs) => {
     <div style={{ textAlign: 'center' }}>
       <CheckboxTri
         {...args}
+        defaultChecked={undefined} // `defaultChecked` must be `undefined` for controlled components
         checked={checked}
         onMouseDown={event => { shiftKeyRef.current = event.shiftKey; }} // For click events
         onKeyDown={event => { shiftKeyRef.current = event.shiftKey; }} // For key events (spacebar)

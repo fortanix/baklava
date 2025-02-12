@@ -94,7 +94,12 @@ const CheckboxControlled = (args: CheckboxArgs) => {
   
   return (
     <div style={{ textAlign: 'center' }}>
-      <Checkbox {...args} checked={checked} onUpdate={checked => { setChecked(checked); }}/>
+      <Checkbox
+        {...args}
+        defaultChecked={undefined} // `defaultChecked` must be `undefined` for controlled components
+        checked={checked}
+        onUpdate={checked => { setChecked(checked); }}
+      />
       {' '}
       <p>Current state: {String(checked)}</p>
     </div>

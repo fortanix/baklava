@@ -15,7 +15,7 @@
   // FIXME: the `fill` here should be `bk.$theme-checkbox-checkmark-default`, but we cannot pass variables into a
   // data:url SVG.
   // https://stackoverflow.com/questions/51395179/svg-fill-with-css-variables
-  background-image: url('data:image/svg+xml;utf8,<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.97165 9.94239L2.97165 8.00003L2.97266 8.00103L14.9717 7.99997L14.9719 9.94239L2.97165 9.94239Z" fill="white"/></svg>');
+  background-image: url('data:image/svg+xml;utf8,<svg width="18" height="10" viewBox="0 4 18 10" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.97165 9.94239L2.97165 8.00003L2.97266 8.00103L14.9717 7.99997L14.9719 9.94239L2.97165 9.94239Z" fill="white"/></svg>');
 }
 
 @layer baklava.components {
