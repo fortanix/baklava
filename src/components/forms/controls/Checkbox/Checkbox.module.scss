@@ -8,19 +8,41 @@
   // FIXME: the `fill` here should be `bk.$theme-checkbox-checkmark-default`, but we cannot pass variables into a
   // data:url SVG.
   // https://stackoverflow.com/questions/51395179/svg-fill-with-css-variables
-  background-image: url('data:image/svg+xml;utf8,<svg width="14" height="10" viewBox="0 0 14 10" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 10L0 5.19231L1.4 3.84615L5 7.30769L12.6 0L14 1.34615L5 10Z" fill="white"/></svg>');
+  background-image: url('data:image/svg+xml;utf8,<svg width="14" height="10" viewBox="0 0 14 10" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 10L0 5.19231L1.4 3.84615L5 7.30769L12.6 0L14 1.34615L5 10Z" fill="red"/></svg>');
 }
 
 @mixin svg-dash {
   // FIXME: the `fill` here should be `bk.$theme-checkbox-checkmark-default`, but we cannot pass variables into a
   // data:url SVG.
   // https://stackoverflow.com/questions/51395179/svg-fill-with-css-variables
-  background-image: url('data:image/svg+xml;utf8,<svg width="18" height="10" viewBox="0 4 18 10" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.97165 9.94239L2.97165 8.00003L2.97266 8.00103L14.9717 7.99997L14.9719 9.94239L2.97165 9.94239Z" fill="white"/></svg>');
+  background-image: url('data:image/svg+xml;utf8,<svg width="18" height="10" viewBox="0 4 18 10" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.97165 9.94239L2.97165 8.00003L2.97266 8.00103L14.9717 7.99997L14.9719 9.94239L2.97165 9.94239Z" fill="red"/></svg>');
+}
+
+@mixin bk-checkbox-checkmark {
+  &::after {
+    width: 50%;
+    height: 84%;
+    margin-top: 0;
+    border-right: bk.rem-from-px(2) solid currentColor;
+    border-bottom: bk.rem-from-px(2) solid currentColor;
+    transform: translate(0, -15%) scaleY(.95) rotate(44deg);
+  }
+}
+
+@mixin bk-checkbox-dash {
+  &::after {
+    width: 80%;
+    height: 0;
+    margin-top: 0;
+    border-top: bk.rem-from-px(2) solid currentColor;
+  }
 }
 
 @layer baklava.components {
   .bk-checkbox {
     @include bk.component-base(bk-checkbox);
+    
+    $bk-checkbox-transition-duration: 120ms;
     
     cursor: pointer;
     flex-shrink: 0;
@@ -28,12 +50,13 @@
     appearance: none; // Disable native user agent appearance
     width: bk.$spacing-5;
     aspect-ratio: 1;
-    border-radius: bk.$radius-1;
     
     background: transparent;
-    background-position: top; // Transition background-image from top
     border: bk.rem-from-px(1) solid bk.$theme-checkbox-border-default;
-    //color: bk.$theme-checkbox-checkmark-default; // FIXME: doesn't work with `data:url` SVG
+    border-radius: bk.$radius-1;
+    
+    display: inline-grid; // For `::after` pseudo-element
+    color: bk.$theme-checkbox-checkmark-default;
     
     &:checked, &:indeterminate {
       border: none;
@@ -41,35 +64,41 @@
       background-position: center;
       background-repeat: no-repeat;
     }
-    &:checked {
-      @include svg-checkmark;
-    }
-    &:indeterminate {
-      @include svg-dash;
-    }
+    
     &:disabled {
       cursor: not-allowed;
       border-color: bk.$theme-checkbox-border-disabled;
       background-color: transparent;
-      //color: $theme-checkbox-checkmark-disabled; // FIXME: doesn't work with `data:url` SVG
+      color: bk.$theme-checkbox-checkmark-disabled;
       
       &:checked, &:indeterminate {
         background-color: bk.$theme-checkbox-background-non-active;
       }
-      &:checked {
-        @include svg-checkmark;
-      }
-      &:indeterminate {
-        @include svg-dash;
-      }
+      &:checked:not(:indeterminate) { @include bk-checkbox-checkmark; }
+      &:indeterminate { @include bk-checkbox-dash; }
     }
     &:not(:disabled):active {
       scale: 0.95; // Give the checkbox a bouncy effect when pressing down
     }
     
+    // Draw the checkmark
+    &::after {
+      content: '';
+      place-self: center;
+      display: block;
+      margin-top: -25%; // Transition: start from top and move to center on activation
+      
+      @media (prefers-reduced-motion: no-preference) {
+        transition: none $bk-checkbox-transition-duration ease-out;
+        transition-property: margin-top;
+      }
+    }
+    &:checked:not(:indeterminate) { @include bk-checkbox-checkmark; }
+    &:indeterminate { @include bk-checkbox-dash; }
+    
     @media (prefers-reduced-motion: no-preference) {
-      transition: none 100ms ease-out;
-      transition-property: scale, background-color, background-position, border-color;
+      transition: none $bk-checkbox-transition-duration ease-out;
+      transition-property: scale, background-color, border-color;
     }
   }
 }
