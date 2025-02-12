@@ -4,20 +4,6 @@
 
 @use '../../../../styling/defs.scss' as bk;
 
-@mixin svg-checkmark {
-  // FIXME: the `fill` here should be `bk.$theme-checkbox-checkmark-default`, but we cannot pass variables into a
-  // data:url SVG.
-  // https://stackoverflow.com/questions/51395179/svg-fill-with-css-variables
-  background-image: url('data:image/svg+xml;utf8,<svg width="14" height="10" viewBox="0 0 14 10" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 10L0 5.19231L1.4 3.84615L5 7.30769L12.6 0L14 1.34615L5 10Z" fill="red"/></svg>');
-}
-
-@mixin svg-dash {
-  // FIXME: the `fill` here should be `bk.$theme-checkbox-checkmark-default`, but we cannot pass variables into a
-  // data:url SVG.
-  // https://stackoverflow.com/questions/51395179/svg-fill-with-css-variables
-  background-image: url('data:image/svg+xml;utf8,<svg width="18" height="10" viewBox="0 4 18 10" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.97165 9.94239L2.97165 8.00003L2.97266 8.00103L14.9717 7.99997L14.9719 9.94239L2.97165 9.94239Z" fill="red"/></svg>');
-}
-
 @mixin bk-checkbox-checkmark {
   &::after {
     width: 50%;
@@ -55,33 +41,39 @@
     border: bk.rem-from-px(1) solid bk.$theme-checkbox-border-default;
     border-radius: bk.$radius-1;
     
-    display: inline-grid; // For `::after` pseudo-element
-    color: bk.$theme-checkbox-checkmark-default;
-    
     &:checked, &:indeterminate {
       border: none;
       background-color: bk.$theme-checkbox-background-default;
       background-position: center;
       background-repeat: no-repeat;
     }
+    &:not(:disabled):active {
+      scale: 0.95; // Give the checkbox a subtle bounce effect when pressing down
+    }
     
     &:disabled {
       cursor: not-allowed;
-      border-color: bk.$theme-checkbox-border-disabled;
       background-color: transparent;
+      border-color: bk.$theme-checkbox-border-disabled;
       color: bk.$theme-checkbox-checkmark-disabled;
       
       &:checked, &:indeterminate {
         background-color: bk.$theme-checkbox-background-non-active;
       }
-      &:checked:not(:indeterminate) { @include bk-checkbox-checkmark; }
-      &:indeterminate { @include bk-checkbox-dash; }
-    }
-    &:not(:disabled):active {
-      scale: 0.95; // Give the checkbox a bouncy effect when pressing down
     }
     
+    @media (prefers-reduced-motion: no-preference) {
+      transition: none $bk-checkbox-transition-duration ease-out;
+      transition-property: scale, background-color, border-color;
+    }
+    
+    //
     // Draw the checkmark
+    //
+    
+    display: inline-grid;
+    color: bk.$theme-checkbox-checkmark-default;
+    
     &::after {
       content: '';
       place-self: center;
@@ -89,16 +81,10 @@
       margin-top: -25%; // Transition: start from top and move to center on activation
       
       @media (prefers-reduced-motion: no-preference) {
-        transition: none $bk-checkbox-transition-duration ease-out;
-        transition-property: margin-top;
+        transition: margin-top $bk-checkbox-transition-duration ease-out;
       }
     }
     &:checked:not(:indeterminate) { @include bk-checkbox-checkmark; }
     &:indeterminate { @include bk-checkbox-dash; }
-    
-    @media (prefers-reduced-motion: no-preference) {
-      transition: none $bk-checkbox-transition-duration ease-out;
-      transition-property: scale, background-color, border-color;
-    }
   }
 }
