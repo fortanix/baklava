@@ -6,8 +6,8 @@
 
 @mixin bk-checkbox-checkmark {
   &::after {
-    width: 50%;
-    height: 84%;
+    width: 42%;
+    height: 68%;
     margin-top: 0;
     border-right: bk.rem-from-px(2) solid currentColor;
     border-bottom: bk.rem-from-px(2) solid currentColor;
@@ -17,7 +17,7 @@
 
 @mixin bk-checkbox-dash {
   &::after {
-    width: 80%;
+    width: 60%;
     height: 0;
     margin-top: 0;
     border-top: bk.rem-from-px(2) solid currentColor;
