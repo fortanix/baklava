@@ -40,7 +40,7 @@ export const CheckboxTri = (props: CheckboxTriProps) => {
   
   // Keep track of the `indeterminate` state of the checkbox. Needed so that we can rerender the component when
   // `indeterminate` changes. There is no event that triggers when `indeterminate` is changed.
-  const [internalIndeterminate, setInternalIndeterminate] = React.useState<undefined | boolean>(undefined);
+  const [_internalIndeterminate, setInternalIndeterminate] = React.useState<undefined | boolean>(undefined);
   
   const handleChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     props.onChange?.(event);
