@@ -28,8 +28,8 @@
           content: "";
           position: absolute;
           width: 100%;
-          left: 0;
-          bottom: 0;
+          inset-inline-start: 0;
+          inset-block-end: 0;
           height: 0;
           transition: .3s;
         }

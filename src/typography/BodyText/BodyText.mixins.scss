@@ -210,7 +210,7 @@
   
   @include self-or-descendent(':is(td, th)') {
     padding: 6px;
-    text-align: left;
+    text-align: start;
   }
   
   @include self-or-descendent(th) {

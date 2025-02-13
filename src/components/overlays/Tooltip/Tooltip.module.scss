@@ -213,7 +213,7 @@
     flex-direction: column;
     align-items: stretch;
     @include bk.text-layout;
-    text-align: left;
+    text-align: start;
     color: bk.$theme-tooltip-text-default;
     @include bk.font(bk.$font-family-body);
     font-size: bk.$font-size-s;
@@ -229,7 +229,7 @@
     
     .bk-tooltip__icon {
       font-size: 18px;
-      margin-right: 10px;
+      margin-block-end: 10px;
     }
     
     .bk-tooltip__alert {
@@ -243,22 +243,22 @@
   @position-try --bk-tooltip-position-top {
     margin-block: var(--bk-layout-header-height) 6px; /* Compensate for layout header */
     /* position-area: top; */
-    bottom: anchor(top);
+    inset-block-end: anchor(top);
     justify-self: anchor-center;
   }
   @position-try --bk-tooltip-position-bottom {
     margin-block-start: 6px;
     /* position-area: bottom; */
     justify-self: anchor-center;
-    top: anchor(bottom);
+    inset-block-start: anchor(bottom);
   }
   @position-try --bk-tooltip-position-left {
     justify-self: anchor-center;
-    right: anchor(left);
+    inset-inline-end: anchor(left);
   }
   @position-try --bk-tooltip-position-right {
     justify-self: anchor-center;
-    left: anchor(right);
+    inset-inline-start: anchor(right);
   }
   
   .bk-tooltip[popover] {

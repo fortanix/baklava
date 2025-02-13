@@ -57,15 +57,15 @@
   mask: url('@/assets/icons/caret-down.svg') no-repeat center center;
   mask-size: 32px;
   background: bk.$theme-date-picker-text-default;
-  top: 1.8rem;
+  inset-block-start: 1.8rem;
 }
 $navigation-distance: 1rem;
 :global(.react-datepicker__navigation--previous) {
-  left: $navigation-distance;
+  inset-inline-start: $navigation-distance;
   transform: rotate(90deg);
 }
 :global(.react-datepicker__navigation--next) {
-  right: $navigation-distance;
+  inset-inline-end: $navigation-distance;
   transform: rotate(-90deg);
 }
 :global(.react-datepicker__navigation:hover) {
@@ -170,7 +170,7 @@ $navigation-distance: 1rem;
 :global(.react-datepicker__input-container .react-datepicker__calendar-icon) {
   width: 14px;
   height: 14px;
-  bottom: 4px;
+  inset-block-end: 4px;
 }
 
 :global(.react-datepicker__view-calendar-icon input) {

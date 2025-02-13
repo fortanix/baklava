@@ -10,8 +10,8 @@
   
   .table-spinner {
     position: absolute;
-    top: calc(50% - (80px / 2));
-    left: calc(50% - (80px / 2));
+    inset-block-start: calc(50% - (80px / 2));
+    inset-inline-start: calc(50% - (80px / 2));
   }
   
   .bk-data-table__table tbody {

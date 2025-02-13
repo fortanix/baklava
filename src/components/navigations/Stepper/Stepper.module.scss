@@ -29,8 +29,8 @@
         &::before {
           content: '';
           position: absolute;
-          top: calc(-1 * bk.$spacing-9 - bk.$size-2);
-          left: calc(50% - bk.$size-2 / 2);
+          inset-block-start: calc(-1 * bk.$spacing-9 - bk.$size-2);
+          inset-inline-start: calc(50% - bk.$size-2 / 2);
           width: 0;
           height: bk.$spacing-9;
           border-inline-start: bk.$size-2 solid bk.$theme-stepper-border-disabled;
