@@ -62,7 +62,6 @@ export const CheckboxTri = (props: CheckboxTriProps) => {
   
   // Sync `checked` with the checkbox.
   // Note: HTML checkbox elements support an intermediate state, but it can only be set through the DOM.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: False positive
   React.useEffect(() => {
     const checkbox = checkboxRef.current;
     if (!checkbox) { return; }
@@ -75,7 +74,7 @@ export const CheckboxTri = (props: CheckboxTriProps) => {
       checkbox.indeterminate = false;
       setInternalIndeterminate(false);
     }
-  }, [checked, internalIndeterminate]);
+  }, [checked]);
   
   // Note: use `true` if `indeterminate`, so that clicking on an indeterminate state goes to unchecked state
   const defaultCheckedBoolean: undefined | boolean = defaultChecked === 'indeterminate' ? true : defaultChecked;
