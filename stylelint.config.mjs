@@ -65,7 +65,7 @@ export default {
     ],
     
     // Properties
-    'csstools/use-logical': ['always'], // FIXME: width/height
+    'csstools/use-logical': ['always', { except: [/width/, /height/] }], // FIXME: width/height
     //'declaration-no-important': true, // No !important
     'declaration-property-value-disallowed-list': [
       {
