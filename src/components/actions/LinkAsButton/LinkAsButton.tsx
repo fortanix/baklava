@@ -50,6 +50,7 @@ export const LinkAsButton = (props: LinkAsButtonProps) => {
         [ButtonClassNames['bk-button']]: !unstyled,
         [ButtonClassNames['bk-button--primary']]: kind === 'primary',
         [ButtonClassNames['bk-button--secondary']]: kind === 'secondary',
+        [ButtonClassNames['bk-button--tertiary']]: kind === 'tertiary',
         [ButtonClassNames['bk-button--nonactive']]: nonactive,
         [ButtonClassNames['bk-button--disabled']]: disabled,
       }, props.className)}
