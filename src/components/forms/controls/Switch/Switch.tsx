@@ -3,7 +3,6 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
-import * as React from 'react';
 
 import { Checkbox } from '../Checkbox/Checkbox.tsx';
 import cl from './Switch.module.scss';
@@ -36,9 +35,9 @@ export const Switch = (props: SwitchProps) => {
   return (
     <Checkbox
       //switch // https://webkit.org/blog/15054/an-html-switch-control
-      disabled={!isInteractive}
-      {...propsRest}
       unstyled
+      {...propsRest}
+      disabled={!isInteractive}
       className={cx(
         { [cl['bk-switch']]: !unstyled },
         { [cl['bk-switch--nonactive']]: nonactive },

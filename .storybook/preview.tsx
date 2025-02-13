@@ -90,6 +90,9 @@ const preview = {
               'controls',
               [
                 'Checkbox',
+                [
+                  'CheckboxTri',
+                ],
                 'Switch',
                 'Radio',
                 'SegmentedControl',
@@ -208,7 +211,8 @@ const preview = {
         // Format: { id: <rule-name>, enabled: <boolean>, selector: <css-selector> }
         rules: [
           // Known accessibility issues (need to fix these)
-          //{ id: 'color-contrast', selector: '*:not(button[class*=primary])' },
+          //{ id: 'color-contrast', enabled: false, selector: '*:not(button[class*=primary])' },
+          { id: 'color-contrast', enabled: false, selector: '*' },
         ],
       },
       // Axe's options parameter

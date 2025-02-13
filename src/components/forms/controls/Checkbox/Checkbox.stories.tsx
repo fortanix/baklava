@@ -8,8 +8,6 @@ import * as React from 'react';
 
 import { Checkbox } from './Checkbox.tsx';
 
-import cl from './Checkbox.module.scss';
-
 
 type CheckboxArgs = React.ComponentProps<typeof Checkbox>;
 type Story = StoryObj<CheckboxArgs>;
@@ -32,90 +30,82 @@ export default {
 } satisfies Meta<CheckboxArgs>;
 
 
-export const Unchecked: Story = {
-  args: {},
+export const CheckboxStandard: Story = {
+  name: 'Checkbox',
 };
 
-export const Checked: Story = {
-  args: { defaultChecked: true },
-};
-
-export const Indeterminate: Story = {
-  args: {
-    defaultChecked: false,
-    indeterminate: true,
-  },
-};
-
-export const DisabledUnchecked: Story = {
-  name: 'Disabled (unchecked)',
-  args: { disabled: true },
-};
-
-export const DisabledChecked: Story = {
-  name: 'Disabled (checked)',
+export const CheckboxChecked: Story = {
+  name: 'Checkbox [checked]',
   args: {
     defaultChecked: true,
+  },
+};
+
+export const CheckboxDisabled: Story = {
+  name: 'Checkbox [disabled]',
+  args: {
     disabled: true,
   },
 };
 
-export const DisabledIndeterminate: Story = {
-  name: 'Disabled (indeterminate)',
+export const CheckboxDisabledChecked: Story = {
+  name: 'Checkbox [disabled] [checked]',
   args: {
-    defaultChecked: false,
     disabled: true,
-    indeterminate: true,
-  },
-};
-
-export const FocusedUnchecked: Story = {
-  name: 'Focused (unchecked)',
-  args: {
-    className: cl['pseudo-focused'],
-  },
-};
-
-export const FocusedChecked: Story = {
-  name: 'Focused (checked)',
-  args: {
-    className: cl['pseudo-focused'],
     defaultChecked: true,
   },
 };
 
-export const FocusedIndeterminate: Story = {
-  name: 'Focused (indeterminate)',
+export const CheckboxFocused: Story = {
+  name: 'Checkbox [focused]',
   args: {
-    className: cl['pseudo-focused'],
-    defaultChecked: false,
-    indeterminate: true,
+    className: 'pseudo-focus-visible',
   },
 };
 
-export const FocusedDisabledUnchecked: Story = {
-  name: 'Focused & Disabled (unchecked)',
+export const CheckboxFocusedChecked: Story = {
+  name: 'Checkbox [focused] [checked]',
   args: {
-    className: cl['pseudo-focused'],
-    disabled: true,
-  },
-};
-
-export const FocusedDisabledChecked: Story = {
-  name: 'Focused & Disabled (checked)',
-  args: {
-    className: cl['pseudo-focused'],
+    className: 'pseudo-focus-visible',
     defaultChecked: true,
+  },
+};
+
+export const CheckboxFocusedDisabled: Story = {
+  name: 'Checkbox [focused] [disabled]',
+  args: {
+    className: 'pseudo-focus-visible',
     disabled: true,
   },
 };
 
-export const FocusedDisabledIndeterminate: Story = {
-  name: 'Focused & Disabled (indeterminate)',
+export const CheckboxFocusedDisabledChecked: Story = {
+  name: 'Checkbox [focused] [disabled] [checked]',
   args: {
-    className: cl['pseudo-focused'],
-    defaultChecked: false,
+    className: 'pseudo-focus-visible',
     disabled: true,
-    indeterminate: true,
+    defaultChecked: true,
   },
+};
+
+
+const CheckboxControlled = (args: CheckboxArgs) => {
+  const [checked, setChecked] = React.useState<CheckboxArgs['checked']>(args.defaultChecked ?? false);
+  
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <Checkbox
+        {...args}
+        defaultChecked={undefined} // `defaultChecked` must be `undefined` for controlled components
+        checked={checked}
+        onUpdate={checked => { setChecked(checked); }}
+      />
+      {' '}
+      <p>Current state: {String(checked)}</p>
+    </div>
+  );
+};
+export const CheckboxControlledStory: Story = {
+  name: 'Checkbox (controlled)',
+  render: (args) => <CheckboxControlled {...args} defaultChecked/>,
 };
