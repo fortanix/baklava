@@ -11,7 +11,7 @@
 
     .bk-radio-group__legend {
       @include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-m);
-      margin-bottom: bk.$spacing-3;
+      margin-block-end: bk.$spacing-3;
     }
 
     .bk-radio-group__control {

@@ -14,7 +14,6 @@ import { Dialog } from '../../containers/Dialog/Dialog.tsx';
 import { Form } from '../../forms/context/Form/Form.tsx';
 import { RadioGroup } from '../../forms/fields/RadioGroup/RadioGroup.tsx';
 import { FormLayout } from '../../../layouts/FormLayout/FormLayout.tsx';
-import { Icon } from '../../graphics/Icon/Icon.tsx';
 
 import { DialogModal } from './DialogModal.tsx';
 
@@ -37,7 +36,7 @@ export default {
   render: (args) => <><LoremIpsum paragraphs={2}/> <DialogModal {...args}/> <LoremIpsum paragraphs={2}/></>,
 } satisfies Meta<DialogModalArgs>;
 
-/*
+
 let count = 1;
 const notifyTest = () => {
   notify({
@@ -240,7 +239,7 @@ export const DialogModalConfirmation: Story = {
   },
   render: (args) => <DialogModalControlledConfirmation {...args}/>,
 };
-*/
+
 const DialogModalControlledPattern1 = (props: React.ComponentProps<typeof DialogModal>) => {
   const radioOptions = ['Response Only', 'Query Only', 'All'] as const;
   const [selectedRadioOption, setSelectedRadioOption] = React.useState<string | null>(null);
