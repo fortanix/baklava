@@ -72,10 +72,8 @@
       gap: bk.$spacing-3;
     }
     
-    .bk-dialog__aside {
-      &--warning {
-        color: bk.$theme-icon-warning;
-      }
+    .bk-dialog__aside--warning {
+      color: bk.$theme-icon-warning;
     }
     
     .bk-dialog__actions {
