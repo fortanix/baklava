@@ -16,6 +16,7 @@ References:
 - https://primer.style/components/segmented-control
 - https://canvas.workday.com/components/buttons/segmented-control
 - https://github.com/adobe/react-spectrum/discussions/7274
+- https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/radiogroup_role
 */
 
 export { cl as SegmentedControlClassNames };
@@ -60,12 +61,9 @@ type SegmentedControlButtonProps = ComponentProps<typeof Button> & {
   
   /** The unique key of this button within the segmented control. */
   buttonKey: ButtonKey,
-  
-  /** Class name to apply to the inner `<Button/>` element. */
-  buttonClassName?: undefined | ClassNameArgument,
 };
 const SegmentedControlButton = (props: SegmentedControlButtonProps) => {
-  const { unstyled, buttonKey, buttonClassName, ...propsRest } = props;
+  const { unstyled, buttonKey, ...propsRest } = props;
   
   const buttonRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const buttonDef = React.useMemo<ButtonDef>(() => ({ buttonKey, buttonRef }), [buttonKey]);
@@ -74,35 +72,27 @@ const SegmentedControlButton = (props: SegmentedControlButtonProps) => {
   const isSelected = context.selectedButton === buttonKey;
   
   return (
-    <li
-      role="presentation"
+    <Button
+      unstyled
+      role="radio"
+      aria-checked={isSelected}
+      tabIndex={isSelected ? 0 : -1} // "Roving" tab index
+      {...propsRest}
+      ref={mergeRefs(buttonRef, propsRest.ref)}
       className={cx(
-        { [cl['bk-segmented-control__item']]: !unstyled },
+        { [cl['bk-segmented-control__button']]: !unstyled },
         propsRest.className,
       )}
-    >
-      <Button
-        unstyled
-        role="radio"
-        aria-checked={isSelected}
-        tabIndex={isSelected ? 0 : -1}
-        {...propsRest}
-        ref={mergeRefs(buttonRef, propsRest.ref)}
-        className={cx(
-          { [cl['bk-segmented-control__button']]: !unstyled },
-          buttonClassName,
-        )}
-        onPress={() => {
-          propsRest.onPress?.();
-          context.selectButton(buttonKey);
-        }}
-        disabled={context.disabled || propsRest.disabled}
-      />
-    </li>
+      onPress={() => {
+        propsRest.onPress?.();
+        context.selectButton(buttonKey);
+      }}
+      disabled={context.disabled || propsRest.disabled}
+    />
   );
 };
 
-export type SegmentedControlProps = ComponentProps<'ul'> & {
+export type SegmentedControlProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -219,10 +209,11 @@ export const SegmentedControl = Object.assign(
     
     return (
       <SegmentedControlContext value={context}>
-        <ul
+        <div
           {...propsRest}
           role="radiogroup"
           aria-required
+          aria-orientation="horizontal"
           className={cx(
             'bk',
             { [cl['bk-segmented-control']]: !unstyled },
@@ -232,7 +223,7 @@ export const SegmentedControl = Object.assign(
           onKeyDown={handleKeyDown}
         >
           {children}
-        </ul>
+        </div>
       </SegmentedControlContext>
     );
   },

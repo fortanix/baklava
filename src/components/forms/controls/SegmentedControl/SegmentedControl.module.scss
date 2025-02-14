@@ -22,6 +22,14 @@
       border: bk.rem-from-px(1) solid var(--bk-segmented-control-toggle-border-color);
       border-inline-start: 0;
       
+      &:first-child {
+        border-inline-start: bk.rem-from-px(1) solid var(--bk-segmented-control-toggle-border-color);
+        border-radius: bk.$radius-1 0 0 bk.$radius-1;
+      }
+      &:last-child {
+        border-radius: 0 bk.$radius-1 bk.$radius-1 0;
+      }
+      
       color: var(--bk-segmented-control-toggle-text-color);
       font-weight: bk.$font-weight-semibold;
       text-transform: uppercase;
@@ -32,21 +40,6 @@
       
       @media (prefers-reduced-motion: no-preference) {
         transition: filter 100ms ease-out;
-      }
-    }
-    
-    .bk-segmented-control__item {
-      &:first-child {
-        .bk-segmented-control__button {
-          border-inline-start: bk.rem-from-px(1) solid var(--bk-segmented-control-toggle-border-color);
-          border-radius: bk.$radius-1 0 0 bk.$radius-1;
-        }
-      }
-      
-      &:last-child {
-        .bk-segmented-control__button {
-          border-radius: 0 bk.$radius-1 bk.$radius-1 0;
-        }
       }
     }
     
@@ -67,6 +60,7 @@
         @include bk.focus-outset;
         &:is(:focus-visible, :global(.pseudo-focus-visible)) {
           position: relative; // Have the focused toggle render over the other toggles so that the focus is fully shown
+          margin-inline-start: bk.rem-from-px(-1);
           border-inline-start: bk.rem-from-px(1) solid var(--bk-segmented-control-toggle-border-color);
           border-radius: bk.$radius-2;
         }
