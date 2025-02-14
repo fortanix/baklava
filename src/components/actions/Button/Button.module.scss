@@ -99,7 +99,7 @@
         }
       }
     }
-        &:is(:focus-visible, :global(.pseudo-focus-visible)) {
+    &:is(:focus-visible, :global(.pseudo-focus-visible)) {
       &.bk-button--tertiary {
         --bk-button-color-text: #{bk.$theme-button-tertiary-text-focused};
       }

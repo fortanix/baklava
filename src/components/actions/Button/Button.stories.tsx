@@ -158,8 +158,8 @@ export const VariantCard: Story = {
   render: (args) => (
     <Card style={{
       display: 'grid',
-      gridTemplateColumns: 'repeat(3, 1fr)',
-      gridAutoFlow: 'row',
+      gridTemplateRows: 'repeat(3, 1fr)',
+      gridAutoFlow: 'column',
       gap: '1rem',
     }}>
       <p><Button variant="card" {...args} kind="primary"/></p>
