@@ -41,7 +41,7 @@
   @include self-or-descendent(hr) {
     margin-block: var(--bk-sizing-3);
     border: none;
-    border-top: 1px solid #dbdbdb;
+    border-block-start: 1px solid #dbdbdb;
   }
   
   @include self-or-descendent(':is(button, input, textarea)') {
@@ -63,7 +63,7 @@
   }
   
   @include self-or-descendent(blockquote) {
-    border-left: 4px solid #0096bfab;
+    border-inline-start: 4px solid #0096bfab;
     margin: 1.5em 0;
     padding: 0.5em 1em;
     font-style: italic;
@@ -90,8 +90,8 @@
     background-color: #efefef;
     font-family: inherit;
     font-size: inherit;
-    margin-right: 6px;
-    margin-bottom: 6px;
+    margin-inline-end: 6px;
+    margin-block-end: 6px;
     padding: 10px;
     border: none;
     border-radius: 6px;
@@ -108,15 +108,14 @@
   } */
   
   @include self-or-descendent(textarea) {
-    margin-right: 0;
+    margin-inline-end: 0;
     width: 100%;
     box-sizing: border-box;
     resize: vertical;
   }
   
   @include self-or-descendent(':is(button, input[type=submit], input[type=button])') {
-    padding-right: 30px;
-    padding-left: 30px;
+    padding-inline: 30px;
   }
   
   @include self-or-descendent(':is(button:hover, input[type=submit]:hover, input[type=button]:hover)') {
@@ -173,7 +172,7 @@
   @include self-or-descendent(':is(li)') {
     /* Nested lists */
     > :is(ul, ol, dl) {
-      margin-left: var(--list-indent);
+      margin-inline-start: var(--list-indent);
     }
   }
   @include self-or-descendent(ul) {
@@ -205,17 +204,17 @@
   
   @include self-or-descendent(table) {
     border-collapse: collapse;
-    margin-bottom: 10px;
+    margin-block-end: 10px;
     width: 100%;
   }
   
   @include self-or-descendent(':is(td, th)') {
     padding: 6px;
-    text-align: left;
+    text-align: start;
   }
   
   @include self-or-descendent(th) {
-    border-bottom: 1px solid #dbdbdb;
+    border-block-end: 1px solid #dbdbdb;
   }
   
   @include self-or-descendent(tbody) {

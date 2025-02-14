@@ -10,6 +10,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 import { loremIpsum, LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
+import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { SegmentedControl } from '../../forms/controls/SegmentedControl/SegmentedControl.tsx';
 
@@ -64,9 +65,9 @@ export default {
 
 
 const ExampleActionButton = () =>
-  <Banner.ActionButton onPress={() => alert('clicked')}>Button</Banner.ActionButton>;
+  <Banner.ActionButton onPress={() => { notify.info('Clicked'); }}>Button</Banner.ActionButton>;
 const ExampleActionIcon = () =>
-  <Banner.ActionIcon icon="copy" label="Copy" onPress={() => alert('clicked')}/>;
+  <Banner.ActionIcon icon="copy" label="Copy" onPress={() => { notify.info('Clicked'); }}/>;
 const ExampleActions = () => (
   <>
     <ExampleActionButton/>
@@ -161,7 +162,7 @@ export const BannerWithThemedContent: Story = {
           The following components should always have a light theme, even in dark mode:
         </p>
         <div style={{ display: 'flex', gap: '2ch', marginTop: '1lh' }}>
-          <Button nonactive kind="primary" onPress={() => alert('clicked')}>Button</Button>
+          <Button nonactive kind="primary" onPress={() => { notify.info('Clicked'); }}>Button</Button>
           <SegmentedControl
             options={['Test 1', 'Test 2']}
             defaultValue="Test 1"

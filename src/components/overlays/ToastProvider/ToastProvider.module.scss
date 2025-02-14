@@ -63,12 +63,15 @@
     
     position: fixed;
     inset: 0;
-    left: auto;
-    margin: 1rem;
+    inset-inline-start: auto;
     width: min-content;
     height: min-content;
     max-width: 100vi;
     max-height: 90vb;
+    
+    &:not(:empty) {
+      margin: 1rem;
+    }
     
     background: transparent;
     

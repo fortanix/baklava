@@ -46,7 +46,7 @@
       background: bk.$theme-header-background-default;
       
       position: sticky;
-      top: 0;
+      inset-block-start: 0;
       z-index: 1; /* Higher than content */
       
       display: grid;
@@ -74,7 +74,7 @@
       
       > aside {
         position: sticky;
-        top: var(--bk-app-layout-header-height);
+        inset-block-start: var(--bk-app-layout-header-height);
         /*
         Note: if the sidebar itself overflows (in height), then we might want to make this scrollable, but this is hard:
           - https://stackoverflow.com/questions/16094785/fixed-position-div-that-needs-to-scroll-if-content-overflows

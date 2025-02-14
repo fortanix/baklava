@@ -120,6 +120,7 @@ const packageConfig = {
     '@types/node': '^22.13.1',
     'stylelint': '^16.14.1',
     'stylelint-config-standard-scss': '^14.0.0',
+    'stylelint-use-logical': '^2.1.2',
     '@biomejs/biome': '^1.9.4',
     
     // Testing

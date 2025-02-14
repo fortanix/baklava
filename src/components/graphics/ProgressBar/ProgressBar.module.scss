@@ -33,11 +33,11 @@
   .bk-progress-bar__label {
     font-size: bk.$font-size-m;
     font-weight: bk.$font-weight-semibold;
-    margin-bottom: bk.$sizing-2;
+    margin-block-end: bk.$sizing-2;
   }
 
   .bk-progress-bar__hint-text {
     font-size: bk.$font-size-s;
-    margin-top: -1 * bk.$sizing-1;
+    margin-block-start: -1 * bk.$sizing-1;
   }
 }

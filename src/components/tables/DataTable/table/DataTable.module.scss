@@ -35,11 +35,11 @@
       }
       
       thead {
-        border-bottom: 1px solid bk.$theme-rule-default;
+        border-block-end: 1px solid bk.$theme-rule-default;
         
         th {
           cursor: default;
-          padding-bottom: 1rem;
+          padding-block-end: 1rem;
           
           color: bk.$theme-table-text-body-secondry;
           font-weight: bk.$font-weight-semibold;
@@ -78,7 +78,7 @@
       tbody {
         tr:not(.bk-data-table__placeholder) {
           &:not(:last-of-type) {
-            border-bottom: 1px solid bk.$theme-rule-default;
+            border-block-end: 1px solid bk.$theme-rule-default;
           }
           
           &:hover,
@@ -124,7 +124,7 @@
       }
       
       thead {
-        border-bottom: none;
+        border-block-end: none;
         
         display: flex;
         flex-direction: column;
@@ -139,7 +139,7 @@
           padding: 1.5rem;
           
           &:not(:last-of-type) {
-            border-bottom: none;
+            border-block-end: none;
           }
           
           > td:empty {

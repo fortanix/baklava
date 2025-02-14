@@ -20,8 +20,8 @@
       display: flex;
       align-items: center;
       gap: bk.$spacing-1;
-      padding-left: bk.$spacing-6;
-      border-left: bk.$size-1 solid bk.$theme-pagination-border-default;
+      padding-inline-start: bk.$spacing-6;
+      border-inline-start: bk.$size-1 solid bk.$theme-pagination-border-default;
       
       .pager__nav {
         display: flex;
