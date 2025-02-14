@@ -7,16 +7,25 @@
 @layer baklava.components {
   .bk-radio-group {
     @include bk.component-base(bk-radio-group);
-    display: flex;
+    // unfortunately `<fieldset>` can't be display:flex, it would ignore a gap, that's why the legend has a margin-bottom.
 
-    &.bk-radio-group--vertical {
-      flex-direction: column;
-      row-gap: 20px;
+    .bk-radio-group__legend {
+      @include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-m);
+      margin-bottom: bk.$spacing-3;
     }
-  
-    &.bk-radio-group--horizontal {
-      flex-direction: row;
-      column-gap: bk.$spacing-7;
+
+    .bk-radio-group__control {
+      display: flex;
+
+      &.bk-radio-group__control--vertical {
+        flex-direction: column;
+        row-gap: 20px;
+      }
+
+      &.bk-radio-group__control--horizontal {
+        flex-direction: row;
+        column-gap: bk.$spacing-7;
+      }
     }
   }
 }
