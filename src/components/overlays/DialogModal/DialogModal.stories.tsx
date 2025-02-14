@@ -5,11 +5,16 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
+import { LoremIpsum, loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { notify } from '../ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { AccountSelector } from '../../../layouts/AppLayout/Header/AccountSelector.tsx';
+import { Dialog } from '../../containers/Dialog/Dialog.tsx';
+import { Form } from '../../forms/context/Form/Form.tsx';
+import { RadioGroup } from '../../forms/fields/RadioGroup/RadioGroup.tsx';
+import { InputField } from '../../forms/fields/InputField/InputField.tsx';
+import { FormLayout } from '../../../layouts/FormLayout/FormLayout.tsx';
 
 import { DialogModal } from './DialogModal.tsx';
 
@@ -234,4 +239,48 @@ export const DialogModalConfirmation: Story = {
     trigger: undefined,
   },
   render: (args) => <DialogModalControlledConfirmation {...args}/>,
+};
+
+const DialogModalControlledPattern1 = (props: React.ComponentProps<typeof DialogModal>) => {
+  const radioOptions = ['Response Only', 'Query Only', 'All'] as const;
+  const [selectedRadioOption, setSelectedRadioOption] = React.useState<string | null>(null);
+  return (
+    <article className="bk-body-text">
+      <DialogModal
+        actions={(
+          <Dialog.SubmitAction
+            label="Button"
+            onPress={() => {}}
+          />
+        )}
+        title="Modal Title"
+        size="medium"
+        trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={() => { activate(); }}/>}
+      >
+        <p>{loremIpsumSentence}</p>
+        <p>{loremIpsumSentence.slice(0, 55)}.</p>
+        <p>
+          <Form>
+            <FormLayout>
+              <RadioGroup direction="horizontal" legend="Label">
+                {radioOptions.map(radioOption =>
+                  <RadioGroup.RadioField
+                    key={radioOption}
+                    label={radioOption}
+                    checked={radioOption === selectedRadioOption}
+                    onChange={() => setSelectedRadioOption(radioOption)}
+                  />
+                )}
+              </RadioGroup>
+              <InputField placeholder="Placeholder"/>
+            </FormLayout>
+          </Form>
+        </p>
+      </DialogModal>
+    </article>
+  );
+};
+export const DialogModalPattern1: Story = {
+  args: {},
+  render: (args) => <DialogModalControlledPattern1 {...args}/>,
 };
