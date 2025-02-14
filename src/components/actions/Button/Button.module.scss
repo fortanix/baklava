@@ -176,16 +176,16 @@
         }
       }
     }
-    &:active {
-      filter: brightness(90%);
+    &:not(:disabled, .bk-button--disabled, .bk-button--nonactive):active {
+      scale: 0.98;
     }
     
     @media (prefers-reduced-motion: no-preference) {
       transition:
-        border 150ms ease-in-out
-        background-color 150ms ease-in-out
+        border 150ms ease-in-out,
+        background-color 150ms ease-in-out,
         color 150ms ease-in-out,
-        filter 100ms ease-out;
+        scale 100ms ease-in;
     }
     
     /* & > :global(.icon) { font-size: 1.2rem; } */

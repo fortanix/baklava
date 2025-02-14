@@ -7,7 +7,6 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { LinkAsButton } from './LinkAsButton.tsx';
-import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
 
 
 type LinkAsButtonArgs = React.ComponentProps<typeof LinkAsButton>;
@@ -26,6 +25,7 @@ export default {
     label: 'Link',
     href: 'https://fortanix.com',
     target: '_blank',
+    onClick: event => { event.preventDefault(); },
   },
   render: (args) => <LinkAsButton {...args}/>,
 } satisfies Meta<LinkAsButtonArgs>;
@@ -66,5 +66,6 @@ export const Download: Story = {
     download: 'my_file.txt',
     label: 'Download',
     href: `data:text/plain,Lorem ipsum`,
+    onClick: undefined,
   },
 };
