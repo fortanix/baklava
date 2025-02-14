@@ -21,6 +21,14 @@ References:
 export { cl as SegmentedControlClassNames };
 
 
+// Check whether the given element is programmatically focusable. Note that we're not checking `tabindex` here, since
+// we want to know whether something is *programmatically* focusable, not necessarily user focusable. Also, we're not
+// doing any element type checks here, we asume that the given element is of some interactive type.
+const isElementFocusable = (element: HTMLElement): boolean => {
+  return element.matches(':not(:disabled, [hidden])');
+};
+
+
 export type ButtonKey = string;
 export type ButtonDef = {
   buttonKey: ButtonKey,
@@ -164,35 +172,47 @@ export const SegmentedControl = Object.assign(
     }), [register, selectedButton, selectButton, disabled]);
     
     const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+      // Get the list of button keys, ideally in the order that they are displayed to the user.
+      // Filter only the buttons that are (programmatically) focusable.
       const buttonKeys: Array<ButtonKey> = [...buttonDefsRef.current.entries()]
-        .filter(([_, { buttonRef }]) => {
-          // Filter only the buttons that are focusable
-          const buttonEl = buttonRef.current;
-          if (!buttonEl) { return false; }
-          return buttonEl.matches(':not(:disabled, [hidden])');
-        })
+        .filter(([_, { buttonRef }]) => buttonRef.current && isElementFocusable(buttonRef.current))
         .map(([buttonKey]) => buttonKey);
       
       const buttonIndex: number = buttonKeys.indexOf(context.selectedButton);
       if (buttonIndex < 0) {
-        console.error(`Could not resolve selected button ${context.selectedButton}`);
+        console.error(`Could not resolve selected button: '${context.selectedButton}'`);
       }
       
-      // Determine the target button to focus based on the keyboard event
-      let buttonTarget: undefined | ButtonKey = undefined;
-      if (event.key === 'ArrowLeft') {
-        const buttonBeforeIndex = Math.max(0, buttonIndex - 1);
-        const buttonBefore: undefined | ButtonKey = buttonKeys.at(buttonBeforeIndex);
-        if (typeof buttonBefore  === 'undefined') { throw new Error(`Should not happen`); }
-        buttonTarget = buttonBefore;
-      } else if (event.key === 'ArrowRight') {
-        const buttonAfterIndex = Math.min(buttonKeys.length - 1, buttonIndex + 1);
-        const buttonAfter: undefined | ButtonKey = buttonKeys.at(buttonAfterIndex);
-        if (typeof buttonAfter  === 'undefined') { throw new Error(`Should not happen`); }
-        buttonTarget = buttonAfter;
-      }
+      // Determine the target button to focus based on the keyboard event (if any)
+      const buttonTarget = ((): null | ButtonKey => {
+        switch (event.key) {
+          case 'ArrowLeft': {
+            const buttonPrevIndex = buttonIndex === 0 ? -1 : buttonIndex - 1;
+            const buttonPrev: undefined | ButtonKey = buttonKeys.at(buttonPrevIndex);
+            if (typeof buttonPrev  === 'undefined') { throw new Error(`Should not happen`); }
+            return buttonPrev;
+          }
+          case 'ArrowRight': {
+            const buttonNextIndex = buttonIndex + 1 >= buttonKeys.length ? 0 : buttonIndex + 1;
+            const buttonNext: undefined | ButtonKey = buttonKeys.at(buttonNextIndex);
+            if (typeof buttonNext  === 'undefined') { throw new Error(`Should not happen`); }
+            return buttonNext;
+          }
+          case 'ArrowUp': {
+            const buttonFirst: undefined | ButtonKey = buttonKeys.at(0);
+            if (typeof buttonFirst  === 'undefined') { throw new Error(`Should not happen`); }
+            return buttonFirst;
+          }
+          case 'ArrowDown': {
+            const buttonLast: undefined | ButtonKey = buttonKeys.at(-1);
+            if (typeof buttonLast  === 'undefined') { throw new Error(`Should not happen`); }
+            return buttonLast;
+          }
+          default: return null;
+        }
+      })();
       
-      if (buttonTarget && buttonTarget !== context.selectedButton) {
+      if (buttonTarget !== null && buttonTarget !== context.selectedButton) {
         context.selectButton(buttonTarget);
       }
     }, [context]);
