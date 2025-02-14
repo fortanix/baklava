@@ -9,6 +9,7 @@
     @include bk.component-base(bk-segmented-control);
     
     display: flex;
+    flex-direction: row;
     
     .bk-segmented-control__button {
       --bk-segmented-control-toggle-background-color: #{bk.$theme-segmented-control-background-default};
@@ -32,6 +33,7 @@
       
       color: var(--bk-segmented-control-toggle-text-color);
       font-weight: bk.$font-weight-semibold;
+      font-size: bk.$font-size-xs;
       text-transform: uppercase;
       
       &:active {
@@ -60,9 +62,13 @@
         @include bk.focus-outset;
         &:is(:focus-visible, :global(.pseudo-focus-visible)) {
           position: relative; // Have the focused toggle render over the other toggles so that the focus is fully shown
-          margin-inline-start: bk.rem-from-px(-1);
           border-inline-start: bk.rem-from-px(1) solid var(--bk-segmented-control-toggle-border-color);
           border-radius: bk.$radius-2;
+          
+          &:not(:first-child) {
+            // Workaround for layout shifting on focus
+            margin-inline-start: bk.rem-from-px(-1);
+          }
         }
       }
     }

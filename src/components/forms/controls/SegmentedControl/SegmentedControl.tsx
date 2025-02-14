@@ -96,6 +96,11 @@ export type SegmentedControlProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
+  // Note: currently only supports `small`, but we may introduce a 'medium' default in the future. Make this field
+  // required for now so that we can change the default later.
+  /** The size of the component. */
+  size: 'small',
+  
   /** The default button to select. */
   defaultButtonKey: ButtonKey,
   
@@ -113,6 +118,7 @@ export const SegmentedControl = Object.assign(
     const {
       children,
       unstyled = false,
+      size = 'small',
       defaultButtonKey,
       disabled = false,
       onChange,
@@ -149,8 +155,11 @@ export const SegmentedControl = Object.assign(
     
     // After initial rendering, check whether `defaultButtonKey` refers to one of the rendered buttons
     useEffectOnce(() => {
-      if (!buttonDefsRef.current.has(defaultButtonKey)) {
+      const buttonDef: undefined | ButtonDef = buttonDefsRef.current.get(defaultButtonKey);
+      if (typeof buttonDef === 'undefined' || buttonDef.buttonRef.current === null) {
         console.error(`Unable to find a button matching the specified defaultButtonKey: ${defaultButtonKey}`);
+      } else if (!isElementFocusable(buttonDef.buttonRef.current)) {
+        console.error(`Default button is not focusable: ${defaultButtonKey}`);
       }
     });
     
@@ -203,6 +212,7 @@ export const SegmentedControl = Object.assign(
       })();
       
       if (buttonTarget !== null && buttonTarget !== context.selectedButton) {
+        event.preventDefault();
         context.selectButton(buttonTarget);
       }
     }, [context]);
@@ -217,6 +227,7 @@ export const SegmentedControl = Object.assign(
           className={cx(
             'bk',
             { [cl['bk-segmented-control']]: !unstyled },
+            { [cl['bk-segmented-control--small']]: size === 'small' },
             { [cl['bk-segmented-control--disabled']]: disabled },
             propsRest.className,
           )}
