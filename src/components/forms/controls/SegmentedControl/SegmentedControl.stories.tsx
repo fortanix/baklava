@@ -21,6 +21,7 @@ export default {
   argTypes: {
   },
   args: {
+    defaultButtonKey: 'red',
     children: (
       <>
         <SegmentedControl.Button buttonKey="red" label="Red"/>

@@ -8,6 +8,7 @@ import { type ClassNameArgument, classNames as cx, type ComponentProps } from '.
 import { Button } from '../../../actions/Button/Button.tsx';
 
 import cl from './SegmentedControl.module.scss';
+import { useEffectOnce } from '../../../../util/reactUtil.ts';
 
 
 /*
@@ -21,18 +22,22 @@ export { cl as SegmentedControlClassNames };
 
 
 export type ButtonKey = string;
-//export type ButtonDef = { buttonKey: ButtonKey, label: string };
 
 export type SegmentedControlContext = {
+  register: (buttonKey: ButtonKey) => () => void,
   selectedButton: ButtonKey,
   disabled: boolean,
   selectButton: (buttonKey: ButtonKey) => void,
-  // getItemProps: ReturnType<typeof useInteractions>['getItemProps'],
 };
 export const SegmentedControlContext = React.createContext<null | SegmentedControlContext>(null);
-export const useSegmentedControlContext = () => {
+export const useSegmentedControlContext = (buttonKey: ButtonKey) => {
   const context = React.use(SegmentedControlContext);
   if (context === null) { throw new Error(`Missing SegmentedControlContext provider`); }
+  
+  React.useEffect(() => {
+    return context.register(buttonKey);
+  }, [context.register, buttonKey]);
+  
   return context;
 };
 
@@ -50,7 +55,7 @@ type SegmentedControlButtonProps = ComponentProps<typeof Button> & {
 const SegmentedControlButton = (props: SegmentedControlButtonProps) => {
   const { unstyled, buttonKey, buttonClassName, ...propsRest } = props;
   
-  const context = useSegmentedControlContext();
+  const context = useSegmentedControlContext(buttonKey);
   
   return (
     <li
@@ -70,7 +75,10 @@ const SegmentedControlButton = (props: SegmentedControlButtonProps) => {
         )}
         // aria-label={option.label}
         // label={option.label}
-        onPress={() => { context.selectButton(buttonKey); } }
+        onPress={() => {
+          propsRest.onPress?.();
+          context.selectButton(buttonKey);
+        }}
         aria-checked={context.selectedButton === buttonKey}
         disabled={context.disabled || propsRest.disabled}
       />
@@ -93,14 +101,14 @@ export type SegmentedControlProps = ComponentProps<'ul'> & {
   ///** What options segmented control has. */
   //options: Array<string> | Array<SegmentedOption>,
   
-  /** What default option segmented control has. */
-  defaultValue: string,
+  /** The default button to select. */
+  defaultButtonKey: ButtonKey,
   
   /** Whether segmented control is disabled or not. */
   disabled?: undefined | boolean,
   
   /** Event handler for segmented control button change events. */
-  onChange?: undefined | ((option: string) => void),
+  onChange?: undefined | ((buttonKey: ButtonKey) => void),
 };
 /**
  * A segmented control is a set of mutually exclusive buttons that can be switched between.
@@ -110,13 +118,14 @@ export const SegmentedControl = Object.assign(
     const {
       children,
       unstyled = false,
-      options = [],
-      defaultValue,
+      //options = [],
+      defaultButtonKey,
       disabled = false,
       onChange,
       ...propsRest
     } = props;
     
+    /*
     const formattedOptions: Array<SegmentedOption> = React.useMemo(() => {
       return options.map((option) => {
         if (typeof option !== 'object' || option === null) {
@@ -130,8 +139,8 @@ export const SegmentedControl = Object.assign(
     }, [options]);
     
     const initialOption = () => {
-      if (defaultValue && formattedOptions.some(option => option.value === defaultValue)) {
-        return defaultValue;
+      if (defaultButtonKey && formattedOptions.some(option => option.value === defaultButtonKey)) {
+        return defaultButtonKey;
       }
       return formattedOptions[0]?.value;
     };
@@ -143,11 +152,43 @@ export const SegmentedControl = Object.assign(
         onChange?.(option);
       }
     };
+    */
+    
+    const buttonsRef = React.useRef<Set<ButtonKey>>(new Set());
+    const [selectedButton, setSelectedButton] = React.useState(defaultButtonKey);
+    
+    const selectButton = React.useCallback((buttonKey: ButtonKey) => {
+      setSelectedButton(buttonKey);
+      onChange?.(buttonKey);
+    }, [onChange]);
+    
+    const register = React.useCallback((buttonKey: ButtonKey) => {
+      const buttons = buttonsRef.current;
+      if (buttons.has(buttonKey)) {
+        console.error(`Duplicate button key: ${buttonKey}`);
+      } else {
+        buttonsRef.current = new Set([...buttons, buttonKey]);
+      }
+      
+      return () => {
+        const buttonsUpdated = new Set(buttons);
+        buttonsUpdated.delete(buttonKey);
+        buttonsRef.current = buttonsUpdated;
+      };
+    }, []);
+    
+    useEffectOnce(() => {
+      if (!buttonsRef.current.has(defaultButtonKey)) {
+        console.error(`Unable to find a button matching the specified defaultButtonKey: ${defaultButtonKey}`);
+      }
+    });
     
     const context = React.useMemo<SegmentedControlContext>(() => ({
-      selectedButton: 'red', // FIXME
+      register,
+      selectedButton,
+      selectButton,
       disabled,
-    }), [disabled]);
+    }), [register, selectedButton, selectButton, disabled]);
     
     return (
       <SegmentedControlContext value={context}>
@@ -160,6 +201,9 @@ export const SegmentedControl = Object.assign(
             { [cl['bk-segmented-control--disabled']]: disabled },
             propsRest.className,
           )}
+          onKeyDown={(event) => {
+            console.log('x', buttonsRef.current);
+          }}
         >
           {/*formattedOptions.map((option, index) =>
             // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
