@@ -55,7 +55,7 @@ export const SegmentedControlHover: Story = {
   args: {
     children: (
       <>
-        <SegmentedControl.Button buttonKey="red" label="Red" buttonClassName="pseudo-hover"/>
+        <SegmentedControl.Button buttonKey="red" label="Red" className="pseudo-hover"/>
         <SegmentedControl.Button buttonKey="green" label="Green"/>
         <SegmentedControl.Button buttonKey="blue" label="Blue"/>
       </>
@@ -67,7 +67,7 @@ export const SegmentedControlFocused: Story = {
   args: {
     children: (
       <>
-        <SegmentedControl.Button buttonKey="red" label="Red" buttonClassName="pseudo-focus-visible"/>
+        <SegmentedControl.Button buttonKey="red" label="Red" className="pseudo-focus-visible"/>
         <SegmentedControl.Button buttonKey="green" label="Green"/>
         <SegmentedControl.Button buttonKey="blue" label="Blue"/>
       </>
