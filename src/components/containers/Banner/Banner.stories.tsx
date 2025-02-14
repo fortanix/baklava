@@ -162,7 +162,7 @@ export const BannerWithThemedContent: Story = {
           The following components should always have a light theme, even in dark mode:
         </p>
         <div style={{ display: 'flex', gap: '2ch', marginTop: '1lh' }}>
-          <Button nonactive kind="primary" onPress={() => alert('clicked')}>Button</Button>
+          <Button nonactive kind="primary" onPress={() => { notify.info('Clicked'); }}>Button</Button>
           <SegmentedControl
             options={['Test 1', 'Test 2']}
             defaultValue="Test 1"

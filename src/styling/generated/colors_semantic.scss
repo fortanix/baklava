@@ -345,7 +345,8 @@ $dark-button-card-secondary-text-default: $color-neutral-20 !default;
 $dark-button-card-secondary-text-disabled: $color-neutral-400 !default;
 $dark-button-card-secondary-text-focused: $color-neutral-20 !default;
 $dark-button-card-secondary-text-hover: $color-neutral-20 !default;
-$dark-button-card-secondary-text-non-active: $color-grape-600 !default;
+//$dark-button-card-secondary-text-non-active: $color-grape-600 !default;
+$dark-button-card-secondary-text-non-active: $color-neutral-100 !default; // FIXME: needs to be resolved in the Figma
 $dark-button-card-tertiary-text-default: $color-grape-400 !default;
 $dark-button-card-tertiary-text-disabled: $color-neutral-400 !default;
 $dark-button-card-tertiary-text-focused: $color-grape-600 !default;
@@ -368,7 +369,8 @@ $dark-button-secondary-text-default: $color-neutral-10 !default;
 $dark-button-secondary-text-disabled: $color-neutral-400 !default;
 $dark-button-secondary-text-focused: $color-neutral-10 !default;
 $dark-button-secondary-text-hover: $color-neutral-10 !default;
-$dark-button-secondary-text-non-active: $color-blueberry-800 !default;
+//$dark-button-secondary-text-non-active: $color-neutral-10 !default;
+$dark-button-secondary-text-non-active: $color-neutral-100 !default; // FIXME: needs to be resolved in the Figma
 $dark-button-tertiary-text-default: $color-blueberry-500 !default;
 $dark-button-tertiary-text-disabled: $color-neutral-400 !default;
 $dark-button-tertiary-text-focused: $color-blueberry-700 !default;
