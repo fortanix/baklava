@@ -154,11 +154,12 @@ export const TertiaryDisabled: Story = {
 };
 
 export const VariantCard: Story = {
+  name: 'Card variant',
   render: (args) => (
     <Card style={{
       display: 'grid',
-      gridTemplateColumns: 'repeat(3, 1fr)',
-      gridAutoFlow: 'row',
+      gridTemplateRows: 'repeat(3, 1fr)',
+      gridAutoFlow: 'column',
       gap: '1rem',
     }}>
       <p><Button variant="card" {...args} kind="primary"/></p>
@@ -182,7 +183,7 @@ export const AsyncButton: Story = {
     ...PrimaryStory.args,
     label: 'Trigger async action',
     async onPress() {
-      await delay(1000);
+      await delay(2000);
       console.log('Done!');
     },
   },
@@ -291,6 +292,7 @@ export const CustomContentWithIconAfter: Story = {
  */
 export const ButtonTrimmed: Story = {
   ...Tertiary,
+  name: 'Trimmed',
   args: {
     ...Tertiary.args,
     trimmed: true,

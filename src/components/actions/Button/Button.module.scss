@@ -8,12 +8,9 @@
   .bk-button {
     @include bk.component-base(bk-button);
     
-    --bk-button-color-accent: #{bk.$theme-button-primary-background-default};
-    --bk-button-color-contrast: #{bk.$theme-button-primary-text-default};
-    &.bk-button--card {
-      --bk-button-color-accent: #{bk.$theme-button-card-primary-background-default};
-      --bk-button-color-contrast: #{bk.$theme-button-card-primary-text-default};
-    }
+    --bk-button-color-border: transparent;
+    --bk-button-color-background: transparent;
+    --bk-button-color-text: transparent;
     
     cursor: pointer;
     user-select: none;
@@ -21,10 +18,10 @@
     margin: 0;
     padding: calc(bk.$spacing-2 - 0.125lh) bk.$spacing-3; /* Note: compensate for line-height difference with Figma */
     
-    /* Transparent border for consistency with other variants that have a border */
-    border: bk.$size-1 solid transparent;
+    border: bk.$size-1 solid var(--bk-button-color-border);
     border-radius: bk.$radius-s;
-    background: transparent;
+    background: var(--bk-button-color-background);
+    color: var(--bk-button-color-text);
     
     &.bk-button--trimmed {
       padding: 0;
@@ -37,56 +34,146 @@
     gap: 0.3ch;
     
     @include bk.font(bk.$font-family-display, bk.$font-weight-semibold);
-    /* letter-spacing: 0.1ch; */
     text-transform: uppercase;
     
-    /* Tertiary (default) */
-    border-color: transparent;
-    background-color: transparent;
-    color: var(--bk-button-color-accent);
-    
+    &.bk-button--tertiary {
+      --bk-button-color-border: transparent;
+      --bk-button-color-background: transparent;
+      --bk-button-color-text: #{bk.$theme-button-tertiary-text-default};
+      
+      &:where(.bk-button--card) {
+        --bk-button-color-border: transparent;
+        --bk-button-color-background: transparent;
+        --bk-button-color-text: #{bk.$theme-button-card-tertiary-text-default};
+      }
+    }
     &.bk-button--secondary {
-      border-color: var(--bk-button-color-accent);
-      background-color: transparent;
-      color: var(--bk-button-color-accent);
+      --bk-button-color-border: #{bk.$theme-button-secondary-border-default};
+      --bk-button-color-background: transparent;
+      --bk-button-color-text: #{bk.$theme-button-secondary-text-default};
+      
+      &:where(.bk-button--card) {
+        --bk-button-color-border: #{bk.$theme-button-card-secondary-border-default};
+        --bk-button-color-background: transparent;
+        --bk-button-color-text: #{bk.$theme-button-card-secondary-text-default};
+      }
     }
     &.bk-button--primary {
-      border-color: var(--bk-button-color-accent);
-      background-color: var(--bk-button-color-accent);
-      color: var(--bk-button-color-contrast);
+      --bk-button-color-border: transparent;
+      --bk-button-color-background: #{bk.$theme-button-primary-background-default};
+      --bk-button-color-text: #{bk.$theme-button-primary-text-default};
+      
+      &:where(.bk-button--card) {
+        --bk-button-color-border: transparent;
+        --bk-button-color-background: #{bk.$theme-button-card-primary-background-default};
+        --bk-button-color-text: #{bk.$theme-button-card-primary-text-default};
+      }
     }
     
     @include bk.focus-outset;
     
     /* States */
     /* NOTE: the ordering here is important, more important rules must come later (in case of multiple states) */
-    &:is(:focus-visible, :global(.pseudo-focus-visible)) {
-      --bk-button-color-accent: #{bk.$theme-button-primary-background-focused};
-      
-      &.bk-button--card {
-        --bk-button-color-accent: #{bk.$theme-button-card-primary-background-focused};
-      }
-    }
     &:is(:hover, :global(.pseudo-hover)) {
-      --bk-button-color-accent: #{bk.$theme-button-primary-background-hover};
+      &.bk-button--tertiary {
+        --bk-button-color-text: #{bk.$theme-button-tertiary-text-hover};
+      }
+      &.bk-button--secondary {
+        --bk-button-color-border: #{bk.$theme-button-secondary-border-hover};
+        --bk-button-color-text: #{bk.$theme-button-secondary-text-hover};
+      }
+      &.bk-button--primary {
+        --bk-button-color-background: #{bk.$theme-button-primary-background-hover};
+      }
       
       &:where(.bk-button--card) {
-        --bk-button-color-accent: #{bk.$theme-button-card-primary-background-hover};
+        &.bk-button--tertiary {
+          --bk-button-color-text: #{bk.$theme-button-card-tertiary-text-hover};
+        }
+        &.bk-button--secondary {
+          --bk-button-color-border: #{bk.$theme-button-card-secondary-border-hover};
+          --bk-button-color-text: #{bk.$theme-button-card-secondary-text-hover};
+        }
+        &.bk-button--primary {
+          --bk-button-color-background: #{bk.$theme-button-card-primary-background-hover};
+        }
+      }
+    }
+    &:is(:focus-visible, :global(.pseudo-focus-visible)) {
+      &.bk-button--tertiary {
+        --bk-button-color-text: #{bk.$theme-button-tertiary-text-focused};
+      }
+      &.bk-button--secondary {
+        --bk-button-color-border: #{bk.$theme-button-secondary-border-focused};
+      }
+      &.bk-button--primary {
+        --bk-button-color-background: #{bk.$theme-button-primary-background-focused};
+      }
+      
+      &:where(.bk-button--card) {
+        &.bk-button--tertiary {
+          --bk-button-color-text: #{bk.$theme-button-card-tertiary-text-focused};
+        }
+        &.bk-button--secondary {
+          --bk-button-color-border: #{bk.$theme-button-card-secondary-border-focused};
+        }
+        &.bk-button--primary {
+          --bk-button-color-background: #{bk.$theme-button-card-primary-background-focused};
+        }
       }
     }
     &:is(:disabled, .bk-button--disabled) {
       cursor: not-allowed;
-      --bk-button-color-accent: #{bk.$theme-button-primary-background-disabled};
-      --bk-button-color-contrast: #{bk.$theme-button-primary-text-disabled};
+      
+      &.bk-button--tertiary {
+        --bk-button-color-text: #{bk.$theme-button-tertiary-text-disabled};
+      }
+      &.bk-button--secondary {
+        --bk-button-color-border: #{bk.$theme-button-secondary-border-disabled};
+        --bk-button-color-text: #{bk.$theme-button-secondary-text-disabled};
+      }
+      &.bk-button--primary {
+        --bk-button-color-background: #{bk.$theme-button-primary-background-disabled};
+      }
+      
+      &:where(.bk-button--card) {
+        &.bk-button--tertiary {
+          --bk-button-color-text: #{bk.$theme-button-card-tertiary-text-disabled};
+        }
+        &.bk-button--secondary {
+          --bk-button-color-border: #{bk.$theme-button-card-secondary-border-disabled};
+          --bk-button-color-text: #{bk.$theme-button-card-secondary-text-disabled};
+        }
+        &.bk-button--primary {
+          --bk-button-color-background: #{bk.$theme-button-card-primary-background-disabled};
+        }
+      }
     }
     &.bk-button--nonactive {
       cursor: not-allowed;
-      --bk-button-color-accent: #{bk.$theme-button-primary-background-non-active};
-      --bk-button-color-contrast: #{bk.$theme-button-primary-text-non-active};
       
-      &.bk-button--card {
-        --bk-button-color-accent: #{bk.$theme-button-card-primary-background-non-active};
-        --bk-button-color-contrast: #{bk.$theme-button-card-primary-text-non-active};
+      &.bk-button--tertiary {
+        --bk-button-color-text: #{bk.$theme-button-tertiary-text-non-active};
+      }
+      &.bk-button--secondary {
+        --bk-button-color-border: #{bk.$theme-button-secondary-border-non-active};
+        --bk-button-color-text: #{bk.$theme-button-secondary-text-non-active};
+      }
+      &.bk-button--primary {
+        --bk-button-color-background: #{bk.$theme-button-primary-background-non-active};
+      }
+      
+      &:where(.bk-button--card) {
+        &.bk-button--tertiary {
+          --bk-button-color-text: #{bk.$theme-button-card-tertiary-text-non-active};
+        }
+        &.bk-button--secondary {
+          --bk-button-color-border: #{bk.$theme-button-card-secondary-border-non-active};
+          --bk-button-color-text: #{bk.$theme-button-card-secondary-text-non-active};
+        }
+        &.bk-button--primary {
+          --bk-button-color-background: #{bk.$theme-button-card-primary-background-non-active};
+        }
       }
     }
     

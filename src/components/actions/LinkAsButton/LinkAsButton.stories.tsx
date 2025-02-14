@@ -37,8 +37,8 @@ export const Variants: Story = {
   render: (args) => (
     <div style={{
       display: 'grid',
-      gridTemplateColumns: 'repeat(3, 1fr)',
-      gridAutoFlow: 'row',
+      gridTemplateRows: 'repeat(3, 1fr)',
+      gridAutoFlow: 'column',
       gap: '1rem',
     }}>
       <p><LinkAsButton {...args} kind="primary"/></p>

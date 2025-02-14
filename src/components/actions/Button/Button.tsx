@@ -151,6 +151,7 @@ export const Button = (props: ButtonProps) => {
         [cl['bk-button--trimmed']]: trimmed,
         [cl['bk-button--primary']]: kind === 'primary',
         [cl['bk-button--secondary']]: kind === 'secondary',
+        [cl['bk-button--tertiary']]: kind === 'tertiary',
         [cl['bk-button--card']]: variant === 'card',
         [cl['bk-button--disabled']]: !isInteractive,
         [cl['bk-button--nonactive']]: isNonactive,
