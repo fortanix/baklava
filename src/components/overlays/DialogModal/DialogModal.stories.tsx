@@ -13,7 +13,6 @@ import { AccountSelector } from '../../../layouts/AppLayout/Header/AccountSelect
 import { Dialog } from '../../containers/Dialog/Dialog.tsx';
 import { Form } from '../../forms/context/Form/Form.tsx';
 import { RadioGroup } from '../../forms/fields/RadioGroup/RadioGroup.tsx';
-import { InputField } from '../../forms/fields/InputField/InputField.tsx';
 import { FormLayout } from '../../../layouts/FormLayout/FormLayout.tsx';
 
 import { DialogModal } from './DialogModal.tsx';
@@ -272,7 +271,7 @@ const DialogModalControlledPattern1 = (props: React.ComponentProps<typeof Dialog
                   />
                 )}
               </RadioGroup>
-              <InputField placeholder="Placeholder"/>
+              <DialogModal.InputField placeholder="Placeholder" />
             </FormLayout>
           </Form>
         </p>

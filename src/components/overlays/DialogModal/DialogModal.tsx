@@ -7,10 +7,11 @@ import type { NonUndefined } from '../../../util/types.ts';
 import * as React from 'react';
 import { flushSync } from 'react-dom';
 import { mergeRefs } from '../../../util/reactUtil.ts';
-import { classNames as cx } from '../../../util/componentUtil.ts';
+import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
 import { Dialog } from '../../containers/Dialog/Dialog.tsx';
 import { ModalProvider, type ModalProviderProps } from '../../util/overlays/modal/ModalProvider.tsx';
+import { InputField } from '../../forms/fields/InputField/InputField.tsx';
 
 import cl from './DialogModal.module.scss';
 
@@ -140,6 +141,16 @@ export const useConfirmationModal = <S,>(
   };
 };
 
+type DialogInputFieldProps = ComponentProps<typeof InputField>;
+const DialogInputField = (props: DialogInputFieldProps) => {
+  return (
+    <InputField
+      {...props}
+      className={cx(cl['bk-dialog-modal__input-field'], props.className)}
+    />
+  )
+}
+
 /**
  * A dialog component displayed as a modal when activating the given trigger.
  */
@@ -203,6 +214,7 @@ export const DialogModal = Object.assign(
     useModalRef: ModalProvider.useRef,
     useModalWithSubject,
     useConfirmationModal,
+    InputField: DialogInputField,
     Action: Dialog.Action,
     ActionIcon: Dialog.ActionIcon,
     CancelAction: Dialog.CancelAction,
