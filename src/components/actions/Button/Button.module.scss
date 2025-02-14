@@ -176,10 +176,16 @@
         }
       }
     }
+    &:active {
+      filter: brightness(90%);
+    }
     
     @media (prefers-reduced-motion: no-preference) {
-      transition: none 150ms ease-in-out;
-      transition-property: border, background, color;
+      transition:
+        border 150ms ease-in-out
+        background-color 150ms ease-in-out
+        color 150ms ease-in-out,
+        filter 100ms ease-out;
     }
     
     /* & > :global(.icon) { font-size: 1.2rem; } */

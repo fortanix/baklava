@@ -21,6 +21,7 @@ export default {
   argTypes: {
   },
   args: {
+    'aria-label': 'Choose a color',
     defaultButtonKey: 'red',
     children: (
       <>
@@ -50,6 +51,30 @@ const baseOptions = [
 
 export const SegmentedControlStandard: Story = {};
 
+export const SegmentedControlHover: Story = {
+  args: {
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="red" label="Red" buttonClassName="pseudo-hover"/>
+        <SegmentedControl.Button buttonKey="green" label="Green"/>
+        <SegmentedControl.Button buttonKey="blue" label="Blue"/>
+      </>
+    ),
+  },
+};
+
+export const SegmentedControlFocused: Story = {
+  args: {
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="red" label="Red" buttonClassName="pseudo-focus-visible"/>
+        <SegmentedControl.Button buttonKey="green" label="Green"/>
+        <SegmentedControl.Button buttonKey="blue" label="Blue"/>
+      </>
+    ),
+  },
+};
+
 export const SegmentedControlDisabled: Story = {
   args: {
     disabled: true,
@@ -66,55 +91,4 @@ export const SegmentedControlDisabledOne: Story = {
       </>
     ),
   },
-};
-
-
-
-
-
-
-const BaseStory: Story = {
-  args: {},
-  render: (args) => <SegmentedControl {...args}/>,
-};
-
-
-export const StandardHover: Story = {
-  ...BaseStory,
-  name: 'SegmentedControl [hover]',
-  args: {
-    ...BaseStory.args,
-    options: baseOptions.map((option, index) => {
-      if (index === 1) {
-        return {
-          ...option,
-          className: 'pseudo-hover',
-        }
-      }
-      return option;
-    }),
-  },
-};
-
-export const StandardFocus: Story = {
-  ...BaseStory,
-  name: 'SegmentedControl [focus]',
-  args: {
-    ...BaseStory.args,
-    options: baseOptions.map((option, index) => {
-      if (index === 1) {
-        return {
-          ...option,
-          className: 'pseudo-focus-visible',
-        }
-      }
-      return option;
-    }),
-  },
-};
-
-export const StandardAllDisabled: Story = {
-  ...BaseStory,
-  name: 'SegmentedControl [disabled]',
-  args: { ...BaseStory.args, disabled: true },
 };

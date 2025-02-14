@@ -3,12 +3,12 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
+import { mergeRefs, useEffectOnce } from '../../../../util/reactUtil.ts';
 import { type ClassNameArgument, classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 
 import { Button } from '../../../actions/Button/Button.tsx';
 
 import cl from './SegmentedControl.module.scss';
-import { useEffectOnce } from '../../../../util/reactUtil.ts';
 
 
 /*
@@ -22,21 +22,25 @@ export { cl as SegmentedControlClassNames };
 
 
 export type ButtonKey = string;
+export type ButtonDef = {
+  buttonKey: ButtonKey,
+  buttonRef: React.RefObject<null | React.ComponentRef<typeof Button>>,
+};
 
 export type SegmentedControlContext = {
-  register: (buttonKey: ButtonKey) => () => void,
+  register: (buttonDef: ButtonDef) => () => void,
   selectedButton: ButtonKey,
   disabled: boolean,
   selectButton: (buttonKey: ButtonKey) => void,
 };
 export const SegmentedControlContext = React.createContext<null | SegmentedControlContext>(null);
-export const useSegmentedControlContext = (buttonKey: ButtonKey) => {
+export const useSegmentedControlContext = (buttonDef: ButtonDef) => {
   const context = React.use(SegmentedControlContext);
   if (context === null) { throw new Error(`Missing SegmentedControlContext provider`); }
   
   React.useEffect(() => {
-    return context.register(buttonKey);
-  }, [context.register, buttonKey]);
+    return context.register(buttonDef);
+  }, [context.register, buttonDef]);
   
   return context;
 };
@@ -55,7 +59,11 @@ type SegmentedControlButtonProps = ComponentProps<typeof Button> & {
 const SegmentedControlButton = (props: SegmentedControlButtonProps) => {
   const { unstyled, buttonKey, buttonClassName, ...propsRest } = props;
   
-  const context = useSegmentedControlContext(buttonKey);
+  const buttonRef = React.useRef<React.ComponentRef<typeof Button>>(null);
+  const buttonDef = React.useMemo<ButtonDef>(() => ({ buttonKey, buttonRef }), [buttonKey]);
+  
+  const context = useSegmentedControlContext(buttonDef);
+  const isSelected = context.selectedButton === buttonKey;
   
   return (
     <li
@@ -68,38 +76,27 @@ const SegmentedControlButton = (props: SegmentedControlButtonProps) => {
       <Button
         unstyled
         role="radio"
+        aria-checked={isSelected}
+        tabIndex={isSelected ? 0 : -1}
         {...propsRest}
+        ref={mergeRefs(buttonRef, propsRest.ref)}
         className={cx(
           { [cl['bk-segmented-control__button']]: !unstyled },
           buttonClassName,
         )}
-        // aria-label={option.label}
-        // label={option.label}
         onPress={() => {
           propsRest.onPress?.();
           context.selectButton(buttonKey);
         }}
-        aria-checked={context.selectedButton === buttonKey}
         disabled={context.disabled || propsRest.disabled}
       />
     </li>
   );
 };
 
-
-
-export type SegmentedOption = {
-  label: string,
-  value: string,
-  className?: undefined | ClassNameArgument,
-};
-
 export type SegmentedControlProps = ComponentProps<'ul'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-  
-  ///** What options segmented control has. */
-  //options: Array<string> | Array<SegmentedOption>,
   
   /** The default button to select. */
   defaultButtonKey: ButtonKey,
@@ -118,67 +115,43 @@ export const SegmentedControl = Object.assign(
     const {
       children,
       unstyled = false,
-      //options = [],
       defaultButtonKey,
       disabled = false,
       onChange,
       ...propsRest
     } = props;
     
-    /*
-    const formattedOptions: Array<SegmentedOption> = React.useMemo(() => {
-      return options.map((option) => {
-        if (typeof option !== 'object' || option === null) {
-          return {
-            label: option,
-            value: option,
-          };
-        }
-        return option;
-      });
-    }, [options]);
-    
-    const initialOption = () => {
-      if (defaultButtonKey && formattedOptions.some(option => option.value === defaultButtonKey)) {
-        return defaultButtonKey;
-      }
-      return formattedOptions[0]?.value;
-    };
-    const [selectedOption, setSelectedOption] = React.useState(initialOption());
-    
-    const handleClick = (option: string) => {
-      if (!disabled) {
-        setSelectedOption(option);
-        onChange?.(option);
-      }
-    };
-    */
-    
-    const buttonsRef = React.useRef<Set<ButtonKey>>(new Set());
+    const buttonDefsRef = React.useRef<Map<ButtonKey, ButtonDef>>(new Map());
     const [selectedButton, setSelectedButton] = React.useState(defaultButtonKey);
     
     const selectButton = React.useCallback((buttonKey: ButtonKey) => {
-      setSelectedButton(buttonKey);
-      onChange?.(buttonKey);
+      setSelectedButton(selectedButton => {
+        if (buttonKey !== selectedButton) {
+          onChange?.(buttonKey);
+          buttonDefsRef.current.get(buttonKey)?.buttonRef.current?.focus();
+          return buttonKey;
+        } else {
+          return selectedButton;
+        }
+      });
     }, [onChange]);
     
-    const register = React.useCallback((buttonKey: ButtonKey) => {
-      const buttons = buttonsRef.current;
-      if (buttons.has(buttonKey)) {
-        console.error(`Duplicate button key: ${buttonKey}`);
+    const register = React.useCallback((buttonDef: ButtonDef) => {
+      const buttonDefs = buttonDefsRef.current;
+      if (buttonDefs.has(buttonDef.buttonKey)) {
+        console.error(`Duplicate button key: ${buttonDef.buttonKey}`);
       } else {
-        buttonsRef.current = new Set([...buttons, buttonKey]);
+        buttonDefsRef.current.set(buttonDef.buttonKey, buttonDef);
       }
       
       return () => {
-        const buttonsUpdated = new Set(buttons);
-        buttonsUpdated.delete(buttonKey);
-        buttonsRef.current = buttonsUpdated;
+        buttonDefsRef.current.delete(buttonDef.buttonKey);
       };
     }, []);
     
+    // After initial rendering, check whether `defaultButtonKey` refers to one of the rendered buttons
     useEffectOnce(() => {
-      if (!buttonsRef.current.has(defaultButtonKey)) {
+      if (!buttonDefsRef.current.has(defaultButtonKey)) {
         console.error(`Unable to find a button matching the specified defaultButtonKey: ${defaultButtonKey}`);
       }
     });
@@ -190,38 +163,54 @@ export const SegmentedControl = Object.assign(
       disabled,
     }), [register, selectedButton, selectButton, disabled]);
     
+    const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+      const buttonKeys: Array<ButtonKey> = [...buttonDefsRef.current.entries()]
+        .filter(([_, { buttonRef }]) => {
+          // Filter only the buttons that are focusable
+          const buttonEl = buttonRef.current;
+          if (!buttonEl) { return false; }
+          return buttonEl.matches(':not(:disabled, [hidden])');
+        })
+        .map(([buttonKey]) => buttonKey);
+      
+      const buttonIndex: number = buttonKeys.indexOf(context.selectedButton);
+      if (buttonIndex < 0) {
+        console.error(`Could not resolve selected button ${context.selectedButton}`);
+      }
+      
+      // Determine the target button to focus based on the keyboard event
+      let buttonTarget: undefined | ButtonKey = undefined;
+      if (event.key === 'ArrowLeft') {
+        const buttonBeforeIndex = Math.max(0, buttonIndex - 1);
+        const buttonBefore: undefined | ButtonKey = buttonKeys.at(buttonBeforeIndex);
+        if (typeof buttonBefore  === 'undefined') { throw new Error(`Should not happen`); }
+        buttonTarget = buttonBefore;
+      } else if (event.key === 'ArrowRight') {
+        const buttonAfterIndex = Math.min(buttonKeys.length - 1, buttonIndex + 1);
+        const buttonAfter: undefined | ButtonKey = buttonKeys.at(buttonAfterIndex);
+        if (typeof buttonAfter  === 'undefined') { throw new Error(`Should not happen`); }
+        buttonTarget = buttonAfter;
+      }
+      
+      if (buttonTarget && buttonTarget !== context.selectedButton) {
+        context.selectButton(buttonTarget);
+      }
+    }, [context]);
+    
     return (
       <SegmentedControlContext value={context}>
         <ul
           {...propsRest}
           role="radiogroup"
+          aria-required
           className={cx(
             'bk',
             { [cl['bk-segmented-control']]: !unstyled },
             { [cl['bk-segmented-control--disabled']]: disabled },
             propsRest.className,
           )}
-          onKeyDown={(event) => {
-            console.log('x', buttonsRef.current);
-          }}
+          onKeyDown={handleKeyDown}
         >
-          {/*formattedOptions.map((option, index) =>
-            // biome-ignore lint/suspicious/noArrayIndexKey: no other unique identifier available
-            <li key={index} role="presentation" className={cl['bk-segmented-control__item']}>
-              <Button
-                role="radio"
-                unstyled
-                className={cx(
-                  [cl['bk-segmented-control__toggle']],
-                  option.className,
-                )}
-                aria-label={option.label}
-                label={option.label}
-                onPress={() => { handleClick(option.value); } }
-                aria-checked={selectedOption === option.value ? 'true' : 'false'}
-              />
-            </li>
-          )*/}
           {children}
         </ul>
       </SegmentedControlContext>
