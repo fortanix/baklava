@@ -31,7 +31,7 @@
     display: inline-flex;
     flex-flow: row wrap;
     align-items: center;
-    gap: 0.3ch;
+    gap: bk.$spacing-1;
     
     @include bk.font(bk.$font-family-display, bk.$font-weight-semibold);
     text-transform: uppercase;
@@ -188,9 +188,10 @@
         scale 100ms ease-in;
     }
     
-    /* & > :global(.icon) { font-size: 1.2rem; } */
+    & > :global(.icon) { font-size: 1em; }
     
-    /* https://css-tricks.com/css-cascade-layers/#aa-reverting-important-layers */
-    /* &:is(:global(.unstyled), #specificity#hack) { all: revert-layer; } */
+    // Experiment: implementing `unstyled` using `revert-layer` rather than by removing the class names
+    // https://css-tricks.com/css-cascade-layers/#aa-reverting-important-layers
+    // &:is(:global(.unstyled), #specificity#hack) { all: revert-layer; }
   }
 }

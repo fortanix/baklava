@@ -34,29 +34,39 @@ export default {
   render: (args) => <SegmentedControl {...args}/>,
 } satisfies Meta<SegmentedControlArgs>;
 
-const baseOptions = [
-  {
-    value: 'test1',
-    label: 'Test1',
-  },
-  {
-    value: 'test2',
-    label: 'Test2',
-  },
-  {
-    value: 'test3',
-    label: 'Test3',
-  },
-];
 
 export const SegmentedControlStandard: Story = {};
+
+export const SegmentedControlWithIcon: Story = {
+  args: {
+    defaultButtonKey: 'edit',
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="edit" icon="edit" label="Edit"/>
+        <SegmentedControl.Button buttonKey="delete" icon="delete" label="Delete"/>
+      </>
+    ),
+  },
+};
+
+export const SegmentedControlWithIconOnly: Story = {
+  args: {
+    defaultButtonKey: 'edit',
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="edit" icon="edit"/>
+        <SegmentedControl.Button buttonKey="delete" icon="delete"/>
+      </>
+    ),
+  },
+};
 
 export const SegmentedControlHover: Story = {
   args: {
     children: (
       <>
-        <SegmentedControl.Button buttonKey="red" label="Red" className="pseudo-hover"/>
-        <SegmentedControl.Button buttonKey="green" label="Green"/>
+        <SegmentedControl.Button buttonKey="red" label="Red"/>
+        <SegmentedControl.Button buttonKey="green" label="Green" className="pseudo-hover"/>
         <SegmentedControl.Button buttonKey="blue" label="Blue"/>
       </>
     ),

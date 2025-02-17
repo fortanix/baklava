@@ -5,7 +5,7 @@
 import * as React from 'react';
 import { mergeRefs, useEffectOnce } from '../../../../util/reactUtil.ts';
 
-import { Label } from '../Label.tsx';
+import { Label } from '../Label/Label.tsx';
 import { Checkbox } from './Checkbox.tsx';
 
 

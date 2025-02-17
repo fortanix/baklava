@@ -56,6 +56,10 @@
     button, label {
       cursor: pointer;
       user-select: none;
+      
+      &:disabled {
+        cursor: not-allowed;
+      }
     }
     
     /*
