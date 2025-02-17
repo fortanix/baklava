@@ -158,7 +158,7 @@ export const SegmentedControl = Object.assign(
       const buttonDef: undefined | ButtonDef = buttonDefsRef.current.get(defaultButtonKey);
       if (typeof buttonDef === 'undefined' || buttonDef.buttonRef.current === null) {
         console.error(`Unable to find a button matching the specified defaultButtonKey: ${defaultButtonKey}`);
-      } else if (!isElementFocusable(buttonDef.buttonRef.current)) {
+      } else if (!disabled && !isElementFocusable(buttonDef.buttonRef.current)) {
         console.error(`Default button is not focusable: ${defaultButtonKey}`);
       }
     });
