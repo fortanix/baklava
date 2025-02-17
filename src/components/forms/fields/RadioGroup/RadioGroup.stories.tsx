@@ -49,16 +49,3 @@ export const RadioGroupHorizontal: Story = {
     direction: 'horizontal',
   },
 };
-
-export const RadioGroupVerticalWithLegend: Story = {
-  args: {
-    legend: 'Legend',
-  },
-};
-
-export const RadioGroupHorizontalWithLegend: Story = {
-  args: {
-    direction: 'horizontal',
-    legend: 'Legend',
-  },
-};

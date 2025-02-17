@@ -262,7 +262,7 @@ const DialogModalControlledPattern1 = (props: React.ComponentProps<typeof Dialog
         <p>
           <Form>
             <FormLayout>
-              <RadioGroup direction="horizontal" legend="Label">
+              <RadioGroup direction="horizontal">
                 {radioOptions.map(radioOption =>
                   <RadioGroup.RadioField
                     key={radioOption}
