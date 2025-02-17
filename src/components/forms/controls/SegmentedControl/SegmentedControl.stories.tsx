@@ -37,12 +37,36 @@ export default {
 
 export const SegmentedControlStandard: Story = {};
 
+export const SegmentedControlWithIcon: Story = {
+  args: {
+    defaultButtonKey: 'edit',
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="edit" icon="edit" label="Edit"/>
+        <SegmentedControl.Button buttonKey="delete" icon="delete" label="Delete"/>
+      </>
+    ),
+  },
+};
+
+export const SegmentedControlWithIconOnly: Story = {
+  args: {
+    defaultButtonKey: 'edit',
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="edit" icon="edit"/>
+        <SegmentedControl.Button buttonKey="delete" icon="delete"/>
+      </>
+    ),
+  },
+};
+
 export const SegmentedControlHover: Story = {
   args: {
     children: (
       <>
-        <SegmentedControl.Button buttonKey="red" label="Red" className="pseudo-hover"/>
-        <SegmentedControl.Button buttonKey="green" label="Green"/>
+        <SegmentedControl.Button buttonKey="red" label="Red"/>
+        <SegmentedControl.Button buttonKey="green" label="Green" className="pseudo-hover"/>
         <SegmentedControl.Button buttonKey="blue" label="Blue"/>
       </>
     ),
