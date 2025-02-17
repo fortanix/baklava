@@ -34,20 +34,6 @@ export default {
   render: (args) => <SegmentedControl {...args}/>,
 } satisfies Meta<SegmentedControlArgs>;
 
-const baseOptions = [
-  {
-    value: 'test1',
-    label: 'Test1',
-  },
-  {
-    value: 'test2',
-    label: 'Test2',
-  },
-  {
-    value: 'test3',
-    label: 'Test3',
-  },
-];
 
 export const SegmentedControlStandard: Story = {};
 
