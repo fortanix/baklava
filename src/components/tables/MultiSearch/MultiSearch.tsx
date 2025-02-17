@@ -492,7 +492,7 @@ export const SearchInput = (props: SearchInputProps) => {
     inputRef,
     onFocus,
     onBlur,
-    ...restProps
+    ...propsRest
   } = props;
   
   const {
@@ -571,13 +571,13 @@ export const SearchInput = (props: SearchInputProps) => {
         </span>
       }
       <Input
-        ref={mergeRefs(props.ref, inputRef)}
         placeholder={renderPlaceholder()}
         className="bk-search-input__input"
         onKeyDown={onKeyDown}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        {...restProps}
+        {...propsRest}
+        ref={mergeRefs(inputRef, propsRest.ref)}
       />
     </div>
   );

@@ -177,6 +177,14 @@ export const VariantCard: Story = {
   ),
 };
 
+export const ButtonWithIcon: Story = {
+  ...PrimaryStory,
+  args: {
+    label: 'I have an icon',
+    icon: 'check',
+  },
+};
+
 export const AsyncButton: Story = {
   ...PrimaryStory,
   args: {

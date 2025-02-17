@@ -8,74 +8,103 @@
   .bk-segmented-control {
     @include bk.component-base(bk-segmented-control);
     
-    display: flex;
+    --bk-segmented-control-background-color: #{bk.$theme-segmented-control-background-default};
+    --bk-segmented-control-border-color: #{bk.$theme-segmented-control-border-unselected};
+    --bk-segmented-control-text-color: #{bk.$theme-segmented-control-text-unselected};
     
-    .bk-segmented-control__toggle {
-      --bk-segmented-control-toggle-background-color: #{bk.$theme-segmented-control-background-default};
-      --bk-segmented-control-toggle-border-color: #{bk.$theme-segmented-control-border-unselected};
-      --bk-segmented-control-toggle-text-color: #{bk.$theme-segmented-control-text-unselected};
+    //overflow: hidden; // Note: cannot hide overflow, would truncate focus outlines
+    
+    border: bk.rem-from-px(1) solid var(--bk-segmented-control-border-color);
+    border-radius: bk.$radius-1;
+    background: var(--bk-segmented-control-border-color);
+    
+    display: flex;
+    flex-direction: row;
+    gap: bk.rem-from-px(1);
+    
+    // Set this to allow wrapping:
+    //flex-wrap: wrap;
+    // Note: may want to implement https://heydonworks.com/article/the-flexbox-holy-albatross-reincarnated
+    
+    .bk-segmented-control__button {
+      // For the inner radius, subtract the border width
+      --inner-radius: #{calc(bk.$radius-1 - bk.rem-from-px(1))};
+      
+      flex-grow: 1; // Fill full width in case `flex-wrap` is enabled
       
       user-select: none;
       
       padding: bk.$spacing-1 bk.$spacing-3;
-      background-color: var(--bk-segmented-control-toggle-background-color);
-      border: 1px solid var(--bk-segmented-control-toggle-border-color);
-      border-inline-start: 0;
+      background-color: var(--bk-segmented-control-background-color);
       
-      color: var(--bk-segmented-control-toggle-text-color);
-      font-weight: bk.$font-weight-semibold;
+      color: var(--bk-segmented-control-text-color);
+      @include bk.font($family: bk.$font-family-body, $weight: bk.$font-weight-semibold, $size: bk.$font-size-xs);
       text-transform: uppercase;
-    }
-    
-    .bk-segmented-control__item {
-      &:first-child {
-        .bk-segmented-control__toggle {
-          border-inline-start: 1px solid var(--bk-segmented-control-toggle-border-color);
-          border-radius: 2px 0 0 2px;
-        }
+      
+      &:first-of-type {
+        border-start-start-radius: var(--inner-radius);
+        border-end-start-radius: var(--inner-radius);
+      }
+      &:last-of-type {
+        border-start-end-radius: var(--inner-radius);
+        border-end-end-radius: var(--inner-radius);
       }
       
-      &:last-child {
-        .bk-segmented-control__toggle {
-          border-radius: 0 2px 2px 0;
-        }
+      display: flex;
+      flex-direction: row;
+      column-gap: bk.$spacing-1;
+      justify-items: center;
+      min-height: 1.5lh; // For case where there are icons only
+      
+      > :global(.icon) {
+        font-size: 1em;
       }
-    }
-    
-    /* States */
-    &:not(.bk-segmented-control--disabled) {
-      .bk-segmented-control__toggle {
-        &[aria-checked="true"] {
-          --bk-segmented-control-toggle-background-color: #{bk.$theme-segmented-control-background-selected};
-          //--bk-segmented-control-toggle-border-color: #{bk.$theme-segmented-control-border-selected};
-          --bk-segmented-control-toggle-text-color: #{bk.$theme-segmented-control-text-default};
-        }
-        
-        &:not(:is([aria-checked="true"])):is(:hover, :global(.pseudo-hover)) {
-          --bk-segmented-control-toggle-background-color: #{bk.$theme-segmented-control-background-hover};
-        }
-        
-        --bk-focus-outline-color: #{bk.$theme-segmented-control-border-focus};
-        @include bk.focus-outset;
-        &:is(:focus-visible, :global(.pseudo-focus-visible)) {
-          position: relative; // Have the focused toggle render over the other toggles so that the focus is fully shown
-          border-inline-start: 1px solid var(--bk-segmented-control-toggle-border-color);
-          border-radius: bk.$radius-2;
-        }
+      
+      // Selected button
+      &[aria-checked="true"] {
+        --bk-segmented-control-background-color: #{bk.$theme-segmented-control-background-selected};
+        --bk-segmented-control-text-color: #{bk.$theme-segmented-control-text-default};
       }
-    }
-    
-    &.bk-segmented-control--disabled {
-      .bk-segmented-control__toggle {
-        --bk-segmented-control-toggle-background-color: #{bk.$theme-segmented-control-background-disabled-2};
-        --bk-segmented-control-toggle-border-color: #{bk.$theme-segmented-control-border-disabled};
-        --bk-segmented-control-toggle-text-color: #{bk.$theme-segmented-control-text-unselected-2};
+      
+      // State: hover (only for non-selected buttons)
+      &:is(:hover, :global(.pseudo-hover)):not([aria-checked="true"]) {
+        --bk-segmented-control-background-color: #{bk.$theme-segmented-control-background-hover};
+      }
+      
+      @include bk.focus-outset;
+      &:is(:focus-visible, :global(.pseudo-focus-visible)) {
+        isolation: isolate; // Have the focused toggle render over the other toggles so that the focus is fully shown
+        border-radius: bk.$radius-1;
+      }
+      
+      // State: active
+      &:active {
+        filter: brightness(90%);
+      }
+      @media (prefers-reduced-motion: no-preference) {
+        transition: filter 100ms ease-out;
+      }
+      
+      // State: disabled (single button)
+      &.bk-segmented-control__button:disabled {
+        --bk-segmented-control-background-color: #{bk.$theme-segmented-control-background-disabled-2};
+        --bk-segmented-control-text-color: #{bk.$theme-segmented-control-text-unselected-2};
+        
         cursor: not-allowed;
         
         &[aria-checked="true"] {
-          --bk-segmented-control-toggle-background-color: #{bk.$theme-segmented-control-background-disabled};
+          --bk-segmented-control-background-color: #{bk.$theme-segmented-control-background-disabled};
         }
       }
+    }
+    
+    // State: disabled (entire control)
+    &.bk-segmented-control--disabled {
+      --bk-segmented-control-background-color: #{bk.$theme-segmented-control-background-disabled-2};
+      --bk-segmented-control-border-color: #{bk.$theme-segmented-control-border-disabled};
+      --bk-segmented-control-text-color: #{bk.$theme-segmented-control-text-unselected-2};
+      
+      cursor: not-allowed;
     }
   }
 }

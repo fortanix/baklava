@@ -107,10 +107,11 @@ export const WithComponents: Story = {
           </div>
         </Panel>
         
-        <SegmentedControl
-          options={['Test 1', 'Test 2']}
-          defaultValue="Test 1"
-        />
+        <SegmentedControl size="small" defaultButtonKey="test-1" aria-label="Test segmented control">
+          <SegmentedControl.Button buttonKey="test-1" label="Test 1"/>
+          <SegmentedControl.Button buttonKey="test-2" label="Test 2"/>
+          <SegmentedControl.Button buttonKey="test-3" label="Test 3"/>
+        </SegmentedControl>
       </>
     ),
   },
