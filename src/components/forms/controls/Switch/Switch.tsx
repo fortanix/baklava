@@ -4,13 +4,15 @@
 
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 
+import { Label } from '../Label/Label.tsx';
 import { Checkbox } from '../Checkbox/Checkbox.tsx';
+
 import cl from './Switch.module.scss';
 
 
 export { cl as SwitchClassNames };
 
-export type SwitchProps = ComponentProps<'input'> & {
+export type SwitchProps = ComponentProps<typeof Checkbox> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -20,29 +22,42 @@ export type SwitchProps = ComponentProps<'input'> & {
    */
   nonactive?: undefined | boolean,
 };
+
+export type SwitchLabeledProps = SwitchProps & {
+  label: React.ComponentProps<typeof Label>['label'],
+  labelProps?: undefined | React.ComponentProps<typeof Label>,
+};
+export const SwitchLabeled = ({ label, labelProps, ...props }: SwitchLabeledProps) =>
+  <Label position="inline-end" label={label} {...labelProps}><Switch {...props}/></Label>;
+
 /**
  * Switch control.
  */
-export const Switch = (props: SwitchProps) => {
-  const {
-    unstyled = false,
-    nonactive = false,
-    ...propsRest
-  } = props;
-  
-  const isInteractive = !propsRest.disabled && !nonactive;
-  
-  return (
-    <Checkbox
-      //switch // https://webkit.org/blog/15054/an-html-switch-control
-      unstyled
-      {...propsRest}
-      disabled={!isInteractive}
-      className={cx(
-        { [cl['bk-switch']]: !unstyled },
-        { [cl['bk-switch--nonactive']]: nonactive },
-        propsRest.className,
-      )}
-    />
-  );
-};
+export const Switch = Object.assign(
+  (props: SwitchProps) => {
+    const {
+      unstyled = false,
+      nonactive = false,
+      ...propsRest
+    } = props;
+    
+    const isInteractive = !propsRest.disabled && !nonactive;
+    
+    return (
+      <Checkbox
+        //switch // https://webkit.org/blog/15054/an-html-switch-control
+        unstyled
+        {...propsRest}
+        disabled={!isInteractive}
+        className={cx(
+          { [cl['bk-switch']]: !unstyled },
+          { [cl['bk-switch--nonactive']]: nonactive },
+          propsRest.className,
+        )}
+      />
+    );
+  },
+  {
+    Labeled: SwitchLabeled,
+  },
+);

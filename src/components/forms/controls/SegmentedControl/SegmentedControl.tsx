@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { mergeRefs, useEffectOnce } from '../../../../util/reactUtil.ts';
-import { type ClassNameArgument, classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
+import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 
 import { Button } from '../../../actions/Button/Button.tsx';
 

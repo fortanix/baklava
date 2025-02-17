@@ -5,6 +5,8 @@
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import * as React from 'react';
 
+import { Label } from '../Label/Label.tsx';
+
 import cl from './Radio.module.scss';
 
 
@@ -14,24 +16,37 @@ export type RadioProps = ComponentProps<'input'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 };
+
+export type RadioLabeledProps = RadioProps & {
+  label: React.ComponentProps<typeof Label>['label'],
+  labelProps?: undefined | React.ComponentProps<typeof Label>,
+};
+export const RadioLabeled = ({ label, labelProps, ...props }: RadioLabeledProps) =>
+  <Label position="inline-end" label={label} {...labelProps}><Radio {...props}/></Label>;
+
 /**
  * A simple Radio control, just the &lt;input type="radio"&gt; and nothing else.
  */
-export const Radio = (props: RadioProps) => {
-  const {
-    unstyled = false,
-    ...propsRest
-  } = props;
-  
-  return (
-    <input
-      type="radio"
-      {...propsRest}
-      className={cx(
-        'bk',
-        { [cl['bk-radio']]: !unstyled },
-        propsRest.className,
-      )}
-    />
-  );
-};
+export const Radio = Object.assign(
+  (props: RadioProps) => {
+    const {
+      unstyled = false,
+      ...propsRest
+    } = props;
+    
+    return (
+      <input
+        type="radio"
+        {...propsRest}
+        className={cx(
+          'bk',
+          { [cl['bk-radio']]: !unstyled },
+          propsRest.className,
+        )}
+      />
+    );
+  },
+  {
+    Labeled: RadioLabeled,
+  },
+);

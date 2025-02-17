@@ -89,12 +89,14 @@ const preview = {
               ],
               'controls',
               [
+                'Label',
                 'Checkbox',
                 [
                   'CheckboxTri',
                 ],
                 'Switch',
                 'Radio',
+                'RadioGroup',
                 'SegmentedControl',
                 'Input',
                 [
@@ -113,7 +115,6 @@ const preview = {
               [
                 'CheckboxGroup',
                 'CheckboxField',
-                'RadioGroup',
                 'RadioField',
                 'InputField',
                 'InputFieldWithTags',

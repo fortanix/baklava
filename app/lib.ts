@@ -32,20 +32,22 @@ export { Form } from '../src/components/forms/context/Form/Form.tsx';
 export { SubmitButton } from '../src/components/forms/context/SubmitButton/SubmitButton.tsx';
 
 // Forms > Controls
+export { Label } from '../src/components/forms/controls/Label/Label.tsx';
 export { Checkbox } from '../src/components/forms/controls/Checkbox/Checkbox.tsx';
 export { CheckboxTri } from '../src/components/forms/controls/Checkbox/CheckboxTri.tsx';
-export { DatePicker } from '../src/components/forms/controls/DatePicker/DatePicker.tsx';
-export { DatePickerRange } from '../src/components/forms/controls/DatePickerRange/DatePickerRange.tsx';
+export { Switch } from '../src/components/forms/controls/Switch/Switch.tsx';
+export { Radio } from '../src/components/forms/controls/Radio/Radio.tsx';
+export { RadioGroup } from '../src/components/forms/controls/RadioGroup/RadioGroup.tsx';
+export { SegmentedControl } from '../src/components/forms/controls/SegmentedControl/SegmentedControl.tsx';
 export { Input } from '../src/components/forms/controls/Input/Input.tsx';
 export { InputSearch } from '../src/components/forms/controls/Input/InputSearch.tsx';
 export { InputSensitive } from '../src/components/forms/controls/Input/InputSensitive.tsx';
 export { InputPassword } from '../src/components/forms/controls/Input/InputPassword.tsx';
-export { Radio } from '../src/components/forms/controls/Radio/Radio.tsx';
-export { SegmentedControl } from '../src/components/forms/controls/SegmentedControl/SegmentedControl.tsx';
-export { Select } from '../src/components/forms/controls/Select/Select.tsx';
-export { Switch } from '../src/components/forms/controls/Switch/Switch.tsx';
 export { TextArea } from '../src/components/forms/controls/TextArea/TextArea.tsx';
+export { DatePicker } from '../src/components/forms/controls/DatePicker/DatePicker.tsx';
 export { TimePicker } from '../src/components/forms/controls/TimePicker/TimePicker.tsx';
+export { DatePickerRange } from '../src/components/forms/controls/DatePickerRange/DatePickerRange.tsx';
+export { Select } from '../src/components/forms/controls/Select/Select.tsx';
 
 // Forms > Fields
 export { CheckboxField } from '../src/components/forms/fields/CheckboxField/CheckboxField.tsx';
@@ -53,7 +55,6 @@ export { CheckboxGroup } from '../src/components/forms/fields/CheckboxGroup/Chec
 export { InputField } from '../src/components/forms/fields/InputField/InputField.tsx';
 export { InputFieldWithTags } from '../src/components/forms/fields/InputFieldWithTags/InputFieldWithTags.tsx';
 export { RadioField } from '../src/components/forms/fields/RadioField/RadioField.tsx';
-export { RadioGroup } from '../src/components/forms/fields/RadioGroup/RadioGroup.tsx';
 export { TextAreaField } from '../src/components/forms/fields/TextAreaField/TextAreaField.tsx';
 
 // Graphics

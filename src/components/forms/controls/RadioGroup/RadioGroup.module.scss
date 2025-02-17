@@ -1,0 +1,40 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-radio-group {
+    @include bk.component-base(bk-radio-group);
+    
+    // https://thatemil.com/blog/2015/01/03/reset-your-fieldset/
+    // https://github.com/whatwg/html/issues/3912
+    // https://codepen.io/absolutholz/pen/jWgBMo
+    background: rebeccapurple;
+    border: 1px solid red;
+    
+    legend {
+      display: table;
+      float: left;
+      width: 100%;
+      
+      + * {
+        clear: both;
+      }
+    }
+    
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.5lh bk.$spacing-7;
+    
+    &.bk-radio-group--horizontal {
+      flex-direction: row;
+    }
+    
+    &.bk-radio-group--vertical {
+      flex-direction: column;
+    }
+  }
+}

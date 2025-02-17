@@ -53,8 +53,9 @@
       overflow-wrap: break-word; // Prevent long words causing overflow
     }
     
-    button {
+    button, label {
       cursor: pointer;
+      user-select: none;
     }
     
     /*
@@ -64,6 +65,29 @@
     }
     */
     
+    // https://thatemil.com/blog/2015/01/03/reset-your-fieldset/
+    // https://github.com/whatwg/html/issues/3912
+    // https://codepen.io/absolutholz/pen/jWgBMo
+    fieldset {
+      border: 0;
+      // stylelint-disable-next-line shorthand-property-no-redundant-values
+      padding: 0.01em 0 0 0;
+      margin: 0;
+      min-width: 0;
+      
+      legend {
+        display: table;
+        float: left;
+        width: 100%;
+        
+        + * {
+          clear: both;
+        }
+      }
+    }
+    body:not(:-moz-handler-blocked) fieldset {
+      display: table-cell;
+    }
     
     // Note: we assume that all styling for dialog (including `:modal` and `:backdrop`) has been hard reset.
     // `the-new-css-reset` has an exception for `dialog:modal`, but we don't want this exception, so here we unset all.

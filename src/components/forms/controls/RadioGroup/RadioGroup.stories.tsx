@@ -23,18 +23,20 @@ export default {
   tags: ['autodocs'],
   argTypes: {
   },
+  args: {
+    label: 'Choose a color',
+  },
   render: (args) => {
     const [selectedColor, setSelectedColor] = React.useState<Color>(Color[0]);
     // TODO: how to make a typed element? such as <RadioGroup<Color> {...args}>
     return (
-      <RadioGroup {...args}
-      >
+      <RadioGroup {...args}>
         {Color.map(color =>
-          <RadioGroup.RadioField
+          <RadioGroup.Button
             key={color}
             label={color}
             checked={color === selectedColor}
-            onChange={() => setSelectedColor(color)}
+            onChange={() => { setSelectedColor(color); }}
           />
         )}
       </RadioGroup>
@@ -42,10 +44,21 @@ export default {
   },
 } satisfies Meta<RadioGroupArgs>;
 
-export const RadioGroupVertical: Story = {};
+export const RadioGroupStandard: Story = {};
 
-export const RadioGroupHorizontal: Story = {
+export const RadioGroupWithWrap: Story = {
+  decorators: [Story => <div style={{ display: 'flex', width: 200 }}><Story/></div>],
+};
+
+export const RadioGroupVertical: Story = {
   args: {
-    direction: 'horizontal',
+    orientation: 'vertical',
+  },
+};
+
+export const RadioGroupVerticalWithWrap: Story = {
+  decorators: [Story => <div style={{ display: 'flex', width: 400, height: '4lh' }}><Story/></div>],
+  args: {
+    orientation: 'vertical',
   },
 };

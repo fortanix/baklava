@@ -110,10 +110,9 @@ export const CheckboxControlledStory: Story = {
   render: (args) => <CheckboxControlled {...args} defaultChecked/>,
 };
 
-
-export const CheckboxWithLabel: Story = {
+export const CheckboxLabeled: Story = {
+  render: (args) => <Checkbox.Labeled label="Label" {...args}/>,
   args: {
-    label: 'Checkbox with a label',
-    'aria-label': undefined,
+    defaultChecked: true,
   },
 };

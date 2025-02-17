@@ -6,6 +6,8 @@ import * as React from 'react';
 import { mergeCallbacks } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 
+import { Label } from '../Label/Label.tsx';
+
 import cl from './Checkbox.module.scss';
 
 
@@ -20,66 +22,33 @@ export type CheckboxProps = Omit<ComponentProps<'input'>, 'defaultChecked' | 'ch
   /** The default state of the checkbox at initialization time. Default: undefined. */
   defaultChecked?: undefined | CheckboxState,
   
-  /**
-   * The current state of the checkbox. If `undefined`, the component is considered uncontrolled.
-   */
+  /** The current state of the checkbox. If `undefined`, the component is considered uncontrolled. */
   checked?: undefined | CheckboxState,
   
   /** Callback for update events, will be called with the new state of the checkbox. */
   onUpdate?: undefined | ((checked: CheckboxState) => void),
-  
-  /** The human-readable label for this checkbox. */
-  label?: undefined | React.ReactNode,
-  
-  /** Any additional props to pass on the `<label>` element. */
-  labelProps?: undefined | React.ComponentProps<'label'>,
 };
+
+export type CheckboxLabeledProps = CheckboxProps & {
+  label: React.ComponentProps<typeof Label>['label'],
+  labelProps?: undefined | React.ComponentProps<typeof Label>,
+};
+export const CheckboxLabeled = ({ label, labelProps, ...props }: CheckboxLabeledProps) =>
+  <Label position="inline-end" label={label} {...labelProps}><Checkbox {...props}/></Label>;
+
 /**
  * A checkbox control is a basic on/off toggle.
  */
-export const Checkbox = (props: CheckboxProps) => {
-  const { unstyled = false, label, labelProps = {}, ...propsRest } = props;
-  
-  const id = React.useId();
-  
-  const handleChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    props.onUpdate?.(event.target.checked);
-  }, [props.onUpdate]);
-  
-  /*
-  Reasons the below is problematic:
-  - Can cause issues if the internal structure changes just based on the presence of a `label` prop.
-    > Also: `className` prop moving around dynamically
-  - Means that consumer's `id` may or may not work, depending on whether the `label` prop is there (confusing!)
-  - Awkward with BEM: is `bk-checkbox` the parent? Or is it a child? What do we call the label if not `bk-checkbox`?
-  - Implementation sufficiently complex that we have to duplicate the entire `<input>` definition... good sign that
-    this should probably be a separate component.
-  - The `label` wrapping pattern is likely to be common for several controls, so this is all duplication.
-  */
-  
-  if (label) {
-    return (
-      <label htmlFor={id} {...labelProps}>
-        <input
-          id={id}
-          type="checkbox"
-          {...propsRest}
-          className={cx(
-            'bk',
-            { [cl['bk-checkbox']]: !unstyled },
-            propsRest.className,
-          )}
-          onChange={mergeCallbacks([props.onChange, handleChange])}
-        />
-        <span className={cl['bk-checkbox__label__text']}>
-          {label}
-        </span>
-      </label>
-    );
-  } else {
+export const Checkbox = Object.assign(
+  (props: CheckboxProps) => {
+    const { unstyled = false, ...propsRest } = props;
+    
+    const handleChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+      props.onUpdate?.(event.target.checked);
+    }, [props.onUpdate]);
+    
     return (
       <input
-        //id={id} // No need to specify the `id` if there is no `<label>`
         type="checkbox"
         {...propsRest}
         className={cx(
@@ -90,5 +59,8 @@ export const Checkbox = (props: CheckboxProps) => {
         onChange={mergeCallbacks([props.onChange, handleChange])}
       />
     );
-  }
-};
+  },
+  {
+    Labeled: CheckboxLabeled,
+  },
+);
