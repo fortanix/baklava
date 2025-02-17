@@ -14,6 +14,8 @@ import { Dialog } from '../../containers/Dialog/Dialog.tsx';
 import { Form } from '../../forms/context/Form/Form.tsx';
 import { RadioGroup } from '../../forms/fields/RadioGroup/RadioGroup.tsx';
 import { FormLayout } from '../../../layouts/FormLayout/FormLayout.tsx';
+import { InputField } from '../../forms/fields/InputField/InputField.tsx';
+import { FieldLayout } from '../../forms/fields/FieldLayout/FieldLayout.tsx';
 
 import { DialogModal } from './DialogModal.tsx';
 
@@ -272,7 +274,9 @@ const DialogModalControlledPattern1 = (props: React.ComponentProps<typeof Dialog
                   />
                 )}
               </RadioGroup>
-              <DialogModal.InputField placeholder="Placeholder" />
+              <FieldLayout size="small">
+                <InputField placeholder="Placeholder" />
+              </FieldLayout>
             </FormLayout>
           </Form>
         </p>
