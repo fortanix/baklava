@@ -108,7 +108,7 @@ export type SegmentedControlProps = ComponentProps<'div'> & {
   selected?: undefined | ButtonKey,
   
   /** Event handler for segmented control button change events. */
-  onChange?: undefined | ((buttonKey: ButtonKey) => void),
+  onUpdate?: undefined | ((buttonKey: ButtonKey) => void),
   
   /** Whether segmented control is disabled or not. */
   disabled?: undefined | boolean,
@@ -128,12 +128,12 @@ export const SegmentedControl = Object.assign(
       defaultSelected,
       selected,
       disabled = false,
-      onChange,
+      onUpdate,
       inputProps = {},
       ...propsRest
     } = props;
     
-    if (typeof selected !== 'undefined' && !onChange) {
+    if (typeof selected !== 'undefined' && !onUpdate) {
       console.warn(`Using SegmentedControl as uncontrolled component, but missing 'onChange' callback.`);
     }
     
@@ -143,14 +143,14 @@ export const SegmentedControl = Object.assign(
     const selectButton = React.useCallback((buttonKey: ButtonKey) => {
       setSelectedButton(selectedButton => {
         if (buttonKey !== selectedButton) {
-          onChange?.(buttonKey);
+          onUpdate?.(buttonKey);
           buttonDefsRef.current.get(buttonKey)?.buttonRef.current?.focus();
           return buttonKey;
         } else {
           return selectedButton;
         }
       });
-    }, [onChange]);
+    }, [onUpdate]);
     
     const register = React.useCallback((buttonDef: ButtonDef) => {
       const buttonDefs = buttonDefsRef.current;

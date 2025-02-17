@@ -25,14 +25,11 @@ export const RadioLabeled = ({ label, labelProps, ...props }: RadioLabeledProps)
   <Label position="inline-end" label={label} {...labelProps}><Radio {...props}/></Label>;
 
 /**
- * A simple Radio control, just the &lt;input type="radio"&gt; and nothing else.
+ * A single radio button. Can be selected, but not deselected unless it's part of a (mutually exclusive) radio group.
  */
 export const Radio = Object.assign(
   (props: RadioProps) => {
-    const {
-      unstyled = false,
-      ...propsRest
-    } = props;
+    const { unstyled = false, ...propsRest } = props;
     
     return (
       <input

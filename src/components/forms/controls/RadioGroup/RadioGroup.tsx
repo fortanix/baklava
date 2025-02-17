@@ -17,8 +17,13 @@ References:
 
 export { cl as RadioGroupClassNames };
 
+type RadioKey = string;
+
 export type RadioGroupContext = {
-  name: string,
+  name: RadioKey,
+  formId?: undefined | string,
+  selectedButton: undefined | RadioKey,
+  selectButton: (radioKey: RadioKey) => void,
 };
 export const RadioGroupContext = React.createContext<null | RadioGroupContext>(null);
 export const useRadioGroupContext = () => {
@@ -27,17 +32,56 @@ export const useRadioGroupContext = () => {
   return context;
 };
 
-export const RadioGroupButton = (props: React.ComponentProps<typeof Radio.Labeled>) => {
+export type RadioGroupButtonProps = React.ComponentProps<typeof Radio.Labeled> & {
+  /** The unique key of this radio button within the radio group. */
+  radioKey: RadioKey,
+};
+export const RadioGroupButton = ({ radioKey, ...propsRest }: RadioGroupButtonProps) => {
   const context = useRadioGroupContext();
-  return <Radio.Labeled name={context.name} {...props}/>;
+  
+  const checked: undefined | boolean = typeof context.selectedButton === 'undefined'
+    ? undefined // Uncontrolled
+    : context.selectedButton === radioKey; // Controlled
+  
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    propsRest.onChange?.(event);
+    if (event.target.checked) {
+      context.selectButton(radioKey);
+    }
+  };
+  
+  return (
+    <Radio.Labeled
+      // Note: `<fieldset>` also has a `form` attribute, but just setting `form` on  `<fieldset>` does not affect any
+      // of the descendent `<input>` elements. See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/fieldset
+      form={context.formId}
+      name={context.name}
+      {...propsRest}
+      value={radioKey}
+      checked={checked}
+      onChange={typeof checked === 'undefined' ? undefined : onChange}
+    />
+  );
 };
 
-export type RadioGroupProps = ComponentProps<'fieldset'> & {
+export type RadioGroupProps = Omit<ComponentProps<'fieldset'>, 'value' | 'defaultChecked' | 'defaultValue'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
+  /** The machine-readable name of the radio group, used for form data. */
+  name: string,
+  
   /** The human-readable label for the radio group. */
   label?: undefined | React.ReactNode,
+  
+  /** The default button to select. Only relevant for uncontrolled usage (`selected` is `undefined`). */
+  defaultSelected?: undefined | RadioKey,
+  
+  /** The radio button to select. If `undefined`, this component will be considered uncontrolled. */
+  selected?: undefined | RadioKey,
+  
+  /** Event handler which is called when the selected radio button changes. */
+  onUpdate?: undefined | ((radioKey: RadioKey) => void),
   
   /** The orientation of radio buttons, either vertical or horizontal. Default: 'horizontal'. */
   orientation?: undefined | 'vertical' | 'horizontal',
@@ -48,10 +92,38 @@ export type RadioGroupProps = ComponentProps<'fieldset'> & {
  */
 export const RadioGroup = Object.assign(
   (props: RadioGroupProps) => {
-    const { unstyled, children, label, orientation = 'horizontal', ...propsRest } = props;
+    const {
+      unstyled,
+      children,
+      form,
+      name,
+      label,
+      defaultSelected,
+      selected,
+      onUpdate,
+      orientation = 'horizontal',
+      ...propsRest
+    } = props;
     
-    const id = React.useId();
-    const context = React.useMemo<RadioGroupContext>(() => ({ name: propsRest.id ?? id }), [propsRest.id, id]);
+    const [selectedButton, setSelectedButton] = React.useState<undefined | RadioKey>(selected ?? defaultSelected);
+    
+    const selectButton = React.useCallback((radioKey: RadioKey) => {
+      setSelectedButton(selectedButton => {
+        if (radioKey !== selectedButton) {
+          onUpdate?.(radioKey);
+          return radioKey;
+        } else {
+          return selectedButton;
+        }
+      });
+    }, [onUpdate]);
+    
+    const context = React.useMemo<RadioGroupContext>(() => ({
+      name,
+      formId: form,
+      selectedButton,
+      selectButton,
+    }), [name, form, selectedButton, selectButton]);
     
     return (
       <RadioGroupContext value={context}>

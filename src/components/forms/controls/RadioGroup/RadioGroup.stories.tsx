@@ -6,14 +6,13 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 
+import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
+
 import { RadioGroup } from './RadioGroup.tsx';
 
 
 type RadioGroupArgs = React.ComponentProps<typeof RadioGroup>;
 type Story = StoryObj<RadioGroupArgs>;
-
-const Color = ['Red', 'Green', 'Blue'] as const;
-type Color = (typeof Color)[number];
 
 export default {
   component: RadioGroup,
@@ -24,24 +23,18 @@ export default {
   argTypes: {
   },
   args: {
+    name: 'color',
     label: 'Choose a color',
+    defaultSelected: 'red',
+    children: (
+      <>
+        <RadioGroup.Button radioKey="red" label="Red"/>
+        <RadioGroup.Button radioKey="green" label="Green"/>
+        <RadioGroup.Button radioKey="blue" label="Blue"/>
+      </>
+    ),
   },
-  render: (args) => {
-    const [selectedColor, setSelectedColor] = React.useState<Color>(Color[0]);
-    // TODO: how to make a typed element? such as <RadioGroup<Color> {...args}>
-    return (
-      <RadioGroup {...args}>
-        {Color.map(color =>
-          <RadioGroup.Button
-            key={color}
-            label={color}
-            checked={color === selectedColor}
-            onChange={() => { setSelectedColor(color); }}
-          />
-        )}
-      </RadioGroup>
-    );
-  },
+  render: args => <RadioGroup {...args}/>,
 } satisfies Meta<RadioGroupArgs>;
 
 export const RadioGroupStandard: Story = {};
@@ -60,5 +53,59 @@ export const RadioGroupVerticalWithWrap: Story = {
   decorators: [Story => <div style={{ display: 'flex', width: 400, height: '4lh' }}><Story/></div>],
   args: {
     orientation: 'vertical',
+  },
+};
+
+export const RadioGroupDisabled: Story = {
+  args: {
+    disabled: true,
+  },
+};
+
+const RadioGroupControlledC = () => {
+  const Color = ['red', 'green', 'blue'];
+  type Color = (typeof Color)[number];
+  
+  const [selectedColor, setSelectedColor] = React.useState<Color>('red');
+  return (
+    <RadioGroup
+      name="story-radio-group"
+      label={`Choose a color (selected: ${selectedColor})`}
+      selected={selectedColor}
+      onUpdate={radioKey => { setSelectedColor(radioKey as Color); }}
+    >
+      <RadioGroup.Button radioKey="red" label="Red"/>
+      <RadioGroup.Button radioKey="green" label="Green"/>
+      <RadioGroup.Button radioKey="blue" label="Blue"/>
+    </RadioGroup>
+  );
+};
+export const RadioGroupControlled: Story = {
+  render: args => <RadioGroupControlledC {...args}/>,
+};
+
+/**
+ * A radio group can be used within a `<form>` element, either by nesting or explicitly specifying the form ID through
+ * the `form` prop.
+ */
+export const RadioGroupInForm: Story = {
+  decorators: [
+    Story => (
+      <>
+        <form
+          id="story-form"
+          onSubmit={event => {
+            event.preventDefault();
+            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story-radio') ?? 'unknown'}`);
+          }}
+        />
+        <Story/>
+        <button type="submit" form="story-form">Submit</button>
+      </>
+    ),
+  ],
+  args: {
+    form: 'story-form',
+    name: 'story-radio',
   },
 };
