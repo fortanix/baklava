@@ -35,6 +35,7 @@ export { SubmitButton } from '../src/components/forms/context/SubmitButton/Submi
 export { Label } from '../src/components/forms/controls/Label/Label.tsx';
 export { Checkbox } from '../src/components/forms/controls/Checkbox/Checkbox.tsx';
 export { CheckboxTri } from '../src/components/forms/controls/Checkbox/CheckboxTri.tsx';
+export { CheckboxGroup } from '../src/components/forms/controls/CheckboxGroup/CheckboxGroup.tsx';
 export { Switch } from '../src/components/forms/controls/Switch/Switch.tsx';
 export { Radio } from '../src/components/forms/controls/Radio/Radio.tsx';
 export { RadioGroup } from '../src/components/forms/controls/RadioGroup/RadioGroup.tsx';
@@ -51,10 +52,9 @@ export { Select } from '../src/components/forms/controls/Select/Select.tsx';
 
 // Forms > Fields
 export { CheckboxField } from '../src/components/forms/fields/CheckboxField/CheckboxField.tsx';
-export { CheckboxGroup } from '../src/components/forms/fields/CheckboxGroup/CheckboxGroup.tsx';
 export { InputField } from '../src/components/forms/fields/InputField/InputField.tsx';
 export { InputFieldWithTags } from '../src/components/forms/fields/InputFieldWithTags/InputFieldWithTags.tsx';
-export { RadioField } from '../src/components/forms/fields/RadioField/RadioField.tsx';
+export { RadioGroupField } from '../src/components/forms/fields/RadioGroupField/RadioGroupField.tsx';
 export { TextAreaField } from '../src/components/forms/fields/TextAreaField/TextAreaField.tsx';
 
 // Graphics

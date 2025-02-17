@@ -27,7 +27,7 @@ import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Tag } from '../../text/Tag/Tag.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { Input } from '../../forms/controls/Input/Input.tsx';
-import { CheckboxGroup } from '../../forms/fields/CheckboxGroup/CheckboxGroup.tsx';
+import { CheckboxGroup } from '../../forms/controls/CheckboxGroup/CheckboxGroup.tsx';
 // import * as Dropdown from '../../overlays/dropdown/Dropdown.tsx';
 import { DropdownMenu, DropdownMenuContext } from '../../overlays/DropdownMenu/DropdownMenu.tsx';
 // import { DateTimePicker } from '../../forms/datetime/DateTimePicker.tsx';
@@ -694,7 +694,7 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
         className="bk-multi-search__alternatives-group"
       >
         {Object.entries(alternatives || {}).map(([alternativesName, { label }], index) => (
-          <CheckboxGroup.CheckboxField
+          <CheckboxGroup.Checkbox
             key={alternativesName}
             label={label}
             checked={selectedAlternatives.includes(alternativesName)}

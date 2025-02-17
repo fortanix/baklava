@@ -94,6 +94,7 @@ const preview = {
                 [
                   'CheckboxTri',
                 ],
+                'CheckboxGroup',
                 'Switch',
                 'Radio',
                 'RadioGroup',

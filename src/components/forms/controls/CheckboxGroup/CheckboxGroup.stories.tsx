@@ -35,7 +35,7 @@ export default {
     return (
       <CheckboxGroup {...args}>
         {Color.map(color =>
-          <CheckboxGroup.CheckboxField
+          <CheckboxGroup.Checkbox
             key={color}
             label={color}
             checked={selectedColors.includes(color)}
@@ -47,10 +47,14 @@ export default {
   },
 } satisfies Meta<CheckboxGroupArgs>;
 
-export const CheckboxGroupVertical: Story = {};
-
 export const CheckboxGroupHorizontal: Story = {
   args: {
-    direction: 'horizontal',
+    orientation: 'horizontal',
+  },
+};
+
+export const CheckboxGroupVertical: Story = {
+  args: {
+    orientation: 'vertical',
   },
 };
