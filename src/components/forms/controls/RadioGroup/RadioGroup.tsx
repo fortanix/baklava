@@ -5,6 +5,7 @@
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 
+import { FieldSet } from '../../common/FieldSet/FieldSet.tsx';
 import { Radio } from '../Radio/Radio.tsx';
 
 import cl from './RadioGroup.module.scss';
@@ -127,7 +128,8 @@ export const RadioGroup = Object.assign(
     
     return (
       <RadioGroupContext value={context}>
-        <fieldset
+        <FieldSet
+          legend={label}
           role="radiogroup"
           aria-orientation={orientation}
           {...propsRest}
@@ -137,10 +139,10 @@ export const RadioGroup = Object.assign(
             { [cl['bk-radio-group--horizontal']]: orientation === 'horizontal' },
             { [cl['bk-radio-group--vertical']]: orientation === 'vertical' },
           )}
+          contentClassName={cl['bk-radio-group__content']}
         >
-          <legend>{label}</legend>
           {children}
-        </fieldset>
+        </FieldSet>
       </RadioGroupContext>
     );
   },

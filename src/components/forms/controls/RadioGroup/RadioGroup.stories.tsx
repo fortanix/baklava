@@ -14,6 +14,12 @@ import { RadioGroup } from './RadioGroup.tsx';
 type RadioGroupArgs = React.ComponentProps<typeof RadioGroup>;
 type Story = StoryObj<RadioGroupArgs>;
 
+const RadioGroupUnique = (args: RadioGroupArgs) => {
+  // Note: make the name unique per story so we don't get conflicts on the Docs page
+  const id = React.useId();
+  return <RadioGroup {...args} name={id}/>;
+};
+
 export default {
   component: RadioGroup,
   parameters: {
@@ -23,7 +29,6 @@ export default {
   argTypes: {
   },
   args: {
-    name: 'color',
     label: 'Choose a color',
     defaultSelected: 'red',
     children: (
@@ -34,13 +39,15 @@ export default {
       </>
     ),
   },
-  render: args => <RadioGroup {...args}/>,
+  render: args => <RadioGroupUnique {...args}/>,
 } satisfies Meta<RadioGroupArgs>;
 
 export const RadioGroupStandard: Story = {};
 
 export const RadioGroupWithWrap: Story = {
-  decorators: [Story => <div style={{ display: 'flex', width: 200 }}><Story/></div>],
+  args: {
+    style: { overflow: 'hidden', resize: 'horizontal', width: 180 },
+  },
 };
 
 export const RadioGroupVertical: Story = {
@@ -50,8 +57,8 @@ export const RadioGroupVertical: Story = {
 };
 
 export const RadioGroupVerticalWithWrap: Story = {
-  decorators: [Story => <div style={{ display: 'flex', width: 400, height: '4lh' }}><Story/></div>],
   args: {
+    style: { overflow: 'hidden', resize: 'vertical', width: 220, height: 80 },
     orientation: 'vertical',
   },
 };
@@ -82,6 +89,8 @@ const RadioGroupControlledC = () => {
 };
 export const RadioGroupControlled: Story = {
   render: args => <RadioGroupControlledC {...args}/>,
+  args: {
+  },
 };
 
 /**
@@ -106,6 +115,5 @@ export const RadioGroupInForm: Story = {
   ],
   args: {
     form: 'story-form',
-    name: 'story-radio',
   },
 };

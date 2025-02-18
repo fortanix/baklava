@@ -87,9 +87,13 @@ const preview = {
                 'Form',
                 'SubmitButton',
               ],
-              'controls',
+              'common',
               [
                 'Label',
+                'FieldSet',
+              ],
+              'controls',
+              [
                 'Checkbox',
                 [
                   'CheckboxTri',

@@ -31,8 +31,11 @@ export { Accordion } from '../src/components/containers/Accordion/Accordion.tsx'
 export { Form } from '../src/components/forms/context/Form/Form.tsx';
 export { SubmitButton } from '../src/components/forms/context/SubmitButton/SubmitButton.tsx';
 
+// Forms > Common
+export { Label } from '../src/components/forms/common/Label/Label.tsx';
+export { FieldSet } from '../src/components/forms/common/FieldSet/FieldSet.tsx';
+
 // Forms > Controls
-export { Label } from '../src/components/forms/controls/Label/Label.tsx';
 export { Checkbox } from '../src/components/forms/controls/Checkbox/Checkbox.tsx';
 export { CheckboxTri } from '../src/components/forms/controls/Checkbox/CheckboxTri.tsx';
 export { CheckboxGroup } from '../src/components/forms/controls/CheckboxGroup/CheckboxGroup.tsx';

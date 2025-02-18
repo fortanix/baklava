@@ -8,26 +8,18 @@
   .bk-radio-group {
     @include bk.component-base(bk-radio-group);
     
-    // https://thatemil.com/blog/2015/01/03/reset-your-fieldset/
-    // https://github.com/whatwg/html/issues/3912
-    // https://codepen.io/absolutholz/pen/jWgBMo
-    background: rebeccapurple;
-    border: 1px solid red;
-    
-    legend {
-      font-weight: bk.$font-weight-semibold;
+    .bk-radio-group__content {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start; // In case of wrap, align everything to the start
+      align-items: flex-start;
+      gap: 0.5lh bk.$spacing-7;
     }
     
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 0.5lh bk.$spacing-7;
-    
-    &.bk-radio-group--horizontal {
+    &.bk-radio-group--horizontal .bk-radio-group__content {
       flex-direction: row;
     }
-    
-    &.bk-radio-group--vertical {
+    &.bk-radio-group--vertical .bk-radio-group__content {
       flex-direction: column;
     }
   }

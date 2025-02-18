@@ -6,7 +6,7 @@ import * as React from 'react';
 import { mergeCallbacks } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 
-import { Label } from '../Label/Label.tsx';
+import { Label } from '../../common/Label/Label.tsx';
 
 import cl from './Checkbox.module.scss';
 

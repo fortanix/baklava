@@ -6,7 +6,7 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Checkbox } from '../Checkbox/Checkbox.tsx';
+import { Checkbox } from '../../controls/Checkbox/Checkbox.tsx';
 
 import { Label } from './Label.tsx';
 

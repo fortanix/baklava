@@ -4,7 +4,7 @@
 
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 
-import { Label } from '../Label/Label.tsx';
+import { Label } from '../../common/Label/Label.tsx';
 import { Checkbox } from '../Checkbox/Checkbox.tsx';
 
 import cl from './Switch.module.scss';

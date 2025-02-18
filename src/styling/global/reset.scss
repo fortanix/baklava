@@ -69,28 +69,23 @@
     }
     */
     
-    // https://thatemil.com/blog/2015/01/03/reset-your-fieldset/
-    // https://github.com/whatwg/html/issues/3912
-    // https://codepen.io/absolutholz/pen/jWgBMo
+    /*
+    By default, `<fieldset>` elements have some peculiar default browser styling. In particular, `<legend>` within a
+    `<fieldset>` is styled on top of the border. Unsetting this default styling is not super trivial, see references:
+    - https://github.com/whatwg/html/issues/3912
+    - https://thatemil.com/blog/2015/01/03/reset-your-fieldset/ (2015, most of this is outdated/no longer necessary)
+    - https://stackoverflow.com/a/20705034/233884 (solution with only `float`, seems to work fine in modern browsers)
+    */
     fieldset {
-      border: 0;
-      // stylelint-disable-next-line shorthand-property-no-redundant-values
-      padding: 0.01em 0 0 0;
-      margin: 0;
-      min-width: 0;
-      
       legend {
-        display: table;
         float: inline-start;
         width: 100%;
         
+        // Clear the `float`
         + * {
           clear: both;
         }
       }
-    }
-    body:not(:-moz-handler-blocked) fieldset {
-      display: table-cell;
     }
     
     // Note: we assume that all styling for dialog (including `:modal` and `:backdrop`) has been hard reset.
