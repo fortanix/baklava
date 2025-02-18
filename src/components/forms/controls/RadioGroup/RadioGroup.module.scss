@@ -15,13 +15,7 @@
     border: 1px solid red;
     
     legend {
-      display: table;
-      float: inline-start;
-      width: 100%;
-      
-      + * {
-        clear: both;
-      }
+      font-weight: bk.$font-weight-semibold;
     }
     
     display: flex;
