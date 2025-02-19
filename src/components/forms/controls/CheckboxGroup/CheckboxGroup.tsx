@@ -16,7 +16,7 @@ export { cl as CheckboxGroupClassNames };
 export type CheckboxKey = string;
 
 export type CheckboxGroupContext = {
-  name: CheckboxKey,
+  name?: undefined | CheckboxKey,
   formId?: undefined | string,
   selectedItems: undefined | Set<CheckboxKey>,
   updateItem: (checkboxKey: CheckboxKey, checked: boolean) => void,
@@ -63,7 +63,7 @@ export type CheckboxGroupProps = ComponentProps<typeof FieldSet> & {
   unstyled?: undefined | boolean,
   
   /** The machine-readable name of the checkbox group, used for form data. */
-  name: string,
+  name?: undefined | string,
   
   /** The human-readable label for the checkbox group. */
   label?: undefined | React.ReactNode,

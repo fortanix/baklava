@@ -696,6 +696,7 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
         {Object.entries(alternatives || {}).map(([alternativesName, { label }], index) => (
           <CheckboxGroup.Checkbox
             key={alternativesName}
+            checkboxKey={alternativesName}
             label={label}
             checked={selectedAlternatives.includes(alternativesName)}
             className="bk-dropdown__menu-item"

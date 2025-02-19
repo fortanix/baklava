@@ -21,7 +21,7 @@ export { cl as RadioGroupClassNames };
 export type RadioKey = string;
 
 export type RadioGroupContext = {
-  name: RadioKey,
+  name?: undefined | RadioKey,
   formId?: undefined | string,
   selectedButton: undefined | RadioKey,
   selectButton: (radioKey: RadioKey) => void,
@@ -70,7 +70,7 @@ export type RadioGroupProps = ComponentProps<typeof FieldSet> & {
   unstyled?: undefined | boolean,
   
   /** The machine-readable name of the radio group, used for form data. */
-  name: string,
+  name?: undefined | string,
   
   /** The human-readable label for the radio group. */
   label?: undefined | React.ReactNode,
