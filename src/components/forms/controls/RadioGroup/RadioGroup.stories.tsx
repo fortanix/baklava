@@ -76,7 +76,7 @@ const RadioGroupControlledC = () => {
   const [selectedColor, setSelectedColor] = React.useState<Color>('red');
   return (
     <RadioGroup
-      name="story_radio_group"
+      name="storyRadioGroup"
       label={`Choose a color (selected: ${selectedColor})`}
       selected={selectedColor}
       onUpdate={radioKey => { setSelectedColor(radioKey as Color); }}
@@ -105,8 +105,7 @@ export const RadioGroupInForm: Story = {
           id="story-form"
           onSubmit={event => {
             event.preventDefault();
-            console.log('x', [...new FormData(event.currentTarget).keys()]);
-            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('controlled_radio') ?? 'unknown'}`);
+            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('controlledRadio') ?? 'unknown'}`);
           }}
         />
         <Story/>
@@ -116,6 +115,6 @@ export const RadioGroupInForm: Story = {
   ],
   args: {
     form: 'story-form',
-    name: 'controlled_radio',
+    name: 'controlledRadio',
   },
 };

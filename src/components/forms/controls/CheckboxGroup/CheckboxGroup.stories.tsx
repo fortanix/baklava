@@ -89,7 +89,7 @@ export const CheckboxGroupInForm: Story = {
           id="story-form"
           onSubmit={event => {
             event.preventDefault();
-            const selectedColors = new FormData(event.currentTarget).getAll('controlled_checkboxes[]');
+            const selectedColors = new FormData(event.currentTarget).getAll('controlledCheckboxes[]');
             notify.info(`You have chosen: ${[...selectedColors].join(', ') || 'none'}`);
           }}
         />
@@ -100,6 +100,6 @@ export const CheckboxGroupInForm: Story = {
   ],
   args: {
     form: 'story-form',
-    name: 'controlled_checkboxes[]',
+    name: 'controlledCheckboxes[]',
   },
 };

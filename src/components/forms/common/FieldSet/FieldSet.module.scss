@@ -28,7 +28,7 @@
       // Workaround for vertical wrapping (see "Vertical With Wrap" story). To make vertical wrapping work, the inner
       // `<div>`'s height must be contained within the `<fieldset>`. This can be done easily with flex/grid, but that
       // doesn't work well with `<fieldset>`. So instead, we calculate the `max-height` as 100% minus the height of
-      // the `<legend>` (which is contrained to one line thanks to the `text-one-line` mixin.
+      // the `<legend>` (which is constrained to one line thanks to the `text-one-line` mixin.
       max-height: calc(100% - 1lh - $legend-gap);
     }
   }
