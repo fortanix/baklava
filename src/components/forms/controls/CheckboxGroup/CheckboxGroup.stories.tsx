@@ -46,6 +46,12 @@ export const CheckboxGroupVertical: Story = {
   },
 };
 
+export const CheckboxGroupDisabled: Story = {
+  args: {
+    disabled: true,
+  },
+};
+
 const CheckboxGroupControlledC = () => {
   const Color = ['red', 'green', 'blue'];
   type Color = (typeof Color)[number];
