@@ -24,7 +24,7 @@
           cursor: pointer;
           
           // Make space for the left border when in active state
-          border-left: var(--bk-nav-item-border-size) solid transparent;
+          border-inline-start: var(--bk-nav-item-border-size) solid transparent;
           
           // Break out of the sidebar padding to extend to the edges (for hover/active states)
           margin-inline: calc(-1 * var(--bk-nav-inset));
@@ -55,7 +55,7 @@
         &[aria-current] {
           .bk-nav__item__link {
             background: bk.$theme-side-nav-menu-background-hover;
-            border-left-color: bk.$theme-side-nav-menu-tab-default;
+            border-inline-start-color: bk.$theme-side-nav-menu-tab-default;
             font-weight: bk.$font-weight-semibold;
           }
         }

@@ -36,7 +36,7 @@
  
     .bk-dialog__header {
       position: sticky;
-      top: -1px; // -1px to prevent bleed through due to pixel rounding
+      inset-block-start: -1px; // -1px to prevent bleed through due to pixel rounding
       z-index: 1;
       
       padding-block: var(--bk-dialog-padding-block) calc(bk.$spacing-7 / 2);
@@ -78,7 +78,7 @@
     
     .bk-dialog__actions {
       position: sticky;
-      bottom: -1px; // -1px to prevent bleed through due to pixel rounding
+      inset-block-end: -1px; // -1px to prevent bleed through due to pixel rounding
       z-index: 1;
       
       padding-block: calc(bk.$spacing-7 / 2) calc(bk.$spacing-9 + 1px); // 1px to compensate for `bottom: -1px`

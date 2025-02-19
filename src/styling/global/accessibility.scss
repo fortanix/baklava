@@ -52,7 +52,9 @@
   }
 }
 
-@mixin sr-only {
+// Hide an element visually, but keep it in the accessibility tree (sometimes also called "sr-only").
+// https://www.w3.org/WAI/tutorials/forms/labels/#note-on-hiding-elements
+@mixin visually-hidden {
   border: 0;
   clip: rect(1px, 1px, 1px, 1px);
   clip-path: inset(50%);

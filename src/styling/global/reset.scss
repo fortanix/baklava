@@ -53,8 +53,13 @@
       overflow-wrap: break-word; // Prevent long words causing overflow
     }
     
-    button {
+    button, label {
       cursor: pointer;
+      user-select: none;
+      
+      &:disabled {
+        cursor: not-allowed;
+      }
     }
     
     /*
@@ -64,6 +69,24 @@
     }
     */
     
+    /*
+    By default, `<fieldset>` elements have some peculiar default browser styling. In particular, `<legend>` within a
+    `<fieldset>` is styled on top of the border. Unsetting this default styling is not super trivial, see references:
+    - https://github.com/whatwg/html/issues/3912
+    - https://thatemil.com/blog/2015/01/03/reset-your-fieldset/ (2015, most of this is outdated/no longer necessary)
+    - https://stackoverflow.com/a/20705034/233884 (solution with only `float`, seems to work fine in modern browsers)
+    */
+    fieldset {
+      legend {
+        float: inline-start;
+        width: 100%;
+        
+        // Clear the `float`
+        + * {
+          clear: both;
+        }
+      }
+    }
     
     // Note: we assume that all styling for dialog (including `:modal` and `:backdrop`) has been hard reset.
     // `the-new-css-reset` has an exception for `dialog:modal`, but we don't want this exception, so here we unset all.

@@ -38,7 +38,7 @@
     .bk-search-input__search-icon,
     .bk-search-input__search-key {
       padding: 1rem;
-      padding-right: $sizing-none;
+      padding-inline-end: $sizing-none;
     }
 
     .bk-search-input__search-icon {
@@ -61,7 +61,7 @@
 
   .bk-multi-search__filters {
     display: flex;
-    margin-top: $sizing-s;
+    margin-block-start: $sizing-s;
 
     .bk-multi-search__filters-wrapper {
       display: flex;
@@ -70,21 +70,21 @@
 
       .bk-multi-search__filter {
         .filter-operand {
-          margin-left: $sizing-xxs;
+          margin-inline-start: $sizing-xxs;
         }
 
         .filter-value {
-          margin-left: $sizing-xxs;
+          margin-inline-start: $sizing-xxs;
           font-weight: $font-weight-semibold;
         }
       }
     }
 
     .bk-multi-search__filter-actions {
-      margin-left: auto;
+      margin-inline-start: auto;
       flex-shrink: 0;
-      padding-left: $sizing-s;
-
+      padding-inline-start: $sizing-s;
+      
       .clear-all {
         color: $accent-color;
 
@@ -111,7 +111,7 @@
     }
 
     .bk-multi-search__alternatives-action {
-      padding-top: $sizing-s;
+      padding-block-start: $sizing-s;
       display: flex;
       justify-content: center;
     }
@@ -120,7 +120,7 @@
   .bk-multi-search__date-time {
     .bk-multi-search__date-time-group {
       .bk-multi-search__date-time-label {
-        margin-bottom: $sizing-xs;
+        margin-block-end: $sizing-xs;
         font-weight: $font-weight-semibold;
       }
 
@@ -128,7 +128,7 @@
     }
 
     .bk-multi-search__date-time-action {
-      padding-top: $sizing-s;
+      padding-block-start: $sizing-s;
       display: flex;
       justify-content: center;
     }
@@ -143,7 +143,7 @@
 
   .bk-multi-search__error-msg,
   .bk-multi-search__dropdown-error-msg {
-    padding-top: $sizing-s;
+    padding-block-start: $sizing-s;
     color: $status-color-error;
     max-width: $sizing-6 * 10;
     display: block;

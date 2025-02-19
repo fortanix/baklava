@@ -12,14 +12,14 @@
   
   min-height: bk.$spacing-16;
   padding: bk.$spacing-4;
-  padding-bottom: bk.$spacing-8;
+  padding-block-end: bk.$spacing-8;
   
   background: var(--bk-card-background-color);
   border: bk.$size-1 solid var(--bk-card-border-color);
   border-radius: bk.$radius-m;
   
   .#{$name}__heading {
-    margin-bottom: bk.$spacing-5;
+    margin-block-end: bk.$spacing-5;
     text-wrap: nowrap;
     text-overflow: ellipsis;
   }

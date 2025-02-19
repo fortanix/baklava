@@ -87,14 +87,21 @@ const preview = {
                 'Form',
                 'SubmitButton',
               ],
+              'common',
+              [
+                'Label',
+                'FieldSet',
+              ],
               'controls',
               [
                 'Checkbox',
                 [
                   'CheckboxTri',
                 ],
+                'CheckboxGroup',
                 'Switch',
                 'Radio',
+                'RadioGroup',
                 'SegmentedControl',
                 'Input',
                 [
@@ -113,7 +120,6 @@ const preview = {
               [
                 'CheckboxGroup',
                 'CheckboxField',
-                'RadioGroup',
                 'RadioField',
                 'InputField',
                 'InputFieldWithTags',

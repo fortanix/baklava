@@ -21,72 +21,84 @@ export default {
   argTypes: {
   },
   args: {
-    options: ['Test1', 'Test2', 'Test3'],
+    'aria-label': 'Choose a color',
+    defaultSelected: 'red',
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="red" label="Red"/>
+        <SegmentedControl.Button buttonKey="green" label="Green"/>
+        <SegmentedControl.Button buttonKey="blue" label="Blue"/>
+      </>
+    ),
   },
   render: (args) => <SegmentedControl {...args}/>,
 } satisfies Meta<SegmentedControlArgs>;
 
-const BaseStory: Story = {
-  args: {},
-  render: (args) => <SegmentedControl {...args}/>,
-};
 
-const baseOptions = [
-  {
-    value: 'test1',
-    label: 'Test1',
-  },
-  {
-    value: 'test2',
-    label: 'Test2',
-  },
-  {
-    value: 'test3',
-    label: 'Test3',
-  },
-];
+export const SegmentedControlStandard: Story = {};
 
-export const Standard: Story = {
-  ...BaseStory,
-  name: 'SegmentedControl [standard]',
-};
-
-export const StandardHover: Story = {
-  ...BaseStory,
-  name: 'SegmentedControl [hover]',
+export const SegmentedControlWithIcon: Story = {
   args: {
-    ...BaseStory.args,
-    options: baseOptions.map((option, index) => {
-      if (index === 1) {
-        return {
-          ...option,
-          className: 'pseudo-hover',
-        }
-      }
-      return option;
-    }),
+    defaultSelected: 'edit',
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="edit" icon="edit" label="Edit"/>
+        <SegmentedControl.Button buttonKey="delete" icon="delete" label="Delete"/>
+      </>
+    ),
   },
 };
 
-export const StandardFocus: Story = {
-  ...BaseStory,
-  name: 'SegmentedControl [focus]',
+export const SegmentedControlWithIconOnly: Story = {
   args: {
-    ...BaseStory.args,
-    options: baseOptions.map((option, index) => {
-      if (index === 1) {
-        return {
-          ...option,
-          className: 'pseudo-focus-visible',
-        }
-      }
-      return option;
-    }),
+    defaultSelected: 'edit',
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="edit" icon="edit"/>
+        <SegmentedControl.Button buttonKey="delete" icon="delete"/>
+      </>
+    ),
   },
 };
 
-export const StandardAllDisabled: Story = {
-  ...BaseStory,
-  name: 'SegmentedControl [disabled]',
-  args: { ...BaseStory.args, disabled: true },
+export const SegmentedControlHover: Story = {
+  args: {
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="red" label="Red"/>
+        <SegmentedControl.Button buttonKey="green" label="Green" className="pseudo-hover"/>
+        <SegmentedControl.Button buttonKey="blue" label="Blue"/>
+      </>
+    ),
+  },
+};
+
+export const SegmentedControlFocused: Story = {
+  args: {
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="red" label="Red" className="pseudo-focus-visible"/>
+        <SegmentedControl.Button buttonKey="green" label="Green"/>
+        <SegmentedControl.Button buttonKey="blue" label="Blue"/>
+      </>
+    ),
+  },
+};
+
+export const SegmentedControlDisabled: Story = {
+  args: {
+    disabled: true,
+  },
+};
+
+export const SegmentedControlDisabledOne: Story = {
+  args: {
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="red" label="Red"/>
+        <SegmentedControl.Button buttonKey="green" label="Green" disabled/>
+        <SegmentedControl.Button buttonKey="blue" label="Blue"/>
+      </>
+    ),
+  },
 };

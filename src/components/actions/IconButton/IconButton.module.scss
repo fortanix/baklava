@@ -14,5 +14,13 @@
     &.inline {
       display: inline-flex;
     }
+    
+    &:not(:disabled):active {
+      scale: 0.95;
+    }
+    
+    @media (prefers-reduced-motion: no-preference) {
+      transition: scale 100ms ease-in;
+    }
   }
 }

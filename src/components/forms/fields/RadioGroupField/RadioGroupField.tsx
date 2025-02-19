@@ -2,19 +2,19 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { classNames as cx, type ComponentProps, type ClassNameArgument } from '../../../../util/componentUtil.ts';
 import * as React from 'react';
+import { classNames as cx, type ComponentProps, type ClassNameArgument } from '../../../../util/componentUtil.ts';
 
 import { Radio } from '../../controls/Radio/Radio.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { TooltipProvider } from '../../../overlays/Tooltip/TooltipProvider.tsx';
 
-import cl from './RadioField.module.scss';
+import cl from './RadioGroupField.module.scss';
 
 
-export { cl as RadioFieldClassNames };
+export { cl as RadioGroupFieldClassNames };
 
-export type RadioTitleProps = React.PropsWithChildren<{
+export type RadioGroupTitleProps = React.PropsWithChildren<{
   className?: ClassNameArgument,
   
   /** Whether to display the optional observation on title. */
@@ -24,25 +24,27 @@ export type RadioTitleProps = React.PropsWithChildren<{
   titleTooltip?: undefined | string,
 }>;
 
-export const RadioFieldTitle = ({ className, children, optional, titleTooltip }: RadioTitleProps) => (
-  <h1 className={cx(
-    'bk',
-    cl['bk-radio-field__title'],
-    className,
-  )}>
+export const RadioGroupFieldTitle = ({ className, children, optional, titleTooltip }: RadioGroupTitleProps) => (
+  <h1
+    className={cx(
+      'bk',
+      cl['bk-radio-group-field__title'],
+      className,
+    )}
+  >
     {children}
     {titleTooltip && (
       <TooltipProvider tooltip={titleTooltip}>
-        <Icon icon="info" className={cl['bk-radio-field__title__icon']}/>
+        <Icon icon="info" className={cl['bk-radio-group-field__title__icon']}/>
       </TooltipProvider>
     )}
     {optional && (
-      <small className={cl['bk-radio-field__title__optional']}>(Optional)</small>
+      <small className={cl['bk-radio-group-field__title__optional']}>(Optional)</small>
     )}
   </h1>
 );
 
-export type RadioFieldProps = ComponentProps<'div'> & {
+export type RadioGroupFieldProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -77,7 +79,7 @@ export type RadioFieldProps = ComponentProps<'div'> & {
 /**
  * A full-fledged Radio field, with optional label, title, icon etc.
  */
-export const RadioField = (props: RadioFieldProps) => {
+export const RadioGroupField = (props: RadioGroupFieldProps) => {
   const {
     unstyled = false,
     label = '',
@@ -85,37 +87,40 @@ export const RadioField = (props: RadioFieldProps) => {
     title,
     optional,
     titleTooltip,
-    className,
+    ...propsRest
   } = props;
   
   return (
-    <div className={cx(
-      'bk',
-      { [cl['bk-radio-field']]: !unstyled },
-      className,
-    )}>
+    <div
+      {...propsRest}
+      className={cx(
+        'bk',
+        { [cl['bk-radio-group-field']]: !unstyled },
+        propsRest.className,
+      )}
+    >
       {title && (
-        <RadioFieldTitle
+        <RadioGroupFieldTitle
           optional={optional}
           titleTooltip={titleTooltip}
         >
           {title}
-        </RadioFieldTitle>
+        </RadioGroupFieldTitle>
       )}
       {/* biome-ignore lint/a11y/noLabelWithoutControl: the `<Radio>` will resolve to an `<input>` */}
-      <label className={cl['bk-radio-field__label']}>
+      <label className={cl['bk-radio-group-field__label']}>
         <Radio
           checked={props.checked}
           defaultChecked={props.defaultChecked}
           disabled={props.disabled}
           onChange={props.onChange}
         />
-        <span className={cl['bk-radio-field__label__content']}>
+        <span className={cl['bk-radio-group-field__label__content']}>
           {label}
         </span>
       </label>
       {description &&
-        <div className={cl['bk-radio-field__description']}>{description}</div>
+        <div className={cl['bk-radio-group-field__description']}>{description}</div>
       }
     </div>
   );

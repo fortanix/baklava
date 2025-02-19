@@ -8,8 +8,6 @@ import * as React from 'react';
 
 import { Radio } from './Radio.tsx';
 
-import cl from './Radio.module.scss';
-
 
 type RadioArgs = React.ComponentProps<typeof Radio>;
 type Story = StoryObj<RadioArgs>;
@@ -56,7 +54,7 @@ export const DisabledUnselected: Story = {
 export const FocusedSelected: Story = {
   name: 'Focused (selected)',
   args: {
-    className: cl['pseudo-focused'],
+    className: 'pseudo-focused',
     defaultChecked: true,
   },
 };
@@ -64,15 +62,22 @@ export const FocusedSelected: Story = {
 export const FocusedUnselected: Story = {
   name: 'Focused (unselected)',
   args: {
-    className: cl['pseudo-focused'],
+    className: 'pseudo-focused',
   },
 };
 
 export const FocusedDisabledSelected: Story = {
   name: 'Focused & Disabled (selected)',
   args: {
-    className: cl['pseudo-focused'],
+    className: 'pseudo-focused',
     defaultChecked: true,
     disabled: true,
+  },
+};
+
+export const RadioLabeled: Story = {
+  render: (args) => <Radio.Labeled label="Label" {...args}/>,
+  args: {
+    defaultChecked: false,
   },
 };

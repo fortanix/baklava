@@ -44,7 +44,7 @@
     hr {
       margin-block: bk.$spacing-3;
       border: none;
-      border-top: bk.rem-from-px(1) solid bk.$theme-side-nav-menu-divider-default;
+      border-block-start: bk.rem-from-px(1) solid bk.$theme-side-nav-menu-divider-default;
     }
   }
 }

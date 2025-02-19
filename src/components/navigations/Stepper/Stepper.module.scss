@@ -29,11 +29,11 @@
         &::before {
           content: '';
           position: absolute;
-          top: calc(-1 * bk.$spacing-9 - bk.$size-2);
-          left: calc(50% - bk.$size-2 / 2);
+          inset-block-start: calc(-1 * bk.$spacing-9 - bk.$size-2);
+          inset-inline-start: calc(50% - bk.$size-2 / 2);
           width: 0;
           height: bk.$spacing-9;
-          border-left: bk.$size-2 solid bk.$theme-stepper-border-disabled;
+          border-inline-start: bk.$size-2 solid bk.$theme-stepper-border-disabled;
         }
       }
     }
@@ -49,7 +49,7 @@
         position: relative; // Needed for the vertical line `position: absolute`
         flex-shrink: 0;
         
-        margin-right: bk.$spacing-3;
+        margin-inline-end: bk.$spacing-3;
         aspect-ratio: 1;
         width: var(--bk-stepper-indicator-size);
         
@@ -71,7 +71,7 @@
       }
       
       .bk-stepper__item__optional {
-        margin-left: bk.$spacing-2;
+        margin-inline-start: bk.$spacing-2;
         font-size: bk.$font-size-xs;
       }
     }

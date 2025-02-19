@@ -25,6 +25,7 @@ export default {
   args: {
     unstyled: false,
     label: 'Link',
+    onClick: event => { event.preventDefault(); },
   },
   render: (args) => <Link {...args}/>,
 } satisfies Meta<LinkArgs>;
@@ -48,7 +49,7 @@ export const Scroll: Story = {
     <>
       <DummyLink id="anchor">Anchor</DummyLink>
       <OverflowTester openDefault/>
-      <Link {...args} href="#anchor"/>
+      <Link {...args} href="#anchor" onClick={undefined}/>
       <OverflowTester openDefault/>
     </>
   ),

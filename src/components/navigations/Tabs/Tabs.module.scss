@@ -11,7 +11,7 @@
     .bk-tabs__switcher {
       display: flex;
       list-style: none;
-      border-bottom: 1px solid #{bk.$theme-tab-rule-default};
+      border-block-end: 1px solid #{bk.$theme-tab-rule-default};
       
       .bk-tabs__switcher__tab {
         position: relative;
@@ -28,8 +28,8 @@
           content: "";
           position: absolute;
           width: 100%;
-          left: 0;
-          bottom: 0;
+          inset-inline-start: 0;
+          inset-block-end: 0;
           height: 0;
           transition: .3s;
         }
@@ -65,7 +65,7 @@
     }
     
     .bk-tabs__tab-content {
-      padding-top: bk.$spacing-7;
+      padding-block-start: bk.$spacing-7;
     }
   }
 }

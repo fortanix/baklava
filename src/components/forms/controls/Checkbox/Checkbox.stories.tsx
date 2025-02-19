@@ -109,3 +109,10 @@ export const CheckboxControlledStory: Story = {
   name: 'Checkbox (controlled)',
   render: (args) => <CheckboxControlled {...args} defaultChecked/>,
 };
+
+export const CheckboxLabeled: Story = {
+  render: (args) => <Checkbox.Labeled label="Label" {...args}/>,
+  args: {
+    defaultChecked: true,
+  },
+};
