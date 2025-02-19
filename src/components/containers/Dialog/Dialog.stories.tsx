@@ -9,7 +9,7 @@ import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 import { loremIpsum, LoremIpsum, loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
 import { Form } from '../../forms/context/Form/Form.tsx';
 import { FormLayout } from '../../../layouts/FormLayout/FormLayout.tsx';
-import { RadioGroup } from '../../forms/fields/RadioGroup/RadioGroup.tsx';
+import { RadioGroup } from '../../forms/controls/RadioGroup/RadioGroup.tsx';
 import { FieldLayout } from '../../forms/fields/FieldLayout/FieldLayout.tsx';
 import { InputField } from '../../forms/fields/InputField/InputField.tsx';
 
@@ -66,21 +66,25 @@ export const DialogFlat: Story = {
 export const DialogPattern1: Story = {
   render: () => {
     const radioOptions = ['Response Only', 'Query Only', 'All'] as const;
-    const [selectedRadioOption, setSelectedRadioOption] = React.useState<string | null>(null);
+    const [selectedRadioOption, setSelectedRadioOption] = React.useState<string>('Response Only');
     return (
-      <Dialog title="Dialog Pattern 1">
+      <Dialog title="Dialog Pattern 1" actions={<Dialog.SubmitAction/>}>
         <p>{loremIpsumSentence}</p>
         <p>{loremIpsumSentence.slice(0, 55)}.</p>
         <p>
           <Form>
             <FormLayout>
-              <RadioGroup direction="horizontal">
+              <RadioGroup
+                orientation="horizontal"
+                label="Label"
+                selected={selectedRadioOption}
+                onUpdate={radioKey => { setSelectedRadioOption(radioKey); }}
+              >
                 {radioOptions.map(radioOption =>
-                  <RadioGroup.RadioField
+                  <RadioGroup.Button
                     key={radioOption}
+                    radioKey={radioOption}
                     label={radioOption}
-                    checked={radioOption === selectedRadioOption}
-                    onChange={() => setSelectedRadioOption(radioOption)}
                   />
                 )}
               </RadioGroup>
