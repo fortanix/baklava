@@ -38,7 +38,7 @@
       background-color: var(--bk-segmented-control-background-color);
       
       color: var(--bk-segmented-control-text-color);
-      @include bk.font($family: bk.$font-family-body, $weight: bk.$font-weight-semibold, $size: bk.$font-size-xs);
+      @include bk.font($family: bk.$font-family-body, $weight: bk.$font-weight-semibold);
       text-transform: uppercase;
       
       &:first-of-type {
@@ -54,9 +54,9 @@
       flex-direction: row;
       column-gap: bk.$spacing-1;
       justify-items: center;
-      min-height: 1.5lh; // For case where there are icons only
       
       > :global(.icon) {
+        padding: 0.1lh;
         font-size: 1em;
       }
       
@@ -78,7 +78,7 @@
       }
       
       // State: active
-      &:active {
+      &:not(:disabled):active {
         filter: brightness(90%);
       }
       @media (prefers-reduced-motion: no-preference) {
@@ -105,6 +105,12 @@
       --bk-segmented-control-text-color: #{bk.$theme-segmented-control-text-unselected-2};
       
       cursor: not-allowed;
+    }
+    
+    &.bk-segmented-control--small {
+      .bk-segmented-control__button {
+        font-size: bk.$font-size-xs;
+      }
     }
   }
 }

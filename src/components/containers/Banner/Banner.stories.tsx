@@ -163,7 +163,7 @@ export const BannerWithThemedContent: Story = {
         </p>
         <div style={{ display: 'flex', gap: '2ch', marginTop: '1lh' }}>
           <Button nonactive kind="primary" onPress={() => { notify.info('Clicked'); }}>Button</Button>
-          <SegmentedControl size="small" defaultButtonKey="test-1" aria-label="Test segmented control">
+          <SegmentedControl size="small" defaultSelected="test-1" aria-label="Test segmented control">
             <SegmentedControl.Button buttonKey="test-1" label="Test 1"/>
             <SegmentedControl.Button buttonKey="test-2" label="Test 2"/>
             <SegmentedControl.Button buttonKey="test-3" label="Test 3"/>

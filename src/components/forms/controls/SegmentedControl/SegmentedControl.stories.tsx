@@ -22,7 +22,7 @@ export default {
   },
   args: {
     'aria-label': 'Choose a color',
-    defaultButtonKey: 'red',
+    defaultSelected: 'red',
     children: (
       <>
         <SegmentedControl.Button buttonKey="red" label="Red"/>
@@ -39,7 +39,7 @@ export const SegmentedControlStandard: Story = {};
 
 export const SegmentedControlWithIcon: Story = {
   args: {
-    defaultButtonKey: 'edit',
+    defaultSelected: 'edit',
     children: (
       <>
         <SegmentedControl.Button buttonKey="edit" icon="edit" label="Edit"/>
@@ -51,7 +51,7 @@ export const SegmentedControlWithIcon: Story = {
 
 export const SegmentedControlWithIconOnly: Story = {
   args: {
-    defaultButtonKey: 'edit',
+    defaultSelected: 'edit',
     children: (
       <>
         <SegmentedControl.Button buttonKey="edit" icon="edit"/>

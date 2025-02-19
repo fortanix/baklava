@@ -5,18 +5,15 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-radio-group {
-    @include bk.component-base(bk-radio-group);
+  .bk-label {
+    @include bk.component-base(bk-label);
+    
     display: flex;
-
-    &.bk-radio-group--vertical {
-      flex-direction: column;
-      row-gap: 20px;
-    }
-  
-    &.bk-radio-group--horizontal {
-      flex-direction: row;
-      column-gap: bk.$spacing-7;
+    align-items: center;
+    column-gap: bk.$spacing-2;
+    
+    .bk-label__text {
+      @include bk.font($family: bk.$font-family-body, $size: bk.$font-size-m);
     }
   }
 }

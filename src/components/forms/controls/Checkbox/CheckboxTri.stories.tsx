@@ -92,3 +92,10 @@ export const CheckboxTriControlledStory: Story = {
   name: 'CheckboxTri (controlled)',
   render: (args) => <CheckboxTriControlled {...args} defaultChecked="indeterminate"/>,
 };
+
+export const CheckboxTriLabeled: Story = {
+  render: (args) => <CheckboxTri.Labeled label="Label" {...args}/>,
+  args: {
+    defaultChecked: 'indeterminate',
+  },
+};

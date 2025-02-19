@@ -38,7 +38,7 @@ export type ButtonDef = {
 
 export type SegmentedControlContext = {
   register: (buttonDef: ButtonDef) => () => void,
-  selectedButton: ButtonKey,
+  selectedButton: undefined | ButtonKey,
   disabled: boolean,
   selectButton: (buttonKey: ButtonKey) => void,
 };
@@ -101,14 +101,20 @@ export type SegmentedControlProps = ComponentProps<'div'> & {
   /** The size of the component. */
   size: 'small',
   
-  /** The default button to select. */
-  defaultButtonKey: ButtonKey,
+  /** The default button to select. Only relevant for uncontrolled usage (`selected` is `undefined`). */
+  defaultSelected?: undefined | ButtonKey,
+  
+  /** The button to select. If `undefined`, this component will be considered uncontrolled. */
+  selected?: undefined | ButtonKey,
+  
+  /** Event handler for segmented control button change events. */
+  onUpdate?: undefined | ((buttonKey: ButtonKey) => void),
   
   /** Whether segmented control is disabled or not. */
   disabled?: undefined | boolean,
   
-  /** Event handler for segmented control button change events. */
-  onChange?: undefined | ((buttonKey: ButtonKey) => void),
+  /** Any additional props to apply to the internal `<input type="hidden"/>`. */
+  inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
 };
 /**
  * A segmented control is a set of mutually exclusive buttons that can be switched between.
@@ -119,26 +125,32 @@ export const SegmentedControl = Object.assign(
       children,
       unstyled = false,
       size = 'small',
-      defaultButtonKey,
+      defaultSelected,
+      selected,
       disabled = false,
-      onChange,
+      onUpdate,
+      inputProps = {},
       ...propsRest
     } = props;
     
+    if (typeof selected !== 'undefined' && !onUpdate) {
+      console.warn(`Using SegmentedControl as uncontrolled component, but missing 'onChange' callback.`);
+    }
+    
     const buttonDefsRef = React.useRef<Map<ButtonKey, ButtonDef>>(new Map());
-    const [selectedButton, setSelectedButton] = React.useState(defaultButtonKey);
+    const [selectedButton, setSelectedButton] = React.useState<undefined | ButtonKey>(selected ?? defaultSelected);
     
     const selectButton = React.useCallback((buttonKey: ButtonKey) => {
       setSelectedButton(selectedButton => {
         if (buttonKey !== selectedButton) {
-          onChange?.(buttonKey);
+          onUpdate?.(buttonKey);
           buttonDefsRef.current.get(buttonKey)?.buttonRef.current?.focus();
           return buttonKey;
         } else {
           return selectedButton;
         }
       });
-    }, [onChange]);
+    }, [onUpdate]);
     
     const register = React.useCallback((buttonDef: ButtonDef) => {
       const buttonDefs = buttonDefsRef.current;
@@ -153,13 +165,15 @@ export const SegmentedControl = Object.assign(
       };
     }, []);
     
-    // After initial rendering, check whether `defaultButtonKey` refers to one of the rendered buttons
+    // After initial rendering, check whether `defaultSelected` refers to one of the rendered buttons
     useEffectOnce(() => {
-      const buttonDef: undefined | ButtonDef = buttonDefsRef.current.get(defaultButtonKey);
+      if (typeof defaultSelected === 'undefined') { return; }
+      
+      const buttonDef: undefined | ButtonDef = buttonDefsRef.current.get(defaultSelected);
       if (typeof buttonDef === 'undefined' || buttonDef.buttonRef.current === null) {
-        console.error(`Unable to find a button matching the specified defaultButtonKey: ${defaultButtonKey}`);
-      } else if (!isElementFocusable(buttonDef.buttonRef.current)) {
-        console.error(`Default button is not focusable: ${defaultButtonKey}`);
+        console.error(`Unable to find a button matching the specified defaultSelected: ${defaultSelected}`);
+      } else if (!disabled && !isElementFocusable(buttonDef.buttonRef.current)) {
+        console.error(`Default button is not focusable: ${defaultSelected}`);
       }
     });
     
@@ -171,15 +185,18 @@ export const SegmentedControl = Object.assign(
     }), [register, selectedButton, selectButton, disabled]);
     
     const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+      const selectedButton = context.selectedButton;
+      if (typeof selectedButton === 'undefined') { return; }
+      
       // Get the list of button keys, ideally in the order that they are displayed to the user.
       // Filter only the buttons that are (programmatically) focusable.
       const buttonKeys: Array<ButtonKey> = [...buttonDefsRef.current.entries()]
         .filter(([_, { buttonRef }]) => buttonRef.current && isElementFocusable(buttonRef.current))
         .map(([buttonKey]) => buttonKey);
       
-      const buttonIndex: number = buttonKeys.indexOf(context.selectedButton);
+      const buttonIndex: number = buttonKeys.indexOf(selectedButton);
       if (buttonIndex < 0) {
-        console.error(`Could not resolve selected button: '${context.selectedButton}'`);
+        console.error(`Could not resolve selected button: '${selectedButton}'`);
       }
       
       // Determine the target button to focus based on the keyboard event (if any)
@@ -220,10 +237,10 @@ export const SegmentedControl = Object.assign(
     return (
       <SegmentedControlContext value={context}>
         <div
-          {...propsRest}
           role="radiogroup"
           aria-required
           aria-orientation="horizontal"
+          {...propsRest}
           className={cx(
             'bk',
             { [cl['bk-segmented-control']]: !unstyled },
@@ -233,6 +250,9 @@ export const SegmentedControl = Object.assign(
           )}
           onKeyDown={handleKeyDown}
         >
+          {/* Hidden input, so that this component can be connected to a <form> element */}
+          <input type="hidden" {...inputProps} value={selectedButton} onChange={undefined}/>
+          
           {children}
         </div>
       </SegmentedControlContext>

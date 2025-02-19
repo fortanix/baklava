@@ -6,14 +6,14 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { RadioField } from './RadioField.tsx';
+import { RadioGroupField } from './RadioGroupField.tsx';
 
 
-type RadioFieldArgs = React.ComponentProps<typeof RadioField>;
-type Story = StoryObj<RadioFieldArgs>;
+type RadioGroupFieldArgs = React.ComponentProps<typeof RadioGroupField>;
+type Story = StoryObj<RadioGroupFieldArgs>;
 
 export default {
-  component: RadioField,
+  component: RadioGroupField,
   parameters: {
     layout: 'centered',
   },
@@ -24,24 +24,24 @@ export default {
   decorators: [
     Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
   ],
-  render: (args) => <RadioField {...args}/>,
-} satisfies Meta<RadioFieldArgs>;
+  render: (args) => <RadioGroupField {...args}/>,
+} satisfies Meta<RadioGroupFieldArgs>;
 
 
-export const RadioFieldWithLabel: Story = {
+export const RadioGroupFieldWithLabel: Story = {
   args: {
     label: 'Label',
   },
 };
 
-export const RadioFieldWithLabelAndTitle: Story = {
+export const RadioGroupFieldWithLabelAndTitle: Story = {
   args: {
     title: 'Title',
     label: 'Label',
   },
 };
 
-export const RadioFieldWithLabelWithTitleWithTooltip: Story = {
+export const RadioGroupFieldWithLabelWithTitleWithTooltip: Story = {
   args: {
     title: 'Title',
     label: 'Label',
@@ -49,7 +49,7 @@ export const RadioFieldWithLabelWithTitleWithTooltip: Story = {
   }
 };
 
-export const RadioFieldWithLabelWithTitleWithOptional: Story = {
+export const RadioGroupFieldWithLabelWithTitleWithOptional: Story = {
   args: {
     title: 'Title',
     label: 'Label',
@@ -57,7 +57,7 @@ export const RadioFieldWithLabelWithTitleWithOptional: Story = {
   },
 };
 
-export const RadioFieldWithLabelWithTitleWithTooltipWithOptional: Story = {
+export const RadioGroupFieldWithLabelWithTitleWithTooltipWithOptional: Story = {
   args: {
     title: 'Title',
     label: 'Label',
@@ -66,7 +66,7 @@ export const RadioFieldWithLabelWithTitleWithTooltipWithOptional: Story = {
   },
 };
 
-export const RadioFieldWithLabelAndDescription: Story = {
+export const RadioGroupFieldWithLabelAndDescription: Story = {
   args: {
     label: 'Label',
     description: 'Additional description',

@@ -1,0 +1,35 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-field-set {
+    @include bk.component-base(bk-field-set);
+    
+    overflow: visible; // Do not truncate inner focus outlines
+    flex-grow: 1; // Allow to grow to full width in a flexbox context
+    
+    // Note: making the `fieldset` itself a flex/grid element doesn't seem to work well across browsers. For one,
+    // it seems to not work with the `clear: both` that is applied on the `<legend>` (in the CSS reset).
+    //display: flex;
+    
+    $legend-gap: bk.$sizing-2;
+    
+    legend {
+      margin-block-end: $legend-gap;
+      font-weight: bk.$font-weight-semibold;
+      
+      @include bk.text-one-line($include-padding: false); // Padding fix not needed thanks to `overflow: visible`
+    }
+    
+    .bk-field-set__content {
+      // Workaround for vertical wrapping (see "Vertical With Wrap" story). To make vertical wrapping work, the inner
+      // `<div>`'s height must be contained within the `<fieldset>`. This can be done easily with flex/grid, but that
+      // doesn't work well with `<fieldset>`. So instead, we calculate the `max-height` as 100% minus the height of
+      // the `<legend>` (which is constrained to one line thanks to the `text-one-line` mixin.
+      max-height: calc(100% - 1lh - $legend-gap);
+    }
+  }
+}
