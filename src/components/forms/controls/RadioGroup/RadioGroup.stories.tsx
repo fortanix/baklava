@@ -58,7 +58,7 @@ export const RadioGroupVertical: Story = {
 
 export const RadioGroupVerticalWithWrap: Story = {
   args: {
-    style: { overflow: 'hidden', resize: 'vertical', width: 220, height: 80 },
+    style: { overflow: 'hidden', resize: 'vertical', width: 220, height: 100 },
     orientation: 'vertical',
   },
 };
