@@ -28,18 +28,18 @@ export const RadioGroupFieldTitle = ({ className, children, optional, titleToolt
   <h1
     className={cx(
       'bk',
-      cl['bk-radio-field__title'],
+      cl['bk-radio-group-field__title'],
       className,
     )}
   >
     {children}
     {titleTooltip && (
       <TooltipProvider tooltip={titleTooltip}>
-        <Icon icon="info" className={cl['bk-radio-field__title__icon']}/>
+        <Icon icon="info" className={cl['bk-radio-group-field__title__icon']}/>
       </TooltipProvider>
     )}
     {optional && (
-      <small className={cl['bk-radio-field__title__optional']}>(Optional)</small>
+      <small className={cl['bk-radio-group-field__title__optional']}>(Optional)</small>
     )}
   </h1>
 );
@@ -87,15 +87,18 @@ export const RadioGroupField = (props: RadioGroupFieldProps) => {
     title,
     optional,
     titleTooltip,
-    className,
+    ...propsRest
   } = props;
   
   return (
-    <div className={cx(
-      'bk',
-      { [cl['bk-radio-field']]: !unstyled },
-      className,
-    )}>
+    <div
+      {...propsRest}
+      className={cx(
+        'bk',
+        { [cl['bk-radio-group-field']]: !unstyled },
+        propsRest.className,
+      )}
+    >
       {title && (
         <RadioGroupFieldTitle
           optional={optional}
@@ -105,19 +108,19 @@ export const RadioGroupField = (props: RadioGroupFieldProps) => {
         </RadioGroupFieldTitle>
       )}
       {/* biome-ignore lint/a11y/noLabelWithoutControl: the `<Radio>` will resolve to an `<input>` */}
-      <label className={cl['bk-radio-field__label']}>
+      <label className={cl['bk-radio-group-field__label']}>
         <Radio
           checked={props.checked}
           defaultChecked={props.defaultChecked}
           disabled={props.disabled}
           onChange={props.onChange}
         />
-        <span className={cl['bk-radio-field__label__content']}>
+        <span className={cl['bk-radio-group-field__label__content']}>
           {label}
         </span>
       </label>
       {description &&
-        <div className={cl['bk-radio-field__description']}>{description}</div>
+        <div className={cl['bk-radio-group-field__description']}>{description}</div>
       }
     </div>
   );
