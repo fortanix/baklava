@@ -17,7 +17,7 @@ type Story = StoryObj<RadioGroupArgs>;
 const RadioGroupUnique = (args: RadioGroupArgs) => {
   // Note: make the name unique per story so we don't get conflicts on the Docs page
   const id = React.useId();
-  return <RadioGroup {...args} name={id}/>;
+  return <RadioGroup {...args} name={args.name ?? id}/>;
 };
 
 export default {
@@ -105,7 +105,8 @@ export const RadioGroupInForm: Story = {
           id="story-form"
           onSubmit={event => {
             event.preventDefault();
-            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story-radio') ?? 'unknown'}`);
+            console.log('x', [...new FormData(event.currentTarget).keys()]);
+            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('controlled_radio') ?? 'unknown'}`);
           }}
         />
         <Story/>
@@ -115,5 +116,6 @@ export const RadioGroupInForm: Story = {
   ],
   args: {
     form: 'story-form',
+    name: 'controlled_radio',
   },
 };
