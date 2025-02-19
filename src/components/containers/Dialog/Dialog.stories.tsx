@@ -6,7 +6,12 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
-import { loremIpsum, LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
+import { loremIpsum, LoremIpsum, loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
+import { Form } from '../../forms/context/Form/Form.tsx';
+import { FormLayout } from '../../../layouts/FormLayout/FormLayout.tsx';
+import { RadioGroup } from '../../forms/fields/RadioGroup/RadioGroup.tsx';
+import { FieldLayout } from '../../forms/fields/FieldLayout/FieldLayout.tsx';
+import { InputField } from '../../forms/fields/InputField/InputField.tsx';
 
 import { Dialog } from './Dialog.tsx';
 
@@ -55,5 +60,37 @@ export const DialogWithTitleOverflow: Story = {
 export const DialogFlat: Story = {
   args: {
     flat: true,
+  },
+};
+
+export const DialogPattern1: Story = {
+  render: () => {
+    const radioOptions = ['Response Only', 'Query Only', 'All'] as const;
+    const [selectedRadioOption, setSelectedRadioOption] = React.useState<string | null>(null);
+    return (
+      <Dialog title="Dialog Pattern 1">
+        <p>{loremIpsumSentence}</p>
+        <p>{loremIpsumSentence.slice(0, 55)}.</p>
+        <p>
+          <Form>
+            <FormLayout>
+              <RadioGroup direction="horizontal">
+                {radioOptions.map(radioOption =>
+                  <RadioGroup.RadioField
+                    key={radioOption}
+                    label={radioOption}
+                    checked={radioOption === selectedRadioOption}
+                    onChange={() => setSelectedRadioOption(radioOption)}
+                  />
+                )}
+              </RadioGroup>
+              <FieldLayout size="small">
+                <InputField placeholder="Placeholder" />
+              </FieldLayout>
+            </FormLayout>
+          </Form>
+        </p>
+      </Dialog>
+    );
   },
 };
