@@ -113,7 +113,7 @@
     
     &:focus-visible {
       outline: none !important; /* Override accessibility layer */
-      box-shadow: inset 2px 2px var(--bk-focus-outline-color), inset -2px -2px var(--bk-focus-outline-color);
+      box-shadow: inset 2px 2px var(--bk-focus-outline-color), inset -2px -2px var(--bk-focus-outline-color) !important;
     }
     
     display: flex;

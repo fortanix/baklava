@@ -76,7 +76,7 @@ const RadioGroupControlledC = () => {
   const [selectedColor, setSelectedColor] = React.useState<Color>('red');
   return (
     <RadioGroup
-      name="story-radio-group"
+      name="story_radio_group"
       label={`Choose a color (selected: ${selectedColor})`}
       selected={selectedColor}
       onUpdate={radioKey => { setSelectedColor(radioKey as Color); }}

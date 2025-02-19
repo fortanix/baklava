@@ -21,7 +21,7 @@
       margin-block-end: $legend-gap;
       font-weight: bk.$font-weight-semibold;
       
-      @include bk.text-one-line;
+      @include bk.text-one-line($include-padding: false); // Padding fix not needed thanks to `overflow: visible`
     }
     
     .bk-field-set__content {

@@ -18,7 +18,7 @@ References:
 
 export { cl as RadioGroupClassNames };
 
-type RadioKey = string;
+export type RadioKey = string;
 
 export type RadioGroupContext = {
   name: RadioKey,
@@ -57,15 +57,15 @@ export const RadioGroupButton = ({ radioKey, ...propsRest }: RadioGroupButtonPro
       // of the descendent `<input>` elements. See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/fieldset
       form={context.formId}
       name={context.name}
-      {...propsRest}
       value={radioKey}
       checked={checked}
       onChange={typeof checked === 'undefined' ? undefined : onChange}
+      {...propsRest}
     />
   );
 };
 
-export type RadioGroupProps = Omit<ComponentProps<'fieldset'>, 'value' | 'defaultChecked' | 'defaultValue'> & {
+export type RadioGroupProps = ComponentProps<typeof FieldSet> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -84,7 +84,7 @@ export type RadioGroupProps = Omit<ComponentProps<'fieldset'>, 'value' | 'defaul
   /** Event handler which is called when the selected radio button changes. */
   onUpdate?: undefined | ((radioKey: RadioKey) => void),
   
-  /** The orientation of radio buttons, either vertical or horizontal. Default: 'horizontal'. */
+  /** The orientation of the radio buttons, either vertical or horizontal. Default: 'horizontal'. */
   orientation?: undefined | 'vertical' | 'horizontal',
 };
 

@@ -6,7 +6,7 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Radio } from '../../controls/Radio/Radio.tsx';
+import { Checkbox } from '../../controls/Checkbox/Checkbox.tsx';
 
 import { FieldSet } from './FieldSet.tsx';
 
@@ -22,10 +22,11 @@ export default {
   },
   argTypes: {},
   args: {
+    legend: 'Field set legend',
     children: (
       <>
-        <Radio.Labeled label="Control 1"/>
-        <Radio.Labeled label="Control 2"/>
+        <Checkbox.Labeled label="Control 1"/>
+        <Checkbox.Labeled label="Control 2"/>
       </>
     ),
   },
