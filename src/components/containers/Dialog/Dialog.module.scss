@@ -72,10 +72,6 @@
       gap: bk.$spacing-3;
     }
     
-    .bk-dialog__aside--warning {
-      color: bk.$theme-icon-warning;
-    }
-    
     .bk-dialog__actions {
       position: sticky;
       inset-block-end: -1px; // -1px to prevent bleed through due to pixel rounding
@@ -96,8 +92,8 @@
       .bk-dialog__action { --keep: ; }
       .bk-dialog__action--icon { --keep: ; }
     }
-    
-    &.bk-dialog--variant {
+
+    &.bk-dialog--content-icon {
       .bk-dialog__actions {
         padding-inline-start: bk.$spacing-11;
       }

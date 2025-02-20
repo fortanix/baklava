@@ -11,7 +11,6 @@ import { Button } from '../../actions/Button/Button.tsx';
 import { IconButton } from '../../actions/IconButton/IconButton.tsx';
 import { H5 } from '../../../typography/Heading/Heading.tsx';
 import { TooltipProvider } from '../../overlays/Tooltip/TooltipProvider.tsx';
-import { Icon } from '../../graphics/Icon/Icon.tsx';
 
 import cl from './Dialog.module.scss';
 
@@ -77,19 +76,6 @@ const SubmitAction = (props: ActionProps) => {
   return <Action kind="primary" label="Submit" {...props} onPress={handlePress}/>;
 };
 
-type VariantType = undefined | 'warning';
-type VariantProps = {
-  icon: VariantType,
-}
-const DialogIcon = (props: VariantProps) => {
-  if (props.icon === 'warning') {
-    return (
-      <Icon icon="warning-filled"/>
-    )
-  }
-  return null;
-};
-
 export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   /** Whether this component should be unstyled. Default: false. */
   unstyled?: undefined | boolean,
@@ -115,9 +101,9 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   /** Whether to set autofocus on the close button. Default: false. */
   autoFocusClose?: undefined | boolean,
 
-  /** A variant insets the content and displays an icon on the top left corner. */
+  /** An icon displayed on the top left corner that insets the content and the action buttons. */
   // TODO: Is this the best name?
-  variant?: VariantType,
+  contentIcon?: React.ReactNode,
 };
 /**
  * The Dialog component displays an interaction with the user, for example a confirmation, or a form to be submitted.
@@ -134,7 +120,7 @@ export const Dialog = Object.assign(
       onRequestClose,
       actions,
       autoFocusClose = false,
-      variant,
+      contentIcon,
       ...propsRest
     } = props;
     
@@ -164,7 +150,7 @@ export const Dialog = Object.assign(
             'bk',
             { [cl['bk-dialog']]: !unstyled },
             { [cl['bk-dialog--flat']]: flat },
-            { [cl['bk-dialog--variant']]: variant },
+            { [cl['bk-dialog--content-icon']]: contentIcon },
             scrollerProps.className,
             propsRest.className,
           )}
@@ -187,9 +173,9 @@ export const Dialog = Object.assign(
           </header>
           
           <div className={cl['bk-dialog__content']}>
-            {variant && (
-              <aside className={cx(cl['bk-dialog__aside'], cl[`bk-dialog__aside--${variant}`])}>
-                <DialogIcon icon={variant} />
+            {contentIcon && (
+              <aside className={cx(cl['bk-dialog__aside'])}>
+                {contentIcon}
               </aside>
             )}
             <section
@@ -219,6 +205,5 @@ export const Dialog = Object.assign(
     ActionIcon,
     CancelAction,
     SubmitAction,
-    DialogIcon,
   },
 );

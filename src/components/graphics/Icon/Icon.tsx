@@ -21,6 +21,8 @@ export type Decoration = (
   | { type: 'background-circle' }
 );
 
+const Warning = () => <Icon icon="warning-filled" className={cl['bk-icon--warning']} />
+
 export type IconProps = React.PropsWithChildren<ComponentProps<'svg'> & {
   /** Whether this component should be unstyled. */
   unstyled?: boolean,
@@ -34,22 +36,26 @@ export type IconProps = React.PropsWithChildren<ComponentProps<'svg'> & {
   /** Visual decoration to apply */
   decoration?: undefined | Decoration,
 }>;
-export const Icon = ({ unstyled, icon, color = 'currentColor', decoration, ...props }: IconProps) => {
-  const symbolId = `#baklava-icon-${icon}`;
-  
-  return (
-    <svg
-      role="img"
-      aria-label={`${icon} icon`}
-      aria-hidden // https://stackoverflow.com/questions/61048356/why-do-we-use-aria-hidden-with-icons
-      {...props}
-      className={cx({
-        bk: true,
-        [cl['bk-icon']]: !unstyled,
-        [cl['bk-icon--background-circle']]: decoration?.type === 'background-circle',
-      }, props.className)}
-    >
-      <use href={symbolId} fill={color}/>
-    </svg>
-  );
-};
+export const Icon = Object.assign(
+  ({ unstyled, icon, color = 'currentColor', decoration, ...props }: IconProps) => {
+    const symbolId = `#baklava-icon-${icon}`;
+
+    return (
+      <svg
+        role="img"
+        aria-label={`${icon} icon`}
+        aria-hidden // https://stackoverflow.com/questions/61048356/why-do-we-use-aria-hidden-with-icons
+        {...props}
+        className={cx({
+          bk: true,
+          [cl['bk-icon']]: !unstyled,
+          [cl['bk-icon--background-circle']]: decoration?.type === 'background-circle',
+        }, props.className)}
+      >
+        <use href={symbolId} fill={color}/>
+      </svg>
+    );
+  }, {
+    Warning,
+  },
+);

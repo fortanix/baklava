@@ -12,6 +12,7 @@ import { FormLayout } from '../../../layouts/FormLayout/FormLayout.tsx';
 import { RadioGroup } from '../../forms/controls/RadioGroup/RadioGroup.tsx';
 import { FieldLayout } from '../../forms/fields/FieldLayout/FieldLayout.tsx';
 import { InputField } from '../../forms/fields/InputField/InputField.tsx';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
 
 import { Dialog } from './Dialog.tsx';
 
@@ -68,7 +69,11 @@ export const DialogPattern1: Story = {
     const radioOptions = ['Response Only', 'Query Only', 'All'] as const;
     const [selectedRadioOption, setSelectedRadioOption] = React.useState<string>('Response Only');
     return (
-      <Dialog title="Dialog Pattern 1" actions={<Dialog.SubmitAction/>}>
+      <Dialog
+        title="Dialog Pattern 1"
+        actions={<Dialog.SubmitAction/>}
+        contentIcon={<Icon.Warning/>}
+      >
         <p>{loremIpsumSentence}</p>
         <p>{loremIpsumSentence.slice(0, 55)}.</p>
         <p>

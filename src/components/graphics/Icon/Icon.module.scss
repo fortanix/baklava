@@ -45,5 +45,9 @@
       align-items: center;
       justify-content: center;
     }
+    
+    &.bk-icon--warning {
+      color: bk.$theme-icon-warning;
+    }
   }
 }
