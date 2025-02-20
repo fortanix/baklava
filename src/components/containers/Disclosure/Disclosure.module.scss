@@ -57,7 +57,7 @@
       align-items: center;
       gap: bk.$spacing-9;
       
-      line-block-size: bk.$line-height-m;
+      line-height: bk.$line-height-m;
       
       .bk-disclosure__title {
         @include bk.text-one-line;
