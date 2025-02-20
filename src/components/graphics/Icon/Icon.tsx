@@ -21,7 +21,15 @@ export type Decoration = (
   | { type: 'background-circle' }
 );
 
-const Warning = () => <Icon icon="warning-filled" className={cl['bk-icon--warning']} />
+type EventProps = {
+  event: 'warning',
+};
+const Event = (props: EventProps) => {
+  const icon: IconName = props.event === 'warning' ? 'warning-filled' : props.event;
+  return (
+    <Icon icon={icon} className={cl[`bk-icon-event--${icon}`]} />
+  );
+};
 
 export type IconProps = React.PropsWithChildren<ComponentProps<'svg'> & {
   /** Whether this component should be unstyled. */
@@ -56,6 +64,6 @@ export const Icon = Object.assign(
       </svg>
     );
   }, {
-    Warning,
+    Event,
   },
 );

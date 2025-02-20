@@ -103,7 +103,10 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
 
   /** An icon displayed on the top left corner that insets the content and the action buttons. */
   // TODO: Is this the best name?
-  contentIcon?: React.ReactNode,
+  iconAside?: undefined | React.ReactNode,
+
+  /** Some content to be displayed aside as the main content. */
+  contentAside?: undefined | React.ReactNode,
 };
 /**
  * The Dialog component displays an interaction with the user, for example a confirmation, or a form to be submitted.
@@ -120,7 +123,8 @@ export const Dialog = Object.assign(
       onRequestClose,
       actions,
       autoFocusClose = false,
-      contentIcon,
+      iconAside,
+      contentAside,
       ...propsRest
     } = props;
     
@@ -150,7 +154,8 @@ export const Dialog = Object.assign(
             'bk',
             { [cl['bk-dialog']]: !unstyled },
             { [cl['bk-dialog--flat']]: flat },
-            { [cl['bk-dialog--content-icon']]: contentIcon },
+            { [cl['bk-dialog--icon-aside']]: iconAside },
+            { [cl['bk-dialog--content-aside']]: contentAside },
             scrollerProps.className,
             propsRest.className,
           )}
@@ -173,9 +178,14 @@ export const Dialog = Object.assign(
           </header>
           
           <div className={cl['bk-dialog__content']}>
-            {contentIcon && (
-              <aside className={cx(cl['bk-dialog__aside'])}>
-                {contentIcon}
+            {iconAside && (
+              <aside className={cx(cl['bk-dialog__content__icon-aside'])}>
+                {iconAside}
+              </aside>
+            )}
+            {contentAside && (
+              <aside className={cx(cl['bk-dialog__content__content-aside'])}>
+                {contentAside}
               </aside>
             )}
             <section
