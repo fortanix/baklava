@@ -39,7 +39,7 @@ const StoryMeta = {
     Story => (
       <ErrorBoundary
         FallbackComponent={({ error, resetErrorBoundary }) =>
-          <Banner variant="error" style={{ width: '60cqi' }}
+          <Banner variant="error" style={{ inlineSize: '60cqi' }}
             title="Error"
             actions={<Banner.ActionButton label="Reset" onPress={resetErrorBoundary}/>}
           >

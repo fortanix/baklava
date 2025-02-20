@@ -9,7 +9,7 @@
   :root {
     // Height of the header needs to be known at root level so we can use it for things like `scroll-padding-top`.
     // Calculate by: content height (spacing-9) + 2 times the block padding (padding-3).
-    --bk-app-layout-header-height: calc(#{bk.$spacing-9} + 2 * #{bk.$spacing-3});
+    --bk-app-layout-header-block-size: calc(#{bk.$spacing-9} + 2 * #{bk.$spacing-3});
   }
 }
 
@@ -20,11 +20,11 @@
     
     --bk-app-layout-sidebar-width-open: #{bk.rem-from-px(220)};
     --bk-app-layout-sidebar-width-closed: #{bk.rem-from-px(48)};
-    --bk-app-layout-sidebar-width: var(--bk-app-layout-sidebar-width-open);
+    --bk-app-layout-sidebar-inline-size: var(--bk-app-layout-sidebar-width-open);
     
     /* Note: do not use vw/vh, because we may want to show the layout in a container (e.g. story) */
-    min-width: 100cqw;
-    min-height: 100cqh;
+    min-inline-size: 100cqw;
+    min-block-size: 100cqh;
     
     display: grid;
     // Note: use `minmax(0, 1fr)` to prevent blowout: https://css-tricks.com/preventing-a-grid-blowout
@@ -107,7 +107,7 @@
         / 1fr;
     }
     
-    //&:has([slot='sidebar']:hover) { --bk-app-layout-sidebar-width: 80px; } // TEST
+    //&:has([slot='sidebar']:hover) { --bk-app-layout-sidebar-inline-size: 80px; } // TEST
     @media (prefers-reduced-motion: no-preference) {
       transition: grid 300ms;
     }

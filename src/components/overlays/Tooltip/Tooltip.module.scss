@@ -131,11 +131,11 @@
     
     cursor: default;
     
-    max-width: 30rem;
-    max-height: 8lh; /* Show about 8 lines of text before scrolling */
+    max-inline-size: 30rem;
+    max-block-size: 8lh; /* Show about 8 lines of text before scrolling */
     /* Alternatively: https://floating-ui.com/docs/misc#handling-large-content
-    max-width: calc(100svw - var(--bk-sizing-2));
-    max-height: calc(100svh - var(--bk-sizing-2));
+    max-inline-size: calc(100svw - var(--bk-sizing-2));
+    max-block-size: calc(100svh - var(--bk-sizing-2));
     */
     
     padding: bk.$spacing-2;
@@ -149,13 +149,13 @@
     border: 1px solid var(--bk-tooltip-border-color);
     
     &.bk-tooltip--small {
-      width: 140px;
+      inline-size: 140px;
     }
     &.bk-tooltip--medium {
-      width: 225px;
+      inline-size: 225px;
     }
     &.bk-tooltip--large {
-      width: 345px;
+      inline-size: 345px;
     }
     
     
@@ -179,8 +179,8 @@
       border-right: 1px solid bk.$theme-tooltip-border-default;
       background-color: bk.$theme-tooltip-background-default;
       position: absolute;
-      width: calc(2 * var(--arrow-size));
-      height: calc(2 * var(--arrow-size));
+      inline-size: calc(2 * var(--arrow-size));
+      block-size: calc(2 * var(--arrow-size));
     }
     &:is(.bk-tooltip--arrow-bottom, .bk-tooltip--arrow-top)::before {
       left: calc(50% - var(--arrow-size));

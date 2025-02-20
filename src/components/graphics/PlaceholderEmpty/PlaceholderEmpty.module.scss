@@ -16,7 +16,7 @@
       
       .bk-placeholder-empty__icon {
         --bk-icon-size: 6rem;
-        max-height: 5rem;
+        max-block-size: 5rem;
       }
       
       .bk-placeholder-empty__content {
@@ -34,7 +34,7 @@
             
       .bk-placeholder-empty__icon {
         --bk-icon-size: 4rem;
-        max-height: 3rem;
+        max-block-size: 3rem;
       }
       
       .bk-placeholder-empty__content {
@@ -63,7 +63,7 @@
     }
     
     .bk-placeholder-empty__content__subtitle {
-      max-width: 50%;
+      max-inline-size: 50%;
       text-align: center;
     }
     

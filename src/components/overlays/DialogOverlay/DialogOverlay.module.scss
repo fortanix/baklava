@@ -44,8 +44,8 @@
     // Basic positioning
     position: fixed;
     inset: 0;
-    max-width: 100vi;
-    max-height: 100vb;
+    max-inline-size: 100vi;
+    max-block-size: 100vb;
     
     //
     // Display variants
@@ -54,8 +54,8 @@
     &.bk-dialog-overlay--slide-over {
       inset: 0;
       margin: 0;
-      width: auto;
-      height: auto;
+      inline-size: auto;
+      block-size: auto;
       
       box-shadow: rgba(0 0 0 / 35%) 0 bk.rem-from-px(5) bk.rem-from-px(15) !important;
       

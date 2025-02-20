@@ -18,7 +18,7 @@
         gap: 2ch;
         
         .color {
-          min-height: 4rem;
+          min-block-size: 4rem;
           padding: 0.5rem;
           background: var(--color);
           border: 1px solid color-mix(in sRGB, var(--color) 90%, black);

@@ -42,7 +42,7 @@
       .bk-banner__header__text {
         margin-inline-end: auto; // Space between text and actions
         
-        min-width: 0;
+        min-inline-size: 0;
         display: flex;
         flex-flow: row wrap;
         gap: bk.$spacing-1;
@@ -51,7 +51,7 @@
           $icon-size: 1.3em;
           margin-inline-start: calc(-1 * (bk.$spacing-2 + $icon-size));
           
-          min-width: 0;
+          min-inline-size: 0;
           display: flex;
           flex-direction: row;
           gap: bk.$spacing-2;
@@ -81,7 +81,7 @@
         > button {
           // Keep each item to a max of 1lh, so that in the case of all items being on one line, all the items
           // are properly aligned with the title (which implicitly has height `1lh`).
-          height: 1lh;
+          block-size: 1lh;
         }
         
         .bk-banner__action {

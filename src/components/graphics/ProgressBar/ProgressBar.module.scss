@@ -13,8 +13,8 @@
     background: bk.$theme-progress-bar-track;
     border: none;
     border-radius: bk.$border-radius-m;
-    width: 100%;
-    height: 10px; // sizing not present on bk variables
+    inline-size: 100%;
+    block-size: 10px; // sizing not present on bk variables
   }
   // for now <progress> needs to be styled with browser-prefixes on Blink and Webkit
   .bk-progress-bar::-moz-progress-bar {

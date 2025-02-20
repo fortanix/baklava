@@ -21,7 +21,7 @@
     flex-direction: column;
     
     &.bk-app-layout-sidebar--collapsible {
-      //width: calc(var(--bk-sizing-6) * 1.7);
+      //inline-size: calc(var(--bk-sizing-6) * 1.7);
       
       transition: all 300ms ease-in-out;
       transition-property: width, grid-template-columns;
@@ -36,7 +36,7 @@
       // Customize some components
       .bk-logo-with-text {
         margin: var(--bk-sizing-3);
-        height: calc(var(--bk-sizing-4) + 18px);
+        block-size: calc(var(--bk-sizing-4) + 18px);
       }
     }
     

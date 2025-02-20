@@ -31,8 +31,8 @@
           position: absolute;
           inset-block-start: calc(-1 * bk.$spacing-9 - bk.$size-2);
           inset-inline-start: calc(50% - bk.$size-2 / 2);
-          width: 0;
-          height: bk.$spacing-9;
+          inline-size: 0;
+          block-size: bk.$spacing-9;
           border-inline-start: bk.$size-2 solid bk.$theme-stepper-border-disabled;
         }
       }
@@ -51,7 +51,7 @@
         
         margin-inline-end: bk.$spacing-3;
         aspect-ratio: 1;
-        width: var(--bk-stepper-indicator-size);
+        inline-size: var(--bk-stepper-indicator-size);
         
         border: bk.$size-2 solid #{bk.$theme-stepper-border-disabled};
         border-radius: 50%;

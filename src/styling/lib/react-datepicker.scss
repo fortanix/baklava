@@ -11,7 +11,7 @@
 }
 
 :global(.react-datepicker) {
-  width: 284px;
+  inline-size: 284px;
   text-align: center;
   padding: 22px 26px 30px;
   background-color: bk.$theme-card-background-default;
@@ -36,7 +36,7 @@
 
 :global(.react-datepicker__month-container) {
   display: inline-block;
-  width: 100%;
+  inline-size: 100%;
   float: none;
 }
 
@@ -51,7 +51,7 @@
 
 :global(.react-datepicker__navigation) {
   position: absolute;
-  width: 3rem;
+  inline-size: 3rem;
   border: none;
   text-indent: -999em;
   mask: url('@/assets/icons/caret-down.svg') no-repeat center center;
@@ -83,7 +83,7 @@ $navigation-distance: 1rem;
 :global(.react-datepicker__day-name),
 :global(.react-datepicker__day) {
   display: inline-block;
-  width: 30px;
+  inline-size: 30px;
   line-height: 30px;
   margin: 5px 0;
   color: bk.$theme-date-picker-text-default;
@@ -168,8 +168,8 @@ $navigation-distance: 1rem;
 }
 
 :global(.react-datepicker__input-container .react-datepicker__calendar-icon) {
-  width: 14px;
-  height: 14px;
+  inline-size: 14px;
+  block-size: 14px;
   inset-block-end: 4px;
 }
 

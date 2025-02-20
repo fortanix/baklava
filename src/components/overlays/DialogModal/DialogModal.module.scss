@@ -140,8 +140,8 @@
     // Basic modal positioning
     position: fixed;
     inset: 0;
-    max-width: 100vi;
-    max-height: 100vb;
+    max-inline-size: 100vi;
+    max-block-size: 100vb;
     
     // Modal backdrop
     &:not(.bk-dialog-modal--full-screen) {
@@ -158,8 +158,8 @@
     
     &.bk-dialog-modal--center {
       margin: auto;
-      width: fit-content;
-      height: fit-content;
+      inline-size: fit-content;
+      block-size: fit-content;
       
       @include dialog-fade-in(
         $entry-dur: var(--bk-dialog-modal-entry-dur),
@@ -168,19 +168,19 @@
       );
       
       // The larger the viewport width, the more breathing room in height
-      max-height: calc(100vb - min(5vi, 3lh));
+      max-block-size: calc(100vb - min(5vi, 3lh));
       
       &.bk-dialog-modal--small {
         --bk-dialog-modal-fade-scale: 1.05;
-        max-width: 60ch;
+        max-inline-size: 60ch;
       }
       &.bk-dialog-modal--medium {
         --bk-dialog-modal-fade-scale: 1.04;
-        max-width: 100ch;
+        max-inline-size: 100ch;
       }
       &.bk-dialog-modal--large {
         --bk-dialog-modal-fade-scale: 1.03;
-        max-width: 140ch;
+        max-inline-size: 140ch;
       }
     }
     
@@ -188,8 +188,8 @@
       // FIXME: test this on mobile for potential overflow/shifting. May need to use `dvb`/`dvi` instead?
       inset: 1rem;
       margin: 0;
-      width: auto;
-      height: auto;
+      inline-size: auto;
+      block-size: auto;
       
       --bk-dialog-modal-entry-dur: 120ms;
       --bk-dialog-modal-exit-dur: 120ms;
@@ -207,8 +207,8 @@
     &.bk-dialog-modal--slide-over {
       inset: 0;
       margin: 0;
-      width: auto;
-      height: auto;
+      inline-size: auto;
+      block-size: auto;
       
       --bk-dialog-modal-slide-over-size: 0.8;
       &.bk-dialog-modal--small { --bk-dialog-modal-slide-over-size: 0.3; }

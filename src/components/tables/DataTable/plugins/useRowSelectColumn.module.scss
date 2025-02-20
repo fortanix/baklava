@@ -8,7 +8,7 @@
   .bk-data-table-row-select {
     @include bk.component-base(bk-data-table-row-select);
     
-    width: bk.$spacing-11;
-    max-width: bk.$spacing-11;
+    inline-size: bk.$spacing-11;
+    max-inline-size: bk.$spacing-11;
   }
 }

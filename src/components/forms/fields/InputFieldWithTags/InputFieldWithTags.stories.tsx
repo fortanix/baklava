@@ -34,7 +34,7 @@ export default {
   decorators: [
     Story => (
       <Form>
-        <Card style={{width: '350px'}}>
+        <Card style={{ inlineSize: 350 }}>
           <Story/>
         </Card>
       </Form>

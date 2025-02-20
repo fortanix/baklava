@@ -22,12 +22,12 @@
 /* Storybook Preview styling */
 @layer storybook {
   :root, body {
-    min-height: 100%;
+    min-block-size: 100%;
   }
   
   .sb-main-fullscreen #storybook-root {
-    width: 100%;
-    min-height: 100%;
+    inline-size: 100%;
+    min-block-size: 100%;
     
     // In fullscreen mode, make the storybook root a container so that we can use `cq` units rather than `vw/vh`.
     // Note: don't do this for centered/padding mode, because then the width of the component will no longer be dynamic.

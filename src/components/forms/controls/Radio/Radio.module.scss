@@ -8,10 +8,11 @@
   .bk-radio {
     @include bk.component-base(bk-radio);
     
+    flex-shrink: 0;
     cursor: pointer;
     
     appearance: none;
-    width: 18px;
+    inline-size: 18px;
     aspect-ratio: 1;
     
     border-radius: bk.$border-radius-circle;

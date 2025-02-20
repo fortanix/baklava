@@ -8,11 +8,14 @@
   .bk-label {
     @include bk.component-base(bk-label);
     
+    min-inline-size: 0;
+    
     display: flex;
     align-items: center;
     column-gap: bk.$spacing-2;
     
     .bk-label__text {
+      @include bk.text-one-line($include-padding: false);
       @include bk.font($family: bk.$font-family-body, $size: bk.$font-size-m);
     }
   }
