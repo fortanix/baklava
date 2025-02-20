@@ -5,7 +5,7 @@
 @use '../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  $bk-dropdown-menu-min-inline-size: 14rem;
+  $bk-dropdown-menu-min-width: 14rem;
   
   .bk-dropdown-menu {
     @include bk.component-base(bk-dropdown-menu);
