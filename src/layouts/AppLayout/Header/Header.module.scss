@@ -8,7 +8,7 @@
   .bk-app-layout-header {
     @include bk.component-base(bk-app-layout-header);
     
-    --header-block-size: var(--bk-app-layout-header-height, var(--bk-sizing-5));
+    --header-height: var(--bk-app-layout-header-height, var(--bk-sizing-5));
     
     /* Necessary despite the `sticky`, because the page content is a container, which generates a stacking context:
         https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context */

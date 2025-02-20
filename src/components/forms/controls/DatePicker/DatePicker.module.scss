@@ -6,7 +6,7 @@
 @use '../../../../styling/lib/react-datepicker.scss';
 
 @layer baklava.components {
-  $caret-inline-size: bk.rem-from-px(18);
+  $caret-width: bk.rem-from-px(18);
 
   .bk-date-picker {
     @include bk.component-base(bk-date-picker);

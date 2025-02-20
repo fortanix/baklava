@@ -22,7 +22,7 @@
     
     .bk-select__input {
       cursor: pointer;
-      min-inline-size: $bk-select-min-width;
+      min-inline-size: $bk-select-min-inline-size;
       caret-color: transparent; /* FIXME: find better way to manage the input state */
       border: none;
     }
@@ -33,7 +33,7 @@
   }
   
   .bk-select__dropdown {
-    min-inline-size: calc($bk-select-min-width + $bk-caret-size);
+    min-inline-size: calc($bk-select-min-inline-size + $bk-caret-size);
     max-block-size: 18rem;
     
     background: bk.$theme-dropdown-menu-menu-background-default;
