@@ -158,7 +158,7 @@
     
     &.bk-dialog-modal--center {
       margin: auto;
-      width: fit-content;
+      width: auto;
       height: fit-content;
       
       @include dialog-fade-in(
@@ -167,20 +167,25 @@
         $scale: var(--bk-dialog-modal-fade-scale),
       );
       
-      // The larger the viewport width, the more breathing room in height
-      max-height: calc(100vb - min(5vi, 3lh));
+      --bk-dialog-modal-min-inset: #{bk.$sizing-2}; // Minimum amount to inset the modal by (on small screens)
+      --bk-dialog-modal-size: 100ch;
+      // Use margin for the width, so that the modal stretches up to the ideal size but also can shrink down
+      margin-inline: clamp(var(--bk-dialog-modal-min-inset), 50% - (var(--bk-dialog-modal-size) / 2), 100svi);
+      
+      // The larger the viewport width (`vi`), the more breathing room in height (but up to `3lh` on large viewports)
+      max-height: calc(100svb - clamp(var(--bk-dialog-modal-min-inset) * 2, 5vi, 3lh));
       
       &.bk-dialog-modal--small {
+        --bk-dialog-modal-size: 60ch;
         --bk-dialog-modal-fade-scale: 1.05;
-        max-width: 60ch;
       }
       &.bk-dialog-modal--medium {
+        --bk-dialog-modal-size: 100ch;
         --bk-dialog-modal-fade-scale: 1.04;
-        max-width: 100ch;
       }
       &.bk-dialog-modal--large {
+        --bk-dialog-modal-size: 140ch;
         --bk-dialog-modal-fade-scale: 1.03;
-        max-width: 140ch;
       }
     }
     
