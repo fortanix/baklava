@@ -13,7 +13,6 @@ import { RadioGroup } from '../../forms/controls/RadioGroup/RadioGroup.tsx';
 import { FieldLayout } from '../../forms/fields/FieldLayout/FieldLayout.tsx';
 import { InputField } from '../../forms/fields/InputField/InputField.tsx';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
-import { Logo } from '../../../layouts/AppLayout/Logo/Logo.tsx';
 
 import { Dialog } from './Dialog.tsx';
 
@@ -100,22 +99,6 @@ export const DialogPattern1: Story = {
             </FormLayout>
           </Form>
         </p>
-      </Dialog>
-    );
-  },
-};
-
-export const DialogPattern2: Story = {
-  render: () => {
-    return (
-      <Dialog
-        title={<Logo subtitle="Armor"/>}
-        showCancelAction={false}
-        contentAside={
-          <>Hello world</>
-        }
-      >
-        <h3>Let's Connect to Your Cloud Provider</h3>
       </Dialog>
     );
   },
