@@ -135,8 +135,15 @@ export const RadioGroupDirectionRtl: Story = {
 
 export const RadioGroupWritingModeVertical: Story = {
   args: {
-    style: { overflow: 'hidden', resize: 'vertical', padding: 5, inlineSize: 220, blockSize: 140, writingMode: 'vertical-rl' },
-    label: '色を選んでください',
+    style: {
+      overflow: 'hidden',
+      resize: 'vertical',
+      padding: 5,
+      inlineSize: 220,
+      blockSize: 140,
+      writingMode: 'vertical-rl',
+    },
+    label: '色を選択してください',
     children: (
       <>
         <RadioGroup.Button radioKey="red" label="赤"/>
