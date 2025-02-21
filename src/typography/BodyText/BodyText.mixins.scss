@@ -9,7 +9,6 @@
 /* Match either the current context (&), or a descendent of it */
 /* Note: only use this on single-element selectors (e.g. `p`), not on descendent selectors like `p a`. */
 @mixin self-or-descendent($selector) {
-  //#{$selector}#{&}, & #{$selector} {
   :is(#{$selector}):is(&, & *) {
     @content;
   }
@@ -237,6 +236,13 @@
     // FIXME: browser support for `@scope` is not quite there yet (but we can't do `@supports at-rule()` yet either)
     @scope (.bk-body-text) to (.isolate, .bk:not(.bk-body-text)) {
       :scope {
+        @include bk.component-base(bk-body-text);
+        @include body-text;
+      }
+    }
+    
+    @supports (-moz-appearance: none) {
+      .bk-body-text:not(.bk, .bk *) {
         @include bk.component-base(bk-body-text);
         @include body-text;
       }

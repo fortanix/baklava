@@ -22,7 +22,8 @@
 
 @include layers.styles; // Cascade layer ordering: MUST be emitted before anything else
 
-.bk-root {
+//.bk-root { // Set this if we want to scope all Baklava styling to some root selector (for opt-in/per-page usage)
+:root {
   @layer normalize { @include meta.load-css('./lib/normalize.css'); } // First, normalize styling across browsers
   @layer reset { @include reset.styles; } // Next, reset all styling to minimal base
   
