@@ -16,8 +16,8 @@
     /* stylelint-disable-next-line declaration-property-value-disallowed-list */
     overflow-y: auto;
     
-    min-width: $bk-dropdown-menu-min-width;
-    max-height: 18rem;
+    min-inline-size: $bk-dropdown-menu-min-width;
+    max-block-size: 18rem;
     padding-block-end: 8px;
     
     background: bk.$theme-dropdown-menu-menu-background-default;

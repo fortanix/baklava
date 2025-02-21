@@ -46,7 +46,7 @@ export const RadioGroupStandard: Story = {};
 
 export const RadioGroupWithWrap: Story = {
   args: {
-    style: { overflow: 'hidden', resize: 'horizontal', width: 180 },
+    style: { overflow: 'hidden', resize: 'horizontal', inlineSize: 180 },
   },
 };
 
@@ -58,7 +58,7 @@ export const RadioGroupVertical: Story = {
 
 export const RadioGroupVerticalWithWrap: Story = {
   args: {
-    style: { overflow: 'hidden', resize: 'vertical', width: 220, height: 100 },
+    style: { overflow: 'hidden', resize: 'vertical', padding: 5, inlineSize: 220, blockSize: 100 },
     orientation: 'vertical',
   },
 };
@@ -116,5 +116,40 @@ export const RadioGroupInForm: Story = {
   args: {
     form: 'story-form',
     name: 'controlledRadio',
+  },
+};
+
+export const RadioGroupDirectionRtl: Story = {
+  args: {
+    style: { overflow: 'hidden', resize: 'horizontal', padding: 5, inlineSize: 220, blockSize: 140, direction: 'rtl' },
+    label: 'اختر اللون',
+    children: (
+      <>
+        <RadioGroup.Button radioKey="red" label="أحمر"/>
+        <RadioGroup.Button radioKey="green" label="أخضر"/>
+        <RadioGroup.Button radioKey="blue" label="أزرق"/>
+      </>
+    ),
+  },
+};
+
+export const RadioGroupWritingModeVertical: Story = {
+  args: {
+    style: {
+      overflow: 'hidden',
+      resize: 'vertical',
+      padding: 5,
+      inlineSize: 220,
+      blockSize: 140,
+      writingMode: 'vertical-rl',
+    },
+    label: '色を選択してください',
+    children: (
+      <>
+        <RadioGroup.Button radioKey="red" label="赤"/>
+        <RadioGroup.Button radioKey="green" label="緑"/>
+        <RadioGroup.Button radioKey="blue" label="青"/>
+      </>
+    ),
   },
 };

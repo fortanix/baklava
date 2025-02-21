@@ -35,7 +35,7 @@
       }
     }
     .pagination__page-input {
-      min-width: bk.$spacing-8;
+      min-inline-size: bk.$spacing-8;
       border: bk.$size-1 solid bk.$theme-pagination-border-default;
       border-radius: bk.$size-2;
       text-align: center;

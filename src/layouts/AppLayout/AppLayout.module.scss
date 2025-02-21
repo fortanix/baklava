@@ -23,8 +23,8 @@
     --bk-app-layout-sidebar-width: var(--bk-app-layout-sidebar-width-open);
     
     /* Note: do not use vw/vh, because we may want to show the layout in a container (e.g. story) */
-    min-width: 100cqw;
-    min-height: 100cqh;
+    min-inline-size: 100cqw;
+    min-block-size: 100cqh;
     
     display: grid;
     // Note: use `minmax(0, 1fr)` to prevent blowout: https://css-tricks.com/preventing-a-grid-blowout

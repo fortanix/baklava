@@ -80,7 +80,7 @@ export const AutomaticVerticalResize: Story = {
   args: {
     automaticResize: true,
     defaultValue: longText,
-    style: { width: 300 },
+    style: { inlineSize: 300 },
   },
 };
 
@@ -88,6 +88,6 @@ export const AutomaticHorizontalResize: Story = {
   args: {
     automaticResize: true,
     defaultValue: longText,
-    style: { height: 100 },
+    style: { blockSize: 100 },
   },
 };

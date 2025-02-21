@@ -29,7 +29,7 @@
       // `<div>`'s height must be contained within the `<fieldset>`. This can be done easily with flex/grid, but that
       // doesn't work well with `<fieldset>`. So instead, we calculate the `max-height` as 100% minus the height of
       // the `<legend>` (which is constrained to one line thanks to the `text-one-line` mixin.
-      max-height: calc(100% - 1lh - $legend-gap);
+      max-block-size: calc(100% - 1lh - $legend-gap);
     }
   }
 }

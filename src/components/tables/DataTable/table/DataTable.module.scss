@@ -8,10 +8,10 @@
 @layer baklava.components {
   .bk-data-table {
     @include bk.component-base(bk-data-table);
-    width: 100%;
+    inline-size: 100%;
     
     table.bk-data-table__table {
-      width: 100%;
+      inline-size: 100%;
       table-layout: fixed;
       border-collapse: collapse;
       
@@ -52,7 +52,7 @@
             gap: bk.$spacing-1;
             
             .sort-indicator {
-              width: bk.$spacing-4;
+              inline-size: bk.$spacing-4;
               
               &.sort-indicator--inactive {
                 opacity: 0;
