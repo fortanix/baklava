@@ -19,7 +19,7 @@
 
     .bk-text-area-field__label__optional {
       @include bk.font(bk.$font-family-body, bk.$font-weight-regular, bk.$font-size-xs);
-      margin-left: bk.rem-from-px(4);
+      margin-inline-start: bk.rem-from-px(4);
     }
 
     .bk-text-area-field__control {

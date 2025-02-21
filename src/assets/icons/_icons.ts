@@ -71,6 +71,7 @@ export const icons = {
   'status-failed': {},
   'status-success-filled': {},
   'status-success': {},
+  'system-admin': {},
   'tasks': {},
   'user-authentication': {},
   'user-profile': {},

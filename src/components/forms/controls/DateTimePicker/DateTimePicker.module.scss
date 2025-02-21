@@ -15,6 +15,6 @@
 
   .bk-date-time-picker--time-picker {
     position: relative;
-    top: bk.rem-from-px(5);
+    inset-block-start: bk.rem-from-px(5);
   }
 }

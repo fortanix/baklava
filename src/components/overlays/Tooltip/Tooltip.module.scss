@@ -131,17 +131,17 @@
     
     cursor: default;
     
-    max-width: 30rem;
-    max-height: 8lh; /* Show about 8 lines of text before scrolling */
+    max-inline-size: 30rem;
+    max-block-size: 8lh; /* Show about 8 lines of text before scrolling */
     /* Alternatively: https://floating-ui.com/docs/misc#handling-large-content
-    max-width: calc(100svw - var(--bk-sizing-2));
-    max-height: calc(100svh - var(--bk-sizing-2));
+    max-inline-size: calc(100svw - var(--bk-sizing-2));
+    max-block-size: calc(100svh - var(--bk-sizing-2));
     */
     
     padding: bk.$spacing-2;
     &:not(.bk-tooltip--compact) {
       padding: bk.$spacing-4;
-      padding-bottom: bk.$spacing-7;
+      padding-block-end: bk.$spacing-7;
     }
     
     border-radius: bk.$radius-s;
@@ -149,13 +149,13 @@
     border: 1px solid var(--bk-tooltip-border-color);
     
     &.bk-tooltip--small {
-      width: 140px;
+      inline-size: 140px;
     }
     &.bk-tooltip--medium {
-      width: 225px;
+      inline-size: 225px;
     }
     &.bk-tooltip--large {
-      width: 345px;
+      inline-size: 345px;
     }
     
     
@@ -179,8 +179,8 @@
       border-right: 1px solid bk.$theme-tooltip-border-default;
       background-color: bk.$theme-tooltip-background-default;
       position: absolute;
-      width: calc(2 * var(--arrow-size));
-      height: calc(2 * var(--arrow-size));
+      inline-size: calc(2 * var(--arrow-size));
+      block-size: calc(2 * var(--arrow-size));
     }
     &:is(.bk-tooltip--arrow-bottom, .bk-tooltip--arrow-top)::before {
       left: calc(50% - var(--arrow-size));
@@ -213,7 +213,7 @@
     flex-direction: column;
     align-items: stretch;
     @include bk.text-layout;
-    text-align: left;
+    text-align: start;
     color: bk.$theme-tooltip-text-default;
     @include bk.font(bk.$font-family-body);
     font-size: bk.$font-size-s;
@@ -229,7 +229,7 @@
     
     .bk-tooltip__icon {
       font-size: 18px;
-      margin-right: 10px;
+      margin-block-end: 10px;
     }
     
     .bk-tooltip__alert {
@@ -241,25 +241,24 @@
   /* Anchor positioning */
   
   @position-try --bk-tooltip-position-top {
-    margin-top: var(--bk-layout-header-height); /* Compensate for layout header */
-    margin-bottom: 6px;
+    margin-block: var(--bk-layout-header-height) 6px; /* Compensate for layout header */
     /* position-area: top; */
-    bottom: anchor(top);
+    inset-block-end: anchor(top);
     justify-self: anchor-center;
   }
   @position-try --bk-tooltip-position-bottom {
-    margin-top: 6px;
+    margin-block-start: 6px;
     /* position-area: bottom; */
     justify-self: anchor-center;
-    top: anchor(bottom);
+    inset-block-start: anchor(bottom);
   }
   @position-try --bk-tooltip-position-left {
     justify-self: anchor-center;
-    right: anchor(left);
+    inset-inline-end: anchor(left);
   }
   @position-try --bk-tooltip-position-right {
     justify-self: anchor-center;
-    left: anchor(right);
+    inset-inline-start: anchor(right);
   }
   
   .bk-tooltip[popover] {

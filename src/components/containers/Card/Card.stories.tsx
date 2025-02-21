@@ -37,7 +37,7 @@ export default {
 
 export const Standard: Story = {
   decorators: [
-    Story => <div style={{ width: '30vw' }}><Story/></div>
+    Story => <div style={{ inlineSize: '30vw' }}><Story/></div>
   ],
 };
 
@@ -56,7 +56,7 @@ export const Multiple: Story = {
   ),
   decorators: [
     Story => (
-      <div style={{ width: '70vw', display: 'flex', flexFlow: 'column', gap: '1.2rem' }}>
+      <div style={{ inlineSize: '70vw', display: 'flex', flexFlow: 'column', gap: '1.2rem' }}>
         <Banner variant="info" title="Note:">
           Cards have no margin by default. Use a flex/grid container to space the cards.
         </Banner>

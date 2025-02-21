@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 
 const packageConfig = {
   name: '@fortanix/baklava',
-  version: '1.0.0-beta-20250121-2',
+  version: '1.0.0-beta-20250219',
   license: 'MPL-2.0',
   author: 'Fortanix',
   description: 'Fortanix Baklava design system',
@@ -118,35 +118,36 @@ const packageConfig = {
     
     // Static analysis
     'typescript': '^5.7.3',
-    '@types/node': '^22.10.5',
-    'stylelint': '^16.12.0',
+    '@types/node': '^22.13.1',
+    'stylelint': '^16.14.1',
     'stylelint-config-standard-scss': '^14.0.0',
+    'stylelint-use-logical': '^2.1.2',
     '@biomejs/biome': '^1.9.4',
     
     // Testing
-    'vitest': '^2.1.8',
-    '@vitest/ui': '^2.1.8',
+    'vitest': '^3.0.5',
+    '@vitest/ui': '^3.0.5',
     'axe-playwright': '^2.0.3',
-    '@ngneat/falso': '^6.4.0',
+    '@ngneat/falso': '^7.3.0',
     
     // Storybook
-    'storybook': '^8.4.7',
-    '@storybook/react': '^8.4.7',
-    '@storybook/react-vite': '^8.4.7',
-    '@storybook/blocks': '^8.4.7',
-    '@storybook/test': '^8.4.7',
+    'storybook': '^8.5.3',
+    '@storybook/react': '^8.5.3',
+    '@storybook/react-vite': '^8.5.3',
+    '@storybook/blocks': '^8.5.3',
+    '@storybook/test': '^8.5.3',
     '@storybook/test-runner': '^0.21.0',
-    '@storybook/addon-essentials': '^8.4.7',
-    '@storybook/addon-a11y': '^8.4.7',
-    '@storybook/addon-interactions': '^8.4.7',
-    '@storybook/addon-links': '^8.4.7',
-    '@storybook/addon-storysource': '^8.4.7',
-    '@storybook/addon-designs': '^8.0.4',
-    'chromatic': '^11.22.2',
+    '@storybook/addon-essentials': '^8.5.3',
+    '@storybook/addon-a11y': '^8.5.3',
+    '@storybook/addon-interactions': '^8.5.3',
+    '@storybook/addon-links': '^8.5.3',
+    '@storybook/addon-storysource': '^8.5.3',
+    '@storybook/addon-designs': '^8.1.0',
+    'chromatic': '^11.25.2',
     '@chromatic-com/storybook': '^3.2.3', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     'storybook-dark-mode': '^4.0.2',
-    '@percy/cli': '^1.30.6',
+    '@percy/cli': '^1.30.7',
     '@percy/storybook': '^6.0.3',
     
     // Styling
@@ -156,7 +157,7 @@ const packageConfig = {
     'lightningcss': '^1.29.1',
     
     // React
-    '@types/react': '^19.0.4',
+    '@types/react': '^19.0.8',
     '@types/react-dom': '^19.0.2',
     
     // Data table
@@ -178,9 +179,9 @@ const packageConfig = {
     
     '@floating-ui/react': '^0.26.28',
     'react-table': '^7.8.0',
-    'react-datepicker': '^7.6.0',
+    'react-datepicker': '^8.0.0',
     
-    'effect': '^3.12.1',
+    'effect': '^3.12.9',
     'react-hook-form': '^7.54.2',
     
     'optics-ts': '^2.4.1',
@@ -196,21 +197,6 @@ const packageConfig = {
     //'@rollup/rollup-linux-x64-gnu': '...', // Adding the optionalDependency works, but you'll just get other errors
   },
   overrides: {
-    // Issue: https://github.com/storybookjs/addon-designs/issues/246
-    '@storybook/addon-designs': {
-      'react': '$react',
-      'react-dom': '$react-dom',
-    },
-    // Issue: https://github.com/storybookjs/icons/issues/34
-    '@storybook/icons': {
-      'react': '$react',
-      'react-dom': '$react-dom',
-    },
-    // Issue: https://github.com/Hacker0x01/react-datepicker/issues/5273
-    'react-datepicker': {
-      'react': '$react',
-      'react-dom': '$react-dom',
-    },
     // TODO: Revisit after updating react-table to v8
     'react-table': {
       'react': '$react',
@@ -246,3 +232,4 @@ const makePackageJson = () => {
 
 // Write to `package.json`
 fs.writeFileSync('./package.json', `${JSON.stringify(makePackageJson(), null, 2)}\n`);
+console.info('Generated package.json');

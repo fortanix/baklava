@@ -32,7 +32,7 @@ export default {
     <>
       <LoremIpsum paragraphs={3}/>
       <DialogOverlay {...args}
-        trigger={({ activate }) => <Button variant="primary" label="Open overlay" onPress={activate}/>}
+        trigger={({ activate }) => <Button kind="primary" label="Open overlay" onPress={activate}/>}
       />
       <LoremIpsum paragraphs={3}/>
     </>
@@ -61,10 +61,10 @@ const DialogOverlayControlledWithSubject = (props: React.ComponentProps<typeof D
       <p>A single details overlay will be used, filled in with the subject based on which name was pressed.</p>
       
       <p>
-        <Button variant="primary" label="Open: Alice" onPress={() => { overlay.activateWith({ name: 'Alice' }); }}/>
+        <Button kind="primary" label="Open: Alice" onPress={() => { overlay.activateWith({ name: 'Alice' }); }}/>
       </p>
       <p>
-        <Button variant="primary" label="Open: Bob" onPress={() => { overlay.activateWith({ name: 'Bob' }); }}/>
+        <Button kind="primary" label="Open: Bob" onPress={() => { overlay.activateWith({ name: 'Bob' }); }}/>
       </p>
     </article>
   );
@@ -82,7 +82,7 @@ export const DialogOverlayWithNestedModal: Story = {
     children: (
       <DialogModal
         title="Modal"
-        trigger={({ activate }) => <Button variant="primary" label="Open modal" onPress={activate}/>}
+        trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={activate}/>}
       >
         Modal nested inside a popover.
       </DialogModal>
@@ -94,7 +94,7 @@ export const DialogOverlayWithToast: Story = {
   args: {
     display: 'slide-over',
     children: (
-      <Button variant="primary" label="Trigger notification"
+      <Button kind="primary" label="Trigger notification"
         onPress={() => notify.info('This notification should be above the overlay.', { autoClose: false })}
       />
     ),

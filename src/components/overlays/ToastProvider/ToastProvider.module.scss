@@ -12,7 +12,7 @@
     
     flex-shrink: 0;
     
-    width: 40ch;
+    inline-size: 60ch;
     box-shadow: 0.15em 0.15em 0.4em rgb(0 0 0 / 50%);
     
     transition-duration: 400ms;
@@ -63,12 +63,15 @@
     
     position: fixed;
     inset: 0;
-    left: auto;
-    margin: 1rem;
-    width: min-content;
-    height: min-content;
-    max-width: 100vi;
-    max-height: 90vb;
+    inset-inline-start: auto;
+    inline-size: min-content;
+    block-size: min-content;
+    max-inline-size: 100vi;
+    max-block-size: 90vb;
+    
+    &:not(:empty) {
+      margin: 1rem;
+    }
     
     background: transparent;
     

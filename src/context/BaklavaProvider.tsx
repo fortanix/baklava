@@ -18,7 +18,7 @@ if (!addedTestNotify && import.meta.env.MODE === 'development') {
         // biome-ignore lint/style/noNonNullAssertion: Will not be undefined.
         variant: (['success', 'info', 'error', 'warning'] as const)[count % 4]!,
         title: `Test ${count++}`,
-        message: 'Test notification',
+        message: 'Test notification. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
       });
     }
   });

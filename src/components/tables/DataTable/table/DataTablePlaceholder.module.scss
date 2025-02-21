@@ -17,24 +17,24 @@
       margin: calc(-1 * bk.$spacing-5) calc(-1 * bk.$spacing-2);
       
       > .skeleton-row {
-        border-bottom: 1px solid bk.$theme-rule-default;
+        border-block-end: 1px solid bk.$theme-rule-default;
         margin: bk.$spacing-1 0;
-        height: bk.$spacing-10;
+        block-size: bk.$spacing-10;
         display: flex;
         align-items: center;
         
         .skeleton-cell {
           flex: 1;
-          padding-left: bk.$spacing-2;
+          padding-inline-start: bk.$spacing-2;
           &::after {
             content: ' ';
             $shimmer-base-color: light-dark(#F8F8F8, #2D2D50); // FIXME: design token
             $shimmer-highlight-color: light-dark(#CBCEDB, #767699); // FIXME: design token
             @include bk.shimmer($base-color: $shimmer-base-color, $highlight-color: $shimmer-highlight-color);
-            height: bk.$spacing-2;
+            block-size: bk.$spacing-2;
             border-radius: bk.$border-radius-xl;
             display: block;
-            width: 60%;
+            inline-size: 60%;
           }
         }
       }

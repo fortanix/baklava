@@ -67,3 +67,14 @@ npm publish --scope=@fortanix --access=public --dry-run # --tag=beta
 Set the --tag as appropriate: beta for beta releases, or remove the --tag if you want to publish a stable release. Remove the --dry-run once you’ve confirmed there are no issues.
 
 **Note: you rarely need to do this manually. Instead, see the "Release workflow" above, which will trigger an npm publish automatically upon creation of a GitHub release.**
+
+
+## FAQ
+
+**Q: I'm getting the following error in GitHub Actions CI after changing the `package.json`, what should I do?**
+
+```
+Error: Cannot find module @rollup/rollup-linux-x64-gnu. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828). Please try `npm i` again after removing both package-lock.json and node_modules directory.
+```
+
+- A: This happens when your local machine uses a different OS (e.g. Mac). One workaround you can find online is to add said dependency to `optionalDependencies`. This fixes that particular problem, but you will just continue to get the same errors for other dependencies. Instead, do as the error message suggests and completely remove `node_modules` and `package-lock.json` and re-install. This should fix the errors.

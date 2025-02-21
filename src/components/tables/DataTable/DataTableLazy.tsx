@@ -245,7 +245,7 @@ export const TableProviderLazy = <D extends object>(props: TableProviderLazyProp
 TableProviderLazy.displayName = 'TableProviderLazy';
 
 
-export type DataTableLazyProps = Omit<React.ComponentPropsWithRef<typeof DataTableAsync>, 'table' | 'status'>;
+export type DataTableLazyProps = Omit<React.ComponentProps<typeof DataTableAsync>, 'table' | 'status'>;
 export const DataTableLazy = ({ className, footer, ...propsRest }: DataTableLazyProps) => {
   const { status, table, reload } = useTable();
   
@@ -280,7 +280,7 @@ export const DataTableLazy = ({ className, footer, ...propsRest }: DataTableLazy
         <DataTablePlaceholderError
           actions={
             <PlaceholderEmptyAction>
-              <Button variant="primary" onPress={() => { reload(); }}>
+              <Button kind="primary" onPress={() => { reload(); }}>
                 Retry
               </Button>
             </PlaceholderEmptyAction>

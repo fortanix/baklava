@@ -5,7 +5,7 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  $bk-select-min-width: 14rem;
+  $bk-select-min-inline-size: 14rem;
   $bk-caret-size: 17px;
   
   .bk-select {
@@ -16,12 +16,13 @@
     
     --bk-input-accent-color: #{bk.$theme-form-rule-default};
     border: 0 solid var(--bk-input-accent-color);
-    border-bottom-width: 1px;
+    border-block-end-width: 1px;
     
-    height: 24px;
+    block-size: 24px;
     
     .bk-select__input {
-      min-width: $bk-select-min-width;
+      cursor: pointer;
+      min-inline-size: $bk-select-min-inline-size;
       caret-color: transparent; /* FIXME: find better way to manage the input state */
       border: none;
     }
@@ -32,20 +33,20 @@
   }
   
   .bk-select__dropdown {
-    min-width: calc($bk-select-min-width + $bk-caret-size);
-    max-height: 18rem;
+    min-inline-size: calc($bk-select-min-inline-size + $bk-caret-size);
+    max-block-size: 18rem;
     
     background: bk.$theme-dropdown-menu-menu-background-default;
     border: 1px solid bk.$theme-dropdown-menu-menu-border-default;
     
     border-radius: 4px;
     &[data-placement="bottom"] {
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
+      border-start-start-radius: 0;
+      border-start-end-radius: 0;
     }
     &[data-placement="top"] {
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
+      border-end-start-radius: 0;
+      border-end-end-radius: 0;
     }
     
     display: flex;
@@ -59,11 +60,11 @@
       align-items: stretch;
       
       &:not(:first-child) {
-        border-top: 1px solid bk.$theme-dropdown-menu-menu-border-default;
+        border-block-start: 1px solid bk.$theme-dropdown-menu-menu-border-default;
       }
       
       &:last-child {
-        padding-bottom: bk.$spacing-2;
+        padding-block-end: bk.$spacing-2;
       }
       
       &:hover {
@@ -112,7 +113,7 @@
     
     &:focus-visible {
       outline: none !important; /* Override accessibility layer */
-      box-shadow: inset 2px 2px var(--bk-focus-outline-color), inset -2px -2px var(--bk-focus-outline-color);
+      box-shadow: inset 2px 2px var(--bk-focus-outline-color), inset -2px -2px var(--bk-focus-outline-color) !important;
     }
     
     display: flex;

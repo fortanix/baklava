@@ -14,55 +14,46 @@ import cl from './UserMenu.module.scss';
 
 export { cl as UserMenuClassNames };
 
+const UserMenuAction = (props: React.ComponentProps<typeof DropdownMenuProvider.Action>) => {
+  return <DropdownMenuProvider.Action {...props}/>;
+};
+
 export type UserMenuProps = Omit<ComponentProps<typeof Button>, 'label'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
   /** The user's name */
-  userName?: undefined | string,
+  userName: string,
 };
-export const UserMenu = (props: UserMenuProps) => {
-  const { unstyled = false, children, userName, ...propsRest } = props;
-  
-  const renderContent = () => {
-    if (userName) {
+export const UserMenu = Object.assign(
+  (props: UserMenuProps) => {
+    const { unstyled = false, children, userName, ...propsRest } = props;
+    
+    const renderContent = () => {
       return (
         <>
-          <Icon icon="user-profile" className={cx(cl['bk-user-menu__user-icon'])}/>
+          <Icon icon="user" className={cx(cl['bk-user-menu__user-icon'])}/>
           <span className={cx(cl['bk-user-menu__user-name'])}>{userName}</span>
         </>
       );
-    }
-    return children;
-  };
-  
-  return (
-    <DropdownMenuProvider
-      label="User menu"
-      placement="bottom-end"
-      items={
-        <>
-          <DropdownMenuProvider.Action itemKey="profile" label="Profile"
-            onActivate={({ close }) => {
-              console.log(`Activated profile`);
-              close();
-            }}
-          />
-          <DropdownMenuProvider.Action itemKey="sign-out" label="Sign out"
-            onActivate={({ close }) => {
-              console.log(`Activated sign out`);
-              close();
-            }}
-          />
-        </>
-      }
-    >
-      <Button unstyled
-        {...propsRest}
-        className={cx('bk', { [cl['bk-user-menu']]: !unstyled }, propsRest.className)}
+    };
+    
+    return (
+      <DropdownMenuProvider
+        label="User menu"
+        placement="bottom-end"
+        items={children}
       >
-        {renderContent()}
-      </Button>
-    </DropdownMenuProvider>
-  );
-};
+        <Button unstyled
+          {...propsRest}
+          className={cx('bk', { [cl['bk-user-menu']]: !unstyled }, propsRest.className)}
+        >
+          {renderContent()}
+        </Button>
+      </DropdownMenuProvider>
+    );
+  },
+  {
+    Action: UserMenuAction,
+  },
+);

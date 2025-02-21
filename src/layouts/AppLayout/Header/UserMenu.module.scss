@@ -9,13 +9,13 @@
     @include bk.component-base(bk-user-menu);
     
     flex-shrink: 1; // Allow the user menu to shrink inside a parent flexbox
-    min-width: 1rem; // Allow it to shrink down to just the icon on small screens
-    max-width: 40ch;
-    margin-inline-start: bk.$spacing-3;
+    min-inline-size: 1rem; // Allow it to shrink down to just the icon on small screens
+    max-inline-size: 40ch;
+    margin-inline-start: bk.$spacing-2;
     
     display: flex;
     flex-direction: row;
-    gap: bk.$spacing-3;
+    gap: bk.$spacing-2;
     align-items: center;
     
     > .bk-user-menu__user-icon {

@@ -26,7 +26,7 @@ export default {
   argTypes: {},
   args: {
     title: 'Modal Dialog',
-    trigger: ({ activate }) => <Button variant="primary" label="Open modal" onPress={activate}/>,
+    trigger: ({ activate }) => <Button kind="primary" label="Open modal" onPress={activate}/>,
     children: <LoremIpsum paragraphs={15}/>,
   },
   render: (args) => <><LoremIpsum paragraphs={2}/> <DialogModal {...args}/> <LoremIpsum paragraphs={2}/></>,
@@ -85,7 +85,7 @@ export const DialogModalNested: Story = {
       <DialogModal
         className="inner"
         title="Submodal"
-        trigger={({ activate }) => <Button variant="primary" label="Open submodal" onPress={activate}/>}
+        trigger={({ activate }) => <Button kind="primary" label="Open submodal" onPress={activate}/>}
       >
         This is a submodal. Closing this modal should keep the outer modal still open.
       </DialogModal>
@@ -99,16 +99,16 @@ export const DialogModalWithToast: Story = {
     className: 'outer',
     children: (
       <>
-        <Button variant="primary" onPress={() => { notifyTest(); }}>
+        <Button kind="primary" onPress={() => { notifyTest(); }}>
           Trigger toast notification
         </Button>
         <DialogModal
           className="inner"
           title="Submodal"
-          trigger={({ activate }) => <Button variant="primary" label="Open submodal" onPress={activate}/>}
+          trigger={({ activate }) => <Button kind="primary" label="Open submodal" onPress={activate}/>}
         >
           <p>Test rendering toast notifications over the modal:</p>
-          <Button variant="primary" onPress={() => { notifyTest(); }}>
+          <Button kind="primary" onPress={() => { notifyTest(); }}>
             Trigger toast notification
           </Button>
         </DialogModal>
@@ -136,7 +136,7 @@ export const DialogModalUncloseable: Story = {
     children: ({ close }) => (
       <article className="bk-body-text">
         <p>It should not be possible to close this dialog, except through the following button:</p>
-        <p><Button variant="primary" label="Force close" onPress={close}/></p>
+        <p><Button kind="primary" label="Force close" onPress={close}/></p>
       </article>
     ),
   },
@@ -181,8 +181,8 @@ const DialogModalControlledWithSubject = (props: React.ComponentProps<typeof Dia
       
       <p>A single details modal will be used, filled in with the subject based on which name was pressed.</p>
       
-      <p><Button variant="primary" label="Open: Alice" onPress={() => { modal.activateWith({ name: 'Alice' }); }}/></p>
-      <p><Button variant="primary" label="Open: Bob" onPress={() => { modal.activateWith({ name: 'Bob' }); }}/></p>
+      <p><Button kind="primary" label="Open: Alice" onPress={() => { modal.activateWith({ name: 'Alice' }); }}/></p>
+      <p><Button kind="primary" label="Open: Bob" onPress={() => { modal.activateWith({ name: 'Bob' }); }}/></p>
     </article>
   );
 };
@@ -213,14 +213,14 @@ const DialogModalControlledConfirmation = (props: React.ComponentProps<typeof Di
       <p>A single details modal will be used, filled in with the subject based on which name was pressed.</p>
       
       <p>
-        <Button variant="primary"
+        <Button kind="primary"
           label={deleted.has('Item 1') ? 'Deleted' : `Delete Item 1`}
           disabled={deleted.has('Item 1')}
           onPress={() => { deleteConfirmer.activateWith({ name: 'Item 1' }); }}
         />
       </p>
       <p>
-        <Button variant="primary"
+        <Button kind="primary"
           label={deleted.has('Item 2') ? 'Deleted' : `Delete Item 2`}
           disabled={deleted.has('Item 2')}
           onPress={() => { deleteConfirmer.activateWith({ name: 'Item 2' }); }}

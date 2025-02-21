@@ -13,20 +13,20 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-right: calc(-1 * $caret-width);
+    margin-inline-end: calc(-1 * $caret-width);
   }
 
   .bk-date-picker--input {
-    width: bk.rem-from-px(134);
+    inline-size: bk.rem-from-px(134);
     color: bk.$theme-form-text-default;
   }
 
   .bk-date-picker--caret {
-    width: $caret-width;
-    height: $caret-width;
+    inline-size: $caret-width;
+    block-size: $caret-width;
     position: relative;
-    left: calc(-1 * $caret-width);
-    top: bk.rem-from-px(-1);
+    inset-inline-start: calc(-1 * $caret-width);
+    inset-block-start: bk.rem-from-px(-1);
   }
 
   .bk-date-picker--caret__down {

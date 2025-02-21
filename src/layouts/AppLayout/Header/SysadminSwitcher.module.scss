@@ -1,0 +1,62 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-sysadmin-switcher {
+    @include bk.component-base(bk-sysadmin-switcher);
+    
+    --icon-size: 1.5rem;
+    --padding-inline: #{bk.$spacing-2};
+    
+    align-self: center;
+    user-select: none;
+    
+    // Allow to shrink to just the icon
+    flex-shrink: 10;
+    min-inline-size: calc(var(--icon-size) + 2 * var(--padding-inline));
+    overflow: hidden;
+    
+    padding-block: bk.$spacing-1;
+    padding-inline: var(--padding-inline);
+    
+    border: bk.rem-from-px(1) solid bk.$theme-side-nav-menu-divider-default;
+    border-radius: bk.$radius-2;
+    
+    display: grid;
+    grid:
+      'icon title' 1.4fr
+      'icon subtitle' 1fr
+      / var(--icon-size) 1fr;
+    column-gap: 5px;
+    
+    > .bk-sysadmin-switcher__icon { grid-area: icon; }
+    > .bk-sysadmin-switcher__title { grid-area: title; }
+    > .bk-sysadmin-switcher__subtitle { grid-area: subtitle; }
+    
+    .bk-sysadmin-switcher__icon {
+      place-self: center end;
+      font-size: 1.2em;
+    }
+    
+    .bk-sysadmin-switcher__title {
+      align-self: end;
+      line-height: 1.4;
+      @include bk.text-one-line;
+      // Override the `0.3ch` padding from `text-one-line` with an absolute value for better alignment with subtitle
+      padding-inline-start: 0.1rem;
+      @include bk.font(bk.$font-family-display, $size: bk.$font-size-m);
+    }
+    .bk-sysadmin-switcher__subtitle {
+      align-self: start;
+      line-height: 1.2;
+      @include bk.text-one-line;
+      // Override the `0.3ch` padding from `text-one-line` with an absolute value for better alignment with title
+      padding-inline-start: 0.1rem;
+      @include bk.font(bk.$font-family-body, $size: bk.$font-size-xs);
+      color: #9697ab;
+    }
+  }
+}

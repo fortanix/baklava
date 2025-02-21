@@ -83,15 +83,14 @@ export const ToastCopyAction = ({ toast }: { toast: ToastDescriptor }) => {
   
   return (
     <Banner.ActionIcon
+      icon="copy"
       label={label}
       onPress={() => handleCopy(message)} // Note: careful to return the promise here to `onPress`
       onMouseLeave={() => {
         // Reset the label after exit animation had a chance to complete
         window.setTimeout(() => { setLabel(defaultLabel); }, 500);
       }}
-    >
-      <Icon icon="copy"/>
-    </Banner.ActionIcon>
+    />
   );
 };
 

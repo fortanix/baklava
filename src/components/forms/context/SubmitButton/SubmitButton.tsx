@@ -84,7 +84,7 @@ export const SubmitButton = (props: SubmitButtonProps) => {
   
   return (
     <Button
-      variant="primary" // Primary by default
+      kind="primary" // Primary by default
       form={formContext.formId}
       {...propsButton}
       // @ts-expect-error We're using an invalid `type` on purpose here, this is meant to be used internally only.

@@ -9,6 +9,7 @@
 export type NonUndefined<T> = T & ({} | null);
 
 // https://stackoverflow.com/questions/39419170/how-do-i-check-that-a-switch-block-is-exhaustive-in-typescript
-export const assertUnreachable = (x: never): never => {
-  throw new Error(`Unexpected case`);
+export const assertUnreachable = (value: never, message?: string): never => {
+  console.error('Unexpected value:', value);
+  throw new Error(message ?? `Unexpected case`);
 };

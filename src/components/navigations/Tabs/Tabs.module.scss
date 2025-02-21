@@ -11,7 +11,7 @@
     .bk-tabs__switcher {
       display: flex;
       list-style: none;
-      border-bottom: 1px solid #{bk.$theme-tab-rule-default};
+      border-block-end: 1px solid #{bk.$theme-tab-rule-default};
       
       .bk-tabs__switcher__tab {
         position: relative;
@@ -27,10 +27,10 @@
         &::after {
           content: "";
           position: absolute;
-          width: 100%;
-          left: 0;
-          bottom: 0;
-          height: 0;
+          inline-size: 100%;
+          inset-inline-start: 0;
+          inset-block-end: 0;
+          block-size: 0;
           transition: .3s;
         }
         
@@ -39,7 +39,7 @@
           
           &::after {
             background-color: #{bk.$theme-tab-tabs-hover};
-            height: 5px;
+            block-size: 5px;
           }
         }
         
@@ -48,7 +48,7 @@
           
           &::after {
             background-color: #{bk.$theme-tab-tabs-focused};
-            height: 5px;
+            block-size: 5px;
           }
         }
         
@@ -58,14 +58,14 @@
           &::after {
             cursor: default;
             background-color: #{bk.$theme-tab-tabs-focused};
-            height: 5px;
+            block-size: 5px;
           }
         }
       }
     }
     
     .bk-tabs__tab-content {
-      padding-top: bk.$spacing-7;
+      padding-block-start: bk.$spacing-7;
     }
   }
 }

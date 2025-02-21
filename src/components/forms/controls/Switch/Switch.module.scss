@@ -26,8 +26,8 @@
     cursor: pointer;
     
     appearance: none;
-    height: calc(var(--r) * 2);
-    width: calc(var(--w) + 6px); // Add a little bit of extra width so that the thumb overflows the track
+    block-size: calc(var(--r) * 2);
+    inline-size: calc(var(--w) + 6px); // Add a little bit of extra width so that the thumb overflows the track
     border-radius: var(--r);
     
     // Render the track (using circles to emulate a capsule shape)
@@ -52,9 +52,11 @@
       --bk-switch-pos: var(--pos-end);
     }
     &:disabled {
+      --bk-switch-track-color: #{bk.$theme-switch-slider-off};
       --bk-switch-thumb-color: #{bk.$theme-switch-knob-disabled};
     }
     &.bk-switch--nonactive {
+      --bk-switch-track-color: #{bk.$theme-switch-slider-off};
       --bk-switch-thumb-color: #{bk.$theme-switch-knob-non-active};
     }
     

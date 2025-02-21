@@ -5,19 +5,22 @@
 @use '../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-search {
-    @include bk.component-base(bk-search);
+  .bk-icon-button {
+    @include bk.component-base(bk-icon-button);
+    
+    cursor: pointer;
     display: flex;
     
-    .bk-search__input {
-      flex: 1;
-      padding-left: bk.$spacing-7;
+    &.inline {
+      display: inline-flex;
     }
     
-    .bk-search__icon {
-      position: absolute;
-      left: 0;
-      bottom: bk.$spacing-1;
+    &:not(:disabled):active {
+      scale: 0.95;
+    }
+    
+    @media (prefers-reduced-motion: no-preference) {
+      transition: scale 100ms ease-in;
     }
   }
 }

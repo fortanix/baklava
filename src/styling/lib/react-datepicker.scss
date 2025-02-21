@@ -11,7 +11,7 @@
 }
 
 :global(.react-datepicker) {
-  width: 284px;
+  inline-size: 284px;
   text-align: center;
   padding: 22px 26px 30px;
   background-color: bk.$theme-card-background-default;
@@ -36,7 +36,7 @@
 
 :global(.react-datepicker__month-container) {
   display: inline-block;
-  width: 100%;
+  inline-size: 100%;
   float: none;
 }
 
@@ -51,21 +51,21 @@
 
 :global(.react-datepicker__navigation) {
   position: absolute;
-  width: 3rem;
+  inline-size: 3rem;
   border: none;
   text-indent: -999em;
   mask: url('@/assets/icons/caret-down.svg') no-repeat center center;
   mask-size: 32px;
   background: bk.$theme-date-picker-text-default;
-  top: 1.8rem;
+  inset-block-start: 1.8rem;
 }
 $navigation-distance: 1rem;
 :global(.react-datepicker__navigation--previous) {
-  left: $navigation-distance;
+  inset-inline-start: $navigation-distance;
   transform: rotate(90deg);
 }
 :global(.react-datepicker__navigation--next) {
-  right: $navigation-distance;
+  inset-inline-end: $navigation-distance;
   transform: rotate(-90deg);
 }
 :global(.react-datepicker__navigation:hover) {
@@ -77,13 +77,13 @@ $navigation-distance: 1rem;
 }
 
 :global(.react-datepicker__day-names) {
-  border-bottom: 0.1rem solid bk.$theme-date-picker-rule-default;
+  border-block-end: 0.1rem solid bk.$theme-date-picker-rule-default;
 }
 
 :global(.react-datepicker__day-name),
 :global(.react-datepicker__day) {
   display: inline-block;
-  width: 30px;
+  inline-size: 30px;
   line-height: 30px;
   margin: 5px 0;
   color: bk.$theme-date-picker-text-default;
@@ -152,11 +152,11 @@ $navigation-distance: 1rem;
 }
 
 :global(.react-datepicker-popper[data-placement^="bottom"]) {
-  margin-top: 0;
+  margin-block-start: 0;
 }
 
 :global(.react-datepicker-popper[data-placement^="top"]) {
-  margin-bottom: 0;
+  margin-block-end: 0;
 }
 
 :global(.react-datepicker__month--selecting-range .react-datepicker__day--in-range:not(.react-datepicker__day--in-selecting-range)),
@@ -168,9 +168,9 @@ $navigation-distance: 1rem;
 }
 
 :global(.react-datepicker__input-container .react-datepicker__calendar-icon) {
-  width: 14px;
-  height: 14px;
-  bottom: 4px;
+  inline-size: 14px;
+  block-size: 14px;
+  inset-block-end: 4px;
 }
 
 :global(.react-datepicker__view-calendar-icon input) {

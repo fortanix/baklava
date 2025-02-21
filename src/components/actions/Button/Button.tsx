@@ -7,6 +7,7 @@ import { timeout } from '../../../util/time.ts';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import * as React from 'react';
 
+import { type IconName, Icon } from '../../graphics/Icon/Icon.tsx';
 import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
 
 import cl from './Button.module.scss';
@@ -29,8 +30,14 @@ export type ButtonProps = React.PropsWithChildren<Omit<ComponentProps<'button'>,
    */
   label?: undefined | string,
   
-  /** What variant the button is, from higher prominance to lower. */
-  variant?: undefined | 'primary' | 'secondary' | 'tertiary',
+  /** An icon to show before the label. Optional. */
+  icon?: undefined | IconName,
+  
+  /** The kind of button, from higher prominance to lower. */
+  kind?: undefined | 'primary' | 'secondary' | 'tertiary',
+  
+  /** Which visual variant to use. Default: 'normal'. */
+  variant?: undefined | 'normal' | 'card',
   
   /**
    * Whether the button is disabled. This is meant for essentially permanent disabled buttons, not for buttons that
@@ -60,9 +67,11 @@ export const Button = (props: ButtonProps) => {
     unstyled = false,
     trimmed = false,
     label,
+    icon,
+    kind = 'tertiary',
+    variant = 'normal',
     disabled = false,
     nonactive = false,
-    variant = 'tertiary',
     onPress,
     asyncTimeout = 30_000,
     ...propsRest
@@ -113,6 +122,7 @@ export const Button = (props: ButtonProps) => {
     return (
       <>
         {isPending && <Spinner className="icon" inline/>}
+        {icon && <Icon className="icon" icon={icon}/>}
         {label}
       </>
     );
@@ -145,8 +155,10 @@ export const Button = (props: ButtonProps) => {
         bk: true,
         [cl['bk-button']]: !unstyled,
         [cl['bk-button--trimmed']]: trimmed,
-        [cl['bk-button--primary']]: variant === 'primary',
-        [cl['bk-button--secondary']]: variant === 'secondary',
+        [cl['bk-button--primary']]: kind === 'primary',
+        [cl['bk-button--secondary']]: kind === 'secondary',
+        [cl['bk-button--tertiary']]: kind === 'tertiary',
+        [cl['bk-button--card']]: variant === 'card',
         [cl['bk-button--disabled']]: !isInteractive,
         [cl['bk-button--nonactive']]: isNonactive,
         'nonactive': isNonactive, // Global class name so that consumers can style nonactive states

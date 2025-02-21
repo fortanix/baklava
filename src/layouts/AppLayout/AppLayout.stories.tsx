@@ -5,21 +5,22 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
+import { DummyLink } from '../../util/storybook/StorybookLink.tsx';
 
+import { notify } from '../../components/overlays/ToastProvider/ToastProvider.tsx';
 import { OverflowTester } from '../../util/storybook/OverflowTester.tsx';
+import { Button } from '../../components/actions/Button/Button.tsx';
+import { Panel } from '../../components/containers/Panel/Panel.tsx';
+import { DialogModal } from '../../components/overlays/DialogModal/DialogModal.tsx';
+
 import { Header } from './Header/Header.tsx';
 import { Sidebar } from './Sidebar/Sidebar.tsx';
 import { Logo } from './Logo/Logo.tsx';
 import { Nav } from './Nav/Nav.tsx';
-
-import { Button } from '../../components/actions/Button/Button.tsx';
-import { Link } from '../../components/actions/Link/Link.tsx';
-import { Panel } from '../../components/containers/Panel/Panel.tsx';
-import { DialogModal } from '../../components/overlays/DialogModal/DialogModal.tsx';
 import { UserMenu } from './Header/UserMenu.tsx';
-
 import { SolutionSelector } from './Header/SolutionSelector.tsx';
 import { AccountSelector } from './Header/AccountSelector.tsx';
+import { SysadminSwitcher } from './Header/SysadminSwitcher.tsx';
 import { Breadcrumbs } from './Breadcrumbs/Breadcrumbs.tsx';
 import { AppLayout } from './AppLayout.tsx';
 
@@ -43,28 +44,58 @@ export const Standard: Story = {
   args: {
     children: (
       <>
-        <header slot="header" className="bk-theme--dark">
-          <Link unstyled href="#" slot="logo">
-            <Logo/>
-          </Link>
+        <AppLayout.Header>
+          <DummyLink slot="logo">
+            <Logo subtitle="Data Security Manager" subtitleTrademark={true}/>
+          </DummyLink>
           <Header slot="actions">
-            <UserMenu userName="Anand Kashyap"/>
-            {/* <UserMenu userName="Anand Kashyap – Very Long Name That Will Overflow"/> */}
-            <AccountSelector className="select-action"/>
-            <SolutionSelector className="select-action"/>
+            <UserMenu userName="Anand Kashyap">
+              <UserMenu.Action itemKey="profile" label="Profile"
+                onActivate={() => { notify.info(`Opening user profile.`); }}
+              />
+              <UserMenu.Action itemKey="sign-out" label="Sign out"
+                onActivate={() => { notify.info(`Signing out.`); }}
+              />
+            </UserMenu>
+            <SysadminSwitcher
+              onPress={() => { notify.info(`Navigating to system administration panel.`); }}
+            />
+            <AccountSelector className="select-action">
+              {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
+                <AccountSelector.Option key={`account_${name}`} optionKey={`account_${name}`} icon="account"
+                  label={name}
+                  onSelect={() => { notify.info(`Selected ${name}`); }}
+                />
+              )}
+              {/* TODO: make this sticky so it's visible even if there are a lot of accounts? */}
+              <AccountSelector.Option key="action_add-account" optionKey="action_add-account" label="Add account"/>
+            </AccountSelector>
+            <SolutionSelector className="select-action">
+              {['Identity & Access Management', 'Key Insight', 'Data Security Manager'].map(name =>
+                <SolutionSelector.Option key={name} optionKey={name} icon="user" label={name}
+                  onSelect={() => { notify.info(`Selected ${name}`); }}
+                />
+              )}
+            </SolutionSelector>
           </Header>
-        </header>
-        {/* Container around the sidebar that grows to full height, allowing the sidebar to be sticky */}
-        <div slot="sidebar" className="bk-theme--dark">
+        </AppLayout.Header>
+        <AppLayout.Sidebar>
           <Sidebar className="bk-app-layout__sidebar">
-            <Nav>
-              <Nav.NavItem active icon="dashboard" label="Dashboard" href="#"/>
-              <Nav.NavItem icon="dashboard" label="Groups" href="#"/>
+            <Nav aria-label="Overview and assessment" /* If there are multiple `Nav`s, they must get unique labels */>
+              <Nav.NavItem Link={DummyLink} active icon="dashboard" label="Overview" href="/dashboard"/>
+              <Nav.NavItem Link={DummyLink} icon="badge-assessment" label="Assessment" href="/assessment"/>
+              <Nav.NavItem Link={DummyLink} icon="services" label="Services" href="/services" disabled/>
+            </Nav>
+            <hr/>
+            <Nav aria-label="Connections and policies">
+              <Nav.NavItem Link={DummyLink} icon="cloud-accounts" label="Connections" href="/connections"/>
+              <Nav.NavItem Link={DummyLink} icon="policy" label="Policy Center" href="/policy-center"/>
+              <Nav.NavItem Link={DummyLink} icon="user-authentication" label="Authentication" href="/authentication"/>
             </Nav>
             <OverflowTester lines={45}/>
           </Sidebar>
-        </div>
-        <main slot="content">
+        </AppLayout.Sidebar>
+        <AppLayout.Content>
           <Breadcrumbs
             items={[
               {
@@ -82,16 +113,16 @@ export const Standard: Story = {
             
             <DialogModal
               title="Modal"
-              trigger={({ activate }) => <Button variant="primary" label="Open modal" onPress={() => { activate(); }}/>}
+              trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={() => { activate(); }}/>}
             >
               Test
             </DialogModal>
           </Panel>
           <OverflowTester/>
-        </main>
-        <footer slot="footer">
-          <span className="version">Version: 4.24.2343</span>
-        </footer>
+        </AppLayout.Content>
+        <AppLayout.Footer>
+          <span className="version">Version: 1.2.2343</span>
+        </AppLayout.Footer>
       </>
     ),
   },

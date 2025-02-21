@@ -8,7 +8,7 @@
   .bk-form-layout {
     @include bk.component-base(bk-form-layout);
     
-    min-width: 300px;
+    min-inline-size: 300px;
     
     display: flex;
     flex-direction: column;

@@ -20,10 +20,10 @@
     
     display: inline-flex;
     
-    width: var(--bk-icon-size);
+    inline-size: var(--bk-icon-size);
     // https://github.com/stylelint-scss/stylelint-scss/issues/1080
     /* stylelint-disable-next-line scss/no-global-function-names */
-    width: round(var(--bk-icon-size), 1px);
+    inline-size: round(var(--bk-icon-size), 1px);
     
     aspect-ratio: 1; // Baklava icon pack all have square aspect ratio
     fill: currentColor; // Use the current font color by default
@@ -34,14 +34,16 @@
     stroke-width: 0;
     
     &.bk-icon--background-circle {
+      // Note: use this instead of `border-radius: 50%`, because that causes a bug in Safari where the icon is cut off
+      // at the padding box even if we set `overflow: visible`.
+      clip-path: circle(50%);
+      
+      aspect-ratio: 1;
+      padding: 0.9em;
+      background: var(--bk-icon-accent-color, currentColor);
+      
       align-items: center;
       justify-content: center;
-      
-      background: var(--bk-icon-accent-color, currentColor);
-      padding: bk.rem-from-px(12); // FIXME: token?
-      aspect-ratio: 1;
-      border-radius: 50%;
-      overflow: visible; // Prevent the border-radius from cutting off part of the icon
     }
   }
 }

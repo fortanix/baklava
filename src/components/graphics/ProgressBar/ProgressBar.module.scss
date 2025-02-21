@@ -13,8 +13,8 @@
     background: bk.$theme-progress-bar-track;
     border: none;
     border-radius: bk.$border-radius-m;
-    width: 100%;
-    height: 10px; // sizing not present on bk variables
+    inline-size: 100%;
+    block-size: 10px; // sizing not present on bk variables
   }
   // for now <progress> needs to be styled with browser-prefixes on Blink and Webkit
   .bk-progress-bar::-moz-progress-bar {
@@ -33,11 +33,11 @@
   .bk-progress-bar__label {
     font-size: bk.$font-size-m;
     font-weight: bk.$font-weight-semibold;
-    margin-bottom: bk.$sizing-2;
+    margin-block-end: bk.$sizing-2;
   }
 
   .bk-progress-bar__hint-text {
     font-size: bk.$font-size-s;
-    margin-top: -1 * bk.$sizing-1;
+    margin-block-start: -1 * bk.$sizing-1;
   }
 }

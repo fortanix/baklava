@@ -27,7 +27,7 @@ import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Tag } from '../../text/Tag/Tag.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { Input } from '../../forms/controls/Input/Input.tsx';
-import { CheckboxGroup } from '../../forms/fields/CheckboxGroup/CheckboxGroup.tsx';
+import { CheckboxGroup } from '../../forms/controls/CheckboxGroup/CheckboxGroup.tsx';
 // import * as Dropdown from '../../overlays/dropdown/Dropdown.tsx';
 import { DropdownMenu, DropdownMenuContext } from '../../overlays/DropdownMenu/DropdownMenu.tsx';
 // import { DateTimePicker } from '../../forms/datetime/DateTimePicker.tsx';
@@ -492,7 +492,7 @@ export const SearchInput = (props: SearchInputProps) => {
     inputRef,
     onFocus,
     onBlur,
-    ...restProps
+    ...propsRest
   } = props;
   
   const {
@@ -571,13 +571,13 @@ export const SearchInput = (props: SearchInputProps) => {
         </span>
       }
       <Input
-        ref={mergeRefs(props.ref, inputRef)}
         placeholder={renderPlaceholder()}
         className="bk-search-input__input"
         onKeyDown={onKeyDown}
         onFocus={handleFocus}
         onBlur={handleBlur}
-        {...restProps}
+        {...propsRest}
+        ref={mergeRefs(inputRef, propsRest.ref)}
       />
     </div>
   );
@@ -694,8 +694,9 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
         className="bk-multi-search__alternatives-group"
       >
         {Object.entries(alternatives || {}).map(([alternativesName, { label }], index) => (
-          <CheckboxGroup.CheckboxField
+          <CheckboxGroup.Checkbox
             key={alternativesName}
+            checkboxKey={alternativesName}
             label={label}
             checked={selectedAlternatives.includes(alternativesName)}
             className="bk-dropdown__menu-item"
@@ -710,7 +711,7 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
       )}
       <div className="bk-multi-search__alternatives-action">
         <Button
-          variant="primary"
+          kind="primary"
           onPress={onSelectionComplete}
           disabled={!arrayValidation.isValid}
         >
@@ -944,7 +945,7 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
         
       <div className="bk-multi-search__date-time-action">
         <Button
-          variant="primary"
+          kind="primary"
           onPress={onSelectionComplete}
           nonactive={!dateTimeRangeValidation.isValid}
         >
@@ -968,7 +969,7 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
 
       <div className="bk-multi-search__date-time-action">
         <Button
-          variant="primary"
+          kind="primary"
           onPress={onSelectionComplete}
           nonactive={!dateTimeRangeValidation.isValid}
         >

@@ -26,7 +26,7 @@ export default {
   },
   args: {
     tooltip: <>This is a tooltip</>,
-    children: (props) => <Button {...props()} variant="primary" label="Hover over me"/>,
+    children: (props) => <Button {...props()} kind="primary" label="Hover over me"/>,
   },
   render: (args) => <TooltipProvider {...args}/>,
 } satisfies Meta<TooltipProviderArgs>;
@@ -102,7 +102,7 @@ export const TooltipWithScroll: Story = {
       <OverflowTester openDefault lines={5}/>
       
       <TooltipProvider tooltip="Tooltips will auto-reposition when it hits the viewport due to scroll.">
-        {props => <Button {...props()} variant="primary" label="Scroll me" autoFocus/>}
+        {props => <Button {...props()} kind="primary" label="Scroll me" autoFocus/>}
       </TooltipProvider>
       
       <OverflowTester openDefault/>
@@ -116,7 +116,7 @@ export const TooltipWithScroll: Story = {
 export const TooltipWithFocus: Story = {
   args: {
     tooltip: 'Tooltips will open when the anchor element is focused',
-    children: (props) => <Button {...props()} variant="primary" label="Focus me" autoFocus/>,
+    children: (props) => <Button {...props()} kind="primary" label="Focus me" autoFocus/>,
   },
 };
 
@@ -139,7 +139,7 @@ const TooltipWithDrag = () => {
               boundary={boundaryRef.current ?? undefined}
               enablePreciseTracking
             >
-              <Button ref={targetRef} variant="secondary" label="Drag me" autoFocus/>
+              <Button ref={targetRef} kind="secondary" label="Drag me" autoFocus/>
             </TooltipProvider>
           }
         </Draggable>

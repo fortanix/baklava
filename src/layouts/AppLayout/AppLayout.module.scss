@@ -7,8 +7,9 @@
 
 @layer baklava.base {
   :root {
-    /* Height of the header needs to be known at root level so we can use it for things like `scroll-padding-top` */
-    --bk-app-layout-header-height: var(--bk-sizing-5);
+    // Height of the header needs to be known at root level so we can use it for things like `scroll-padding-top`.
+    // Calculate by: content height (spacing-9) + 2 times the block padding (padding-3).
+    --bk-app-layout-header-height: calc(#{bk.$spacing-9} + 2 * #{bk.$spacing-3});
   }
 }
 
@@ -17,12 +18,13 @@
     @include bk.component-base(bk-app-layout);
     container-type: inline-size;
     
-    --bk-app-layout-sidebar-width-open: 220px;
+    --bk-app-layout-sidebar-width-open: #{bk.rem-from-px(220)};
+    --bk-app-layout-sidebar-width-closed: #{bk.rem-from-px(48)};
     --bk-app-layout-sidebar-width: var(--bk-app-layout-sidebar-width-open);
-
+    
     /* Note: do not use vw/vh, because we may want to show the layout in a container (e.g. story) */
-    min-width: 100cqw;
-    min-height: 100cqh;
+    min-inline-size: 100cqw;
+    min-block-size: 100cqh;
     
     display: grid;
     // Note: use `minmax(0, 1fr)` to prevent blowout: https://css-tricks.com/preventing-a-grid-blowout
@@ -44,19 +46,24 @@
       background: bk.$theme-header-background-default;
       
       position: sticky;
-      top: 0;
+      inset-block-start: 0;
       z-index: 1; /* Higher than content */
       
       display: grid;
       grid:
         'logo account-actions user-actions' 1fr
-        / var(--bk-app-layout-sidebar-width-open) max-content 1fr;
+        / var(--bk-app-layout-sidebar-width) max-content 1fr;
       
       > [slot='logo'] { grid-area: logo; }
       > [slot='actions'] { grid-column: account-actions-start / user-actions-end; }
       
       > [slot='logo'] {
         @include bk.focus-inset;
+        padding-inline-start: bk.$spacing-4;
+        display: flex;
+        flex-direction: column;
+        align-items: start;
+        justify-content: center;
       }
     }
     
@@ -67,7 +74,7 @@
       
       > aside {
         position: sticky;
-        top: var(--bk-app-layout-header-height);
+        inset-block-start: var(--bk-app-layout-header-height);
         /*
         Note: if the sidebar itself overflows (in height), then we might want to make this scrollable, but this is hard:
           - https://stackoverflow.com/questions/16094785/fixed-position-div-that-needs-to-scroll-if-content-overflows
@@ -99,7 +106,7 @@
         'footer' max-content
         / 1fr;
     }
-
+    
     //&:has([slot='sidebar']:hover) { --bk-app-layout-sidebar-width: 80px; } // TEST
     @media (prefers-reduced-motion: no-preference) {
       transition: grid 300ms;

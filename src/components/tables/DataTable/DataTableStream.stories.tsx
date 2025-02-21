@@ -118,8 +118,8 @@ const DataTableStreamTemplate = ({dataTableProps, ...props} : dataTeableLazyTemp
               title="No users"
               actions={
                 <DataTableStream.PlaceholderEmptyAction>
-                  <Button variant="secondary" onPress={() => {}}>Action 1</Button>
-                  <Button variant="primary" onPress={() => {}}>Action 2</Button>
+                  <Button kind="secondary" onPress={() => {}}>Action 1</Button>
+                  <Button kind="primary" onPress={() => {}}>Action 2</Button>
                 </DataTableStream.PlaceholderEmptyAction>
               }
             />

@@ -9,6 +9,8 @@ import { userEvent, fireEvent, within } from '@storybook/test';
 
 import * as React from 'react';
 
+import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
+
 import { Input } from './Input.tsx';
 
 
@@ -33,15 +35,23 @@ export default {
 } satisfies Meta<InputArgs>;
 
 
-export const Standard: Story = {
+export const InputStandard: Story = {
 };
 
-export const InvalidInput: Story = {
+export const InputWithFocus: Story = {
+  args: {
+    className: 'pseudo-focus',
+  },
+};
+
+export const InputInvalid: Story = {
   args: {
     required: true,
     pattern: '\d+',
     className: 'invalid',
+    value: 'invalid input',
   },
+  /*
   async play({ canvasElement }) {
     const canvas = within(canvasElement);
     const input = canvas.getByPlaceholderText('Example');
@@ -54,5 +64,49 @@ export const InvalidInput: Story = {
     await userEvent.keyboard('{Enter}');
     await fireEvent.submit(form);
     await userEvent.click(form);
-  },  
+  },
+  */  
+};
+
+/** Note: if you use an input as a search input, make sure to embed it inside a `<search>` element. */
+export const InputWithIcon: Story = {
+  args: {
+    icon: 'search',
+    iconLabel: 'Search',
+  },
+};
+
+export const InputWithAction: Story = {
+  args: {
+    actions: <Input.Action icon="cross" label="Reset" onPress={() => { notify.info('Clicked'); }}/>,
+  },
+};
+
+export const InputWithIconAndActions: Story = {
+  args: {
+    icon: 'search',
+    iconLabel: 'Search',
+    actions: (
+      <>
+        <Input.Action icon="cross" label="Clear input" onPress={() => { notify.info('Clicked'); }}/>
+        <Input.Action icon="caret-down" label="Open menu" onPress={() => { notify.info('Clicked'); }}/>
+      </>
+    ),
+  },
+};
+
+export const InputWithTypePassword: Story = {
+  args: {
+    type: 'password',
+    value: 'example$password',
+  },
+};
+
+export const InputWithAutomaticResizing: Story = {
+  args: {
+    automaticResize: true,
+    defaultValue: 'This input should automatically resize based on the content',
+    // Add an action to test whether resizing works correctly with additional UI
+    actions: <Input.Action icon="caret-down" label="Open menu" onPress={() => { notify.info('Clicked'); }}/>,
+  },
 };

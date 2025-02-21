@@ -32,7 +32,7 @@ export const Standard: Story = {
 
     return (
       // with a fixed height to avoid hiding the bottom part of the calendar
-      <div style={{height: '500px'}}>
+      <div style={{ blockSize: 500 }}>
         <DatePicker
           {...args}
           selected={startDate}
@@ -50,7 +50,7 @@ export const DateNotSet: Story = {
 
     return (
       // with a fixed height to avoid hiding the bottom part of the calendar
-      <div style={{height: '500px'}}>
+      <div style={{ blockSize: 500 }}>
         <DatePicker
           {...args}
           selected={startDate}

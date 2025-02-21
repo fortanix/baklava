@@ -10,7 +10,7 @@
   
   overflow: hidden;
   
-  min-height: 4rem;
+  min-block-size: 4rem;
   padding: bk.$spacing-4;
   background: var(--bk-panel-background-color);
   border: bk.rem-from-px(1) solid var(--bk-panel-border-color);
@@ -24,7 +24,7 @@
     @include panel;
     
     .bk-panel__heading {
-      margin-bottom: 0.8lh;
+      margin-block-end: 0.8lh;
       text-wrap: nowrap;
       text-overflow: ellipsis;
     }

@@ -44,6 +44,8 @@ const preview = {
             [
               'Icon',
               'Spinner',
+              'PlaceholderEmpty',
+              'ProgressBar',
             ],
             'text',
             [
@@ -64,17 +66,14 @@ const preview = {
               'LinkAsButton',
               'Button',
               'ButtonAsLink',
-              'Switcher',
             ],
             'overlays',
             [
-              'ModalProvider',
               'SpinnerModal',
               'DialogModal',
               'DialogOverlay',
               'ToastProvider',
               'Tooltip',
-              'TooltipProvider',
               'DropdownMenu',
             ],
             'lists',
@@ -86,23 +85,59 @@ const preview = {
               'context',
               [
                 'Form',
+                'SubmitButton',
+              ],
+              'common',
+              [
+                'Label',
+                'FieldSet',
               ],
               'controls',
               [
                 'Checkbox',
+                [
+                  'CheckboxTri',
+                ],
                 'CheckboxGroup',
                 'Switch',
+                'Radio',
+                'RadioGroup',
+                'SegmentedControl',
                 'Input',
+                [
+                  'InputSearch',
+                  'InputSensitive',
+                  'InputPassword',
+                ],
+                'TextArea',
                 'Select',
+                'DatePicker',
+                'DatePickerRange',
+                'TimePicker',
+                'DateTimePicker',
               ],
               'fields',
               [
-                'Input',
+                'CheckboxGroup',
+                'CheckboxField',
+                'RadioField',
+                'InputField',
+                'InputFieldWithTags',
+                'TextAreaField',
               ],
             ],
             'navigations',
             [
               'Tabs',
+              'Stepper',
+            ],
+            'tables',
+            [
+              'DataTableEager',
+              'DataTableLazy',
+              'DataTableStream',
+              'SearchInput',
+              'MultiSearch',
             ],
           ],
           'layouts',
@@ -110,6 +145,7 @@ const preview = {
             'FormLayout',
             'AppLayout',
             [
+              'Logo',
               'Header',
               'Nav',
               'Sidebar',
@@ -181,7 +217,8 @@ const preview = {
         // Format: { id: <rule-name>, enabled: <boolean>, selector: <css-selector> }
         rules: [
           // Known accessibility issues (need to fix these)
-          //{ id: 'color-contrast', selector: '*:not(button[class*=primary])' },
+          //{ id: 'color-contrast', enabled: false, selector: '*:not(button[class*=primary])' },
+          { id: 'color-contrast', enabled: false, selector: '*' },
         ],
       },
       // Axe's options parameter

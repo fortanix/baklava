@@ -6,6 +6,7 @@ import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
 import { H5 } from '../../../typography/Heading/Heading.tsx';
+import { Button } from '../../actions/Button/Button.tsx';
 
 import cl from './Card.module.scss';
 

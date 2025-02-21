@@ -467,7 +467,7 @@ export const TableProviderStream = <D extends object, P = undefined>(
 };
 TableProviderStream.displayName = 'TableProviderStream';
 
-type DataTableStreamProps = Omit<React.ComponentPropsWithRef<typeof DataTableAsync>, 'table' | 'status'>;
+type DataTableStreamProps = Omit<React.ComponentProps<typeof DataTableAsync>, 'table' | 'status'>;
 export const DataTableStream = ({
   className,
   footer,
@@ -519,7 +519,7 @@ export const DataTableStream = ({
         <DataTablePlaceholderError
           actions={
             <PlaceholderEmptyAction>
-              <Button variant="primary" onPress={() => { reload(); }}>
+              <Button kind="primary" onPress={() => { reload(); }}>
                 Retry
               </Button>
             </PlaceholderEmptyAction>

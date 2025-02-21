@@ -58,7 +58,7 @@ export const Option = (props: OptionProps) => {
   return (
     <li aria-selected={isSelected}>
       <Button unstyled
-        // FIXME: requires a parent with `role="listbox"
+        // FIXME: requires a parent with `role="listbox"`
         role="option"
         {...propsRest}
         className={cx(
@@ -68,7 +68,7 @@ export const Option = (props: OptionProps) => {
         {...getItemProps()}
         onPress={() => { selectOption(option); }}
       >
-        {label ?? propsRest.children}
+        {propsRest.children ?? label}
       </Button>
     </li>
   );

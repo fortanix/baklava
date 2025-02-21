@@ -7,7 +7,6 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { LinkAsButton } from './LinkAsButton.tsx';
-import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
 
 
 type LinkAsButtonArgs = React.ComponentProps<typeof LinkAsButton>;
@@ -22,10 +21,11 @@ export default {
   argTypes: {},
   args: {
     unstyled: false,
-    variant: 'primary',
+    kind: 'primary',
     label: 'Link',
     href: 'https://fortanix.com',
     target: '_blank',
+    onClick: event => { event.preventDefault(); },
   },
   render: (args) => <LinkAsButton {...args}/>,
 } satisfies Meta<LinkAsButtonArgs>;
@@ -37,21 +37,21 @@ export const Variants: Story = {
   render: (args) => (
     <div style={{
       display: 'grid',
-      gridTemplateColumns: 'repeat(3, 1fr)',
-      gridAutoFlow: 'row',
+      gridTemplateRows: 'repeat(3, 1fr)',
+      gridAutoFlow: 'column',
       gap: '1rem',
     }}>
-      <p><LinkAsButton {...args} variant="primary"/></p>
-      <p><LinkAsButton {...args} variant="primary" nonactive/></p>
-      <p><LinkAsButton {...args} variant="primary" disabled/></p>
+      <p><LinkAsButton {...args} kind="primary"/></p>
+      <p><LinkAsButton {...args} kind="primary" nonactive/></p>
+      <p><LinkAsButton {...args} kind="primary" disabled/></p>
       
-      <p><LinkAsButton {...args} variant="secondary"/></p>
-      <p><LinkAsButton {...args} variant="secondary" nonactive/></p>
-      <p><LinkAsButton {...args} variant="secondary" disabled/></p>
+      <p><LinkAsButton {...args} kind="secondary"/></p>
+      <p><LinkAsButton {...args} kind="secondary" nonactive/></p>
+      <p><LinkAsButton {...args} kind="secondary" disabled/></p>
       
-      <p><LinkAsButton {...args} variant="tertiary"/></p>
-      <p><LinkAsButton {...args} variant="tertiary" nonactive/></p>
-      <p><LinkAsButton {...args} variant="tertiary" disabled/></p>
+      <p><LinkAsButton {...args} kind="tertiary"/></p>
+      <p><LinkAsButton {...args} kind="tertiary" nonactive/></p>
+      <p><LinkAsButton {...args} kind="tertiary" disabled/></p>
     </div>
   ),
 };
@@ -62,9 +62,10 @@ export const Variants: Story = {
  */
 export const Download: Story = {
   args: {
-    variant: 'tertiary',
+    kind: 'tertiary',
     download: 'my_file.txt',
     label: 'Download',
     href: `data:text/plain,Lorem ipsum`,
+    onClick: undefined,
   },
 };

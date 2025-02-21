@@ -7,16 +7,21 @@
 @layer baklava.components {
   .bk-checkbox-group {
     @include bk.component-base(bk-checkbox-group);
-    display: flex;
-
-    &.bk-checkbox-group--vertical {
-      flex-direction: column;
-      row-gap: 20px;
+    
+    .bk-checkbox-group__content {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start; // In case of wrap, align everything to the start
+      align-items: flex-start;
+      gap: 0.5lh bk.$spacing-7;
     }
-  
-    &.bk-checkbox-group--horizontal {
+    
+    &.bk-checkbox-group--horizontal .bk-checkbox-group__content {
       flex-direction: row;
-      column-gap: bk.$spacing-7;
+    }
+    
+    &.bk-checkbox-group--vertical .bk-checkbox-group__content {
+      flex-direction: column;
     }
   }
 }

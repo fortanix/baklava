@@ -11,6 +11,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 
 import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
+import { Card } from '../../containers/Card/Card.tsx';
 import { Banner } from '../../containers/Banner/Banner.tsx';
 
 import { Button } from './Button.tsx';
@@ -29,7 +30,7 @@ export default {
   args: {
     unstyled: false,
     label: 'Button',
-    variant: 'primary',
+    kind: 'primary',
     nonactive: false,
     disabled: false,
     onPress: () => { notify.success('You pressed the button.'); },
@@ -38,7 +39,7 @@ export default {
     Story => (
       <ErrorBoundary
         FallbackComponent={({ error, resetErrorBoundary }) =>
-          <Banner variant="error" style={{ width: '60cqi' }}
+          <Banner variant="error" style={{ inlineSize: '60cqi' }}
             title="Error"
             actions={<Banner.ActionButton label="Reset" onPress={resetErrorBoundary}/>}
           >
@@ -60,7 +61,7 @@ const BaseStory: Story = {
 
 const PrimaryStory: Story = {
   ...BaseStory,
-  args: { ...BaseStory.args, variant: 'primary' },
+  args: { ...BaseStory.args, kind: 'primary' },
 };
 
 export const PrimaryStandard: Story = {
@@ -95,7 +96,7 @@ export const PrimaryDisabled: Story = {
 export const Secondary: Story = {
   ...BaseStory,
   name: 'Secondary [standard]',
-  args: { ...BaseStory.args, variant: 'secondary' },
+  args: { ...BaseStory.args, kind: 'secondary' },
 };
 
 export const SecondaryHover: Story = {
@@ -125,7 +126,7 @@ export const SecondaryDisabled: Story = {
 export const Tertiary: Story = {
   ...BaseStory,
   name: 'Tertiary [standard]',
-  args: { ...BaseStory.args, variant: 'tertiary' },
+  args: { ...BaseStory.args, kind: 'tertiary' },
 };
 
 export const TertiaryHover: Story = {
@@ -152,13 +153,45 @@ export const TertiaryDisabled: Story = {
   args: { ...Tertiary.args, disabled: true },
 };
 
+export const VariantCard: Story = {
+  name: 'Card variant',
+  render: (args) => (
+    <Card style={{
+      display: 'grid',
+      gridTemplateRows: 'repeat(3, 1fr)',
+      gridAutoFlow: 'column',
+      gap: '1rem',
+    }}>
+      <p><Button variant="card" {...args} kind="primary"/></p>
+      <p><Button variant="card" {...args} kind="primary" nonactive/></p>
+      <p><Button variant="card" {...args} kind="primary" disabled/></p>
+      
+      <p><Button variant="card" {...args} kind="secondary"/></p>
+      <p><Button variant="card" {...args} kind="secondary" nonactive/></p>
+      <p><Button variant="card" {...args} kind="secondary" disabled/></p>
+      
+      <p><Button variant="card" {...args} kind="tertiary"/></p>
+      <p><Button variant="card" {...args} kind="tertiary" nonactive/></p>
+      <p><Button variant="card" {...args} kind="tertiary" disabled/></p>
+    </Card>
+  ),
+};
+
+export const ButtonWithIcon: Story = {
+  ...PrimaryStory,
+  args: {
+    label: 'I have an icon',
+    icon: 'check',
+  },
+};
+
 export const AsyncButton: Story = {
   ...PrimaryStory,
   args: {
     ...PrimaryStory.args,
     label: 'Trigger async action',
     async onPress() {
-      await delay(1000);
+      await delay(2000);
       console.log('Done!');
     },
   },
@@ -197,7 +230,7 @@ export const AsyncButtonFailure: Story = {
   },
 };
 
-const Form = (props: React.ComponentPropsWithRef<'form'>) => {
+const Form = (props: React.ComponentProps<'form'>) => {
   const [error, submitAction, isPending] = React.useActionState(
     async (previousState: unknown, formData: FormData) => {
       const delay = (timeMs: number) => new Promise(resolve => window.setTimeout(resolve, timeMs));
@@ -267,6 +300,7 @@ export const CustomContentWithIconAfter: Story = {
  */
 export const ButtonTrimmed: Story = {
   ...Tertiary,
+  name: 'Trimmed',
   args: {
     ...Tertiary.args,
     trimmed: true,

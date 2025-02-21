@@ -40,7 +40,7 @@ const SpinnerModalControlledWithTrigger = (props: SpinnerModalArgs) => {
     <>
       {isLoading && <SpinnerModal delay={0} {...props}/>}
       <LoremIpsum paragraphs={2}/>
-      <Button variant="primary" label="Trigger spinner for 3 seconds" onPress={() => { setIsLoading(true); }}/>
+      <Button kind="primary" label="Trigger spinner for 3 seconds" onPress={() => { setIsLoading(true); }}/>
       <LoremIpsum paragraphs={2}/>
     </>
   );

@@ -37,19 +37,19 @@
     animation: spin 1s linear infinite;
 
     &.bk-spinner--large {
-      width: var(--bk-spinner-large-size);
+      inline-size: var(--bk-spinner-large-size);
       --mask-radius: calc(70% - calc(var(--bk-spinner-large-thickness)*1.5) / 100 * 70);
       mask-image: radial-gradient(transparent 0 var(--mask-radius), black calc(var(--mask-radius) + var(--antialias)));
     }
 
     &.bk-spinner--medium {
-      width: var(--bk-spinner-medium-size);
+      inline-size: var(--bk-spinner-medium-size);
       --mask-radius: calc(70% - calc(var(--bk-spinner-medium-thickness)*1.5) / 100 * 70);
       mask-image: radial-gradient(transparent 0 var(--mask-radius), black calc(var(--mask-radius) + var(--antialias)));
     }
 
     &.bk-spinner--small {
-      width: var(--bk-spinner-small-size);
+      inline-size: var(--bk-spinner-small-size);
       --mask-radius: calc(70% - calc(var(--bk-spinner-small-thickness)*2) / 100 * 70);
       mask-image: radial-gradient(transparent 0 var(--mask-radius), black calc(var(--mask-radius) + var(--antialias)));
     }

@@ -11,6 +11,10 @@ export default {
     'dist/**/*',
   ],
   
+  plugins: [
+    'stylelint-use-logical',
+  ],
+  
   // Override `stylelint-config-standard-scss` rules
   rules: {
     // Modules
@@ -61,6 +65,7 @@ export default {
     ],
     
     // Properties
+    'csstools/use-logical': 'always',
     //'declaration-no-important': true, // No !important
     'declaration-property-value-disallowed-list': [
       {
@@ -79,7 +84,6 @@ export default {
     ],
     
     // Expressions
-    // Workaround for `round()`, re-enable once https://github.com/stylelint-scss/stylelint-scss/pull/1097 lands
     'scss/no-global-function-names': null,
     
     // CSS extensions (e.g. CSS modules, or future CSS)
