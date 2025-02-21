@@ -42,7 +42,7 @@
     }
 
     .bk-search-input__search-icon {
-      width: $sizing-m;
+      inline-size: $sizing-m;
       opacity: 0.5;
       color: #8AA1B0;
     }
@@ -55,7 +55,7 @@
     }
 
     .bk-search-input__input {
-      width: 100%;
+      inline-size: 100%;
     }
   }
 
@@ -137,7 +137,7 @@
 
   .bk-multi-search__suggested-keys {
     .bk-multi-search__suggested-key-input .bk-input__input {
-      width: auto;
+      inline-size: auto;
     }
   }
 
@@ -145,7 +145,7 @@
   .bk-multi-search__dropdown-error-msg {
     padding-block-start: $sizing-s;
     color: $status-color-error;
-    max-width: $sizing-6 * 10;
+    max-inline-size: $sizing-6 * 10;
     display: block;
   }
 

@@ -109,7 +109,7 @@
   
   @include self-or-descendent(textarea) {
     margin-inline-end: 0;
-    width: 100%;
+    inline-size: 100%;
     box-sizing: border-box;
     resize: vertical;
   }
@@ -162,7 +162,7 @@
   }
   
   @include self-or-descendent(img) {
-    max-width: 100%;
+    max-inline-size: 100%;
   }
   
   @include self-or-descendent(':is(ul, ol, dl)') {
@@ -205,7 +205,7 @@
   @include self-or-descendent(table) {
     border-collapse: collapse;
     margin-block-end: 10px;
-    width: 100%;
+    inline-size: 100%;
   }
   
   @include self-or-descendent(':is(td, th)') {

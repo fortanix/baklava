@@ -16,7 +16,7 @@
     
     // Allow to shrink to just the icon
     flex-shrink: 10;
-    min-width: calc(var(--icon-size) + 2 * var(--padding-inline));
+    min-inline-size: calc(var(--icon-size) + 2 * var(--padding-inline));
     overflow: hidden;
     
     padding-block: bk.$spacing-1;

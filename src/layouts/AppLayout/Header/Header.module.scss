@@ -14,7 +14,7 @@
         https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context */
     z-index: 1;
     
-    height: var(--header-height);
+    block-size: var(--header-height);
     padding: var(--bk-sizing-2) var(--bk-sizing-3);
     
     background: bk.$theme-header-background-default;
@@ -35,7 +35,7 @@
       inset-block-start: calc(var(--header-height) + var(--bk-sizing-1));
       inset-inline-end: var(--bk-sizing-1);
       
-      width: var(--bk-sizing-7);
+      inline-size: var(--bk-sizing-7);
       padding: var(--bk-sizing-3);
       border-radius: var(--bk-sizing-1);
       

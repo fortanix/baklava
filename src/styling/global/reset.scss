@@ -79,7 +79,7 @@
     fieldset {
       legend {
         float: inline-start;
-        width: 100%;
+        inline-size: 100%;
         
         // Clear the `float`
         + * {
@@ -139,8 +139,8 @@
       
       margin: auto;
       //place-self: center; // In the future can use this instead of `margin: auto`
-      width: fit-content;
-      height: fit-content;
+      inline-size: fit-content;
+      block-size: fit-content;
       
       &::backdrop {
         position: fixed;

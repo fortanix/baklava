@@ -39,7 +39,7 @@ export const useDropdownMenuContext = (): DropdownMenuContext => {
 };
 
 
-export type ActionProps = React.PropsWithChildren<ComponentProps<typeof Button> & {
+export type ActionProps = ComponentProps<typeof Button> & {
   /** A unique identifier for this action. */
   itemKey: OptionKey,
   
@@ -51,7 +51,7 @@ export type ActionProps = React.PropsWithChildren<ComponentProps<typeof Button> 
   
   /** The event handler for when the user activates this action. */
   onActivate: (context: DropdownMenuContext) => void | Promise<void>,
-}>;
+};
 /**
  * A dropdown menu item that can be triggered to perform some action.
  */

@@ -6,11 +6,11 @@
   .util-layout-decorator {
     overflow: hidden; // Note: either `hidden` or `scroll` is required for `resize` to work
     
-    width: 80ch;
+    inline-size: 80ch;
     padding: var(--bk-focus-outline-width); // Add some spacing so as not to cut off focus outlines
     
-    &.util-layout-decorator--small { width: 60ch; }
-    &.util-layout-decorator--large { width: 100ch; }
+    &.util-layout-decorator--small { inline-size: 60ch; }
+    &.util-layout-decorator--large { inline-size: 100ch; }
     
     &.util-layout-decorator--resizable {
       padding-block-end: 10px; // Make space for the resize control in the corner

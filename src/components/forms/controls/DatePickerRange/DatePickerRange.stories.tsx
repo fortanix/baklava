@@ -38,7 +38,7 @@ export const Standard: Story = {
 
     return (
       // with a fixed height to avoid hiding the bottom part of the calendar
-      <div style={{height: '500px'}}>
+      <div style={{ blockSize: 500 }}>
         <DatePickerRange
           {...args}
           selected={startDate}
@@ -48,7 +48,7 @@ export const Standard: Story = {
           inline={true}
         />
         {/* with a fixed width to avoid content moving around while selecting */}
-        <p style={{width: '300px'}}>
+        <p style={{ inlineSize: 300 }}>
           Range selected:<br />
           {startDate?.toDateString()} - {endDate === null && '(null)'}{endDate?.toDateString()}
         </p>

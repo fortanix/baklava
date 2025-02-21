@@ -5,7 +5,7 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  $bk-select-min-width: 14rem;
+  $bk-select-min-inline-size: 14rem;
   $bk-caret-size: 17px;
   
   .bk-select {
@@ -18,11 +18,11 @@
     border: 0 solid var(--bk-input-accent-color);
     border-block-end-width: 1px;
     
-    height: 24px;
+    block-size: 24px;
     
     .bk-select__input {
       cursor: pointer;
-      min-width: $bk-select-min-width;
+      min-inline-size: $bk-select-min-inline-size;
       caret-color: transparent; /* FIXME: find better way to manage the input state */
       border: none;
     }
@@ -33,8 +33,8 @@
   }
   
   .bk-select__dropdown {
-    min-width: calc($bk-select-min-width + $bk-caret-size);
-    max-height: 18rem;
+    min-inline-size: calc($bk-select-min-inline-size + $bk-caret-size);
+    max-block-size: 18rem;
     
     background: bk.$theme-dropdown-menu-menu-background-default;
     border: 1px solid bk.$theme-dropdown-menu-menu-border-default;
