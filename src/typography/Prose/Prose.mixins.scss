@@ -5,8 +5,8 @@
 @use '../../styling/defs.scss' as bk;
 @use '../Heading/Heading.mixins.scss' as heading;
 
-@mixin body-text {
-  --bk-body-text-line-height: 1.6;
+@mixin prose {
+  --bk-prose-line-height: 1.6;
   --bk-body-block-spacing: 0.8lh;
   
   font-family: var(--bk-font-family-body);
@@ -15,7 +15,7 @@
   overflow-wrap: break-word; /* Prevent long words causing overflow */
   text-wrap: pretty; /* Favor better typography for text wrapping (e.g. prevent orphans */
   hyphens: auto;
-  line-height: var(--bk-body-text-line-height);
+  line-height: var(--bk-prose-line-height);
   
   &:where(h1) { @include heading.h1; }
   &:where(h2) { @include heading.h2; }
@@ -221,14 +221,14 @@
 }
 
 @mixin styles {
-  @layer baklava.body-text {
-    // Do not leak .bk-body-text styling into components
+  @layer baklava.prose {
+    // Do not leak .bk-prose styling into components
     // FIXME: browser support for `@scope` is not quite there yet (but we can't do `@supports at-rule()` yet either)
     // See: https://css-tricks.com/solved-by-css-donuts-scopes
-    @scope (.bk-body-text) to (.isolate, .bk:not(.bk-body-text)) {
+    @scope (.bk-prose) to (.isolate, .bk:not(.bk-prose)) {
       :scope, :scope * {
-        //@include bk.component-base(bk-body-text);
-        @include body-text;
+        //@include bk.component-base(bk-prose);
+        @include prose;
       }
     }
     
@@ -236,19 +236,19 @@
     // do this with feature testing, but we cannot yet use `@supports (at-rule())` to check for at-rules like `@scope`.
     @supports (-moz-appearance: none) {
       // Shallow implementation (note: this does not work well, breaks with any nested components.
-      //.bk-body-text:not(.bk, .bk *) { @include body-text; }
+      //.bk-prose:not(.bk, .bk *) { @include prose; }
       
       // The main issue with doing donut scoping without `@scope` is due to how the descendant operator (`.foo .bar`)
       // works. So instead, we avoid the descendant operator altogether and manually check level by level. This will
       // only work up until a certain finite depth, but we can make it as a deep as we like.
-      $descendant: '*:not(.bk:not(.bk-body-text))';
-      .bk-body-text,
-      .bk-body-text > #{$descendant},
-      .bk-body-text > #{$descendant} > #{$descendant},
-      .bk-body-text > #{$descendant} > #{$descendant} > #{$descendant},
-      .bk-body-text > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant},
-      .bk-body-text > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant} {
-        @include body-text;
+      $descendant: '*:not(.bk:not(.bk-prose))';
+      .bk-prose,
+      .bk-prose > #{$descendant},
+      .bk-prose > #{$descendant} > #{$descendant},
+      .bk-prose > #{$descendant} > #{$descendant} > #{$descendant},
+      .bk-prose > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant},
+      .bk-prose > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant} {
+        @include prose;
       }
     }
   }

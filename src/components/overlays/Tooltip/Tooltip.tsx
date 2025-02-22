@@ -73,7 +73,7 @@ export const Tooltip = (props: TooltipProps) => {
         propsRest.className,
       )}
     >
-      <div {...scrollerProps} className={cx(cl['bk-tooltip__content'], 'bk-body-text', scrollerProps.className)}>
+      <div {...scrollerProps} className={cx(cl['bk-tooltip__content'], 'bk-prose', scrollerProps.className)}>
         {children}
       </div>
     </div>

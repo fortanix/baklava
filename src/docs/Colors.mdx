@@ -37,7 +37,7 @@ Primitive color tokens are the basic color definitions which are not dependent o
           <H4>{colorCategory}</H4>
           <dl className={cl['colors-list']}>
             {Object.entries(colors).map(([colorName, { weight, color }]) =>
-              <TooltipProvider key={colorName} tooltip={<code className="bk-body-text">{`bk.$color-${colorName}`}</code>}>
+              <TooltipProvider key={colorName} tooltip={<code className="bk-prose">{`bk.$color-${colorName}`}</code>}>
                 <div className={cl['color']} tabIndex="1" style={{ '--color': color }}>
                   <dt>{weight}</dt>
                   <dd>{color}</dd>
@@ -93,12 +93,12 @@ Baklava supports both light and dark themes. By default, the user's preferred co
   <div className={cl['theme-demo']}>
     <Panel className="bk-theme--dark">
       <Panel.Heading>
-        This is a panel in dark theme: <code className="bk-body-text">.bk-theme--dark</code>
+        This is a panel in dark theme: <code className="bk-prose">.bk-theme--dark</code>
       </Panel.Heading>
       
       <Panel className="bk-theme--light">
         <Panel.Heading>
-          This is a panel in light theme: <code className="bk-body-text">.bk-theme--light</code>
+          This is a panel in light theme: <code className="bk-prose">.bk-theme--light</code>
         </Panel.Heading>
         
         {/* XXX this doesn't work without `@scope`, light wins over dark due to the order in which they were defined

@@ -39,7 +39,7 @@ const FormWithState = (props: React.ComponentProps<typeof Form>) => {
   return (
     <Form {...props} action={formAction}>
       {state &&
-        <Panel className="bk-body-text">
+        <Panel className="bk-prose">
           Submitted data:
           {' '}
           <pre>{JSON.stringify(state, null, 2)}</pre>

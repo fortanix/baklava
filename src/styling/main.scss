@@ -13,7 +13,7 @@
 @use './global/fonts.scss';
 
 // Defaults
-@use '../typography/BodyText/BodyText.mixins.scss' as bodytext;
+@use '../typography/Prose/Prose.mixins.scss' as Prose;
 
 
 //
@@ -36,7 +36,7 @@
   @layer baklava.base { @include variables.styles; }
   @layer baklava.base { @include theming.styles; }
   @layer baklava.base { @include global.styles; }
-  @layer baklava.body-text { @include bodytext.styles; }
+  @layer baklava.prose { @include Prose.styles; }
   
   // Emit fonts last, because vite will inline the font files, and we don't want to block the rest of the styling
   @layer baklava.base { @include fonts.styles; }

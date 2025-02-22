@@ -36,7 +36,7 @@ const preview = {
           'typography',
           [
             'Heading',
-            'BodyText',
+            'Prose',
           ],
           'components',
           [

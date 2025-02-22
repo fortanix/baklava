@@ -134,7 +134,7 @@ export const DialogModalUncloseable: Story = {
     activeDefault: true,
     allowUserClose: false,
     children: ({ close }) => (
-      <article className="bk-body-text">
+      <article className="bk-prose">
         <p>It should not be possible to close this dialog, except through the following button:</p>
         <p><Button kind="primary" label="Force close" onPress={close}/></p>
       </article>
@@ -172,7 +172,7 @@ const DialogModalControlledWithSubject = (props: React.ComponentProps<typeof Dia
   const modal = DialogModal.useModalWithSubject<Subject>();
   
   return (
-    <article className="bk-body-text">
+    <article className="bk-prose">
       {modal.subject &&
         <DialogModal {...modal.props} {...props} title={modal.subject.name}>
           Details about {modal.subject.name} here.
@@ -203,7 +203,7 @@ const DialogModalControlledConfirmation = (props: React.ComponentProps<typeof Di
   });
   
   return (
-    <article className="bk-body-text">
+    <article className="bk-prose">
       {deleteConfirmer.subject &&
         <DialogModal {...deleteConfirmer.props} {...props} title="Confirm Delete">
           Are you sure you want to delete "{deleteConfirmer.subject.name}"?
