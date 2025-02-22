@@ -5,15 +5,6 @@
 @use '../../styling/defs.scss' as bk;
 @use '../Heading/Heading.mixins.scss' as heading;
 
-
-/* Match either the current context (&), or a descendent of it */
-/* Note: only use this on single-element selectors (e.g. `p`), not on descendent selectors like `p a`. */
-@mixin self-or-descendent($selector) {
-  :is(#{$selector}):is(&, & *) {
-    @content;
-  }
-}
-
 @mixin body-text {
   --bk-body-text-line-height: 1.6;
   --bk-body-block-spacing: 0.8lh;
@@ -26,66 +17,66 @@
   hyphens: auto;
   line-height: var(--bk-body-text-line-height);
   
-  @include self-or-descendent(h1) { @include heading.h1; }
-  @include self-or-descendent(h2) { @include heading.h2; }
-  @include self-or-descendent(h3) { @include heading.h3; }
-  @include self-or-descendent(h4) { @include heading.h4; }
-  @include self-or-descendent(h5) { @include heading.h5; }
-  @include self-or-descendent(h6) { @include heading.h6; }
+  &:where(h1) { @include heading.h1; }
+  &:where(h2) { @include heading.h2; }
+  &:where(h3) { @include heading.h3; }
+  &:where(h4) { @include heading.h4; }
+  &:where(h5) { @include heading.h5; }
+  &:where(h6) { @include heading.h6; }
   
-  @include self-or-descendent(p) {
+  &:where(p) {
     margin-block-start: var(--bk-body-block-spacing);
     overflow-wrap: break-word; // Allow breaking mid-word if they would otherwise cause overflow
   }
   
-  @include self-or-descendent(hr) {
+  &:where(hr) {
     margin-block: var(--bk-sizing-3);
     border: none;
     border-block-start: 1px solid #dbdbdb;
   }
   
-  @include self-or-descendent('button, input, textarea') {
+  &:where(button, input, textarea) {
     transition:
-      background-color 0.1s linear,
-      border-color 0.1s linear,
-      color 0.1s linear,
-      box-shadow 0.1s linear,
-      transform 0.1s ease;
+    background-color 0.1s linear,
+    border-color 0.1s linear,
+    color 0.1s linear,
+    box-shadow 0.1s linear,
+    transform 0.1s ease;
   }
-  @include self-or-descendent('b, strong, th') {
+  &:where(b, strong, th) {
     font-weight: 600;
   }
-  @include self-or-descendent('u') {
+  &:where(u) {
     text-decoration: underline;
   }
-  @include self-or-descendent('i, em') {
+  &:where(i, em) {
     font-style: italic;
   }
   
-  @include self-or-descendent(blockquote) {
+  &:where(blockquote) {
     border-inline-start: 4px solid #0096bfab;
     margin: 1.5em 0;
     padding: 0.5em 1em;
     font-style: italic;
     
-    & > footer, & cite {
+    & > footer:not(.bk), & > cite:not(.bk) {
       font-style: normal;
     }
   }
   
-  @include self-or-descendent(address) {
+  &:where(address) {
     font-style: normal;
   }
   
-  @include self-or-descendent('button, input[type=submit], input[type=button], input[type=checkbox]') {
+  &:where(button, input[type='submit'], input[type='button'], input[type='checkbox']) {
     cursor: pointer;
   }
   
-  @include self-or-descendent('input:not([type=checkbox]):not([type=radio]), select') {
+  &:where(input:not([type='checkbox'], [type='radio']), select) {
     display: block;
   }
   
-  @include self-or-descendent('input, select, button, textarea') {
+  &:where(input, select, button, textarea) {
     color: #000000;
     background-color: #efefef;
     font-family: inherit;
@@ -98,8 +89,8 @@
     outline: none;
   }
   
-  /* @include self-or-descendent :is(
-    input:not([type=checkbox]):not([type=radio]),
+  /* &:where(
+    input:not([type='checkbox']):not([type='radio']),
     select,
     button,
     textarea,
@@ -107,35 +98,35 @@
     -webkit-appearance: none;
   } */
   
-  @include self-or-descendent(textarea) {
+  &:where(textarea) {
     margin-inline-end: 0;
     inline-size: 100%;
     box-sizing: border-box;
     resize: vertical;
   }
   
-  @include self-or-descendent('button, input[type=submit], input[type=button]') {
+  &:where(button, input[type='submit'], input[type='button']) {
     padding-inline: 30px;
   }
   
-  @include self-or-descendent('button:hover, input[type=submit]:hover, input[type=button]:hover') {
+  &:where(button:hover, input[type='submit']:hover, input[type='button']:hover) {
     background: #dddddd;
   }
   
-  @include self-or-descendent('input:disabled, select:disabled, button:disabled, textarea:disabled') {
+  &:where(input:disabled, select:disabled, button:disabled, textarea:disabled) {
     cursor: not-allowed;
     opacity: .5;
   }
   
-  & ::-webkit-input-placeholder {
+  &:where(::-webkit-input-placeholder) {
     color: #949494;
   }
   
-  & ::placeholder {
+  &:where(::placeholder) {
     color: #949494;
   }
   
-  @include self-or-descendent(a) {
+  &:where(a) {
     text-decoration: none;
     color: bk.$theme-text-link-default;
     
@@ -144,15 +135,15 @@
     }
   }
   
-  @include self-or-descendent('code, kbd') {
+  &:where(code, kbd) {
     background: light-dark(#ccc, #333);
     padding: 5px;
     border-radius: 3px;
     font-family: var(--bk-font-family-code, monospace);
   }
   
-  @include self-or-descendent('pre') {
-    > code {
+  &:where(pre) {
+    > code:not(.bk) {
       padding: 10px;
       display: block;
       // Note: we don't control the code here, so can't use `useScroller()`. Consumer needs to add the tabindex.
@@ -161,106 +152,104 @@
     }
   }
   
-  @include self-or-descendent(img) {
+  &:where(img) {
     max-inline-size: 100%;
   }
   
-  @include self-or-descendent('ul, ol, dl') {
+  &:where(ul, ol, dl) {
     --list-indent: 1.5ch;
     margin-block-start: var(--bk-body-block-spacing);
   }
-  @include self-or-descendent('li') {
+  &:where(li) {
     /* Nested lists */
-    > :is(ul, ol, dl) {
+    > :is(ul, ol, dl):not(.bk) {
       margin-inline-start: var(--list-indent);
     }
   }
-  @include self-or-descendent(ul) {
+  &:where(ul) {
     display: block;
     /* Note: do not use list-style: none, this causes accessibility issues:
     https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists */
     list-style: disc inside;
     
-    > li::marker {
+    > li:not(.bk)::marker {
       /* Override the marker style so we customize the gap size */
       /* https://css-tricks.com/everything-you-need-to-know-about-the-gap-after-the-list-marker/ */
       content: '\2022' ' ';
       margin: 0; /* Margin and padding are not supported by `::marker` currently */
     }
-    > li:not(:first-of-type) { /* Note: in the future we could use `margin-trim` instead */
+    > li:not(:first-of-type, .bk) { /* Note: in the future we could use `margin-trim` instead */
       margin-block-start: calc(var(--bk-body-block-spacing) / 4);
     }
   }
-  @include self-or-descendent(ol) {
+  &:where(ol) {
     display: block;
     /* Note: do not use list-style: none, this causes accessibility issues:
     https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists */
     list-style: decimal inside;
     
-    > li:not(:first-of-type) {
+    > li:not(:first-of-type, .bk) {
       margin-block-start: calc(var(--bk-body-block-spacing) / 4);
     }
   }
   
-  @include self-or-descendent(table) {
+  &:where(table) {
     border-collapse: collapse;
     margin-block-end: 10px;
     inline-size: 100%;
   }
   
-  @include self-or-descendent('td, th') {
+  &:where(td, th) {
     padding: 6px;
     text-align: start;
   }
   
-  @include self-or-descendent(th) {
+  &:where(th) {
     border-block-end: 1px solid #dbdbdb;
   }
   
-  @include self-or-descendent(tbody) {
-    tr:nth-child(even) {
+  &:where(tbody) {
+    > tr:nth-child(even):not(.bk) {
       background-color: #efefef;
     }
   }
   
   // XXX replace this with `margin-trim` once that's available
-  > :nth-child(1 of :not([hidden], dialog)) {
+  & > :nth-child(1 of :not(.bk, [hidden], dialog)) {
     margin-block-start: 0;
   }
 }
 
 @mixin styles {
-  // Use a separate layer for body-text so that we can `revert-layer`
   @layer baklava.body-text {
     // Do not leak .bk-body-text styling into components
     // FIXME: browser support for `@scope` is not quite there yet (but we can't do `@supports at-rule()` yet either)
-    @scope (.bk-body-text) to (.isolate, .bk:not(.bk-body-text)) {
-      :scope {
-        @include bk.component-base(bk-body-text);
-        @include body-text;
-      }
-    }
-    
-    @supports (-moz-appearance: none) {
-      .bk-body-text:not(.bk, .bk *) {
-        @include bk.component-base(bk-body-text);
-        @include body-text;
-      }
-    }
-    
-    /*
-    // Note: without @scope we can only achieve shallow donut selectors, not arbitrary nesting
     // See: https://css-tricks.com/solved-by-css-donuts-scopes
-    
-    .bk-body-text {
-      @include bk.component-base(bk-body-text);
-      @include body-text;
+    @scope (.bk-body-text) to (.isolate, .bk:not(.bk-body-text)) {
+      :scope, :scope * {
+        //@include bk.component-base(bk-body-text);
+        @include body-text;
+      }
     }
     
-    // Note: need the `#specificity#hack` to make sure we override everything in this layer
-    :is(.bk:not(.bk-body-text) *, #specificity#hack) {
-      all: revert-layer;
+    // Workaround for Firefox, which (as of early 2025) does not support `@scope`. Note: it would be better if we could
+    // do this with feature testing, but we cannot yet use `@supports (at-rule())` to check for at-rules like `@scope`.
+    @supports (-moz-appearance: none) {
+      // Shallow implementation (note: this does not work well, breaks with any nested components.
+      //.bk-body-text:not(.bk, .bk *) { @include body-text; }
+      
+      // The main issue with doing donut scoping without `@scope` is due to how the descendant operator (`.foo .bar`)
+      // works. So instead, we avoid the descendant operator altogether and manually check level by level. This will
+      // only work up until a certain finite depth, but we can make it as a deep as we like.
+      $descendant: '*:not(.bk:not(.bk-body-text))';
+      .bk-body-text,
+      .bk-body-text > #{$descendant},
+      .bk-body-text > #{$descendant} > #{$descendant},
+      .bk-body-text > #{$descendant} > #{$descendant} > #{$descendant},
+      .bk-body-text > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant},
+      .bk-body-text > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant} {
+        @include body-text;
+      }
     }
-    */
   }
 }

@@ -239,7 +239,7 @@ export const ToastProvider = ({ global = false, children }: ToastProviderProps) 
       {children}
       {/*
       Render the toasts in the top-most modal `<dialog>`, to work around browser limitations where only the `<dialog>`
-      element and its descendents are interactive (everything else is inert).
+      element and its descendants are interactive (everything else is inert).
       */}
       {createPortal(<Toaster/>, activeModalDialog?.dialogRef?.current ?? window.document.body)}
     </ToastContext>

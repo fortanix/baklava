@@ -142,7 +142,7 @@ const packageConfig = {
     '@storybook/addon-interactions': '^8.5.3',
     '@storybook/addon-links': '^8.5.3',
     '@storybook/addon-storysource': '^8.5.3',
-    '@storybook/addon-designs': '^8.1.0',
+    '@storybook/addon-designs': '^8.2.0',
     'chromatic': '^11.25.2',
     '@chromatic-com/storybook': '^3.2.3', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
@@ -199,6 +199,11 @@ const packageConfig = {
   overrides: {
     // TODO: Revisit after updating react-table to v8
     'react-table': {
+      'react': '$react',
+      'react-dom': '$react-dom',
+    },
+    // https://github.com/storybookjs/addon-designs/issues/254
+    '@storybook/addon-designs': {
       'react': '$react',
       'react-dom': '$react-dom',
     },

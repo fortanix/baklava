@@ -14,6 +14,7 @@
     
     //overflow: hidden; // Note: cannot hide overflow, would truncate focus outlines
     inline-size: fit-content; // Do not stretch in a block context
+    align-self: center; // Do not stretch along cross axis in flex context
     flex: 0; // Do not shrink/grow in a flex context
     
     border: bk.rem-from-px(1) solid var(--bk-segmented-control-border-color);
@@ -40,6 +41,7 @@
       border: none;
       background-color: var(--bk-segmented-control-background-color);
       
+      @include bk.text-one-line($include-padding: false);
       color: var(--bk-segmented-control-text-color);
       @include bk.font($family: bk.$font-family-body, $weight: bk.$font-weight-semibold);
       text-transform: uppercase;
