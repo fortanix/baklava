@@ -43,7 +43,7 @@ const ToastAutomatic = (props: Partial<ToastDescriptor>) => {
 
 export const ToastStandard: Story = {
   args: {
-    children: <><ToastAutomatic/><p className="bk-body-text">A notification should appear on screen.</p></>,
+    children: <><ToastAutomatic/><p className="bk-prose">A notification should appear on screen.</p></>,
   },
 };
 
@@ -62,7 +62,7 @@ export const ToastVariantInfo: Story = {
     children: (
       <>
         <ToastAutomatic variant="info"/>
-        <p className="bk-body-text">A notification should appear on screen.</p>
+        <p className="bk-prose">A notification should appear on screen.</p>
       </>
     ),
   }
@@ -73,7 +73,7 @@ export const ToastVariantWarning: Story = {
     children: (
       <>
         <ToastAutomatic variant="warning"/>
-        <p className="bk-body-text">A notification should appear on screen.</p>
+        <p className="bk-prose">A notification should appear on screen.</p>
       </>
     ),
   }
@@ -84,7 +84,7 @@ export const ToastVariantError: Story = {
     children: (
       <>
         <ToastAutomatic variant="error"/>
-        <p className="bk-body-text">A notification should appear on screen.</p>
+        <p className="bk-prose">A notification should appear on screen.</p>
       </>
     ),
   }
@@ -95,7 +95,7 @@ export const ToastVariantSuccess: Story = {
     children: (
       <>
         <ToastAutomatic variant="success"/>
-        <p className="bk-body-text">A notification should appear on screen.</p>
+        <p className="bk-prose">A notification should appear on screen.</p>
       </>
     ),
   }
@@ -106,7 +106,7 @@ export const ToastWithAutoClose: Story = {
     children: (
       <>
         <ToastAutomatic variant="info" options={{ autoClose: 3000 }} message="I should close after 3 seconds"/>
-        <p className="bk-body-text">A notification should appear on screen, and then auto-close in 3 seconds.</p>
+        <p className="bk-prose">A notification should appear on screen, and then auto-close in 3 seconds.</p>
       </>
     ),
   }

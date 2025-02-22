@@ -109,6 +109,7 @@ const packageConfig = {
     'glob': '^11.0.1',
     
     // Build
+    'browserslist': '^4.24.4',
     'vite': '^5.4.11', // Cannot use vite v6, blocked by https://github.com/privatenumber/vite-css-modules/issues/13
     '@vitejs/plugin-react': '^4.3.4',
     'vite-plugin-dts': '^4.5.0',
@@ -127,6 +128,7 @@ const packageConfig = {
     'vitest': '^3.0.5',
     '@vitest/ui': '^3.0.5',
     'axe-playwright': '^2.0.3',
+    '@ngneat/falso': '^7.3.0',
     
     // Storybook
     'storybook': '^8.5.3',
@@ -140,7 +142,7 @@ const packageConfig = {
     '@storybook/addon-interactions': '^8.5.3',
     '@storybook/addon-links': '^8.5.3',
     '@storybook/addon-storysource': '^8.5.3',
-    '@storybook/addon-designs': '^8.1.0',
+    '@storybook/addon-designs': '^8.2.0',
     'chromatic': '^11.25.2',
     '@chromatic-com/storybook': '^3.2.3', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
@@ -160,8 +162,6 @@ const packageConfig = {
     
     // Data table
     '@types/react-table': '^7.7.20',
-    // Fake data
-    "@ngneat/falso": '^7.3.0',
   },
   
   // Dependencies needed when running the generated build
@@ -202,6 +202,11 @@ const packageConfig = {
       'react': '$react',
       'react-dom': '$react-dom',
     },
+    // https://github.com/storybookjs/addon-designs/issues/254
+    '@storybook/addon-designs': {
+      'react': '$react',
+      'react-dom': '$react-dom',
+    },
   },
 };
 
@@ -232,3 +237,4 @@ const makePackageJson = () => {
 
 // Write to `package.json`
 fs.writeFileSync('./package.json', `${JSON.stringify(makePackageJson(), null, 2)}\n`);
+console.info('Generated package.json');

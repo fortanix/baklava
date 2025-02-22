@@ -50,7 +50,7 @@ export const LoremIpsum = (props: LoremIpsumProps) => {
   return (
     <article
       {...propsRest}
-      className={cx('bk-body-text', propsRest.className)}
+      className={cx('bk-prose', propsRest.className)}
     >
       {renderParagraphs()}
     </article>

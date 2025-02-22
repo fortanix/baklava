@@ -46,6 +46,7 @@
     :where([hidden]) {
       // The `reset` lib does this already but without the `!important`, which means `hidden` will get overridden
       // easily if a `display` is set in a higher layer.
+      // stylelint-disable-next-line declaration-no-important
       display: none !important;
     }
     

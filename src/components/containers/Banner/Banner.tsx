@@ -154,7 +154,7 @@ export const Banner = Object.assign(
               <span className={cx(cl['bk-banner__title__text'])}>{renderTitle()}</span>
             </strong>
             {compact && children &&
-              <div className={cx('bk-body-text', cl['bk-banner__message--compact'])}>{children}</div>
+              <div className={cx('bk-prose', cl['bk-banner__message--compact'])}>{children}</div>
             }
           </div>
           
@@ -174,7 +174,7 @@ export const Banner = Object.assign(
         </div>
         
         {!compact && children &&
-          <article className={cx('bk-body-text', 'bk-theme--light', cl['bk-banner__message'])}>{children}</article>
+          <article className={cx('bk-prose', 'bk-theme--light', cl['bk-banner__message'])}>{children}</article>
         }
       </div>
     );

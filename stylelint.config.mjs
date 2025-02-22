@@ -66,7 +66,7 @@ export default {
     
     // Properties
     'csstools/use-logical': 'always',
-    //'declaration-no-important': true, // No !important
+    'declaration-no-important': true, // Discourage use of `!important`
     'declaration-property-value-disallowed-list': [
       {
         // Disallow auto/scroll. This requires a tabindex="0" for accessibility, which should be handled through the

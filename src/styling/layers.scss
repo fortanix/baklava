@@ -15,7 +15,7 @@ References:
 
 @mixin styles {
   @layer normalize, reset, baklava, app, accessibility, storybook;
-  @layer baklava.base, baklava.body-text, baklava.theming, baklava.components, baklava.overrides;
+  @layer baklava.base, baklava.prose, baklava.theming, baklava.components, baklava.overrides;
 }
 
 /*

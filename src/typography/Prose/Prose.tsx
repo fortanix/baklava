@@ -5,25 +5,25 @@
 import { classNames as cx, type ComponentProps } from '../../util/componentUtil.ts';
 import * as React from 'react';
 
-import cl from './BodyText.module.scss';
+import cl from './Prose.module.scss';
 
 
-export { cl as BodyTextClassNames };
+export { cl as ProseClassNames };
 
-export type BodyTextProps = React.PropsWithChildren<ComponentProps<'article'> & {
+export type ProseProps = React.PropsWithChildren<ComponentProps<'article'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 }>;
 /**
- * BodyText component.
+ * Prose component.
  */
-export const BodyText = ({ unstyled, ...propsRest }: BodyTextProps) => {
+export const Prose = ({ unstyled, ...propsRest }: ProseProps) => {
   return (
     <article
       {...propsRest}
       className={cx({
         bk: true,
-        'bk-body-text': !unstyled,
+        'bk-prose': !unstyled,
       }, propsRest.className)}
     />
   );
