@@ -5,14 +5,27 @@
 @use 'sass:meta';
 
 @mixin styles {
-  @layer base, overrides, popover;
+  @layer lib, custom; // Sublayers within `@layer reset` for more fine-grained control
   
-  @layer base {
+  @layer lib {
+    // Note: any top-level `&` in the CSS will be transpiled to `:scope`. Sass assumes that the CSS we load is
+    // top-level CSS, where `&` does indeed mean `:scope`. So any `:root`/`html` selectors will need to be done in Sass.
     @include meta.load-css('../lib/reset.css');
+    
+    // Rules including `:root`/`html` from `reset.css`
+    &:root {
+      /* stylelint-disable property-no-vendor-prefix */
+      -moz-text-size-adjust: none;
+      -webkit-text-size-adjust: none;
+      /* stylelint-enable property-no-vendor-prefix */
+      text-size-adjust: none;
+    }
   }
   
-  @layer overrides {
-    /* Custom reset overrides */
+  // Custom reset overrides
+  // References:
+  // - [1] https://www.youtube.com/watch?v=cCAtD_BAHNw ("Under the radar CSS features for your CSS reset")
+  @layer custom {
     
     // :focus-visible {
     //   /* outline: calc(var(--bk-sizing-1) / 2) solid color-contrast(var(--bk-page-color-background) vs white, black); */
@@ -28,24 +41,16 @@
     // }
     
     @media (prefers-reduced-motion: no-preference) {
-      :has(:target) {
-        /* Add enough scroll padding so anchors don't get hidden */
-        scroll-padding-top: calc(var(--bk-layout-header-height) + var(--bk-sizing-2));
-      }
-    }
-    
-    
-    /* https://www.youtube.com/watch?v=cCAtD_BAHNw */
-    @media (prefers-reduced-motion: no-preference) {
+      // Source: [1]
       :has(:target) {
         scroll-behavior: smooth;
-        scroll-padding-top: 1rem;
+        scroll-padding-top: 1.5lh;
       }
     }
     
     :where([hidden]) {
-      // The `reset` lib does this already but without the `!important`, which means `hidden` will get overridden
-      // easily if a `display` is set in a higher layer.
+      // The `reset.css` lib does this already but without the `!important`, which means it will get overridden easily
+      // if a `display` is set in a higher layer. There should be no reason to override `display: none` on `[hidden]`.
       // stylelint-disable-next-line declaration-no-important
       display: none !important;
     }
@@ -100,35 +105,49 @@
     // Re-apply a few sensible defaults for dialogs. For reference, see the default user agent styling rules here:
     // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css
     dialog {
-      // Allow overriding the visible display type, without having to reimplement all the `display: none` logic
-      display: var(--dialog-display, block);
-      position: static;
-      
       // Issue: if the parent has `user-select: none` (e.g. button), then the dialog will inherit this by default.
       // In the future, if `contain: user-select` is implemented, we could use that instead.
       user-select: text;
-      
-      &:where(:not([open])) {
-        display: none;
-      }
-      
       &::backdrop {
         user-select: none; // Without this, clicking on the backdrop selects the dialog text in Firefox
+      }
+      
+      // Do not position absolutely by default (make that an opt in for modal dialogs only)
+      position: static;
+      
+      // Use a variable (`--display`) to allow higher level styling to override the visible display type (e.g. to use
+      // `flex` instead of `block`), without having to reimplement all the `display: none` logic.
+      display: var(--display, block);
+      
+      &:not([popover]) {
+        &:not([open]) { // Once supported, use `:open` for this instead of `[open]`
+          display: none;
+        }
+      }
+      
+      // Take note of this Chromium issue: https://issues.chromium.org/issues/388538944
+      // In summary, `<dialog open popover>` is buggy in Chromium when setting `open` manually or using `show()` rather
+      // than `showModal()`. If we want to use a `<dialog>` as a popover, make sure to use `showModal()` only.
+      
+      &[popover] {
+        &:not(:popover-open) {
+          display: none;
+        }
       }
     }
     /*
     Note: the `:modal` pseudo-class applies when the modal is in the top layer *and* currently open. That means that it
     stops applying during an exit transition, which will break the styling. The upcoming `:open` pseudo-class doesn't
-    resolve this either. Chrome internally has a `:-internal-dialog-in-top-layer` pseudo-class for this, but it's not
+    resolve this either. Chrome internally has an `:-internal-dialog-in-top-layer` pseudo-class for this, but it's not
     exposed.
     
     We can work around this by applying the modal styling on `dialog` regardless of `:modal`. However, that breaks
     regular (non-modal) styling. It is essentially impossible to generically style dialog elements without knowing
     whether it's going to be used as a modal or not, if we also want exit transitions.
     
-    This reset assumes you do *not* apply an exit transition. If you do want an exit transition, you must also apply
-    the `position: fixed` (etc.) styling on the base `dialog`. Or you can use `aria-model="true"` and opt in to base
-    styling that way.
+    This reset assumes you do *not* apply an exit transition, by default. If you do want an exit transition, you can
+    set `aria-model="true"` to opt in. Or, you can manually apply the `position: fixed` (etc.) styling on the base
+    `dialog` yourself.
     
     - https://github.com/w3c/csswg-drafts/issues/9912 - "User-agent styles for top layer transitions"
     - https://github.com/whatwg/html/pull/9387#issuecomment-1599722425
@@ -138,8 +157,7 @@
       position: fixed;
       inset: 0;
       
-      margin: auto;
-      //place-self: center; // In the future can use this instead of `margin: auto`
+      margin: auto; // In the future, could use `place-self: center` instead
       inline-size: fit-content;
       block-size: fit-content;
       
@@ -147,22 +165,6 @@
         position: fixed;
         inset: 0;
         background: rgba(0 0 0 / 20%);
-      }
-    }
-  }
-  
-  // Popover styles should override prior definitions like those for `dialog`
-  @layer popover {
-    [popover] {
-      // Workaround for Chrome issue: https://issues.chromium.org/issues/388538944
-      // Assumes there are no elements with a higher `z-index` in the (non-top layer) document, which we should avoid
-      // doing anyway. We don't want to do `infinity` because we want to allow other top layer elements to be higher.
-      //z-index: 100; // XXX we can also work around this by using `open={false}` with popovers.
-      
-      display: var(--dialog-display);
-      
-      &:not(:popover-open) {
-        display: none;
       }
     }
   }

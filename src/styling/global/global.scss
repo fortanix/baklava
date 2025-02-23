@@ -52,4 +52,11 @@
   // Workaround for https://github.com/vbenjs/vite-plugin-svg-icons/issues/90
   // stylelint-disable-next-line selector-id-pattern
   #baklava-icon-sprite { display: none; }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    &:root:has(:target) {
+      // Add enough scroll padding so anchors don't get hidden behind the `AppLayout` header
+      scroll-padding-top: calc(var(--bk-layout-header-height) + var(--bk-sizing-2));
+    }
+  }
 }

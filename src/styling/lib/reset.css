@@ -1,9 +1,16 @@
 /* stylelint-disable */
 /*
 Source: https://github.com/elad2412/the-new-css-reset
-Modifications:
-  - Indents (4 -> 2)
-  - Change `html`/`:root` to `&:root` so that we can nest all these rules inside a `.bk-root` class.
+
+Note: we load this file in a nested context (see `styling/global/reset.scss`). Be careful not to use top-level `&`
+in this CSS file, since Sass will assume that this CSS is a top-level file and transpile `&` to `:scope`.
+https://developer.mozilla.org/en-US/docs/Web/CSS/Nesting_selector
+
+(1) `*:where(:not(html, ...)`
+  - Here it is not an issue, the `*` will never match `html` anyway since we're in a nested context.
+
+(2) `html { text-size-adjust: none; ... }
+  - This rule will break due to the nested context. We need to replicate this rule in `reset.scss` instead.
 */
 
 
@@ -30,7 +37,7 @@ Modifications:
 }
 
 /* Fix mobile Safari increase font-size on landscape mode */
-&:root {
+html {
   -moz-text-size-adjust: none;
   -webkit-text-size-adjust: none;
   text-size-adjust: none;

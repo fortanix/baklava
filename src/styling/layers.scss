@@ -18,8 +18,7 @@ of `preview-head.html`.
 
 @mixin styles {
   @layer
-    normalize, // User agent style normalization (https://css-tricks.com/reboot-resets-reasoning)
-    reset, // User agent style reset
+    reset, // User agent style reset (https://css-tricks.com/reboot-resets-reasoning)
     baklava, // Baklava styling
     app, // Consumer application styling (*)
     accessibility, // Global accessibility styling that should take precedence over components by default
