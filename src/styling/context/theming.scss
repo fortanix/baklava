@@ -26,16 +26,6 @@ a `light-dark()` expression in a variable and reuse that in a different theme. M
 
 @mixin color-scheme($scheme) {
   color-scheme: string.unquote($scheme);
-  
-  // XXX this should be done by lightningcss automatically, but for some reason these variables are not being injected.
-  // https://github.com/parcel-bundler/lightningcss/releases/tag/v1.24.0
-  @if $scheme == 'light' or $scheme == 'only light' {
-    --lightningcss-light: initial;
-    --lightningcss-dark: ;
-  } @else if $scheme == dark or $scheme == 'only dark' {
-    --lightningcss-light: ;
-    --lightningcss-dark: initial;
-  }
 }
 
 @mixin theme($theme) {
@@ -83,15 +73,6 @@ a `light-dark()` expression in a variable and reuse that in a different theme. M
   &:root {
     /* Indicates that we support both light and dark themes (in no particular order) */
     @include theme('light dark');
-    
-    // XXX this should be done by lightningcss automatically, but for some reason these variables are not being injected
-    // https://github.com/parcel-bundler/lightningcss/releases/tag/v1.24.0
-    --lightningcss-light: initial;
-    --lightningcss-dark: ;
-    @media (prefers-color-scheme: dark) {
-      --lightningcss-light: ;
-      --lightningcss-dark: initial;
-    }
   }
   
   /* Theme overrides */

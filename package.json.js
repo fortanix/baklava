@@ -110,7 +110,7 @@ const packageConfig = {
     
     // Build
     'browserslist': '^4.24.4',
-    'vite': '^5.4.11', // Cannot use vite v6, blocked by https://github.com/privatenumber/vite-css-modules/issues/13
+    'vite': '^5.4.11', // Cannot yet upgrade to v6, causes some odd pre-transform errors in lightningcss
     '@vitejs/plugin-react': '^4.3.4',
     'vite-plugin-dts': '^4.5.0',
     'vite-plugin-lib-inject-css': '^2.2.1',

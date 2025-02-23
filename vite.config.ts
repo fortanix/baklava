@@ -71,14 +71,17 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         api: 'modern-compiler',
+        silenceDeprecations: ['mixed-decls'], // https://sass-lang.com/documentation/breaking-changes/mixed-decls
       },
     },
     
     // Configure postprocessing using lightningcss
     transformer: 'lightningcss',
     lightningcss: {
-      targets: browserslistToTargets(browserslist('>= 0.25%')),
-      exclude: LightningCssFeatures.LightDark,
+      targets: browserslistToTargets(browserslist(
+        `fully supports css-nesting AND fully supports css-cascade-layers`
+      )),
+      exclude: LightningCssFeatures.LightDark, // Do not include the `light-dark()` polyfill (it's too buggy)
       cssModules: {
         // @ts-expect-error This is fixed in vite v6, remove this line once we upgrade.
         grid: false, // Workaround for https://github.com/parcel-bundler/lightningcss/issues/762

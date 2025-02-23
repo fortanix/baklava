@@ -1,9 +1,15 @@
 {
-  // https://github.com/Microsoft/vscode-css-languageservice/blob/main/docs/customData.md
-  // https://stackoverflow.com/questions/42520229/vs-code-and-intellisense-for-css-grid-and-css-modules
-  "css.customData": ["./custom.css-data.json"],
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/node_modules": true,
+  },
   
-  // Editor (code)
+  // Editor
   "editor.insertSpaces": true, // Insert spaces when pressing Tab
   "editor.tabSize": 2,
   "editor.detectIndentation": true, // Detect tabSize/insertSpaces automatically when opening a file
@@ -18,10 +24,17 @@
   "files.trimTrailingWhitespace": false, // Do not trim trailing whitespace
   "editor.trimAutoWhitespace": false,
   "files.eol": "\n",
+  
+  // JS/TS
   "javascript.preferences.quoteStyle": "single",
   "typescript.tsdk": "node_modules/typescript/lib", // Use the TypeScript SDK from the current project
   "typescript.preferences.autoImportFileExcludePatterns": [
     "app/lib.ts",
     "storybook/internal/**/*"
   ],
+  
+  // CSS
+  // https://github.com/Microsoft/vscode-css-languageservice/blob/main/docs/customData.md
+  // https://stackoverflow.com/questions/42520229/vs-code-and-intellisense-for-css-grid-and-css-modules
+  "css.customData": ["./custom.css-data.json"],
 }
