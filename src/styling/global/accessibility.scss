@@ -90,11 +90,6 @@
     @include focus-outset($override-layer: false);
   }
   
-  *:has(:target) {
-    // Add enough scroll padding so anchors don't get hidden
-    scroll-padding-top: calc(var(--bk-layout-header-height) + var(--bk-sizing-2));
-  }
-  
   // https://www.smashingmagazine.com/2021/10/respecting-users-motion-preferences
   @media screen and (prefers-reduced-motion: reduce), (update: slow) {
     * {

@@ -118,7 +118,11 @@ export const Standard: Story = {
               Test
             </DialogModal>
           </Panel>
-          <OverflowTester/>
+          
+          {/* Clicking the link should scroll to the anchor, with enough top padding (`scroll-padding-top`) */}
+          <DummyLink id="anchor">Anchor</DummyLink>
+          <OverflowTester openDefault/>
+          <a href="#anchor">Scroll to anchor</a>
         </AppLayout.Content>
         <AppLayout.Footer>
           <span className="version">Version: 1.2.2343</span>

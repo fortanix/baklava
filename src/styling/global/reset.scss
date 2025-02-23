@@ -48,7 +48,7 @@
       }
     }
     
-    :where([hidden]) {
+    [hidden] {
       // The `reset.css` lib does this already but without the `!important`, which means it will get overridden easily
       // if a `display` is set in a higher layer. There should be no reason to override `display: none` on `[hidden]`.
       // stylelint-disable-next-line declaration-no-important
