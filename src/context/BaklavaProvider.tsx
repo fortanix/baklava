@@ -26,11 +26,6 @@ if (!addedTestNotify && import.meta.env.MODE === 'development') {
 }
 
 export const BaklavaProvider = (props: React.PropsWithChildren) => {
-  // TEMP
-  if (!document.documentElement.classList.contains('bk-root')) {
-    document.documentElement.classList.add('bk-root');
-  }
-  
   return (
     <TopLayerManager>
       <ToastProvider global>

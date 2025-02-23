@@ -76,11 +76,13 @@
 }
 
 @mixin styles {
-  &:root {
+  /*
+  :root {
     // See `theming.scss`
     //--bk-focus-outline-width
     //--bk-focus-outline-color
   }
+  */
   
   $elements-with-inset: div, section, dialog;
   :is(#{$elements-with-inset}) {

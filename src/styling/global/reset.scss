@@ -10,16 +10,8 @@
   @layer lib {
     // Note: any top-level `&` in the CSS will be transpiled to `:scope`. Sass assumes that the CSS we load is
     // top-level CSS, where `&` does indeed mean `:scope`. So any `:root`/`html` selectors will need to be done in Sass.
+    // See `global.scss` for these `:root` styles.
     @include meta.load-css('../lib/reset.css');
-    
-    // Rules including `:root`/`html` from `reset.css`
-    &:root {
-      /* stylelint-disable property-no-vendor-prefix */
-      -moz-text-size-adjust: none;
-      -webkit-text-size-adjust: none;
-      /* stylelint-enable property-no-vendor-prefix */
-      text-size-adjust: none;
-    }
   }
   
   // Custom reset overrides

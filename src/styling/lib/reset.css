@@ -1,16 +1,6 @@
 /* stylelint-disable */
 /*
 Source: https://github.com/elad2412/the-new-css-reset
-
-Note: we load this file in a nested context (see `styling/global/reset.scss`). Be careful not to use top-level `&`
-in this CSS file, since Sass will assume that this CSS is a top-level file and transpile `&` to `:scope`.
-https://developer.mozilla.org/en-US/docs/Web/CSS/Nesting_selector
-
-(1) `*:where(:not(html, ...)`
-  - Here it is not an issue, the `*` will never match `html` anyway since we're in a nested context.
-
-(2) `html { text-size-adjust: none; ... }
-  - This rule will break due to the nested context. We need to replicate this rule in `reset.scss` instead.
 */
 
 

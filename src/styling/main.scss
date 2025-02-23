@@ -21,21 +21,18 @@
 
 @include layers.styles; // Cascade layer ordering: MUST be emitted before anything else
 
-.bk-root:root { // Set this to opt in to Baklava global styling only if `.bk-root` is set on the root element
-//:root {
-  @layer reset { @include reset.styles; } // Reset all user agent styling to a minimal/consistent base
-  
-  // User-oriented styling (high layer specificity in order to apply to everything by default). If a component needs
-  // to override these styling (e.g. custom focus outline), then use `!important`.
-  // Note: despite being in a high layer, emitted early so that it is parsed sooner.
-  @layer accessibility { @include accessibility.styles; }
-  
-  // Baklava-specific styling
-  @layer baklava.base { @include variables.styles; }
-  @layer baklava.base { @include global.styles; }
-  @layer baklava.theming { @include theming.styles; }
-  @layer baklava.prose { @include prose.styles; }
-  
-  // Emit fonts last, because vite will inline the font files, and we don't want to block the rest of the styling
-  @layer baklava.base { @include fonts.styles; }
-}
+@layer reset { @include reset.styles; } // Reset all user agent styling to a minimal/consistent base
+
+// User-oriented styling (high layer specificity in order to apply to everything by default). If a component needs
+// to override these styling (e.g. custom focus outline), then use `!important`.
+// Note: despite being in a high layer, emitted early so that it is parsed sooner.
+@layer accessibility { @include accessibility.styles; }
+
+// Baklava-specific styling
+@layer baklava.base { @include variables.styles; }
+@layer baklava.base { @include global.styles; }
+@layer baklava.theming { @include theming.styles; }
+@layer baklava.prose { @include prose.styles; }
+
+// Emit fonts last, because vite will inline the font files, and we don't want to block the rest of the styling
+@layer baklava.base { @include fonts.styles; }

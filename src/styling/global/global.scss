@@ -2,6 +2,14 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+@use '../context/theming.scss' as theming;
+
+@mixin text-defaults {
+  font-family: var(--bk-font-family-body);
+  line-height: 1.6; // https://css-tricks.com/how-to-tame-line-height-in-css
+  //color: ...; // Handled by theming.scss
+}
+
 /*
  * Mixin: isolate.
  * Resets the element with "root" container styling, so that it is not affected by inherited properties of parents. For
@@ -9,55 +17,63 @@
  * at the root of the document.
  */
 @mixin isolate {
-  /* https://web.dev/learn/css/inheritance#which_properties_are_inherited_by_default */
+  // https://web.dev/learn/css/inheritance#which_properties_are_inherited_by_default
+  
   font: initial;
-  font-family: var(--bk-font-family-body);
-  /* font-weight: 400; */
-  font-size: 1rem;
-  color: var(--bk-page-color-text);
   letter-spacing: normal;
   text-align: initial;
   text-transform: initial;
+  
+  @include text-defaults;
+}
+
+/*
+Root element styling. Meant to be applied specifically on the document root (i.e. `:root`).
+Note: we want to allow opting out of global styling. In order to do so, we should have all root styling bundled into
+one place, namely this mixin. Any `:root` selectors in the rest of the codebase should be discouraged, except in the
+case where we set CSS variables (using a `--bk-` prefix to minimize conflicts with other libraries).
+*/
+@mixin root-styles {
+  interpolate-size: allow-keywords; // Allow transitioning width/height to `auto`
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  
+  // Disable text size adjustments on mobile devices (e.g. iOS Safari in landscape mode)
+  // stylelint-disable property-no-vendor-prefix
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  // stylelint-enable property-no-vendor-prefix
+  text-size-adjust: none;
+  
+  // Set the base font size (this must be done on the root element, since it determines the `rem` unit)
+  font-size: 0.875rem; // 14px (at default browser font size at 1rem = 16px)
+  // https://royalfig.github.io/fluid-typography-calculator
+  //font-size: clamp(0.8rem, 0.76rem + 0.19999999999999996vw, 1rem);
+  // https://utopia.fyi/type/calculator?c=320,12,1.2,1440,14,1.25,4,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12
+  font-size: round(clamp(0.75rem, 0.7143rem + 0.1786vi, 0.875rem), 1px); // 1rem ~ 14px at 1440px max viewport size
+  
+  &:has(:target) {
+    // Add enough scroll padding so anchors don't get hidden behind the `AppLayout` header
+    scroll-padding-top: calc(var(--bk-app-layout-header-height) + var(--bk-sizing-2));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    scroll-behavior: smooth;
+  }
 }
 
 @mixin styles {
-  /* Class, for use with `@scope (.x) to (.isolate)` */
+  // Isolate mixin as a utility class, for use with `@scope (.x) to (.isolate)`
   .isolate {
     @include isolate;
   }
   
-  &:root {
-    @include isolate;
-    
-    interpolate-size: allow-keywords; // Allow transitioning width/height to `auto`
-    
-    /* Whether to inflate text on small devices */
-    text-size-adjust: none;
-    
-    font-size: 0.875rem; // 14px (at default browser font size at 1rem = 16px)
-    // https://royalfig.github.io/fluid-typography-calculator
-    //font-size: clamp(0.8rem, 0.76rem + 0.19999999999999996vw, 1rem);
-    // https://utopia.fyi/type/calculator?c=320,12,1.2,1440,14,1.25,4,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12
-    font-size: round(clamp(0.75rem, 0.7143rem + 0.1786vi, 0.875rem), 1px); // 1rem ~ 14px at 1440px max viewport size
-    
-    /* https://css-tricks.com/how-to-tame-line-height-in-css/ */
-    line-height: 1.6;
-    
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    
-    background: var(--bk-page-color-background);
+  // Allow opting out of root styling using `.bk-no-globals`
+  :root:not(.bk-no-globals), .bk-root {
+    @include root-styles;
+    @include theming.root-styles;
+    @include text-defaults;
   }
   
   // Workaround for https://github.com/vbenjs/vite-plugin-svg-icons/issues/90
-  // stylelint-disable-next-line selector-id-pattern
   #baklava-icon-sprite { display: none; }
-  
-  @media (prefers-reduced-motion: no-preference) {
-    &:root:has(:target) {
-      // Add enough scroll padding so anchors don't get hidden behind the `AppLayout` header
-      scroll-padding-top: calc(var(--bk-app-layout-header-height) + var(--bk-sizing-2));
-      scroll-behavior: smooth;
-    }
-  }
 }
