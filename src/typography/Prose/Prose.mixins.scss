@@ -1,0 +1,271 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../styling/defs.scss' as bk;
+@use '../../styling/features/typography.scss' as typography;
+
+@mixin prose {
+  --bk-prose-line-height: 1.6;
+  --bk-body-block-spacing: 0.8lh;
+  
+  font-family: var(--bk-font-family-body);
+  font-weight: 400;
+  font-size: 1rem;
+  
+  line-height: var(--bk-prose-line-height);
+  overflow-wrap: break-word; // Prevent long words causing overflow
+  text-wrap: pretty; // Favor better typography for text wrapping (e.g. prevent orphans)
+  hyphens: auto;
+  
+  
+  //
+  // Elements
+  //
+  
+  // Note: in order to not break the workaround for Firefox, we should not use a descendent selector in any of these.
+  // For all selectors, use `&:is(X)` so that we apply the condition to the current context and not "any descendent".
+  // Use `> X:not(.bk)` if you need to select a child element (using `:not(.bk)` to ensure it's not a component).
+  
+  &:is(h1) { @include typography.h1; }
+  &:is(h2) { @include typography.h2; }
+  &:is(h3) { @include typography.h3; }
+  &:is(h4) { @include typography.h4; }
+  &:is(h5) { @include typography.h5; }
+  &:is(h6) { @include typography.h6; }
+  
+  &:is(i, em) { font-style: italic; }
+  &:is(b, strong, th) { font-weight: bk.$font-weight-semibold; }
+  &:is(u) { text-decoration: underline; }
+  
+  &:is(p) {
+    margin-block-start: var(--bk-body-block-spacing);
+    overflow-wrap: break-word; // Allow breaking mid-word if they would otherwise cause overflow
+  }
+  
+  &:is(ul, ol, dl) {
+    --list-indent: 2.5ch;
+    
+    display: block;
+    margin-block-start: var(--bk-body-block-spacing);
+    
+    > li:not(.bk) {
+      // Increase gap size
+      // https://stackoverflow.com/a/26336092/233884
+      &::before {
+        content: '';
+        padding-inline-start: bk.$spacing-2;
+      }
+      
+      // Nested lists
+      > :is(ul, ol, dl):not(.bk) {
+        margin-block-start: calc(var(--bk-body-block-spacing) / 2);
+        margin-inline-start: var(--list-indent);
+      }
+    }
+  }
+  &:is(ul) {
+    // Note: do not use list-style: none, this causes accessibility issues:
+    // https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists
+    list-style: disc inside;
+    
+    > li:not(.bk)::marker {
+      // Override the marker style so we customize the gap size
+      // https://css-tricks.com/everything-you-need-to-know-about-the-gap-after-the-list-marker
+      content: '\2022' ' ';
+      margin: 0; // Margin and padding are not supported by `::marker` currently
+    }
+    > li:not(:first-of-type, .bk) { // Note: in the future we could use `margin-trim` instead
+      margin-block-start: calc(var(--bk-body-block-spacing) / 4);
+    }
+  }
+  &:is(ol) {
+    // Note: do not use list-style: none, this causes accessibility issues:
+    // https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists
+    list-style: decimal inside;
+    
+    > li:not(:first-of-type, .bk) {
+      margin-block-start: calc(var(--bk-body-block-spacing) / 4);
+    }
+  }
+  
+  &:is(hr) {
+    margin-block: bk.$sizing-3;
+    border: none;
+    border-block-start: bk.rem-from-px(1) solid currentColor;
+  }
+  
+  &:is(blockquote) {
+    border-inline-start: 4px solid #0096bfab;
+    margin: 1.5em 0;
+    padding: 0.5em 1em;
+    font-style: italic;
+    
+    & > footer:not(.bk), & > cite:not(.bk) {
+      font-style: normal;
+    }
+  }
+  
+  &:is(address) {
+    font-style: normal;
+  }
+  
+  
+  // Media
+  
+  &:is(img) {
+    max-inline-size: 100%;
+  }
+  
+  
+  // Interactive elements
+  
+  &:is(a) { @include typography.link; }
+  
+  &:is(label, button, input[type='submit'], input[type='button'], input[type='checkbox']) {
+    cursor: pointer;
+  }
+  
+  /*
+  &:is(button, input, textarea) {
+    transition:
+      background-color 0.1s linear,
+      border-color 0.1s linear,
+      color 0.1s linear,
+      box-shadow 0.1s linear,
+      transform 0.1s ease;
+  }
+  
+  &:is(input:not([type='checkbox'], [type='radio']), select) {
+    display: block;
+  }
+  
+  &:is(input, select, button, textarea) {
+    color: #000000;
+    background-color: #efefef;
+    font-family: inherit;
+    font-size: inherit;
+    margin-inline-end: 6px;
+    margin-block-end: 6px;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+  }
+  
+  &:is(
+    input:not([type='checkbox']):not([type='radio']),
+    select,
+    button,
+    textarea,
+  ) {
+    -webkit-appearance: none;
+  }
+  
+  &:is(textarea) {
+    margin-inline-end: 0;
+    inline-size: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+  }
+  
+  &:is(button, input[type='submit'], input[type='button']) {
+    padding-inline: 30px;
+  }
+  
+  &:is(button:hover, input[type='submit']:hover, input[type='button']:hover) {
+    background: #dddddd;
+  }
+  
+  &:is(input:disabled, select:disabled, button:disabled, textarea:disabled) {
+    cursor: not-allowed;
+    opacity: .5;
+  }
+  
+  &:is(::-webkit-input-placeholder) {
+    color: #949494;
+  }
+  
+  &:is(::placeholder) {
+    color: #949494;
+  }
+  
+  &:is(code, kbd) {
+    background: light-dark(#ccc, #333);
+    padding: 5px;
+    border-radius: 3px;
+    font-family: var(--bk-font-family-code, monospace);
+  }
+  
+  &:is(pre) {
+    > code:not(.bk) {
+      padding: 10px;
+      display: block;
+      // Note: we don't control the code here, so can't use `useScroller()`. Consumer needs to add the tabindex.
+      // stylelint-disable-next-line declaration-property-value-disallowed-list
+      overflow-x: auto;
+    }
+  }
+  
+  &:is(table) {
+    border-collapse: collapse;
+    margin-block-end: 10px;
+    inline-size: 100%;
+  }
+  
+  &:is(td, th) {
+    padding: 6px;
+    text-align: start;
+  }
+  
+  &:is(th) {
+    border-block-end: bk.rem-from-px(1) solid #dbdbdb;
+  }
+  
+  &:is(tbody) {
+    > tr:nth-child(even):not(.bk) {
+      background-color: #efefef;
+    }
+  }
+  */
+  
+  
+  // XXX replace this with `margin-trim` once that's available
+  & > :nth-child(1 of :not(.bk, [hidden], dialog)) {
+    margin-block-start: 0;
+  }
+}
+
+@mixin styles {
+  @layer baklava.prose {
+    // Do not leak .bk-prose styling into components
+    // FIXME: browser support for `@scope` is not quite there yet (but we can't do `@supports at-rule()` yet either)
+    // See: https://css-tricks.com/solved-by-css-donuts-scopes
+    @scope (.bk-prose) to (.isolate, .bk:not(.bk-prose)) {
+      :scope, :scope * {
+        //@include bk.component-base(bk-prose);
+        @include prose;
+      }
+    }
+    
+    // Workaround for Firefox, which (as of early 2025) does not support `@scope`. Note: it would be better if we could
+    // do this with feature testing, but we cannot yet use `@supports (at-rule())` to check for at-rules like `@scope`.
+    @supports (-moz-appearance: none) {
+      // Shallow implementation (note: this does not work well, breaks with any nested components.
+      //.bk-prose:not(.bk, .bk *) { @include prose; }
+      
+      // The main issue with doing donut scoping without `@scope` is due to how the descendant operator (`.foo .bar`)
+      // works. So instead, we avoid the descendant operator altogether and manually check level by level. This will
+      // only work up until a certain finite depth, but we can make it as a deep as we like.
+      $descendant: '*:not(.bk:not(.bk-prose))';
+      .bk-prose,
+      .bk-prose > #{$descendant},
+      .bk-prose > #{$descendant} > #{$descendant},
+      .bk-prose > #{$descendant} > #{$descendant} > #{$descendant},
+      .bk-prose > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant},
+      .bk-prose > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant} {
+        @include prose;
+      }
+    }
+  }
+}

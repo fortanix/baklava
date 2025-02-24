@@ -2,15 +2,25 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@use 'sass:math';
-
 @forward './variables.scss';
 @forward './global/fonts.scss' hide styles;
 @forward './global/accessibility.scss' hide styles;
-@forward './global/shimmer.scss' hide styles;
 @forward './context/theming.scss' hide styles;
 
+@forward './features/util.scss';
+@forward './features/text.scss';
+@forward './features/layout.scss';
+@forward './features/typography.scss' as typography-*;
+@forward './features/skeleton.scss' as skeleton-*;
+
 @use './variables.scss' as vars;
+
+
+
+// @function fluid-size($size) {
+//   $scale: #{calc(tan(atan2($size, 1px)) * 14)};
+//   @return #{round(min($size, $scale / 768 * 100vi), 1px)};
+// }
 
 @mixin component-base($name) {
   container-name: $name;
@@ -26,45 +36,7 @@
   //contain: paint;
 }
 
-@mixin font($family: vars.$font-family-display, $weight: vars.$font-weight-regular, $size: null) {
-  font-family: $family;
-  font-weight: $weight;
-  @if $size {
-    font-size: $size;
-  }
-}
-
-@mixin text-layout {
-  /* https://blog.logrocket.com/guide-css-word-wrap-overflow-wrap-word-break/ */
-  /* https://stackoverflow.com/questions/12699800/smarter-word-break-in-css */
-  overflow-wrap: break-word; // Prevent long words causing overflow
-  text-wrap: pretty; // Favor better typography for text wrapping (e.g. prevent orphans)
-  hyphens: auto;
-}
-
-@mixin text-one-line($include-padding: true) {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  
-  @if $include-padding {
-    // Add a little bit of padding to prevent parts of characters getting cut off in some browsers. For example,
-    // try the letter "J" and view it in Safari, the bottom extender of the "J" overflows the text box and gets cut off.
-    padding-inline: 0.3ch;
-  }
-}
-
-@mixin flex-center() {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 @mixin rounded($rounding: bkl.$sizing-xs) {
   border-radius: $rounding;
   overflow: hidden; // Prevent child items from "bleeding through" the rounded borders
-}
-
-@function rem-from-px($size-in-px) {
-  @return round(math.div($size-in-px, 14) * 1rem, 1px);
 }

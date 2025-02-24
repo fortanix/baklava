@@ -11,14 +11,14 @@ import { Button } from '../../components/actions/Button/Button.tsx';
 import { SegmentedControl } from '../../components/forms/controls/SegmentedControl/SegmentedControl.tsx';
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
 
-import { BodyText } from './BodyText.tsx';
+import { Prose } from './Prose.tsx';
 
 
-type BodyTextArgs = React.ComponentProps<typeof BodyText>;
-type Story = StoryObj<typeof BodyText>;
+type ProseArgs = React.ComponentProps<typeof Prose>;
+type Story = StoryObj<typeof Prose>;
 
 export default {
-  component: BodyText,
+  component: Prose,
   parameters: {
     layout: 'centered',
   },
@@ -27,16 +27,29 @@ export default {
   },
   args: {
   },
-  render: (args) => <BodyText {...args}/>,
-} satisfies Meta<BodyTextArgs>;
+  render: (args) => <Prose {...args}/>,
+} satisfies Meta<ProseArgs>;
 
 
-const SampleBodyText = () => {
+const SampleProse = () => {
   const id = React.useId();
   return (
     <>
-      <h1>Example of body text</h1>
-      <h2>Example of body text</h2>
+      <h1>Heading 1</h1>
+      <h2>Heading 2</h2>
+      <h3>Heading 3</h3>
+      <h4>Heading 4</h4>
+      <h5>Heading 5</h5>
+      <h6>Heading 6</h6>
+      
+      <p>
+        <b>This text is bold.</b>
+        {' '}<i>This text is italic.</i>
+        {' '}<u>This text is underlined.</u>
+      </p>
+      
+      <hr/>
+      
       <p>
         Lorem ipsum dolor sit amet, <DummyLink>consectetur</DummyLink> adipiscing elit. Pellentesque eget sem ut neque lobortis pharetra nec vel quam. Etiam sem neque, gravida sed pharetra ut, vehicula quis lectus. Donec ac rhoncus purus. Proin ultricies augue vitae purus feugiat, in ultrices lorem aliquet. Donec eleifend ac dolor a auctor. Cras ac suscipit nibh. Fusce tincidunt iaculis dapibus. Vivamus sit amet neque eu velit tincidunt semper. Donec at magna aliquam mi consectetur imperdiet. Donec pretium placerat quam, in sodales purus porta vitae. Phasellus nisl justo, luctus vel mi vel, sollicitudin euismod neque.
       </p>
@@ -65,7 +78,10 @@ const SampleBodyText = () => {
           </ul>
         </li>
       </ol>
+      
+      {/*
       <hr/>
+      
       <h2>Forms</h2>
       
       <form>
@@ -76,13 +92,14 @@ const SampleBodyText = () => {
           <input id={`${id}-input-1`} type="text"/>
         </fieldset>
       </form>
+      */}
     </>
   );
 };
 
 export const Standard: Story = {
   args: {
-    children: <SampleBodyText/>,
+    children: <SampleProse/>,
   },
 };
 
@@ -90,20 +107,20 @@ export const WithComponents: Story = {
   args: {
     children: (
       <>
-        <h1>Body text with embedded components</h1>
+        <h1>Prose with embedded components</h1>
         <p>
-          Body text can include Baklava components. Those components should not be affected by any styling inherited
-          from the body text styling.
+          Prose can include Baklava components. Those components should not be affected by any styling inherited
+          from the prose styling.
         </p>
         <p>Here is a button component:</p>
         <Button kind="primary" label="Button"/>
         
         <Panel>
-          <Panel.Heading>This panel contains a nested a bk-body-text</Panel.Heading>
+          <Panel.Heading>This panel contains a nested a bk-prose</Panel.Heading>
           
-          <div className="bk-body-text">
+          <div className="bk-prose">
             <p>The following should be bold and underlined:</p>
-            <p><strong><u>This is body text embedded within a component.</u></strong></p>
+            <p><strong><u>This is prose embedded within a component.</u></strong></p>
           </div>
         </Panel>
         

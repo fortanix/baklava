@@ -157,7 +157,7 @@ export const BannerWithThemedContent: Story = {
     title: 'Banner with themed content',
     compact: false,
     children: (
-      <article className="bk-body-text">
+      <article className="bk-prose">
         <p>
           The following components should always have a light theme, even in dark mode:
         </p>

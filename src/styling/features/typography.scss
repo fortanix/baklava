@@ -1,0 +1,89 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../variables.scss' as vars;
+@use './util.scss' as util;
+@use './text.scss' as text;
+@use '../global/accessibility.scss' as accessibility;
+
+
+/*
+Note: these mixins are used as part of `.bk-prose`. In order to not break the workaround for Firefox's lack of
+`@scope` support, we need to follow these rules in this file (see `Prose.mixins.scss` for more info):
+- Do not use the descendant operator (i.e. space, `a b`).
+- If you need to select a child, use `a > b:not(.bk)`
+*/
+
+@mixin heading {
+  @include text.font(vars.$font-family-display);
+  text-wrap: balance;
+  line-height: 1.6;
+}
+
+@mixin h1 {
+  @include heading;
+  font-size: vars.$font-size-xxxl;
+  font-weight: 300;
+}
+@mixin h2 {
+  @include heading;
+  font-size: util.rem-from-px(30); // FIXME: token
+  font-weight: 400;
+}
+@mixin h3 {
+  @include heading;
+  font-size: util.rem-from-px(24); // FIXME: token
+  font-weight: 400;
+}
+@mixin h4 {
+  @include heading;
+  font-size: util.rem-from-px(20); // FIXME: token
+  font-weight: 400;
+}
+@mixin h5 {
+  @include heading;
+  font-size: util.rem-from-px(16); // FIXME: token
+  font-weight: 600;
+}
+@mixin h6 {
+  @include heading;
+  font-size: util.rem-from-px(16); // FIXME: token
+  font-weight: 500;
+}
+
+@mixin link($self: '.bk-link') {
+  --bk-link-color: #{vars.$theme-text-link-default};
+  
+  cursor: pointer;
+  
+  @include text.font(vars.$font-family-body);
+  color: var(--bk-link-color);
+  
+  /* https://css-tricks.com/styling-links-with-real-underlines */
+  text-decoration: underline;
+  text-decoration-skip-ink: auto;
+  text-underline-offset: from-font;
+  // text-decoration-thickness: from-font;
+  
+  &:is(#{$self}--small) {
+    font-size: 0.8em;
+  }
+  
+  &:hover, &.pseudo-hover {
+    --bk-link-color: #{vars.$theme-text-link-hover};
+  }
+  &:active {
+    --bk-link-color: #{vars.$theme-text-link-active};
+  }
+  
+  border-radius: vars.$radius-1;
+  @include accessibility.focus-outset {
+    outline-offset: util.rem-from-px(2);
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    transition: none 150ms ease-in-out;
+    transition-property: color;
+  }
+}

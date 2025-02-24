@@ -241,7 +241,7 @@
   /* Anchor positioning */
   
   @position-try --bk-tooltip-position-top {
-    margin-block: var(--bk-layout-header-height) 6px; /* Compensate for layout header */
+    margin-block: var(--bk-app-layout-header-height) 6px; /* Compensate for layout header */
     /* position-area: top; */
     inset-block-end: anchor(top);
     justify-self: anchor-center;

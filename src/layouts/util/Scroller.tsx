@@ -45,8 +45,11 @@ export const useScroller = (args: UseScrollerArgs = {}): ScrollerProps => {
   );
   
   return {
+    // For Safari, we may want to enable setting `tabIndex={0}`, since it does not yet support keyboard focusble
+    // scroll containers. Firefox and Chrome both support this now.
     // Discussion: https://github.com/fortanix/baklava/issues/75#issuecomment-2564578564
     //tabIndex: hasFocusableChild ? undefined : 0,
+    
     className: includeStyling ? className : undefined,
   };
 };

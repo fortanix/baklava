@@ -12,7 +12,7 @@ import { DatePickerRange } from './DatePickerRange.tsx';
 type DatePickerRangeArgs = React.ComponentProps<typeof DatePickerRange>;
 type Story = StoryObj<DatePickerRangeArgs>;
 
-export default {
+const meta: Meta<DatePickerRangeArgs> = { // Need an explicit type annotation here for TS declaration emission
   component: DatePickerRange,
   parameters: {
     layout: 'centered',
@@ -24,7 +24,8 @@ export default {
   decorators: [
     Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
   ],
-} satisfies Meta<DatePickerRangeArgs>;
+};
+export default meta;
 
 export const Standard: Story = {
   render: (args) => {

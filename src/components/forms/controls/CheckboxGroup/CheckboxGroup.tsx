@@ -47,7 +47,7 @@ export const CheckboxItem = ({ checkboxKey, ...propsRest }: CheckboxItemProps) =
   return (
     <Checkbox.Labeled
       // Note: `<fieldset>` also has a `form` attribute, but just setting `form` on  `<fieldset>` does not affect any
-      // of the descendent `<input>` elements. See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/fieldset
+      // of the descendant `<input>` elements. See: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/fieldset
       form={context.formId}
       name={context.name}
       value={checkboxKey}

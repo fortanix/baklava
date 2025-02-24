@@ -3,12 +3,6 @@
   "version": 1.1,
   "properties": [
     { "name": "interpolate-size" },
-    {
-      "name": "container",
-      "references": [{ "name": "", "url": "https://github.com/microsoft/vscode-css-languageservice/issues/329" }]
-    },
-    { "name": "container-name" },
-    { "name": "container-type" },
     { "name": "position-try-fallbacks" }
   ],
   "atDirectives": [

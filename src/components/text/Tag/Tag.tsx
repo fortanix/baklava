@@ -15,10 +15,10 @@ export { cl as TagClassNames };
 export type TagProps = Omit<ComponentProps<'div'>, 'content' | 'children'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-
+  
   /** Some content to be displayed inside the tag. */
   content: React.ReactNode,
-
+  
   /** Callback to remove the tag. If set, display a close icon, otherwise it is hidden. */
   onRemove?: () => void,
 };
@@ -32,7 +32,7 @@ export const Tag = (props: TagProps) => {
     onRemove,
     ...propsRest
   } = props;
-
+  
   return (
     <div
       {...propsRest}

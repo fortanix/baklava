@@ -15,12 +15,6 @@ export { cl as SwitchClassNames };
 export type SwitchProps = ComponentProps<typeof Checkbox> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-  
-  /**
-   * Whether the button is in "nonactive" state. This is a variant of `disabled`, but instead of completely graying
-   * out the button, it only becomes a muted variation of the button's appearance. When true, also implies `disabled`.
-   */
-  nonactive?: undefined | boolean,
 };
 
 export type SwitchLabeledProps = SwitchProps & {
@@ -37,11 +31,10 @@ export const Switch = Object.assign(
   (props: SwitchProps) => {
     const {
       unstyled = false,
-      nonactive = false,
       ...propsRest
     } = props;
     
-    const isInteractive = !propsRest.disabled && !nonactive;
+    const isInteractive = !propsRest.disabled;
     
     return (
       <Checkbox
@@ -51,7 +44,6 @@ export const Switch = Object.assign(
         disabled={!isInteractive}
         className={cx(
           { [cl['bk-switch']]: !unstyled },
-          { [cl['bk-switch--nonactive']]: nonactive },
           propsRest.className,
         )}
       />

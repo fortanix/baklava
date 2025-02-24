@@ -55,10 +55,6 @@
       --bk-switch-track-color: #{bk.$theme-switch-slider-off};
       --bk-switch-thumb-color: #{bk.$theme-switch-knob-disabled};
     }
-    &.bk-switch--nonactive {
-      --bk-switch-track-color: #{bk.$theme-switch-slider-off};
-      --bk-switch-thumb-color: #{bk.$theme-switch-knob-non-active};
-    }
     
     @media (prefers-reduced-motion: no-preference) {
       transition: none 200ms ease-out;

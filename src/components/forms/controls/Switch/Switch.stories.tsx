@@ -32,16 +32,6 @@ export const Unchecked: Story = {
   args: { defaultChecked: false },
 };
 
-export const NonactiveChecked: Story = {
-  name: 'Nonactive (checked)',
-  args: { nonactive: true, defaultChecked: true },
-};
-
-export const NonactiveUnchecked: Story = {
-  name: 'Nonactive (unchecked)',
-  args: { nonactive: true, defaultChecked: false },
-};
-
 export const DisabledChecked: Story = {
   name: 'Disabled (checked)',
   args: { disabled: true, defaultChecked: true },

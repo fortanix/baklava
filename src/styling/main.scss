@@ -4,16 +4,15 @@
 
 @use 'sass:meta';
 
-@use './layers.scss';
-@use './global/reset.scss';
-@use './context/variables.scss';
-@use './context/theming.scss';
-@use './global/global.scss';
-@use './global/accessibility.scss';
-@use './global/fonts.scss';
-
-// Defaults
-@use '../typography/BodyText/BodyText.mixins.scss' as bodytext;
+// Note: make sure the following do not emit anything (should only export mixins)
+@use './layers.scss' as layers;
+@use './global/reset.scss' as reset;
+@use './context/variables.scss' as variables;
+@use './global/global.scss' as global;
+@use './context/theming.scss' as theming;
+@use './global/accessibility.scss' as accessibility;
+@use './global/fonts.scss' as fonts;
+@use '../typography/Prose/Prose.mixins.scss' as prose;
 
 
 //
@@ -22,8 +21,7 @@
 
 @include layers.styles; // Cascade layer ordering: MUST be emitted before anything else
 
-@layer normalize { @include meta.load-css('./lib/normalize.css'); } // First, normalize styling across browsers
-@layer reset { @include reset.styles; } // Next, reset all styling to minimal base
+@layer reset { @include reset.styles; } // Reset all user agent styling to a minimal/consistent base
 
 // User-oriented styling (high layer specificity in order to apply to everything by default). If a component needs
 // to override these styling (e.g. custom focus outline), then use `!important`.
@@ -32,9 +30,9 @@
 
 // Baklava-specific styling
 @layer baklava.base { @include variables.styles; }
-@layer baklava.base { @include theming.styles; }
 @layer baklava.base { @include global.styles; }
-@layer baklava.body-text { @include bodytext.styles; }
+@layer baklava.theming { @include theming.styles; }
+@layer baklava.prose { @include prose.styles; }
 
 // Emit fonts last, because vite will inline the font files, and we don't want to block the rest of the styling
 @layer baklava.base { @include fonts.styles; }

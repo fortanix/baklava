@@ -2,6 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+// stylelint-disable declaration-no-important
+
 @mixin focus-hidden($override-layer: true) {
   --bk-focus-color-anim: transparent; // Start transparent for animation purposes
   
@@ -21,11 +23,15 @@
   // Should add `.pseudo-focus-visible` here for visual testing purposes
   #{$selector} {
     --bk-focus-color-anim: var(--bk-focus-outline-color) #{if($override-layer, !important, null)};
+    @content;
   }
   
+  /*
+  // FIXME: this breaks any `transition` set in a lower layer
   @media (prefers-reduced-motion: no-preference) {
-    //transition: outline 80ms ease-in-out; // FIXME: this breaks any `transition` set in a lower layer
+    transition: outline 80ms ease-in-out;
   }
+  */
 }
 
 // Configure an element with a focus outline inset into the element. This can be useful for elements
@@ -47,9 +53,12 @@
     --bk-focus-color-anim: var(--bk-focus-outline-color);
   }
   
+  /*
+  // FIXME: this breaks any `transition` set in a lower layer
   @media (prefers-reduced-motion: no-preference) {
-    //transition: box-shadow 80ms ease-in-out; // FIXME: this breaks any `transition` set in a lower layer
+    transition: outline 80ms ease-in-out;
   }
+  */
 }
 
 // Hide an element visually, but keep it in the accessibility tree (sometimes also called "sr-only").
@@ -68,11 +77,13 @@
 }
 
 @mixin styles {
+  /*
   :root {
     // See `theming.scss`
     //--bk-focus-outline-width
     //--bk-focus-outline-color
   }
+  */
   
   $elements-with-inset: div, section, dialog;
   :is(#{$elements-with-inset}) {
@@ -80,11 +91,6 @@
   }
   :not(#{$elements-with-inset}) {
     @include focus-outset($override-layer: false);
-  }
-  
-  *:has(:target) {
-    // Add enough scroll padding so anchors don't get hidden
-    scroll-padding-top: calc(var(--bk-layout-header-height) + var(--bk-sizing-2));
   }
   
   // https://www.smashingmagazine.com/2021/10/respecting-users-motion-preferences
