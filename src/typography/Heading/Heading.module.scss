@@ -3,13 +3,13 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 @use '../../styling/defs.scss' as bk;
-@use './Heading.mixins.scss' as Heading;
+@use '../../styling/features/typography.scss' as typography;
 
 @layer baklava.components {
-  .bk-h1 { @include bk.component-base(bk-h1); @include Heading.h1; }
-  .bk-h2 { @include bk.component-base(bk-h2); @include Heading.h2; }
-  .bk-h3 { @include bk.component-base(bk-h3); @include Heading.h3; }
-  .bk-h4 { @include bk.component-base(bk-h4); @include Heading.h4; }
-  .bk-h5 { @include bk.component-base(bk-h5); @include Heading.h5; }
-  .bk-h6 { @include bk.component-base(bk-h6); @include Heading.h6; }
+  .bk-h1 { @include bk.component-base(bk-h1); @include typography.h1; }
+  .bk-h2 { @include bk.component-base(bk-h2); @include typography.h2; }
+  .bk-h3 { @include bk.component-base(bk-h3); @include typography.h3; }
+  .bk-h4 { @include bk.component-base(bk-h4); @include typography.h4; }
+  .bk-h5 { @include bk.component-base(bk-h5); @include typography.h5; }
+  .bk-h6 { @include bk.component-base(bk-h6); @include typography.h6; }
 }

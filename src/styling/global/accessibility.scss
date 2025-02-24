@@ -23,6 +23,7 @@
   // Should add `.pseudo-focus-visible` here for visual testing purposes
   #{$selector} {
     --bk-focus-color-anim: var(--bk-focus-outline-color) #{if($override-layer, !important, null)};
+    @content;
   }
   
   /*

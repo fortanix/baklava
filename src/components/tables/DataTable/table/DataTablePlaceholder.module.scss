@@ -30,7 +30,7 @@
             content: ' ';
             $shimmer-base-color: light-dark(#F8F8F8, #2D2D50); // FIXME: design token
             $shimmer-highlight-color: light-dark(#CBCEDB, #767699); // FIXME: design token
-            @include bk.shimmer($base-color: $shimmer-base-color, $highlight-color: $shimmer-highlight-color);
+            @include bk.skeleton-shimmer($base-color: $shimmer-base-color, $highlight-color: $shimmer-highlight-color);
             block-size: bk.$spacing-2;
             border-radius: bk.$border-radius-xl;
             display: block;

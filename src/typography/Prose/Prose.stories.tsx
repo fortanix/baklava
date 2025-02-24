@@ -35,8 +35,21 @@ const SampleProse = () => {
   const id = React.useId();
   return (
     <>
-      <h1>Example of prose</h1>
-      <h2>Example of prose</h2>
+      <h1>Heading 1</h1>
+      <h2>Heading 2</h2>
+      <h3>Heading 3</h3>
+      <h4>Heading 4</h4>
+      <h5>Heading 5</h5>
+      <h6>Heading 6</h6>
+      
+      <p>
+        <b>This text is bold.</b>
+        {' '}<i>This text is italic.</i>
+        {' '}<u>This text is underlined.</u>
+      </p>
+      
+      <hr/>
+      
       <p>
         Lorem ipsum dolor sit amet, <DummyLink>consectetur</DummyLink> adipiscing elit. Pellentesque eget sem ut neque lobortis pharetra nec vel quam. Etiam sem neque, gravida sed pharetra ut, vehicula quis lectus. Donec ac rhoncus purus. Proin ultricies augue vitae purus feugiat, in ultrices lorem aliquet. Donec eleifend ac dolor a auctor. Cras ac suscipit nibh. Fusce tincidunt iaculis dapibus. Vivamus sit amet neque eu velit tincidunt semper. Donec at magna aliquam mi consectetur imperdiet. Donec pretium placerat quam, in sodales purus porta vitae. Phasellus nisl justo, luctus vel mi vel, sollicitudin euismod neque.
       </p>
@@ -65,7 +78,10 @@ const SampleProse = () => {
           </ul>
         </li>
       </ol>
+      
+      {/*
       <hr/>
+      
       <h2>Forms</h2>
       
       <form>
@@ -76,6 +92,7 @@ const SampleProse = () => {
           <input id={`${id}-input-1`} type="text"/>
         </fieldset>
       </form>
+      */}
     </>
   );
 };

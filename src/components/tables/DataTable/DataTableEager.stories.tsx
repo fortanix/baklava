@@ -16,7 +16,7 @@ import { Panel } from '../../containers/Panel/Panel.tsx';
 import * as DataTablePlugins from './plugins/useRowSelectColumn.tsx';
 import * as DataTableEager from './DataTableEager.tsx';
 
-import './DataTableEager.stories.scss';
+import './DataTableEager_stories.scss';
 
 
 const columns = [
