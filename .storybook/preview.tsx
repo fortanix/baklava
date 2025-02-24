@@ -10,13 +10,21 @@ import * as React from 'react';
 import { type Preview } from '@storybook/react';
 import { themes } from '@storybook/theming';
 import { addons } from '@storybook/preview-api';
-import { DARK_MODE_EVENT_NAME, UPDATE_DARK_MODE_EVENT_NAME } from 'storybook-dark-mode';
+import { DARK_MODE_EVENT_NAME } from 'storybook-dark-mode';
 import { DocsContainer, Title, Subtitle, Description, Primary, Controls, Stories } from '@storybook/blocks';
 
 import { BaklavaProvider } from '../src/context/BaklavaProvider.tsx';
 
 
 const channel = addons.getChannel();
+
+// Start listening to dark mode events as soon as possible. In Safari it seems the event is emitted *before*
+// the component is first rendered and starts listening to this event.
+// Ticket: https://github.com/hipstersmoothie/storybook-dark-mode/issues/230
+let isDarkInitial = false;
+channel.on(DARK_MODE_EVENT_NAME, isDark => { isDarkInitial = isDark; });
+
+
 const preview = {
   decorators: [
     Story => <BaklavaProvider><Story/></BaklavaProvider>,
@@ -178,8 +186,7 @@ const preview = {
     docs: {
       container: (props) => {
         // `DocsContainer` does not automatically support light/dark mode switching, need to set the theme manually
-        const [isDark, setDark] = React.useState();
-        //const onChangeHandler = () => { channel.emit(UPDATE_DARK_MODE_EVENT_NAME); };
+        const [isDark, setDark] = React.useState(isDarkInitial);
         
         React.useEffect(() => {
           channel.on(DARK_MODE_EVENT_NAME, setDark);
