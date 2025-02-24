@@ -40,10 +40,11 @@ export const DialogPattern2: Story = {
           aside={<>hello world</>}
         >
           <H4>Connect to Azure Subscriptions</H4>
-          <p>Key insight has read-only access to resources within your AWS account.</p>
 
           <Form>
             <FormLayout>
+              <p>Key insight has read-only access to resources within your AWS account.</p>
+
               <InputField
                 label="Azure account name"
                 labelTooltip="Lorem ipsum"
