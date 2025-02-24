@@ -7,19 +7,25 @@
 @layer baklava.components {
   .bk-dialog-layout {
     @include bk.component-base(bk-dialog-layout);
-    
+
     display: flex;
     flex-direction: column;
     gap: bk.$spacing-7;
-    
+
     .bk-dialog-layout__content {
       display: flex;
       flex-direction: row;
       gap: bk.$spacing-10;
     }
-    
+
     .bk-dialog-layout__content__aside {
       inline-size: bk.$spacing-18;
+    }
+
+    // TODO: Maybe this should be a separate component?
+    hr {
+      border-block-end: 1px solid bk.$color-blackberry-300;
+      margin-block: bk.$spacing-11 bk.$spacing-2;
     }
   }
 }

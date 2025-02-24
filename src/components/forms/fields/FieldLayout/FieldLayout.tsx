@@ -11,7 +11,7 @@ import cl from './FieldLayout.module.scss';
 export { cl as FieldLayoutClassNames };
 
 export type FieldLayoutProps = React.PropsWithChildren<{
-  size: "small",
+  size: 'small' | 'medium',
 }>;
 
 /**
