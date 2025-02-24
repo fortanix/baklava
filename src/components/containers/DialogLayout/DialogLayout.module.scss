@@ -2,22 +2,24 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+@use '../../../styling/defs.scss' as bk;
+
 @layer baklava.components {
   .bk-dialog-layout {
     @include bk.component-base(bk-dialog-layout);
     
     display: flex;
     flex-direction: column;
-    gap: 100px; // TODO
+    gap: bk.$spacing-7;
     
     .bk-dialog-layout__content {
       display: flex;
       flex-direction: row;
-      gap: 100px; // TODO
+      gap: bk.$spacing-10;
     }
     
     .bk-dialog-layout__content__aside {
-      width: 300px; // TODO
+      width: bk.$spacing-18;
     }
   }
 }

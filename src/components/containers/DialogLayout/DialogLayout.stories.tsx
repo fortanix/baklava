@@ -8,6 +8,11 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { Dialog } from '../Dialog/Dialog';
 import { Logo } from '../../../layouts/AppLayout/Logo/Logo.tsx';
+import { H4 } from '../../../typography/Heading/Heading.tsx';
+import { Form } from '../../forms/context/Form/Form.tsx';
+import { FormLayout } from '../../../layouts/FormLayout/FormLayout.tsx';
+import { CheckboxGroup } from '../../forms/controls/CheckboxGroup/CheckboxGroup.tsx';
+import { InputField } from '../../forms/fields/InputField/InputField.tsx';
 
 import { DialogLayout } from './DialogLayout';
 
@@ -32,9 +37,50 @@ export const DialogPattern2: Story = {
       >
         <DialogLayout
           title="Let's Connect to Your Cloud Provider"
-          aside={<>Lorem ipsum</>}
+          aside={<>hello world</>}
         >
-          Hello World
+          <H4>Connect to Azure Subscriptions</H4>
+          <p>Key insight has read-only access to resources within your AWS account.</p>
+
+          <Form>
+            <FormLayout>
+              <InputField
+                label="Azure account name"
+                labelTooltip="Lorem ipsum"
+                placeholder="Placeholder"
+                description="Account name must be unique within the global namespace"
+              />
+
+              <CheckboxGroup label="Select your account type">
+                <CheckboxGroup.Checkbox checkboxKey="m" label="Management groups"/>
+                <CheckboxGroup.Checkbox checkboxKey="s" label="Subscriptions"/>
+              </CheckboxGroup>
+
+              <InputField
+                label="Management group ID"
+                labelTooltip="Lorem ipsum"
+                placeholder="Placeholder"
+              />
+
+              <InputField
+                label="Client ID"
+                labelTooltip="Lorem ipsum"
+                placeholder="Placeholder"
+              />
+
+              <InputField
+                label="Client secret"
+                labelTooltip="Lorem ipsum"
+                placeholder="Placeholder"
+              />
+
+              <InputField
+                label="Tenant ID"
+                labelTooltip="Lorem ipsum"
+                placeholder="Placeholder"
+              />
+            </FormLayout>
+          </Form>
         </DialogLayout>
       </Dialog>
     );
