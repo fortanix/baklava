@@ -237,35 +237,33 @@
 }
 
 @mixin styles {
-  @layer baklava.prose {
-    // Do not leak .bk-prose styling into components
-    // FIXME: browser support for `@scope` is not quite there yet (but we can't do `@supports at-rule()` yet either)
-    // See: https://css-tricks.com/solved-by-css-donuts-scopes
-    @scope (.bk-prose) to (.isolate, .bk:not(.bk-prose)) {
-      :scope, :scope * {
-        //@include bk.component-base(bk-prose);
-        @include prose;
-      }
+  // Do not leak .bk-prose styling into components
+  // FIXME: browser support for `@scope` is not quite there yet (but we can't do `@supports at-rule()` yet either)
+  // See: https://css-tricks.com/solved-by-css-donuts-scopes
+  @scope (.bk-prose) to (.isolate, .bk:not(.bk-prose)) {
+    :scope, :scope * {
+      //@include bk.component-base(bk-prose);
+      @include prose;
     }
+  }
+  
+  // Workaround for Firefox, which (as of early 2025) does not support `@scope`. Note: it would be better if we could
+  // do this with feature testing, but we cannot yet use `@supports (at-rule())` to check for at-rules like `@scope`.
+  @supports (-moz-appearance: none) {
+    // Shallow implementation (note: this does not work well, breaks with any nested components.
+    //.bk-prose:not(.bk, .bk *) { @include prose; }
     
-    // Workaround for Firefox, which (as of early 2025) does not support `@scope`. Note: it would be better if we could
-    // do this with feature testing, but we cannot yet use `@supports (at-rule())` to check for at-rules like `@scope`.
-    @supports (-moz-appearance: none) {
-      // Shallow implementation (note: this does not work well, breaks with any nested components.
-      //.bk-prose:not(.bk, .bk *) { @include prose; }
-      
-      // The main issue with doing donut scoping without `@scope` is due to how the descendant operator (`.foo .bar`)
-      // works. So instead, we avoid the descendant operator altogether and manually check level by level. This will
-      // only work up until a certain finite depth, but we can make it as a deep as we like.
-      $descendant: '*:not(.bk:not(.bk-prose))';
-      .bk-prose,
-      .bk-prose > #{$descendant},
-      .bk-prose > #{$descendant} > #{$descendant},
-      .bk-prose > #{$descendant} > #{$descendant} > #{$descendant},
-      .bk-prose > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant},
-      .bk-prose > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant} {
-        @include prose;
-      }
+    // The main issue with doing donut scoping without `@scope` is due to how the descendant operator (`.foo .bar`)
+    // works. So instead, we avoid the descendant operator altogether and manually check level by level. This will
+    // only work up until a certain finite depth, but we can make it as a deep as we like.
+    $descendant: '*:not(.bk:not(.bk-prose))';
+    .bk-prose,
+    .bk-prose > #{$descendant},
+    .bk-prose > #{$descendant} > #{$descendant},
+    .bk-prose > #{$descendant} > #{$descendant} > #{$descendant},
+    .bk-prose > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant},
+    .bk-prose > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant} > #{$descendant} {
+      @include prose;
     }
   }
 }
