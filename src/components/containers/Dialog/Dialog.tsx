@@ -193,7 +193,7 @@ export const Dialog = Object.assign(
               role="document" // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/document_role
               // FIXME: make this focusable instead of the <dialog> as per guidelines on MDN?
               //tabIndex={0}
-              className={cx('bk-body-text')}
+              className={cx(cl['bk-dialog__content'], 'bk-prose')}
             >
               {children}
             </section>

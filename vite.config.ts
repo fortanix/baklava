@@ -1,10 +1,12 @@
 /// <reference types="vitest" />
 
 import * as path from 'node:path';
-import * as url from 'node:url';
-import { glob } from 'glob';
+//import * as url from 'node:url';
+//import { glob } from 'glob';
 
+import browserslist from 'browserslist';
 import { defineConfig } from 'vite';
+import { Features as LightningCssFeatures, browserslistToTargets } from 'lightningcss';
 
 // Vite plugins
 import dts from 'vite-plugin-dts';
@@ -69,20 +71,17 @@ export default defineConfig({
     preprocessorOptions: {
       scss: {
         api: 'modern-compiler',
+        silenceDeprecations: ['mixed-decls'], // https://sass-lang.com/documentation/breaking-changes/mixed-decls
       },
     },
     
     // Configure postprocessing using lightningcss
     transformer: 'lightningcss',
     lightningcss: {
-      targets: {
-        // Use minimum targets so that the `light-dark()` polyfill doesn't get applied, which is buggy.
-        // https://github.com/parcel-bundler/lightningcss/issues/821
-        //chrome: 123 << 16, // Minimum for `light-dark()`
-        chrome: 121 << 16, // FIXME: needed for Chromatic, since it currently uses Chrome v121
-        firefox: 120 << 16, // Minimum for `light-dark()`
-        safari: 17 << 16 | 5 << 8, // Minimum for `light-dark()`
-      },
+      targets: browserslistToTargets(browserslist(
+        `fully supports css-nesting AND fully supports css-cascade-layers`
+      )),
+      exclude: LightningCssFeatures.LightDark, // Do not include the `light-dark()` polyfill (it's too buggy)
       cssModules: {
         // @ts-expect-error This is fixed in vite v6, remove this line once we upgrade.
         grid: false, // Workaround for https://github.com/parcel-bundler/lightningcss/issues/762

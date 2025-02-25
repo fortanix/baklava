@@ -2,13 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@use '../../../styling/defs.scss' as bk;
-@use '../../../styling/features/typography.scss' as typography;
+@use 'sass:math';
 
-@layer baklava.components {
-  .bk-link {
-    @include bk.component-base(bk-link);
-    
-    @include typography.link;
-  }
+@function rem-from-px($size-in-px) {
+  @return round(math.div($size-in-px, 14) * 1rem, 1px);
 }

@@ -11,6 +11,7 @@ a `light-dark()` expression in a variable and reuse that in a different theme. M
 - Ref: https://github.com/web-platform-tests/wpt/blob/master/css/css-color/light-dark-inheritance.html
 */
 
+// Global CSS variables that are theme-dependent
 @mixin theme-variables {
   --bk-page-color-text: #{bk.$theme-text-body-default};
   --bk-page-color-background: #{bk.$theme-page-default};
@@ -18,83 +19,59 @@ a `light-dark()` expression in a variable and reuse that in a different theme. M
   --bk-focus-outline-width: 0.2rem;
 }
 
-/* This mixin should be used after every usage of `color-scheme` */
-@mixin theme-root {
+// This mixin should be used after every usage of `color-scheme`
+@mixin theme-init {
   @include theme-variables;
   color: var(--bk-page-color-text);
 }
 
-@mixin color-scheme($scheme) {
-  color-scheme: string.unquote($scheme);
-  
-  // XXX this should be done by lightningcss automatically, but for some reason these variables are not being injected.
-  // https://github.com/parcel-bundler/lightningcss/releases/tag/v1.24.0
-  @if $scheme == 'light' or $scheme == 'only light' {
-    --lightningcss-light: initial;
-    --lightningcss-dark: ;
-  } @else if $scheme == dark or $scheme == 'only dark' {
-    --lightningcss-light: ;
-    --lightningcss-dark: initial;
-  }
-}
-
 @mixin theme($theme) {
-  @include color-scheme($theme);
-  @include theme-root;
+  color-scheme: string.unquote($theme);
+  @include theme-init; // Recompute theme values after `color-scheme` change
 }
 
 @mixin theme-invert($selector: &) {
-  @include theme-root;
-  
-  /* Fallback: if no `bk-theme` class is applied, invert based on the user's preferred scheme. */
-  /* Note: this should have lower precedence than the rules below */
+  // Fallback: if no `bk-theme` class is applied, invert based on the user's preferred scheme.
+  // Note: this should have lower precedence than the rules below
   @media (prefers-color-scheme: light) {
     @at-root #{$selector} {
-      @include color-scheme('only dark');
+      @include theme('only dark');
     }
   }
   @media (prefers-color-scheme: dark) {
     @at-root #{$selector} {
-      @include color-scheme('only light');
+      @include theme('only light');
     }
   }
   
-  /* Invert if overridden by a `bk-theme` class */
-  /*
-  NOTE: this will not work for additional `bk-theme-invert` mixins deeper inside the current, because this mixin does
-  not produce a `bk-theme` class.
-  */
+  // Invert if overridden by a `bk-theme` class
+  // NOTE: this will not work for additional `bk-theme-invert` mixins deeper inside the current, because this mixin does
+  // not produce a `bk-theme` class.
   @at-root :global(.bk-theme--dark) #{$selector} {
-    @include color-scheme('only light');
+    @include theme('only light');
   }
   @at-root :global(.bk-theme--light) #{$selector} {
-    @include color-scheme('only dark');
+    @include theme('only dark');
   }
-  /* Once `@scope` is available, convert the above selectors to use `@scope` to prevent the second overring the first */
+  // Once `@scope` is available, convert the above selectors to use `@scope` to prevent the second overring the first
   
-  /* Possible solution using `--color-scheme` variables rather than `bk-theme` classes. Downside: this will not allow
-    us to style the container itself.
+  /*
+  // Possible solution using `--color-scheme` variables rather than `bk-theme` classes. Downside: this will not allow
+  // us to style the container itself.
   @container style(--color-scheme: light) { * { color-scheme: only dark; }
   @container style(--color-scheme: dark) { * { color-scheme: only light; }
   */
 }
 
+// Styles to be applied specifically on the `:root` element (see `global.scss`)
+@mixin root-styles {
+  @include theme('light dark'); // Indicates that we support light and dark themes (in no particular order)
+  background: var(--bk-page-color-background); // Must be set on the root so that we style the entire viewport
+  color: var(--bk-page-color-text);
+}
+
 @mixin styles {
-  :root {
-    /* Indicates that we support both light and dark themes (in no particular order) */
-    @include theme('light dark');
-    
-    // XXX this should be done by lightningcss automatically, but for some reason these variables are not being injected
-    // https://github.com/parcel-bundler/lightningcss/releases/tag/v1.24.0
-    --lightningcss-light: initial;
-    --lightningcss-dark: ;
-    @media (prefers-color-scheme: dark) {
-      --lightningcss-light: ;
-      --lightningcss-dark: initial;
-    }
-  }
-  
-  /* Theme overrides */
+  // Utility classes for theme overrides
   .bk-theme--light { @include theme('only light'); }
   .bk-theme--dark { @include theme('only dark'); }
   .bk-theme--invert { @include theme-invert; }

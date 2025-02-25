@@ -11,14 +11,26 @@ break our layering order [1]. `@import` is deprecated anyway, so we should not u
 
 References:
 - [1] https://github.com/sass/sass/issues/3842
+
+In production Storybook builds it is hard to guarantee style ordering, so make sure to also inject this at the top
+of `preview-head.html`.
 */
 
 @mixin styles {
-  @layer normalize, reset, baklava, app, accessibility, storybook;
-  @layer baklava.base, baklava.body-text, baklava.theming, baklava.components, baklava.overrides;
+  @layer
+    reset, // User agent style reset (https://css-tricks.com/reboot-resets-reasoning)
+    baklava, // Baklava styling
+    app, // Consumer application styling (*)
+    accessibility, // Global accessibility styling that should take precedence over components by default
+    storybook; // Storybook styling (e.g. docs pages)
+  @layer
+    baklava.base, // Global base styling
+    baklava.theming, // Themes (e.g. light/dark mode)
+    baklava.prose, // Default semantic HTML styling for prose sections
+    baklava.components, // Component styling
+    baklava.overrides; // Local overrides (e.g. components that need to override other components)
+  
+  // (*) In the future, we could maybe use caret syntax for this instead, so that consumer applications just use regular
+  // unlayered styling and anything that needs higher precedence uses `@layer ^my-layer`.
+  // https://github.com/w3c/csswg-drafts/issues/6323
 }
-
-/*
-In production Storybook builds it is hard to guarantee style ordering, so we also inject this list at the top
-of `preview-head.html`.
-*/

@@ -1,7 +1,7 @@
 <style>
-  /* This should be the same as the ordering in `preview.css` and `main.css` */
-  @layer normalize, reset, baklava, app, accessibility, storybook;
-  @layer baklava.base, baklava.body-text, baklava.theming, baklava.components;
+  /* This should be the same as the ordering in `layers.css`. */
+  @layer reset, baklava, app, accessibility, storybook;
+  @layer baklava.base, baklava.theming, baklava.prose, baklava.components, baklava.overrides;
 </style>
 
 <link rel="preload" as="font" type="font/woff2" crossorigin="anonymous"

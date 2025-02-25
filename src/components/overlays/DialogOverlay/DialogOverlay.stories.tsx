@@ -51,7 +51,7 @@ const DialogOverlayControlledWithSubject = (props: React.ComponentProps<typeof D
   const overlay = DialogOverlay.useOverlayWithSubject<Subject>();
   
   return (
-    <article className="bk-body-text">
+    <article className="bk-prose">
       {overlay.subject &&
         <DialogOverlay {...overlay.props} {...props} title={overlay.subject.name}>
           Details about {overlay.subject.name} here.

@@ -25,6 +25,7 @@ export default {
   args: {
     unstyled: false,
     label: 'Link',
+    href: '/',
     onClick: event => { event.preventDefault(); },
   },
   render: (args) => <Link {...args}/>,
