@@ -33,7 +33,8 @@
     }
 
     .bk-input-field__description {
-      font-size: bk.$font-size-xs;
+      color: bk.$theme-form-text-hint;
+      font-size: bk.$font-size-s;
     }
   }
 }

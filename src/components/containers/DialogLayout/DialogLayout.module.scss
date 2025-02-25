@@ -10,12 +10,12 @@
 
     display: flex;
     flex-direction: column;
-    gap: bk.$spacing-7;
+    gap: bk.$spacing-10;
 
     .bk-dialog-layout__content {
       display: flex;
       flex-direction: row;
-      gap: bk.$spacing-10;
+      gap: bk.$spacing-12;
     }
 
     .bk-dialog-layout__content__aside {
@@ -24,8 +24,17 @@
 
     // TODO: Maybe this should be a separate component?
     hr {
-      border-block-end: 1px solid bk.$color-blackberry-300;
-      margin-block: bk.$spacing-11 bk.$spacing-2;
+      border-block-end: 1px solid bk.$theme-rule-default;
+      margin-block: bk.rem-from-px(70) bk.$spacing-2;
+    }
+
+    small {
+      color: bk.$theme-text-small-text-subtle;
+      font-size: bk.$font-size-s;
+    }
+
+    button {
+      font-size: bk.$font-size-s;
     }
   }
 }

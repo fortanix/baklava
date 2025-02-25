@@ -36,6 +36,7 @@ export const DialogPattern2: Story = {
   render: () => {
     return (
       <Dialog
+        // not exactly the same logo on Figma, but I guess that's irrelevant for this story.
         title={<Logo subtitle="Armor"/>}
         showCancelAction={false}
       >
@@ -55,7 +56,10 @@ export const DialogPattern2: Story = {
               />
               {/* TODO: Maybe this should be a separate component? */}
               <hr/>
-              <p><Icon icon="info"/> Step-by-Step Guide to Connect to Azure Cloud Provider</p>
+              <div style={{display: 'flex', flexDirection: 'row', gap: '4px', alignItems: 'flex-start'}}>
+                <p><Icon icon="info"/></p>
+                <p><small>Step-by-Step Guide to Connect to Azure Cloud Provider</small></p>
+              </div>
             </>
           )}
         >
@@ -113,7 +117,7 @@ export const DialogPattern2: Story = {
 
               {/* TODO: Eventually in the future implement something like this:
               https://react-spectrum.adobe.com/react-spectrum/Flex.html */}
-              <div style={{display: 'flex', flexDirection: 'row', gap: '8px'}}>
+              <div style={{display: 'flex', flexDirection: 'row', gap: '12px'}}>{/* bk.spacing-3 */}
                 <Button kind="secondary">Back</Button>
                 <Button kind="secondary">Skip Onboarding</Button>
                 <Button kind="primary">Next</Button>

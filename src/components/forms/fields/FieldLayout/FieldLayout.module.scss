@@ -13,7 +13,7 @@
     }
 
     &.bk-field-layout--medium {
-      inline-size: calc(bk.$spacing-18 + bk.$spacing-11); // 320px
+      inline-size: bk.rem-from-px(400);
     }
   }
 }
