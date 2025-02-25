@@ -7,7 +7,7 @@ import type { NonUndefined } from '../../../util/types.ts';
 import * as React from 'react';
 import { flushSync } from 'react-dom';
 import { mergeRefs } from '../../../util/reactUtil.ts';
-import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
+import { classNames as cx } from '../../../util/componentUtil.ts';
 
 import { Dialog } from '../../containers/Dialog/Dialog.tsx';
 import { ModalProvider, type ModalProviderProps } from '../../util/overlays/modal/ModalProvider.tsx';
