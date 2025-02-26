@@ -67,7 +67,7 @@ export const DialogPattern2: Story = {
 
           <Form>
             <FormLayout>
-              <p>Key insight has read-only access to resources within your AWS account.</p>
+              <p>Key Insight has read-only access to resources within your AWS account.</p>
 
               <FieldLayout size="medium">
                 <InputField

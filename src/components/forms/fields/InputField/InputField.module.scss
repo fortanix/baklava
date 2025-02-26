@@ -14,7 +14,6 @@
 
     .bk-input-field__label {
       @include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-m);
-      cursor: default;
       margin-block-end: bk.$spacing-1;
     }
 
