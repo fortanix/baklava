@@ -24,7 +24,6 @@ export { Panel } from '../src/components/containers/Panel/Panel.tsx';
 export { Card } from '../src/components/containers/Card/Card.tsx';
 export { Banner } from '../src/components/containers/Banner/Banner.tsx';
 export { Dialog } from '../src/components/containers/Dialog/Dialog.tsx';
-export { DialogLayout } from '../src/components/containers/DialogLayout/DialogLayout.tsx';
 export { Disclosure } from '../src/components/containers/Disclosure/Disclosure.tsx';
 export { Accordion } from '../src/components/containers/Accordion/Accordion.tsx';
 
@@ -106,5 +105,7 @@ export { UserMenu } from '../src/layouts/AppLayout/Header/UserMenu.tsx';
 export { Logo } from '../src/layouts/AppLayout/Logo/Logo.tsx';
 export { Nav } from '../src/layouts/AppLayout/Nav/Nav.tsx';
 export { Sidebar } from '../src/layouts/AppLayout/Sidebar/Sidebar.tsx';
+
+export { DialogLayout } from '../src/layouts/DialogLayout/DialogLayout.tsx';
 
 export { FormLayout } from '../src/layouts/FormLayout/FormLayout.tsx';

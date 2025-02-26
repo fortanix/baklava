@@ -6,17 +6,17 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Dialog } from '../Dialog/Dialog';
-import { Logo } from '../../../layouts/AppLayout/Logo/Logo.tsx';
-import { H4 } from '../../../typography/Heading/Heading.tsx';
-import { Form } from '../../forms/context/Form/Form.tsx';
-import { FormLayout } from '../../../layouts/FormLayout/FormLayout.tsx';
-import { CheckboxGroup } from '../../forms/controls/CheckboxGroup/CheckboxGroup.tsx';
-import { InputField } from '../../forms/fields/InputField/InputField.tsx';
-import { Button } from '../../actions/Button/Button.tsx';
-import { Stepper } from '../../navigations/Stepper/Stepper.tsx';
-import { Icon } from '../../graphics/Icon/Icon.tsx';
-import { FieldLayout } from '../../forms/fields/FieldLayout/FieldLayout.tsx';
+import { Dialog } from '../../components/containers/Dialog/Dialog.tsx';
+import { Logo } from '../../layouts/AppLayout/Logo/Logo.tsx';
+import { H4 } from '../../typography/Heading/Heading.tsx';
+import { Form } from '../../components/forms/context/Form/Form.tsx';
+import { FormLayout } from '../FormLayout/FormLayout.tsx';
+import { CheckboxGroup } from '../../components/forms/controls/CheckboxGroup/CheckboxGroup.tsx';
+import { InputField } from '../../components/forms/fields/InputField/InputField.tsx';
+import { Button } from '../../components/actions/Button/Button.tsx';
+import { Stepper } from '../../components/navigations/Stepper/Stepper.tsx';
+import { Icon } from '../../components/graphics/Icon/Icon.tsx';
+import { FieldLayout } from '../../components/forms/fields/FieldLayout/FieldLayout.tsx';
 
 import { DialogLayout } from './DialogLayout';
 
