@@ -106,4 +106,6 @@ export { Logo } from '../src/layouts/AppLayout/Logo/Logo.tsx';
 export { Nav } from '../src/layouts/AppLayout/Nav/Nav.tsx';
 export { Sidebar } from '../src/layouts/AppLayout/Sidebar/Sidebar.tsx';
 
+export { DialogLayout } from '../src/layouts/DialogLayout/DialogLayout.tsx';
+
 export { FormLayout } from '../src/layouts/FormLayout/FormLayout.tsx';

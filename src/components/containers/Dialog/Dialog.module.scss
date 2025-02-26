@@ -33,7 +33,7 @@
     
     --display: flex; // Note: don't set the `display` directly, leave it to `reset.scss` (see comments there)
     flex-direction: column;
-    
+ 
     .bk-dialog__header {
       position: sticky;
       inset-block-start: -1px; // -1px to prevent bleed through due to pixel rounding
@@ -66,6 +66,10 @@
       
       margin-block: calc(bk.$spacing-7 / 2) calc(bk.$spacing-7 / 2);
       padding-inline: var(--bk-dialog-padding-inline);
+      
+      display: flex;
+      flex-direction: row;
+      gap: bk.$spacing-3;
     }
     
     .bk-dialog__actions {
@@ -87,6 +91,12 @@
       
       .bk-dialog__action { --keep: ; }
       .bk-dialog__action--icon { --keep: ; }
+    }
+
+    &.bk-dialog--icon-aside {
+      .bk-dialog__actions {
+        padding-inline-start: bk.$spacing-11;
+      }
     }
     
     // State: focus
