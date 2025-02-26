@@ -5,7 +5,7 @@
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../util/componentUtil.ts';
 
-import { H3 } from '../../typography/Heading/Heading.tsx';
+import { H2 } from '../../typography/Heading/Heading.tsx'
 
 import cl from './DialogLayout.module.scss';
 
@@ -31,7 +31,7 @@ export const DialogLayout = (props: DialogLayoutProps) => {
         { [cl['bk-dialog-layout']]: !unstyled },
       )}
     >
-      {title && <H3>{title}</H3>}
+      {title && <H2>{title}</H2>}
       <div className={cx(cl['bk-dialog-layout__content'])}>
         {aside && <aside className={cx(cl['bk-dialog-layout__content__aside'])}>{aside}</aside>}
         <section>{children}</section>

@@ -8,7 +8,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { Dialog } from '../../components/containers/Dialog/Dialog.tsx';
 import { Logo } from '../../layouts/AppLayout/Logo/Logo.tsx';
-import { H4 } from '../../typography/Heading/Heading.tsx';
+import { H3 } from '../../typography/Heading/Heading.tsx';
 import { Form } from '../../components/forms/context/Form/Form.tsx';
 import { FormLayout } from '../FormLayout/FormLayout.tsx';
 import { CheckboxGroup } from '../../components/forms/controls/CheckboxGroup/CheckboxGroup.tsx';
@@ -63,7 +63,7 @@ export const DialogPattern2: Story = {
             </>
           )}
         >
-          <H4>Connect to Azure Subscriptions</H4>
+          <H3>Connect to Azure Subscriptions</H3>
 
           <Form>
             <FormLayout>
