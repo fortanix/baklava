@@ -106,13 +106,11 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
       switch (placement) {
         case 'top':
         case 'bottom': {
-          const x = arrow?.arrowX ?? '50%';
-          return `calc(${x} + 15px)`;
+          return arrow?.arrowX ?? '50%';
         }
         case 'right':
         case 'left': {
-          const y = arrow?.arrowY ?? '50%';
-          return `calc(${y} + 20px)`;
+          return arrow?.arrowY ?? '50%';
         }
         default: return assertUnreachable(placement);
       }
