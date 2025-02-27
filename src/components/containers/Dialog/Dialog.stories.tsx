@@ -64,7 +64,7 @@ export const DialogFlat: Story = {
   },
 };
 
-export const DialogPattern1: Story = {
+export const DialogWithAside: Story = {
   render: () => {
     const radioOptions = ['Response Only', 'Query Only', 'All'] as const;
     const [selectedRadioOption, setSelectedRadioOption] = React.useState<string>('Response Only');

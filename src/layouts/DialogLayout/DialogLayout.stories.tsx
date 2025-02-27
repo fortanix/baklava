@@ -32,11 +32,11 @@ export default {
 } satisfies Meta<DialogLayoutArgs>;
 
 
-export const DialogPattern2: Story = {
+export const DialogOnboarding: Story = {
   render: () => {
     return (
       <Dialog
-        // not exactly the same logo on Figma, but I guess that's irrelevant for this story.
+        // TODO: Replace here after https://github.com/fortanix/baklava/issues/163
         title={<Logo subtitle="Armor"/>}
         showCancelAction={false}
       >
