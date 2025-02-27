@@ -18,6 +18,7 @@
   // References:
   // - [1] https://www.youtube.com/watch?v=cCAtD_BAHNw ("Under the radar CSS features for your CSS reset")
   @layer custom {
+    //* { min-inline-size: 0; } // Reset flexbox item min-width? https://github.com/elad2412/the-new-css-reset/issues/45
     
     // :focus-visible {
     //   /* outline: calc(var(--bk-sizing-1) / 2) solid color-contrast(var(--bk-page-color-background) vs white, black); */
