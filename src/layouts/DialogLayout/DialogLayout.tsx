@@ -26,16 +26,17 @@ export const DialogLayout = (props: DialogLayoutProps) => {
   const { unstyled, title, aside, children, ...propsRest } = props;
   return (
     <div
+      {...propsRest}
       className={cx(
         'bk',
         { [cl['bk-dialog-layout']]: !unstyled },
       )}
     >
       {title && <H2>{title}</H2>}
-      <div className={cx(cl['bk-dialog-layout__content'])}>
+      <section className={cx(cl['bk-dialog-layout__content'])}>
         {aside && <aside className={cx(cl['bk-dialog-layout__content__aside'])}>{aside}</aside>}
-        <section>{children}</section>
-      </div>
+        <div>{children}</div>
+      </section>
     </div>
   );
 };

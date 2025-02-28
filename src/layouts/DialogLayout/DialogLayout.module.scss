@@ -24,7 +24,7 @@
     }
 
     hr {
-      border-block-end: 1px solid bk.$theme-rule-default;
+      border-block-end: bk.rem-from-px(1) solid bk.$theme-rule-default;
       margin-block: bk.rem-from-px(70) bk.$spacing-2;
     }
 
