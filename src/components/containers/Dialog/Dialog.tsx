@@ -100,11 +100,11 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   
   /** Whether to set autofocus on the close button. Default: false. */
   autoFocusClose?: undefined | boolean,
-
+  
   /** An icon displayed on the top left corner that insets the content and the action buttons. */
   // TODO: Is this the best name?
   iconAside?: undefined | React.ReactNode,
-
+  
   /** Some content to be displayed aside as the main content. */
   contentAside?: undefined | React.ReactNode,
 };
