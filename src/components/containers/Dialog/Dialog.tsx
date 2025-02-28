@@ -178,14 +178,14 @@ export const Dialog = Object.assign(
           </header>
           
           <div className={cl['bk-dialog__content']}>
-            {iconAside && (
-              <aside className={cx(cl['bk-dialog__content__icon-aside'])}>
-                {iconAside}
-              </aside>
-            )}
-            {contentAside && (
-              <aside className={cx(cl['bk-dialog__content__content-aside'])}>
-                {contentAside}
+            {(iconAside || contentAside) && (
+              <aside className={cx(cl['bk-dialog__content__aside'])}>
+                {iconAside && (
+                  <div>{iconAside}</div>
+                )}
+                {contentAside && (
+                  <div>{contentAside}</div>
+                )}
               </aside>
             )}
             <section

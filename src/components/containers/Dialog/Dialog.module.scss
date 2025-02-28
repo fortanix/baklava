@@ -72,6 +72,12 @@
       gap: bk.$spacing-3;
     }
     
+    .bk-dialog__content__aside {
+      display: flex;
+      flex-direction: row;
+      gap: bk.$spacing-3;
+    }
+
     .bk-dialog__actions {
       position: sticky;
       inset-block-end: -1px; // -1px to prevent bleed through due to pixel rounding
