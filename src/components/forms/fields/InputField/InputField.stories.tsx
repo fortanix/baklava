@@ -54,3 +54,28 @@ export const InvalidInput: Story = {
     await fireEvent.submit(input.closest('form')!);
   },
 };
+
+export const Optional: Story = {
+  args: {
+    labelOptional: true,
+  },
+};
+
+export const Tooltip: Story = {
+  args: {
+    labelTooltip: 'This is a tooltip',
+  },
+};
+
+export const OptionalAndTooltip: Story = {
+  args: {
+    labelOptional: true,
+    labelTooltip: 'This is a tooltip for an optional field',
+  },
+};
+
+export const Description: Story = {
+  args: {
+    description: 'This is a description',
+  },
+};
