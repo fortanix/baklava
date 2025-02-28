@@ -9,7 +9,7 @@
     @include bk.component-base(bk-field-layout);
 
     &.bk-field-layout--small {
-      inline-size: calc(bk.$spacing-17 + bk.$spacing-6); // 244px
+      inline-size: bk.rem-from-px(244);
     }
 
     &.bk-field-layout--medium {

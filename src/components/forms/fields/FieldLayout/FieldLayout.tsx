@@ -24,7 +24,7 @@ export const FieldLayout = (props: FieldLayoutProps) => {
     <div className={cx(
       'bk',
       cl['bk-field-layout'],
-      cl[`bk-field-layout--${size}`]
+      cl[`bk-field-layout--${size}`],
     )}>
       {children}
     </div>
