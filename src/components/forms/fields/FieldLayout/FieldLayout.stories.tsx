@@ -6,10 +6,10 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { FieldLayout } from './FieldLayout';
-import { Card } from '../../../containers/Card/Card';
-import { Input } from '../../controls/Input/Input';
-import { LoremIpsum } from '../../../../util/storybook/LoremIpsum'; 
+import { FieldLayout } from './FieldLayout.tsx';
+import { Card } from '../../../containers/Card/Card.tsx';
+import { Input } from '../../controls/Input/Input.tsx';
+import { LoremIpsum } from '../../../../util/storybook/LoremIpsum.tsx';
 
 
 type FieldLayoutArgs = React.ComponentProps<typeof FieldLayout>;
