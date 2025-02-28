@@ -23,7 +23,6 @@
       inline-size: bk.$spacing-18;
     }
 
-    // TODO: Maybe this should be a separate component?
     hr {
       border-block-end: 1px solid bk.$theme-rule-default;
       margin-block: bk.rem-from-px(70) bk.$spacing-2;

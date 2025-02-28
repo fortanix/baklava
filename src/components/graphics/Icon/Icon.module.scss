@@ -45,9 +45,9 @@
       align-items: center;
       justify-content: center;
     }
-    
-    &.bk-icon-event--warning-filled {
-      color: bk.$theme-icon-warning;
-    }
+  }
+
+  .bk-icon-event--warning-filled {
+    color: bk.$theme-icon-warning;
   }
 }
