@@ -39,6 +39,22 @@ export const ListBoxStandard: Story = {
   },
 };
 
+/**
+ * If selecting an item triggers some side effect (e.g. page change), then we only want to select an item if there
+ * is an explicit user intent, such as a mouse click, tap, or pressing Enter/Space.
+ */
+export const ListBoxWithoutAutoSelect: Story = {
+  args: {
+    children: (
+      <>
+        {['Apple', 'Apricot', 'Blueberry', 'Cherry', 'Melon', 'Orange', 'Strawberry'].map((fruit) =>
+          <ListBox.Option key={fruit} itemKey={fruit} label={fruit} requireIntent/>
+        )}
+      </>
+    ),
+  },
+};
+
 export const ListBoxWithScroll: Story = {
   args: {
     children: (

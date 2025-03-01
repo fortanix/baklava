@@ -22,7 +22,7 @@ References:
 export { cl as ListBoxClassNames };
 
 
-const useKeyboardSequence = (maxDuration = 1000) => {
+const useKeyboardSequence = (maxDuration = 400) => {
   const [sequence, setSequence] = React.useState<Array<string>>([]);
   const lastKeyPressTime = React.useRef(0);
   
@@ -63,6 +63,7 @@ export type ItemDef = {
 export type ListBoxContext = {
   register: (itemDef: ItemDef) => () => void, // Register a new item; returns a callback to unregister
   focusedItem: null | ItemKey, // The currently selected item (up to one at a time)
+  focusItem: (itemKey: null | ItemKey) => void, // Callback to request the given `itemKey` to be focused
   selectedItem: null | ItemKey, // The currently selected item (up to one at a time)
   selectItem: (itemKey: ItemKey) => void, // Callback to request the given `itemKey` to be selected
   
@@ -165,27 +166,43 @@ export type OptionProps = ComponentProps<typeof Button> & {
   /** A callback to be called when the option is selected. */
   onSelect?: undefined | (() => void),
   
-  /** Whether to automatically select the option as soon as it gets focused. Default: true. */
-  autoSelectOnFocus?: undefined | boolean,
+  /**
+   * Whether to require explicit user intent (e.g. click) before selecting the option. When this is false, the item
+   * may be selected automatically when navigating through the list by keyboard. Default: false.
+   */
+  requireIntent?: undefined | boolean,
 };
 /**
  * A dropdown menu item that can be selected.
  */
 export const Option = (props: OptionProps) => {
-  const { itemKey, label, icon, onSelect, autoSelectOnFocus = true, ...propsRest } = props;
+  const { itemKey, label, icon, onSelect, requireIntent = false, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemDef>(() => ({ itemKey, itemRef }), [itemKey]);
+  
+  const hasHover = React.useRef<boolean>(false);
   
   const context = useListBoxContext(itemDef);
   const isFocused = context.focusedItem === itemKey;
   const isSelected = context.selectedItem === itemKey;
   
   React.useEffect(() => {
-    if (autoSelectOnFocus && isFocused && !isSelected) {
+    // Note: we should not auto-select if the focus is due to hover, only if it's through keyboard interactions
+    if (!requireIntent && isFocused && !isSelected && !hasHover.current) {
       context.selectItem(itemKey);
     }
-  }, [autoSelectOnFocus, context.selectItem, itemKey, isFocused, isSelected]);
+  }, [requireIntent, context.selectItem, itemKey, isFocused, isSelected]);
+  
+  // Focus the item when the user hovers over
+  const handleMouseOver = React.useCallback(() => {
+    hasHover.current = true;
+    context.focusItem(itemKey);
+  }, [context.focusItem, itemKey]);
+  const handleMouseOut = React.useCallback(() => {
+    hasHover.current = false;
+    context.focusItem(null);
+  }, [context.focusItem]);
   
   return (
     <Button unstyled
@@ -206,6 +223,8 @@ export const Option = (props: OptionProps) => {
         { [cl['bk-list-box__item--focused']]: isFocused },
         propsRest.className,
       )}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
       onPress={() => { context.selectItem(itemKey); onSelect?.(); }}
     >
       {icon && <Icon icon={icon} className={cl['bk-list-box__item__icon']}/>}
@@ -292,6 +311,7 @@ export const ListBox = Object.assign(
     const context = React.useMemo<ListBoxContext>(() => ({
       register,
       focusedItem,
+      focusItem: setFocusedItem,
       selectedItem,
       selectItem,
       disabled,
