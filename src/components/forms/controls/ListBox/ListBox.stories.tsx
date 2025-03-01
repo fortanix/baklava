@@ -27,11 +27,15 @@ export default {
 } satisfies Meta<ListBoxArgs>;
 
 
+// Sample items
+const fruits = ['Apple', 'Apricot', 'Blueberry', 'Cherry', 'Melon', 'Orange', 'Peach', 'Strawberry'];
+
+
 export const ListBoxStandard: Story = {
   args: {
     children: (
       <>
-        {['Apple', 'Apricot', 'Blueberry', 'Cherry', 'Melon', 'Orange', 'Strawberry'].map((fruit) =>
+        {fruits.map((fruit) =>
           <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
         )}
       </>
@@ -48,6 +52,32 @@ export const ListBoxEmpty: Story = {
 export const ListBoxSingle: Story = {
   args: {
     children: <ListBox.Option itemKey="single" label="This list box has a single option"/>,
+  },
+};
+
+export const ListBoxWithHeader: Story = {
+  args: {
+    children: (
+      <>
+        <ListBox.Header itemKey="header" label={`Fruits (${fruits.length})`}/>
+        {fruits.map(fruit =>
+          <ListBox.Option key={fruit} itemKey={fruit} label={fruit} requireIntent/>
+        )}
+      </>
+    ),
+  },
+};
+
+export const ListBoxWithAction: Story = {
+  args: {
+    children: (
+      <>
+        {fruits.map(fruit =>
+          <ListBox.Option key={fruit} itemKey={fruit} label={fruit} requireIntent/>
+        )}
+        <ListBox.Action itemKey="action" label="Go to checkout" onActivate={() => {}}/>
+      </>
+    ),
   },
 };
 
@@ -72,7 +102,7 @@ export const ListBoxWithRequireIntent: Story = {
   args: {
     children: (
       <>
-        {['Apple', 'Apricot', 'Blueberry', 'Cherry', 'Melon', 'Orange', 'Strawberry'].map((fruit) =>
+        {fruits.map((fruit) =>
           <ListBox.Option key={fruit} itemKey={fruit} label={fruit} requireIntent/>
         )}
       </>
@@ -84,12 +114,26 @@ export const ListBoxWithRequireIntent: Story = {
  * When the list box is selected, typing a string of characters will automatically select the first option found that
  * starts with the typed string. This should in a case insensitive way, ignoring most diacritics.
  */
-export const ListBoxWithTypeAhead: Story = {
+export const ListBoxTypeAhead: Story = {
   args: {
     children: (
       <>
-        {['Here is a sentence', 'über', 'ça', 'ôté', 'ñoñada', '@username', '#hashtag'].map((char) =>
+        {['A capitalized sentence', 'über', 'ça', 'ôté', 'ñoñada', '@username', '#hashtag'].map((char) =>
           <ListBox.Option key={char} itemKey={char} label={char}/>
+        )}
+      </>
+    ),
+  },
+};
+
+export const ListBoxMany: Story = {
+  args: {
+    children: (
+      <>
+        {Array.from({ length: 1000 }).map((_, index) =>
+          index === 500
+            ? <ListBox.Option key="find-me" itemKey="find-me" label="Find me"/> // Searchability test (CTRL+F)
+            : <ListBox.Option key={`opt-${index + 1}`} itemKey={`opt-${index + 1}`} label={`Option ${index + 1}`}/>
         )}
       </>
     ),

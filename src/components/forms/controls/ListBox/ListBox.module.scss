@@ -5,26 +5,31 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  $bk-list-box-min-width: 14rem;
-  
   .bk-list-box {
     @include bk.component-base(bk-list-box);
     
-    --bk-list-box-transition-duration: 150ms;
+    --bk-list-box-padding-end: #{bk.$spacing-2}; // Extra padding included at the end of the list
+    --bk-list-box-item-padding-inline: #{bk.$spacing-4};
+    --bk-list-box-item-padding-block: #{bk.$spacing-2};
+    --bk-list-box-item-block-size: calc(#{bk.rem-from-px(1)} + var(--bk-list-box-item-padding-block) * 2 + 1lh);
     
-    scroll-behavior: smooth;
+    container-type: scroll-state;
     overflow: hidden;
     /* stylelint-disable-next-line declaration-property-value-disallowed-list */
     overflow-y: auto;
+    scroll-behavior: smooth;
+    scroll-padding-block:
+      var(--bk-list-box-item-block-size)
+      calc(var(--bk-list-box-item-block-size) + var(--bk-list-box-padding-end));
     
-    min-inline-size: $bk-list-box-min-width;
-    max-block-size: 18rem;
-    padding-block-end: 8px;
+    min-inline-size: 30ch;
+    max-block-size: 12lh;
+    padding-block-end: var(--bk-list-box-padding-end);
     
     background: bk.$theme-dropdown-menu-menu-background-default;
-    border: 1px solid bk.$theme-dropdown-menu-menu-border-default;
+    border: bk.rem-from-px(1) solid bk.$theme-dropdown-menu-menu-border-default;
     
-    border-radius: 4px;
+    border-radius: bk.$radius-2;
     &[data-placement^="bottom"] {
       border-start-start-radius: 0;
       border-start-end-radius: 0;
@@ -41,103 +46,88 @@
     &:not(:has(> :nth-child(1 of .bk-list-box__item))) {
       &::before {
         content: 'No items';
-        padding: bk.$spacing-1 bk.$spacing-3;
+        padding: bk.$spacing-2 bk.$spacing-4;
         display: flex;
         color: bk.$theme-text-small-text-subtle;
       }
     }
     
-    /*
-    &[popover] {
-      &:not(:popover-open) { display: none; }
-      
-      @media (prefers-reduced-motion: no-preference) {
-        transition:
-          display var(--bk-list-box-transition-duration) allow-discrete,
-          overlay var(--bk-list-box-transition-duration) allow-discrete,
-          opacity var(--bk-list-box-transition-duration) ease-out,
-          translate var(--bk-list-box-transition-duration) ease-out;
-          //transform: ... // Note: don't animate `transform` with floating-ui, since it relies on it for positioning
-        opacity: 0;
-        translate: 0 -1rem;
-      }
-      
-      &:popover-open {
-        opacity: 1;
-        translate: none;
-        
-        @media (prefers-reduced-motion: no-preference) {
-          @starting-style {
-            opacity: 0;
-            translate: 0 -1rem;
-          }
-        }
-      }
-    }
-    */
-    
     > .bk-list-box__item {
-      padding: 8px 14px;
+      //content-visibility: auto;
+      // Border + padding + content
+      //contain-intrinsic-block-size: calc(bk.rem-from-px(1) + var(--bk-list-box-item-padding-block) * 2 + 1lh);
+      
+      padding: var(--bk-list-box-item-padding-block) var(--bk-list-box-item-padding-inline);
+      background: bk.$theme-dropdown-menu-menu-background-default;
       
       display: flex;
       flex-direction: column;
       align-items: stretch;
       
       @include bk.font(bk.$font-family-body);
-      font-size: 14px;
-      line-height: 24px;
+      font-size: bk.$font-size-m;
       
+      > .bk-list-box__item__label {
+        @include bk.text-one-line($include-padding: false);
+      }
+      
+      border-block-start: bk.rem-from-px(1) solid transparent; // Keep a transparent border for consistent height
       &:not(:first-child) {
-        border-block-start: 1px solid bk.$theme-dropdown-menu-menu-border-default;
+        border-block-start-color: bk.$theme-dropdown-menu-menu-border-default;
       }
       
-      &:hover {
-        background: bk.$theme-dropdown-menu-menu-background-hover;
-      }
-      &.bk-list-box__item--focused {
-        background: bk.$theme-dropdown-menu-menu-background-focused;
-      }
-      &[aria-selected="true"] {
-        background: bk.$theme-dropdown-menu-menu-background-hover;
-        // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
-        box-shadow: inset 5px 0 bk.$theme-dropdown-menu-menu-tab-default !important;
-      }
-      
-      @media (prefers-reduced-motion: no-preference) {
-        transition: box-shadow 150ms ease-in;
-      }
-      
-      /*
-      .bk-list-box__item {
-        padding: 8px 14px;
-        
-        @include bk.font(bk.$font-family-body);
-        font-size: 14px;
-        line-height: 24px;
-        
-        display: flex;
-        align-items: center;
-        gap: bk.$spacing-3;
-        
-        .bk-list-box__item__icon {
-          font-size: 1.2em;
+      &:not(.bk-list-box__item--static) {
+        &:hover {
+          background: bk.$theme-dropdown-menu-menu-background-hover;
         }
-        .bk-list-box__item__label {
-          user-select: none;
+        &.bk-list-box__item--focused {
+          background: bk.$theme-dropdown-menu-menu-background-focused;
+        }
+        &[aria-selected="true"] {
+          background: bk.$theme-dropdown-menu-menu-background-hover;
+          // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
+          box-shadow: inset 5px 0 bk.$theme-dropdown-menu-menu-tab-default !important;
         }
         
-        @include bk.focus-inset;
+        @media (prefers-reduced-motion: no-preference) {
+          transition: box-shadow 150ms ease-in;
+        }
       }
-      */
+      
+      &.bk-list-box__item--option {
+        // Options get indented a little bit more
+        padding-inline-start: calc(var(--bk-list-box-item-padding-inline) + bk.$spacing-2);
+      }
+      
+      &.bk-list-box__item--header {
+        position: sticky;
+        inset-block-start: 0;
+        user-select: none;
+        
+        color: bk.$theme-text-small-text-subtle;
+        font-size: bk.$font-size-s;
+        text-transform: uppercase;
+        
+        /* In the future, we could use a scroll state query to add a shadow while stuck
+        @container scroll-state(stuck: top) {
+          box-shadow: ...
+        }
+        */
+      }
+      
+      &.bk-list-box__item--action {
+        position: sticky;
+        inset-block-end: 0;
+        user-select: none;
+        
+        font-size: bk.$font-size-s;
+        font-weight: bk.$font-weight-semibold;
+        text-transform: uppercase;
+      }
+      
+      @include bk.focus-hidden; // Prevent visible focus on individual items (e.g. through click + shift key)
     }
     
-    /*
-    &[popover] > .bk-list-box__item {
-      @media (prefers-reduced-motion: no-preference) {
-        // Delay transition until after close is complete to make it less jarring during close animation
-        transition-delay: var(--bk-list-box-transition-duration);
-      }
-    }
-    */
+    @include bk.focus-outset;
   }
 }

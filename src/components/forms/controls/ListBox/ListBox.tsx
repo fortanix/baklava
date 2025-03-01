@@ -43,6 +43,9 @@ const useKeyboardSequence = (maxDuration = 400) => {
       
       if (!isPrintableAscii || hasModifier) { return prevSequence; }
       
+      event.preventDefault();
+      event.stopPropagation();
+      
       const now = Date.now();
       const shouldReset = now - lastKeyPressTime.current > maxDuration;
       lastKeyPressTime.current = now;
@@ -68,6 +71,7 @@ export type ItemDef = {
 };
 
 export type ListBoxContext = {
+  id: string, // Unique ID for the component (e.g. for ARIA attributes)
   register: (itemDef: ItemDef) => () => void, // Register a new item; returns a callback to unregister
   focusedItem: null | ItemKey, // The currently selected item (up to one at a time)
   focusItem: (itemKey: null | ItemKey) => void, // Callback to request the given `itemKey` to be focused
@@ -91,74 +95,8 @@ export const useListBoxContext = (itemDef: ItemDef) => {
 
 
 //
-// Action item
+// Option item
 //
-
-export type ActionProps = ComponentProps<typeof Button> & {
-  /** A unique identifier for this action. */
-  itemKey: ItemKey,
-  
-  /** The human-readable label to be shown. */
-  label: string,
-  
-  /** The icon to be displayed (if any). */
-  icon?: undefined | IconName,
-  
-  /** The event handler for when the user activates this action. */
-  onActivate: (context: ListBoxContext) => void | Promise<void>,
-};
-/**
- * A dropdown menu item that can be triggered to perform some action.
- */
-/*export const Action = (props: ActionProps) => {
-  const { itemKey, label, icon, onActivate, ...propsRest } = props;
-  
-  const context = useListBoxContext();
-  const { optionProps, selectedOption } = context;
-  
-  const option: ItemDef = { itemKey: itemKey, label };
-  const isSelected = selectedOption === itemKey;
-  
-  return (
-    <li aria-selected={isSelected}>
-      <Button unstyled
-        // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<option>` for this.
-        role="option"
-        //tabIndex={-1} // Only the `role="listbox"` should be focusable, use keyboard arrows to select the option
-        data-option-key={itemKey}
-        {...propsRest}
-        {...optionProps?.({
-          option,
-          selected: false,
-        })}
-        // FIXME: merge these props with `optionProps()`
-        className={cx(
-          cl['bk-list-box__item'],
-          propsRest.className,
-        )}
-        onPress={() => {
-          const result = onActivate(context);
-          if (result instanceof Promise) {
-            // TODO: allow some way for the `Promise` result to signal that it wants to opt out of auto close?
-            result.then(
-              () => { context.close(); },
-              reason => {
-                // Keep open
-                console.warn(`Error during dropdown menu onPress callback:`, reason);
-              },
-            );
-          } else {
-            context.close();
-          }
-        }}
-      >
-        {icon && <Icon icon={icon}/>}
-        {propsRest.children ?? label}
-      </Button>
-    </li>
-  );
-};*/
-
 
 export type OptionProps = ComponentProps<typeof Button> & {
   /** A unique identifier for this option. */
@@ -213,20 +151,18 @@ export const Option = (props: OptionProps) => {
   
   return (
     <Button unstyled
+      id={`${context.id}_option_${itemKey}`}
       ref={itemRef}
       // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<option>` for this.
       role="option"
       tabIndex={-1} // Only the parent listbox is focusable
       data-item-key={itemKey}
+      aria-label={label}
       aria-selected={isSelected}
       {...propsRest}
-      // {...optionProps?.({
-      //   option,
-      //   selected: isSelected,
-      // })}
-      // FIXME: merge these props with `optionProps()`
       className={cx(
         cl['bk-list-box__item'],
+        cl['bk-list-box__item--option'],
         { [cl['bk-list-box__item--focused']]: isFocused },
         propsRest.className,
       )}
@@ -239,6 +175,102 @@ export const Option = (props: OptionProps) => {
     </Button>
   );
 };
+
+
+//
+// Header item
+//
+
+export type HeaderProps = ComponentProps<typeof Button> & {
+  /** A unique identifier for this item. */
+  itemKey: ItemKey,
+  
+  /** The human-readable label to be shown. */
+  label: string,
+  
+  /** An icon to be displayed before the label. */
+  icon?: undefined | IconName,
+};
+/**
+ * A static text item that can be used as a heading.
+ */
+export const Header = (props: HeaderProps) => {
+  const { itemKey, label, icon, ...propsRest } = props;
+  
+  return (
+    <span
+      tabIndex={-1}
+      data-item-key={itemKey}
+      {...propsRest}
+      className={cx(
+        cl['bk-list-box__item'],
+        cl['bk-list-box__item--static'],
+        cl['bk-list-box__item--header'],
+        propsRest.className,
+      )}
+    >
+      {icon && <Icon icon={icon} className={cl['bk-list-box__item__icon']}/>}
+      <span className={cl['bk-list-box__item__label']}>{propsRest.children ?? label}</span>
+    </span>
+  );
+};
+
+
+//
+// Action item
+//
+
+export type ActionProps = ComponentProps<typeof Button> & {
+  /** A unique identifier for this action. */
+  itemKey: ItemKey,
+  
+  /** The human-readable label to be shown. */
+  label: string,
+  
+  /** An icon to be displayed before the label. */
+  icon?: undefined | IconName,
+  
+  /** The event handler for when the user activates this action. */
+  onActivate: () => void | Promise<void>,
+};
+/**
+ * A dropdown menu item that can be activated to perform some action.
+ */
+export const Action = (props: ActionProps) => {
+  const { itemKey, label, icon, onActivate, ...propsRest } = props;
+  
+  const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
+  const itemDef = React.useMemo<ItemDef>(() => ({ itemKey, itemRef }), [itemKey]);
+  
+  const context = useListBoxContext(itemDef);
+  const isFocused = context.focusedItem === itemKey;
+  
+  return (
+    <Button unstyled
+      id={`${context.id}_action_${itemKey}`}
+      ref={itemRef}
+      tabIndex={-1} // Only the parent listbox is focusable
+      data-item-key={itemKey}
+      aria-label={label}
+      {...propsRest}
+      className={cx(
+        cl['bk-list-box__item'],
+        cl['bk-list-box__item--action'],
+        { [cl['bk-list-box__item--focused']]: isFocused },
+        propsRest.className,
+      )}
+      onPress={() => { context.selectItem(itemKey); onActivate?.(); }}
+    >
+      {icon && <Icon icon={icon} className={cl['bk-list-box__item__icon']}/>}
+      <span className={cl['bk-list-box__item__label']}>{propsRest.children ?? label}</span>
+    </Button>
+  );
+};
+
+
+//
+// List box
+//
 
 export type ListBoxProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
@@ -279,6 +311,8 @@ export const ListBox = Object.assign(
       ...propsRest
     } = props;
     
+    const generatedId = React.useId();
+    const id = props.id ?? generatedId;
     
     const itemsRef = React.useRef<Map<ItemKey, ItemDef>>(new Map());
     const [focusedItem, setFocusedItem] = React.useState<null | ItemKey>(null);
@@ -316,13 +350,14 @@ export const ListBox = Object.assign(
     }, [onSelect]);
     
     const context = React.useMemo<ListBoxContext>(() => ({
+      id,
       register,
       focusedItem,
       focusItem: setFocusedItem,
       selectedItem,
       selectItem,
       disabled,
-    }), [register, focusedItem, selectedItem, selectItem, disabled]);
+    }), [id, register, focusedItem, selectedItem, selectItem, disabled]);
     
     
     
@@ -430,6 +465,7 @@ export const ListBox = Object.assign(
           role="listbox"
           tabIndex={0} // The outer listbox is focusable, not the individual items
           aria-label={label}
+          aria-activedescendant={selectedItem ? `${context.id}_option_${selectedItem}` : undefined}
           {...propsRest}
           onKeyDown={mergeCallbacks([handleKeyInput, keyboardSeq.handleKeyDown])}
           onBlur={() => { setFocusedItem(null); }}
@@ -448,7 +484,8 @@ export const ListBox = Object.assign(
     );
   },
   {
-    //Action,
     Option,
+    Header,
+    Action,
   },
 );
