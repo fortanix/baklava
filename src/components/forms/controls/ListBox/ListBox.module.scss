@@ -1,0 +1,130 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  $bk-list-box-min-width: 14rem;
+  
+  .bk-list-box {
+    @include bk.component-base(bk-list-box);
+    
+    --bk-list-box-transition-duration: 150ms;
+    
+    scroll-behavior: smooth;
+    overflow: hidden;
+    /* stylelint-disable-next-line declaration-property-value-disallowed-list */
+    overflow-y: auto;
+    
+    min-inline-size: $bk-list-box-min-width;
+    max-block-size: 18rem;
+    padding-block-end: 8px;
+    
+    background: bk.$theme-dropdown-menu-menu-background-default;
+    border: 1px solid bk.$theme-dropdown-menu-menu-border-default;
+    
+    border-radius: 4px;
+    &[data-placement^="bottom"] {
+      border-start-start-radius: 0;
+      border-start-end-radius: 0;
+    }
+    &[data-placement^="top"] {
+      border-end-start-radius: 0;
+      border-end-end-radius: 0;
+    }
+    
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    
+    &[popover] {
+      &:not(:popover-open) { display: none; }
+      
+      @media (prefers-reduced-motion: no-preference) {
+        transition:
+          display var(--bk-list-box-transition-duration) allow-discrete,
+          overlay var(--bk-list-box-transition-duration) allow-discrete,
+          opacity var(--bk-list-box-transition-duration) ease-out,
+          translate var(--bk-list-box-transition-duration) ease-out;
+          /* transform */ /* Note: don't animate `transform` with floating-ui, since it relies on it for positioning */
+        opacity: 0;
+        translate: 0 -1rem;
+      }
+      
+      &:popover-open {
+        opacity: 1;
+        translate: none;
+        
+        @media (prefers-reduced-motion: no-preference) {
+          @starting-style {
+            opacity: 0;
+            translate: 0 -1rem;
+          }
+        }
+      }
+    }
+    
+    > .bk-list-box__item {
+      padding: 8px 14px;
+      
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      
+      @include bk.font(bk.$font-family-body);
+      font-size: 14px;
+      line-height: 24px;
+      
+      &:not(:first-child) {
+        border-block-start: 1px solid bk.$theme-dropdown-menu-menu-border-default;
+      }
+      
+      &:hover {
+        background: bk.$theme-dropdown-menu-menu-background-hover;
+      }
+      &.bk-list-box__item--focused {
+        background: bk.$theme-dropdown-menu-menu-background-focused;
+      }
+      &[aria-selected="true"] {
+        background: bk.$theme-dropdown-menu-menu-background-hover;
+        // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
+        box-shadow: inset 5px 0 bk.$theme-dropdown-menu-menu-tab-default !important;
+      }
+      
+      @media (prefers-reduced-motion: no-preference) {
+        transition: box-shadow 150ms ease-in;
+      }
+      
+      /*
+      .bk-list-box__item {
+        padding: 8px 14px;
+        
+        @include bk.font(bk.$font-family-body);
+        font-size: 14px;
+        line-height: 24px;
+        
+        display: flex;
+        align-items: center;
+        gap: bk.$spacing-3;
+        
+        .bk-list-box__item__icon {
+          font-size: 1.2em;
+        }
+        .bk-list-box__item__label {
+          user-select: none;
+        }
+        
+        @include bk.focus-inset;
+      }
+      */
+    }
+    
+    &[popover] > .bk-list-box__item {
+      @media (prefers-reduced-motion: no-preference) {
+        /* Delay transition until after close is complete to make it less jarring during close animation */
+        transition-delay: var(--bk-list-box-transition-duration);
+      }
+    }
+  }
+}
