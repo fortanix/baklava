@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { ListBox } from './ListBox.tsx';
+import { type ItemKey, type ItemDef, ListBoxContext, ListBox } from './ListBox.tsx';
 
 
 type ListBoxArgs = React.ComponentProps<typeof ListBox>;
@@ -49,9 +49,26 @@ export const ListBoxEmpty: Story = {
   },
 };
 
-export const ListBoxSingle: Story = {
+export const ListBoxWithIcon: Story = {
   args: {
-    children: <ListBox.Option itemKey="single" label="This list box has a single option"/>,
+    children: (
+      <>
+        <ListBox.Option icon="account" itemKey="option-1" label="Option with an icon"/>
+        <ListBox.Option icon="user" itemKey="option-2" label="Another option"/>
+      </>
+    ),
+  },
+};
+
+export const ListBoxWithDisabled: Story = {
+  args: {
+    children: (
+      <>
+        <ListBox.Option itemKey="option-1" label="This option is enabled"/>
+        <ListBox.Option itemKey="option-2" label="This option is disabled" disabled/>
+        <ListBox.Option itemKey="option-3" label="Focus should skip the disabled option"/>
+      </>
+    ),
   },
 };
 
@@ -68,14 +85,27 @@ export const ListBoxWithHeader: Story = {
   },
 };
 
-export const ListBoxWithAction: Story = {
+export const ListBoxWithActions: Story = {
+  args: {
+    children: (
+      <>
+        <ListBox.Option itemKey="option-1" label="Option 1"/>
+        <ListBox.Option itemKey="option-2" label="Option 2"/>
+        <ListBox.Action itemKey="action-1" icon="edit" label="Action 1" onActivate={() => {}}/>
+        <ListBox.Action itemKey="action-2" icon="delete" label="Action 2" onActivate={() => {}}/>
+      </>
+    ),
+  },
+};
+
+export const ListBoxWithStickyAction: Story = {
   args: {
     children: (
       <>
         {fruits.map(fruit =>
           <ListBox.Option key={fruit} itemKey={fruit} label={fruit} requireIntent/>
         )}
-        <ListBox.Action itemKey="action" label="Go to checkout" onActivate={() => {}}/>
+        <ListBox.Action itemKey="action" label="Go to checkout" onActivate={() => {}} sticky="end"/>
       </>
     ),
   },
@@ -140,67 +170,27 @@ export const ListBoxMany: Story = {
   },
 };
 
-/*
-type ListBoxControlledProps = React.PropsWithChildren<Partial<ListBoxContext>>;
-const ListBoxControlled = ({ children, ...listBoxContext }: ListBoxControlledProps) => {
-  const [selectedItem, setSelectedItem] = React.useState<null | ItemKey>(null);
-  const context: ListBoxContext = {
-    selectedItem,
-    selectItem: (option: ItemDef) => { setSelectedItem(option.itemKey); },
-    close: () => {},
-    ...listBoxContext,
-  };
+type ListBoxControlledProps = Omit<React.ComponentProps<typeof ListBox>, 'selected'>;
+const ListBoxControlledC = (props: ListBoxControlledProps) => {
+  const [selectedItem, setSelectedItem] = React.useState<undefined | ItemKey>(undefined);
   
   return (
-    <ListBoxContext value={context}>
-      {children}
-    </ListBoxContext>
+    <>
+      <p>Selected fruit: {selectedItem ?? <em>none</em>}</p>
+      <ListBox {...props} selected={selectedItem} onSelect={setSelectedItem}/>
+    </>
   );
 };
 
-export const Standard: Story = {
-  name: 'ListBox',
-  decorators: [Story => <ListBoxControlled><Story/></ListBoxControlled>],
+export const ListBoxControlled: Story = {
+  render: args => <ListBoxControlledC {...args}/>,
   args: {
     children: (
       <>
-        <ListBox.Option optionKey="option-1" label="Option 1"/>
-        <ListBox.Option optionKey="option-2" label="Option 2"/>
-        <ListBox.Option optionKey="option-3" label="Option 3"/>
-        <ListBox.Option optionKey="option-4" label="Option 4"/>
-        <ListBox.Option optionKey="option-5" label="Option 5"/>
-        <ListBox.Option optionKey="option-6" label="Option 6"/>
-        <ListBox.Option optionKey="option-7" label="Option 7"/>
-        <ListBox.Option optionKey="option-8" label="Option 8"/>
-        <ListBox.Option optionKey="option-9" label="Option 9"/>
+        {fruits.map((fruit) =>
+          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
+        )}
       </>
     ),
   },
 };
-
-export const WithActions: Story = {
-  decorators: [Story => <ListBoxControlled><Story/></ListBoxControlled>],
-  args: {
-    children: (
-      <>
-        <ListBox.Action itemKey="action-1" icon="docs" label="Action 1" onActivate={() => {}}/>
-        <ListBox.Action itemKey="action-2" icon="key-link" label="Action 2" onActivate={() => {}}/>
-      </>
-    ),
-  },
-};
-
-export const WithActionsAndOptions: Story = {
-  decorators: [Story => <ListBoxControlled><Story/></ListBoxControlled>],
-  args: {
-    children: (
-      <>
-        <ListBox.Option optionKey="option-1" label="Option 1"/>
-        <ListBox.Option optionKey="option-2" label="Option 2"/>
-        <ListBox.Action itemKey="action-1" icon="edit" label="Action 1" onActivate={() => {}}/>
-        <ListBox.Action itemKey="action-2" icon="delete" label="Action 2" onActivate={() => {}}/>
-      </>
-    ),
-  },
-};
-*/

@@ -232,12 +232,15 @@ export type ActionProps = ComponentProps<typeof Button> & {
   
   /** The event handler for when the user activates this action. */
   onActivate: () => void | Promise<void>,
+  
+  /** Whether the action should stick on scroll. Default: false. */
+  sticky?: undefined | false | 'end',
 };
 /**
  * A dropdown menu item that can be activated to perform some action.
  */
 export const Action = (props: ActionProps) => {
-  const { itemKey, label, icon, onActivate, ...propsRest } = props;
+  const { itemKey, label, icon, onActivate, sticky = false, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemDef>(() => ({ itemKey, itemRef }), [itemKey]);
@@ -257,6 +260,7 @@ export const Action = (props: ActionProps) => {
         cl['bk-list-box__item'],
         cl['bk-list-box__item--action'],
         { [cl['bk-list-box__item--focused']]: isFocused },
+        { [cl['bk-list-box__item--sticky-end']]: sticky === 'end' },
         propsRest.className,
       )}
       onPress={() => { context.selectItem(itemKey); onActivate?.(); }}
@@ -272,7 +276,7 @@ export const Action = (props: ActionProps) => {
 // List box
 //
 
-export type ListBoxProps = ComponentProps<'div'> & {
+export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -286,7 +290,7 @@ export type ListBoxProps = ComponentProps<'div'> & {
   selected?: undefined | ItemKey,
   
   /** Event handler to be called when the selected option state changes. */
-  onSelect?: undefined | ((optionKey: ItemKey) => void),
+  onSelect?: undefined | ((itemKey: ItemKey) => void),
   
   /** Whether the list box is disabled or not. Default: false. */
   disabled?: undefined | boolean,
@@ -466,6 +470,7 @@ export const ListBox = Object.assign(
           tabIndex={0} // The outer listbox is focusable, not the individual items
           aria-label={label}
           aria-activedescendant={selectedItem ? `${context.id}_option_${selectedItem}` : undefined}
+          data-empty-placeholder="No items"
           {...propsRest}
           onKeyDown={mergeCallbacks([handleKeyInput, keyboardSeq.handleKeyDown])}
           onBlur={() => { setFocusedItem(null); }}

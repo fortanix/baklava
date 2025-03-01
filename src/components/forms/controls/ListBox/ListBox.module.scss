@@ -45,7 +45,7 @@
     
     &:not(:has(> :nth-child(1 of .bk-list-box__item))) {
       &::before {
-        content: 'No items';
+        content: attr(data-empty-placeholder, 'No items');
         padding: bk.$spacing-2 bk.$spacing-4;
         display: flex;
         color: bk.$theme-text-small-text-subtle;
@@ -61,8 +61,9 @@
       background: bk.$theme-dropdown-menu-menu-background-default;
       
       display: flex;
-      flex-direction: column;
-      align-items: stretch;
+      flex-direction: row;
+      align-items: center;
+      gap: bk.$sizing-2;
       
       @include bk.font(bk.$font-family-body);
       font-size: bk.$font-size-m;
@@ -77,10 +78,10 @@
       }
       
       &:not(.bk-list-box__item--static) {
-        &:hover {
+        &:not(:disabled):hover {
           background: bk.$theme-dropdown-menu-menu-background-hover;
         }
-        &.bk-list-box__item--focused {
+        &:not(:disabled).bk-list-box__item--focused {
           background: bk.$theme-dropdown-menu-menu-background-focused;
         }
         &[aria-selected="true"] {
@@ -92,6 +93,9 @@
         @media (prefers-reduced-motion: no-preference) {
           transition: box-shadow 150ms ease-in;
         }
+      }
+      &:disabled {
+        color: bk.$theme-text-small-text-subtle;
       }
       
       &.bk-list-box__item--option {
@@ -116,13 +120,21 @@
       }
       
       &.bk-list-box__item--action {
-        position: sticky;
-        inset-block-end: 0;
         user-select: none;
         
-        font-size: bk.$font-size-s;
-        font-weight: bk.$font-weight-semibold;
-        text-transform: uppercase;
+        // Actions (non-sticky) get indented a little bit more
+        &:not(.bk-list-box__item--sticky-end) {
+          padding-inline-start: calc(var(--bk-list-box-item-padding-inline) + bk.$spacing-2);
+        }
+        
+        &.bk-list-box__item--sticky-end {
+          position: sticky;
+          inset-block-end: 0;
+          
+          font-weight: bk.$font-weight-semibold;
+          font-size: bk.$font-size-s;
+          text-transform: uppercase;
+        }
       }
       
       @include bk.focus-hidden; // Prevent visible focus on individual items (e.g. through click + shift key)
