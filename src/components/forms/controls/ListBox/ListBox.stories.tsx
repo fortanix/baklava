@@ -6,7 +6,9 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { type ItemKey, type ItemDef, ListBoxContext, ListBox } from './ListBox.tsx';
+import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
+
+import { type ItemKey, ListBox } from './ListBox.tsx';
 
 
 type ListBoxArgs = React.ComponentProps<typeof ListBox>;
@@ -185,6 +187,35 @@ const ListBoxControlledC = (props: ListBoxControlledProps) => {
 export const ListBoxControlled: Story = {
   render: args => <ListBoxControlledC {...args}/>,
   args: {
+    children: (
+      <>
+        {fruits.map((fruit) =>
+          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
+        )}
+      </>
+    ),
+  },
+};
+
+export const ListBoxInForm: Story = {
+  decorators: [
+    Story => (
+      <>
+        <form
+          id="story-form"
+          onSubmit={event => {
+            event.preventDefault();
+            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('controlledListBox') ?? 'unknown'}`);
+          }}
+        />
+        <Story/>
+        <button type="submit" form="story-form">Submit</button>
+      </>
+    ),
+  ],
+  args: {
+    form: 'story-form',
+    name: 'controlledListBox',
     children: (
       <>
         {fruits.map((fruit) =>

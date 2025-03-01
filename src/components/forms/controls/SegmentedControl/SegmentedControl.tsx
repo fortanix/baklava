@@ -149,14 +149,19 @@ export const SegmentedControl = Object.assign(
     const selectButton = React.useCallback((buttonKey: ButtonKey) => {
       setSelectedButton(selectedButton => {
         if (buttonKey !== selectedButton) {
-          onUpdate?.(buttonKey);
           buttonDefsRef.current.get(buttonKey)?.buttonRef.current?.focus();
           return buttonKey;
         } else {
           return selectedButton;
         }
       });
-    }, [onUpdate]);
+    }, []);
+    
+    React.useEffect(() => {
+      if (typeof selectedButton !== 'undefined') {
+        onUpdate?.(selectedButton);
+      }
+    }, [selectedButton, onUpdate]);
     
     // After initial rendering, check whether `defaultSelected` refers to one of the rendered buttons
     useEffectOnce(() => {

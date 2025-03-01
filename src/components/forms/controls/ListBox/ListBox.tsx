@@ -295,6 +295,12 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   /** Whether the list box is disabled or not. Default: false. */
   disabled?: undefined | boolean,
   
+  /** The machine readable name of the list box control, used as part of `<form>` submission. */
+  name?: undefined | string,
+  
+  /** The ID of the `<form>` element to associate this list box with. Optional. */
+  form?: undefined | string,
+  
   /** Any additional props to apply to the internal `<input type="hidden"/>`. */
   inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
 };
@@ -311,6 +317,8 @@ export const ListBox = Object.assign(
       selected,
       onSelect,
       disabled = false,
+      name,
+      form,
       inputProps,
       ...propsRest
     } = props;
@@ -345,13 +353,18 @@ export const ListBox = Object.assign(
     const selectItem = React.useCallback((itemKey: ItemKey) => {
       setSelectedItem(selectedItem => {
         if (itemKey !== selectedItem) {
-          onSelect?.(itemKey);
           return itemKey;
         } else {
           return selectedItem;
         }
       });
-    }, [onSelect]);
+    }, []);
+    
+    React.useEffect(() => {
+      if (selectedItem !== null) {
+        onSelect?.(selectedItem);
+      }
+    }, [selectedItem, onSelect]);
     
     const context = React.useMemo<ListBoxContext>(() => ({
       id,
@@ -481,7 +494,7 @@ export const ListBox = Object.assign(
           )}
         >
           {/* Hidden input, so that this component can be connected to a <form> element */}
-          <input type="hidden" {...inputProps} value={selectedItem ?? ''} onChange={() => {}}/>
+          <input type="hidden" name={name} form={form} {...inputProps} value={selectedItem ?? ''} onChange={() => {}}/>
           
           {renderContent()}
         </div>
