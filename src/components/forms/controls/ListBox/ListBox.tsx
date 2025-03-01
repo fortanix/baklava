@@ -22,6 +22,13 @@ References:
 export { cl as ListBoxClassNames };
 
 
+// https://stackoverflow.com/questions/11815883/convert-non-ascii-characters-umlauts-accents
+const normalizeAscii = (str: string): string => {
+  // biome-ignore lint/suspicious/noMisleadingCharacterClass: Intentionally matching combining characters
+  const combining = /[\u0300-\u036F]/g;
+  return str.normalize('NFKD').replace(combining, '').toLocaleLowerCase();
+};
+
 const useKeyboardSequence = (maxDuration = 400) => {
   const [sequence, setSequence] = React.useState<Array<string>>([]);
   const lastKeyPressTime = React.useRef(0);
@@ -322,7 +329,7 @@ export const ListBox = Object.assign(
     const keyboardSeq = useKeyboardSequence();
     
     React.useEffect(() => {
-      const query: string = keyboardSeq.sequence.join('').toLocaleLowerCase();
+      const query: string = normalizeAscii(keyboardSeq.sequence.join(''));
       
       if (query.trim() === '') { return; }
       
@@ -330,7 +337,7 @@ export const ListBox = Object.assign(
         const elementRef = item.itemRef.current;
         const elementText = elementRef?.innerText ?? null;
         
-        if (elementText !== null && elementText.toLocaleLowerCase().startsWith(query)) {
+        if (elementText !== null && normalizeAscii(elementText).startsWith(query)) {
           setFocusedItem(itemKey);
           break;
         }
@@ -338,8 +345,6 @@ export const ListBox = Object.assign(
     }, [keyboardSeq.sequence]);
     
     const handleKeyInput = React.useCallback((event: React.KeyboardEvent) => {
-      event.preventDefault(); // Prevent scrolling
-      
       const selectedItem = context.selectedItem;
       const focusedItem = context.focusedItem ?? selectedItem;
       
@@ -400,7 +405,8 @@ export const ListBox = Object.assign(
       })();
       
       if (itemTarget !== null) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent default behavior, like scrolling
+        event.stopPropagation(); // Prevent the key event from triggering other behavior
         
         if (['Enter', ' '].includes(event.key)) {
           setSelectedItem(itemTarget);
@@ -411,6 +417,9 @@ export const ListBox = Object.assign(
     }, [context]);
     
     
+    const renderContent = () => {
+      return children;
+    };
     
     // FIXME: need to implement keyboard arrow (up/down) navigation through items, as per:
     // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
@@ -433,7 +442,7 @@ export const ListBox = Object.assign(
           {/* Hidden input, so that this component can be connected to a <form> element */}
           <input type="hidden" {...inputProps} value={selectedItem ?? ''} onChange={() => {}}/>
           
-          {children}
+          {renderContent()}
         </div>
       </ListBoxContext>
     );

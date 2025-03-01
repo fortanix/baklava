@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { ListBox, type ItemKey, type ItemDef, ListBoxContext } from './ListBox.tsx';
+import { ListBox } from './ListBox.tsx';
 
 
 type ListBoxArgs = React.ComponentProps<typeof ListBox>;
@@ -39,11 +39,36 @@ export const ListBoxStandard: Story = {
   },
 };
 
+export const ListBoxEmpty: Story = {
+  args: {
+    children: null,
+  },
+};
+
+export const ListBoxSingle: Story = {
+  args: {
+    children: <ListBox.Option itemKey="single" label="This list box has a single option"/>,
+  },
+};
+
+export const ListBoxWithScroll: Story = {
+  args: {
+    children: (
+      <>
+        {Array.from({ length: 15 }).map((_, index) =>
+          <ListBox.Option key={`option-${index + 1}`} itemKey={`option-${index + 1}`} label={`Option ${index + 1}`}/>
+        )}
+      </>
+    ),
+  },
+};
+
 /**
  * If selecting an item triggers some side effect (e.g. page change), then we only want to select an item if there
- * is an explicit user intent, such as a mouse click, tap, or pressing Enter/Space.
+ * is an explicit user intent, such as a mouse click, tap, or pressing Enter/Space. This can be configured by setting
+ * the `requireIntent` prop to `true`.
  */
-export const ListBoxWithoutAutoSelect: Story = {
+export const ListBoxWithRequireIntent: Story = {
   args: {
     children: (
       <>
@@ -55,12 +80,16 @@ export const ListBoxWithoutAutoSelect: Story = {
   },
 };
 
-export const ListBoxWithScroll: Story = {
+/**
+ * When the list box is selected, typing a string of characters will automatically select the first option found that
+ * starts with the typed string. This should in a case insensitive way, ignoring most diacritics.
+ */
+export const ListBoxWithTypeAhead: Story = {
   args: {
     children: (
       <>
-        {Array.from({ length: 15 }).map((_, index) =>
-          <ListBox.Option key={`option-${index + 1}`} itemKey={`option-${index + 1}`} label={`Option ${index + 1}`}/>
+        {['Here is a sentence', 'über', 'ça', 'ôté', 'ñoñada', '@username', '#hashtag'].map((char) =>
+          <ListBox.Option key={char} itemKey={char} label={char}/>
         )}
       </>
     ),

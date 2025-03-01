@@ -38,6 +38,16 @@
     flex-direction: column;
     align-items: stretch;
     
+    &:not(:has(> :nth-child(1 of .bk-list-box__item))) {
+      &::before {
+        content: 'No items';
+        padding: bk.$spacing-1 bk.$spacing-3;
+        display: flex;
+        color: bk.$theme-text-small-text-subtle;
+      }
+    }
+    
+    /*
     &[popover] {
       &:not(:popover-open) { display: none; }
       
@@ -47,7 +57,7 @@
           overlay var(--bk-list-box-transition-duration) allow-discrete,
           opacity var(--bk-list-box-transition-duration) ease-out,
           translate var(--bk-list-box-transition-duration) ease-out;
-          /* transform */ /* Note: don't animate `transform` with floating-ui, since it relies on it for positioning */
+          //transform: ... // Note: don't animate `transform` with floating-ui, since it relies on it for positioning
         opacity: 0;
         translate: 0 -1rem;
       }
@@ -64,6 +74,7 @@
         }
       }
     }
+    */
     
     > .bk-list-box__item {
       padding: 8px 14px;
@@ -120,11 +131,13 @@
       */
     }
     
+    /*
     &[popover] > .bk-list-box__item {
       @media (prefers-reduced-motion: no-preference) {
-        /* Delay transition until after close is complete to make it less jarring during close animation */
+        // Delay transition until after close is complete to make it less jarring during close animation
         transition-delay: var(--bk-list-box-transition-duration);
       }
     }
+    */
   }
 }
