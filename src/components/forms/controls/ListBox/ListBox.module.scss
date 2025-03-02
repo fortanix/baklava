@@ -13,7 +13,7 @@
     --bk-list-box-item-padding-block: #{bk.$spacing-2};
     --bk-list-box-item-block-size: calc(#{bk.rem-from-px(1)} + var(--bk-list-box-item-padding-block) * 2 + 1lh);
     
-    container-type: scroll-state;
+    //container-type: scroll-state;
     overflow: hidden;
     /* stylelint-disable-next-line declaration-property-value-disallowed-list */
     overflow-y: auto;
@@ -43,7 +43,8 @@
     flex-direction: column;
     align-items: stretch;
     
-    &:not(:has(> :nth-child(1 of .bk-list-box__item))) {
+    // Note: currently works up to two levels deep, in the future could use `@scope () to (.bk-list-box)` for this
+    &:not(:has(> :nth-child(1 of .bk-list-box__item), > :not(.bk-list-box) > :nth-child(1 of .bk-list-box__item))) {
       &::before {
         content: attr(data-empty-placeholder, 'No items');
         padding: bk.$spacing-2 bk.$spacing-4;
@@ -52,7 +53,7 @@
       }
     }
     
-    > .bk-list-box__item {
+    .bk-list-box__item {
       //content-visibility: auto;
       // Border + padding + content
       //contain-intrinsic-block-size: calc(bk.rem-from-px(1) + var(--bk-list-box-item-padding-block) * 2 + 1lh);

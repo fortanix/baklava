@@ -118,6 +118,8 @@ const preview = {
                   'InputPassword',
                 ],
                 'TextArea',
+                'ListBox',
+                'ListBoxLazy',
                 'Select',
                 'DatePicker',
                 'DatePickerRange',

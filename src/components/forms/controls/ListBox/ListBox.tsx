@@ -67,19 +67,38 @@ const useKeyboardSequence = (maxDuration = 400) => {
 export type ItemKey = string;
 export type ItemDef = {
   itemKey: ItemKey,
+  itemPos?: undefined | number, // Explicit position of this item in the list (e.g. for virtualization)
   itemRef: React.RefObject<null | React.ComponentRef<typeof Button>>,
 };
 
+// A specifier for a given item in the list. Either an explicit target by its item key, or a number representing the
+// index in the list. Negative numbers index from the end.
+export type ItemTarget = number | ItemKey;
+
 export type ListBoxContext = {
-  id: string, // Unique ID for the component (e.g. for ARIA attributes)
-  register: (itemDef: ItemDef) => () => void, // Register a new item; returns a callback to unregister
-  focusedItem: null | ItemKey, // The currently selected item (up to one at a time)
-  focusItem: (itemKey: null | ItemKey) => void, // Callback to request the given `itemKey` to be focused
-  selectedItem: null | ItemKey, // The currently selected item (up to one at a time)
-  selectItem: (itemKey: ItemKey) => void, // Callback to request the given `itemKey` to be selected
+  /** Unique ID for the list box component (e.g. for ARIA attributes). */
+  id: string,
   
-  disabled: boolean, // Whether the whole control is currently disabled or not
-  //itemProps?: undefined | ((optionState: OptionState) => Record<string, unknown>), // Additional props for the item
+  /** Register a new item. Returns a callback to unregister. */
+  register: (itemDef: ItemDef) => () => void,
+  
+  /** The currently selected item (up to one at a time). */
+  focusedItem: null | ItemTarget,
+  
+  /** Request the given `itemKey` to be focused. If `null`, unset focus. */
+  focusItem: (itemKey: null | ItemTarget) => void,
+  
+  /** The currently selected item (up to one at a time). */
+  selectedItem: null | ItemTarget,
+  
+  /** Request the given `itemKey` to be selected. If `null`, unset selection. */
+  selectItem: (itemKey: null | ItemTarget) => void,
+  
+  /** Whether the whole control is currently disabled or not. */
+  disabled: boolean,
+  
+  /** Total number of items in the list. */
+  totalItems: undefined | number,
 };
 export const ListBoxContext = React.createContext<null | ListBoxContext>(null);
 export const useListBoxContext = (itemDef: ItemDef) => {
@@ -93,6 +112,27 @@ export const useListBoxContext = (itemDef: ItemDef) => {
   return context;
 };
 
+// Check whether the given item matches the given target specification
+const matchesItemTarget = (
+  itemTarget: null | ItemTarget,
+  item: {
+    itemKey: ItemKey,
+    itemPos: undefined | number,
+  },
+  totalItems: undefined | number,
+): boolean => {
+  if (typeof itemTarget === 'string') {
+    return item.itemKey === itemTarget;
+  } else if (typeof itemTarget === 'number' && typeof item.itemPos !== 'undefined') {
+    if (itemTarget >= 0) {
+      return item.itemPos === itemTarget;
+    } else if (typeof totalItems !== 'undefined') {
+      return item.itemPos === itemTarget + totalItems;
+    }
+  }
+  return false;
+};
+
 
 //
 // Option item
@@ -101,6 +141,9 @@ export const useListBoxContext = (itemDef: ItemDef) => {
 export type OptionProps = ComponentProps<typeof Button> & {
   /** A unique identifier for this option. */
   itemKey: ItemKey,
+  
+  /** Explicit position of this item in the list (e.g. for virtualization). */
+  itemPos?: undefined | number,
   
   /** The human-readable label to be shown. */
   label: string,
@@ -118,19 +161,19 @@ export type OptionProps = ComponentProps<typeof Button> & {
   requireIntent?: undefined | boolean,
 };
 /**
- * A dropdown menu item that can be selected.
+ * A list box item that can be selected.
  */
 export const Option = (props: OptionProps) => {
-  const { itemKey, label, icon, onSelect, requireIntent = false, ...propsRest } = props;
+  const { itemKey, itemPos, label, icon, onSelect, requireIntent = false, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
-  const itemDef = React.useMemo<ItemDef>(() => ({ itemKey, itemRef }), [itemKey]);
+  const itemDef = React.useMemo<ItemDef>(() => ({ itemKey, itemRef, itemPos }), [itemKey, itemPos]);
   
   const hasHover = React.useRef<boolean>(false);
   
   const context = useListBoxContext(itemDef);
-  const isFocused = context.focusedItem === itemKey;
-  const isSelected = context.selectedItem === itemKey;
+  const isFocused = matchesItemTarget(context.focusedItem, { itemKey, itemPos }, context.totalItems);
+  const isSelected = matchesItemTarget(context.selectedItem, { itemKey, itemPos }, context.totalItems);
   
   React.useEffect(() => {
     // Note: we should not auto-select if the focus is due to hover, only if it's through keyboard interactions
@@ -159,6 +202,7 @@ export const Option = (props: OptionProps) => {
       data-item-key={itemKey}
       aria-label={label}
       aria-selected={isSelected}
+      aria-posinset={itemPos}
       {...propsRest}
       className={cx(
         cl['bk-list-box__item'],
@@ -224,6 +268,9 @@ export type ActionProps = ComponentProps<typeof Button> & {
   /** A unique identifier for this action. */
   itemKey: ItemKey,
   
+  /** Explicit position of this item in the list (e.g. for virtualization). */
+  itemPos?: undefined | number,
+  
   /** The human-readable label to be shown. */
   label: string,
   
@@ -237,16 +284,16 @@ export type ActionProps = ComponentProps<typeof Button> & {
   sticky?: undefined | false | 'end',
 };
 /**
- * A dropdown menu item that can be activated to perform some action.
+ * A list box item that can be activated to perform some action.
  */
 export const Action = (props: ActionProps) => {
-  const { itemKey, label, icon, onActivate, sticky = false, ...propsRest } = props;
+  const { itemKey, itemPos, label, icon, onActivate, sticky = false, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
-  const itemDef = React.useMemo<ItemDef>(() => ({ itemKey, itemRef }), [itemKey]);
+  const itemDef = React.useMemo<ItemDef>(() => ({ itemKey, itemRef, itemPos }), [itemKey, itemPos]);
   
   const context = useListBoxContext(itemDef);
-  const isFocused = context.focusedItem === itemKey;
+  const isFocused = matchesItemTarget(context.focusedItem, { itemKey, itemPos }, context.totalItems);
   
   return (
     <Button unstyled
@@ -255,6 +302,7 @@ export const Action = (props: ActionProps) => {
       tabIndex={-1} // Only the parent listbox is focusable
       data-item-key={itemKey}
       aria-label={label}
+      aria-posinset={itemPos}
       {...propsRest}
       className={cx(
         cl['bk-list-box__item'],
@@ -303,6 +351,9 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   
   /** Any additional props to apply to the internal `<input type="hidden"/>`. */
   inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
+  
+  /** The total number of items in the list, in case the list is virtualized. */
+  totalItems?: undefined | number,
 };
 /**
  * A list of items, where each item is either an option that can be selected, or an action that can be activated.
@@ -320,6 +371,7 @@ export const ListBox = Object.assign(
       name,
       form,
       inputProps,
+      totalItems: totalItemsProp,
       ...propsRest
     } = props;
     
@@ -327,13 +379,26 @@ export const ListBox = Object.assign(
     const id = props.id ?? generatedId;
     
     const itemsRef = React.useRef<Map<ItemKey, ItemDef>>(new Map());
-    const [focusedItem, setFocusedItem] = React.useState<null | ItemKey>(null);
-    const [selectedItem, setSelectedItem] = React.useState<null | ItemKey>(selected ?? defaultSelected ?? null);
+    const totalItems = totalItemsProp ?? itemsRef.current.size; // If no `totalItems`, assume we're not virtualized
+    
+    const [focusedItem, setFocusedItem] = React.useState<null | ItemTarget>(null);
+    const [selectedItem, setSelectedItem] = React.useState<null | ItemTarget>(selected ?? defaultSelected ?? null);
+    
+    const sortItems = React.useCallback((items: Map<ItemKey, ItemDef>): Map<ItemKey, ItemDef> => {
+      // Once iterator helpers are supported we could skip the intermediate array
+      const itemsEntries = Array.from(items.entries(), );
+      return new Map(itemsEntries.sort(([_keyA, a], [_keyB, b]) => {
+        if (a.itemPos === undefined && b.itemPos === undefined) return 0;
+        if (a.itemPos === undefined) return 1;
+        if (b.itemPos === undefined) return -1;
+        return a.itemPos - b.itemPos;
+      }));
+    }, []);
     
     React.useEffect(() => { setFocusedItem(selectedItem); }, [selectedItem]); // Sync focused with selected
     // When the focused item changes, scroll it into view
     React.useEffect(() => {
-      if (focusedItem === null) { return; }
+      if (typeof focusedItem !== 'string') { return; }
       itemsRef.current.get(focusedItem)?.itemRef.current?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
     }, [focusedItem]);
     
@@ -344,24 +409,16 @@ export const ListBox = Object.assign(
       } else {
         itemsRef.current.set(itemDef.itemKey, itemDef);
       }
+      itemsRef.current = sortItems(itemsRef.current);
       
       return () => {
         itemsRef.current.delete(itemDef.itemKey);
+        itemsRef.current = sortItems(itemsRef.current);
       };
-    }, []);
-    
-    const selectItem = React.useCallback((itemKey: ItemKey) => {
-      setSelectedItem(selectedItem => {
-        if (itemKey !== selectedItem) {
-          return itemKey;
-        } else {
-          return selectedItem;
-        }
-      });
-    }, []);
+    }, [sortItems]);
     
     React.useEffect(() => {
-      if (selectedItem !== null) {
+      if (typeof selectedItem === 'string') {
         onSelect?.(selectedItem);
       }
     }, [selectedItem, onSelect]);
@@ -372,10 +429,10 @@ export const ListBox = Object.assign(
       focusedItem,
       focusItem: setFocusedItem,
       selectedItem,
-      selectItem,
+      selectItem: setSelectedItem,
       disabled,
-    }), [id, register, focusedItem, selectedItem, selectItem, disabled]);
-    
+      totalItems,
+    }), [id, register, focusedItem, selectedItem, disabled, totalItems]);
     
     
     const keyboardSeq = useKeyboardSequence();
@@ -400,58 +457,65 @@ export const ListBox = Object.assign(
       const selectedItem = context.selectedItem;
       const focusedItem = context.focusedItem ?? selectedItem;
       
-      // Get the list of item keys, ideally in the order that they are displayed to the user.
-      // Filter only the items that are (programmatically) focusable.
       const itemKeys: Array<ItemKey> = [...itemsRef.current.entries()]
+        .map(([itemKey]) => itemKey);
+      
+      // Filter only the items that are (programmatically) focusable.
+      const itemKeysFocusable: Array<ItemKey> = [...itemsRef.current.entries()]
         .filter(([_, { itemRef }]) => itemRef.current && isItemProgrammaticallyFocusable(itemRef.current))
         .map(([itemKey]) => itemKey);
       
-      const itemIndex: number = focusedItem === null ? 0 : itemKeys.indexOf(focusedItem);
+      // If no focusable items, do nothing (allows us to assume there is at least one item)
+      if (itemKeysFocusable.length === 0 && (typeof totalItems === 'undefined' || totalItems === 0)) {
+        return;
+      }
+      
+      // Get the index of the "current" item (either the focused item, or the first item if none focused)
+      const itemIndex = ((): number => {
+        if (focusedItem === null) {
+          return 0;
+        } else if (typeof focusedItem === 'string') {
+          const focusedItemDef = itemsRef.current.get(focusedItem);
+          if (typeof focusedItemDef === 'undefined') { throw new Error(`Should not happen`); }
+          return focusedItemDef.itemPos ?? Math.min(0, itemKeys.indexOf(focusedItem));
+        } else if (typeof focusedItem === 'number') {
+          const total = typeof totalItems !== 'undefined' ? totalItems : itemKeys.length;
+          return focusedItem >= 0 ? focusedItem : (focusedItem + total);
+        } else {
+          return 0;
+        }
+      })();
       if (itemIndex < 0) {
         console.error(`Could not resolve focused item: '${focusedItem}'`);
       }
-      
-      // Determine the target item to focus based on the keyboard event (if any)
-      const itemTarget = ((): null | ItemKey => {
+      // Determine the target item to focus based on the keyboard event (if any). If `null`, do not navigate.
+      const itemTarget = ((): null | ItemTarget => {
         // Note: listboxes should not "cycle" (e.g. going beyond the last item should not go to the first)
         switch (event.key) {
           case 'Enter':
-          case ' ': {
-            if (focusedItem === null) { return itemKeys.at(0) ?? null; }
-            return focusedItem;
-          }
+          case ' ':
+            return itemIndex; // Just return the current item (which will be targeted for selection)
           case 'ArrowUp': {
-            if (focusedItem === null) { return itemKeys.at(0) ?? null; }
-            
-            const itemPrevIndex = itemIndex === 0 ? 0 : itemIndex - 1;
-            const itemPrev: undefined | ItemKey = itemKeys.at(itemPrevIndex);
-            if (typeof itemPrev  === 'undefined') { throw new Error(`Should not happen`); }
-            return itemPrev;
+            // const itemPrevIndex = itemIndex === 0 ? 0 : itemIndex - 1;
+            // const itemPrev: undefined | ItemKey = itemKeysFocusable.at(itemPrevIndex);
+            // if (typeof itemPrev === 'undefined') { throw new Error(`Should not happen`); }
+            // return itemPrev;
+            return Math.max(0, itemIndex - 1);
           }
           case 'ArrowDown': {
-            if (focusedItem === null) { return itemKeys.at(0) ?? null; }
+            // const itemNextIndex = itemIndex + 1 >= itemKeysFocusable.length
+            //   ? itemKeysFocusable.length - 1
+            //   : itemIndex + 1;
+            // const itemNext: undefined | ItemKey = itemKeysFocusable.at(itemNextIndex);
+            // if (typeof itemNext === 'undefined') { throw new Error(`Should not happen`); }
+            // return itemNext;
             
-            const itemNextIndex = itemIndex + 1 >= itemKeys.length ? itemKeys.length - 1 : itemIndex + 1;
-            const itemNext: undefined | ItemKey = itemKeys.at(itemNextIndex);
-            if (typeof itemNext  === 'undefined') { throw new Error(`Should not happen`); }
-            return itemNext;
+            return Math.min(totalItems - 1, itemIndex + 1);
           }
-          case 'Home': // On Mac keyboards this can be simulated with Fn + ArrowLeft
-          case 'PageUp': { // On Mac keyboards this can be simulated with Fn + ArrowUp
-            if (focusedItem === null) { return itemKeys.at(0) ?? null; }
-            
-            const itemFirst: undefined | ItemKey = itemKeys.at(0);
-            if (typeof itemFirst  === 'undefined') { throw new Error(`Should not happen`); }
-            return itemFirst;
-          }
-          case 'End': // On Mac keyboards this can be simulated with Fn + ArrowRight
-          case 'PageDown': { // On Mac keyboards this can be simulated with Fn + ArrowDown
-            if (focusedItem === null) { return itemKeys.at(-1) ?? null; }
-            
-            const itemLast: undefined | ItemKey = itemKeys.at(-1);
-            if (typeof itemLast  === 'undefined') { throw new Error(`Should not happen`); }
-            return itemLast;
-          }
+          case 'PageUp': return Math.max(0, itemIndex - 10); // On Mac: Fn + ArrowUp
+          case 'PageDown': return Math.min(totalItems - 1, itemIndex + 10); // On Mac: Fn + ArrowDown
+          case 'Home': return 0; // On Mac: Fn + ArrowLeft
+          case 'End': return -1; // On Mac: Fn + ArrowRight
           default: return null;
         }
       })();
@@ -460,21 +524,14 @@ export const ListBox = Object.assign(
         event.preventDefault(); // Prevent default behavior, like scrolling
         event.stopPropagation(); // Prevent the key event from triggering other behavior
         
-        if (['Enter', ' '].includes(event.key)) {
+        if (['Enter', ' '].includes(event.key) && typeof itemTarget === 'string') {
           setSelectedItem(itemTarget);
         } else {
           setFocusedItem(itemTarget);
         }
       }
-    }, [context]);
+    }, [context, totalItems]);
     
-    
-    const renderContent = () => {
-      return children;
-    };
-    
-    // FIXME: need to implement keyboard arrow (up/down) navigation through items, as per:
-    // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
     return (
       <ListBoxContext value={context}>
         <div
@@ -496,7 +553,7 @@ export const ListBox = Object.assign(
           {/* Hidden input, so that this component can be connected to a <form> element */}
           <input type="hidden" name={name} form={form} {...inputProps} value={selectedItem ?? ''} onChange={() => {}}/>
           
-          {renderContent()}
+          {children}
         </div>
       </ListBoxContext>
     );
