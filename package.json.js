@@ -183,6 +183,7 @@ const packageConfig = {
     
     'effect': '^3.12.9',
     'react-hook-form': '^7.54.2',
+    '@tanstack/react-virtual': '^3.13.2',
     
     'optics-ts': '^2.4.1',
   },
