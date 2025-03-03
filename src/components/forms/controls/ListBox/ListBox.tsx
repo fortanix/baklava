@@ -398,9 +398,20 @@ export const ListBox = Object.assign(
     React.useEffect(() => { setFocusedItem(selectedItem); }, [selectedItem]); // Sync focused with selected
     // When the focused item changes, scroll it into view
     React.useEffect(() => {
-      if (typeof focusedItem !== 'string') { return; }
-      itemsRef.current.get(focusedItem)?.itemRef.current?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
-    }, [focusedItem]);
+      const itemRef = ((): undefined | HTMLElement => {
+        if (typeof focusedItem === 'string') {
+          return itemsRef.current.get(focusedItem)?.itemRef.current ?? undefined;
+        } else if (typeof focusedItem === 'number') {
+          if (typeof props.totalItems === 'undefined') {
+            // FIXME: handle negative indices
+            const FIXME = 1 satisfies 2;
+            const itemKey = Array.from(itemsRef.current.keys()).at(focusedItem) ?? undefined;
+            return itemKey !== undefined ? itemsRef.current.get(itemKey)?.itemRef.current ?? undefined : undefined;
+          }
+        }
+      })();
+      itemRef?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+    }, [focusedItem, props.totalItems]);
     
     const register = React.useCallback((itemDef: ItemDef) => {
       const itemDefs = itemsRef.current;
