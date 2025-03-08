@@ -3,8 +3,12 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
+import { useDebounce } from '../../../../util/hooks/useDebounce.ts';
 
 import type { Meta, StoryObj } from '@storybook/react';
+import { generateData } from '../../../tables/util/generateData.ts'; // FIXME: move to a common location
+
+import { Input } from '../Input/Input.tsx';
 
 import { ListBoxLazy } from './ListBoxLazy.tsx';
 
@@ -22,6 +26,7 @@ export default {
   args: {
     limit: 5,
     onUpdateLimit: () => {},
+    renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
   },
   render: (args) => <ListBoxLazy {...args}/>,
 } satisfies Meta<ListBoxLazyArgs>;
@@ -29,15 +34,16 @@ export default {
 
 export const ListBoxLazyStandard: Story = {
   args: {
-    count: 10_000,
-  }
+    count: 100_000,
+    renderItem: item => `Item ${item.index + 1}`,
+  },
 };
 
 export const ListBoxLazyLoading: Story = {
   args: {
     count: 5,
     isLoading: true,
-  }
+  },
 };
 
 
@@ -54,7 +60,7 @@ const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
       window.setTimeout(() => {
         setItems(Array.from({ length: limit }));
         setIsLoading(false);
-      }, 600);
+      }, 0);
     }
   }, [limit]);
   
@@ -66,12 +72,77 @@ const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
       onUpdateLimit={setLimit}
       count={items.length}
       isLoading={isLoading}
-      renderItem={item => <>Item {item.index + 1}</>}
+      //renderItem={item => <>Item {item.index + 1}</>}
     />
   );
 };
 export const ListBoxLazyInfinite: Story = {
   render: args => <ListBoxLazyInfiniteC {...args}/>,
   args: {
-  }
+  },
+};
+
+const ListBoxLazyWithFilterC = (props: ListBoxLazyArgs) => {
+  const pageSize = 10;
+  
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoadingDebounced] = useDebounce(isLoading, 200);
+  const [limit, setLimit] = React.useState(pageSize);
+  const [items, setItems] = React.useState<Array<{ name: string }>>([]);
+  const [filter, setFilter] = React.useState('');
+  
+  const itemsFiltered = items.filter(item => item.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()));
+  React.useEffect(() => {
+    const itemsFiltered = items.filter(item => item.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()));
+    if (itemsFiltered.length < limit) {
+      setIsLoading(true);
+      
+      const load = () => {
+        const items = generateData({ numItems: limit });
+        setItems(items);
+        setIsLoading(false);
+        
+        /*
+        // FIXME: need paging
+        if (items.length >= 300) { // Simulate end of list
+          console.log('done');
+          setIsLoading(false);
+        } else if (itemsFiltered.length < limit) {
+          window.setTimeout(load, 600);
+        } else {
+          setIsLoading(false);
+        }
+        */
+      };
+      window.setTimeout(load, 600);
+    }
+  }, [limit, filter, isLoading]);
+  
+  return (
+    <>
+      <Input
+        placeholder="Search"
+        value={filter}
+        onChange={event => {
+          setFilter(event.target.value);
+          //setLimit(5); // When results change, we should scroll back to the start and reset the limit
+          //listBoxRef.scrollToStart(); // Maybe?
+        }}
+      />
+      <ListBoxLazy
+        {...props}
+        limit={limit}
+        pageSize={pageSize}
+        onUpdateLimit={setLimit}
+        count={itemsFiltered.length}
+        isLoading={isLoadingDebounced}
+        renderItem={item => <>{itemsFiltered[item.index]?.name}</>}
+      />
+    </>
+  );
+};
+export const ListBoxLazyWithFilter: Story = {
+  render: args => <ListBoxLazyWithFilterC {...args}/>,
+  args: {
+  },
 };

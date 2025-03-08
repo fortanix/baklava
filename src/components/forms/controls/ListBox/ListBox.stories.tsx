@@ -150,7 +150,22 @@ export const ListBoxTypeAhead: Story = {
   args: {
     children: (
       <>
-        {['A capitalized sentence', 'über', 'ça', 'ôté', 'ñoñada', '@username', '#hashtag'].map((char) =>
+        {[
+          ' whitespace', // Whitespace at start/end should be ignored (matches: "w")
+          'A capitalized sentence', // Case insensitivity (matches: "a", or also "A", or also "a<space>")
+          'apple', // Type letters in rapid sequence in case of ambiguity (matches: "ap")
+          '42', // Numbers should work (matches: "4")
+          '#hashtag', // Special characters should work (matches: "#")
+          'ça', // Diacritics should be ignored (matches: "c")
+          'ôté', // (matches: "o")
+          'ñoñada', // (matches: "n")
+          'Über', // Case insensitivity + diacritics (matches: "u", or also "U")
+          'ß', // Language-specific collation rules (e.g. "Straße" = "Strasse") (NOTE: currently does not work)
+          '€20', // Composition using Alt (matches "Alt+Shift+2" on certain European keyboards)
+          'ไทย', // Non-ASCII characters should work (matches: "ไ" on a Thai keyboard)
+          'かな', // For keyboards using live conversion like Japanese romaji or Chinese pinyin, matching will still be
+                 // Latin-based. However, this would match "か" on a kana-based Japanese keyboard layout.
+        ].map((char) =>
           <ListBox.Option key={char} itemKey={char} label={char}/>
         )}
       </>

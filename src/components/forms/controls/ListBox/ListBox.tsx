@@ -2,136 +2,41 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import { removeCombiningCharacters } from '../../../../util/formatting.ts';
+
 import * as React from 'react';
+import { mergeRefs, mergeCallbacks } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import { isItemProgrammaticallyFocusable } from '../../../util/composition/compositionUtil.ts';
+import { useTypeAhead } from '../../../../util/hooks/useTypeAhead.ts';
 
 import { type IconName, Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
+import {
+  type ItemKey,
+  type ItemDef,
+  type ItemTarget,
+  ListBoxContext,
+  useListBoxItem,
+  ItemUtil,
+} from './ListBoxContext.ts';
+import * as Store from './ListBoxStore.tsx';
+
 import cl from './ListBox.module.scss';
-import { mergeCallbacks } from '../../../../util/reactUtil.ts';
 
 
 /*
 References:
+- https://www.w3.org/WAI/ARIA/apg/patterns/listbox
 - https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
 - https://react-spectrum.adobe.com/react-spectrum/ListBox.html
 */
 
+//const isFocusedAtom = atom(false);
+
+export { type ItemKey, type ItemDef, type ItemTarget, ListBoxContext, useListBoxItem };
 export { cl as ListBoxClassNames };
-
-
-// https://stackoverflow.com/questions/11815883/convert-non-ascii-characters-umlauts-accents
-const normalizeAscii = (str: string): string => {
-  // biome-ignore lint/suspicious/noMisleadingCharacterClass: Intentionally matching combining characters
-  const combining = /[\u0300-\u036F]/g;
-  return str.normalize('NFKD').replace(combining, '').toLocaleLowerCase();
-};
-
-const useKeyboardSequence = (maxDuration = 400) => {
-  const [sequence, setSequence] = React.useState<Array<string>>([]);
-  const lastKeyPressTime = React.useRef(0);
-  
-  const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
-    setSequence((prevSequence) => {
-      const charCode = event.key.charCodeAt(0);
-      const isPrintableAscii = event.key.length === 1 && charCode >= 32 && charCode < 127;
-      
-      // Note: allow 'Shift' for capital letters
-      const hasModifier = (['Alt', 'AltGraph', 'Control', 'Meta'] as const).some(mod => event.getModifierState(mod));
-      
-      if (!isPrintableAscii || hasModifier) { return prevSequence; }
-      
-      event.preventDefault();
-      event.stopPropagation();
-      
-      const now = Date.now();
-      const shouldReset = now - lastKeyPressTime.current > maxDuration;
-      lastKeyPressTime.current = now;
-      
-      if (shouldReset) {
-        return [event.key];
-      }
-      return [...prevSequence, event.key];
-    });
-  }, [maxDuration]);
-  
-  return { handleKeyDown, sequence };
-};
-
-//
-// Context
-//
-
-export type ItemKey = string;
-export type ItemDef = {
-  itemKey: ItemKey,
-  itemPos?: undefined | number, // Explicit position of this item in the list (e.g. for virtualization)
-  itemRef: React.RefObject<null | React.ComponentRef<typeof Button>>,
-};
-
-// A specifier for a given item in the list. Either an explicit target by its item key, or a number representing the
-// index in the list. Negative numbers index from the end.
-export type ItemTarget = number | ItemKey;
-
-export type ListBoxContext = {
-  /** Unique ID for the list box component (e.g. for ARIA attributes). */
-  id: string,
-  
-  /** Register a new item. Returns a callback to unregister. */
-  register: (itemDef: ItemDef) => () => void,
-  
-  /** The currently selected item (up to one at a time). */
-  focusedItem: null | ItemTarget,
-  
-  /** Request the given `itemKey` to be focused. If `null`, unset focus. */
-  focusItem: (itemKey: null | ItemTarget) => void,
-  
-  /** The currently selected item (up to one at a time). */
-  selectedItem: null | ItemTarget,
-  
-  /** Request the given `itemKey` to be selected. If `null`, unset selection. */
-  selectItem: (itemKey: null | ItemTarget) => void,
-  
-  /** Whether the whole control is currently disabled or not. */
-  disabled: boolean,
-  
-  /** Total number of items in the list. */
-  totalItems: undefined | number,
-};
-export const ListBoxContext = React.createContext<null | ListBoxContext>(null);
-export const useListBoxContext = (itemDef: ItemDef) => {
-  const context = React.use(ListBoxContext);
-  if (context === null) { throw new Error(`Missing ListBoxContext provider`); }
-  
-  React.useEffect(() => {
-    return context.register(itemDef); // Register the current item (returning the unregister callback)
-  }, [context.register, itemDef]);
-  
-  return context;
-};
-
-// Check whether the given item matches the given target specification
-const matchesItemTarget = (
-  itemTarget: null | ItemTarget,
-  item: {
-    itemKey: ItemKey,
-    itemPos: undefined | number,
-  },
-  totalItems: undefined | number,
-): boolean => {
-  if (typeof itemTarget === 'string') {
-    return item.itemKey === itemTarget;
-  } else if (typeof itemTarget === 'number' && typeof item.itemPos !== 'undefined') {
-    if (itemTarget >= 0) {
-      return item.itemPos === itemTarget;
-    } else if (typeof totalItems !== 'undefined') {
-      return item.itemPos === itemTarget + totalItems;
-    }
-  }
-  return false;
-};
 
 
 //
@@ -164,6 +69,11 @@ export type OptionProps = ComponentProps<typeof Button> & {
  * A list box item that can be selected.
  */
 export const Option = (props: OptionProps) => {
+  // const xxisFocused = Store.useListBoxContext(s => s.focusedItem);
+  // const setFocusedItem = Store.useListBoxContext(s => s.setFocusedItem);
+  // setFocusedItem(0);
+  // console.log('xxisFocused', xxisFocused);
+  
   const { itemKey, itemPos, label, icon, onSelect, requireIntent = false, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
@@ -171,9 +81,9 @@ export const Option = (props: OptionProps) => {
   
   const hasHover = React.useRef<boolean>(false);
   
-  const context = useListBoxContext(itemDef);
-  const isFocused = matchesItemTarget(context.focusedItem, { itemKey, itemPos }, context.totalItems);
-  const isSelected = matchesItemTarget(context.selectedItem, { itemKey, itemPos }, context.totalItems);
+  const context = useListBoxItem(itemDef);
+  const isFocused = ItemUtil.matchesTarget(context.focusedItem, { itemKey, itemPos }, context.totalItems);
+  const isSelected = ItemUtil.matchesTarget(context.selectedItem, { itemKey, itemPos }, context.totalItems);
   
   React.useEffect(() => {
     // Note: we should not auto-select if the focus is due to hover, only if it's through keyboard interactions
@@ -292,8 +202,8 @@ export const Action = (props: ActionProps) => {
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemDef>(() => ({ itemKey, itemRef, itemPos }), [itemKey, itemPos]);
   
-  const context = useListBoxContext(itemDef);
-  const isFocused = matchesItemTarget(context.focusedItem, { itemKey, itemPos }, context.totalItems);
+  const context = useListBoxItem(itemDef);
+  const isFocused = ItemUtil.matchesTarget(context.focusedItem, { itemKey, itemPos }, context.totalItems);
   
   return (
     <Button unstyled
@@ -377,6 +287,7 @@ export const ListBox = Object.assign(
     
     const generatedId = React.useId();
     const id = props.id ?? generatedId;
+    const ref = React.useRef<HTMLDivElement>(null);
     
     const itemsRef = React.useRef<Map<ItemKey, ItemDef>>(new Map());
     const totalItems = totalItemsProp ?? itemsRef.current.size; // If no `totalItems`, assume we're not virtualized
@@ -413,7 +324,7 @@ export const ListBox = Object.assign(
       itemRef?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
     }, [focusedItem, props.totalItems]);
     
-    const register = React.useCallback((itemDef: ItemDef) => {
+    const registerItem = React.useCallback((itemDef: ItemDef) => {
       const itemDefs = itemsRef.current;
       if (itemDefs.has(itemDef.itemKey)) {
         console.error(`Duplicate item key: ${itemDef.itemKey}`);
@@ -436,20 +347,20 @@ export const ListBox = Object.assign(
     
     const context = React.useMemo<ListBoxContext>(() => ({
       id,
-      register,
+      registerItem,
       focusedItem,
       focusItem: setFocusedItem,
       selectedItem,
       selectItem: setSelectedItem,
       disabled,
       totalItems,
-    }), [id, register, focusedItem, selectedItem, disabled, totalItems]);
+    }), [id, registerItem, focusedItem, selectedItem, disabled, totalItems]);
     
     
-    const keyboardSeq = useKeyboardSequence();
+    const keyboardSeq = useTypeAhead();
     
     React.useEffect(() => {
-      const query: string = normalizeAscii(keyboardSeq.sequence.join(''));
+      const query: string = removeCombiningCharacters(keyboardSeq.sequence.join(''));
       
       if (query.trim() === '') { return; }
       
@@ -457,7 +368,7 @@ export const ListBox = Object.assign(
         const elementRef = item.itemRef.current;
         const elementText = elementRef?.innerText ?? null;
         
-        if (elementText !== null && normalizeAscii(elementText).startsWith(query)) {
+        if (elementText !== null && removeCombiningCharacters(elementText).startsWith(query)) {
           setFocusedItem(itemKey);
           break;
         }
@@ -465,6 +376,7 @@ export const ListBox = Object.assign(
     }, [keyboardSeq.sequence]);
     
     const handleKeyInput = React.useCallback((event: React.KeyboardEvent) => {
+      console.log(event);
       const selectedItem = context.selectedItem;
       const focusedItem = context.focusedItem ?? selectedItem;
       
@@ -532,8 +444,10 @@ export const ListBox = Object.assign(
       })();
       
       if (itemTarget !== null) {
-        event.preventDefault(); // Prevent default behavior, like scrolling
-        event.stopPropagation(); // Prevent the key event from triggering other behavior
+        if (event.key !== 'Enter') { // Exclude 'Enter', this should still cause default behavior like form submit
+          event.preventDefault(); // Prevent default behavior, like scrolling
+          event.stopPropagation(); // Prevent the key event from triggering other behavior
+        }
         
         if (['Enter', ' '].includes(event.key) && typeof itemTarget === 'string') {
           setSelectedItem(itemTarget);
@@ -543,30 +457,37 @@ export const ListBox = Object.assign(
       }
     }, [context, totalItems]);
     
+    // Focus the list box when a click bubbles up from an item
+    const handleClick = React.useCallback(() => { ref.current?.focus(); }, []);
+    
     return (
-      <ListBoxContext value={context}>
-        <div
-          // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<select>` for this purpose.
-          role="listbox"
-          tabIndex={0} // The outer listbox is focusable, not the individual items
-          aria-label={label}
-          aria-activedescendant={selectedItem ? `${context.id}_option_${selectedItem}` : undefined}
-          data-empty-placeholder="No items"
-          {...propsRest}
-          onKeyDown={mergeCallbacks([handleKeyInput, keyboardSeq.handleKeyDown])}
-          onBlur={() => { setFocusedItem(null); }}
-          className={cx(
-            'bk',
-            { [cl['bk-list-box']]: !unstyled },
-            propsRest.className,
-          )}
-        >
-          {/* Hidden input, so that this component can be connected to a <form> element */}
-          <input type="hidden" name={name} form={form} {...inputProps} value={selectedItem ?? ''} onChange={() => {}}/>
-          
-          {children}
-        </div>
-      </ListBoxContext>
+      <Store.ListBoxProvider focusedItem={null}>
+        <ListBoxContext value={context}>
+          <div
+            ref={mergeRefs(ref, props.ref)}
+            // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<select>` for this purpose.
+            role="listbox"
+            tabIndex={0} // The outer listbox is focusable, not the individual items
+            aria-label={label}
+            aria-activedescendant={selectedItem ? `${context.id}_option_${selectedItem}` : undefined}
+            data-empty-placeholder="No items"
+            {...propsRest}
+            onClick={mergeCallbacks([handleClick, props.onClick])}
+            onKeyDown={mergeCallbacks([handleKeyInput, keyboardSeq.handleKeyDown])}
+            onBlur={() => { setFocusedItem(null); }}
+            className={cx(
+              'bk',
+              { [cl['bk-list-box']]: !unstyled },
+              propsRest.className,
+            )}
+          >
+            {/* Hidden input, so that this component can be connected to a <form> element */}
+            <input type="hidden" name={name} form={form} {...inputProps} value={selectedItem ?? ''} onChange={() => {}}/>
+            
+            {children}
+          </div>
+        </ListBoxContext>
+      </Store.ListBoxProvider>
     );
   },
   {
