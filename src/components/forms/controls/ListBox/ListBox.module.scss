@@ -82,9 +82,9 @@
         &:not(:disabled):hover {
           background: bk.$theme-dropdown-menu-menu-background-hover;
         }
-        &:not(:disabled).bk-list-box__item--focused {
-          background: bk.$theme-dropdown-menu-menu-background-focused;
-        }
+        // &:not(:disabled).bk-list-box__item--focused {
+        //   background: bk.$theme-dropdown-menu-menu-background-focused;
+        // }
         &[aria-selected="true"] {
           background: bk.$theme-dropdown-menu-menu-background-hover;
           // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
@@ -92,7 +92,7 @@
         }
         
         @media (prefers-reduced-motion: no-preference) {
-          transition: box-shadow 150ms ease-in;
+          // transition: box-shadow 150ms ease-in;
         }
       }
       &:disabled {
@@ -138,9 +138,7 @@
         }
       }
       
-      @include bk.focus-hidden; // Prevent visible focus on individual items (e.g. through click + shift key)
+      @include bk.focus-inset; // FIXME: conflict with box-shadow for selected state
     }
-    
-    @include bk.focus-outset;
   }
 }

@@ -24,6 +24,7 @@ export default {
   },
   args: {
     label: 'Test list box',
+    //onSelect: item => { console.log('x', item); },
   },
   render: (args) => <ListBox {...args}/>,
 } satisfies Meta<ListBoxArgs>;

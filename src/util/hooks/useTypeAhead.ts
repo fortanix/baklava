@@ -13,11 +13,11 @@ export const useTypeAhead = (maxDuration = 400/*ms*/) => {
   
   const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
     setSequence((prevSequence) => {
-      const isPrintable = event.key.length === 1; // For control characters, `key` will be a word (e.g. `Tab`)
+      const isPrintable = event.key.length === 1; // For control characters, `key` will be a longer word (e.g. `Tab`)
       
       // Note: we want to:
       // - Allow 'Shift' (we don't want to block things like capitals or other shift keyboard layout characters)
-      // - Allow Alt/AltGraph (commonly used for composition, e.g. Alt+2 becomes €).
+      // - Allow Alt/AltGraph (commonly used for composition, e.g. Alt+Shift+2 could become "€").
       const hasModifier = (['Control', 'Meta'] as const).some(mod => event.getModifierState(mod));
       
       if (!isPrintable || hasModifier) { return prevSequence; }
