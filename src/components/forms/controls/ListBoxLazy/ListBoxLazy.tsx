@@ -8,7 +8,8 @@ import { classNames as cx, type ComponentProps } from '../../../../util/componen
 import { type VirtualItem, type Virtualizer, useVirtualizer } from '@tanstack/react-virtual';
 
 import { Spinner } from '../../../graphics/Spinner/Spinner.tsx';
-import { ListBoxContext, ListBox } from '../ListBox/ListBox.tsx';
+import { ListBoxContext } from '../ListBox/ListBoxStore.tsx';
+import { ListBox } from '../ListBox/ListBox.tsx';
 
 import cl from './ListBoxLazy.module.scss';
 
@@ -22,16 +23,32 @@ type ListBoxVirtualListProps<Item> = {
 };
 const ListBoxVirtualList = <Item,>(props: ListBoxVirtualListProps<Item>) => {
   const { virtualizer, totalItems, renderItem } = props;
-  const context = React.use(ListBoxContext);
+  const store = React.use(ListBoxContext);
   
   React.useEffect(() => {
-    if (typeof context?.focusedItem !== 'number') { return; }
-    const targetIndex: number = context.focusedItem >= 0 ? context.focusedItem : (context.focusedItem + totalItems);
-    
-    virtualizer.scrollToIndex(targetIndex);
-  }, [context?.focusedItem, virtualizer, totalItems]);
+    if (!store) { return; }
+    return store.subscribe((state, prevState) => {
+      for (const key of Object.keys(state)) {
+        if (state[key] !== prevState[key]) {
+          console.log('CHANGED:', key);
+        }
+      }
+      console.log('s', state);
+    });
+  }, [store]);
+  
+  // React.useEffect(() => {
+  //   if (!store) { return; }
+  //   const state = store.getState();
+  //   
+  //   // if (typeof context?.focusedItem !== 'number') { return; }
+  //   // const targetIndex: number = context.focusedItem >= 0 ? context.focusedItem : (context.focusedItem + totalItems);
+  //   
+  //   // virtualizer.scrollToIndex(targetIndex);
+  // }, [context?.focusedItem, virtualizer, totalItems]);
   
   return (
+    // XXX we could do away with this extra <div> if we force a scroll bar with a (hidden?) item at the far end
     <div
       className={cx(cl['bk-list-box-lazy__scroller'])}
       style={{
@@ -115,11 +132,12 @@ export const ListBoxLazy = <Item,>(props: ListBoxLazyProps<Item>) => {
   const virtualizer = useVirtualizer({
     count: count + (isLoading ? 1 : 0),
     getScrollElement: () => listBoxRef.current,
-    estimateSize: () => 35,
+    estimateSize: () => 35, // FIXME: enforce this as the item height through CSS?
     overscan: 5,
   });
   
-  React.useEffect(() => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `virtualizer.getVirtualItems()` is a valid dep
+    React.useEffect(() => {
     const lastItem = virtualizer.getVirtualItems().at(-1);
     if (!lastItem) { return; }
     
@@ -129,10 +147,13 @@ export const ListBoxLazy = <Item,>(props: ListBoxLazyProps<Item>) => {
     }
   }, [
     limit,
+    pageSize,
     onUpdateLimit,
     isLoading,
     virtualizer.getVirtualItems(),
   ]);
+  
+  const virtualItemKeys = React.useMemo(() => Array.from({ length: count }, (_, i) => `option_${i}`), [count]);
   
   return (
     <ListBox
@@ -143,7 +164,7 @@ export const ListBoxLazy = <Item,>(props: ListBoxLazyProps<Item>) => {
         { [cl['bk-list-box-lazy']]: !unstyled },
         propsRest.className,
       )}
-      totalItems={count}
+      virtualItemKeys={virtualItemKeys}
     >
       <ListBoxVirtualList virtualizer={virtualizer} totalItems={count} renderItem={renderItem}/>
     </ListBox>

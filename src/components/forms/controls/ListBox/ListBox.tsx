@@ -12,7 +12,6 @@ import { Button } from '../../../actions/Button/Button.tsx';
 import {
   type ItemKey,
   type ItemDef,
-  type ItemTarget,
   ListBoxContext,
   useListBoxContext,
   useListBox,
@@ -31,9 +30,7 @@ References:
 - https://react-spectrum.adobe.com/react-spectrum/ListBox.html
 */
 
-//const isFocusedAtom = atom(false);
-
-export { type ItemKey, type ItemDef, type ItemTarget, ListBoxContext, useListBoxItem };
+export { type ItemKey, type ItemDef, ListBoxContext, useListBoxItem };
 export { cl as ListBoxClassNames };
 
 
@@ -206,6 +203,12 @@ export const Action = (props: ActionProps) => {
   useListBoxItem(itemDef);
   const { isFocused, requestFocus } = useListBoxItemFocus(itemKey);
   
+  React.useEffect(() => {
+    if (isFocused) {
+      itemRef.current?.focus();
+    }
+  }, [isFocused]);
+  
   return (
     <Button unstyled
       //id={`${context.id}_action_${itemKey}`}
@@ -263,8 +266,8 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   /** Any additional props to apply to the internal `<input type="hidden"/>`. */
   inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
   
-  /** The total number of items in the list, in case the list is virtualized. */
-  totalItems?: undefined | number,
+  /** If the list is virtualized, this should be set with the ordered list of all the item keys. */
+  virtualItemKeys?: undefined | Array<ItemKey>,
 };
 
 type HiddenSelectedStateProps = Pick<ListBoxProps, 'name' | 'form' | 'inputProps'>;
@@ -293,7 +296,7 @@ export const ListBox = Object.assign(
       name,
       form,
       inputProps,
-      totalItems: totalItemsProp,
+      virtualItemKeys,
       ...propsRest
     } = props;
     
@@ -309,98 +312,16 @@ export const ListBox = Object.assign(
     const listBox = useListBox(ref, {
       id: props.id ?? id,
       selectedItem: defaultSelected ?? null,
+      virtualItemKeys,
     });
     
     React.useEffect(() => {
       return listBox.store.subscribe((state, prevState) => {
-        if (state.selectedItem !== prevState.selectedItem && typeof state.selectedItem === 'string') {
-          onSelect?.(state.selectedItem); // FIXME: support ItemTarget
+        if (state.selectedItem !== prevState.selectedItem && state.selectedItem !== null) {
+          onSelect?.(state.selectedItem);
         }
       });
     }, [listBox.store, onSelect]);
-    
-    /*
-    const handleKeyInput = React.useCallback((event: React.KeyboardEvent) => {
-      const selectedItem = context.selectedItem;
-      const focusedItem = context.focusedItem ?? selectedItem;
-      
-      const itemKeys: Array<ItemKey> = [...itemsRef.current.entries()]
-        .map(([itemKey]) => itemKey);
-      
-      // Filter only the items that are (programmatically) focusable.
-      const itemKeysFocusable: Array<ItemKey> = [...itemsRef.current.entries()]
-        .filter(([_, { itemRef }]) => itemRef.current && isItemProgrammaticallyFocusable(itemRef.current))
-        .map(([itemKey]) => itemKey);
-      
-      // If no focusable items, do nothing (allows us to assume there is at least one item)
-      if (itemKeysFocusable.length === 0 && (typeof totalItems === 'undefined' || totalItems === 0)) {
-        return;
-      }
-      
-      // Get the index of the "current" item (either the focused item, or the first item if none focused)
-      const itemIndex = ((): number => {
-        if (focusedItem === null) {
-          return 0;
-        } else if (typeof focusedItem === 'string') {
-          const focusedItemDef = itemsRef.current.get(focusedItem);
-          if (typeof focusedItemDef === 'undefined') { throw new Error(`Should not happen`); }
-          return focusedItemDef.itemPos ?? Math.min(0, itemKeys.indexOf(focusedItem));
-        } else if (typeof focusedItem === 'number') {
-          const total = typeof totalItems !== 'undefined' ? totalItems : itemKeys.length;
-          return focusedItem >= 0 ? focusedItem : (focusedItem + total);
-        } else {
-          return 0;
-        }
-      })();
-      if (itemIndex < 0) {
-        console.error(`Could not resolve focused item: '${focusedItem}'`);
-      }
-      // Determine the target item to focus based on the keyboard event (if any). If `null`, do not navigate.
-      const itemTarget = ((): null | ItemTarget => {
-        // Note: listboxes should not "cycle" (e.g. going beyond the last item should not go to the first)
-        switch (event.key) {
-          case 'Enter':
-          case ' ':
-            return itemIndex; // Just return the current item (which will be targeted for selection)
-          case 'ArrowUp': {
-            // const itemPrevIndex = itemIndex === 0 ? 0 : itemIndex - 1;
-            // const itemPrev: undefined | ItemKey = itemKeysFocusable.at(itemPrevIndex);
-            // if (typeof itemPrev === 'undefined') { throw new Error(`Should not happen`); }
-            // return itemPrev;
-            return Math.max(0, itemIndex - 1);
-          }
-          case 'ArrowDown': {
-            // const itemNextIndex = itemIndex + 1 >= itemKeysFocusable.length
-            //   ? itemKeysFocusable.length - 1
-            //   : itemIndex + 1;
-            // const itemNext: undefined | ItemKey = itemKeysFocusable.at(itemNextIndex);
-            // if (typeof itemNext === 'undefined') { throw new Error(`Should not happen`); }
-            // return itemNext;
-            
-            return Math.min(totalItems - 1, itemIndex + 1);
-          }
-          case 'PageUp': return Math.max(0, itemIndex - 10); // On Mac: Fn + ArrowUp
-          case 'PageDown': return Math.min(totalItems - 1, itemIndex + 10); // On Mac: Fn + ArrowDown
-          case 'Home': return 0; // On Mac: Fn + ArrowLeft
-          case 'End': return -1; // On Mac: Fn + ArrowRight
-          default: return null;
-        }
-      })();
-      
-      if (itemTarget !== null) {
-        if (event.key !== 'Enter') { // Exclude 'Enter', this should still cause default behavior like form submit
-          event.preventDefault(); // Prevent default behavior, like scrolling
-          event.stopPropagation(); // Prevent the key event from triggering other behavior
-        }
-        
-        if (['Enter', ' '].includes(event.key) && typeof itemTarget === 'string') {
-          setSelectedItem(itemTarget);
-        } else {
-          setFocusedItem(itemTarget);
-        }
-      }
-    }, [context, totalItems]);
-    */
     
     return (
       <listBox.Provider>
