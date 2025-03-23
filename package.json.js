@@ -169,6 +169,7 @@ const packageConfig = {
     // Utilities
     'date-fns': '^4.1.0',
     'message-tag': '^0.10.0',
+    'immer': '^10.1.1',
     
     // React
     'react': '^19.0.0',
@@ -176,7 +177,7 @@ const packageConfig = {
     'react-error-boundary': '^5.0.0',
     'classnames': '^2.5.1',
     'zustand': '^5.0.3',
-    //'@uidotdev/usehooks': '^2.4.1',
+    '@uidotdev/usehooks': '^2.4.1',
     
     '@floating-ui/react': '^0.26.28',
     'react-table': '^7.8.0',

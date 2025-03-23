@@ -12,12 +12,11 @@ import { Button } from '../../../actions/Button/Button.tsx';
 import {
   type ItemKey,
   type ItemDef,
+  type ItemWithKey,
   ListBoxContext,
-  useListBoxContext,
+  useListBoxSelector,
   useListBox,
   useListBoxItem,
-  useListBoxItemFocus,
-  useListBoxItemSelection,
 } from './ListBoxStore.tsx';
 
 import cl from './ListBox.module.scss';
@@ -42,9 +41,6 @@ export type OptionProps = ComponentProps<typeof Button> & {
   /** A unique identifier for this option. */
   itemKey: ItemKey,
   
-  /** Explicit position of this item in the list (e.g. for virtualization). */
-  itemPos?: undefined | number,
-  
   /** The human-readable label to be shown. */
   label: string,
   
@@ -64,22 +60,26 @@ export type OptionProps = ComponentProps<typeof Button> & {
  * A list box item that can be selected.
  */
 export const Option = (props: OptionProps) => {
-  const { itemKey, itemPos, label, icon, onSelect, requireIntent = false, ...propsRest } = props;
+  const { itemKey, label, icon, onSelect, requireIntent = false, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
-  const itemDef = React.useMemo<ItemDef>(() => ({ itemKey, itemRef, itemPos }), [itemKey, itemPos]);
+  const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef }), [itemKey]);
   
-  const hasHover = React.useRef<boolean>(false);
+  const hasHover = React.useRef<boolean>(false); // Note: make sure to use ref instead of state (prevent rerenders)
+  const handleMouseOver = React.useCallback(() => { hasHover.current = true; }, []);
+  const handleMouseOut = React.useCallback(() => { hasHover.current = false; }, []);
   
-  useListBoxItem(itemDef);
-  const { isFocused, requestFocus } = useListBoxItemFocus(itemKey);
-  const { isSelected, requestSelection } = useListBoxItemSelection(itemKey);
+  const { itemPosition, isFocused, requestFocus, isSelected, requestSelection } = useListBoxItem(itemDef);
   
+  /*
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Needs to rerun if `itemRef.current` changes
   React.useEffect(() => {
     if (isFocused) {
-      itemRef.current?.focus();
+      // Note: do not scroll if the focus was triggered by a mouse event
+      itemRef.current?.focus({ preventScroll: hasHover.current });
     }
-  }, [isFocused]);
+  }, [isFocused, itemRef.current]);
+  */
   
   /*
   React.useEffect(() => {
@@ -88,16 +88,6 @@ export const Option = (props: OptionProps) => {
       context.selectItem(itemKey);
     }
   }, [requireIntent, context.selectItem, itemKey, isFocused, isSelected]);
-  
-  // Focus the item when the user hovers over
-  const handleMouseOver = React.useCallback(() => {
-    hasHover.current = true;
-    context.focusItem(itemKey);
-  }, [context.focusItem, itemKey]);
-  const handleMouseOut = React.useCallback(() => {
-    hasHover.current = false;
-    context.focusItem(null);
-  }, [context.focusItem]);
   */
   
   return (
@@ -110,16 +100,15 @@ export const Option = (props: OptionProps) => {
       data-item-key={itemKey}
       aria-label={label}
       aria-selected={isSelected}
-      aria-posinset={itemPos}
+      aria-posinset={itemPosition ?? undefined}
       {...propsRest}
       className={cx(
         cl['bk-list-box__item'],
         cl['bk-list-box__item--option'],
-        //{ [cl['bk-list-box__item--focused']]: isFocused },
         propsRest.className,
       )}
-      // onMouseOver={handleMouseOver}
-      // onMouseOut={handleMouseOut}
+      onMouseOver={mergeCallbacks([handleMouseOver, propsRest.onMouseOver])}
+      onMouseOut={mergeCallbacks([handleMouseOut, propsRest.onMouseOut])}
       onPress={() => { requestSelection(); onSelect?.(); }}
     >
       {icon && <Icon icon={icon} className={cl['bk-list-box__item__icon']}/>}
@@ -198,10 +187,9 @@ export const Action = (props: ActionProps) => {
   const { itemKey, itemPos, label, icon, onActivate, sticky = false, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
-  const itemDef = React.useMemo<ItemDef>(() => ({ itemKey, itemRef, itemPos }), [itemKey, itemPos]);
+  const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef }), [itemKey]);
   
-  useListBoxItem(itemDef);
-  const { isFocused, requestFocus } = useListBoxItemFocus(itemKey);
+  const { isFocused, requestFocus } = useListBoxItem(itemDef);
   
   React.useEffect(() => {
     if (isFocused) {
@@ -266,14 +254,17 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   /** Any additional props to apply to the internal `<input type="hidden"/>`. */
   inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
   
-  /** If the list is virtualized, this should be set with the ordered list of all the item keys. */
-  virtualItemKeys?: undefined | Array<ItemKey>,
+  /** Only provide this prop if the list is virtual. Defines the ordered list of all the item keys (rendered or not). */
+  itemKeys: null | Array<ItemKey>,
+  
+  /** Only provide this prop if the list is virtual. Used to determine if the given item is focusable. */
+  isVirtualItemKeyFocusable: null | ((itemKey: ItemKey) => boolean),
 };
 
 type HiddenSelectedStateProps = Pick<ListBoxProps, 'name' | 'form' | 'inputProps'>;
 /** Hidden input, so that this component can be connected to a <form> element. */
 const HiddenSelectedState = ({ name, form, inputProps }: HiddenSelectedStateProps) => {
-  const selectedItem = useListBoxContext(s => s.selectedItem);
+  const selectedItem = useListBoxSelector(s => s.selectedItem);
   const onChange = React.useCallback(() => {}, []);
   return (
     <input type="hidden" name={name} form={form} {...inputProps} value={selectedItem ?? ''} onChange={onChange}/>
@@ -296,7 +287,8 @@ export const ListBox = Object.assign(
       name,
       form,
       inputProps,
-      virtualItemKeys,
+      itemKeys,
+      isVirtualItemKeyFocusable,
       ...propsRest
     } = props;
     
@@ -309,10 +301,13 @@ export const ListBox = Object.assign(
       - Separate logic out to a separate component (as in `HiddenSelectedState`).
       - Use `listBox.store.subscribe` for side effects.
     */
+    const selectedItemKey = selected ?? defaultSelected ?? null;
     const listBox = useListBox(ref, {
       id: props.id ?? id,
-      selectedItem: defaultSelected ?? null,
-      virtualItemKeys,
+      selectedItem: selectedItemKey,
+      focusedItem: selectedItemKey,
+      itemKeys,
+      isVirtualItemKeyFocusable,
     });
     
     React.useEffect(() => {

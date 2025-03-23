@@ -61,29 +61,38 @@ const ListBoxVirtualList = <Item,>(props: ListBoxVirtualListProps<Item>) => {
             <ListBox.Header
               key={virtualItem.key}
               itemKey={`option_${virtualItem.key}`}
-              label={<span style={{ display: 'flex', alignItems: 'center', gap: '1ch' }}>Loading... <Spinner size="small" inline/></span>}
+              label="Loading"
               className={cx(cl['bk-list-box-lazy__item'])}
               style={{
                 blockSize: virtualItem.size,
                 transform: `translateY(${virtualItem.start}px)`, // FIXME: logical property equivalent?
               }}
-            />
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: '1ch' }}>
+                Loading...
+                <Spinner size="small" inline/>
+              </span>
+            </ListBox.Header>
           );
         }
+        
+        const content = renderItem(virtualItem);
         
         return (
           <ListBox.Option
             key={virtualItem.key}
             itemKey={`option_${virtualItem.key}`}
-            itemPos={virtualItem.index}
-            label={renderItem(virtualItem)}
+            aria-posinset={virtualItem.index}
+            label={typeof content === 'string' ? content : undefined} // FIXME
             aria-setsize={totalItems}
             className={cx(cl['bk-list-box-lazy__item'])}
             style={{
               blockSize: virtualItem.size,
               transform: `translateY(${virtualItem.start}px)`, // FIXME: logical property equivalent?
             }}
-          />
+          >
+            {typeof content !== 'string' ? content : undefined}
+          </ListBox.Option>
         );
       })}
     </div>
@@ -133,11 +142,11 @@ export const ListBoxLazy = <Item,>(props: ListBoxLazyProps<Item>) => {
     count: count + (isLoading ? 1 : 0),
     getScrollElement: () => listBoxRef.current,
     estimateSize: () => 35, // FIXME: enforce this as the item height through CSS?
-    overscan: 5,
+    overscan: 15,
   });
   
   // biome-ignore lint/correctness/useExhaustiveDependencies: `virtualizer.getVirtualItems()` is a valid dep
-    React.useEffect(() => {
+  React.useEffect(() => {
     const lastItem = virtualizer.getVirtualItems().at(-1);
     if (!lastItem) { return; }
     
@@ -153,7 +162,7 @@ export const ListBoxLazy = <Item,>(props: ListBoxLazyProps<Item>) => {
     virtualizer.getVirtualItems(),
   ]);
   
-  const virtualItemKeys = React.useMemo(() => Array.from({ length: count }, (_, i) => `option_${i}`), [count]);
+  const itemKeys = React.useMemo(() => Array.from({ length: count }, (_, i) => `option_${i}`), [count]);
   
   return (
     <ListBox
@@ -164,7 +173,8 @@ export const ListBoxLazy = <Item,>(props: ListBoxLazyProps<Item>) => {
         { [cl['bk-list-box-lazy']]: !unstyled },
         propsRest.className,
       )}
-      virtualItemKeys={virtualItemKeys}
+      itemKeys={itemKeys}
+      isVirtualItemKeyFocusable={() => true} // FIXME
     >
       <ListBoxVirtualList virtualizer={virtualizer} totalItems={count} renderItem={renderItem}/>
     </ListBox>

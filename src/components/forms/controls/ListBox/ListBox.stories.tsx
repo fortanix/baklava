@@ -43,6 +43,7 @@ export const ListBoxStandard: Story = {
         )}
       </>
     ),
+    defaultSelected: 'Blueberry',
   },
 };
 

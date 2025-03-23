@@ -88,7 +88,7 @@
         &[aria-selected="true"] {
           background: bk.$theme-dropdown-menu-menu-background-hover;
           // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
-          box-shadow: inset 5px 0 bk.$theme-dropdown-menu-menu-tab-default !important;
+          //box-shadow: inset 5px 0 bk.$theme-dropdown-menu-menu-tab-default !important; // FIXME: conflicts with focus
         }
         
         @media (prefers-reduced-motion: no-preference) {
