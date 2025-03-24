@@ -8,7 +8,7 @@ import { classNames as cx, type ComponentProps } from '../../../../util/componen
 import { type VirtualItem, type Virtualizer, useVirtualizer } from '@tanstack/react-virtual';
 
 import { Spinner } from '../../../graphics/Spinner/Spinner.tsx';
-import { ListBoxContext } from '../ListBox/ListBoxStore.tsx';
+import { ListBoxContext, useListBoxSelector } from '../ListBox/ListBoxStore.tsx';
 import { ListBox } from '../ListBox/ListBox.tsx';
 
 import cl from './ListBoxLazy.module.scss';
@@ -47,6 +47,22 @@ const ListBoxVirtualList = <Item,>(props: ListBoxVirtualListProps<Item>) => {
   //   // virtualizer.scrollToIndex(targetIndex);
   // }, [context?.focusedItem, virtualizer, totalItems]);
   
+  const focusedItemKey = useListBoxSelector(s => s.focusedItem);
+  
+  const formatItemKey = (virtualKey: string | number | bigint) => `option_${virtualKey}`;
+  
+  const virtualItems = virtualizer.getVirtualItems();
+  
+  const renderFocusedItem = () => {
+    if (focusedItemKey === null) { return null; }
+    
+    const virtualItemFocused = virtualItems.find(item => formatItemKey(item.key) === focusedItemKey) ?? null;
+    
+    if (virtualItemFocused === null) {
+      return 'FOCUSED';
+    }
+  };
+  
   return (
     // XXX we could do away with this extra <div> if we force a scroll bar with a (hidden?) item at the far end
     <div
@@ -55,12 +71,13 @@ const ListBoxVirtualList = <Item,>(props: ListBoxVirtualListProps<Item>) => {
         blockSize: virtualizer.getTotalSize(),
       }}
     >
-      {virtualizer.getVirtualItems().map((virtualItem) => {
+      {renderFocusedItem()}
+      {virtualItems.map((virtualItem) => {
         if (virtualItem.index === totalItems) {
           return (
             <ListBox.Header
               key={virtualItem.key}
-              itemKey={`option_${virtualItem.key}`}
+              itemKey={formatItemKey(virtualItem.key)}
               label="Loading"
               className={cx(cl['bk-list-box-lazy__item'])}
               style={{

@@ -82,13 +82,10 @@
         &:not(:disabled):hover {
           background: bk.$theme-dropdown-menu-menu-background-hover;
         }
-        // &:not(:disabled).bk-list-box__item--focused {
-        //   background: bk.$theme-dropdown-menu-menu-background-focused;
-        // }
         &[aria-selected="true"] {
           background: bk.$theme-dropdown-menu-menu-background-hover;
           // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
-          //box-shadow: inset 5px 0 bk.$theme-dropdown-menu-menu-tab-default !important; // FIXME: conflicts with focus
+          box-shadow: inset 5px 0 bk.$theme-dropdown-menu-menu-tab-default !important; // FIXME: conflicts with focus
         }
         
         @media (prefers-reduced-motion: no-preference) {
@@ -138,7 +135,21 @@
         }
       }
       
-      @include bk.focus-inset; // FIXME: conflict with box-shadow for selected state
+      @include bk.focus-hidden; // Make sure the default button focus styling is not applied (e.g. through shift key)
+    }
+    
+    @include bk.focus-hidden;
+    
+    &:focus-visible {
+      .bk-list-box__item {
+        // FIXME: the standards say that disabled list box items should still be focusable?
+        &.bk-list-box__item--focused:not(:disabled) {
+          background: bk.$theme-dropdown-menu-menu-background-focused;
+          
+          outline: var(--bk-focus-outline-width) solid var(--bk-focus-outline-color) !important;
+          outline-offset: calc(-1 * var(--bk-focus-outline-width)) !important;
+        }
+      }
     }
   }
 }

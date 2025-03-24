@@ -69,7 +69,7 @@ export const Option = (props: OptionProps) => {
   const handleMouseOver = React.useCallback(() => { hasHover.current = true; }, []);
   const handleMouseOut = React.useCallback(() => { hasHover.current = false; }, []);
   
-  const { itemPosition, isFocused, requestFocus, isSelected, requestSelection } = useListBoxItem(itemDef);
+  const { id, itemPosition, isFocused, requestFocus, isSelected, requestSelection } = useListBoxItem(itemDef);
   
   /*
   // biome-ignore lint/correctness/useExhaustiveDependencies: Needs to rerun if `itemRef.current` changes
@@ -91,12 +91,13 @@ export const Option = (props: OptionProps) => {
   */
   
   return (
-    <Button unstyled
-      //id={`${context.id}_option_${itemKey}`}
+    <Button
+      unstyled
+      id={id}
       ref={itemRef}
       // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<option>` for this.
       role="option"
-      tabIndex={isFocused ? 0 : -1} // Roving tabindex
+      tabIndex={-1} // Focus is managed at the top level (list box element)
       data-item-key={itemKey}
       aria-label={label}
       aria-selected={isSelected}
@@ -105,6 +106,7 @@ export const Option = (props: OptionProps) => {
       className={cx(
         cl['bk-list-box__item'],
         cl['bk-list-box__item--option'],
+        { [cl['bk-list-box__item--focused']]: isFocused },
         propsRest.className,
       )}
       onMouseOver={mergeCallbacks([handleMouseOver, propsRest.onMouseOver])}
@@ -189,19 +191,20 @@ export const Action = (props: ActionProps) => {
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef }), [itemKey]);
   
-  const { isFocused, requestFocus } = useListBoxItem(itemDef);
+  const { id, isFocused, requestFocus } = useListBoxItem(itemDef);
   
-  React.useEffect(() => {
-    if (isFocused) {
-      itemRef.current?.focus();
-    }
-  }, [isFocused]);
+  // React.useEffect(() => {
+  //   if (isFocused) {
+  //     itemRef.current?.focus();
+  //   }
+  // }, [isFocused]);
   
   return (
-    <Button unstyled
-      //id={`${context.id}_action_${itemKey}`}
+    <Button
+      unstyled
+      id={id}
       ref={itemRef}
-      tabIndex={isFocused ? 0 : -1} // Roving tabindex
+      tabIndex={-1} // Focus is managed at the top level (list box element)
       data-item-key={itemKey}
       aria-label={label}
       aria-posinset={itemPos}
@@ -209,7 +212,7 @@ export const Action = (props: ActionProps) => {
       className={cx(
         cl['bk-list-box__item'],
         cl['bk-list-box__item--action'],
-        //{ [cl['bk-list-box__item--focused']]: isFocused },
+        { [cl['bk-list-box__item--focused']]: isFocused },
         { [cl['bk-list-box__item--sticky-end']]: sticky === 'end' },
         propsRest.className,
       )}
@@ -248,6 +251,9 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   /** The machine readable name of the list box control, used as part of `<form>` submission. */
   name?: undefined | string,
   
+  /** A placheholder text message to display when there are no items in the list. */
+  placeholderEmpty?: undefined | string,
+  
   /** The ID of the `<form>` element to associate this list box with. Optional. */
   form?: undefined | string,
   
@@ -285,6 +291,7 @@ export const ListBox = Object.assign(
       onSelect,
       disabled = false,
       name,
+      placeholderEmpty = 'No items',
       form,
       inputProps,
       itemKeys,
@@ -301,11 +308,11 @@ export const ListBox = Object.assign(
       - Separate logic out to a separate component (as in `HiddenSelectedState`).
       - Use `listBox.store.subscribe` for side effects.
     */
-    const selectedItemKey = selected ?? defaultSelected ?? null;
+    const selectedItemKeyDefault = selected ?? defaultSelected ?? null;
     const listBox = useListBox(ref, {
       id: props.id ?? id,
-      selectedItem: selectedItemKey,
-      focusedItem: selectedItemKey,
+      selectedItem: selectedItemKeyDefault,
+      focusedItem: selectedItemKeyDefault,
       itemKeys,
       isVirtualItemKeyFocusable,
     });
@@ -318,17 +325,30 @@ export const ListBox = Object.assign(
       });
     }, [listBox.store, onSelect]);
     
+    React.useEffect(() => {
+      return listBox.store.subscribe((state, prevState) => {
+        if (state.focusedItem !== prevState.focusedItem && ref.current) {
+          if (state.focusedItem === null) {
+            ref.current.removeAttribute('aria-activedescendant');
+          } else {
+            const activeDescendantId = `${id}_${state.focusedItem}`;
+            ref.current.setAttribute('aria-activedescendant', activeDescendantId);
+          }
+        }
+      });
+    }, [listBox.store, id]);
+    
     return (
       <listBox.Provider>
         <div
           // biome-ignore lint/a11y/useSemanticElements: Customizable `<select>` does not yet have browser support.
           role="listbox"
-          tabIndex={-1} // Use a roving tabindex (https://www.w3.org/WAI/ARIA/apg/practices/keyboard-interface)
+          tabIndex={0}
           aria-label={label}
-          data-empty-placeholder="No items"
+          data-empty-placeholder={placeholderEmpty}
           {...propsRest}
           {...listBox.props}
-          ref={mergeRefs(listBox.props.ref, props.ref)}
+          ref={mergeRefs(ref, props.ref)}
           onKeyDown={mergeCallbacks([listBox.props.onKeyDown, propsRest.onKeyDown])}
           className={cx(
             'bk',

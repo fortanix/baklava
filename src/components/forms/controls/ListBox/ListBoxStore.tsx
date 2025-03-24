@@ -115,11 +115,7 @@ export const createListBoxStore = <E extends HTMLElement>(ref: React.RefObject<n
       return index >= 0 ? index : null;
     },
     selectItem: itemKey => { set({ selectedItem: itemKey }); },
-    focusItem: itemKey => {
-      if (ref.current?.matches(`:focus-within`)) { // Only focus an item if the list box has focus
-        set({ focusedItem: itemKey });
-      }
-    },
+    focusItem: itemKey => { set({ focusedItem: itemKey }); },
   }));
 };
 export type ListBoxStore = ReturnType<typeof createListBoxStore>;
@@ -188,6 +184,8 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
       const itemTargetKey = itemKeysFocusable.at(itemTargetIndex);
       if (typeof itemTargetKey === 'undefined') { throw new Error(`Cannot resolve target index`); }
       
+      const itemTargetRef = registeredItems.get(itemTargetKey)?.itemRef ?? null;
+      
       event.preventDefault(); // Prevent default behavior, like scrolling
       event.stopPropagation(); // Prevent the key event from triggering other behavior at higher levels
       
@@ -195,6 +193,10 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
         state.selectItem(itemTargetKey);
       } else {
         state.focusItem(itemTargetKey);
+        
+        // Note: this only works if the item is already rendered, for virtual lists the component will need to handle
+        // the scroll.
+        itemTargetRef?.current?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
       }
     }
   } catch (error) {
@@ -287,6 +289,7 @@ export const useListBox = <E extends HTMLElement>(
 };
 
 type UseListBoxItemResult = {
+  id: string,
   itemPosition: null | number, // Position of this item in the total collection, or `null` if not known
   isFocused: boolean,
   requestFocus: () => void,
@@ -296,6 +299,8 @@ type UseListBoxItemResult = {
 export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
   const store = React.use(ListBoxContext);
   if (store === null) { throw new Error(`Missing ListBoxContext provider`); }
+  
+  const id = useStore(store, s => s.id);
   
   const itemPosition = useStore(store, s => s.getItemPosition(item.itemKey));
   
@@ -323,19 +328,21 @@ export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
     focusItem(item.itemKey);
   }, [item.itemKey, focusItem]);
   
-  React.useEffect(() => {
-    const itemElement = item.itemRef.current;
-    if (isFocused && itemElement && itemElement.closest('[role="listbox"]')?.matches(`:focus-within`)) {
-      const hasHover: boolean = itemElement.matches(':hover') ?? false;
-      // Note: do not scroll if the focus was triggered by a mouse event
-      itemElement.focus({ preventScroll: hasHover });
-    }
-  }, [isFocused, item.itemRef.current]);
+  // React.useEffect(() => {
+  //   const itemElement = item.itemRef.current;
+  //   if (isFocused && itemElement && itemElement.closest('[role="listbox"]')?.matches(`:focus-within`)) {
+  //     const hasHover: boolean = itemElement.matches(':hover') ?? false;
+  //     // Note: do not scroll if the focus was triggered by a mouse event
+  //     itemElement.focus({ preventScroll: hasHover });
+  //   }
+  // }, [isFocused, item.itemRef.current]);
   
   const isSelected = useStore(store, s => s.selectedItem === item.itemKey);
   const selectItem = useStore(store, s => s.selectItem);
   
   return {
+    id: `${id}_${item.itemKey}`,
+    
     itemPosition,
     
     isFocused,
