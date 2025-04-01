@@ -169,13 +169,15 @@ const packageConfig = {
     // Utilities
     'date-fns': '^4.1.0',
     'message-tag': '^0.10.0',
+    'immer': '^10.1.1',
     
     // React
-    'classnames': '^2.5.1',
     'react': '^19.0.0',
     'react-dom': '^19.0.0',
     'react-error-boundary': '^5.0.0',
-    //'@uidotdev/usehooks': '^2.4.1',
+    'classnames': '^2.5.1',
+    'zustand': '^5.0.3',
+    '@uidotdev/usehooks': '^2.4.1',
     
     '@floating-ui/react': '^0.26.28',
     'react-table': '^7.8.0',
@@ -183,6 +185,7 @@ const packageConfig = {
     
     'effect': '^3.12.9',
     'react-hook-form': '^7.54.2',
+    '@tanstack/react-virtual': '^3.13.2',
     
     'optics-ts': '^2.4.1',
   },

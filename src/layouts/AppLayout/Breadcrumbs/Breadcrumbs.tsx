@@ -8,6 +8,7 @@ import { classNames as cx, type ComponentProps } from '../../../util/componentUt
 import cl from './Breadcrumbs.module.scss';
 import { Link } from '../../../components/actions/Link/Link.tsx';
 
+
 export { cl as BreadcrumbsClassNames };
 
 export type BreadcrumbItem = ComponentProps<'li'> & {
@@ -19,7 +20,7 @@ export type BreadcrumbsProps = React.PropsWithChildren<ComponentProps<'nav'> & {
   unstyled?: undefined | boolean,
   
   /** The routing informations */
-  items: BreadcrumbItem[],
+  items: Array<BreadcrumbItem>,
   
   /** Whether the last breadcrumb item has slash or not. */
   hasTrailingSlash?: boolean,
@@ -33,10 +34,11 @@ export const Breadcrumbs = (props: BreadcrumbsProps) => {
     <nav
       {...propsRest}
       aria-label="Breadcrumbs"
-      className={cx({
-        bk: true,
-        [cl['bk-breadcrumbs']]: !unstyled,
-      }, propsRest.className)}
+      className={cx(
+        'bk',
+        { [cl['bk-breadcrumbs']]: !unstyled },
+        propsRest.className,
+      )}
     >
       <ol className={cx([cl['bk-breadcrumb']])}>
         {items.map((item, index) => {
