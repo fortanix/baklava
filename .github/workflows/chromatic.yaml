@@ -7,7 +7,7 @@ on:
 
 jobs:
   chromatic:
-    if: false # Temporarily disable until https://github.com/fortanix/baklava/issues/81 is resolved
+    #if: false # Uncomment to disable this job
     name: Run Chromatic
     runs-on: ubuntu-latest
     steps:
