@@ -7,6 +7,9 @@ import { withoutVitePlugins } from '@storybook/builder-vite';
 
 
 const config: StorybookConfig = {
+  core: {
+    disableTelemetry: true,
+  },
   framework: {
     name: '@storybook/react-vite',
     options: {},
