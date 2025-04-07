@@ -39,6 +39,7 @@ export const DialogOnboarding: Story = {
         // TODO: Replace here after https://github.com/fortanix/baklava/issues/163
         title={<Logo subtitle="Armor"/>}
         showCancelAction={false}
+        onRequestClose={() => console.log('close')}
       >
         <DialogLayout
           title="Let's Connect to Your Cloud Provider"
@@ -118,6 +119,7 @@ export const DialogOnboarding: Story = {
               {/* TODO: Eventually in the future implement something like this:
               https://react-spectrum.adobe.com/react-spectrum/Flex.html */}
               <div style={{display: 'flex', flexDirection: 'row', gap: '12px'}}>{/* bk.spacing-3 */}
+                <Dialog.CancelAction kind="secondary">Close</Dialog.CancelAction>
                 <Button kind="secondary">Back</Button>
                 <Button kind="secondary">Skip Onboarding</Button>
                 <Button kind="primary">Next</Button>

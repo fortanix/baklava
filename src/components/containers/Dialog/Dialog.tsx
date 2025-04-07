@@ -101,12 +101,8 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   /** Whether to set autofocus on the close button. Default: false. */
   autoFocusClose?: undefined | boolean,
   
-  /** An icon displayed on the top left corner that insets the content and the action buttons. */
-  // TODO: Is this the best name?
+  /** Container intended to display an icon on the top left corner, insetting the content and the action buttons. For larger elements, consider using DialogLayout */
   iconAside?: undefined | React.ReactNode,
-  
-  /** Some content to be displayed aside as the main content. */
-  contentAside?: undefined | React.ReactNode,
 };
 /**
  * The Dialog component displays an interaction with the user, for example a confirmation, or a form to be submitted.
@@ -124,7 +120,6 @@ export const Dialog = Object.assign(
       actions,
       autoFocusClose = false,
       iconAside,
-      contentAside,
       ...propsRest
     } = props;
     
@@ -155,7 +150,6 @@ export const Dialog = Object.assign(
             { [cl['bk-dialog']]: !unstyled },
             { [cl['bk-dialog--flat']]: flat },
             { [cl['bk-dialog--icon-aside']]: iconAside },
-            { [cl['bk-dialog--content-aside']]: contentAside },
             scrollerProps.className,
             propsRest.className,
           )}
@@ -178,14 +172,9 @@ export const Dialog = Object.assign(
           </header>
           
           <div className={cl['bk-dialog__content']}>
-            {(iconAside || contentAside) && (
-              <aside className={cx(cl['bk-dialog__content__aside'])}>
-                {iconAside && (
-                  <div>{iconAside}</div>
-                )}
-                {contentAside && (
-                  <div>{contentAside}</div>
-                )}
+            {iconAside && (
+              <aside className={cx(cl['bk-dialog__content__icon-aside'])}>
+                {iconAside}
               </aside>
             )}
             <section
