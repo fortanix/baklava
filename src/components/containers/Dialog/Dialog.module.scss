@@ -63,7 +63,6 @@
     .bk-dialog__content {
       scroll-margin-top: 100lh; // Workaround for an issue where the content scroll behind the header on focus
       flex: 1;
-      align-items: flex-start;
       
       margin-block: calc(bk.$spacing-7 / 2) calc(bk.$spacing-7 / 2);
       padding-inline: var(--bk-dialog-padding-inline);
@@ -74,6 +73,8 @@
     }
     
     .bk-dialog__content__icon-aside {
+      align-self: flex-start;
+      
       display: flex;
       flex-direction: row;
       gap: bk.$spacing-3;

@@ -76,29 +76,27 @@ export const DialogWithAside: Story = {
       >
         <p>{loremIpsumSentence}</p>
         <p>{loremIpsumSentence.slice(0, 55)}.</p>
-        <p>
-          <Form>
-            <FormLayout>
-              <RadioGroup
-                orientation="horizontal"
-                label="Label"
-                selected={selectedRadioOption}
-                onUpdate={radioKey => { setSelectedRadioOption(radioKey); }}
-              >
-                {radioOptions.map(radioOption =>
-                  <RadioGroup.Button
-                    key={radioOption}
-                    radioKey={radioOption}
-                    label={radioOption}
-                  />
-                )}
-              </RadioGroup>
-              <FieldLayout size="small">
-                <InputField placeholder="Placeholder" />
-              </FieldLayout>
-            </FormLayout>
-          </Form>
-        </p>
+        <Form>
+          <FormLayout>
+            <RadioGroup
+              orientation="horizontal"
+              label="Label"
+              selected={selectedRadioOption}
+              onUpdate={radioKey => { setSelectedRadioOption(radioKey); }}
+            >
+              {radioOptions.map(radioOption =>
+                <RadioGroup.Button
+                  key={radioOption}
+                  radioKey={radioOption}
+                  label={radioOption}
+                />
+              )}
+            </RadioGroup>
+            <FieldLayout size="small">
+              <InputField placeholder="Placeholder" />
+            </FieldLayout>
+          </FormLayout>
+        </Form>
       </Dialog>
     );
   },

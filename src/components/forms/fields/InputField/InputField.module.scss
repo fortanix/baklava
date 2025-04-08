@@ -7,30 +7,29 @@
 @layer baklava.components {
   .bk-input-field {
     @include bk.component-base(bk-input-field);
-
+    
     display: flex;
     flex-direction: column;
     gap: bk.$spacing-1;
-
+    
     .bk-input-field__label {
       @include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-m);
-      margin-block-end: bk.$spacing-1;
+      
+      display: flex;
+      flex-direction: row;
+      gap: bk.$spacing-1;
+      align-items: center;
+      
+      .bk-input-field__label__icon { --empty: ; }
+      
+      .bk-input-field__label__optional {
+        font-size: bk.$font-size-xs;
+        font-weight: bk.$font-weight-regular;
+      }
     }
-
-    .bk-input-field__label__icon {
-      margin-inline-start: bk.$spacing-1;
-    }
-
-    .bk-input-field__label__optional {
-      font-size: bk.$font-size-xs;
-      font-weight: bk.$font-weight-regular;
-      margin-inline-start: bk.$spacing-1;
-    }
-
-    .bk-input-field__control {
-      --empty: ; // Prevent empty class from being removed
-    }
-
+    
+    .bk-input-field__control { --empty: ; }
+    
     .bk-input-field__description {
       color: bk.$theme-form-text-hint;
       font-size: bk.$font-size-s;

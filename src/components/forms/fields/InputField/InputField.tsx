@@ -71,14 +71,14 @@ export const InputField = (props: InputFieldProps) => {
           className={cx(cl['bk-input-field__label'], labelProps.className)}
         >
           {label}
-          {labelTooltip && (
+          {labelTooltip &&
             <TooltipProvider tooltip={labelTooltip}>
               <Icon icon="info" className={cl['bk-input-field__label__icon']}/>
             </TooltipProvider>
-          )}
-          {labelOptional && (
+          }
+          {labelOptional &&
             <small className={cl['bk-input-field__label__optional']}>(Optional)</small>
-          )}
+          }
         </label>
       }
       <Input
