@@ -13,6 +13,8 @@ import { Input } from '../Input/Input.tsx';
 import { ListBoxLazy } from './ListBoxLazy.tsx';
 
 
+const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `test-${i}`);
+
 type ListBoxLazyArgs = React.ComponentProps<typeof ListBoxLazy>;
 type Story = StoryObj<ListBoxLazyArgs>;
 
@@ -34,14 +36,15 @@ export default {
 
 export const ListBoxLazyStandard: Story = {
   args: {
-    count: 100_000,
+    itemKeys: generateItemKeys(10_000),
+    defaultSelected: 'test-2',
     renderItem: item => `Item ${item.index + 1}`,
   },
 };
 
 export const ListBoxLazyLoading: Story = {
   args: {
-    count: 5,
+    itemKeys: generateItemKeys(5),
     isLoading: true,
   },
 };
@@ -62,7 +65,9 @@ const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
         setIsLoading(false);
       }, 2000);
     }
-  }, [limit]);
+  }, [limit, items.length]);
+  
+  const itemKeys = React.useMemo(() => generateItemKeys(items.length), [items.length]);
   
   return (
     <ListBoxLazy
@@ -70,7 +75,7 @@ const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
       limit={limit}
       pageSize={pageSize}
       onUpdateLimit={setLimit}
-      count={items.length}
+      itemKeys={itemKeys}
       isLoading={isLoading}
       //renderItem={item => <>Item {item.index + 1}</>}
     />
@@ -116,7 +121,9 @@ const ListBoxLazyWithFilterC = (props: ListBoxLazyArgs) => {
       };
       window.setTimeout(load, 600);
     }
-  }, [limit, filter, isLoading]);
+  }, [limit, filter, /*isLoading,*/ items]);
+  
+  const itemKeys = React.useMemo(() => generateItemKeys(itemsFiltered.length), [itemsFiltered.length]);
   
   return (
     <>
@@ -134,7 +141,7 @@ const ListBoxLazyWithFilterC = (props: ListBoxLazyArgs) => {
         limit={limit}
         pageSize={pageSize}
         onUpdateLimit={setLimit}
-        count={itemsFiltered.length}
+        itemKeys={itemKeys}
         isLoading={isLoadingDebounced}
         renderItem={item => <>{itemsFiltered[item.index]?.name}</>}
       />

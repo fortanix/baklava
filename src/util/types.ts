@@ -13,3 +13,6 @@ export const assertUnreachable = (value: never, message?: string): never => {
   console.error('Unexpected value:', value);
   throw new Error(message ?? `Unexpected case`);
 };
+
+// Given a type `T`, the keys `K` should be required, and everything else becomes optional.
+export type RequireOnly<T, K extends keyof T> = Pick<Required<T>, K> & Partial<T>;

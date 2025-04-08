@@ -1,9 +1,11 @@
 
+import { type RequireOnly } from '../../../../util/types.ts';
 import { removeCombiningCharacters } from '../../../../util/formatting.ts';
 
 import * as React from 'react';
 import { mergeCallbacks } from '../../../../util/reactUtil.ts';
 import { type StoreApi, createStore, useStore } from 'zustand';
+import { devtools } from 'zustand/middleware';
 
 import { isItemProgrammaticallyFocusable } from '../../../util/composition/compositionUtil.ts';
 import { useTypeAhead } from '../../../../util/hooks/useTypeAhead.ts';
@@ -37,7 +39,7 @@ export const ItemListUtil = {
   
   withItemAdded: (items: ItemMap, itemNew: ItemWithKey): ItemMap => {
     // There should not be any duplicate keys. For the same item, it should unregister before it reregisters.
-    if (items.has(itemNew.itemKey)) { console.warn(`Duplicate item key: ${itemNew.itemKey}`); }
+    if (items.has(itemNew.itemKey)) { console.warn(`Found duplicate item key: ${itemNew.itemKey}`); }
     
     const itemsUpdated = new Map(items);
     itemsUpdated.set(itemNew.itemKey, itemNew);
@@ -66,10 +68,10 @@ export type ListBoxState = {
   /** The items to be displayed in the list. */
   items: ItemMap,
   
-  /** The currently selected item (up to one at a time). */
+  /** The currently focused item (if any). */
   focusedItem: null | ItemKey,
   
-  /** The currently selected item (up to one at a time). */
+  /** The currently selected item (if any). */
   selectedItem: null | ItemKey,
   
   /** (For virtual lists only.) Defines the ordered list of all the item keys (rendered or not). */
@@ -82,7 +84,7 @@ export type ListBoxStateApi = ListBoxState & {
   /** Whether the list is virtual (only subset of items actually rendered/registered) or not. */
   isVirtual: () => boolean,
   
-  /** Get the position of the given item in the list. */
+  /** Get the position (integer between 0 and n-1) of the given item in the list, or `null` if not found. */
   getItemPosition: (itemKey: ItemKey) => null | number,
   
   /** Request the given `itemKey` to be focused. If `null`, unset focus. */
@@ -94,8 +96,8 @@ export type ListBoxStateApi = ListBoxState & {
 
 // Ref: https://zustand.docs.pmnd.rs/guides/initialize-state-with-props#wrapping-the-context-provider
 
-export type ListBoxProps = Partial<ListBoxState> & Pick<Required<ListBoxState>, 'id'>;
-export const createListBoxStore = <E extends HTMLElement>(ref: React.RefObject<null | E>, props: ListBoxProps) => {
+export type ListBoxProps = RequireOnly<ListBoxState, 'id'>;
+export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<null | E>, props: ListBoxProps) => {
   const propsWithDefaults: ListBoxState = {
     disabled: false,
     items: new Map(),
@@ -105,7 +107,7 @@ export const createListBoxStore = <E extends HTMLElement>(ref: React.RefObject<n
     isVirtualItemKeyFocusable: null,
     ...props,
   };
-  return createStore<ListBoxStateApi>()((set, get) => ({
+  return createStore<ListBoxStateApi>()(devtools((set, get) => ({
     ...propsWithDefaults,
     isVirtual: () => get().itemKeys !== null,
     getItemPosition: (itemKey: ItemKey) => {
@@ -116,10 +118,14 @@ export const createListBoxStore = <E extends HTMLElement>(ref: React.RefObject<n
     },
     selectItem: itemKey => { set({ selectedItem: itemKey }); },
     focusItem: itemKey => { set({ focusedItem: itemKey }); },
-  }));
+  })));
 };
 export type ListBoxStore = ReturnType<typeof createListBoxStore>;
 
+
+//
+// Event handlers
+//
 
 /**
  * Keyboard event handler for the list box to handle keyboard interactions (e.g. arrow key navigation).
@@ -135,7 +141,7 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
     const itemKeys = state.itemKeys ?? [...registeredItems.keys()]; // FIXME: sort items?
     
     // Filter out any items that are not (programmatically) focusable.
-    // Note: this will only work if the item is rendered (has a ref), virtual unrendered items will be ignored
+    // Note: this will only work if the item is rendered (has a ref), virtual unrendered items will be ignored.
     const itemKeysFocusable: Array<ItemKey> = itemKeys
       .filter(itemKey => {
         // Note: may not exist (if the list is virtual and the item is not rendered, or the ref is not yet resolved)
@@ -196,7 +202,8 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
         
         // Note: this only works if the item is already rendered, for virtual lists the component will need to handle
         // the scroll.
-        itemTargetRef?.current?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+        //itemTargetRef?.current?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+        itemTargetRef?.current?.focus();
       }
     }
   } catch (error) {
@@ -244,10 +251,14 @@ export const useListBoxSelector = <T,>(selector: (state: ListBoxState) => T): T 
   return useStore(store, selector);
 };
 
-export type ListBoxService<E extends HTMLElement> = {
+export type UseListBoxResult<E extends HTMLElement> = {
+  /** The list box store. */
   store: ListBoxStore,
+  /** The context provider element for the list box context. */
   Provider: (props: React.PropsWithChildren) => React.ReactNode,
-  // Note: using `div` here since there is easy no way to get props for a generic `HTMLElement`
+  /** Some props that should be applied to the list box element. */
+  // Note: using `div` here as a proxy for `E` (since there is no easy way to get the `ComponentProps` for a generic
+  // `HTMLElement in the React types).
   props: Pick<React.ComponentProps<'div'>, 'className' | 'onKeyDown'> & {
     ref: React.RefObject<null | E>,
   },
@@ -255,7 +266,7 @@ export type ListBoxService<E extends HTMLElement> = {
 export const useListBox = <E extends HTMLElement>(
   ref: React.RefObject<null | E>,
   props: ListBoxProps,
-): ListBoxService<E> => {
+): UseListBoxResult<E> => {
   const storeRef = React.useRef<ListBoxStore>(null);
   if (!storeRef.current) {
     storeRef.current = createListBoxStore(ref, props);
@@ -288,9 +299,9 @@ export const useListBox = <E extends HTMLElement>(
   };
 };
 
-type UseListBoxItemResult = {
+export type UseListBoxItemResult = {
   id: string,
-  itemPosition: null | number, // Position of this item in the total collection, or `null` if not known
+  itemPosition: null | number, // Position of this item in the total collection, or `null` if unknown
   isFocused: boolean,
   requestFocus: () => void,
   isSelected: boolean,
@@ -304,6 +315,7 @@ export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
   
   const itemPosition = useStore(store, s => s.getItemPosition(item.itemKey));
   
+  // Register the item
   React.useEffect(() => {
     store.setState(state => ({
       items: ItemListUtil.withItemAdded(state.items, item),
@@ -339,6 +351,10 @@ export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
   
   const isSelected = useStore(store, s => s.selectedItem === item.itemKey);
   const selectItem = useStore(store, s => s.selectItem);
+  const requestSelection = React.useCallback(() => {
+    selectItem(item.itemKey)
+    focusItem(item.itemKey);
+  }, [item.itemKey, selectItem, focusItem]);
   
   return {
     id: `${id}_${item.itemKey}`,
@@ -349,7 +365,7 @@ export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
     requestFocus,
     
     isSelected,
-    requestSelection: () => selectItem(item.itemKey),
+    requestSelection,
   };
 };
 

@@ -31,7 +31,7 @@ export default {
 
 
 // Sample items
-const fruits = ['Apple', 'Apricot', 'Blueberry', 'Cherry', 'Melon', 'Orange', 'Peach', 'Strawberry'];
+const fruits = ['Apple', 'Apricot', 'Blueberry', 'Cherry', 'Melon', 'Mango', 'Orange', 'Peach', 'Strawberry'];
 
 
 export const ListBoxStandard: Story = {

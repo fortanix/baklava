@@ -27,6 +27,7 @@ References:
 - https://www.w3.org/WAI/ARIA/apg/patterns/listbox
 - https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/listbox_role
 - https://react-spectrum.adobe.com/react-spectrum/ListBox.html
+- https://www.radix-ui.com/primitives/docs/components/select
 */
 
 export { type ItemKey, type ItemDef, ListBoxContext, useListBoxItem };
@@ -89,6 +90,8 @@ export const Option = (props: OptionProps) => {
     }
   }, [requireIntent, context.selectItem, itemKey, isFocused, isSelected]);
   */
+ 
+  const handlePress = React.useCallback(() => { requestSelection(); onSelect?.(); }, [requestSelection, onSelect]);
   
   return (
     <Button
@@ -97,7 +100,7 @@ export const Option = (props: OptionProps) => {
       ref={itemRef}
       // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<option>` for this.
       role="option"
-      tabIndex={-1} // Focus is managed at the top level (list box element)
+      tabIndex={isFocused ? 0 : -1}
       data-item-key={itemKey}
       aria-label={label}
       aria-selected={isSelected}
@@ -106,12 +109,12 @@ export const Option = (props: OptionProps) => {
       className={cx(
         cl['bk-list-box__item'],
         cl['bk-list-box__item--option'],
-        { [cl['bk-list-box__item--focused']]: isFocused },
+        //{ [cl['bk-list-box__item--focused']]: isFocused },
         propsRest.className,
       )}
-      onMouseOver={mergeCallbacks([handleMouseOver, propsRest.onMouseOver])}
-      onMouseOut={mergeCallbacks([handleMouseOut, propsRest.onMouseOut])}
-      onPress={() => { requestSelection(); onSelect?.(); }}
+      //onMouseOver={mergeCallbacks([handleMouseOver, propsRest.onMouseOver])}
+      //onMouseOut={mergeCallbacks([handleMouseOut, propsRest.onMouseOut])}
+      onPress={handlePress}
     >
       {icon && <Icon icon={icon} className={cl['bk-list-box__item__icon']}/>}
       <span className={cl['bk-list-box__item__label']}>{propsRest.children ?? label}</span>
@@ -142,7 +145,7 @@ export const Header = (props: HeaderProps) => {
   
   return (
     <span
-      tabIndex={-1}
+      //tabIndex={undefined}
       data-item-key={itemKey}
       {...propsRest}
       className={cx(
@@ -204,7 +207,7 @@ export const Action = (props: ActionProps) => {
       unstyled
       id={id}
       ref={itemRef}
-      tabIndex={-1} // Focus is managed at the top level (list box element)
+      tabIndex={isFocused ? 0 : -1}
       data-item-key={itemKey}
       aria-label={label}
       aria-posinset={itemPos}
@@ -212,7 +215,7 @@ export const Action = (props: ActionProps) => {
       className={cx(
         cl['bk-list-box__item'],
         cl['bk-list-box__item--action'],
-        { [cl['bk-list-box__item--focused']]: isFocused },
+        //{ [cl['bk-list-box__item--focused']]: isFocused },
         { [cl['bk-list-box__item--sticky-end']]: sticky === 'end' },
         propsRest.className,
       )}
@@ -278,7 +281,10 @@ const HiddenSelectedState = ({ name, form, inputProps }: HiddenSelectedStateProp
 };
 
 /**
- * A list of items, where each item is either an option that can be selected, or an action that can be activated.
+ * A list box is a composite control, consisting of a (flat) list of items. Each item can be either an option that can
+ * be selected, or an action that can be activated. The items list may be partial, in case of virtualization (see
+ * also `ListBoxLazy`). In this case, the `itemKeys` prop must be provided so that the list box can determine the
+ * identity and ordering of the full list.
  */
 export const ListBox = Object.assign(
   (props: ListBoxProps) => {
@@ -299,10 +305,12 @@ export const ListBox = Object.assign(
       ...propsRest
     } = props;
     
-    const ref = React.useRef<HTMLDivElement>(null);
     const id = React.useId();
+    const ref = React.useRef<HTMLDivElement>(null);
     
     /*
+    Set up the list box store.
+    
     NOTE: be careful not to use `useStore` or any other hook that would cause a re-render when the store is updated.
     This would cause all items in the list to re-render unnecessarily. Instead, you can:
       - Separate logic out to a separate component (as in `HiddenSelectedState`).
@@ -311,6 +319,7 @@ export const ListBox = Object.assign(
     const selectedItemKeyDefault = selected ?? defaultSelected ?? null;
     const listBox = useListBox(ref, {
       id: props.id ?? id,
+      disabled,
       selectedItem: selectedItemKeyDefault,
       focusedItem: selectedItemKeyDefault,
       itemKeys,
@@ -343,7 +352,7 @@ export const ListBox = Object.assign(
         <div
           // biome-ignore lint/a11y/useSemanticElements: Customizable `<select>` does not yet have browser support.
           role="listbox"
-          tabIndex={0}
+          tabIndex={undefined} // Do not make the listbox focusable, use a roving tabindex instead
           aria-label={label}
           data-empty-placeholder={placeholderEmpty}
           {...propsRest}

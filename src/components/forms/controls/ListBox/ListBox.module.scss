@@ -54,6 +54,10 @@
     }
     
     .bk-list-box__item {
+      // https://github.com/TanStack/virtual/issues/860
+      contain: paint;
+      will-change: transform;
+      
       //content-visibility: auto;
       // Border + padding + content
       //contain-intrinsic-block-size: calc(bk.rem-from-px(1) + var(--bk-list-box-item-padding-block) * 2 + 1lh);
@@ -95,6 +99,13 @@
       &:disabled {
         color: bk.$theme-text-small-text-subtle;
       }
+      // NOTE: according to WCAG standards, disabled list box items should still be focusable
+      &:focus-visible {
+        background: bk.$theme-dropdown-menu-menu-background-focused;
+        
+        outline: var(--bk-focus-outline-width) solid var(--bk-focus-outline-color) !important;
+        outline-offset: calc(-1 * var(--bk-focus-outline-width)) !important;
+      }
       
       &.bk-list-box__item--option {
         // Options get indented a little bit more
@@ -135,14 +146,16 @@
         }
       }
       
-      @include bk.focus-hidden; // Make sure the default button focus styling is not applied (e.g. through shift key)
+      @include bk.focus-hidden; // Make sure the default `Button` focus styling is not applied (e.g. through shift key)
     }
     
     @include bk.focus-hidden;
     
+    /*
+    TEMP: top-level focus
     &:focus-visible {
       .bk-list-box__item {
-        // FIXME: the standards say that disabled list box items should still be focusable?
+        // FIXME: the standards say that disabled list box items should still be focusable
         &.bk-list-box__item--focused:not(:disabled) {
           background: bk.$theme-dropdown-menu-menu-background-focused;
           
@@ -151,5 +164,6 @@
         }
       }
     }
+    */
   }
 }
