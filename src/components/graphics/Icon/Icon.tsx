@@ -25,6 +25,9 @@ type EventProps = {
   event: 'warning',
 };
 const Event = (props: EventProps) => {
+  if (props.event !== 'warning') {
+    return null;
+  }
   const icon: IconName = props.event === 'warning' ? 'warning-filled' : props.event;
   return (
     <Icon icon={icon} className={cl[`bk-icon-event--${icon}`]} />
