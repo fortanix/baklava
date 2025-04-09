@@ -18,7 +18,7 @@ import { Stepper } from '../../components/navigations/Stepper/Stepper.tsx';
 import { Icon } from '../../components/graphics/Icon/Icon.tsx';
 import { FieldLayout } from '../../components/forms/fields/FieldLayout/FieldLayout.tsx';
 
-import { DialogLayout } from './DialogLayout';
+import { DialogLayout, DialogLayoutClassNames as cl } from './DialogLayout';
 
 type DialogLayoutArgs = React.ComponentProps<typeof DialogLayout>;
 type Story = StoryObj<DialogLayoutArgs>;
@@ -55,12 +55,10 @@ export const DialogOnboarding: Story = {
                 activeKey="1"
                 onSwitch={() => {}}
               />
-              {/* TODO: Maybe this should be a separate component? */}
-              <hr/>
-              <div style={{display: 'flex', flexDirection: 'row', gap: '4px', alignItems: 'flex-start'}}>
-                <p><Icon icon="info"/></p>
-                <p><small>Step-by-Step Guide to Connect to Azure Cloud Provider</small></p>
-              </div>
+              <p className={cl['bk-dialog-layout__content__aside__hint']}>
+                <Icon icon="info" className={cl['bk-dialog-layout__content__aside__hint__icon']}/>
+                Step-by-Step Guide to Connect to Azure Cloud Provider
+              </p>
             </>
           )}
         >
