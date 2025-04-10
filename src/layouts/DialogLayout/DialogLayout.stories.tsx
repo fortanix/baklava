@@ -15,10 +15,9 @@ import { CheckboxGroup } from '../../components/forms/controls/CheckboxGroup/Che
 import { InputField } from '../../components/forms/fields/InputField/InputField.tsx';
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { Stepper } from '../../components/navigations/Stepper/Stepper.tsx';
-import { Icon } from '../../components/graphics/Icon/Icon.tsx';
 import { FieldLayout } from '../../components/forms/fields/FieldLayout/FieldLayout.tsx';
 
-import { DialogLayout, DialogLayoutClassNames as cl } from './DialogLayout';
+import { DialogLayout } from './DialogLayout';
 
 type DialogLayoutArgs = React.ComponentProps<typeof DialogLayout>;
 type Story = StoryObj<DialogLayoutArgs>;
@@ -55,10 +54,10 @@ export const DialogOnboarding: Story = {
                 activeKey="1"
                 onSwitch={() => {}}
               />
-              <p className={cl['bk-dialog-layout__content__aside__hint']}>
-                <Icon icon="info" className={cl['bk-dialog-layout__content__aside__hint__icon']}/>
+              <DialogLayout.Hint>
+                <DialogLayout.Icon icon="info"/>
                 Step-by-Step Guide to Connect to Azure Cloud Provider
-              </p>
+              </DialogLayout.Hint>
             </>
           )}
         >
