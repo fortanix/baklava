@@ -7,6 +7,8 @@ import * as React from 'react';
 
 import { useFormContext } from '../../context/Form/Form.tsx';
 import { Input } from '../../controls/Input/Input.tsx';
+import { TooltipProvider } from '../../../overlays/Tooltip/TooltipProvider.tsx';
+import { Icon } from '../../../graphics/Icon/Icon.tsx';
 
 import cl from './InputField.module.scss';
 
@@ -23,6 +25,15 @@ export type InputFieldProps = Omit<ComponentProps<'input'>, 'value'> & {
   /** Props for the `<label>` element, if `label` is defined. */
   labelProps?: undefined | ComponentProps<'label'>,
 
+  /** An optional tooltip to be displayed on an info icon next to the label. */
+  labelTooltip?: undefined | string,
+
+  /** Whether to display the optional observation on the label. */
+  labelOptional?: undefined | boolean,
+
+  /** Additional optional supporting text to be displayed under the input. */
+  description?: undefined | string,
+
   /** Props for the wrapper element. */
   wrapperProps?: undefined | ComponentProps<'div'>,
 };
@@ -33,7 +44,10 @@ export const InputField = (props: InputFieldProps) => {
   const {
     unstyled = false,
     label,
+    labelTooltip,
+    labelOptional,
     labelProps = {},
+    description,
     wrapperProps = {},
     ...inputProps
   } = props;
@@ -57,6 +71,14 @@ export const InputField = (props: InputFieldProps) => {
           className={cx(cl['bk-input-field__label'], labelProps.className)}
         >
           {label}
+          {labelTooltip &&
+            <TooltipProvider tooltip={labelTooltip}>
+              <Icon icon="info" className={cl['bk-input-field__label__icon']}/>
+            </TooltipProvider>
+          }
+          {labelOptional &&
+            <small className={cl['bk-input-field__label__optional']}>(Optional)</small>
+          }
         </label>
       }
       <Input
@@ -65,6 +87,9 @@ export const InputField = (props: InputFieldProps) => {
         form={formContext.formId}
         className={cx(cl['bk-input-field__control'], inputProps.className)}
       />
+      {description &&
+        <div className={cl['bk-input-field__description']}>{description}</div>
+      }
     </div>
   );
 };

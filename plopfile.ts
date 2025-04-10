@@ -60,13 +60,13 @@ const componentTemplate = {
     
     export { cl as {{{component-name}}}ClassNames };
     
-    export type {{{component-name}}}Props = React.PropsWithChildren<ComponentProps<{{{format-element-type-ts element-type}}}> & {
+    export type {{{component-name}}}Props = ComponentProps<{{{format-element-type-ts element-type}}}> & {
       /** Whether this component should be unstyled. */
       unstyled?: undefined | boolean,
       
       /** Some property specific to \`{{{component-name}}}\`. */
       variant?: undefined | 'x' | 'y',
-    }>;
+    };
     {{"\\n"~}}
     {{~#if component-description}}
     /**

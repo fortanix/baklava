@@ -100,6 +100,9 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   
   /** Whether to set autofocus on the close button. Default: false. */
   autoFocusClose?: undefined | boolean,
+  
+  /** Container intended to display an icon on the top left corner, insetting the content and the action buttons. For larger elements, consider using DialogLayout */
+  iconAside?: undefined | React.ReactNode,
 };
 /**
  * The Dialog component displays an interaction with the user, for example a confirmation, or a form to be submitted.
@@ -116,6 +119,7 @@ export const Dialog = Object.assign(
       onRequestClose,
       actions,
       autoFocusClose = false,
+      iconAside,
       ...propsRest
     } = props;
     
@@ -145,6 +149,7 @@ export const Dialog = Object.assign(
             'bk',
             { [cl['bk-dialog']]: !unstyled },
             { [cl['bk-dialog--flat']]: flat },
+            { [cl['bk-dialog--icon-aside']]: iconAside },
             scrollerProps.className,
             propsRest.className,
           )}
@@ -166,15 +171,23 @@ export const Dialog = Object.assign(
             </div>
           </header>
           
-          <section
-            id={`${dialogId}-content`} // Used with `aria-describedby`
-            role="document" // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/document_role
-            // FIXME: make this focusable instead of the <dialog> as per guidelines on MDN?
-            //tabIndex={0}
-            className={cx(cl['bk-dialog__content'], 'bk-prose')}
-          >
-            {children}
-          </section>
+          <div className={cl['bk-dialog__content']}>
+            {iconAside && (
+              <aside className={cx(cl['bk-dialog__content__icon-aside'])}>
+                {iconAside}
+              </aside>
+            )}
+            <section
+              id={`${dialogId}-content`} // Used with `aria-describedby`
+              role="document" // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/document_role
+              // FIXME: make this focusable instead of the <dialog> as per guidelines on MDN?
+              //tabIndex={0}
+              className={cx('bk-prose')}
+            >
+              {children}
+            </section>
+          </div>
+          
           
           {(showCancelAction || actions) &&
             <footer className={cx(cl['bk-dialog__actions'])}>
