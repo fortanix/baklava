@@ -13,6 +13,7 @@ import {
   type ItemKey,
   type ItemDef,
   type ItemWithKey,
+  type VirtualItemKeys,
   ListBoxContext,
   useListBoxSelector,
   useListBox,
@@ -263,11 +264,8 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   /** Any additional props to apply to the internal `<input type="hidden"/>`. */
   inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
   
-  /** Only provide this prop if the list is virtual. Defines the ordered list of all the item keys (rendered or not). */
-  itemKeys: null | Array<ItemKey>,
-  
-  /** Only provide this prop if the list is virtual. Used to determine if the given item is focusable. */
-  isVirtualItemKeyFocusable: null | ((itemKey: ItemKey) => boolean),
+  /** If the list is virtually rendered, `virtualItemKeys` should be provided with the full list of item keys. */
+  virtualItemKeys: null | VirtualItemKeys,
 };
 
 type HiddenSelectedStateProps = Pick<ListBoxProps, 'name' | 'form' | 'inputProps'>;
@@ -300,8 +298,7 @@ export const ListBox = Object.assign(
       placeholderEmpty = 'No items',
       form,
       inputProps,
-      itemKeys,
-      isVirtualItemKeyFocusable,
+      virtualItemKeys,
       ...propsRest
     } = props;
     
@@ -322,8 +319,7 @@ export const ListBox = Object.assign(
       disabled,
       selectedItem: selectedItemKeyDefault,
       focusedItem: selectedItemKeyDefault,
-      itemKeys,
-      isVirtualItemKeyFocusable,
+      virtualItemKeys,
     });
     
     React.useEffect(() => {

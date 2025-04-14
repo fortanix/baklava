@@ -10,9 +10,18 @@ import { generateData } from '../../../tables/util/generateData.ts'; // FIXME: m
 
 import { Input } from '../Input/Input.tsx';
 
+import { type ItemKey, type VirtualItemKeys } from '../ListBox/ListBoxStore.tsx';
 import { ListBoxLazy } from './ListBoxLazy.tsx';
 
 
+const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKeys => {
+  const indicesByKey = new Map(itemKeys.map((itemKey, index) => [itemKey, index]));
+  return {
+    length: itemKeys.length,
+    at: (index: number) => itemKeys.at(index),
+    indexOf: (itemKey: ItemKey) => indicesByKey.get(itemKey) ?? -1,
+  };
+};
 const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `test-${i}`);
 
 type ListBoxLazyArgs = React.ComponentProps<typeof ListBoxLazy>;
@@ -36,7 +45,7 @@ export default {
 
 export const ListBoxLazyStandard: Story = {
   args: {
-    itemKeys: generateItemKeys(10_000),
+    virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(10_000)),
     defaultSelected: 'test-2',
     renderItem: item => `Item ${item.index + 1}`,
   },
@@ -44,7 +53,7 @@ export const ListBoxLazyStandard: Story = {
 
 export const ListBoxLazyLoading: Story = {
   args: {
-    itemKeys: generateItemKeys(5),
+    virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(5)),
     isLoading: true,
   },
 };
@@ -67,7 +76,7 @@ const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
     }
   }, [limit, items.length]);
   
-  const itemKeys = React.useMemo(() => generateItemKeys(items.length), [items.length]);
+  const virtualItemKeys = React.useMemo(() => cachedVirtualItemKeys(generateItemKeys(items.length)), [items.length]);
   
   return (
     <ListBoxLazy
@@ -75,7 +84,7 @@ const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
       limit={limit}
       pageSize={pageSize}
       onUpdateLimit={setLimit}
-      itemKeys={itemKeys}
+      virtualItemKeys={virtualItemKeys}
       isLoading={isLoading}
       //renderItem={item => <>Item {item.index + 1}</>}
     />
@@ -123,7 +132,10 @@ const ListBoxLazyWithFilterC = (props: ListBoxLazyArgs) => {
     }
   }, [limit, filter, /*isLoading,*/ items]);
   
-  const itemKeys = React.useMemo(() => generateItemKeys(itemsFiltered.length), [itemsFiltered.length]);
+  const virtualItemKeys = React.useMemo(() =>
+    cachedVirtualItemKeys(generateItemKeys(itemsFiltered.length)),
+    [itemsFiltered.length],
+  );
   
   return (
     <>
@@ -141,7 +153,7 @@ const ListBoxLazyWithFilterC = (props: ListBoxLazyArgs) => {
         limit={limit}
         pageSize={pageSize}
         onUpdateLimit={setLimit}
-        itemKeys={itemKeys}
+        virtualItemKeys={virtualItemKeys}
         isLoading={isLoadingDebounced}
         renderItem={item => <>{itemsFiltered[item.index]?.name}</>}
       />

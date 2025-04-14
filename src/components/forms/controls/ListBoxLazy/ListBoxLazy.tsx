@@ -13,7 +13,7 @@ import {
 } from '@tanstack/react-virtual';
 
 import { Spinner } from '../../../graphics/Spinner/Spinner.tsx';
-import { type ItemKey, ListBoxContext, useListBoxSelector } from '../ListBox/ListBoxStore.tsx';
+import { type VirtualItemKeys, VirtualItemKeysUtil, useListBoxSelector } from '../ListBox/ListBoxStore.tsx';
 import { ListBox } from '../ListBox/ListBox.tsx';
 
 import cl from './ListBoxLazy.module.scss';
@@ -73,7 +73,7 @@ const ListItemVirtual = ({ virtualItem, itemsCount, renderItem }: ListItemVirtua
 type ListBoxVirtualListProps = {
   //listBoxRef: React.RefObject<null | React.ComponentRef<typeof ListBox>>,
   scrollElement: null | React.ComponentRef<typeof ListBox>,
-  itemKeys: Array<ItemKey>,
+  virtualItemKeys: VirtualItemKeys,
   limit: number,
   pageSize: number,
   onUpdateLimit: (limit: number) => void,
@@ -83,7 +83,7 @@ type ListBoxVirtualListProps = {
 const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   const {
     scrollElement,
-    itemKeys,
+    virtualItemKeys,
     limit,
     pageSize,
     onUpdateLimit,
@@ -92,7 +92,9 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   } = props;
   
   const focusedItemKey = useListBoxSelector(s => s.focusedItem);
-  const focusedItemIndex: null | number = focusedItemKey !== null ? itemKeys.indexOf(focusedItemKey) ?? null : null;
+  const focusedItemIndex: null | number = focusedItemKey === null
+    ? null
+    : VirtualItemKeysUtil.indexForItemKey(virtualItemKeys, focusedItemKey);
   
   // Range extractor for `useVirtualizer` that always includes the focused item, if there is one. This is so that we
   // do not "lose" the focused item when it gets scrolled out of view (for accessibility).
@@ -106,10 +108,13 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     return indices;
   }, [focusedItemIndex]);
   
-  const getItemKey = React.useCallback((index: number) => itemKeys[index] ?? `__INVALID-INDEX_${index}`, [itemKeys]);
+  const getItemKey = React.useCallback((index: number) =>
+    virtualItemKeys.at(index) ?? `__INVALID-INDEX_${index}`,
+    [virtualItemKeys],
+  );
   
   const virtualizer = useVirtualizer({
-    count: itemKeys.length + (isLoading ? 1 : 0),
+    count: virtualItemKeys.length + (isLoading ? 1 : 0),
     getScrollElement: () => scrollElement,
     getItemKey,
     estimateSize: () => 35, // FIXME: enforce this as the item height through CSS?
@@ -118,8 +123,6 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     useAnimationFrameWithResizeObserver: true,
     //debug: true,
   });
-  
-  //console.log('focused', focusedItemKey, focusedItemIndex);
   
   // biome-ignore lint/correctness/useExhaustiveDependencies: `virtualizer.getVirtualItems()` is a valid dep
   React.useEffect(() => {
@@ -175,7 +178,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
         <ListItemVirtual
           key={virtualItem.key}
           virtualItem={virtualItem}
-          itemsCount={itemKeys.length}
+          itemsCount={virtualItemKeys.length}
           renderItem={renderItem}
         />
       )}
@@ -186,9 +189,9 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
 /**
  * A list box component that renders its items lazily.
  */
-export type ListBoxLazyProps = Omit<ComponentProps<typeof ListBox>, 'children' | 'itemKeys'> & {
-  /** Defines the ordered list of all the item keys (rendered or not). */
-  itemKeys: Array<ItemKey>,
+export type ListBoxLazyProps = Omit<ComponentProps<typeof ListBox>, 'children' | 'virtualItemKeys'> & {
+  /** The full list of item keys (possibly lazily computed). */
+  virtualItemKeys: VirtualItemKeys,
   
   /** The maximum number of items to load. */
   limit: ListBoxVirtualListProps['limit'],
@@ -208,7 +211,7 @@ export type ListBoxLazyProps = Omit<ComponentProps<typeof ListBox>, 'children' |
 export const ListBoxLazy = (props: ListBoxLazyProps) => {
   const {
     unstyled = false,
-    itemKeys,
+    virtualItemKeys,
     limit,
     pageSize = 10,
     onUpdateLimit,
@@ -223,7 +226,7 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
   
   const propsVirtualList: ListBoxVirtualListProps = {
     scrollElement,
-    itemKeys,
+    virtualItemKeys,
     limit,
     pageSize,
     onUpdateLimit,
@@ -240,8 +243,7 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
         { [cl['bk-list-box-lazy']]: !unstyled },
         propsRest.className,
       )}
-      itemKeys={itemKeys}
-      isVirtualItemKeyFocusable={() => true} // FIXME
+      virtualItemKeys={virtualItemKeys}
     >
       <ListBoxVirtualList {...propsVirtualList}/>
     </ListBox>

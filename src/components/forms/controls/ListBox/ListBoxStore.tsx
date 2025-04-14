@@ -5,7 +5,6 @@ import { removeCombiningCharacters } from '../../../../util/formatting.ts';
 import * as React from 'react';
 import { mergeCallbacks } from '../../../../util/reactUtil.ts';
 import { type StoreApi, createStore, useStore } from 'zustand';
-import { devtools } from 'zustand/middleware';
 
 import { isItemProgrammaticallyFocusable } from '../../../util/composition/compositionUtil.ts';
 import { useTypeAhead } from '../../../../util/hooks/useTypeAhead.ts';
@@ -21,6 +20,19 @@ export type ItemDef = { // Definition of a registered item
 };
 export type ItemMap = Map<ItemKey, ItemDef>;
 export type ItemWithKey = ItemDef & { itemKey: ItemKey };
+
+// This is the minimal subtype of `Array<ItemKey>` that we need to be able to render a virtualized list. We keep it
+// minimal so that the consumer may compute this information dynamically rather than storing it all in memory.
+// For best performance, each of the defined operations should be computable in O(1), this may require some caching
+// (e.g. for `indexOf`).
+export type VirtualItemKeys = Pick<ReadonlyArray<ItemKey>, 'length' | 'at' | 'indexOf'>;
+export const VirtualItemKeysUtil = {
+  /** Find the index of the given `itemKey`, or `null` if not found in the list. */
+  indexForItemKey: (virtualItemKeys: VirtualItemKeys, itemKey: ItemKey): null | number => {
+    const index = virtualItemKeys.indexOf(itemKey);
+    return index >= 0 ? index : null;
+  },
+};
 
 export const ItemListUtil = {
   /**
@@ -74,15 +86,11 @@ export type ListBoxState = {
   /** The currently selected item (if any). */
   selectedItem: null | ItemKey,
   
-  /** (For virtual lists only.) Defines the ordered list of all the item keys (rendered or not). */
-  itemKeys: null | Array<ItemKey>,
-  
-  /** (For virtual lists only.) Used to determine if the given item is focusable. */
-  isVirtualItemKeyFocusable: null | ((itemKey: ItemKey) => boolean),
+  /** If the list is virtually rendered, `virtualItemKeys` should be provided with the full list of item keys. */
+  virtualItemKeys: null | VirtualItemKeys,
 };
 export type ListBoxStateApi = ListBoxState & {
-  /** Whether the list is virtual (only subset of items actually rendered/registered) or not. */
-  isVirtual: () => boolean,
+  getVirtualItemKeys: () => VirtualItemKeys,
   
   /** Get the position (integer between 0 and n-1) of the given item in the list, or `null` if not found. */
   getItemPosition: (itemKey: ItemKey) => null | number,
@@ -103,22 +111,23 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
     items: new Map(),
     focusedItem: null,
     selectedItem: null,
-    itemKeys: null,
-    isVirtualItemKeyFocusable: null,
+    virtualItemKeys: null,
     ...props,
   };
-  return createStore<ListBoxStateApi>()(devtools((set, get) => ({
+  return createStore<ListBoxStateApi>()((set, get) => ({
     ...propsWithDefaults,
-    isVirtual: () => get().itemKeys !== null,
-    getItemPosition: (itemKey: ItemKey) => {
+    getVirtualItemKeys: () => {
       const state = get();
-      const itemKeys = state.itemKeys ?? [...state.items.keys()];
-      const index = itemKeys.indexOf(itemKey);
-      return index >= 0 ? index : null;
+      return state.virtualItemKeys ?? [...state.items.keys()];
+    },
+    getItemPosition: (itemKey: ItemKey): null | number => {
+      const state = get();
+      const itemKeys: VirtualItemKeys = state.virtualItemKeys ?? [...state.items.keys()];
+      return VirtualItemKeysUtil.indexForItemKey(itemKeys, itemKey);
     },
     selectItem: itemKey => { set({ selectedItem: itemKey }); },
     focusItem: itemKey => { set({ focusedItem: itemKey }); },
-  })));
+  }));
 };
 export type ListBoxStore = ReturnType<typeof createListBoxStore>;
 
@@ -135,11 +144,17 @@ export type ListBoxStore = ReturnType<typeof createListBoxStore>;
 export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React.KeyboardEvent) => {
   try {
     const state = store.getState();
-    const isVirtual = state.isVirtual();
+    const virtualItemKeys = state.virtualItemKeys;
     const registeredItems = state.items;
-    const selectedItemKey = state.selectedItem;
-    const itemKeys = state.itemKeys ?? [...registeredItems.keys()]; // FIXME: sort items?
+    const registeredItemKeys = [...registeredItems.keys()]; // FIXME: sort registered items?
     
+    // Get the complete list of item keys (possibly lazily computed in case of virtualization)
+    const itemKeys: VirtualItemKeys = virtualItemKeys ?? registeredItemKeys;
+    
+    const selectedItemKey = state.selectedItem;
+    
+    // NOTE: we assume that all items are focusable (which is also recommended by WCAG)
+    /*
     // Filter out any items that are not (programmatically) focusable.
     // Note: this will only work if the item is rendered (has a ref), virtual unrendered items will be ignored.
     const itemKeysFocusable: Array<ItemKey> = itemKeys
@@ -156,13 +171,14 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
         
         return isFocusable;
       });
+    */
     
     const firstFocusableItem = itemKeys.at(0);
     if (typeof firstFocusableItem === 'undefined') { return; } // If no focusable items, no interactions needed
     
     const focusedItemKey: ItemKey = state.focusedItem ?? selectedItemKey ?? firstFocusableItem;
-    const focusedItemIndex: number = itemKeysFocusable.indexOf(focusedItemKey);
-    if (focusedItemIndex < 0) { throw new Error(`Should not happen`); }
+    const focusedItemIndex: null | number = VirtualItemKeysUtil.indexForItemKey(itemKeys, focusedItemKey);
+    if (focusedItemIndex === null) { throw new Error(`Unable to resolve focused item '${focusedItemKey}'`); }
     
     // Determine the index of the item to focus based on the keyboard event. If `null`, do not navigate.
     const pageSize = 10; // FIXME: make this a bit smarter?
@@ -171,13 +187,13 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
       switch (event.key) {
         case ' ': return focusedItemIndex;
         case 'ArrowUp': return Math.max(0, focusedItemIndex - 1);
-        case 'ArrowDown': return Math.min(itemKeysFocusable.length - 1, focusedItemIndex + 1);
+        case 'ArrowDown': return Math.min(itemKeys.length - 1, focusedItemIndex + 1);
         case 'Home': return 0; // On Mac: Fn + ArrowLeft
         case 'End': return -1; // On Mac: Fn + ArrowRight
         case 'PageUp':
           return Math.max(0, focusedItemIndex - pageSize); // On Mac: Fn + ArrowUp
         case 'PageDown':
-          return Math.min(itemKeysFocusable.length - 1, focusedItemIndex + pageSize); // On Mac: Fn + ArrowDown
+          return Math.min(itemKeys.length - 1, focusedItemIndex + pageSize); // On Mac: Fn + ArrowDown
         default: return null;
       }
     })();
@@ -187,8 +203,8 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
     if (event.key === 'Enter') { return; }
     
     if (itemTargetIndex !== null) {
-      const itemTargetKey = itemKeysFocusable.at(itemTargetIndex);
-      if (typeof itemTargetKey === 'undefined') { throw new Error(`Cannot resolve target index`); }
+      const itemTargetKey = itemKeys.at(itemTargetIndex);
+      if (typeof itemTargetKey === 'undefined') { throw new Error(`Cannot resolve target index '${itemTargetKey}'`); }
       
       const itemTargetRef = registeredItems.get(itemTargetKey)?.itemRef ?? null;
       
