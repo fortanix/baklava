@@ -99,11 +99,15 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   // Range extractor for `useVirtualizer` that always includes the focused item, if there is one. This is so that we
   // do not "lose" the focused item when it gets scrolled out of view (for accessibility).
   const rangeExtractorWithFocused = React.useCallback((range: Range) => {
-    //console.log('range', range);
     // For an example, see: https://tanstack.com/virtual/latest/docs/framework/react/examples/sticky?panel=code
-    const indices = defaultRangeExtractor(range);
-    if (focusedItemIndex && !indices.includes(focusedItemIndex)) {
-      indices.push(focusedItemIndex - 1, focusedItemIndex, focusedItemIndex + 1);
+    let indices: Array<number> = defaultRangeExtractor(range);
+    if (focusedItemIndex !== null) {
+      indices = [...new Set([
+        ...indices,
+        Math.max(0, focusedItemIndex - 1),
+        focusedItemIndex,
+        Math.min(focusedItemIndex, focusedItemIndex + 1),
+      ])];
     }
     return indices;
   }, [focusedItemIndex]);

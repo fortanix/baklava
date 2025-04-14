@@ -90,7 +90,8 @@ export type ListBoxState = {
   virtualItemKeys: null | VirtualItemKeys,
 };
 export type ListBoxStateApi = ListBoxState & {
-  getVirtualItemKeys: () => VirtualItemKeys,
+  /** Update the `virtualItemKeys`. */
+  setVirtualItemKeys: (virtualItemKeys: null | VirtualItemKeys) => void,
   
   /** Get the position (integer between 0 and n-1) of the given item in the list, or `null` if not found. */
   getItemPosition: (itemKey: ItemKey) => null | number,
@@ -116,10 +117,7 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
   };
   return createStore<ListBoxStateApi>()((set, get) => ({
     ...propsWithDefaults,
-    getVirtualItemKeys: () => {
-      const state = get();
-      return state.virtualItemKeys ?? [...state.items.keys()];
-    },
+    setVirtualItemKeys: virtualItemKeys => set({ virtualItemKeys }),
     getItemPosition: (itemKey: ItemKey): null | number => {
       const state = get();
       const itemKeys: VirtualItemKeys = state.virtualItemKeys ?? [...state.items.keys()];

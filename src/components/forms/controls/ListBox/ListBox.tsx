@@ -322,6 +322,10 @@ export const ListBox = Object.assign(
       virtualItemKeys,
     });
     
+    if (listBox.store.getState().virtualItemKeys !== virtualItemKeys) {
+      listBox.store.getState().setVirtualItemKeys(virtualItemKeys);
+    }
+    
     React.useEffect(() => {
       return listBox.store.subscribe((state, prevState) => {
         if (state.selectedItem !== prevState.selectedItem && state.selectedItem !== null) {
