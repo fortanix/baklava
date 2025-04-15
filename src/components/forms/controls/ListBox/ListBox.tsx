@@ -334,6 +334,7 @@ export const ListBox = Object.assign(
       });
     }, [listBox.store, onSelect]);
     
+    /*
     React.useEffect(() => {
       return listBox.store.subscribe((state, prevState) => {
         if (state.focusedItem !== prevState.focusedItem && ref.current) {
@@ -346,6 +347,7 @@ export const ListBox = Object.assign(
         }
       });
     }, [listBox.store, id]);
+    */
     
     return (
       <listBox.Provider>

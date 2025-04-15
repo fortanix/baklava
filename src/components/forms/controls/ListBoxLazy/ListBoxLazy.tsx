@@ -102,20 +102,29 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     // For an example, see: https://tanstack.com/virtual/latest/docs/framework/react/examples/sticky?panel=code
     let indices: Array<number> = defaultRangeExtractor(range);
     if (focusedItemIndex !== null) {
+      // Note: the array must be deduplicated (otherwise we get the same item rendered multiple times), and it must
+      // also be sorted (otherwise focus scroll into view becomes buggy).
       indices = [...new Set([
-        ...indices,
-        Math.max(0, focusedItemIndex - 1),
+        0, // First item
+        Math.max(0, focusedItemIndex - 10), // Previous "page"
+        Math.max(0, focusedItemIndex - 1), // Previous element
         focusedItemIndex,
-        Math.min(focusedItemIndex, focusedItemIndex + 1),
-      ])];
+        Math.min(virtualItemKeys.length - 1, focusedItemIndex + 1), // Next element
+        Math.min(virtualItemKeys.length - 1, focusedItemIndex + 10), // Next "page"
+        virtualItemKeys.length - 1, // Last item
+        ...indices,
+      ])].sort((index1, index2) => index1 - index2);
     }
     return indices;
-  }, [focusedItemIndex]);
+  }, [focusedItemIndex, virtualItemKeys.length]);
   
-  const getItemKey = React.useCallback((index: number) =>
-    virtualItemKeys.at(index) ?? `__INVALID-INDEX_${index}`,
-    [virtualItemKeys],
-  );
+  const getItemKey = React.useCallback((index: number) => {
+    const virtualItemKey = virtualItemKeys.at(index);
+    if (typeof virtualItemKey === 'undefined' && isLoading && index === virtualItemKeys.length) {
+      return '__LOADING';
+    }
+    return virtualItemKey ?? `__INVALID-INDEX_${index}`;
+  }, [virtualItemKeys, isLoading]);
   
   const virtualizer = useVirtualizer({
     count: virtualItemKeys.length + (isLoading ? 1 : 0),
@@ -130,11 +139,12 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   
   // biome-ignore lint/correctness/useExhaustiveDependencies: `virtualizer.getVirtualItems()` is a valid dep
   React.useEffect(() => {
-    const lastItem = virtualizer.getVirtualItems().at(-1);
-    if (!lastItem) { return; }
+    const virtualItemsSorted = virtualizer.getVirtualItems().toSorted((item1, item2) => item1.index - item2.index);
+    const lastItem = virtualItemsSorted.at(-1);
+    if (!lastItem) { return; } // If the list is empty, ignore
     
     const hasNextPage = true; // FIXME
-    if (lastItem.index >= limit - 1 && hasNextPage && !isLoading) {
+    if (!isLoading && lastItem.index >= limit - 1 && hasNextPage) {
       onUpdateLimit(limit + pageSize);
     }
   }, [
