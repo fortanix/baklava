@@ -153,6 +153,7 @@ const preview = {
           'layouts',
           [
             'FormLayout',
+            'DialogLayout',
             'AppLayout',
             [
               'Logo',

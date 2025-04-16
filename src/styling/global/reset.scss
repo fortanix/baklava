@@ -52,13 +52,18 @@
       overflow-wrap: break-word; // Prevent long words causing overflow
     }
     
-    button, label {
+    button {
       cursor: pointer;
       user-select: none;
       
       &:disabled {
         cursor: not-allowed;
       }
+    }
+    
+    label {
+      cursor: default;
+      user-select: none;
     }
     
     /*

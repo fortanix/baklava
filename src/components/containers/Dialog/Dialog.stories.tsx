@@ -6,7 +6,13 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
-import { loremIpsum, LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
+import { loremIpsum, LoremIpsum, loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
+import { Form } from '../../forms/context/Form/Form.tsx';
+import { FormLayout } from '../../../layouts/FormLayout/FormLayout.tsx';
+import { RadioGroup } from '../../forms/controls/RadioGroup/RadioGroup.tsx';
+import { FieldLayout } from '../../forms/fields/FieldLayout/FieldLayout.tsx';
+import { InputField } from '../../forms/fields/InputField/InputField.tsx';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
 
 import { Dialog } from './Dialog.tsx';
 
@@ -55,5 +61,43 @@ export const DialogWithTitleOverflow: Story = {
 export const DialogFlat: Story = {
   args: {
     flat: true,
+  },
+};
+
+export const DialogWithAside: Story = {
+  render: () => {
+    const radioOptions = ['Response Only', 'Query Only', 'All'] as const;
+    const [selectedRadioOption, setSelectedRadioOption] = React.useState<string>('Response Only');
+    return (
+      <Dialog
+        title="Dialog Pattern 1"
+        actions={<Dialog.SubmitAction/>}
+        iconAside={<Icon.Event event="warning"/>}
+      >
+        <p>{loremIpsumSentence}</p>
+        <p>{loremIpsumSentence.slice(0, 55)}.</p>
+        <Form>
+          <FormLayout>
+            <RadioGroup
+              orientation="horizontal"
+              label="Label"
+              selected={selectedRadioOption}
+              onUpdate={radioKey => { setSelectedRadioOption(radioKey); }}
+            >
+              {radioOptions.map(radioOption =>
+                <RadioGroup.Button
+                  key={radioOption}
+                  radioKey={radioOption}
+                  label={radioOption}
+                />
+              )}
+            </RadioGroup>
+            <FieldLayout size="small">
+              <InputField placeholder="Placeholder" />
+            </FieldLayout>
+          </FormLayout>
+        </Form>
+      </Dialog>
+    );
   },
 };
