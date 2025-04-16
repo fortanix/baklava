@@ -7,6 +7,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import * as React from 'react';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
+import { Button } from '../../../actions/Button/Button.tsx';
 
 import { type ItemKey, ListBox } from './ListBox.tsx';
 
@@ -82,7 +83,7 @@ export const ListBoxWithHeader: Story = {
       <>
         <ListBox.Header itemKey="header" label={`Fruits (${fruits.length})`}/>
         {fruits.map(fruit =>
-          <ListBox.Option key={fruit} itemKey={fruit} label={fruit} requireIntent/>
+          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
         )}
       </>
     ),
@@ -107,7 +108,7 @@ export const ListBoxWithStickyAction: Story = {
     children: (
       <>
         {fruits.map(fruit =>
-          <ListBox.Option key={fruit} itemKey={fruit} label={fruit} requireIntent/>
+          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
         )}
         <ListBox.Action itemKey="action" label="Go to checkout" onActivate={() => {}} sticky="end"/>
       </>
@@ -121,23 +122,6 @@ export const ListBoxWithScroll: Story = {
       <>
         {Array.from({ length: 15 }).map((_, index) =>
           <ListBox.Option key={`option-${index + 1}`} itemKey={`option-${index + 1}`} label={`Option ${index + 1}`}/>
-        )}
-      </>
-    ),
-  },
-};
-
-/**
- * If selecting an item triggers some side effect (e.g. page change), then we only want to select an item if there
- * is an explicit user intent, such as a mouse click, tap, or pressing Enter/Space. This can be configured by setting
- * the `requireIntent` prop to `true`.
- */
-export const ListBoxWithRequireIntent: Story = {
-  args: {
-    children: (
-      <>
-        {fruits.map((fruit) =>
-          <ListBox.Option key={fruit} itemKey={fruit} label={fruit} requireIntent/>
         )}
       </>
     ),
@@ -175,18 +159,29 @@ export const ListBoxTypeAhead: Story = {
   },
 };
 
-export const ListBoxMany: Story = {
-  args: {
-    children: (
-      <>
-        {Array.from({ length: 1000 }).map((_, index) =>
+type ListBoxManyProps = Omit<React.ComponentProps<typeof ListBox>, 'selected'>;
+const ListBoxManyC = (props: ListBoxManyProps) => {
+  const [isPending, startTransition] = React.useTransition();
+  const [count, setCount] = React.useState(100);
+  return (
+    <>
+      <div style={{ display: 'flex', gap: 5, margin: 5 }}>
+        <Button kind="primary" onPress={() => { startTransition(() => setCount(100)); }}>100 items</Button>
+        <Button kind="primary" onPress={() => { startTransition(() => setCount(1000)); }}>1K items</Button>
+        <Button kind="primary" onPress={() => { startTransition(() => setCount(10_000)); }}>10K items</Button>
+      </div>
+      <ListBox {...props}>
+        {Array.from({ length: count }).map((_, index) =>
           index === 500
-            ? <ListBox.Option key="find-me" itemKey="find-me" label="Find me"/> // Searchability test (CTRL+F)
+            ? <ListBox.Option key="find-me" itemKey="find-me" label="Find me"/> // Searchability test (CTRL/CMD+F)
             : <ListBox.Option key={`opt-${index + 1}`} itemKey={`opt-${index + 1}`} label={`Option ${index + 1}`}/>
         )}
-      </>
-    ),
-  },
+      </ListBox>
+    </>
+  );
+};
+export const ListBoxMany: Story = {
+  render: args => <ListBoxManyC {...args}/>,
 };
 
 type ListBoxControlledProps = Omit<React.ComponentProps<typeof ListBox>, 'selected'>;

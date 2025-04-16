@@ -13,10 +13,7 @@
     --bk-list-box-item-padding-block: #{bk.$spacing-2};
     --bk-list-box-item-block-size: calc(#{bk.rem-from-px(1)} + var(--bk-list-box-item-padding-block) * 2 + 1lh);
     
-    //container-type: scroll-state;
     overflow: hidden;
-    /* stylelint-disable-next-line declaration-property-value-disallowed-list */
-    overflow-y: auto;
     scroll-behavior: smooth;
     scroll-padding-block:
       var(--bk-list-box-item-block-size)
@@ -58,6 +55,7 @@
       contain: paint;
       will-change: transform;
       
+      // FIXME: enabling this causes a strange issue with keyboard navigation (scrolling goes too fard down/up)
       //content-visibility: auto;
       // Border + padding + content
       //contain-intrinsic-block-size: calc(bk.rem-from-px(1) + var(--bk-list-box-item-padding-block) * 2 + 1lh);
@@ -89,11 +87,11 @@
         &[aria-selected="true"] {
           background: bk.$theme-dropdown-menu-menu-background-hover;
           // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
-          box-shadow: inset 5px 0 bk.$theme-dropdown-menu-menu-tab-default !important; // FIXME: conflicts with focus
+          box-shadow: inset 5px 0 bk.$theme-dropdown-menu-menu-tab-default !important;
         }
         
         @media (prefers-reduced-motion: no-preference) {
-          // transition: box-shadow 150ms ease-in;
+          transition: box-shadow 150ms ease-in;
         }
       }
       &:disabled {
@@ -103,7 +101,9 @@
       &:focus-visible {
         background: bk.$theme-dropdown-menu-menu-background-focused;
         
+        // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
         outline: var(--bk-focus-outline-width) solid var(--bk-focus-outline-color) !important;
+        // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
         outline-offset: calc(-1 * var(--bk-focus-outline-width)) !important;
       }
       
@@ -150,20 +150,5 @@
     }
     
     @include bk.focus-hidden;
-    
-    /*
-    TEMP: top-level focus
-    &:focus-visible {
-      .bk-list-box__item {
-        // FIXME: the standards say that disabled list box items should still be focusable
-        &.bk-list-box__item--focused:not(:disabled) {
-          background: bk.$theme-dropdown-menu-menu-background-focused;
-          
-          outline: var(--bk-focus-outline-width) solid var(--bk-focus-outline-color) !important;
-          outline-offset: calc(-1 * var(--bk-focus-outline-width)) !important;
-        }
-      }
-    }
-    */
   }
 }

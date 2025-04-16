@@ -18,7 +18,7 @@ export type User = {
 };
 
 type GenerateDataArgs = { numItems: number, seed?: undefined | string };
-export const generateData = ({ numItems = 10, seed: seedValue }: GenerateDataArgs = {}) => {
+export const generateData = ({ numItems = 10, seed: seedValue }: GenerateDataArgs) => {
   seed(seedValue ?? 'some-constant-seed'); // Use a fixed seed for consistent results
   
   const data: Array<User> = [];

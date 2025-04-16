@@ -5,6 +5,7 @@
 import * as React from 'react';
 import { mergeRefs, mergeCallbacks } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
+import { useScroller } from '../../../../layouts/util/Scroller.tsx';
 
 import { type IconName, Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
@@ -43,7 +44,7 @@ export type OptionProps = ComponentProps<typeof Button> & {
   /** A unique identifier for this option. */
   itemKey: ItemKey,
   
-  /** The human-readable label to be shown. */
+  /** An accessible name for this option. */
   label: string,
   
   /** An icon to be displayed before the label. */
@@ -51,47 +52,18 @@ export type OptionProps = ComponentProps<typeof Button> & {
   
   /** A callback to be called when the option is selected. */
   onSelect?: undefined | (() => void),
-  
-  /**
-   * Whether to require explicit user intent (e.g. click) before selecting the option. When this is false, the item
-   * may be selected automatically when navigating through the list by keyboard. Default: false.
-   */
-  requireIntent?: undefined | boolean,
 };
 /**
  * A list box item that can be selected.
  */
 export const Option = (props: OptionProps) => {
-  const { itemKey, label, icon, onSelect, requireIntent = false, ...propsRest } = props;
+  const { itemKey, label, icon, onSelect, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef }), [itemKey]);
   
-  const hasHover = React.useRef<boolean>(false); // Note: make sure to use ref instead of state (prevent rerenders)
-  const handleMouseOver = React.useCallback(() => { hasHover.current = true; }, []);
-  const handleMouseOut = React.useCallback(() => { hasHover.current = false; }, []);
+  const { id, isFocused, isSelected, requestSelection } = useListBoxItem(itemDef);
   
-  const { id, itemPosition, isFocused, requestFocus, isSelected, requestSelection } = useListBoxItem(itemDef);
-  
-  /*
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Needs to rerun if `itemRef.current` changes
-  React.useEffect(() => {
-    if (isFocused) {
-      // Note: do not scroll if the focus was triggered by a mouse event
-      itemRef.current?.focus({ preventScroll: hasHover.current });
-    }
-  }, [isFocused, itemRef.current]);
-  */
-  
-  /*
-  React.useEffect(() => {
-    // Note: we should not auto-select if the focus is due to hover, only if it's through keyboard interactions
-    if (!requireIntent && isFocused && !isSelected && !hasHover.current) {
-      context.selectItem(itemKey);
-    }
-  }, [requireIntent, context.selectItem, itemKey, isFocused, isSelected]);
-  */
- 
   const handlePress = React.useCallback(() => { requestSelection(); onSelect?.(); }, [requestSelection, onSelect]);
   
   return (
@@ -105,16 +77,12 @@ export const Option = (props: OptionProps) => {
       data-item-key={itemKey}
       aria-label={label}
       aria-selected={isSelected}
-      aria-posinset={itemPosition ?? undefined}
       {...propsRest}
       className={cx(
         cl['bk-list-box__item'],
         cl['bk-list-box__item--option'],
-        //{ [cl['bk-list-box__item--focused']]: isFocused },
         propsRest.className,
       )}
-      //onMouseOver={mergeCallbacks([handleMouseOver, propsRest.onMouseOver])}
-      //onMouseOut={mergeCallbacks([handleMouseOut, propsRest.onMouseOut])}
       onPress={handlePress}
     >
       {icon && <Icon icon={icon} className={cl['bk-list-box__item__icon']}/>}
@@ -132,7 +100,7 @@ export type HeaderProps = ComponentProps<typeof Button> & {
   /** A unique identifier for this item. */
   itemKey: ItemKey,
   
-  /** The human-readable label to be shown. */
+  /** An accessible name for this header. */
   label: string,
   
   /** An icon to be displayed before the label. */
@@ -146,7 +114,6 @@ export const Header = (props: HeaderProps) => {
   
   return (
     <span
-      //tabIndex={undefined}
       data-item-key={itemKey}
       {...propsRest}
       className={cx(
@@ -174,7 +141,7 @@ export type ActionProps = ComponentProps<typeof Button> & {
   /** Explicit position of this item in the list (e.g. for virtualization). */
   itemPos?: undefined | number,
   
-  /** The human-readable label to be shown. */
+  /** An accessible name for this action. */
   label: string,
   
   /** An icon to be displayed before the label. */
@@ -197,12 +164,6 @@ export const Action = (props: ActionProps) => {
   
   const { id, isFocused, requestFocus } = useListBoxItem(itemDef);
   
-  // React.useEffect(() => {
-  //   if (isFocused) {
-  //     itemRef.current?.focus();
-  //   }
-  // }, [isFocused]);
-  
   return (
     <Button
       unstyled
@@ -216,7 +177,6 @@ export const Action = (props: ActionProps) => {
       className={cx(
         cl['bk-list-box__item'],
         cl['bk-list-box__item--action'],
-        //{ [cl['bk-list-box__item--focused']]: isFocused },
         { [cl['bk-list-box__item--sticky-end']]: sticky === 'end' },
         propsRest.className,
       )}
@@ -304,6 +264,7 @@ export const ListBox = Object.assign(
     
     const id = React.useId();
     const ref = React.useRef<HTMLDivElement>(null);
+    const scrollerProps = useScroller();
     
     /*
     Set up the list box store.
@@ -334,29 +295,15 @@ export const ListBox = Object.assign(
       });
     }, [listBox.store, onSelect]);
     
-    /*
-    React.useEffect(() => {
-      return listBox.store.subscribe((state, prevState) => {
-        if (state.focusedItem !== prevState.focusedItem && ref.current) {
-          if (state.focusedItem === null) {
-            ref.current.removeAttribute('aria-activedescendant');
-          } else {
-            const activeDescendantId = `${id}_${state.focusedItem}`;
-            ref.current.setAttribute('aria-activedescendant', activeDescendantId);
-          }
-        }
-      });
-    }, [listBox.store, id]);
-    */
-    
     return (
       <listBox.Provider>
         <div
           // biome-ignore lint/a11y/useSemanticElements: Customizable `<select>` does not yet have browser support.
           role="listbox"
-          tabIndex={undefined} // Do not make the listbox focusable, use a roving tabindex instead
           aria-label={label}
           data-empty-placeholder={placeholderEmpty}
+          {...scrollerProps}
+          tabIndex={undefined} // Do not make the listbox focusable, use a roving tabindex instead
           {...propsRest}
           {...listBox.props}
           ref={mergeRefs(ref, props.ref)}
@@ -364,6 +311,7 @@ export const ListBox = Object.assign(
           className={cx(
             'bk',
             { [cl['bk-list-box']]: !unstyled },
+            scrollerProps.className,
             listBox.props.className,
             propsRest.className,
           )}

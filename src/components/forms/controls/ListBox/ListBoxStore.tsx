@@ -6,7 +6,6 @@ import * as React from 'react';
 import { mergeCallbacks } from '../../../../util/reactUtil.ts';
 import { type StoreApi, createStore, useStore } from 'zustand';
 
-import { isItemProgrammaticallyFocusable } from '../../../util/composition/compositionUtil.ts';
 import { useTypeAhead } from '../../../../util/hooks/useTypeAhead.ts';
 
 
@@ -14,17 +13,21 @@ import { useTypeAhead } from '../../../../util/hooks/useTypeAhead.ts';
 Store for a composable list box with (up to) a single selected item state.
 */
 
-export type ItemKey = string; // Unique key of an item
-export type ItemDef = { // Definition of a registered item
+/** Unique key of an item. */
+export type ItemKey = string;
+/** Definition of a registered item. */
+export type ItemDef = {
   itemRef: React.RefObject<null | HTMLElement>,
 };
 export type ItemMap = Map<ItemKey, ItemDef>;
 export type ItemWithKey = ItemDef & { itemKey: ItemKey };
 
-// This is the minimal subtype of `Array<ItemKey>` that we need to be able to render a virtualized list. We keep it
-// minimal so that the consumer may compute this information dynamically rather than storing it all in memory.
-// For best performance, each of the defined operations should be computable in O(1), this may require some caching
-// (e.g. for `indexOf`).
+/**
+ * The minimal subtype of `Array<ItemKey>` that we need to be able to render a virtualized list. We keep it minimal
+ * so that the consumer may compute this information dynamically rather than storing it all in memory. For best
+ * performance, each of the defined operations should be computable in (or close to) O(1), this may require some
+ * caching (e.g. maintaining a reverse lookup table for `indexOf`).
+ */
 export type VirtualItemKeys = Pick<ReadonlyArray<ItemKey>, 'length' | 'at' | 'indexOf'>;
 export const VirtualItemKeysUtil = {
   /** Find the index of the given `itemKey`, or `null` if not found in the list. */
@@ -35,9 +38,8 @@ export const VirtualItemKeysUtil = {
 };
 
 export const ItemListUtil = {
-  /**
-   * Sort the given `items` map in order of their position in the DOM tree.
-   */
+  /*
+  // Sort the given `items` map in order of their position in the DOM tree.
   sortItemsByDomOrder: (items: ItemMap): ItemMap => {
     return new Map([...items.entries()].sort(([, item1], [, item2]) => {
       const itemRef1 = item1.itemRef.current;
@@ -48,37 +50,23 @@ export const ItemListUtil = {
       return (pos & Node.DOCUMENT_POSITION_PRECEDING) ? 1 : -1;
     }));
   },
-  
-  withItemAdded: (items: ItemMap, itemNew: ItemWithKey): ItemMap => {
-    // There should not be any duplicate keys. For the same item, it should unregister before it reregisters.
-    if (items.has(itemNew.itemKey)) { console.warn(`Found duplicate item key: ${itemNew.itemKey}`); }
-    
-    const itemsUpdated = new Map(items);
-    itemsUpdated.set(itemNew.itemKey, itemNew);
-    
-    // FIXME: sort?
-    //const itemsSorted = ItemListUtil.sortItemsByDomOrder(itemsUpdated);
-    
-    return itemsUpdated;
-  },
-  
-  withItemRemoved: (items: ItemMap, itemKey: ItemKey): ItemMap => {
-    const itemsUpdated = new Map(items);
-    itemsUpdated.delete(itemKey);
-    return itemsUpdated;
-  },
+  */
 };
 
 
 export type ListBoxState = {
+  /**
+   * Used to track the items that have been rendered. Note: this property is internal only, it should not be accessed
+   * by consumers. The `Map` is mutated in place for performance, since there may be a lot of items. On initial render,
+   * we get N registrations, an immutable update taking O(N) would result in O(N^2) updates which is not acceptable.
+   */
+  _internalItemsRegistry: ItemMap,
+  
   /** Globally unique ID for the list box control (e.g. for ARIA attributes). */
   id: string,
   
   /** Whether the list box control is currently disabled or not. */
   disabled: boolean,
-  
-  /** The items to be displayed in the list. */
-  items: ItemMap,
   
   /** The currently focused item (if any). */
   focusedItem: null | ItemKey,
@@ -86,11 +74,14 @@ export type ListBoxState = {
   /** The currently selected item (if any). */
   selectedItem: null | ItemKey,
   
-  /** If the list is virtually rendered, `virtualItemKeys` should be provided with the full list of item keys. */
+  /**
+   * If the list is virtually rendered, `virtualItemKeys` should be provided with the full list of item keys. This list
+   * should be ordered in the same way as the items are rendered on screen.
+   */
   virtualItemKeys: null | VirtualItemKeys,
 };
 export type ListBoxStateApi = ListBoxState & {
-  /** Update the `virtualItemKeys`. */
+  /** Update `virtualItemKeys`. */
   setVirtualItemKeys: (virtualItemKeys: null | VirtualItemKeys) => void,
   
   /** Get the position (integer between 0 and n-1) of the given item in the list, or `null` if not found. */
@@ -107,9 +98,11 @@ export type ListBoxStateApi = ListBoxState & {
 
 export type ListBoxProps = RequireOnly<ListBoxState, 'id'>;
 export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<null | E>, props: ListBoxProps) => {
+  // FIXME: do we need `ref`?
+  
   const propsWithDefaults: ListBoxState = {
+    _internalItemsRegistry: new Map(),
     disabled: false,
-    items: new Map(),
     focusedItem: null,
     selectedItem: null,
     virtualItemKeys: null,
@@ -120,11 +113,30 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
     setVirtualItemKeys: virtualItemKeys => set({ virtualItemKeys }),
     getItemPosition: (itemKey: ItemKey): null | number => {
       const state = get();
-      const itemKeys: VirtualItemKeys = state.virtualItemKeys ?? [...state.items.keys()];
-      return VirtualItemKeysUtil.indexForItemKey(itemKeys, itemKey);
+      // const itemKeys: VirtualItemKeys = state.virtualItemKeys ?? [...state._internalItemsRegistry.keys()];
+      // return VirtualItemKeysUtil.indexForItemKey(itemKeys, itemKey);
+      
+      const virtualItemKeys = state.virtualItemKeys;
+      if (virtualItemKeys) {
+        return VirtualItemKeysUtil.indexForItemKey(virtualItemKeys, itemKey);
+      } else {
+        // FIXME 1: cache the reverse mapping (track the index)
+        // FIXME 2: there's no guarantee that the registry is ordered by DOM position
+        return VirtualItemKeysUtil.indexForItemKey([...state._internalItemsRegistry.keys()], itemKey);
+      }
     },
     selectItem: itemKey => { set({ selectedItem: itemKey }); },
-    focusItem: itemKey => { set({ focusedItem: itemKey }); },
+    focusItem: itemKey => {
+      set({ focusedItem: itemKey });
+      
+      if (itemKey !== null) {
+        const itemTargetRef = get()._internalItemsRegistry.get(itemKey)?.itemRef;
+        
+        // Note: this only works if the item is already rendered, for virtual lists the component will need to handle
+        // the scroll.
+        itemTargetRef?.current?.focus();
+      }
+    },
   }));
 };
 export type ListBoxStore = ReturnType<typeof createListBoxStore>;
@@ -143,7 +155,7 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
   try {
     const state = store.getState();
     const virtualItemKeys = state.virtualItemKeys;
-    const registeredItems = state.items;
+    const registeredItems = state._internalItemsRegistry;
     const registeredItemKeys = [...registeredItems.keys()]; // FIXME: sort registered items?
     
     // Get the complete list of item keys (possibly lazily computed in case of virtualization)
@@ -151,26 +163,7 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
     
     const selectedItemKey = state.selectedItem;
     
-    // NOTE: we assume that all items are focusable (which is also recommended by WCAG)
-    /*
-    // Filter out any items that are not (programmatically) focusable.
-    // Note: this will only work if the item is rendered (has a ref), virtual unrendered items will be ignored.
-    const itemKeysFocusable: Array<ItemKey> = itemKeys
-      .filter(itemKey => {
-        // Note: may not exist (if the list is virtual and the item is not rendered, or the ref is not yet resolved)
-        const itemElement: null | HTMLElement = registeredItems.get(itemKey)?.itemRef?.current ?? null;
-        
-        let isFocusable = false;
-        if (isVirtual && state.isVirtualItemKeyFocusable) {
-          isFocusable = state.isVirtualItemKeyFocusable(itemKey);
-        } else if (itemElement) {
-          isFocusable = isItemProgrammaticallyFocusable(itemElement);
-        }
-        
-        return isFocusable;
-      });
-    */
-    
+    // NOTE: we assume that all items are focusable, even disabled ones (this is also recommended by the WCAG standard)
     const firstFocusableItem = itemKeys.at(0);
     if (typeof firstFocusableItem === 'undefined') { return; } // If no focusable items, no interactions needed
     
@@ -179,7 +172,7 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
     if (focusedItemIndex === null) { throw new Error(`Unable to resolve focused item '${focusedItemKey}'`); }
     
     // Determine the index of the item to focus based on the keyboard event. If `null`, do not navigate.
-    const pageSize = 10; // FIXME: make this a bit smarter?
+    const pageSize = 10; // TODO: could we make this dynamic based on scrollport height?
     const itemTargetIndex = ((): null | number => {
       // Note: list boxes should not "cycle" (e.g. going beyond the last item should not go to the first)
       switch (event.key) {
@@ -188,10 +181,8 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
         case 'ArrowDown': return Math.min(itemKeys.length - 1, focusedItemIndex + 1);
         case 'Home': return 0; // On Mac: Fn + ArrowLeft
         case 'End': return -1; // On Mac: Fn + ArrowRight
-        case 'PageUp':
-          return Math.max(0, focusedItemIndex - pageSize); // On Mac: Fn + ArrowUp
-        case 'PageDown':
-          return Math.min(itemKeys.length - 1, focusedItemIndex + pageSize); // On Mac: Fn + ArrowDown
+        case 'PageUp': return Math.max(0, focusedItemIndex - pageSize); // On Mac: Fn + ArrowUp
+        case 'PageDown': return Math.min(itemKeys.length - 1, focusedItemIndex + pageSize); // On Mac: Fn + ArrowDown
         default: return null;
       }
     })();
@@ -204,8 +195,6 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
       const itemTargetKey = itemKeys.at(itemTargetIndex);
       if (typeof itemTargetKey === 'undefined') { throw new Error(`Cannot resolve target index '${itemTargetKey}'`); }
       
-      const itemTargetRef = registeredItems.get(itemTargetKey)?.itemRef ?? null;
-      
       event.preventDefault(); // Prevent default behavior, like scrolling
       event.stopPropagation(); // Prevent the key event from triggering other behavior at higher levels
       
@@ -213,11 +202,6 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
         state.selectItem(itemTargetKey);
       } else {
         state.focusItem(itemTargetKey);
-        
-        // Note: this only works if the item is already rendered, for virtual lists the component will need to handle
-        // the scroll.
-        //itemTargetRef?.current?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
-        itemTargetRef?.current?.focus();
       }
     }
   } catch (error) {
@@ -230,15 +214,14 @@ export const useListBoxTypeAhead = (storeRef: React.RefObject<null | StoreApi<Li
   const typeAhead = useTypeAhead();
   
   React.useEffect(() => {
-    const store = storeRef.current;
-    if (!store) { return; }
-    const state = store.getState();
+    const state = storeRef.current?.getState();
+    if (!state) { return; }
     
     const query: string = removeCombiningCharacters(typeAhead.sequence.join(''));
     
     if (query.trim() === '') { return; }
     
-    for (const [itemKey, item] of state.items) {
+    for (const [itemKey, item] of state._internalItemsRegistry) {
       const elementRef = item.itemRef.current;
       const elementText = elementRef?.innerText ?? null;
       
@@ -331,37 +314,38 @@ export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
   
   // Register the item
   React.useEffect(() => {
-    store.setState(state => ({
-      items: ItemListUtil.withItemAdded(state.items, item),
-    }));
+    // store.setState(state => ({
+    //   items: ItemListUtil.withItemAdded(state.items, item),
+    // }));
+    store.setState(state => {
+      state._internalItemsRegistry.set(item.itemKey, item);
+      return state;
+    });
     return () => {
-      store.setState(state => ({
-        //items: produce(state.items, draft => { draft.delete(item.itemKey); }), // XXX this causes an error:
-        // https://stackoverflow.com/questions/74200399/react-cannot-assign-to-read-only-property-status-of-object
-        items: ItemListUtil.withItemRemoved(state.items, item.itemKey),
-      }));
+      // store.setState(state => ({
+      //   //items: produce(state.items, draft => { draft.delete(item.itemKey); }), // XXX this causes an error:
+      //   // https://stackoverflow.com/questions/74200399/react-cannot-assign-to-read-only-property-status-of-object
+      //   items: ItemListUtil.withItemRemoved(state.items, item.itemKey),
+      // }));
+      store.setState(state => {
+        state._internalItemsRegistry.delete(item.itemKey);
+        return state;
+      });
     };
   }, [store, item]);
   
   // Make sure the following selectors return primitives or existing references, not new object references
   const isFocused = useStore(store, s => {
     // FIXME: better way to determine that the item is "first" (e.g. does it need sorting? what about ItemKey?)
-    if (s.focusedItem === null) { return Array.from(s.items.keys())[0] === item.itemKey; } // If no focus, use the first
+    if (s.focusedItem === null) {
+      return Array.from(s._internalItemsRegistry.keys())[0] === item.itemKey; // If no focus, use the first
+    }
     return s.focusedItem === item.itemKey;
   });
   const focusItem = useStore(store, s => s.focusItem);
   const requestFocus = React.useCallback(() => {
     focusItem(item.itemKey);
   }, [item.itemKey, focusItem]);
-  
-  // React.useEffect(() => {
-  //   const itemElement = item.itemRef.current;
-  //   if (isFocused && itemElement && itemElement.closest('[role="listbox"]')?.matches(`:focus-within`)) {
-  //     const hasHover: boolean = itemElement.matches(':hover') ?? false;
-  //     // Note: do not scroll if the focus was triggered by a mouse event
-  //     itemElement.focus({ preventScroll: hasHover });
-  //   }
-  // }, [isFocused, item.itemRef.current]);
   
   const isSelected = useStore(store, s => s.selectedItem === item.itemKey);
   const selectItem = useStore(store, s => s.selectItem);
@@ -382,38 +366,3 @@ export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
     requestSelection,
   };
 };
-
-/*
-export const useListBoxItemFocus = (itemKey: ItemKey) => {
-  const store = React.use(ListBoxContext);
-  if (store === null) { throw new Error(`Missing ListBoxContext provider`); }
-  
-  // Make sure the following selectors return primitive values or existing references, not new object references
-  const isFocused = useStore(store, s => {
-    // FIXME: better way to determine that the item is "first" (e.g. does it need sorting? what about ItemKey?)
-    if (s.focusedItem === null) { return Array.from(s.items.keys())[0] === itemKey; } // If no focus, use the first
-    return s.focusedItem === itemKey;
-  });
-  const focusItem = useStore(store, s => s.focusItem);
-  
-  return {
-    isFocused,
-    requestFocus: () => focusItem(itemKey),
-  };
-};
-
-export const useListBoxItemSelection = (itemKey: ItemKey) => {
-  const store = React.use(ListBoxContext);
-  if (store === null) { throw new Error(`Missing ListBoxContext provider`); }
-  
-  // FIXME: implement ItemKey resolving
-  // Make sure the following selectors return existing references or primitives, not new object references
-  const isSelected = useStore(store, s => s.selectedItem === itemKey);
-  const selectItem = useStore(store, s => s.selectItem);
-  
-  return {
-    isSelected,
-    requestSelection: () => selectItem(itemKey),
-  };
-};
-*/

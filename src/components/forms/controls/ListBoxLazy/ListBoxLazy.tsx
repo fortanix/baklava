@@ -59,7 +59,7 @@ const ListItemVirtual = ({ virtualItem, itemsCount, renderItem }: ListItemVirtua
     <ListBox.Option
       itemKey={String(virtualItem.key)}
       aria-posinset={virtualItem.index}
-      label={typeof content === 'string' ? content : undefined} // FIXME
+      label={typeof content === 'string' ? content : ''} // FIXME: require some accessible name here?
       aria-setsize={itemsCount}
       className={cx(cl['bk-list-box-lazy__item'])}
       style={styles}
@@ -71,7 +71,6 @@ const ListItemVirtual = ({ virtualItem, itemsCount, renderItem }: ListItemVirtua
 
 
 type ListBoxVirtualListProps = {
-  //listBoxRef: React.RefObject<null | React.ComponentRef<typeof ListBox>>,
   scrollElement: null | React.ComponentRef<typeof ListBox>,
   virtualItemKeys: VirtualItemKeys,
   limit: number,
@@ -134,7 +133,6 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     overscan: 15,
     rangeExtractor: rangeExtractorWithFocused,
     useAnimationFrameWithResizeObserver: true,
-    //debug: true,
   });
   
   // biome-ignore lint/correctness/useExhaustiveDependencies: `virtualizer.getVirtualItems()` is a valid dep
@@ -155,33 +153,24 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     virtualizer.getVirtualItems(),
   ]);
   
-  // const store = React.use(ListBoxContext);
-  // React.useEffect(() => {
-  //   if (!store) { return; }
-  //   return store.subscribe((state, prevState) => {
-  //     for (const key of Object.keys(state)) {
-  //       if (state[key] !== prevState[key]) {
-  //         console.log('CHANGED:', key);
-  //       }
-  //     }
-  //     console.log('state', state);
-  //   });
-  // }, [store]);
-  
-  // React.useEffect(() => {
-  //   if (!store) { return; }
-  //   const state = store.getState();
-  //   
-  //   // if (typeof context?.focusedItem !== 'number') { return; }
-  //   // const targetIndex: number = context.focusedItem >= 0 ? context.focusedItem : (context.focusedItem + totalItems);
-  //   
-  //   // virtualizer.scrollToIndex(targetIndex);
-  // }, [context?.focusedItem, virtualizer, totalItems]);
+  /*
+  // Alternative idea for the "injecting first/last/etc. items into `rangeExtractorWithFocused`" solution for focusing
+  // items during keyboard navigation: use `virtualizer.scrollToIndex()` instead.
+  React.useEffect(() => {
+    if (!store) { return; }
+    const state = store.getState();
+    
+    if (typeof context?.focusedItem !== 'number') { return; }
+    const targetIndex: number = context.focusedItem >= 0 ? context.focusedItem : (context.focusedItem + totalItems);
+    
+    virtualizer.scrollToIndex(targetIndex);
+  }, [context?.focusedItem, virtualizer, totalItems]);
+  */
   
   const virtualItems = virtualizer.getVirtualItems();
   
   return (
-    // XXX we could do away with this extra <div> if we force a scroll bar with a (hidden?) item at the far end
+    // FIXME: we could do away with this extra <div> if we force a scroll bar with a (hidden?) item at the far end
     <div
       className={cx(cl['bk-list-box-lazy__scroller'])}
       style={{
@@ -234,7 +223,6 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
     ...propsRest
   } = props;
   
-  //const listBoxRef = React.useRef<React.ComponentRef<typeof ListBox>>(null);
   const [scrollElement, setScrollElement] = React.useState<null | React.ComponentRef<typeof ListBox>>(null);
   const listBoxRef = (element: React.ComponentRef<typeof ListBox>) => { setScrollElement(element); };
   
