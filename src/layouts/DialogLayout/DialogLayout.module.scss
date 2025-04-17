@@ -1,0 +1,40 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-dialog-layout {
+    @include bk.component-base(bk-dialog-layout);
+
+    display: flex;
+    flex-direction: column;
+    gap: bk.$spacing-10;
+    padding-block-end: bk.$spacing-12;
+
+    .bk-dialog-layout__content {
+      display: flex;
+      flex-direction: row;
+      gap: bk.$spacing-12;
+    }
+
+    .bk-dialog-layout__content__aside {
+      inline-size: bk.$spacing-18;
+    }
+    
+    .bk-dialog-layout__content__aside__hint {
+      border-block-start: bk.rem-from-px(1) solid bk.$theme-rule-default;
+      margin-block-start: bk.rem-from-px(70);
+      padding-block-start: bk.$spacing-2;
+      color: bk.$theme-text-small-text-subtle;
+      font-size: bk.$font-size-s;
+    }
+    
+    .bk-dialog-layout__content__aside__hint__icon {
+      color: initial;
+      font-size: bk.$font-size-m;
+      margin-inline-end: bk.$spacing-1;
+    }
+  }
+}

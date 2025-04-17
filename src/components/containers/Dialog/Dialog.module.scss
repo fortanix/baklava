@@ -66,6 +66,18 @@
       
       margin-block: calc(bk.$spacing-7 / 2) calc(bk.$spacing-7 / 2);
       padding-inline: var(--bk-dialog-padding-inline);
+      
+      display: flex;
+      flex-direction: row;
+      gap: bk.$spacing-3;
+    }
+    
+    .bk-dialog__content__icon-aside {
+      align-self: flex-start;
+      
+      display: flex;
+      flex-direction: row;
+      gap: bk.$spacing-3;
     }
     
     .bk-dialog__actions {
@@ -87,6 +99,12 @@
       
       .bk-dialog__action { --keep: ; }
       .bk-dialog__action--icon { --keep: ; }
+    }
+    
+    &.bk-dialog--icon-aside {
+      .bk-dialog__actions {
+        padding-inline-start: bk.$spacing-11;
+      }
     }
     
     // State: focus
