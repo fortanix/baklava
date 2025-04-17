@@ -131,23 +131,23 @@ const packageConfig = {
     '@ngneat/falso': '^7.3.0',
     
     // Storybook
-    'storybook': '^8.5.3',
-    '@storybook/react': '^8.5.3',
-    '@storybook/react-vite': '^8.5.3',
-    '@storybook/blocks': '^8.5.3',
-    '@storybook/test': '^8.5.3',
-    '@storybook/test-runner': '^0.21.0',
-    '@storybook/addon-essentials': '^8.5.3',
-    '@storybook/addon-a11y': '^8.5.3',
-    '@storybook/addon-interactions': '^8.5.3',
-    '@storybook/addon-links': '^8.5.3',
-    '@storybook/addon-storysource': '^8.5.3',
-    '@storybook/addon-designs': '^8.2.0',
+    'storybook': '^8.6.12',
+    '@storybook/react': '^8.6.12',
+    '@storybook/react-vite': '^8.6.12',
+    '@storybook/blocks': '^8.6.12',
+    '@storybook/test': '^8.6.12',
+    '@storybook/test-runner': '^0.22.0',
+    '@storybook/addon-essentials': '^8.6.12',
+    '@storybook/addon-a11y': '^8.6.12',
+    '@storybook/addon-interactions': '^8.6.12',
+    '@storybook/addon-links': '^8.6.12',
+    '@storybook/addon-storysource': '^8.6.12',
+    '@storybook/addon-designs': '^8.2.1',
     'chromatic': '^11.25.2',
-    '@chromatic-com/storybook': '^3.2.3', // Chromatic integration for Storybook
+    '@chromatic-com/storybook': '^3.2.6', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     'storybook-dark-mode': '^4.0.2',
-    '@percy/cli': '^1.30.7',
+    '@percy/cli': '^1.30.9',
     '@percy/storybook': '^6.0.3',
     
     // Styling
@@ -169,7 +169,6 @@ const packageConfig = {
     // Utilities
     'date-fns': '^4.1.0',
     'message-tag': '^0.10.0',
-    'immer': '^10.1.1',
     
     // React
     'react': '^19.0.0',
@@ -177,9 +176,8 @@ const packageConfig = {
     'react-error-boundary': '^5.0.0',
     'classnames': '^2.5.1',
     'zustand': '^5.0.3',
-    '@uidotdev/usehooks': '^2.4.1',
     
-    '@floating-ui/react': '^0.26.28',
+    '@floating-ui/react': '^0.27.6',
     'react-table': '^7.8.0',
     'react-datepicker': '^8.0.0',
     
@@ -202,11 +200,6 @@ const packageConfig = {
   overrides: {
     // TODO: Revisit after updating react-table to v8
     'react-table': {
-      'react': '$react',
-      'react-dom': '$react-dom',
-    },
-    // https://github.com/storybookjs/addon-designs/issues/254
-    '@storybook/addon-designs': {
       'react': '$react',
       'react-dom': '$react-dom',
     },
