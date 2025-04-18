@@ -62,7 +62,8 @@ export const Option = (props: OptionProps) => {
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef }), [itemKey]);
   
-  const { id, isFocused, isSelected, requestSelection } = useListBoxItem(itemDef);
+  const { id, disabled, isFocused, isSelected, requestSelection } = useListBoxItem(itemDef);
+  const isNonactive = propsRest.disabled || propsRest.nonactive || disabled;
   
   const handlePress = React.useCallback(() => { requestSelection(); onSelect?.(); }, [requestSelection, onSelect]);
   
@@ -80,9 +81,12 @@ export const Option = (props: OptionProps) => {
       {...propsRest}
       className={cx(
         cl['bk-list-box__item'],
+        { [cl['bk-list-box__item--disabled']]: isNonactive },
         cl['bk-list-box__item--option'],
         propsRest.className,
       )}
+      disabled={false} // Use `nonactive` for disabled state, so that we still allow focus
+      nonactive={isNonactive}
       onPress={handlePress}
     >
       {icon && <Icon icon={icon} className={cl['bk-list-box__item__icon']}/>}
@@ -162,7 +166,8 @@ export const Action = (props: ActionProps) => {
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef }), [itemKey]);
   
-  const { id, isFocused, requestFocus } = useListBoxItem(itemDef);
+  const { id, disabled, isFocused, requestFocus } = useListBoxItem(itemDef);
+  const isNonactive = propsRest.disabled || propsRest.nonactive || disabled;
   
   return (
     <Button
@@ -176,10 +181,13 @@ export const Action = (props: ActionProps) => {
       {...propsRest}
       className={cx(
         cl['bk-list-box__item'],
+        { [cl['bk-list-box__item--disabled']]: isNonactive },
         cl['bk-list-box__item--action'],
         { [cl['bk-list-box__item--sticky-end']]: sticky === 'end' },
         propsRest.className,
       )}
+      disabled={false} // Use `nonactive` for disabled state, so that we still allow focus
+      nonactive={isNonactive}
       onPress={() => { requestFocus(); onActivate?.(); }}
     >
       {icon && <Icon icon={icon} className={cl['bk-list-box__item__icon']}/>}
@@ -228,13 +236,23 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   virtualItemKeys: null | VirtualItemKeys,
 };
 
-type HiddenSelectedStateProps = Pick<ListBoxProps, 'name' | 'form' | 'inputProps'>;
+type HiddenSelectedStateProps = Pick<ListBoxProps, 'name' | 'form' | 'inputProps'> & {
+  ref: React.Ref<React.ComponentRef<'input'>>,
+};
 /** Hidden input, so that this component can be connected to a <form> element. */
-const HiddenSelectedState = ({ name, form, inputProps }: HiddenSelectedStateProps) => {
+const HiddenSelectedState = ({ ref, name, form, inputProps }: HiddenSelectedStateProps) => {
   const selectedItem = useListBoxSelector(s => s.selectedItem);
   const onChange = React.useCallback(() => {}, []);
   return (
-    <input type="hidden" name={name} form={form} {...inputProps} value={selectedItem ?? ''} onChange={onChange}/>
+    <input
+      type="hidden"
+      name={name}
+      form={form}
+      {...inputProps}
+      ref={mergeRefs(ref, inputProps?.ref)}
+      value={selectedItem ?? ''}
+      onChange={onChange}
+    />
   );
 };
 
@@ -264,6 +282,7 @@ export const ListBox = Object.assign(
     
     const id = React.useId();
     const ref = React.useRef<HTMLDivElement>(null);
+    const inputRef = React.useRef<React.ComponentRef<typeof HiddenSelectedState>>(null);
     const scrollerProps = useScroller();
     
     /*
@@ -295,6 +314,23 @@ export const ListBox = Object.assign(
       });
     }, [listBox.store, onSelect]);
     
+    const handleKeyDownCapture = React.useCallback((event: React.KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        // Prevent the child `Button` press handler from being triggered, since pressing Enter should submit the form,
+        // not trigger the default click/select behavior.
+        event.preventDefault();
+        event.stopPropagation();
+        
+        const formId = inputRef.current?.getAttribute('form');
+        if (!formId) { return; }
+        
+        const form = document.getElementById(formId);
+        if (form instanceof HTMLFormElement) {
+          form.requestSubmit();
+        }
+      }
+    }, []);
+    
     return (
       <listBox.Provider>
         <div
@@ -307,6 +343,7 @@ export const ListBox = Object.assign(
           {...propsRest}
           {...listBox.props}
           ref={mergeRefs(ref, props.ref)}
+          onKeyDownCapture={handleKeyDownCapture} // Note: run in capture phase so we can prevent the `Button` handler
           onKeyDown={mergeCallbacks([listBox.props.onKeyDown, propsRest.onKeyDown])}
           className={cx(
             'bk',
@@ -316,7 +353,7 @@ export const ListBox = Object.assign(
             propsRest.className,
           )}
         >
-          <HiddenSelectedState/>
+          <HiddenSelectedState ref={inputRef} name={name} form={form}/>
           {children}
         </div>
       </listBox.Provider>

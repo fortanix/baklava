@@ -16,6 +16,10 @@ export const useTypeAhead = (maxDuration = 400/*ms*/) => {
   
   const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
     setSequence((prevSequence) => {
+      // Ignore isolated space inputs, since we may instead want this to trigger an action (e.g. clicking a button
+      // or selecting a form input). Since we `trim()`, a leading whitespace input should not matter anyway.
+      if (event.key === ' ' && prevSequence.length === 0) { return prevSequence; }
+      
       const isPrintable = event.key.length === 1; // For control characters, `key` will be a longer word (e.g. `Tab`)
       
       // Note: we want to:

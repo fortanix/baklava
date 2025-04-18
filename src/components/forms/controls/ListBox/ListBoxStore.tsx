@@ -194,6 +194,10 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
     // other kind of drop down, then Enter should cause a selection + close, but this should be handled at the parent.
     if (event.key === 'Enter') { return; }
     
+    // 'Space' key should trigger the item's own event handler (e.g. click event for <button> elements), so that it
+    // can handle things like disabled state.
+    if (event.key === ' ') { return; }
+    
     if (itemTargetIndex !== null) {
       const itemTargetKey = itemKeys.at(itemTargetIndex);
       if (typeof itemTargetKey === 'undefined') { throw new Error(`Cannot resolve target index '${itemTargetKey}'`); }
@@ -201,11 +205,7 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
       event.preventDefault(); // Prevent default behavior, like scrolling
       event.stopPropagation(); // Prevent the key event from triggering other behavior at higher levels
       
-      if (event.key === ' ') {
-        state.selectItem(itemTargetKey);
-      } else {
-        state.focusItem(itemTargetKey);
-      }
+      state.focusItem(itemTargetKey);
     }
   } catch (error) {
     // If an assumption fails, log the error but don't crash
@@ -301,6 +301,7 @@ export const useListBox = <E extends HTMLElement>(
 
 export type UseListBoxItemResult = {
   id: string,
+  disabled: boolean,
   itemPosition: null | number, // Position of this item in the total collection, or `null` if unknown
   isFocused: boolean,
   requestFocus: () => void,
@@ -312,6 +313,7 @@ export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
   if (store === null) { throw new Error(`Missing ListBoxContext provider`); }
   
   const id = useStore(store, s => s.id);
+  const disabled = useStore(store, s => s.disabled);
   
   const itemPosition = useStore(store, s => s.getItemPosition(item.itemKey));
   
@@ -359,6 +361,7 @@ export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
   
   return {
     id: `${id}_${item.itemKey}`,
+    disabled,
     
     itemPosition,
     

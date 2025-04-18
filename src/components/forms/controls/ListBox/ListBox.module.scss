@@ -55,7 +55,7 @@
       contain: paint;
       will-change: transform;
       
-      // FIXME: enabling this causes a strange issue with keyboard navigation (scrolling goes too fard down/up)
+      // FIXME: enabling this causes a strange issue with keyboard navigation (scrolling goes too far down/up)
       //content-visibility: auto;
       // Border + padding + content
       //contain-intrinsic-block-size: calc(bk.rem-from-px(1) + var(--bk-list-box-item-padding-block) * 2 + 1lh);
@@ -81,7 +81,7 @@
       }
       
       &:not(.bk-list-box__item--static) {
-        &:not(:disabled):hover {
+        &:not(:disabled, .bk-list-box__item--disabled):hover {
           background: bk.$theme-dropdown-menu-menu-background-hover;
         }
         &[aria-selected="true"] {
@@ -94,10 +94,9 @@
           transition: box-shadow 150ms ease-in;
         }
       }
-      &:disabled {
+      &:is(:disabled, .bk-list-box__item--disabled) {
         color: bk.$theme-text-small-text-subtle;
       }
-      // NOTE: according to WCAG standards, disabled list box items should still be focusable
       &:focus-visible {
         background: bk.$theme-dropdown-menu-menu-background-focused;
         

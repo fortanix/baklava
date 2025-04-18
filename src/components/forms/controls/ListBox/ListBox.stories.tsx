@@ -65,13 +65,30 @@ export const ListBoxWithIcon: Story = {
   },
 };
 
-export const ListBoxWithDisabled: Story = {
+/** Disabled items should still be focusable. */
+export const ListBoxWithDisabledOption: Story = {
   args: {
     children: (
       <>
         <ListBox.Option itemKey="option-1" label="This option is enabled"/>
-        <ListBox.Option itemKey="option-2" label="This option is disabled" disabled/>
-        <ListBox.Option itemKey="option-3" label="Focus should skip the disabled option"/>
+        <ListBox.Option itemKey="option-2" label="This option is disabled, but you can still focus me" disabled/>
+        <ListBox.Option itemKey="option-3" label="This option is enabled"/>
+      </>
+    ),
+  },
+};
+
+const handleDisabledActivate = () => {
+  notify.error(`This should not have been triggered! Check the disabled logic.`);
+};
+export const ListBoxDisabled: Story = {
+  args: {
+    disabled: true,
+    children: (
+      <>
+        <ListBox.Option itemKey="item-1" label="All options should be disabled"/>
+        <ListBox.Option itemKey="item-2" label="Selecting me should do nothing"/>
+        <ListBox.Action itemKey="item-3" label="Activating me should do nothing" onActivate={handleDisabledActivate}/>
       </>
     ),
   },
