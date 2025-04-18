@@ -109,12 +109,15 @@ export type HeaderProps = ComponentProps<typeof Button> & {
   
   /** An icon to be displayed before the label. */
   icon?: undefined | IconName,
+  
+  /** Whether the action should stick on scroll. Default: false. */
+  sticky?: undefined | false | 'start',
 };
 /**
  * A static text item that can be used as a heading.
  */
 export const Header = (props: HeaderProps) => {
-  const { itemKey, label, icon, ...propsRest } = props;
+  const { itemKey, label, icon, sticky = false, ...propsRest } = props;
   
   return (
     <span
@@ -124,6 +127,7 @@ export const Header = (props: HeaderProps) => {
         cl['bk-list-box__item'],
         cl['bk-list-box__item--static'],
         cl['bk-list-box__item--header'],
+        { [cl['bk-list-box__item--sticky-start']]: sticky === 'start' },
         propsRest.className,
       )}
     >
@@ -153,15 +157,12 @@ export type ActionProps = ComponentProps<typeof Button> & {
   
   /** The event handler for when the user activates this action. */
   onActivate: () => void | Promise<void>,
-  
-  /** Whether the action should stick on scroll. Default: false. */
-  sticky?: undefined | false | 'end',
 };
 /**
  * A list box item that can be activated to perform some action.
  */
 export const Action = (props: ActionProps) => {
-  const { itemKey, itemPos, label, icon, onActivate, sticky = false, ...propsRest } = props;
+  const { itemKey, itemPos, label, icon, onActivate, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef }), [itemKey]);
@@ -183,7 +184,6 @@ export const Action = (props: ActionProps) => {
         cl['bk-list-box__item'],
         { [cl['bk-list-box__item--disabled']]: isNonactive },
         cl['bk-list-box__item--action'],
-        { [cl['bk-list-box__item--sticky-end']]: sticky === 'end' },
         propsRest.className,
       )}
       disabled={false} // Use `nonactive` for disabled state, so that we still allow focus
@@ -194,6 +194,10 @@ export const Action = (props: ActionProps) => {
       <span className={cl['bk-list-box__item__label']}>{propsRest.children ?? label}</span>
     </Button>
   );
+};
+
+export const FooterActions = (props: React.ComponentProps<'div'>) => {
+  return <div {...props} className={cx(cl['bk-list-box__footer-actions'], props.className)}/>;
 };
 
 
@@ -334,11 +338,11 @@ export const ListBox = Object.assign(
     return (
       <listBox.Provider>
         <div
+          {...scrollerProps}
           // biome-ignore lint/a11y/useSemanticElements: Customizable `<select>` does not yet have browser support.
           role="listbox"
           aria-label={label}
           data-empty-placeholder={placeholderEmpty}
-          {...scrollerProps}
           tabIndex={undefined} // Do not make the listbox focusable, use a roving tabindex instead
           {...propsRest}
           {...listBox.props}
@@ -346,9 +350,9 @@ export const ListBox = Object.assign(
           onKeyDownCapture={handleKeyDownCapture} // Note: run in capture phase so we can prevent the `Button` handler
           onKeyDown={mergeCallbacks([listBox.props.onKeyDown, propsRest.onKeyDown])}
           className={cx(
+            scrollerProps.className,
             'bk',
             { [cl['bk-list-box']]: !unstyled },
-            scrollerProps.className,
             listBox.props.className,
             propsRest.className,
           )}
@@ -363,5 +367,6 @@ export const ListBox = Object.assign(
     Option,
     Header,
     Action,
+    FooterActions,
   },
 );

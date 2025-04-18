@@ -16,9 +16,15 @@ export const useTypeAhead = (maxDuration = 400/*ms*/) => {
   
   const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
     setSequence((prevSequence) => {
-      // Ignore isolated space inputs, since we may instead want this to trigger an action (e.g. clicking a button
-      // or selecting a form input). Since we `trim()`, a leading whitespace input should not matter anyway.
-      if (event.key === ' ' && prevSequence.length === 0) { return prevSequence; }
+      const now = Date.now();
+      const shouldReset = now - lastKeyPressTime.current > maxDuration;
+      lastKeyPressTime.current = now;
+      
+      const currentSequence = shouldReset ? [] : prevSequence;
+      
+      // Ignore isolated space inputs, since we likely instead want this to trigger an action (e.g. clicking a button
+      // or selecting a form input).
+      if (event.key === ' ') { return currentSequence; }
       
       const isPrintable = event.key.length === 1; // For control characters, `key` will be a longer word (e.g. `Tab`)
       
@@ -27,19 +33,12 @@ export const useTypeAhead = (maxDuration = 400/*ms*/) => {
       // - Allow Alt/AltGraph (commonly used for composition, e.g. Alt+Shift+2 could become "€").
       const hasModifier = (['Control', 'Meta'] as const).some(mod => event.getModifierState(mod));
       
-      if (!isPrintable || hasModifier) { return prevSequence; }
+      if (!isPrintable || hasModifier) { return currentSequence; }
       
       event.preventDefault();
       event.stopPropagation();
       
-      const now = Date.now();
-      const shouldReset = now - lastKeyPressTime.current > maxDuration;
-      lastKeyPressTime.current = now;
-      
-      if (shouldReset) {
-        return [event.key];
-      }
-      return [...prevSequence, event.key];
+      return [...currentSequence, event.key];
     });
   }, [maxDuration]);
   

@@ -112,13 +112,17 @@
       }
       
       &.bk-list-box__item--header {
-        position: sticky;
-        inset-block-start: 0;
         user-select: none;
         
         color: bk.$theme-text-small-text-subtle;
         font-size: bk.$font-size-s;
         text-transform: uppercase;
+        
+        &.bk-list-box__item--sticky-start {
+          position: sticky;
+          inset-block-start: 0;
+          z-index: 1;
+        }
         
         /* In the future, we could use a scroll state query to add a shadow while stuck
         @container scroll-state(stuck: top) {
@@ -131,21 +135,32 @@
         user-select: none;
         
         // Actions (non-sticky) get indented a little bit more
-        &:not(.bk-list-box__item--sticky-end) {
-          padding-inline-start: calc(var(--bk-list-box-item-padding-inline) + bk.$spacing-2);
-        }
-        
-        &.bk-list-box__item--sticky-end {
-          position: sticky;
-          inset-block-end: 0;
-          
-          font-weight: bk.$font-weight-semibold;
-          font-size: bk.$font-size-s;
-          text-transform: uppercase;
-        }
+        padding-inline-start: calc(var(--bk-list-box-item-padding-inline) + bk.$spacing-2);
       }
       
       @include bk.focus-hidden; // Make sure the default `Button` focus styling is not applied (e.g. through shift key)
+    }
+    
+    // Wrapper for sticky footer items. Need a wrapper element for this, otherwise all the sticky elements will
+    // overlap each other. We want them to stack.
+    .bk-list-box__footer-actions {
+      position: sticky;
+      inset-block-end: 0;
+      z-index: 1;
+      
+      background: bk.$theme-dropdown-menu-menu-background-default;
+      
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      
+      .bk-list-box__item--action {
+        padding-inline-start: var(--bk-list-box-item-padding-inline); // Reset the item inset
+        
+        font-weight: bk.$font-weight-semibold;
+        font-size: bk.$font-size-s;
+        text-transform: uppercase;
+      }
     }
     
     @include bk.focus-hidden;

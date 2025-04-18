@@ -227,8 +227,9 @@ export const useListBoxTypeAhead = (storeRef: React.RefObject<null | StoreApi<Li
     for (const [itemKey, item] of state._internalItemsRegistry) {
       const elementRef = item.itemRef.current;
       const elementText = elementRef?.innerText ?? null;
+      const elementTextStripped = removeCombiningCharacters(elementText ?? '').replaceAll(/\s+/g, '');
       
-      if (elementText !== null && removeCombiningCharacters(elementText).startsWith(query)) {
+      if (elementText !== null && elementTextStripped.startsWith(query)) {
         state.focusItem(itemKey);
         break;
       }
