@@ -161,6 +161,11 @@
         font-size: bk.$font-size-s;
         text-transform: uppercase;
       }
+      
+      // Draw a "chin" so that it covers the scrolling items behind it
+      $chin-h: var(--bk-list-box-padding-end);
+      $chin-c: conic-gradient(bk.$theme-dropdown-menu-menu-background-default 0 0);
+      border-image: fill 0 / 0 / 0 0 $chin-h 0 $chin-c; /* the color */
     }
     
     @include bk.focus-hidden;
