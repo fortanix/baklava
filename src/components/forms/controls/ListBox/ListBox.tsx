@@ -351,6 +351,7 @@ export const ListBox = Object.assign(
           ref={mergeRefs(ref, props.ref)}
           onKeyDownCapture={handleKeyDownCapture} // Note: run in capture phase so we can prevent the `Button` handler
           onKeyDown={mergeCallbacks([listBox.props.onKeyDown, propsRest.onKeyDown])}
+          onToggle={mergeCallbacks([listBox.props.onToggle, props.onToggle])}
           className={cx(
             scrollerProps.className,
             'bk',

@@ -40,22 +40,6 @@ export const VirtualItemKeysUtil = {
   },
 };
 
-export const ItemListUtil = {
-  /*
-  // Sort the given `items` map in order of their position in the DOM tree.
-  sortItemsByDomOrder: (items: ItemMap): ItemMap => {
-    return new Map([...items.entries()].sort(([, item1], [, item2]) => {
-      const itemRef1 = item1.itemRef.current;
-      const itemRef2 = item2.itemRef.current;
-      if (!itemRef1 || !itemRef2) { return 0; }
-      
-      const pos = itemRef1.compareDocumentPosition(itemRef2);
-      return (pos & Node.DOCUMENT_POSITION_PRECEDING) ? 1 : -1;
-    }));
-  },
-  */
-};
-
 
 export type ListBoxState = {
   /**
@@ -116,8 +100,6 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
     setVirtualItemKeys: virtualItemKeys => set({ virtualItemKeys }),
     getItemPosition: (itemKey: ItemKey): null | number => {
       const state = get();
-      // const itemKeys: VirtualItemKeys = state.virtualItemKeys ?? [...state._internalItemsRegistry.keys()];
-      // return VirtualItemKeysUtil.indexForItemKey(itemKeys, itemKey);
       
       const virtualItemKeys = state.virtualItemKeys;
       if (virtualItemKeys) {
@@ -260,7 +242,7 @@ export type UseListBoxResult<E extends HTMLElement> = {
   /** Some props that should be applied to the list box element. */
   // Note: using `div` here as a proxy for `E` (since there is no easy way to get the `ComponentProps` for a generic
   // `HTMLElement in the React types).
-  props: Pick<React.ComponentProps<'div'>, 'className' | 'onKeyDown'> & {
+  props: Pick<React.ComponentProps<'div'>, 'className' | 'onKeyDown' | 'onToggle'> & {
     ref: React.RefObject<null | E>,
   },
 };
@@ -290,12 +272,38 @@ export const useListBox = <E extends HTMLElement>(
     }
   }, [typeAhead.handleKeyDown]);
   
+  // Focus management (focus on open + restore focus on close)
+  const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
+  const handleToggle = React.useCallback((event: React.ToggleEvent) => {
+    const state = storeRef.current?.getState() ?? null;
+    if (state === null) { return; }
+    
+    const focusedItem: null | ItemKey = state?.focusedItem ?? null;
+    if (focusedItem === null) { return; }
+    
+    const focusedElement = state._internalItemsRegistry.get(focusedItem) ?? null;
+    if (focusedElement === null)  { return; }
+    
+    if (event.oldState === 'closed' && event.newState === 'open') {
+      if (document.activeElement instanceof HTMLElement) {
+        previousActiveElementRef.current = document.activeElement;
+      }
+      focusedElement.itemRef?.current?.focus();
+    } else if (event.oldState === 'open' && event.newState === 'closed') {
+      const previousActiveElement = previousActiveElementRef.current;
+      if (previousActiveElement) {
+        previousActiveElement.focus();
+      }
+    }
+  }, []);
+  
   return {
     store: storeRef.current,
     Provider,
     props: {
       ref,
       onKeyDown: handleKeyDown,
+      onToggle: handleToggle,
     },
   };
 };
@@ -320,34 +328,31 @@ export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
   
   // Register the item
   React.useEffect(() => {
-    // store.setState(state => ({
-    //   items: ItemListUtil.withItemAdded(state.items, item),
-    // }));
     store.setState(state => {
       state._internalItemsRegistry.set(item.itemKey, item);
+      
+      if (state.focusedItem === null) {
+        state.focusedItem = item.itemKey;
+      }
+      
       return state;
     });
     return () => {
-      // store.setState(state => ({
-      //   //items: produce(state.items, draft => { draft.delete(item.itemKey); }), // XXX this causes an error:
-      //   // https://stackoverflow.com/questions/74200399/react-cannot-assign-to-read-only-property-status-of-object
-      //   items: ItemListUtil.withItemRemoved(state.items, item.itemKey),
-      // }));
       store.setState(state => {
         state._internalItemsRegistry.delete(item.itemKey);
+        
+        if (state.focusedItem === item.itemKey) {
+          const firstKey = state._internalItemsRegistry.keys().next();
+          state.focusedItem = firstKey.done ? null : firstKey.value;
+        }
+        
         return state;
       });
     };
   }, [store, item]);
   
   // Make sure the following selectors return primitives or existing references, not new object references
-  const isFocused = useStore(store, s => {
-    // FIXME: better way to determine that the item is "first" (e.g. does it need sorting? what about ItemKey?)
-    if (s.focusedItem === null) {
-      return Array.from(s._internalItemsRegistry.keys())[0] === item.itemKey; // If no focus, use the first
-    }
-    return s.focusedItem === item.itemKey;
-  });
+  const isFocused = useStore(store, s => s.focusedItem === item.itemKey);
   const focusItem = useStore(store, s => s.focusItem);
   const requestFocus = React.useCallback(() => {
     focusItem(item.itemKey);
