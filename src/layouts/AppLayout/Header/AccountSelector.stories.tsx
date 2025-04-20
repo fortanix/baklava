@@ -26,6 +26,21 @@ export default {
 } satisfies Meta<AccountSelectorArgs>;
 
 
-export const Standard: Story = {
-  name: 'AccountSelector',
+export const AccountSelectorStandard: Story = {
+  args: {
+    accounts: (
+      <>
+        {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
+          <AccountSelector.Option key={`account_${name}`} itemKey={`account_${name}`} icon="account"
+            label={name}
+            //onSelect={() => { notify.info(`Selected ${name}`); }}
+          />
+        )}
+        <AccountSelector.FooterActions>
+          <AccountSelector.Action itemKey="action_add-account" label="Add account" onActivate={() => {}}/>
+        </AccountSelector.FooterActions>
+      </>
+    ),
+    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.replace(/^account_/, '')
+  },
 };

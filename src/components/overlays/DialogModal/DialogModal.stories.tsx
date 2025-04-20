@@ -123,7 +123,21 @@ export const DialogModalWithDropdown: Story = {
     children: (
       <>
         <p>The following dropdown menu should overlay the modal (and not be cut off).</p>
-        <AccountSelector/>
+        <AccountSelector
+          className="select-action"
+          accounts={
+            <>
+              {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
+                <AccountSelector.Option key={`acc_${name}`} itemKey={`acc_${name}`} icon="account" label={name}/>
+              )}
+              <AccountSelector.FooterActions>
+                <AccountSelector.Action itemKey="action_add-account" label="Add account" onActivate={() => {}}/>
+              </AccountSelector.FooterActions>
+            </>
+          }
+        >
+          {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.replace(/^acc_/, '')}
+        </AccountSelector>
       </>
     ),
   },

@@ -19,11 +19,11 @@ import cl from './Select.module.scss';
 export { cl as SelectClassNames };
 
 
-export type OptionKey = string;
-export type OptionDef = { optionKey: OptionKey, label: string };
+export type itemKey = string;
+export type OptionDef = { itemKey: itemKey, label: string };
 
 export type SelectContext = {
-  selectedOption: null | OptionKey,
+  selectedOption: null | itemKey,
   selectOption: (option: OptionDef) => void,
   getItemProps: ReturnType<typeof useInteractions>['getItemProps'],
 };
@@ -39,7 +39,7 @@ export const useSelectContext = () => {
 
 export type OptionProps = React.PropsWithChildren<ComponentProps<typeof Button> & {
   /** A unique identifier for this option. */
-  optionKey: OptionKey,
+  itemKey: itemKey,
   
   /** The human-readable label to be shown. */
   label: string,
@@ -48,12 +48,12 @@ export type OptionProps = React.PropsWithChildren<ComponentProps<typeof Button> 
  * Form control to select an item from a list of options through a dropdown.
  */
 export const Option = (props: OptionProps) => {
-  const { optionKey, label, ...propsRest } = props;
+  const { itemKey, label, ...propsRest } = props;
   
   const { selectedOption, selectOption, getItemProps } = useSelectContext();
   
-  const option: OptionDef = { optionKey, label };
-  const isSelected = typeof selectedOption === 'string' && selectedOption === optionKey;
+  const option: OptionDef = { itemKey, label };
+  const isSelected = typeof selectedOption === 'string' && selectedOption === itemKey;
   
   return (
     <li aria-selected={isSelected}>
@@ -121,7 +121,7 @@ export const Select = Object.assign(
     });
     
     const context: SelectContext = React.useMemo(() => ({
-      selectedOption: selected?.optionKey ?? null,
+      selectedOption: selected?.itemKey ?? null,
       selectOption: (option: OptionDef) => {
         setSelected(option);
         setIsOpen(false);

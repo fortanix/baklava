@@ -33,13 +33,12 @@ export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
         label="Page size selector"
         className={cx(cl['page-size-selector__dropdown'])}
         items={pageSizeOptions.map((pageSize) => (
-          <DropdownMenuProvider.Action
+          <DropdownMenuProvider.Option
             key={pageSize.toString()}
             itemKey={pageSize.toString()}
             label={`${pageSize}`}
-            onActivate={(context) => {
+            onSelect={() => {
               table.setPageSize(pageSize);
-              context.close();
             }}
           />
         ))}

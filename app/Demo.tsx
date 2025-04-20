@@ -27,7 +27,9 @@ export const Demo = () => {
         <Header slot="actions">
           <UserMenu userName="Anand Kashyap"/>
           {/* <UserMenu userName="Anand Kashyap – Very Long Name That Will Overflow"/> */}
-          <AccountSelector className="select-action"/>
+          <AccountSelector className="select-action" accounts={null}>
+            {accountSelected => accountSelected ?? 'Accounts'}
+          </AccountSelector>
           <SolutionSelector className="select-action"/>
         </Header>
       </AppLayout.Header>

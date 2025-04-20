@@ -31,14 +31,14 @@ export const Standard: Story = {
   args: {
     children: (
       <>
-        <Select.Option optionKey="option-1" label="Option 1"/>
-        <Select.Option optionKey="option-2" label="Option 2"/>
-        <Select.Option optionKey="option-3" label="Option 3"/>
-        <Select.Option optionKey="option-4" label="Option 4"/>
-        <Select.Option optionKey="option-5" label="Option 5"/>
-        <Select.Option optionKey="option-6" label="Option 6"/>
-        <Select.Option optionKey="option-7" label="Option 7"/>
-        <Select.Option optionKey="option-8" label="Option 8"/>
+        <Select.Option itemKey="option-1" label="Option 1"/>
+        <Select.Option itemKey="option-2" label="Option 2"/>
+        <Select.Option itemKey="option-3" label="Option 3"/>
+        <Select.Option itemKey="option-4" label="Option 4"/>
+        <Select.Option itemKey="option-5" label="Option 5"/>
+        <Select.Option itemKey="option-6" label="Option 6"/>
+        <Select.Option itemKey="option-7" label="Option 7"/>
+        <Select.Option itemKey="option-8" label="Option 8"/>
       </>
     ),
   },

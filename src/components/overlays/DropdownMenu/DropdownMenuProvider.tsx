@@ -6,18 +6,23 @@ import * as React from 'react';
 import { mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
-import { useListNavigation, type Placement } from '@floating-ui/react';
+import { type Placement } from '@floating-ui/react';
 import { useFloatingElement } from '../../util/overlays/floating-ui/useFloatingElement.tsx';
 
-import { DropdownMenuContext, type OptionDef, Option, Action, DropdownMenu } from './DropdownMenu.tsx';
+import * as ListBox from '../../forms/controls/ListBox/ListBox.tsx';
 
+import cl from './DropdownMenuProvider.module.scss';
+
+
+export type ItemKey = ListBox.ItemKey;
 
 export type AnchorRenderArgs = {
   props: (userProps?: undefined | React.HTMLProps<Element>) => Record<string, unknown>,
   open: boolean,
-  state: DropdownMenuContext,
+  close: () => void,
+  selectedOption: undefined | ListBox.ItemKey,
 };
-export type DropdownMenuProviderProps = Omit<ComponentProps<typeof DropdownMenu>, 'children' | 'label'> & {
+export type DropdownMenuProviderProps = Omit<ComponentProps<typeof ListBox.ListBox>, 'children' | 'label'> & {
   /** An accessible name for this dropdown menu. Required */
   label: string,
   
@@ -54,11 +59,9 @@ export const DropdownMenuProvider = Object.assign(
       ...propsRest
     } = props;
     
-    const selectedRef = React.useRef<React.ComponentRef<typeof Option>>(null);
-    const [selected, setSelected] = React.useState<null | OptionDef>(null);
+    const anchorRef = React.useRef<HTMLElement>(null);
+    const listBoxRef = React.useRef<React.ComponentRef<typeof ListBox.ListBox>>(null);
     
-    const listRef = React.useRef([]);
-    const [activeIndex, setActiveIndex] = React.useState<null | number>(null);
     const {
       refs,
       placement: placementEffective,
@@ -75,25 +78,9 @@ export const DropdownMenuProvider = Object.assign(
         fallbackAxisSideDirection: 'none',
         fallbackStrategy: 'initialPlacement',
       },
-      floatingUiInteractions: context => [
-        useListNavigation(context, {
-          listRef,
-          activeIndex,
-          onNavigate: setActiveIndex,
-        }),
-      ],
     });
     
-    const context: DropdownMenuContext = React.useMemo((): DropdownMenuContext => ({
-      optionProps: () => getItemProps(),
-      selectedOption: selected?.optionKey ?? null,
-      selectOption: (option: OptionDef) => {
-        setSelected(option);
-        setIsOpen(false);
-        selectedRef.current?.focus(); // Return focus
-      },
-      close: () => { setIsOpen(false); },
-    }), [selected, setIsOpen, getItemProps]);
+    const [selectedOption, setSelectedOption] = React.useState<undefined | ListBox.ItemKey>();
     
     const renderAnchor = () => {
       const anchorProps: AnchorRenderArgs['props'] = (userProps?: undefined | React.HTMLProps<Element>) => {
@@ -106,12 +93,12 @@ export const DropdownMenuProvider = Object.assign(
         
         return {
           ...getReferenceProps(userProps),
-          ref: userPropsRef ? mergeRefs(userPropsRef, refs.setReference) : refs.setReference,
+          ref: userPropsRef ? mergeRefs(anchorRef, userPropsRef, refs.setReference) : refs.setReference,
         };
       };
       
       if (typeof children === 'function') {
-        return children({ props: anchorProps, open: isOpen, state: context });
+        return children({ props: anchorProps, open: isOpen, close: () => { setIsOpen(false); }, selectedOption });
       }
       
       // If a render prop is not used, try to attach it to the element directly.
@@ -127,25 +114,41 @@ export const DropdownMenuProvider = Object.assign(
       return children;
     };
     
+    const handleSelect = React.useCallback((optionKey: ListBox.ItemKey) => {
+      setSelectedOption(optionKey);
+      
+      // Note: add a slight delay before closing, to make it less jarring (and allow "select" animations to run)
+      window.setTimeout(() => {
+        setIsOpen(false);
+      }, 150);
+    }, [setIsOpen]);
+    
     return (
-      <DropdownMenuContext value={context}>
+      <>
         {renderAnchor()}
         
-        <DropdownMenu
+        <ListBox.ListBox
           label={label}
           {...getFloatingProps({
             popover: 'manual',
             style: floatingStyles,
             ...propsRest,
-            className: cx(propsRest.className),
+            className: cx(cl['bk-dropdown-menu-provider__list-box'], propsRest.className),
           })}
-          ref={mergeRefs<HTMLUListElement>(refs.setFloating, propsRest.ref)}
+          selected={selectedOption}
+          onSelect={handleSelect}
+          ref={mergeRefs<React.ComponentRef<typeof ListBox.ListBox>>(listBoxRef, refs.setFloating, propsRest.ref)}
           data-placement={placementEffective}
         >
           {items}
-        </DropdownMenu>
-      </DropdownMenuContext>
+        </ListBox.ListBox>
+      </>
     );
   },
-  { Action, Option },
+  {
+    Option: ListBox.Option,
+    Action: ListBox.Action,
+    Header: ListBox.Header,
+    FooterActions: ListBox.FooterActions,
+  },
 );
