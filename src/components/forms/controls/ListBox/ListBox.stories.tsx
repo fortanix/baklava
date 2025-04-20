@@ -34,7 +34,22 @@ export default {
 
 
 // Sample items
-const fruits = ['Apple', 'Apricot', 'Blueberry', 'Cherry', 'Melon', 'Mango', 'Orange', 'Peach', 'Strawberry'];
+const fruits = [
+  'Apple',
+  'Apricot',
+  'Blueberry',
+  'Cherry',
+  'Durian',
+  'Jackfruit',
+  'Melon',
+  'Mango',
+  'Mangosteen',
+  'Orange',
+  'Peach',
+  'Pineapple',
+  'Razzberry',
+  'Strawberry',
+];
 
 
 export const ListBoxStandard: Story = {
@@ -147,9 +162,13 @@ export const ListBoxWithStickyActions: Story = {
   args: {
     children: (
       <>
-        <ListBox.Header itemKey="header" label={`Products (${fruits.length})`} sticky="start"/>
+        <ListBox.Header itemKey="header" label={`Ice cream flavors (${fruits.length})`} sticky="start"/>
         {fruits.map(fruit =>
-          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
+          <ListBox.Option key={`icecream-${fruit}`} itemKey={`icecream-${fruit}`} label={fruit}/>
+        )}
+        <ListBox.Header itemKey="header" label={`Jelly bean flavors (${fruits.length})`} sticky="start"/>
+        {fruits.map(fruit =>
+          <ListBox.Option key={`jellybean-${fruit}`} itemKey={`jellybean-${fruit}`} label={fruit}/>
         )}
         <ListBox.FooterActions>
           <ListBox.Action itemKey="action-checkout" label="Go to Checkout" onActivate={() => { notifyPressed(); }}/>

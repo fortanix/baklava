@@ -20,7 +20,7 @@
       calc(var(--bk-list-box-item-block-size) + var(--bk-list-box-padding-end));
     
     min-inline-size: 30ch;
-    max-block-size: 12lh;
+    max-block-size: 15lh;
     padding-block-end: var(--bk-list-box-padding-end);
     
     background: bk.$theme-dropdown-menu-menu-background-default;

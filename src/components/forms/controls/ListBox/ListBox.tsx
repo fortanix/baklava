@@ -85,6 +85,7 @@ export const Option = (props: OptionProps) => {
         cl['bk-list-box__item--option'],
         propsRest.className,
       )}
+      // See: https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Keyboard-navigable_JavaScript_widgets#grouping_controls
       disabled={false} // Use `nonactive` for disabled state, so that we still allow focus
       nonactive={isNonactive}
       onPress={handlePress}
@@ -186,6 +187,7 @@ export const Action = (props: ActionProps) => {
         cl['bk-list-box__item--action'],
         propsRest.className,
       )}
+      // See: https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Keyboard-navigable_JavaScript_widgets#grouping_controls
       disabled={false} // Use `nonactive` for disabled state, so that we still allow focus
       nonactive={isNonactive}
       onPress={() => { requestFocus(); onActivate?.(); }}
@@ -237,7 +239,7 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
   
   /** If the list is virtually rendered, `virtualItemKeys` should be provided with the full list of item keys. */
-  virtualItemKeys: null | VirtualItemKeys,
+  virtualItemKeys?: undefined | null | VirtualItemKeys,
 };
 
 type HiddenSelectedStateProps = Pick<ListBoxProps, 'name' | 'form' | 'inputProps'> & {
@@ -280,7 +282,7 @@ export const ListBox = Object.assign(
       placeholderEmpty = 'No items',
       form,
       inputProps,
-      virtualItemKeys,
+      virtualItemKeys = null,
       ...propsRest
     } = props;
     
