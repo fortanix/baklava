@@ -2,8 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@use '../../../style/variables.scss' as *;
-@use '../../../components/overlays/dropdown/Dropdown.scss';
+@use '../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
   .bk-search-input {
@@ -11,25 +10,11 @@
     position: relative;
     display: flex;
     flex: 1;
-    padding: $sizing-none;
+    border-bottom: 1px solid bk.$theme-form-rule-default;
 
-    background-color: $light-color-2;
-    border: 0.2rem solid $neutral-color-1;
-    border-radius: $sizing-2;
-
-    &.bk-search-input--active {
-      background-color: $light-color-1;
-      border-color: $accent-color-light-2;
-    }
-
-    &:hover:not(.bk-search-input--active) {
-      background-color: $light-color-1;
-      border-color: rgba($accent-color-light-2, 0.33);
-      outline: none;
-    }
-
-    .bk-input {
-      .bk-input__input {
+    .bk-search-input__input{
+      border: none;
+      input {
         background-color: transparent;
         border: none;
       }
@@ -37,20 +22,11 @@
 
     .bk-search-input__search-icon,
     .bk-search-input__search-key {
-      padding: 1rem;
-      padding-inline-end: $sizing-none;
+      margin-right: bk.$spacing-1;
     }
 
-    .bk-search-input__search-icon {
-      inline-size: $sizing-m;
-      opacity: 0.5;
-      color: #8AA1B0;
-    }
 
     .bk-search-input__search-key {
-      font-size: $font-size-s;
-      font-weight: $font-weight-light;
-      line-height: $line-height-2;
       flex: 1 0 auto;
     }
 
@@ -61,21 +37,21 @@
 
   .bk-multi-search__filters {
     display: flex;
-    margin-block-start: $sizing-s;
+    margin-block-start: bk.$spacing-3;
 
     .bk-multi-search__filters-wrapper {
       display: flex;
       flex-wrap: wrap;
-      gap: $sizing-s;
+      gap: bk.$spacing-3;
 
       .bk-multi-search__filter {
         .filter-operand {
-          margin-inline-start: $sizing-xxs;
+          margin-inline-start: bk.$spacing-1;
         }
 
         .filter-value {
-          margin-inline-start: $sizing-xxs;
-          font-weight: $font-weight-semibold;
+          margin-inline-start: bk.$spacing-1;
+          font-weight: bk.$font-weight-semibold;
         }
       }
     }
@@ -83,10 +59,10 @@
     .bk-multi-search__filter-actions {
       margin-inline-start: auto;
       flex-shrink: 0;
-      padding-inline-start: $sizing-s;
+      padding-inline-start: bk.$spacing-3;
       
       .clear-all {
-        color: $accent-color;
+        color: bk.$theme-text-link-default;
 
         &:hover {
           cursor: pointer;
@@ -105,13 +81,14 @@
 
   .bk-multi-search__alternatives {
     .bk-multi-search__alternatives-group {
+      padding: bk.$spacing-3;
       .bk-checkbox {
-        padding: $sizing-s;
+        padding: bk.$spacing-3;
       }
     }
 
     .bk-multi-search__alternatives-action {
-      padding-block-start: $sizing-s;
+      padding-block-start: bk.$spacing-3;
       display: flex;
       justify-content: center;
     }
@@ -120,15 +97,15 @@
   .bk-multi-search__date-time {
     .bk-multi-search__date-time-group {
       .bk-multi-search__date-time-label {
-        margin-block-end: $sizing-xs;
-        font-weight: $font-weight-semibold;
+        margin-block-end: bk.$spacing-2;
+        font-weight: bk.$font-weight-semibold;
       }
 
-      padding: $sizing-s;
+      padding: bk.$spacing-3;
     }
 
     .bk-multi-search__date-time-action {
-      padding-block-start: $sizing-s;
+      padding-block-start: bk.$spacing-3;
       display: flex;
       justify-content: center;
     }
@@ -136,20 +113,20 @@
 
 
   .bk-multi-search__suggested-keys {
-    .bk-multi-search__suggested-key-input .bk-input__input {
-      inline-size: auto;
+    .bk-multi-search__suggested-key-input {
+      padding: bk.$spacing-1 bk.$spacing-3;
     }
   }
 
   .bk-multi-search__error-msg,
   .bk-multi-search__dropdown-error-msg {
-    padding-block-start: $sizing-s;
-    color: $status-color-error;
-    max-inline-size: $sizing-6 * 10;
+    padding-block-start: bk.$spacing-3;
+    color: bk.$theme-form-text-error;
+    max-inline-size: calc(bk.$spacing-8 * 10);
     display: block;
   }
 
   .bk-multi-search__dropdown-error-msg {
-    padding: $sizing-s;
+    padding: bk.$spacing-3;
   }
 }

@@ -38,12 +38,28 @@ export type DropdownMenuProviderProps = Omit<ComponentProps<typeof DropdownMenu>
   
   /** Enable more precise tracking of the anchor, at the cost of performance. */
   enablePreciseTracking?: undefined | boolean,
+  
+  /** For controlled open state. */
+  open?: boolean,
+
+  /** When controlled, callback to set state. */
+  onOpenChange?: (isOpen: boolean) => void,
+
+  /** (optional) Use an existing DOM node as the positioning anchor. */
+  anchorRef?: React.RefObject<HTMLElement | null>,
 };
+
+export type DropdownRef = {
+  setIsOpen: (open: boolean) => void,
+  isOpen: boolean,
+  floatingEl: HTMLElement | null,
+};
+
 /**
  * Provider for a dropdown menu overlay with its trigger.
  */
 export const DropdownMenuProvider = Object.assign(
-  (props: DropdownMenuProviderProps) => {
+  React.forwardRef<DropdownRef, DropdownMenuProviderProps>((props, ref) => {
     const {
       label,
       children,
@@ -51,6 +67,9 @@ export const DropdownMenuProvider = Object.assign(
       items,
       placement = 'bottom',
       enablePreciseTracking,
+      open: controlledOpen,
+      onOpenChange: controlledOnOpenChange,
+      anchorRef,
       ...propsRest
     } = props;
     
@@ -75,6 +94,19 @@ export const DropdownMenuProvider = Object.assign(
         fallbackAxisSideDirection: 'none',
         fallbackStrategy: 'initialPlacement',
       },
+      floatingUiOptions: {
+        ...(
+          typeof controlledOpen !== 'undefined' ?
+            {
+              open: controlledOpen,
+              ...(
+                typeof controlledOnOpenChange !== 'undefined' ?
+                  { onOpenChange: controlledOnOpenChange } : {}
+              ),
+
+            } : {}
+        ),
+      },
       floatingUiInteractions: context => [
         useListNavigation(context, {
           listRef,
@@ -83,7 +115,31 @@ export const DropdownMenuProvider = Object.assign(
         }),
       ],
     });
-    
+
+    // keep internal state in sync with the controlled prop
+    React.useEffect(() => {
+      if (controlledOpen !== undefined) {
+        setIsOpen(controlledOpen);
+      }
+    }, [controlledOpen, setIsOpen]);
+
+    // Use external element as the reference, if provided
+    React.useLayoutEffect(() => {
+      if (anchorRef?.current) {
+        refs.setReference(anchorRef.current);
+      }
+    }, [anchorRef?.current, refs.setReference]);
+
+    const dropdownRef = React.useMemo<DropdownRef>(() => ({
+      isOpen,
+      setIsOpen,
+      get floatingEl() {
+        return refs.floating.current;
+      },
+    }), [isOpen, setIsOpen, refs.floating]);
+
+    React.useImperativeHandle(ref, () => dropdownRef, [dropdownRef]);
+
     const context: DropdownMenuContext = React.useMemo((): DropdownMenuContext => ({
       optionProps: () => getItemProps(),
       selectedOption: selected?.optionKey ?? null,
@@ -146,6 +202,6 @@ export const DropdownMenuProvider = Object.assign(
         </DropdownMenu>
       </DropdownMenuContext>
     );
-  },
+  }),
   { Action, Option },
 );

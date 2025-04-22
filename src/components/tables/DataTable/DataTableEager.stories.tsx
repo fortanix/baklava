@@ -13,6 +13,7 @@ import * as Filtering from './filtering/Filtering.ts';
 import type { Fields, FilterQuery } from '../MultiSearch/filterQuery.ts';
 
 import { Panel } from '../../containers/Panel/Panel.tsx';
+import * as MultiSearch from '../MultiSearch/MultiSearch.tsx';
 import * as DataTablePlugins from './plugins/useRowSelectColumn.tsx';
 import * as DataTableEager from './DataTableEager.tsx';
 
@@ -117,7 +118,7 @@ const DataTableEagerTemplate = (props: dataTeableEagerTemplateProps) => {
         plugins={[DataTablePlugins.useRowSelectColumn]}
       >
         <DataTableEager.Search />
-        <DataTableEager.DataTableEager status={{ error: null, loading: false, ready: true }} />
+        <DataTableEager.DataTableEager />
       </DataTableEager.TableProviderEager>
     </Panel>
   );
@@ -139,6 +140,8 @@ const DataTableEagerWithFilterTemplate = (props: dataTeableEagerTemplateProps) =
     const filtered = Filtering.filterByQuery(fields, itemsAsRecord, filters);
     setFilteredItems(Object.values(filtered) as User[]);
   }, [filters, itemsAsRecord]);
+  
+  const query = React.useCallback((filters: FilterQuery) => { setFilters(filters); }, []);
 
   return (
     <Panel>
@@ -149,7 +152,8 @@ const DataTableEagerWithFilterTemplate = (props: dataTeableEagerTemplateProps) =
         getRowId={(item: User) => item.id}
         plugins={[DataTablePlugins.useRowSelectColumn]}
       >
-        <DataTableEager.DataTableEager status={{ error: null, loading: false, ready: true }} />
+        <MultiSearch.MultiSearch query={query} fields={fields} filters={filters}/>
+        <DataTableEager.DataTableEager />
       </DataTableEager.TableProviderEager>
     </Panel>
   );
@@ -206,13 +210,13 @@ export const AsyncInitialization = {
   render: (args: dataTeableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
 };
 
-// export const WithFilter = {
-//   args: {
-//     columns,
-//     items: generateData({ numItems: 45 }),
-//   },
-//   render: (args: dataTeableEagerTemplateProps) => <DataTableEagerWithFilterTemplate {...args} />,
-// };
+export const WithFilter = {
+  args: {
+    columns,
+    items: generateData({ numItems: 45 }),
+  },
+  render: (args: dataTeableEagerTemplateProps) => <DataTableEagerWithFilterTemplate {...args} />,
+};
 
 const moreColumns = [
   ...columns, 
@@ -223,6 +227,7 @@ const moreColumns = [
     Cell: ({ value }: { value: string }) => value,
     disableSortBy: false,
     disableGlobalFilter: true,
+    className: 'user-table__column',
   },
   {
     id: 'dummy_2',
@@ -230,6 +235,7 @@ const moreColumns = [
     Header: 'Email',
     disableSortBy: false,
     disableGlobalFilter: true,
+    className: 'user-table__column',
   },
   {
     id: 'dummy_3',
@@ -237,6 +243,7 @@ const moreColumns = [
     Header: 'Company',
     disableSortBy: false,
     disableGlobalFilter: true,
+    className: 'user-table__column',
   },
   {
     id: 'dummy_4',
@@ -244,6 +251,7 @@ const moreColumns = [
     Header: 'Company',
     disableSortBy: false,
     disableGlobalFilter: true,
+    className: 'user-table__column',
   },
   {
     id: 'dummy_5',
@@ -251,7 +259,57 @@ const moreColumns = [
     Header: 'Company',
     disableSortBy: false,
     disableGlobalFilter: true,
+    className: 'user-table__column',
   },
+  {
+    id: 'dummy_6',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'dummy_7',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'dummy_8',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'dummy_9',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'dummy_10',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'dummy_11',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  
 ];
 // FIXME: example with horizontal scroll
 // export const WithScroll = {
