@@ -59,7 +59,7 @@ export type DropdownRef = {
  * Provider for a dropdown menu overlay with its trigger.
  */
 export const DropdownMenuProvider = Object.assign(
-  React.forwardRef<DropdownRef, DropdownMenuProviderProps>((props, ref) => {
+  React.forwardRef<DropdownRef, DropdownMenuProviderProps>((props, forwardRef) => {
     const {
       label,
       children,
@@ -138,7 +138,7 @@ export const DropdownMenuProvider = Object.assign(
       },
     }), [isOpen, setIsOpen, refs.floating]);
 
-    React.useImperativeHandle(ref, () => dropdownRef, [dropdownRef]);
+    React.useImperativeHandle(forwardRef, () => dropdownRef, [dropdownRef]);
 
     const context: DropdownMenuContext = React.useMemo((): DropdownMenuContext => ({
       optionProps: () => getItemProps(),
@@ -195,7 +195,7 @@ export const DropdownMenuProvider = Object.assign(
             ...propsRest,
             className: cx(propsRest.className),
           })}
-          ref={mergeRefs<HTMLUListElement>(refs.setFloating, propsRest.ref)}
+          ref={refs.setFloating}
           data-placement={placementEffective}
         >
           {items}
