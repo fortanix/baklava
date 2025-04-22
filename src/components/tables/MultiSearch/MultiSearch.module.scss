@@ -10,10 +10,11 @@
     position: relative;
     display: flex;
     flex: 1;
-    border-bottom: 1px solid bk.$theme-form-rule-default;
+    border-block-end: 1px solid bk.$theme-form-rule-default;
 
     .bk-search-input__input{
       border: none;
+      inline-size: 100%;
       input {
         background-color: transparent;
         border: none;
@@ -22,16 +23,12 @@
 
     .bk-search-input__search-icon,
     .bk-search-input__search-key {
-      margin-right: bk.$spacing-1;
+      margin-inline-end: bk.$spacing-1;
     }
 
 
     .bk-search-input__search-key {
       flex: 1 0 auto;
-    }
-
-    .bk-search-input__input {
-      inline-size: 100%;
     }
   }
 
