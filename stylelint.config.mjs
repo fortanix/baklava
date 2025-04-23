@@ -71,7 +71,7 @@ export default {
       {
         // Disallow auto/scroll. This requires a tabindex="0" for accessibility, which should be handled through the
         // `useScroller()` hook instead.
-        '/^overflow(-x|-y)?/': ['auto', 'scroll'],
+        '/^overflow(-x|-y|-block|-inline)?/': ['auto', 'scroll'],
       },
       {
         message: (selector, value) => {
