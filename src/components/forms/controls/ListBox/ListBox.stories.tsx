@@ -9,7 +9,7 @@ import * as React from 'react';
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
-import { type ItemKey, ListBox } from './ListBox.tsx';
+import { type ItemDetails, ListBox } from './ListBox.tsx';
 
 
 const notifyPressed = () => { notify.info('Pressed the item'); };
@@ -27,7 +27,6 @@ export default {
   },
   args: {
     label: 'Test list box',
-    //onSelect: item => { console.log('x', item); },
   },
   render: (args) => <ListBox {...args}/>,
 } satisfies Meta<ListBoxArgs>;
@@ -237,12 +236,12 @@ export const ListBoxMany: Story = {
 
 type ListBoxControlledProps = Omit<React.ComponentProps<typeof ListBox>, 'selected'>;
 const ListBoxControlledC = (props: ListBoxControlledProps) => {
-  const [selectedItem, setSelectedItem] = React.useState<undefined | ItemKey>(undefined);
+  const [selectedItem, setSelectedItem] = React.useState<null | ItemDetails>(null);
   
   return (
     <>
-      <p>Selected fruit: {selectedItem ?? <em>none</em>}</p>
-      <ListBox {...props} selected={selectedItem} onSelect={setSelectedItem}/>
+      <p>Selected fruit: {selectedItem?.label ?? <em>none</em>}</p>
+      <ListBox {...props} selected={selectedItem?.itemKey ?? null} onSelect={setSelectedItem}/>
     </>
   );
 };

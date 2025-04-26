@@ -13,6 +13,7 @@ import { Button } from '../../../actions/Button/Button.tsx';
 import {
   type ItemKey,
   type ItemDef,
+  type ItemDetails,
   type ItemWithKey,
   type VirtualItemKeys,
   ListBoxContext,
@@ -32,7 +33,7 @@ References:
 - https://www.radix-ui.com/primitives/docs/components/select
 */
 
-export { type ItemKey, type ItemDef, ListBoxContext, useListBoxItem };
+export { type ItemKey, type ItemDef, type ItemDetails, ListBoxContext, useListBoxItem };
 export { cl as ListBoxClassNames };
 
 
@@ -218,10 +219,10 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   defaultSelected?: undefined | ItemKey,
 
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */
-  selected?: undefined | ItemKey,
+  selected?: undefined | null | ItemKey,
   
   /** Event handler to be called when the selected option state changes. */
-  onSelect?: undefined | ((itemKey: ItemKey) => void),
+  onSelect?: undefined | ((selectedItem: null | ItemDetails) => void),
   
   /** Whether the list box is disabled or not. Default: false. */
   disabled?: undefined | boolean,
@@ -237,6 +238,9 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   
   /** Any additional props to apply to the internal `<input type="hidden"/>`. */
   inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
+  
+  /** Render the given item key as a string label. If not given, will use the item element's text value. */
+  formatItemLabel?: undefined | ((itemKey: ItemKey) => string),
   
   /** If the list is virtually rendered, `virtualItemKeys` should be provided with the full list of item keys. */
   virtualItemKeys?: undefined | null | VirtualItemKeys,
@@ -275,7 +279,7 @@ export const ListBox = Object.assign(
       unstyled = false,
       label,
       defaultSelected,
-      selected,
+      selected = null,
       onSelect,
       disabled = false,
       name,
@@ -283,6 +287,7 @@ export const ListBox = Object.assign(
       form,
       inputProps,
       virtualItemKeys = null,
+      formatItemLabel,
       ...propsRest
     } = props;
     
@@ -315,24 +320,29 @@ export const ListBox = Object.assign(
     React.useEffect(() => {
       return listBox.store.subscribe((state, prevState) => {
         if (state.selectedItem !== prevState.selectedItem && state.selectedItem !== null) {
-          onSelect?.(state.selectedItem);
+          const itemKey = state.selectedItem;
+          const label: string = formatItemLabel?.(itemKey)
+            ?? state._internalItemsRegistry.get(itemKey)?.itemRef.current?.textContent
+            ?? itemKey;
+          const selectedItem: null | ItemDetails = state.selectedItem === null ? null : {
+            itemKey,
+            label,
+          };
+          
+          onSelect?.(selectedItem);
         }
       });
-    }, [listBox.store, onSelect]);
+    }, [listBox.store, onSelect, formatItemLabel]);
     
-    const handleKeyDownCapture = React.useCallback((event: React.KeyboardEvent) => {
+    const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
       if (event.key === 'Enter') {
-        // Prevent the child `Button` press handler from being triggered, since pressing Enter should submit the form,
-        // not trigger the default click/select behavior.
-        event.preventDefault();
-        event.stopPropagation();
-        
         const formId = inputRef.current?.getAttribute('form');
         if (!formId) { return; }
         
         const form = document.getElementById(formId);
         if (form instanceof HTMLFormElement) {
-          form.requestSubmit();
+          // Submit the form (after a timeout to allow the `<input>` to be updated in response to the Enter key event)
+          window.setTimeout(() => { form.requestSubmit(); }, 0);
         }
       }
     }, []);
@@ -349,8 +359,7 @@ export const ListBox = Object.assign(
           {...propsRest}
           {...listBox.props}
           ref={mergeRefs(ref, props.ref)}
-          onKeyDownCapture={handleKeyDownCapture} // Note: run in capture phase so we can prevent the `Button` handler
-          onKeyDown={mergeCallbacks([listBox.props.onKeyDown, propsRest.onKeyDown])}
+          onKeyDown={mergeCallbacks([handleKeyDown, listBox.props.onKeyDown, propsRest.onKeyDown])}
           onToggle={mergeCallbacks([listBox.props.onToggle, props.onToggle])}
           className={cx(
             scrollerProps.className,

@@ -3,11 +3,14 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { mergeRefs } from '../../../util/reactUtil.ts';
+import { mergeCallbacks, mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
+import { useDebounce } from '../../../util/hooks/useDebounce.ts';
 
-import { type Placement } from '@floating-ui/react';
-import { useFloatingElement } from '../../util/overlays/floating-ui/useFloatingElement.tsx';
+import {
+  type UseFloatingElementOptions,
+  useFloatingElement,
+} from '../../util/overlays/floating-ui/useFloatingElement.tsx';
 
 import * as ListBox from '../../forms/controls/ListBox/ListBox.tsx';
 
@@ -16,13 +19,15 @@ import cl from './DropdownMenuProvider.module.scss';
 
 export type ItemKey = ListBox.ItemKey;
 
+type ListBoxProps = ComponentProps<typeof ListBox.ListBox>;
 export type AnchorRenderArgs = {
   props: (userProps?: undefined | React.HTMLProps<Element>) => Record<string, unknown>,
   open: boolean,
+  requestOpen: () => void, // FIXME: better naming
   close: () => void,
-  selectedOption: undefined | ListBox.ItemKey,
+  selectedOption: null | ListBox.ItemDetails,
 };
-export type DropdownMenuProviderProps = Omit<ComponentProps<typeof ListBox.ListBox>, 'children' | 'label'> & {
+export type DropdownMenuProviderProps = Omit<ListBoxProps, 'children' | 'label' | 'selected' > & {
   /** An accessible name for this dropdown menu. Required */
   label: string,
   
@@ -38,11 +43,26 @@ export type DropdownMenuProviderProps = Omit<ComponentProps<typeof ListBox.ListB
   /** The dropdown items. */
   items: React.ReactNode,
   
+  /** The accessible role of the dropdown. */
+  role?: undefined | UseFloatingElementOptions['role'],
+  
+  /**
+   * The kind of keyboard interactions to include:
+   * - 'none': No keyboard interactions set.
+   * - 'form-control': Appropriate keyboard interactions for a form control (e.g. Enter should trigger submit).
+   * - 'default': Acts as a menu button [1] (e.g. Enter will activate the popover).
+   *   [1] https://www.w3.org/WAI/ARIA/apg/patterns/menu-button
+   */
+  keyboardInteractions?: undefined | UseFloatingElementOptions['keyboardInteractions'],
+  
   /** Override the default placement */
-  placement?: undefined | Placement,
+  placement?: undefined | UseFloatingElementOptions['placement'],
+  
+  /** Offset size for the dropdown relative to the anchor. */
+  offset?: undefined | UseFloatingElementOptions['offset'],
   
   /** Enable more precise tracking of the anchor, at the cost of performance. */
-  enablePreciseTracking?: undefined | boolean,
+  enablePreciseTracking?: undefined | UseFloatingElementOptions['enablePreciseTracking'],
 };
 /**
  * Provider for a dropdown menu overlay with its trigger.
@@ -54,13 +74,18 @@ export const DropdownMenuProvider = Object.assign(
       children,
       unstyled = false,
       items,
+      role,
+      keyboardInteractions,
       placement = 'bottom',
+      offset = 8,
       enablePreciseTracking,
+      onSelect,
       ...propsRest
     } = props;
     
     const anchorRef = React.useRef<HTMLElement>(null);
     const listBoxRef = React.useRef<React.ComponentRef<typeof ListBox.ListBox>>(null);
+    const listBoxId = `listbox-${React.useId()}`;
     
     const {
       refs,
@@ -72,15 +97,19 @@ export const DropdownMenuProvider = Object.assign(
       isOpen,
       setIsOpen,
     } = useFloatingElement({
-      placement: placement,
-      offset: 8,
+      role,
+      keyboardInteractions,
+      placement,
+      offset,
       floatingUiFlipOptions: {
         fallbackAxisSideDirection: 'none',
         fallbackStrategy: 'initialPlacement',
       },
     });
     
-    const [selectedOption, setSelectedOption] = React.useState<undefined | ListBox.ItemKey>();
+    const [shouldMountDropdown] = useDebounce(isOpen, isOpen ? 0 : 1000);
+    
+    const [selectedOption, setSelectedOption] = React.useState<null | ListBox.ItemDetails>(null);
     
     const renderAnchor = () => {
       const anchorProps: AnchorRenderArgs['props'] = (userProps?: undefined | React.HTMLProps<Element>) => {
@@ -94,11 +123,20 @@ export const DropdownMenuProvider = Object.assign(
         return {
           ...getReferenceProps(userProps),
           ref: userPropsRef ? mergeRefs(anchorRef, userPropsRef, refs.setReference) : refs.setReference,
+          'aria-controls': listBoxId,
+          'aria-haspopup': 'listbox',
+          'aria-expanded': isOpen,
         };
       };
       
       if (typeof children === 'function') {
-        return children({ props: anchorProps, open: isOpen, close: () => { setIsOpen(false); }, selectedOption });
+        return children({
+          props: anchorProps,
+          open: isOpen,
+          requestOpen: () => { setIsOpen(true); },
+          close: () => { setIsOpen(false); },
+          selectedOption,
+        });
       }
       
       // If a render prop is not used, try to attach it to the element directly.
@@ -114,8 +152,8 @@ export const DropdownMenuProvider = Object.assign(
       return children;
     };
     
-    const handleSelect = React.useCallback((optionKey: ListBox.ItemKey) => {
-      setSelectedOption(optionKey);
+    const handleSelect = React.useCallback((itemDetails: null | ListBox.ItemDetails) => {
+      setSelectedOption(itemDetails);
       
       // Note: add a slight delay before closing, to make it less jarring (and allow "select" animations to run)
       window.setTimeout(() => {
@@ -123,25 +161,45 @@ export const DropdownMenuProvider = Object.assign(
       }, 150);
     }, [setIsOpen]);
     
-    return (
-      <>
-        {renderAnchor()}
-        
+    const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        handleSelect(selectedOption);
+      }
+    }, [selectedOption, handleSelect]);
+    
+    const renderDropdown = () => {
+      const floatingProps = getFloatingProps({
+        popover: 'manual',
+        style: floatingStyles,
+        ...propsRest,
+        className: cx(cl['bk-dropdown-menu-provider__list-box'], propsRest.className),
+        onKeyDown: mergeCallbacks([handleKeyDown, propsRest.onKeyDown]),
+      });
+      
+      return (
         <ListBox.ListBox
           label={label}
-          {...getFloatingProps({
-            popover: 'manual',
-            style: floatingStyles,
-            ...propsRest,
-            className: cx(cl['bk-dropdown-menu-provider__list-box'], propsRest.className),
-          })}
-          selected={selectedOption}
-          onSelect={handleSelect}
-          ref={mergeRefs<React.ComponentRef<typeof ListBox.ListBox>>(listBoxRef, refs.setFloating, propsRest.ref)}
+          {...floatingProps}
+          ref={mergeRefs<React.ComponentRef<typeof ListBox.ListBox>>(
+            listBoxRef,
+            refs.setFloating,
+            floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBox.ListBox>>,
+            propsRest.ref,
+          )}
+          id={listBoxId}
+          selected={selectedOption?.itemKey ?? null}
+          onSelect={mergeCallbacks([handleSelect, onSelect])}
           data-placement={placementEffective}
         >
           {items}
         </ListBox.ListBox>
+      );
+    };
+    
+    return (
+      <>
+        {renderAnchor()}
+        {shouldMountDropdown && renderDropdown()}
       </>
     );
   },

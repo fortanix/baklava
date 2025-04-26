@@ -11,108 +11,28 @@
   .bk-select {
     @include bk.component-base(bk-select);
     
-    /* Make sure the content does not have any extra space (e.g. under the line) due to baseline alignment */
-    display: flex;
-    
-    --bk-input-accent-color: #{bk.$theme-form-rule-default};
-    border: 0 solid var(--bk-input-accent-color);
-    border-block-end-width: 1px;
-    
-    block-size: 24px;
+    cursor: pointer;
     
     .bk-select__input {
-      cursor: pointer;
-      min-inline-size: $bk-select-min-inline-size;
-      caret-color: transparent; /* FIXME: find better way to manage the input state */
-      border: none;
-    }
-    
-    &.bk-select--open .bk-select__input__arrow {
-      rotate: 0.5turn;
-    }
-  }
-  
-  .bk-select__dropdown {
-    min-inline-size: calc($bk-select-min-inline-size + $bk-caret-size);
-    max-block-size: 18rem;
-    
-    background: bk.$theme-dropdown-menu-menu-background-default;
-    border: 1px solid bk.$theme-dropdown-menu-menu-border-default;
-    
-    border-radius: 4px;
-    &[data-placement="bottom"] {
-      border-start-start-radius: 0;
-      border-start-end-radius: 0;
-    }
-    &[data-placement="top"] {
-      border-end-start-radius: 0;
-      border-end-end-radius: 0;
-    }
-    
-    display: flex;
-    &:not(:popover-open) { display: none; }
-    flex-direction: column;
-    align-items: stretch;
-    
-    > li {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
+      user-select: none;
       
-      &:not(:first-child) {
-        border-block-start: 1px solid bk.$theme-dropdown-menu-menu-border-default;
-      }
+      min-inline-size: 12ch;
       
-      &:last-child {
-        padding-block-end: bk.$spacing-2;
+      // Note: `user-select` does not seem to work for `input`, instead we can make the highlight color transparent
+      &::selection {
+        background-color: transparent;
       }
-      
-      &:hover {
-        background: bk.$theme-dropdown-menu-menu-background-hover;
-      }
-      &[aria-selected="true"] {
-        background: bk.$theme-dropdown-menu-menu-background-hover;
-        box-shadow: inset 5px 0 bk.$theme-dropdown-menu-menu-tab-default;
-      }
+    }
+    
+    .bk-select__arrow {
+      pointer-events: none; // Let the container handle pointer events instead
       
       @media (prefers-reduced-motion: no-preference) {
-        /* Add a transition to make the switch to selected state less jarring during close animation */
-        transition: box-shadow 300ms ease-in;
+        transition: rotate 150ms ease-in-out;
       }
     }
-    
-    @media (prefers-reduced-motion: no-preference) {
-      --transition-duration: 150ms;
-      transition:
-        display var(--transition-duration) allow-discrete,
-        overlay var(--transition-duration) allow-discrete,
-        opacity var(--transition-duration) ease-out,
-        translate var(--transition-duration) ease-out;
-        /* transform */ /* Note: don't animate `transform` with floating-ui, since it relies on it for positioning */
-      opacity: 0;
-      translate: 0 -1rem;
+    &.bk-select--open .bk-select__arrow {
+      rotate: x 0.5turn;
     }
-    
-    &:popover-open {
-      opacity: 1;
-      translate: none;
-      
-      @starting-style {
-        opacity: 0;
-        translate: 0 -1rem;
-      }
-    }
-  }
-  
-  .bk-select__option {
-    padding: 8px 14px 8px 26px;
-    
-    @include bk.font(bk.$font-family-body);
-    font-size: 14px;
-    line-height: 24px;
-    
-    @include bk.focus-inset;
-    
-    display: flex;
   }
 }

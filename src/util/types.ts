@@ -2,9 +2,11 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-// TypeScript has `NonNullable` built in, but not `NonUndefined`.
-// Note: when TS refines non-undefined, it produces `T & ({} | null)`. Do not define this type as
-// `T extends undefined ? never : T`, because you cannot `T & ({} | null)` cannot be assigned to such a conditional.
+/**
+ * TypeScript has `NonNullable` built in, but not `NonUndefined`.
+ * Note: when TS refines non-undefined, it produces `T & ({} | null)`. Do not define this type as
+ * `T extends undefined ? never : T`, because you cannot `T & ({} | null)` cannot be assigned to such a conditional.
+ */
 // https://www.typescriptlang.org/play/?#code/LAKAxg9gdgzgLgAgGZQQXgQHgCoBoB8AFAIYBOA5gFwLYCU6+CA3qAmwgJZIKFwCeABwCmEbmXLo0GAOQBXKABMhSDlCELp9FiHa6EpIXFmkoAblbsAvhbbjzIS-aA
 export type NonUndefined<T> = T & ({} | null);
 
@@ -14,5 +16,5 @@ export const assertUnreachable = (value: never, message?: string): never => {
   throw new Error(message ?? `Unexpected case`);
 };
 
-// Given a type `T`, the keys `K` should be required, and everything else becomes optional.
+/** Given a type `T`, the keys `K` should be required, and everything else becomes optional. */
 export type RequireOnly<T, K extends keyof T> = Pick<Required<T>, K> & Partial<T>;

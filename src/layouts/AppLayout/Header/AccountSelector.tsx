@@ -22,6 +22,7 @@ export type AccountSelectorProps = Omit<ComponentProps<typeof Button>, 'label' |
   /** The accounts list to be shown in the dropdown menu. */
   accounts: React.ReactNode,
   
+  /** The selected account. To access the selected account, pass a render prop. */
   children: (selectedAccount: null | ItemKey) => React.ReactNode,
 };
 export const AccountSelector = Object.assign(

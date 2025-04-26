@@ -25,6 +25,11 @@ export type ItemDef = {
 export type ItemMap = Map<ItemKey, ItemDef>;
 export type ItemWithKey = ItemDef & { itemKey: ItemKey };
 
+export type ItemDetails = {
+  itemKey: ItemKey,
+  label: string,
+};
+
 /**
  * The minimal subtype of `Array<ItemKey>` that we need to be able to render a virtualized list. We keep it minimal
  * so that the consumer may compute this information dynamically rather than storing it all in memory. For best
@@ -288,11 +293,17 @@ export const useListBox = <E extends HTMLElement>(
       if (document.activeElement instanceof HTMLElement) {
         previousActiveElementRef.current = document.activeElement;
       }
-      focusedElement.itemRef?.current?.focus();
+      focusedElement.itemRef?.current?.focus({
+        // @ts-ignore Supported in some browsers (e.g. Firefox).
+        focusVisible: false,
+      });
     } else if (event.oldState === 'open' && event.newState === 'closed') {
       const previousActiveElement = previousActiveElementRef.current;
       if (previousActiveElement) {
-        previousActiveElement.focus();
+        previousActiveElement.focus({
+          // @ts-ignore Supported in some browsers (e.g. Firefox).
+          focusVisible: false,
+        });
       }
     }
   }, []);

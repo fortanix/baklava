@@ -97,13 +97,15 @@
       &:is(:disabled, .bk-list-box__item--disabled) {
         color: bk.$theme-text-small-text-subtle;
       }
-      &:focus-visible {
+      &:focus {
         background: bk.$theme-dropdown-menu-menu-background-focused;
         
-        // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
-        outline: var(--bk-focus-outline-width) solid var(--bk-focus-outline-color) !important;
-        // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
-        outline-offset: calc(-1 * var(--bk-focus-outline-width)) !important;
+        &:focus-visible {
+          // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
+          outline: var(--bk-focus-outline-width) solid var(--bk-focus-outline-color) !important;
+          // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
+          outline-offset: calc(-1 * var(--bk-focus-outline-width)) !important;
+        }
       }
       
       &.bk-list-box__item--option {

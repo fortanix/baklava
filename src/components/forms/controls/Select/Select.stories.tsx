@@ -6,6 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
+import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Select } from './Select.tsx';
 
 
@@ -26,19 +27,42 @@ export default {
 } satisfies Meta<SelectArgs>;
 
 
-export const Standard: Story = {
-  name: 'Select',
+export const SelectStandard: Story = {
   args: {
-    children: (
+    options: (
       <>
-        <Select.Option itemKey="option-1" label="Option 1"/>
-        <Select.Option itemKey="option-2" label="Option 2"/>
-        <Select.Option itemKey="option-3" label="Option 3"/>
-        <Select.Option itemKey="option-4" label="Option 4"/>
-        <Select.Option itemKey="option-5" label="Option 5"/>
-        <Select.Option itemKey="option-6" label="Option 6"/>
-        <Select.Option itemKey="option-7" label="Option 7"/>
-        <Select.Option itemKey="option-8" label="Option 8"/>
+        {Array.from({ length: 8 }, (_, i) => i + 1).map(index =>
+          <Select.Option key={`option-${index}`} itemKey={`option-${index}`} label={`Option ${index}`}/>
+        )}
+      </>
+    ),
+  },
+};
+
+export const SelectInForm: Story = {
+  decorators: [
+    Story => (
+      <>
+        <form
+          id="story-form"
+          onSubmit={event => {
+            event.preventDefault();
+            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || 'none'}`);
+          }}
+        />
+        <Story/>
+        <button type="submit" form="story-form">Submit</button>
+      </>
+    ),
+  ],
+  args: {
+    form: 'story-form',
+    name: 'story_component1',
+    options: (
+      <>
+        {Array.from({ length: 8 }, (_, i) => i + 1).map(index =>
+          <Select.Option key={`option-${index}`} itemKey={`option-${index}`} label={`Option ${index}`}/>
+        )}
       </>
     ),
   },

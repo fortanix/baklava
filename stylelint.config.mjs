@@ -87,7 +87,7 @@ export default {
     'scss/no-global-function-names': null,
     
     // CSS extensions (e.g. CSS modules, or future CSS)
-    //'property-no-unknown': [true, { ignoreProperties: [] }],
+    'property-no-unknown': [true, { ignoreProperties: ['reading-flow', 'reading-order'] }],
     //'scss/at-rule-no-unknown': [true, { ignoreAtRules: [] }],
     'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ['global', 'local'] }],
     'selector-pseudo-element-no-unknown': [true, { ignorePseudoElements: [] }],
