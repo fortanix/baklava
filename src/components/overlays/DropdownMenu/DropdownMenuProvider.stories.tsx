@@ -33,7 +33,7 @@ export const Standard: Story = {
   args: {
     children: ({ props, selectedOption }) => (
       <Button kind="primary" {...props()}>
-        {typeof selectedOption !== 'undefined' ? `Selected: ${selectedOption}` : 'Open dropdown'}
+        {typeof selectedOption !== 'undefined' ? `Selected: ${selectedOption?.label ?? 'none'}` : 'Open dropdown'}
       </Button>
     ),
     items: (
@@ -56,7 +56,10 @@ export const WithPlacement: Story = {
     placement: 'right',
     children: ({ props, selectedOption }) => (
       <Button kind="primary" {...props()}>
-        {typeof selectedOption !== 'undefined' ? `Selected: ${selectedOption}` : 'Open dropdown placed to the right'}
+        {typeof selectedOption !== 'undefined'
+          ? `Selected: ${selectedOption?.label ?? 'none'}`
+          : 'Open dropdown placed to the right'
+        }
       </Button>
     ),
     items: (

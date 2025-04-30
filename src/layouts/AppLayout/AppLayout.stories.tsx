@@ -78,7 +78,7 @@ export const Standard: Story = {
                 </>
               }
             >
-              {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.replace(/^account_/, '')}
+              {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label}
             </AccountSelector>
             <SolutionSelector className="select-action">
               {['Identity & Access Management', 'Key Insight', 'Data Security Manager'].map(name =>

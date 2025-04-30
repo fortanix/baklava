@@ -17,6 +17,7 @@ import * as ListBox from '../../forms/controls/ListBox/ListBox.tsx';
 import cl from './DropdownMenuProvider.module.scss';
 
 
+export type ItemDetails = ListBox.ItemDetails;
 export type ItemKey = ListBox.ItemKey;
 
 type ListBoxProps = ComponentProps<typeof ListBox.ListBox>;

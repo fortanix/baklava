@@ -7,7 +7,7 @@ import * as React from 'react';
 
 import { Icon } from '../../../components/graphics/Icon/Icon.tsx';
 import { Button } from '../../../components/actions/Button/Button.tsx';
-import { type ItemKey, DropdownMenuProvider } from '../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
+import { type ItemDetails, DropdownMenuProvider } from '../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
 
 import cl from './AccountSelector.module.scss';
 
@@ -23,7 +23,7 @@ export type AccountSelectorProps = Omit<ComponentProps<typeof Button>, 'label' |
   accounts: React.ReactNode,
   
   /** The selected account. To access the selected account, pass a render prop. */
-  children: (selectedAccount: null | ItemKey) => React.ReactNode,
+  children: (selectedAccount: null | ItemDetails) => React.ReactNode,
 };
 export const AccountSelector = Object.assign(
   (props: AccountSelectorProps) => {

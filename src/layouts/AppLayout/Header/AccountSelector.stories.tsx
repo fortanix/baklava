@@ -41,6 +41,6 @@ export const AccountSelectorStandard: Story = {
         </AccountSelector.FooterActions>
       </>
     ),
-    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.replace(/^account_/, '')
+    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label
   },
 };

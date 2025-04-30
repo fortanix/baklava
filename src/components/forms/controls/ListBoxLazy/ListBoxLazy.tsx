@@ -13,7 +13,12 @@ import {
 } from '@tanstack/react-virtual';
 
 import { Spinner } from '../../../graphics/Spinner/Spinner.tsx';
-import { type VirtualItemKeys, VirtualItemKeysUtil, useListBoxSelector } from '../ListBox/ListBoxStore.tsx';
+import {
+  type ItemKey,
+  type VirtualItemKeys,
+  VirtualItemKeysUtil,
+  useListBoxSelector,
+} from '../ListBox/ListBoxStore.tsx';
 import { ListBox } from '../ListBox/ListBox.tsx';
 
 import cl from './ListBoxLazy.module.scss';
@@ -236,6 +241,24 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
     renderItem,
   };
   
+  const formatItemLabel = React.useCallback((itemKey: ItemKey) => {
+    const virtualItem: VirtualItem = {
+      key: itemKey,
+      index: 0,
+      start: 0,
+      end: 0,
+      size: 0,
+      lane: 0,
+    };
+    const label = renderItem(virtualItem);
+    
+    if (typeof label !== 'string') {
+      console.warn(`Unable to render item to string label: '${itemKey}', found type '${typeof label}'`);
+    }
+    
+    return typeof label === 'string' ? label : '';
+  }, [renderItem]);
+  
   return (
     <ListBox
       {...propsRest}
@@ -246,6 +269,7 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
         propsRest.className,
       )}
       virtualItemKeys={virtualItemKeys}
+      formatItemLabel={formatItemLabel}
     >
       <ListBoxVirtualList {...propsVirtualList}/>
     </ListBox>
