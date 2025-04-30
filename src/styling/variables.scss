@@ -56,14 +56,20 @@ $spacing-7: round(math.div(24, 14) * 1rem, 1px) !default; // ~24px
 $spacing-8: round(math.div(32, 14) * 1rem, 1px) !default; // ~32px
 $spacing-9: round(math.div(40, 14) * 1rem, 1px) !default; // ~40px
 $spacing-10: round(math.div(48, 14) * 1rem, 1px) !default; // ~48px
+// from here onwards, increments of 16px
 $spacing-11: round(math.div(64, 14) * 1rem, 1px) !default; // ~64px
 $spacing-12: round(math.div(80, 14) * 1rem, 1px) !default; // ~80px
 $spacing-13: round(math.div(96, 14) * 1rem, 1px) !default; // ~96px
+// from here onwards, increments of 32px
 $spacing-14: round(math.div(128, 14) * 1rem, 1px) !default; // ~128px
 $spacing-15: round(math.div(160, 14) * 1rem, 1px) !default; // ~160px
 $spacing-16: round(math.div(192, 14) * 1rem, 1px) !default; // ~192px
 $spacing-17: round(math.div(224, 14) * 1rem, 1px) !default; // ~224px
 $spacing-18: round(math.div(256, 14) * 1rem, 1px) !default; // ~256px
+$spacing-19: round(math.div(288, 14) * 1rem, 1px) !default; // ~288px
+$spacing-20: round(math.div(320, 14) * 1rem, 1px) !default; // ~320px
+$spacing-21: round(math.div(352, 14) * 1rem, 1px) !default; // ~352px
+$spacing-22: round(math.div(384, 14) * 1rem, 1px) !default; // ~384px
 
 // These sizes do not match Figma variables
 $size-1: math.div(1, 14) * 1rem !default; // ~1px
