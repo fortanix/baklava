@@ -9,8 +9,9 @@
 
 @forward './features/util.scss';
 @forward './features/text.scss';
-@forward './features/layout.scss';
 @forward './features/typography.scss' as typography-*;
+@forward './features/layout.scss';
+@forward './features/scroll.scss' as scroll-*;
 @forward './features/skeleton.scss' as skeleton-*;
 
 @use './variables.scss' as vars;

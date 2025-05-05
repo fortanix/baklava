@@ -66,6 +66,8 @@ export default {
     
     // Properties
     'csstools/use-logical': 'always',
+    'declaration-block-no-redundant-longhand-properties': null,
+    'declaration-block-single-line-max-declarations': 2,
     'declaration-no-important': true, // Discourage use of `!important`
     'declaration-property-value-disallowed-list': [
       {

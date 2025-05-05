@@ -7,6 +7,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import * as React from 'react';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
+import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
 import { type ItemDetails, ListBox } from './ListBox.tsx';
@@ -70,12 +71,50 @@ export const ListBoxEmpty: Story = {
   },
 };
 
+export const ListBoxEmptyWithCustomPlaceholder: Story = {
+  args: {
+    placeholderEmpty: 'This is a custom placeholder',
+    children: null,
+  },
+};
+
+export const ListBoxEmptyWithHeaderAndFooter: Story = {
+  args: {
+    children: (
+      <>
+        <ListBox.Header itemKey="header" label="An empty list with header/footer" sticky="start"/>
+        <ListBox.FooterActions>
+          <ListBox.FooterAction itemKey="action-1" label="Action 1" onActivate={() => { notifyPressed(); }}/>
+          <ListBox.FooterAction itemKey="action-2" label="Action 2" onActivate={() => { notifyPressed(); }}/>
+        </ListBox.FooterActions>
+      </>
+    ),
+  },
+};
+
 export const ListBoxWithIcon: Story = {
   args: {
     children: (
       <>
         <ListBox.Option icon="account" itemKey="option-1" label="Option with an icon"/>
         <ListBox.Option icon="user" itemKey="option-2" label="Another option"/>
+      </>
+    ),
+  },
+};
+
+const CustomIcon = (props: React.ComponentProps<typeof Icon>) =>
+  <Icon
+    decoration={{ type: 'background-circle' }}
+    {...props}
+    style={{ backgroundColor: 'light-dark(white, black)', padding: '0.4em', ...props.style }}
+  />;
+export const ListBoxWithCustomIcon: Story = {
+  args: {
+    children: (
+      <>
+        <ListBox.Option Icon={CustomIcon} icon="account" itemKey="option-1" label="Option with an icon"/>
+        <ListBox.Option Icon={CustomIcon} icon="user" itemKey="option-2" label="Another option"/>
       </>
     ),
   },
@@ -114,11 +153,11 @@ export const ListBoxWithHeaders: Story = {
   args: {
     children: (
       <>
-        <ListBox.Header itemKey="header" label={`Ice cream flavors (${fruits.length})`}/>
+        <ListBox.Header itemKey="header" label={`Ice cream flavors (${fruits.length})`} sticky={false}/>
         {fruits.map(fruit =>
           <ListBox.Option key={`icecream-${fruit}`} itemKey={`icecream-${fruit}`} label={fruit}/>
         )}
-        <ListBox.Header itemKey="header" label={`Jelly bean flavors (${fruits.length})`}/>
+        <ListBox.Header itemKey="header" label={`Jelly bean flavors (${fruits.length})`} sticky={false}/>
         {fruits.map(fruit =>
           <ListBox.Option key={`jellybean-${fruit}`} itemKey={`jellybean-${fruit}`} label={fruit}/>
         )}
@@ -159,6 +198,7 @@ export const ListBoxWithActions: Story = {
 
 export const ListBoxWithStickyActions: Story = {
   args: {
+    style: { '--sticky-items-end': 2 },
     children: (
       <>
         <ListBox.Header itemKey="header" label={`Ice cream flavors (${fruits.length})`} sticky="start"/>

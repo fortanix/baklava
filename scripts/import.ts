@@ -216,6 +216,10 @@ const runImportColorsSemantic = async (args: ScriptArgs) => {
       throw new Error(`Should not happen`);
     }
     
+    if (tokenValue.match(/#[a-z0-9]{3,6}/i)) {
+      throw new Error(`Found semantic color token defined using a hardcoded hex color: '${tokenName}'`);
+    }
+    
     // Replace references to primitive color tokens with their Sass variable equivalent
     const color = tokenValue.replaceAll(/var\(--(.+?)-(\d+)\)/g, '\$color-$1-$2');
     

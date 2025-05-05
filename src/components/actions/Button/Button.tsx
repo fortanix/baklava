@@ -147,7 +147,7 @@ export const Button = (props: ButtonProps) => {
   return (
     <button
       aria-label={accessibleName}
-      aria-disabled={!isInteractive}
+      aria-disabled={isInteractive ? undefined : true}
       disabled={disabled}
       {...propsRest}
       type={buttonType} // Not overridable

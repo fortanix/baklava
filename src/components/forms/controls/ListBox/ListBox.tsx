@@ -7,7 +7,7 @@ import { mergeRefs, mergeCallbacks } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import { useScroller } from '../../../../layouts/util/Scroller.tsx';
 
-import { type IconName, Icon } from '../../../graphics/Icon/Icon.tsx';
+import { type IconName, Icon as BkIcon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
 import {
@@ -37,6 +37,9 @@ export { type ItemKey, type ItemDef, type ItemDetails, ListBoxContext, useListBo
 export { cl as ListBoxClassNames };
 
 
+type ListBoxIcon = React.ComponentType<Pick<React.ComponentProps<typeof BkIcon>, 'icon' | 'className'>>;
+
+
 //
 // Option item
 //
@@ -53,15 +56,18 @@ export type OptionProps = ComponentProps<typeof Button> & {
   
   /** A callback to be called when the option is selected. */
   onSelect?: undefined | (() => void),
+  
+  /** Custom icon component. */
+  Icon?: undefined | ListBoxIcon,
 };
 /**
  * A list box item that can be selected.
  */
 export const Option = (props: OptionProps) => {
-  const { itemKey, label, icon, onSelect, ...propsRest } = props;
+  const { itemKey, label, icon, onSelect, Icon = BkIcon, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
-  const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef }), [itemKey]);
+  const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef, isContentItem: true }), [itemKey]);
   
   const { id, disabled, isFocused, isSelected, requestSelection } = useListBoxItem(itemDef);
   const isNonactive = propsRest.disabled || propsRest.nonactive || disabled;
@@ -112,14 +118,17 @@ export type HeaderProps = ComponentProps<typeof Button> & {
   /** An icon to be displayed before the label. */
   icon?: undefined | IconName,
   
-  /** Whether the action should stick on scroll. Default: false. */
+  /** Whether the action should stick on scroll. Default: 'start'. */
   sticky?: undefined | false | 'start',
+  
+  /** Custom icon component. */
+  Icon?: undefined | ListBoxIcon,
 };
 /**
  * A static text item that can be used as a heading.
  */
 export const Header = (props: HeaderProps) => {
-  const { itemKey, label, icon, sticky = false, ...propsRest } = props;
+  const { itemKey, label, icon, sticky = 'start', Icon = BkIcon, ...propsRest } = props;
   
   return (
     <span
@@ -157,17 +166,27 @@ export type ActionProps = ComponentProps<typeof Button> & {
   /** An icon to be displayed before the label. */
   icon?: undefined | IconName,
   
+  /** Whether this action is positioned sticky. Default: false. */
+  sticky?: undefined | false | 'end',
+  
   /** The event handler for when the user activates this action. */
   onActivate: () => void | Promise<void>,
+  
+  /** Custom icon component. */
+  Icon?: undefined | ListBoxIcon,
 };
 /**
  * A list box item that can be activated to perform some action.
  */
 export const Action = (props: ActionProps) => {
-  const { itemKey, itemPos, label, icon, onActivate, ...propsRest } = props;
+  const { itemKey, itemPos, label, icon, sticky = false, onActivate, Icon = BkIcon, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
-  const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef }), [itemKey]);
+  const itemDef = React.useMemo<ItemWithKey>(() => ({
+    itemKey,
+    itemRef,
+    isContentItem: sticky === false,
+  }), [itemKey, sticky]);
   
   const { id, disabled, isFocused, requestFocus } = useListBoxItem(itemDef);
   const isNonactive = propsRest.disabled || propsRest.nonactive || disabled;
@@ -199,6 +218,9 @@ export const Action = (props: ActionProps) => {
   );
 };
 
+export const FooterAction = (props: Omit<ActionProps, 'sticky'>) => {
+  return <Action {...props} sticky="end"/>;
+};
 export const FooterActions = (props: React.ComponentProps<'div'>) => {
   return <div {...props} className={cx(cl['bk-list-box__footer-actions'], props.className)}/>;
 };
@@ -266,6 +288,23 @@ const HiddenSelectedState = ({ ref, name, form, inputProps }: HiddenSelectedStat
   );
 };
 
+const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
+  return (
+    <>
+      <div
+        {...props}
+        className={cx(
+          cl['bk-list-box__item'],
+          cl['bk-list-box__item--static'],
+          cl['bk-list-box__item--disabled'],
+          cl['bk-list-box__empty-placeholder'],
+          props.className,
+        )}
+      />
+    </>
+  );
+};
+
 /**
  * A list box is a composite control, consisting of a (flat) list of items. Each item can be either an option that can
  * be selected, or an action that can be activated. The items list may be partial, in case of virtualization (see
@@ -313,9 +352,12 @@ export const ListBox = Object.assign(
       virtualItemKeys,
     });
     
-    if (listBox.store.getState().virtualItemKeys !== virtualItemKeys) {
-      listBox.store.getState().setVirtualItemKeys(virtualItemKeys);
+    const listBoxState = listBox.store.getState();
+    if (listBoxState.virtualItemKeys !== virtualItemKeys) {
+      listBoxState.setVirtualItemKeys(virtualItemKeys);
     }
+    
+    const isEmpty = useListBoxSelector(state => state.isEmpty(), listBox.store);
     
     React.useEffect(() => {
       return listBox.store.subscribe((state, prevState) => {
@@ -347,15 +389,26 @@ export const ListBox = Object.assign(
       }
     }, []);
     
+    // Note: WCAG requires at least one element with `role="option"` (or "group") in a `role="listbox"`. If there are
+    // no options, then we should not render a `role="listbox"`.
+    // https://github.com/dequelabs/axe-core/issues/383
+    // https://github.com/dequelabs/axe-core/issues/2339
+    // We can instead just render a normal (`role="presentation"`) element, see for example how it's done in MUI:
+    // https://mui.com/material-ui/react-autocomplete/#combo-box
+    const ariaProps = isEmpty ? {
+      'aria-describedby': `${id}_empty-placeholder`,
+    } : {
+      role: 'listbox',
+      'aria-label': label,
+      'aria-busy': false,
+    } as const;
+    
     return (
       <listBox.Provider>
         <div
           {...scrollerProps}
-          // biome-ignore lint/a11y/useSemanticElements: Customizable `<select>` does not yet have browser support.
-          role="listbox"
-          aria-label={label}
-          data-empty-placeholder={placeholderEmpty}
           tabIndex={undefined} // Do not make the listbox focusable, use a roving tabindex instead
+          {...ariaProps}
           {...propsRest}
           {...listBox.props}
           ref={mergeRefs(ref, props.ref)}
@@ -365,20 +418,24 @@ export const ListBox = Object.assign(
             scrollerProps.className,
             'bk',
             { [cl['bk-list-box']]: !unstyled },
+            { [cl['bk-list-box--empty']]: isEmpty },
             listBox.props.className,
             propsRest.className,
           )}
         >
-          <HiddenSelectedState ref={inputRef} name={name} form={form}/>
+          {typeof name === 'string' && <HiddenSelectedState ref={inputRef} name={name} form={form}/>}
           {children}
+          {isEmpty && <EmptyPlaceholder id={`${id}_empty-placeholder`}>{placeholderEmpty}</EmptyPlaceholder>}
         </div>
       </listBox.Provider>
     );
   },
   {
+    EmptyPlaceholder,
     Option,
     Header,
     Action,
+    FooterAction,
     FooterActions,
   },
 );

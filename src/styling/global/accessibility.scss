@@ -86,10 +86,10 @@
   */
   
   $elements-with-inset: div, section, dialog;
-  :is(#{$elements-with-inset}) {
+  [tabindex]:is(#{$elements-with-inset}) {
     @include focus-inset($override-layer: false);
   }
-  :not(#{$elements-with-inset}) {
+  [tabindex]:not(#{$elements-with-inset}) {
     @include focus-outset($override-layer: false);
   }
   
@@ -100,5 +100,9 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.001ms !important;
     }
+  }
+  
+  .visually-hidden {
+    @include visually-hidden;
   }
 }
