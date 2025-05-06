@@ -28,7 +28,7 @@ export const Demo = () => {
           <UserMenu userName="Anand Kashyap"/>
           {/* <UserMenu userName="Anand Kashyap – Very Long Name That Will Overflow"/> */}
           <AccountSelector className="select-action" accounts={null}>
-            {accountSelected => accountSelected ?? 'Accounts'}
+            {accountSelected => accountSelected?.label ?? 'Accounts'}
           </AccountSelector>
           <SolutionSelector className="select-action"/>
         </Header>

@@ -30,7 +30,9 @@ const InputAction = (props: React.ComponentProps<typeof IconButton>) => {
   );
 };
 
-export type InputProps = Omit<ComponentProps<'div'>, 'ref'> & Omit<InputUtil.InputSpecificProps, 'type'> & {
+type InputSpecificProps = Omit<InputUtil.InputSpecificProps, 'type'>;
+type InputContainerProps = Omit<ComponentProps<'div'>, 'ref' | keyof InputSpecificProps>;
+export type InputProps = InputContainerProps & InputSpecificProps & {
   ref?: undefined | React.Ref<HTMLInputElement>,
   
   /** Whether this component should be unstyled. */

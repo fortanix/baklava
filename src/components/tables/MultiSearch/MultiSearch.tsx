@@ -28,13 +28,18 @@ import { Tag } from '../../text/Tag/Tag.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { Input } from '../../forms/controls/Input/Input.tsx';
 import { CheckboxGroup } from '../../forms/controls/CheckboxGroup/CheckboxGroup.tsx';
-// import * as Dropdown from '../../overlays/dropdown/Dropdown.tsx';
-import { DropdownMenu, DropdownMenuContext } from '../../overlays/DropdownMenu/DropdownMenu.tsx';
-// import { DateTimePicker } from '../../forms/datetime/DateTimePicker.tsx';
+//import * as Dropdown from '../../overlays/dropdown/Dropdown.tsx';
+//import { DropdownMenu, DropdownMenuContext } from '../../overlays/DropdownMenu/DropdownMenu.tsx';
+//import { DateTimePicker } from '../../forms/datetime/DateTimePicker.tsx';
 
 import * as FQ from './filterQuery.ts';
 
 //import './MultiSearch.scss';
+
+
+// FIXME: to be done in separate MultiSearch PR
+const DropdownMenu = Object.assign((props: any) => null, { Action: (props: any) => null });
+type DropdownMenuContext = any;
 
 
 // Utilities

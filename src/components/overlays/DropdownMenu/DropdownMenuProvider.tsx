@@ -94,7 +94,6 @@ export const DropdownMenuProvider = Object.assign(
       floatingStyles,
       getReferenceProps,
       getFloatingProps,
-      getItemProps,
       isOpen,
       setIsOpen,
     } = useFloatingElement({
@@ -112,6 +111,13 @@ export const DropdownMenuProvider = Object.assign(
     
     const [selectedOption, setSelectedOption] = React.useState<null | ListBox.ItemDetails>(null);
     
+    const handleAnchorKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+      if (['ArrowUp', 'ArrowDown', ' '].includes(event.key)) {
+        event.preventDefault(); // Prevent scrolling
+        setIsOpen(true);
+      }
+    }, [setIsOpen]);
+    
     const renderAnchor = () => {
       const anchorProps: AnchorRenderArgs['props'] = (userProps?: undefined | React.HTMLProps<Element>) => {
         const userPropsRef: undefined | string | React.Ref<Element> = userProps?.ref ?? undefined;
@@ -121,12 +127,15 @@ export const DropdownMenuProvider = Object.assign(
           return (userProps ?? {}) as Record<string, unknown>;
         }
         
+        const props = getReferenceProps(userProps);
         return {
-          ...getReferenceProps(userProps),
+          ...props,
           ref: userPropsRef ? mergeRefs(anchorRef, userPropsRef, refs.setReference) : refs.setReference,
           'aria-controls': listBoxId,
           'aria-haspopup': 'listbox',
           'aria-expanded': isOpen,
+          // biome-ignore lint/suspicious/noExplicitAny: `onKeyDown` should be a function here
+          onKeyDown: mergeCallbacks([handleAnchorKeyDown, props.onKeyDown as any]),
         };
       };
       
@@ -162,7 +171,7 @@ export const DropdownMenuProvider = Object.assign(
       }, 150);
     }, [setIsOpen]);
     
-    const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+    const handleDropdownKeyDown = React.useCallback((event: React.KeyboardEvent) => {
       if (event.key === 'Enter') {
         handleSelect(selectedOption);
       }
@@ -174,7 +183,7 @@ export const DropdownMenuProvider = Object.assign(
         style: floatingStyles,
         ...propsRest,
         className: cx(cl['bk-dropdown-menu-provider__list-box'], propsRest.className),
-        onKeyDown: mergeCallbacks([handleKeyDown, propsRest.onKeyDown]),
+        onKeyDown: mergeCallbacks([handleDropdownKeyDown, propsRest.onKeyDown]),
       });
       
       return (

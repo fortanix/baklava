@@ -2,6 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import { loremIpsum } from '../../../../util/storybook/LoremIpsum.tsx';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
@@ -68,6 +69,19 @@ export const ListBoxStandard: Story = {
 export const ListBoxEmpty: Story = {
   args: {
     children: null,
+  },
+};
+
+export const ListBoxWithOverflow: Story = {
+  args: {
+    children: (
+      <>
+        <ListBox.Option itemKey="overflow" label={loremIpsum()}/>
+        {fruits.map((fruit) =>
+          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
+        )}
+      </>
+    ),
   },
 };
 

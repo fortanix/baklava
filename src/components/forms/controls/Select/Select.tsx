@@ -46,13 +46,6 @@ export const Select = Object.assign(
       ...propsRest
     } = props;
     
-    const handleKeyDown = React.useCallback((requestOpen: () => void) => (event: React.KeyboardEvent) => {
-      if (['ArrowUp', 'ArrowDown', ' '].includes(event.key)) {
-        event.preventDefault(); // Prevent scrolling
-        requestOpen();
-      }
-    }, []);
-    
     return (
       <DropdownMenuProvider
         label="Account selector"
@@ -72,7 +65,6 @@ export const Select = Object.assign(
             className: cx(cl['bk-select'], { [cl['bk-select--open']]: open }),
             value: selectedOption === null ? '' : selectedOption.label,
             onChange: () => {},
-            onKeyDown: mergeCallbacks([handleKeyDown(requestOpen), propsRest.onKeyDown]),
           });
           
           return (

@@ -136,7 +136,7 @@ export const DialogModalWithDropdown: Story = {
             </>
           }
         >
-          {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.replace(/^acc_/, '')}
+          {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label.replace(/^acc_/, '')}
         </AccountSelector>
       </>
     ),
