@@ -79,7 +79,7 @@ const packageConfig = {
     // Test
     // Note: use `vitest run --root=. src/...` to run a single test file
     //'test:unit': 'vitest run --root=.', // Need to specify `--root=.` since the vite root is set to `./app`
-    'test': 'npm run check:types && npm run lint:style', // TODO: add `lint:script`, `test:unit`
+    'test': 'npm run check:types && npm run lint:style && npm run verify verify:source', // TODO: add `lint:script`, `test:unit`
     'test-ui': 'vitest --ui',
     'coverage': 'vitest run --coverage',
     
