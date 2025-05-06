@@ -26,7 +26,9 @@ export const App = () => {
         <Header slot="actions">
           <UserMenu userName="Anand Kashyap"/>
           {/* <UserMenu userName="Anand Kashyap – Very Long Name That Will Overflow"/> */}
-          <AccountSelector className="select-action"/>
+          <AccountSelector className="select-action" accounts={null}>
+            {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label}
+          </AccountSelector>
           <SolutionSelector className="select-action"/>
         </Header>
       </AppLayout.Header>
