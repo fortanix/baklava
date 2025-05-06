@@ -168,7 +168,7 @@
       }
       
       // Draw a "chin" so that it covers the scrolling items behind it
-      $chin-h: var(--bk-list-box-chin-size);
+      $chin-h: calc(var(--bk-list-box-padding-end) + 1px); // Add 1px to work around pixel rounding issues
       $chin-c: conic-gradient(bk.$theme-dropdown-menu-menu-background-default 0 0);
       border-image: fill 0 / 0 / 0 0 $chin-h 0 $chin-c;
     }
