@@ -264,8 +264,8 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   /** The machine readable name of the list box control, used as part of `<form>` submission. */
   name?: undefined | string,
   
-  /** A placheholder text message to display when there are no items in the list. */
-  placeholderEmpty?: undefined | React.ReactNode,
+  /** A placheholder text message to display when there are no items in the list. Set to `false` to prevent showing. */
+  placeholderEmpty?: undefined | false | React.ReactNode,
   
   /** The ID of the `<form>` element to associate this list box with. Optional. */
   form?: undefined | string,
@@ -437,7 +437,9 @@ export const ListBox = Object.assign(
         >
           {typeof name === 'string' && <HiddenSelectedState ref={inputRef} name={name} form={form}/>}
           {children}
-          {isEmpty && <EmptyPlaceholder id={`${id}_empty-placeholder`}>{placeholderEmpty}</EmptyPlaceholder>}
+          {isEmpty && placeholderEmpty !== false &&
+            <EmptyPlaceholder id={`${id}_empty-placeholder`}>{placeholderEmpty}</EmptyPlaceholder>
+          }
         </div>
       </listBox.Provider>
     );

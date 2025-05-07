@@ -353,32 +353,39 @@ export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
   // Register the item
   React.useEffect(() => {
     store.setState(state => {
-      state._internalItemsRegistry.set(item.itemKey, item);
+      let stateUpdated = state;
+      
+      stateUpdated._internalItemsRegistry.set(item.itemKey, item); // Mutate to prevent frequent rerendering
       
       if (item.isContentItem) {
-        state._internalItemsCount++;
+        stateUpdated._internalItemsCount++;
       }
       
       if (state.focusedItem === null) {
-        state.focusedItem = item.itemKey;
+        stateUpdated = { ...state, focusedItem: item.itemKey }; // Immutable update
       }
       
-      return state;
+      return stateUpdated;
     });
     return () => {
       store.setState(state => {
-        state._internalItemsRegistry.delete(item.itemKey);
+        let stateUpdated = state;
+        
+        stateUpdated._internalItemsRegistry.delete(item.itemKey); // Mutate to prevent frequent rerendering
         
         if (item.isContentItem) {
-          state._internalItemsCount--;
+          // Immutable update, since we do want to trigger updates in case this hits 0
+          stateUpdated = { ...state, _internalItemsCount: state._internalItemsCount-- };
         }
         
         if (state.focusedItem === item.itemKey) {
           const firstKey = state._internalItemsRegistry.keys().next();
-          state.focusedItem = firstKey.done ? null : firstKey.value;
+          const focusedItem = firstKey.done ? null : firstKey.value;
+          
+          stateUpdated = { ...state, focusedItem }; // Immutable update
         }
         
-        return state;
+        return stateUpdated;
       });
     };
   }, [store, item]);
