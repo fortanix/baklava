@@ -29,10 +29,18 @@
     display: grid;
     // Note: use `minmax(0, 1fr)` to prevent blowout: https://css-tricks.com/preventing-a-grid-blowout
     grid:
-      'header  header' var(--bk-app-layout-header-height)
-      'sidebar content' 1fr
-      'sidebar footer' max-content
-      / var(--bk-app-layout-sidebar-width) minmax(0, 1fr);
+      'header' var(--bk-app-layout-header-height)
+      'content' 1fr
+      'footer' max-content
+      / minmax(0, 1fr);
+    
+    &:has(> [slot='sidebar']) {
+      grid:
+        'header  header' var(--bk-app-layout-header-height)
+        'sidebar content' 1fr
+        'sidebar footer' max-content
+        / var(--bk-app-layout-sidebar-width) minmax(0, 1fr);
+    }
     
     > [slot='header'] { grid-area: header; }
     > [slot='sidebar'] { grid-area: sidebar; }

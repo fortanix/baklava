@@ -138,3 +138,79 @@ export const Standard: Story = {
     ),
   },
 };
+
+export const NoSidebar: Story = {
+  args: {
+    children: (
+      <>
+        <AppLayout.Header>
+          <DummyLink slot="logo">
+            <Logo subtitle="Data Security Manager" subtitleTrademark={true}/>
+          </DummyLink>
+          <Header slot="actions">
+            <UserMenu userName="Anand Kashyap">
+              <UserMenu.Action itemKey="profile" label="Profile"
+                onActivate={() => { notify.info(`Opening user profile.`); }}
+              />
+              <UserMenu.Action itemKey="sign-out" label="Sign out"
+                onActivate={() => { notify.info(`Signing out.`); }}
+              />
+            </UserMenu>
+            <SysadminSwitcher
+              onPress={() => { notify.info(`Navigating to system administration panel.`); }}
+            />
+            <AccountSelector className="select-action">
+              {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
+                <AccountSelector.Option key={`account_${name}`} optionKey={`account_${name}`} icon="account"
+                  label={name}
+                  onSelect={() => { notify.info(`Selected ${name}`); }}
+                />
+              )}
+              {/* TODO: make this sticky so it's visible even if there are a lot of accounts? */}
+              <AccountSelector.Option key="action_add-account" optionKey="action_add-account" label="Add account"/>
+            </AccountSelector>
+            <SolutionSelector className="select-action">
+              {['Identity & Access Management', 'Key Insight', 'Data Security Manager'].map(name =>
+                <SolutionSelector.Option key={name} optionKey={name} icon="user" label={name}
+                  onSelect={() => { notify.info(`Selected ${name}`); }}
+                />
+              )}
+            </SolutionSelector>
+          </Header>
+        </AppLayout.Header>
+        <AppLayout.Content>
+          <Breadcrumbs
+            items={[
+              {
+                title: 'Data Security Manager',
+                href: '#',
+              },
+              {
+                title: 'Dashboard',
+                href: '#',
+              }
+            ]}
+          />
+          <Panel>
+            <Panel.Heading>Panel</Panel.Heading>
+            
+            <DialogModal
+              title="Modal"
+              trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={() => { activate(); }}/>}
+            >
+              Test
+            </DialogModal>
+          </Panel>
+          
+          {/* Clicking the link should scroll to the anchor, with enough top padding (`scroll-padding-top`) */}
+          <DummyLink id="anchor">Anchor</DummyLink>
+          <OverflowTester openDefault/>
+          <a href="#anchor">Scroll to anchor</a>
+        </AppLayout.Content>
+        <AppLayout.Footer>
+          <span className="version">Version: 1.2.2343</span>
+        </AppLayout.Footer>
+      </>
+    ),
+  },
+};
