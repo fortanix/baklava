@@ -149,6 +149,14 @@
         // Actions (non-sticky) get indented a little bit more
         padding-inline-start: calc(var(--bk-list-box-item-padding-inline) + bk.$spacing-2);
       }
+      
+      &.bk-list-box__item--loading {
+        user-select: none;
+        
+        color: bk.$theme-text-small-text-subtle;
+        font-size: bk.$font-size-s;
+        text-transform: uppercase;
+      }
     }
     
     // Wrapper for sticky footer items. Need a wrapper element for this, otherwise all the sticky elements will

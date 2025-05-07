@@ -23,6 +23,7 @@ import {
 } from './ListBoxStore.tsx';
 
 import cl from './ListBox.module.scss';
+import { Spinner } from '../../../graphics/Spinner/Spinner.tsx';
 
 
 /*
@@ -276,6 +277,9 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   /** Render the given item key as a string label. If not given, will use the item element's text value. */
   formatItemLabel?: undefined | ((itemKey: ItemKey) => string),
   
+  /** Whether the list is currently in loading state. Default: false. */
+  isLoading?: undefined | boolean,
+  
   /** If the list is virtually rendered, `virtualItemKeys` should be provided with the full list of item keys. */
   virtualItemKeys?: undefined | null | VirtualItemKeys,
 };
@@ -337,6 +341,7 @@ export const ListBox = Object.assign(
       placeholderEmpty = 'No items',
       form,
       inputProps,
+      isLoading = false,
       virtualItemKeys = null,
       formatItemLabel,
       ...propsRest
@@ -436,9 +441,19 @@ export const ListBox = Object.assign(
           )}
         >
           {typeof name === 'string' && <HiddenSelectedState ref={inputRef} name={name} form={form}/>}
+          
           {children}
-          {isEmpty && placeholderEmpty !== false &&
+          
+          {isEmpty && placeholderEmpty !== false && !isLoading &&
             <EmptyPlaceholder id={`${id}_empty-placeholder`}>{placeholderEmpty}</EmptyPlaceholder>
+          }
+          
+          {isLoading &&
+            <span
+              className={cx(cl['bk-list-box__item'], cl['bk-list-box__item--static'], cl['bk-list-box__item--loading'])}
+            >
+              Loading... <Spinner inline size="small"/>
+            </span>
           }
         </div>
       </listBox.Provider>

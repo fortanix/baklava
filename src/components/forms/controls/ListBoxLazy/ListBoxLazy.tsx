@@ -12,7 +12,6 @@ import {
   useVirtualizer,
 } from '@tanstack/react-virtual';
 
-import { Spinner } from '../../../graphics/Spinner/Spinner.tsx';
 import {
   type ItemKey,
   type VirtualItemKeys,
@@ -41,22 +40,6 @@ const ListItemVirtual = ({ virtualItem, itemsCount, renderItem }: ListItemVirtua
     blockSize: virtualItem.size,
     transform: `translateY(${virtualItem.start}px)`, // FIXME: logical property equivalent?
   }), [virtualItem.size, virtualItem.start]);
-  
-  if (virtualItem.index >= itemsCount) {
-    return (
-      <ListBox.Header
-        itemKey={String(virtualItem.key)}
-        label="Loading"
-        className={cx(cl['bk-list-box-lazy__item'])}
-        style={styles}
-      >
-        <span style={{ display: 'flex', alignItems: 'center', gap: '1ch' }}>
-          Loading...
-          <Spinner size="small" inline/>
-        </span>
-      </ListBox.Header>
-    );
-  }
   
   const content = renderItem(virtualItem);
   
@@ -124,14 +107,11 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   
   const getItemKey = React.useCallback((index: number) => {
     const virtualItemKey = virtualItemKeys.at(index);
-    if (typeof virtualItemKey === 'undefined' && isLoading && index === virtualItemKeys.length) {
-      return '__LOADING';
-    }
     return virtualItemKey ?? `__INVALID-INDEX_${index}`;
-  }, [virtualItemKeys, isLoading]);
+  }, [virtualItemKeys]);
   
   const virtualizer = useVirtualizer({
-    count: virtualItemKeys.length + (isLoading ? 1 : 0),
+    count: virtualItemKeys.length,
     getScrollElement: () => scrollElement,
     getItemKey,
     estimateSize: () => 35, // FIXME: enforce this as the item height through CSS?
@@ -142,11 +122,12 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   
   // biome-ignore lint/correctness/useExhaustiveDependencies: `virtualizer.getVirtualItems()` is a valid dep
   React.useEffect(() => {
+    const hasNextPage = true; // FIXME: need some stopping condition
+    
     const virtualItemsSorted = virtualizer.getVirtualItems().toSorted((item1, item2) => item1.index - item2.index);
     const lastItem = virtualItemsSorted.at(-1);
     if (!lastItem) { return; } // If the list is empty, ignore
     
-    const hasNextPage = true; // FIXME
     if (!isLoading && lastItem.index >= limit - 1 && hasNextPage) {
       onUpdateLimit(limit + pageSize);
     }
@@ -210,9 +191,6 @@ export type ListBoxLazyProps = Omit<ComponentProps<typeof ListBox>, 'children' |
   /** Request to update the limit. */
   onUpdateLimit: ListBoxVirtualListProps['onUpdateLimit'],
   
-  /** Whether the list is currently in loading state. Default: false. */
-  isLoading?: undefined | ListBoxVirtualListProps['isLoading'],
-  
   /** Callback to render the given list item. */
   renderItem: ListBoxVirtualListProps['renderItem'],
 };
@@ -270,6 +248,7 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
       )}
       virtualItemKeys={virtualItemKeys}
       formatItemLabel={formatItemLabel}
+      isLoading={isLoading}
     >
       <ListBoxVirtualList {...propsVirtualList}/>
     </ListBox>

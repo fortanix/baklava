@@ -242,6 +242,19 @@ export const ListBoxWithStickyActions: Story = {
   },
 };
 
+export const ListBoxLoading: Story = {
+  args: {
+    children: (
+      <>
+        {fruits.slice(0, 2).map((fruit) =>
+          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
+        )}
+      </>
+    ),
+    isLoading: true,
+  },
+};
+
 /**
  * When the list box is selected, typing a string of characters will automatically select the first option found that
  * starts with the typed string. This should in a case insensitive way, ignoring most diacritics.
