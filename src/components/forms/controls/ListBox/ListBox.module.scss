@@ -73,6 +73,15 @@
         @include bk.text-one-line($include-padding: false);
       }
       
+      > .bk-list-box__item__icon {
+        &.bk-list-box__item__icon--highlight {
+          --bk-icon-accent-color: color-mix(
+            in oklch, #{bk.$theme-dropdown-menu-menu-icon-background-default}, 30% transparent
+          );
+          padding: 4px;
+        }
+      }
+      
       // Add a separator between each item
       &:not(:nth-child(1 of .bk-list-box__item)) {
         border-block-start: bk.$size-1 solid bk.$theme-dropdown-menu-menu-border-default;
@@ -168,7 +177,7 @@
       }
       
       // Draw a "chin" so that it covers the scrolling items behind it
-      $chin-h: calc(var(--bk-list-box-padding-end) + 1px); // Add 1px to work around pixel rounding issues
+      $chin-h: calc(var(--bk-list-box-chin-size) + 1px); // Add 1px to work around pixel rounding issues
       $chin-c: conic-gradient(bk.$theme-dropdown-menu-menu-background-default 0 0);
       border-image: fill 0 / 0 / 0 0 $chin-h 0 $chin-c;
     }

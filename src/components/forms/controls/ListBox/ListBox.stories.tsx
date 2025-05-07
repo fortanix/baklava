@@ -87,7 +87,7 @@ export const ListBoxWithOverflow: Story = {
 
 export const ListBoxEmptyWithCustomPlaceholder: Story = {
   args: {
-    placeholderEmpty: 'This is a custom placeholder',
+    placeholderEmpty: <><Icon icon="warning-filled"/> This is a custom placeholder</>,
     children: null,
   },
 };
@@ -117,11 +117,21 @@ export const ListBoxWithIcon: Story = {
   },
 };
 
+export const ListBoxWithHighlightedIcon: Story = {
+  args: {
+    children: (
+      <>
+        <ListBox.Option icon="account" iconDecoration="highlight" itemKey="option-1" label="Option with an icon"/>
+        <ListBox.Option icon="user" iconDecoration="highlight" itemKey="option-2" label="Another option"/>
+      </>
+    ),
+  },
+};
+
 const CustomIcon = (props: React.ComponentProps<typeof Icon>) =>
   <Icon
-    decoration={{ type: 'background-circle' }}
     {...props}
-    style={{ backgroundColor: 'light-dark(white, black)', padding: '0.4em', ...props.style }}
+    style={{ color: 'light-dark(brown, orange)', ...props.style }}
   />;
 export const ListBoxWithCustomIcon: Story = {
   args: {

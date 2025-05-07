@@ -37,7 +37,7 @@ export { type ItemKey, type ItemDef, type ItemDetails, ListBoxContext, useListBo
 export { cl as ListBoxClassNames };
 
 
-type ListBoxIcon = React.ComponentType<Pick<React.ComponentProps<typeof BkIcon>, 'icon' | 'className'>>;
+type ListBoxIcon = React.ComponentType<Pick<React.ComponentProps<typeof BkIcon>, 'icon' | 'className' | 'decoration'>>;
 
 
 //
@@ -54,6 +54,9 @@ export type OptionProps = ComponentProps<typeof Button> & {
   /** An icon to be displayed before the label. */
   icon?: undefined | IconName,
   
+  /** How to decorate the icon. Default: undefined (i.e. no decoration). */
+  iconDecoration?: undefined | 'highlight',
+  
   /** A callback to be called when the option is selected. */
   onSelect?: undefined | (() => void),
   
@@ -64,7 +67,7 @@ export type OptionProps = ComponentProps<typeof Button> & {
  * A list box item that can be selected.
  */
 export const Option = (props: OptionProps) => {
-  const { itemKey, label, icon, onSelect, Icon = BkIcon, ...propsRest } = props;
+  const { itemKey, label, icon, iconDecoration, onSelect, Icon = BkIcon, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef, isContentItem: true }), [itemKey]);
@@ -97,7 +100,16 @@ export const Option = (props: OptionProps) => {
       nonactive={isNonactive}
       onPress={handlePress}
     >
-      {icon && <Icon icon={icon} className={cl['bk-list-box__item__icon']}/>}
+      {icon &&
+        <Icon
+          icon={icon}
+          decoration={iconDecoration !== 'highlight' ? undefined : { type: 'background-circle' }}
+          className={cx(
+            cl['bk-list-box__item__icon'],
+            { [cl['bk-list-box__item__icon--highlight']]: iconDecoration === 'highlight' },
+          )}
+        />
+      }
       <span className={cl['bk-list-box__item__label']}>{propsRest.children ?? label}</span>
     </Button>
   );
@@ -253,7 +265,7 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   name?: undefined | string,
   
   /** A placheholder text message to display when there are no items in the list. */
-  placeholderEmpty?: undefined | string,
+  placeholderEmpty?: undefined | React.ReactNode,
   
   /** The ID of the `<form>` element to associate this list box with. Optional. */
   form?: undefined | string,
