@@ -159,19 +159,26 @@ export const NoSidebar: Story = {
             <SysadminSwitcher
               onPress={() => { notify.info(`Navigating to system administration panel.`); }}
             />
-            <AccountSelector className="select-action">
-              {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
-                <AccountSelector.Option key={`account_${name}`} optionKey={`account_${name}`} icon="account"
-                  label={name}
-                  onSelect={() => { notify.info(`Selected ${name}`); }}
-                />
-              )}
-              {/* TODO: make this sticky so it's visible even if there are a lot of accounts? */}
-              <AccountSelector.Option key="action_add-account" optionKey="action_add-account" label="Add account"/>
+            <AccountSelector
+              className="select-action"
+              accounts={
+                <>
+                  {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
+                    <AccountSelector.Option key={`acc_${name}`} itemKey={`acc_${name}`} icon="account" label={name}/>
+                  )}
+                  <AccountSelector.FooterActions>
+                    <AccountSelector.Action itemKey="action_add-account" label="Add account"
+                      onActivate={() => { notify.info(`Navigating to 'Add Account' page.`);  }}
+                    />
+                  </AccountSelector.FooterActions>
+                </>
+              }
+            >
+              {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label}
             </AccountSelector>
             <SolutionSelector className="select-action">
               {['Identity & Access Management', 'Key Insight', 'Data Security Manager'].map(name =>
-                <SolutionSelector.Option key={name} optionKey={name} icon="user" label={name}
+                <SolutionSelector.Option key={name} itemKey={name} icon="user" label={name}
                   onSelect={() => { notify.info(`Selected ${name}`); }}
                 />
               )}
