@@ -65,10 +65,7 @@ export const Standard: Story = {
               accounts={
                 <>
                   {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
-                    <AccountSelector.Option key={`account_${name}`} itemKey={`account_${name}`} icon="account"
-                      label={name}
-                      //onSelect={() => { notify.info(`Selected ${name}`); }}
-                    />
+                    <AccountSelector.Option key={`acc_${name}`} itemKey={`acc_${name}`} icon="account" label={name}/>
                   )}
                   <AccountSelector.FooterActions>
                     <AccountSelector.Action itemKey="action_add-account" label="Add account"
