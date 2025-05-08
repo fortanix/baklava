@@ -89,7 +89,7 @@ const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
       setIsLoading(true);
       window.setTimeout(() => {
         setIsLoading(false);
-        setItems(Array.from({ length: limit }));
+        setItems(generateData({ numItems: limit }));
       }, 2000);
     }
   }, [limit, hasMoreItems]);
