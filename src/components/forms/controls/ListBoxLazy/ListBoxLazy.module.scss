@@ -9,7 +9,6 @@
     @include bk.component-base(bk-list-box-lazy);
     
     .bk-list-box-lazy__scroller {
-      position: 'relative';
       flex-shrink: 0; // Prevent the div from shrinking inside the parent flex box
       
       > .bk-list-box-lazy__item {

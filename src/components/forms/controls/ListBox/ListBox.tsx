@@ -417,7 +417,7 @@ export const ListBox = Object.assign(
     } : {
       role: 'listbox',
       'aria-label': label,
-      'aria-busy': false,
+      'aria-busy': isLoading,
     } as const;
     
     return (

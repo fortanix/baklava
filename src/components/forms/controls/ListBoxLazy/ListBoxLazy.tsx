@@ -8,6 +8,7 @@ import { classNames as cx, type ComponentProps } from '../../../../util/componen
 import {
   type Range,
   type VirtualItem,
+  type Virtualizer,
   defaultRangeExtractor,
   useVirtualizer,
 } from '@tanstack/react-virtual';
@@ -58,11 +59,24 @@ const ListItemVirtual = ({ virtualItem, itemsCount, renderItem }: ListItemVirtua
 };
 
 
+// Calculate if the user has scrolled to near the end of the scroll container
+const isScrollNearEnd = (virtualizer: Virtualizer<HTMLDivElement, Element>): boolean => {
+  const scrollRectHeight = virtualizer.scrollRect?.height ?? null;
+  if (virtualizer.scrollOffset === null || scrollRectHeight === null) {
+    return false;
+  }
+  
+  const distanceFromEnd = virtualizer.getTotalSize() - (virtualizer.scrollOffset + scrollRectHeight);
+  return distanceFromEnd < (scrollRectHeight / 2);
+};
+
+
 type ListBoxVirtualListProps = {
   scrollElement: null | React.ComponentRef<typeof ListBox>,
   virtualItemKeys: VirtualItemKeys,
   limit: number,
   pageSize: number,
+  hasMoreItems: boolean,
   onUpdateLimit: (limit: number) => void,
   isLoading: boolean,
   renderItem: ListItemVirtualProps['renderItem'],
@@ -73,6 +87,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     virtualItemKeys,
     limit,
     pageSize,
+    hasMoreItems,
     onUpdateLimit,
     isLoading,
     renderItem,
@@ -120,23 +135,20 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     useAnimationFrameWithResizeObserver: true,
   });
   
-  // biome-ignore lint/correctness/useExhaustiveDependencies: `virtualizer.getVirtualItems()` is a valid dep
+  const virtualItems = virtualizer.getVirtualItems();
+  const scrollNearEnd = isScrollNearEnd(virtualizer);
+  
   React.useEffect(() => {
-    const hasNextPage = true; // FIXME: need some stopping condition
-    
-    const virtualItemsSorted = virtualizer.getVirtualItems().toSorted((item1, item2) => item1.index - item2.index);
-    const lastItem = virtualItemsSorted.at(-1);
-    if (!lastItem) { return; } // If the list is empty, ignore
-    
-    if (!isLoading && lastItem.index >= limit - 1 && hasNextPage) {
+    if (hasMoreItems && scrollNearEnd && !isLoading) {
       onUpdateLimit(limit + pageSize);
     }
   }, [
+    scrollNearEnd,
+    hasMoreItems,
+    isLoading,
+    onUpdateLimit,
     limit,
     pageSize,
-    onUpdateLimit,
-    isLoading,
-    virtualizer.getVirtualItems(),
   ]);
   
   /*
@@ -152,8 +164,6 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     virtualizer.scrollToIndex(targetIndex);
   }, [context?.focusedItem, virtualizer, totalItems]);
   */
-  
-  const virtualItems = virtualizer.getVirtualItems();
   
   return (
     // FIXME: we could do away with this extra <div> if we force a scroll bar with a (hidden?) item at the far end
@@ -188,6 +198,9 @@ export type ListBoxLazyProps = Omit<ComponentProps<typeof ListBox>, 'children' |
   /** Size of a page (set of additional data to load in). Default: 10. */
   pageSize?: undefined | ListBoxVirtualListProps['pageSize'],
   
+  /** Whether there are more items, to be loaded. Default: false. */
+  hasMoreItems?: undefined | ListBoxVirtualListProps['hasMoreItems'],
+  
   /** Request to update the limit. */
   onUpdateLimit: ListBoxVirtualListProps['onUpdateLimit'],
   
@@ -200,6 +213,7 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
     virtualItemKeys,
     limit,
     pageSize = 10,
+    hasMoreItems = false,
     onUpdateLimit,
     isLoading = false,
     renderItem,
@@ -214,6 +228,7 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
     virtualItemKeys,
     limit,
     pageSize,
+    hasMoreItems,
     onUpdateLimit,
     isLoading,
     renderItem,
