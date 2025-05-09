@@ -18,7 +18,6 @@ export type LogoProps = ComponentProps<'figure'> & {
  * Logo component.
  */
 export const Logo = ({ subtitle, subtitleTrademark, ...propsRest }: LogoProps) => {
-  const showSubtitle = !!subtitle
   return (
     <figure
       {...propsRest}
@@ -28,10 +27,10 @@ export const Logo = ({ subtitle, subtitleTrademark, ...propsRest }: LogoProps) =
         propsRest.className,
       )}
     >
-      <div className={cx('_logo', !showSubtitle && 'no-subtitle')}>
+      <div className="_logo">
         <img alt={`Fortanix ${subtitle ?? ''}`} src={logoImage} className="_icon"/>
         <span className="_title">Fortanix</span>
-        {showSubtitle && <span className="_subtitle">
+        {subtitle && <span className="_subtitle">
           {subtitle}
           {subtitleTrademark && <sup className="_subtitle-trademark">&trade;</sup>}
         </span>}
