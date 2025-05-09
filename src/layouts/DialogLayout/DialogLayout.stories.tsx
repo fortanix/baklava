@@ -7,7 +7,7 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Dialog } from '../../components/containers/Dialog/Dialog.tsx';
-import { Logo } from '../../layouts/AppLayout/Logo/Logo.tsx';
+import { Logo } from '../../fortanix/Logo/Logo.tsx';
 import { H3 } from '../../typography/Heading/Heading.tsx';
 import { Form } from '../../components/forms/context/Form/Form.tsx';
 import { FormLayout } from '../FormLayout/FormLayout.tsx';
