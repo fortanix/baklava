@@ -275,7 +275,7 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
   
   /** Render the given item key as a string label. If not given, will use the item element's text value. */
-  formatItemLabel?: undefined | ((itemKey: ItemKey) => string),
+  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
   
   /** Whether the list is currently in loading state. Default: false. */
   isLoading?: undefined | boolean,
@@ -369,10 +369,14 @@ export const ListBox = Object.assign(
       virtualItemKeys,
     });
     
-    const listBoxState = listBox.store.getState();
-    if (listBoxState.virtualItemKeys !== virtualItemKeys) {
-      listBoxState.setVirtualItemKeys(virtualItemKeys);
-    }
+    // Keep the `virtualItemKeys` prop in sync with the store
+    React.useEffect(() => {
+      return listBox.store.subscribe(state => {
+        if (state.virtualItemKeys !== virtualItemKeys) {
+          state.setVirtualItemKeys(virtualItemKeys);
+        }
+      });
+    }, [listBox.store, virtualItemKeys]);
     
     const isEmpty = useListBoxSelector(state => state.isEmpty(), listBox.store);
     

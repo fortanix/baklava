@@ -353,36 +353,36 @@ export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
   // Register the item
   React.useEffect(() => {
     store.setState(state => {
-      let stateUpdated = state;
+      state._internalItemsRegistry.set(item.itemKey, item); // Mutate to prevent frequent rerendering
       
-      stateUpdated._internalItemsRegistry.set(item.itemKey, item); // Mutate to prevent frequent rerendering
+      const stateUpdated = { ...state };
       
       if (item.isContentItem) {
-        stateUpdated._internalItemsCount++;
+        stateUpdated._internalItemsCount += 1;
       }
       
       if (state.focusedItem === null) {
-        stateUpdated = { ...state, focusedItem: item.itemKey }; // Immutable update
+        stateUpdated.focusedItem = item.itemKey; // Immutable update
       }
       
       return stateUpdated;
     });
     return () => {
       store.setState(state => {
-        let stateUpdated = state;
+        state._internalItemsRegistry.delete(item.itemKey); // Mutate to prevent frequent rerendering
         
-        stateUpdated._internalItemsRegistry.delete(item.itemKey); // Mutate to prevent frequent rerendering
+        const stateUpdated = { ...state };
         
         if (item.isContentItem) {
           // Immutable update, since we do want to trigger updates in case this hits 0
-          stateUpdated = { ...state, _internalItemsCount: state._internalItemsCount-- };
+          stateUpdated._internalItemsCount -= 1;
         }
         
         if (state.focusedItem === item.itemKey) {
           const firstKey = state._internalItemsRegistry.keys().next();
           const focusedItem = firstKey.done ? null : firstKey.value;
           
-          stateUpdated = { ...state, focusedItem }; // Immutable update
+          stateUpdated.focusedItem = focusedItem; // Immutable update
         }
         
         return stateUpdated;

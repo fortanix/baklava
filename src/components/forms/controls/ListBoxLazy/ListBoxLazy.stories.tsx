@@ -3,12 +3,11 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { useDebounce } from '../../../../util/hooks/useDebounce.ts';
 
 import type { Meta, StoryObj } from '@storybook/react';
 import { generateData } from '../../../tables/util/generateData.ts'; // FIXME: move to a common location
 
-import { Input } from '../Input/Input.tsx';
+import { InputSearch } from '../Input/InputSearch.tsx';
 
 import { type ItemKey, type VirtualItemKeys } from '../ListBox/ListBoxStore.tsx';
 import { ListBoxLazy } from './ListBoxLazy.tsx';
@@ -38,6 +37,7 @@ export default {
     limit: 5,
     onUpdateLimit: () => {},
     renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
+    renderItemLabel: item => `Item ${item.index}`,
   },
   render: (args) => <ListBoxLazy {...args}/>,
 } satisfies Meta<ListBoxLazyArgs>;
@@ -48,6 +48,7 @@ export const ListBoxLazyStandard: Story = {
     virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(10_000)),
     defaultSelected: 'test-2',
     renderItem: item => `Item ${item.index + 1}`,
+    renderItemLabel: item => `Item ${item.index + 1}`,
   },
 };
 
@@ -105,7 +106,8 @@ const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
       virtualItemKeys={virtualItemKeys}
       hasMoreItems={hasMoreItems}
       isLoading={isLoading}
-      //renderItem={item => <>Item {item.index + 1}</>}
+      renderItem={item => <>Item {item.index + 1}</>}
+      renderItemLabel={item => `Item ${item.index + 1}`}
     />
   );
 };
@@ -151,8 +153,7 @@ const ListBoxLazyWithFilterC = (props: ListBoxLazyArgs) => {
   
   return (
     <>
-      <Input
-        placeholder="Search"
+      <InputSearch
         value={filter}
         onChange={event => {
           setFilter(event.target.value);
@@ -160,6 +161,7 @@ const ListBoxLazyWithFilterC = (props: ListBoxLazyArgs) => {
           //listBoxRef.scrollToStart(); // Maybe?
         }}
       />
+      {filter !== 'hide' &&
       <ListBoxLazy
         data-placement="bottom"
         {...props}
@@ -170,7 +172,10 @@ const ListBoxLazyWithFilterC = (props: ListBoxLazyArgs) => {
         hasMoreItems={hasMoreItems}
         isLoading={isLoading}
         renderItem={item => <>{itemsFiltered[item.index]?.name}</>}
+        renderItemLabel={item => itemsFiltered[item.index]?.name ?? 'Unknown'}
+        placeholderEmpty={items.length === 0 ? 'No items' : 'No items found'}
       />
+      }
     </>
   );
 };

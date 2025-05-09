@@ -31,24 +31,26 @@ type ListItemVirtualProps = {
   virtualItem: VirtualItem,
   itemsCount: number,
   renderItem: (item: VirtualItem) => React.ReactNode,
+  renderItemLabel: (item: VirtualItem) => string,
 };
-const ListItemVirtual = ({ virtualItem, itemsCount, renderItem }: ListItemVirtualProps) => {
+const ListItemVirtual = ({ virtualItem, itemsCount, renderItem, renderItemLabel }: ListItemVirtualProps) => {
   const styles = React.useMemo(() => ({
     position: 'absolute' as const,
     top: 0,
     left: 0,
     width: '100%',
     blockSize: virtualItem.size,
-    transform: `translateY(${virtualItem.start}px)`, // FIXME: logical property equivalent?
+    transform: `translateY(${virtualItem.start}px)`,
   }), [virtualItem.size, virtualItem.start]);
   
   const content = renderItem(virtualItem);
+  const label = renderItemLabel(virtualItem);
   
   return (
     <ListBox.Option
       itemKey={String(virtualItem.key)}
       aria-posinset={virtualItem.index}
-      label={typeof content === 'string' ? content : ''} // FIXME: require some accessible name here?
+      label={label}
       aria-setsize={itemsCount}
       className={cx(cl['bk-list-box-lazy__item'])}
       style={styles}
@@ -80,6 +82,7 @@ type ListBoxVirtualListProps = {
   onUpdateLimit: (limit: number) => void,
   isLoading: boolean,
   renderItem: ListItemVirtualProps['renderItem'],
+  renderItemLabel: ListItemVirtualProps['renderItemLabel'],
 };
 const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   const {
@@ -91,6 +94,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     onUpdateLimit,
     isLoading,
     renderItem,
+    renderItemLabel,
   } = props;
   
   const focusedItemKey = useListBoxSelector(s => s.focusedItem);
@@ -179,6 +183,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
           virtualItem={virtualItem}
           itemsCount={virtualItemKeys.length}
           renderItem={renderItem}
+          renderItemLabel={renderItemLabel}
         />
       )}
     </div>
@@ -206,6 +211,9 @@ export type ListBoxLazyProps = Omit<ComponentProps<typeof ListBox>, 'children' |
   
   /** Callback to render the given list item. */
   renderItem: ListBoxVirtualListProps['renderItem'],
+  
+  /** Callback to render the given list item as a human-readable name. */
+  renderItemLabel: ListBoxVirtualListProps['renderItemLabel'],
 };
 export const ListBoxLazy = (props: ListBoxLazyProps) => {
   const {
@@ -217,6 +225,7 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
     onUpdateLimit,
     isLoading = false,
     renderItem,
+    renderItemLabel,
     ...propsRest
   } = props;
   
@@ -232,6 +241,7 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
     onUpdateLimit,
     isLoading,
     renderItem,
+    renderItemLabel,
   };
   
   const formatItemLabel = React.useCallback((itemKey: ItemKey) => {
@@ -243,14 +253,8 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
       size: 0,
       lane: 0,
     };
-    const label = renderItem(virtualItem);
-    
-    if (typeof label !== 'string') {
-      console.warn(`Unable to render item to string label: '${itemKey}', found type '${typeof label}'`);
-    }
-    
-    return typeof label === 'string' ? label : '';
-  }, [renderItem]);
+    return renderItemLabel(virtualItem);
+  }, [renderItemLabel]);
   
   return (
     <ListBox
