@@ -10,7 +10,7 @@ import cl from './Logo.module.scss';
 
 
 export type LogoProps = ComponentProps<'figure'> & {
-  subtitle: React.ReactNode,
+  subtitle?: undefined | React.ReactNode,
   subtitleTrademark?: undefined | boolean,
 };
 
@@ -18,6 +18,7 @@ export type LogoProps = ComponentProps<'figure'> & {
  * Logo component.
  */
 export const Logo = ({ subtitle, subtitleTrademark, ...propsRest }: LogoProps) => {
+  const showSubtitle = !!subtitle
   return (
     <figure
       {...propsRest}
@@ -27,13 +28,13 @@ export const Logo = ({ subtitle, subtitleTrademark, ...propsRest }: LogoProps) =
         propsRest.className,
       )}
     >
-      <div className="_logo">
-        <img alt={`Fortanix ${subtitle}`} src={logoImage} className="_icon"/>
+      <div className={cx('_logo', !showSubtitle && 'no-subtitle')}>
+        <img alt={`Fortanix ${subtitle ?? ''}`} src={logoImage} className="_icon"/>
         <span className="_title">Fortanix</span>
-        <span className="_subtitle">
+        {showSubtitle && <span className="_subtitle">
           {subtitle}
           {subtitleTrademark && <sup className="_subtitle-trademark">&trade;</sup>}
-        </span>
+        </span>}
       </div>
     </figure>
   );

@@ -19,18 +19,22 @@ export default {
   },
   tags: ['autodocs'],
   argTypes: {
+    subtitle: { control: 'text' },
+    subtitleTrademark: { control: 'boolean' },
   },
-  args: {
-    subtitle: 'Data Security Manager',
-    subtitleTrademark: true,
-  },
-  render: (args) => <Logo {...args}/>,
+  render: (args) => <Logo {...args} />,
 } satisfies Meta<LogoArgs>;
 
 
 export const Standard: Story = {
   name: 'Logo',
+};
+
+export const LogoWithSubtitle: Story = {
+  name: 'Logo with Subtitle',
   args: {
-    //style: { outline: '1px solid firebrick' },
+    subtitle: 'Data Security Manager',
+    subtitleTrademark: true,
   },
 };
+

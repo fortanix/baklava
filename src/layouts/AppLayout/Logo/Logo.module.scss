@@ -88,5 +88,37 @@
         @include bk.font(bk.$font-family-display, bk.$font-weight-medium);
       }
     }
+    > :global(._logo.no-subtitle) {
+      display: flex;
+      align-items: center;
+      column-gap: 0.6rem;
+
+      > :global(._icon) {
+        inline-size: var(--icon-size);
+        block-size: auto;
+        object-fit: contain;
+        display: block;
+      }
+
+      > :global(._title) {
+        font-size: 88cqb;
+        line-height: 1;
+        margin: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        align-self: start;
+          
+          &::after {
+            display: inline-block;
+            content: '®';
+            margin-inline-start: 0.5ch;
+            
+            vertical-align: 1.6cap;
+            font-size: 0.4em;
+          }
+        }
+        @include bk.font(bk.$font-family-display, bk.$font-weight-bold);
+      }
   }
 }
