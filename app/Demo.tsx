@@ -30,7 +30,7 @@ export const Demo = () => {
           <AccountSelector className="select-action" accounts={null}>
             {accountSelected => accountSelected?.label ?? 'Accounts'}
           </AccountSelector>
-          <SolutionSelector className="select-action"/>
+          <SolutionSelector className="select-action" solutions={null}/>
         </Header>
       </AppLayout.Header>
       {/* Container around the sidebar that grows to full height, allowing the sidebar to be sticky */}

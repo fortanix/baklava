@@ -77,13 +77,15 @@ export const Standard: Story = {
             >
               {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label}
             </AccountSelector>
-            <SolutionSelector className="select-action">
-              {['Identity & Access Management', 'Key Insight', 'Data Security Manager'].map(name =>
-                <SolutionSelector.Option key={name} itemKey={name} icon="user" label={name}
-                  onSelect={() => { notify.info(`Selected ${name}`); }}
-                />
-              )}
-            </SolutionSelector>
+            <SolutionSelector className="select-action"
+              solutions={
+                ['Identity & Access Management', 'Key Insight', 'Data Security Manager'].map(name =>
+                  <SolutionSelector.Option key={name} itemKey={name} icon="user" label={name}
+                    onSelect={() => { notify.info(`Selected ${name}`); }}
+                  />
+                )
+              }
+            />
           </Header>
         </AppLayout.Header>
         <AppLayout.Sidebar>
@@ -176,13 +178,15 @@ export const NoSidebar: Story = {
             >
               {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label}
             </AccountSelector>
-            <SolutionSelector className="select-action">
-              {['Identity & Access Management', 'Key Insight', 'Data Security Manager'].map(name =>
-                <SolutionSelector.Option key={name} itemKey={name} icon="user" label={name}
-                  onSelect={() => { notify.info(`Selected ${name}`); }}
-                />
-              )}
-            </SolutionSelector>
+            <SolutionSelector className="select-action"
+              solutions={
+                ['Identity & Access Management', 'Key Insight', 'Data Security Manager'].map(name =>
+                  <SolutionSelector.Option key={name} itemKey={name} icon="user" label={name}
+                    onSelect={() => { notify.info(`Selected ${name}`); }}
+                  />
+                )
+              }
+            />
           </Header>
         </AppLayout.Header>
         <AppLayout.Content>

@@ -89,7 +89,7 @@
   [tabindex]:is(#{$elements-with-inset}) {
     @include focus-inset($override-layer: false);
   }
-  [tabindex]:not(#{$elements-with-inset}) {
+  :not([tabindex]:is(#{$elements-with-inset})) {
     @include focus-outset($override-layer: false);
   }
   
