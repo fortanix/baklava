@@ -126,7 +126,11 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
       <Tooltip
         {...floatingProps}
         {...tooltipProps}
-        ref={mergeRefs<HTMLDivElement>(refs.setFloating, tooltipProps.ref)}
+        ref={mergeRefs<HTMLDivElement>(
+          refs.setFloating,
+          floatingProps.ref as React.Ref<HTMLDivElement>,
+          tooltipProps.ref,
+        )}
         className={cx(
           floatingProps.className as ClassNameArgument,
           arrowClassName,

@@ -27,6 +27,20 @@ To create a new release:
     - Note: you can run `npm run automate github:create-release-pr` to generate a link with all the information
       prefilled.
 
+**Script:**
+
+```shell
+VERSION=x.y.z
+git checkout -b release/v${VERSION}
+sed -i '' "s/version: '.*'/version: '${VERSION}'/" package.json.js
+npm run install-project
+git add package.json.js package.json package-lock.json
+git commit -m "Release v${VERSION}"
+git push -u origin HEAD
+npm run automate github:create-release-pr
+# Follow instructions from above command
+```
+
 - Once the release PR is merged, create a new GitHub release:
   - From the `master` branch, run `npm run automate github:create-release`, this will generate a link to create the
     release with all the information filled in.
@@ -39,22 +53,16 @@ To create a new release:
   - If the version is a pre-release, mark it as such.
   - Hit "Publish the release".
 
-- Once the release has been created, a GitHub Actions workflow will automatically run to publish this release to npm.
-
-
 **Script:**
 
 ```shell
-VERSION=x.y.z
-git co -b release/v${VERSION}
-sed -i '' "s/version: '.*'/version: '${VERSION}'/" package.json.js
-npm run install-project
-git add package.json.js package.json package-lock.json
-git ci -m "Release v${VERSION}"
-git push -u origin HEAD
-npm run automate github:create-release-pr
+git checkout master
+git pull
+npm run automate github:create-release
 # Follow instructions from above command
 ```
+
+- Once the release has been created, a GitHub Actions workflow will automatically run to publish this release to npm.
 
 ## Publishing to npm
 

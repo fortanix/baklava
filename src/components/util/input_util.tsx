@@ -17,6 +17,7 @@ export const inputSpecificPropKeys = {
   autoComplete: true,
   capture: true,
   checked: true,
+  defaultValue: true,
   disabled: true,
   form: true,
   formAction: true,
