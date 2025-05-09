@@ -88,7 +88,7 @@
         @include bk.font(bk.$font-family-display, bk.$font-weight-medium);
       }
     }
-    > :global(._logo.no-subtitle) {
+    > :global(._logo):not(:has(:global(._subtitle))) {
       display: flex;
       align-items: center;
       column-gap: 0.6rem;
