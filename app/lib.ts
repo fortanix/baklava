@@ -107,7 +107,7 @@ export { AccountSelector } from '../src/layouts/AppLayout/Header/AccountSelector
 export { SolutionSelector } from '../src/layouts/AppLayout/Header/SolutionSelector.tsx';
 export { SysadminSwitcher } from '../src/layouts/AppLayout/Header/SysadminSwitcher.tsx';
 export { UserMenu } from '../src/layouts/AppLayout/Header/UserMenu.tsx';
-export { Logo } from '../src/layouts/AppLayout/Logo/Logo.tsx';
+export { Logo } from '../src/fortanix/Logo/Logo.tsx';
 export { Nav } from '../src/layouts/AppLayout/Nav/Nav.tsx';
 export { Sidebar } from '../src/layouts/AppLayout/Sidebar/Sidebar.tsx';
 export { AppLayout } from '../src/layouts/AppLayout/AppLayout.tsx';
