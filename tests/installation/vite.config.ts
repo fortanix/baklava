@@ -1,7 +1,7 @@
 
 import path from 'node:path';
 
-import { defineConfig } from 'vite';
+import { defineConfig, searchForWorkspaceRoot } from 'vite';
 import react from '@vitejs/plugin-react';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 
@@ -18,4 +18,12 @@ export default defineConfig({
       customDomId: 'baklava-icon-sprite',
     }),
   ],
+  server: {
+    fs: {
+      allow: [
+        searchForWorkspaceRoot(process.cwd()), // Search up for workspace root
+        '../../dist',
+      ],
+    },
+  },
 });

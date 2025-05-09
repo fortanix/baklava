@@ -110,7 +110,7 @@ const packageConfig = {
     
     // Build
     'browserslist': '^4.24.4',
-    'vite': '^5.4.11', // Cannot yet upgrade to v6, causes some odd pre-transform errors in lightningcss
+    'vite': '^6.3.5', // Cannot yet upgrade to v6, causes some odd pre-transform errors in lightningcss
     '@vitejs/plugin-react': '^4.3.4',
     'vite-plugin-dts': '^4.5.0',
     'vite-plugin-lib-inject-css': '^2.2.1',
@@ -151,7 +151,6 @@ const packageConfig = {
     '@percy/storybook': '^6.0.3',
     
     // Styling
-    'vite-css-modules': '^1.6.0',
     'typescript-plugin-css-modules': '^5.0.1',
     'sass-embedded': '^1.83.1',
     'lightningcss': '^1.29.1',
