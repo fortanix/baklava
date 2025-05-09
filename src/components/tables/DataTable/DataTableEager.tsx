@@ -138,7 +138,7 @@ export const MultiSearch = (props: React.ComponentPropsWithoutRef<typeof MultiSe
 };
 MultiSearch.displayName = 'MultiSearch';
 
-export type DataTableEagerProps = Omit<React.ComponentProps<typeof DataTableSync>, 'table'> & {
+export type DataTableEagerProps = Omit<React.ComponentProps<typeof DataTableSync>, 'table' | 'status'> & {
   children?: React.ReactNode,
   className?: ClassNameArgument,
   footer?: React.ReactNode,

@@ -44,6 +44,8 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
   const headerGroup: undefined | ReactTable.HeaderGroup<D> = table.headerGroups[0];
   if (!headerGroup) { return null; }
   
+  const { key, ...HeaderGroupPropsRest } = headerGroup.getHeaderGroupProps();
+
   return (
     <table
       {...table.getTableProps()}
@@ -52,7 +54,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
       {columnGroups}
       
       <thead>
-        <tr {...headerGroup.getHeaderGroupProps()}>
+        <tr key={key} {...HeaderGroupPropsRest}>
           {/*<th/> {/ * Empty header for the selection checkbox column */}
           
           {headerGroup.headers.map((column: ReactTable.HeaderGroup<D>) => {

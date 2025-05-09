@@ -16,6 +16,12 @@ export type DateTimePickerProps = Omit<ComponentProps<'div'>, 'onChange'> & {
   /** A Date object to hold the date and time. */
   date: null | Date,
   
+  /** A Date object limit min selectable date. */
+  minDate: null | Date,
+  
+  /** A Date object limit max selectable date. */
+  maxDate: null | Date,
+  
   /** A callback function that is called when either the date or the time picker is changed. */
   onChange: ((date: null | Date, event?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => void),
   
@@ -32,6 +38,8 @@ export const DateTimePicker = (props: DateTimePickerProps) => {
   const {
     date,
     onChange,
+    minDate,
+    maxDate,
     dateFormat = 'MM/dd/yyyy',
     placeholderText = 'MM/DD/YYYY',
     ...propsRest
@@ -65,6 +73,8 @@ export const DateTimePicker = (props: DateTimePickerProps) => {
         onChange={onChange}
         dateFormat={dateFormat}
         placeholderText={placeholderText}
+        {...(minDate ? { minDate: new Date(minDate) } : {})}
+        {...(maxDate ? { maxDate: new Date(maxDate) } : {})}
       />
       <TimePicker
         aria-label="Time input"
