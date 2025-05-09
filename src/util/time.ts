@@ -5,7 +5,7 @@
 export type TimeoutHandle = number; //ReturnType<typeof window.setTimeout>; // FIXME: TS infers Node's `Timeout` type
 
 export const delay = (timeMs: number) => {
-  return new Promise(resolve => setTimeout(resolve, timeMs));
+  return new Promise(resolve => window.setTimeout(resolve, timeMs));
 };
 
 export const timeout = (timeMs: number) => {

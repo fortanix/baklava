@@ -7,7 +7,10 @@ import * as React from 'react';
 
 import { Icon } from '../../../components/graphics/Icon/Icon.tsx';
 import { Button } from '../../../components/actions/Button/Button.tsx';
-import { DropdownMenuProvider } from '../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
+import {
+  type ItemDetails,
+  DropdownMenuProvider,
+} from '../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
 
 import cl from './SolutionSelector.module.scss';
 
@@ -21,18 +24,24 @@ const SolutionSelectorOption = (props: React.ComponentProps<typeof DropdownMenuP
 export type SolutionSelectorProps = Omit<ComponentProps<typeof Button>, 'label'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
+  
+  /** The solutions list to be shown in the dropdown menu. */
+  solutions: React.ReactNode,
+
+  /** The selected solution. To access the selected solution, pass a render prop. */
+  children?: undefined | ((selectedAccount: null | ItemDetails) => React.ReactNode),
 };
 export const SolutionSelector = Object.assign(
   (props: SolutionSelectorProps) => {
-    const { unstyled = false, children, ...propsRest } = props;
+    const { unstyled = false, solutions, children, ...propsRest } = props;
     
     return (
       <DropdownMenuProvider
         label="Solution selector"
         placement="bottom-start"
-        items={children}
+        items={solutions}
       >
-        {({ props }) =>
+        {({ props, selectedOption }) =>
           <Button unstyled
             {...props({
               ...propsRest,
@@ -42,7 +51,7 @@ export const SolutionSelector = Object.assign(
             <Icon icon="solutions" className={cl['bk-solution-selector__icon']}
               decoration={{ type: 'background-circle' }}
             />
-            Solutions
+            {typeof children === 'function' ? children(selectedOption ?? null) : <>Solutions</>}
             <Icon icon="caret-down" className={cl['bk-solution-selector__caret']}/>
           </Button>
         }

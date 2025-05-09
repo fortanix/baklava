@@ -21,9 +21,15 @@ export type ItemKey = string;
 /** Definition of a registered item. */
 export type ItemDef = {
   itemRef: React.RefObject<null | HTMLElement>,
+  isContentItem: boolean, // Whether this counts as "content" (so not: headers, sticky actions)
 };
 export type ItemMap = Map<ItemKey, ItemDef>;
 export type ItemWithKey = ItemDef & { itemKey: ItemKey };
+
+export type ItemDetails = {
+  itemKey: ItemKey,
+  label: string,
+};
 
 /**
  * The minimal subtype of `Array<ItemKey>` that we need to be able to render a virtualized list. We keep it minimal
@@ -49,6 +55,12 @@ export type ListBoxState = {
    */
   _internalItemsRegistry: ItemMap,
   
+  /**
+   * Keep track of the items count. Cannot be derived from `_internalItemsRegistry`, because it is mutable and so does
+   * not trigger updates.
+   */
+  _internalItemsCount: number,
+  
   /** Globally unique ID for the list box control (e.g. for ARIA attributes). */
   id: string,
   
@@ -68,6 +80,9 @@ export type ListBoxState = {
   virtualItemKeys: null | VirtualItemKeys,
 };
 export type ListBoxStateApi = ListBoxState & {
+  /** Whether the list box is empty (no content items). */
+  isEmpty: () => boolean,
+  
   /** Update `virtualItemKeys`. */
   setVirtualItemKeys: (virtualItemKeys: null | VirtualItemKeys) => void,
   
@@ -89,6 +104,7 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
   
   const propsWithDefaults: ListBoxState = {
     _internalItemsRegistry: new Map(),
+    _internalItemsCount: 0,
     disabled: false,
     focusedItem: null,
     selectedItem: null,
@@ -97,6 +113,7 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
   };
   return createStore<ListBoxStateApi>()((set, get) => ({
     ...propsWithDefaults,
+    isEmpty: () => get()._internalItemsCount === 0,
     setVirtualItemKeys: virtualItemKeys => set({ virtualItemKeys }),
     getItemPosition: (itemKey: ItemKey): null | number => {
       const state = get();
@@ -228,8 +245,9 @@ export const useListBoxTypeAhead = (storeRef: React.RefObject<null | StoreApi<Li
 
 export const ListBoxContext = React.createContext<null | ListBoxStore>(null);
 
-export const useListBoxSelector = <T,>(selector: (state: ListBoxState) => T): T => {
-  const store = React.use(ListBoxContext);
+export const useListBoxSelector = <T,>(selector: (state: ListBoxStateApi) => T, storeParam?: ListBoxStore): T => {
+  const storeFromContext = React.use(ListBoxContext);
+  const store = storeParam ?? storeFromContext;
   if (!store) { throw new Error('Missing ListBoxContext provider'); }
   return useStore(store, selector);
 };
@@ -288,11 +306,17 @@ export const useListBox = <E extends HTMLElement>(
       if (document.activeElement instanceof HTMLElement) {
         previousActiveElementRef.current = document.activeElement;
       }
-      focusedElement.itemRef?.current?.focus();
+      focusedElement.itemRef?.current?.focus({
+        // @ts-ignore Supported in some browsers (e.g. Firefox).
+        focusVisible: false,
+      });
     } else if (event.oldState === 'open' && event.newState === 'closed') {
       const previousActiveElement = previousActiveElementRef.current;
       if (previousActiveElement) {
-        previousActiveElement.focus();
+        previousActiveElement.focus({
+          // @ts-ignore Supported in some browsers (e.g. Firefox).
+          focusVisible: false,
+        });
       }
     }
   }, []);
@@ -329,24 +353,39 @@ export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
   // Register the item
   React.useEffect(() => {
     store.setState(state => {
-      state._internalItemsRegistry.set(item.itemKey, item);
+      state._internalItemsRegistry.set(item.itemKey, item); // Mutate to prevent frequent rerendering
       
-      if (state.focusedItem === null) {
-        state.focusedItem = item.itemKey;
+      const stateUpdated = { ...state };
+      
+      if (item.isContentItem) {
+        stateUpdated._internalItemsCount += 1;
       }
       
-      return state;
+      if (state.focusedItem === null) {
+        stateUpdated.focusedItem = item.itemKey; // Immutable update
+      }
+      
+      return stateUpdated;
     });
     return () => {
       store.setState(state => {
-        state._internalItemsRegistry.delete(item.itemKey);
+        state._internalItemsRegistry.delete(item.itemKey); // Mutate to prevent frequent rerendering
+        
+        const stateUpdated = { ...state };
+        
+        if (item.isContentItem) {
+          // Immutable update, since we do want to trigger updates in case this hits 0
+          stateUpdated._internalItemsCount -= 1;
+        }
         
         if (state.focusedItem === item.itemKey) {
           const firstKey = state._internalItemsRegistry.keys().next();
-          state.focusedItem = firstKey.done ? null : firstKey.value;
+          const focusedItem = firstKey.done ? null : firstKey.value;
+          
+          stateUpdated.focusedItem = focusedItem; // Immutable update
         }
         
-        return state;
+        return stateUpdated;
       });
     };
   }, [store, item]);

@@ -2,14 +2,16 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import { loremIpsum } from '../../../../util/storybook/LoremIpsum.tsx';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
+import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
-import { type ItemKey, ListBox } from './ListBox.tsx';
+import { type ItemDetails, ListBox } from './ListBox.tsx';
 
 
 const notifyPressed = () => { notify.info('Pressed the item'); };
@@ -27,7 +29,6 @@ export default {
   },
   args: {
     label: 'Test list box',
-    //onSelect: item => { console.log('x', item); },
   },
   render: (args) => <ListBox {...args}/>,
 } satisfies Meta<ListBoxArgs>;
@@ -71,12 +72,73 @@ export const ListBoxEmpty: Story = {
   },
 };
 
+export const ListBoxWithOverflow: Story = {
+  args: {
+    children: (
+      <>
+        <ListBox.Option itemKey="overflow" label={loremIpsum()}/>
+        {fruits.map((fruit) =>
+          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
+        )}
+      </>
+    ),
+  },
+};
+
+export const ListBoxEmptyWithCustomPlaceholder: Story = {
+  args: {
+    placeholderEmpty: <><Icon icon="warning-filled"/> This is a custom placeholder</>,
+    children: null,
+  },
+};
+
+export const ListBoxEmptyWithHeaderAndFooter: Story = {
+  args: {
+    children: (
+      <>
+        <ListBox.Header itemKey="header" label="An empty list with header/footer" sticky="start"/>
+        <ListBox.FooterActions>
+          <ListBox.FooterAction itemKey="action-1" label="Action 1" onActivate={() => { notifyPressed(); }}/>
+          <ListBox.FooterAction itemKey="action-2" label="Action 2" onActivate={() => { notifyPressed(); }}/>
+        </ListBox.FooterActions>
+      </>
+    ),
+  },
+};
+
 export const ListBoxWithIcon: Story = {
   args: {
     children: (
       <>
         <ListBox.Option icon="account" itemKey="option-1" label="Option with an icon"/>
         <ListBox.Option icon="user" itemKey="option-2" label="Another option"/>
+      </>
+    ),
+  },
+};
+
+export const ListBoxWithHighlightedIcon: Story = {
+  args: {
+    children: (
+      <>
+        <ListBox.Option icon="account" iconDecoration="highlight" itemKey="option-1" label="Option with an icon"/>
+        <ListBox.Option icon="user" iconDecoration="highlight" itemKey="option-2" label="Another option"/>
+      </>
+    ),
+  },
+};
+
+const CustomIcon = (props: React.ComponentProps<typeof Icon>) =>
+  <Icon
+    {...props}
+    style={{ color: 'light-dark(brown, orange)', ...props.style }}
+  />;
+export const ListBoxWithCustomIcon: Story = {
+  args: {
+    children: (
+      <>
+        <ListBox.Option Icon={CustomIcon} icon="account" itemKey="option-1" label="Option with an icon"/>
+        <ListBox.Option Icon={CustomIcon} icon="user" itemKey="option-2" label="Another option"/>
       </>
     ),
   },
@@ -115,11 +177,11 @@ export const ListBoxWithHeaders: Story = {
   args: {
     children: (
       <>
-        <ListBox.Header itemKey="header" label={`Ice cream flavors (${fruits.length})`}/>
+        <ListBox.Header itemKey="header" label={`Ice cream flavors (${fruits.length})`} sticky={false}/>
         {fruits.map(fruit =>
           <ListBox.Option key={`icecream-${fruit}`} itemKey={`icecream-${fruit}`} label={fruit}/>
         )}
-        <ListBox.Header itemKey="header" label={`Jelly bean flavors (${fruits.length})`}/>
+        <ListBox.Header itemKey="header" label={`Jelly bean flavors (${fruits.length})`} sticky={false}/>
         {fruits.map(fruit =>
           <ListBox.Option key={`jellybean-${fruit}`} itemKey={`jellybean-${fruit}`} label={fruit}/>
         )}
@@ -160,6 +222,7 @@ export const ListBoxWithActions: Story = {
 
 export const ListBoxWithStickyActions: Story = {
   args: {
+    style: { '--sticky-items-end': 2 },
     children: (
       <>
         <ListBox.Header itemKey="header" label={`Ice cream flavors (${fruits.length})`} sticky="start"/>
@@ -176,6 +239,19 @@ export const ListBoxWithStickyActions: Story = {
         </ListBox.FooterActions>
       </>
     ),
+  },
+};
+
+export const ListBoxLoading: Story = {
+  args: {
+    children: (
+      <>
+        {fruits.slice(0, 2).map((fruit) =>
+          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
+        )}
+      </>
+    ),
+    isLoading: true,
   },
 };
 
@@ -237,12 +313,12 @@ export const ListBoxMany: Story = {
 
 type ListBoxControlledProps = Omit<React.ComponentProps<typeof ListBox>, 'selected'>;
 const ListBoxControlledC = (props: ListBoxControlledProps) => {
-  const [selectedItem, setSelectedItem] = React.useState<undefined | ItemKey>(undefined);
+  const [selectedItem, setSelectedItem] = React.useState<null | ItemDetails>(null);
   
   return (
     <>
-      <p>Selected fruit: {selectedItem ?? <em>none</em>}</p>
-      <ListBox {...props} selected={selectedItem} onSelect={setSelectedItem}/>
+      <p>Selected fruit: {selectedItem?.label ?? <em>none</em>}</p>
+      <ListBox {...props} selected={selectedItem?.itemKey ?? null} onSelect={setSelectedItem}/>
     </>
   );
 };

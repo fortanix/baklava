@@ -8,12 +8,17 @@ import { classNames as cx, type ComponentProps } from '../../../../util/componen
 import {
   type Range,
   type VirtualItem,
+  type Virtualizer,
   defaultRangeExtractor,
   useVirtualizer,
 } from '@tanstack/react-virtual';
 
-import { Spinner } from '../../../graphics/Spinner/Spinner.tsx';
-import { type VirtualItemKeys, VirtualItemKeysUtil, useListBoxSelector } from '../ListBox/ListBoxStore.tsx';
+import {
+  type ItemKey,
+  type VirtualItemKeys,
+  VirtualItemKeysUtil,
+  useListBoxSelector,
+} from '../ListBox/ListBoxStore.tsx';
 import { ListBox } from '../ListBox/ListBox.tsx';
 
 import cl from './ListBoxLazy.module.scss';
@@ -26,40 +31,26 @@ type ListItemVirtualProps = {
   virtualItem: VirtualItem,
   itemsCount: number,
   renderItem: (item: VirtualItem) => React.ReactNode,
+  renderItemLabel: (item: VirtualItem) => string,
 };
-const ListItemVirtual = ({ virtualItem, itemsCount, renderItem }: ListItemVirtualProps) => {
+const ListItemVirtual = ({ virtualItem, itemsCount, renderItem, renderItemLabel }: ListItemVirtualProps) => {
   const styles = React.useMemo(() => ({
     position: 'absolute' as const,
     top: 0,
     left: 0,
     width: '100%',
     blockSize: virtualItem.size,
-    transform: `translateY(${virtualItem.start}px)`, // FIXME: logical property equivalent?
+    transform: `translateY(${virtualItem.start}px)`,
   }), [virtualItem.size, virtualItem.start]);
   
-  if (virtualItem.index >= itemsCount) {
-    return (
-      <ListBox.Header
-        itemKey={String(virtualItem.key)}
-        label="Loading"
-        className={cx(cl['bk-list-box-lazy__item'])}
-        style={styles}
-      >
-        <span style={{ display: 'flex', alignItems: 'center', gap: '1ch' }}>
-          Loading...
-          <Spinner size="small" inline/>
-        </span>
-      </ListBox.Header>
-    );
-  }
-  
   const content = renderItem(virtualItem);
+  const label = renderItemLabel(virtualItem);
   
   return (
     <ListBox.Option
       itemKey={String(virtualItem.key)}
       aria-posinset={virtualItem.index}
-      label={typeof content === 'string' ? content : ''} // FIXME: require some accessible name here?
+      label={label}
       aria-setsize={itemsCount}
       className={cx(cl['bk-list-box-lazy__item'])}
       style={styles}
@@ -70,14 +61,28 @@ const ListItemVirtual = ({ virtualItem, itemsCount, renderItem }: ListItemVirtua
 };
 
 
+// Calculate if the user has scrolled to near the end of the scroll container
+const isScrollNearEnd = (virtualizer: Virtualizer<HTMLDivElement, Element>): boolean => {
+  const scrollRectHeight = virtualizer.scrollRect?.height ?? null;
+  if (virtualizer.scrollOffset === null || scrollRectHeight === null) {
+    return false;
+  }
+  
+  const distanceFromEnd = virtualizer.getTotalSize() - (virtualizer.scrollOffset + scrollRectHeight);
+  return distanceFromEnd < (scrollRectHeight / 2);
+};
+
+
 type ListBoxVirtualListProps = {
   scrollElement: null | React.ComponentRef<typeof ListBox>,
   virtualItemKeys: VirtualItemKeys,
   limit: number,
   pageSize: number,
+  hasMoreItems: boolean,
   onUpdateLimit: (limit: number) => void,
   isLoading: boolean,
   renderItem: ListItemVirtualProps['renderItem'],
+  renderItemLabel: ListItemVirtualProps['renderItemLabel'],
 };
 const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   const {
@@ -85,9 +90,11 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     virtualItemKeys,
     limit,
     pageSize,
+    hasMoreItems,
     onUpdateLimit,
     isLoading,
     renderItem,
+    renderItemLabel,
   } = props;
   
   const focusedItemKey = useListBoxSelector(s => s.focusedItem);
@@ -119,14 +126,11 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   
   const getItemKey = React.useCallback((index: number) => {
     const virtualItemKey = virtualItemKeys.at(index);
-    if (typeof virtualItemKey === 'undefined' && isLoading && index === virtualItemKeys.length) {
-      return '__LOADING';
-    }
     return virtualItemKey ?? `__INVALID-INDEX_${index}`;
-  }, [virtualItemKeys, isLoading]);
+  }, [virtualItemKeys]);
   
   const virtualizer = useVirtualizer({
-    count: virtualItemKeys.length + (isLoading ? 1 : 0),
+    count: virtualItemKeys.length,
     getScrollElement: () => scrollElement,
     getItemKey,
     estimateSize: () => 35, // FIXME: enforce this as the item height through CSS?
@@ -135,22 +139,20 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     useAnimationFrameWithResizeObserver: true,
   });
   
-  // biome-ignore lint/correctness/useExhaustiveDependencies: `virtualizer.getVirtualItems()` is a valid dep
+  const virtualItems = virtualizer.getVirtualItems();
+  const scrollNearEnd = isScrollNearEnd(virtualizer);
+  
   React.useEffect(() => {
-    const virtualItemsSorted = virtualizer.getVirtualItems().toSorted((item1, item2) => item1.index - item2.index);
-    const lastItem = virtualItemsSorted.at(-1);
-    if (!lastItem) { return; } // If the list is empty, ignore
-    
-    const hasNextPage = true; // FIXME
-    if (!isLoading && lastItem.index >= limit - 1 && hasNextPage) {
+    if (hasMoreItems && scrollNearEnd && !isLoading) {
       onUpdateLimit(limit + pageSize);
     }
   }, [
+    scrollNearEnd,
+    hasMoreItems,
+    isLoading,
+    onUpdateLimit,
     limit,
     pageSize,
-    onUpdateLimit,
-    isLoading,
-    virtualizer.getVirtualItems(),
   ]);
   
   /*
@@ -167,8 +169,6 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   }, [context?.focusedItem, virtualizer, totalItems]);
   */
   
-  const virtualItems = virtualizer.getVirtualItems();
-  
   return (
     // FIXME: we could do away with this extra <div> if we force a scroll bar with a (hidden?) item at the far end
     <div
@@ -183,6 +183,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
           virtualItem={virtualItem}
           itemsCount={virtualItemKeys.length}
           renderItem={renderItem}
+          renderItemLabel={renderItemLabel}
         />
       )}
     </div>
@@ -202,14 +203,17 @@ export type ListBoxLazyProps = Omit<ComponentProps<typeof ListBox>, 'children' |
   /** Size of a page (set of additional data to load in). Default: 10. */
   pageSize?: undefined | ListBoxVirtualListProps['pageSize'],
   
+  /** Whether there are more items, to be loaded. Default: false. */
+  hasMoreItems?: undefined | ListBoxVirtualListProps['hasMoreItems'],
+  
   /** Request to update the limit. */
   onUpdateLimit: ListBoxVirtualListProps['onUpdateLimit'],
   
-  /** Whether the list is currently in loading state. Default: false. */
-  isLoading?: undefined | ListBoxVirtualListProps['isLoading'],
-  
   /** Callback to render the given list item. */
   renderItem: ListBoxVirtualListProps['renderItem'],
+  
+  /** Callback to render the given list item as a human-readable name. */
+  renderItemLabel: ListBoxVirtualListProps['renderItemLabel'],
 };
 export const ListBoxLazy = (props: ListBoxLazyProps) => {
   const {
@@ -217,9 +221,11 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
     virtualItemKeys,
     limit,
     pageSize = 10,
+    hasMoreItems = false,
     onUpdateLimit,
     isLoading = false,
     renderItem,
+    renderItemLabel,
     ...propsRest
   } = props;
   
@@ -231,10 +237,24 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
     virtualItemKeys,
     limit,
     pageSize,
+    hasMoreItems,
     onUpdateLimit,
     isLoading,
     renderItem,
+    renderItemLabel,
   };
+  
+  const formatItemLabel = React.useCallback((itemKey: ItemKey) => {
+    const virtualItem: VirtualItem = {
+      key: itemKey,
+      index: 0,
+      start: 0,
+      end: 0,
+      size: 0,
+      lane: 0,
+    };
+    return renderItemLabel(virtualItem);
+  }, [renderItemLabel]);
   
   return (
     <ListBox
@@ -246,6 +266,8 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
         propsRest.className,
       )}
       virtualItemKeys={virtualItemKeys}
+      formatItemLabel={formatItemLabel}
+      isLoading={isLoading}
     >
       <ListBoxVirtualList {...propsVirtualList}/>
     </ListBox>

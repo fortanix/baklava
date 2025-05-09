@@ -1,0 +1,18 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../variables.scss' as vars;
+
+@mixin shadow($dir: start) {
+  $shadow-color-light: color-mix(in oklch, vars.$color-neutral-900, transparent 85%);
+  $shadow-color-dark: vars.$color-neutral-900;
+  
+  @if $dir == start {
+    // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
+    box-shadow: 0 1px 4px light-dark($shadow-color-light, $shadow-color-dark) !important;;
+  } @else if $dir == 'end' {
+    // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
+    box-shadow: 0 -1px 4px light-dark($shadow-color-light, $shadow-color-dark) !important;;
+  }
+}

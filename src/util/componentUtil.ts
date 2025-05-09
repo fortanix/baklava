@@ -14,7 +14,7 @@ export const classNames = (...args: ArgumentArray): string => {
   const className = classNamesDedupe(...args);
   
   if (import.meta.env.MODE === 'development' && className.split(' ').includes('undefined')) {
-    console.warn('Found `undefined` in class names list');
+    console.warn(`Found 'undefined' in class names list: '${className}'`);
   }
   
   return className;

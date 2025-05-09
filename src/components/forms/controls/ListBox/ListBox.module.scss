@@ -8,49 +8,47 @@
   .bk-list-box {
     @include bk.component-base(bk-list-box);
     
-    --bk-list-box-padding-end: #{bk.$spacing-2}; // Extra padding included at the end of the list
-    --bk-list-box-item-padding-inline: #{bk.$spacing-4};
+    --bk-list-box-chin-size: #{bk.$spacing-2}; // There's a slight "chin" at the end of the list box
+    --bk-list-box-item-padding-inline: #{bk.$spacing-3};
     --bk-list-box-item-padding-block: #{bk.$spacing-2};
     --bk-list-box-item-block-size: calc(#{bk.rem-from-px(1)} + var(--bk-list-box-item-padding-block) * 2 + 1lh);
     
     overflow: hidden;
     scroll-behavior: smooth;
-    scroll-padding-block:
-      var(--bk-list-box-item-block-size)
-      calc(var(--bk-list-box-item-block-size) + var(--bk-list-box-padding-end));
     
-    min-inline-size: 30ch;
-    max-block-size: 15lh;
-    padding-block-end: var(--bk-list-box-padding-end);
+    // Add a scroll padding, so that focusing items will scroll them into view even if there are sticky items
+    --sticky-items-start: 1; // Increase this if there is more than one sticky item
+    scroll-padding-block-start: calc(var(--sticky-items-start) * var(--bk-list-box-item-block-size));
+    --sticky-items-end: 1; // Increase this if there is more than one sticky item
+    scroll-padding-block-end: calc(
+      var(--sticky-items-end) * var(--bk-list-box-item-block-size) + var(--bk-list-box-chin-size)
+    );
+    
+    min-inline-size: 34ch;
+    max-inline-size: 80svi;
+    min-block-size: 2lh;
+    max-block-size: 18lh;
+    padding-block-end: var(--bk-list-box-chin-size);
     
     background: bk.$theme-dropdown-menu-menu-background-default;
     border: bk.rem-from-px(1) solid bk.$theme-dropdown-menu-menu-border-default;
+    color: bk.$theme-dropdown-menu-menu-text-default;
     
-    border-radius: bk.$radius-2;
-    &[data-placement^="bottom"] {
-      border-start-start-radius: 0;
-      border-start-end-radius: 0;
-    }
-    &[data-placement^="top"] {
-      border-end-start-radius: 0;
-      border-end-end-radius: 0;
-    }
+    border-radius: bk.$radius-3;
+    
+    // For use in popovers
+    &[data-placement^="top"] { border-end-start-radius: 0; border-end-end-radius: 0; }
+    &[data-placement^="right"] { border-start-start-radius: 0; border-end-start-radius: 0; }
+    &[data-placement^="bottom"] { border-start-start-radius: 0; border-start-end-radius: 0; }
+    &[data-placement^="left"] { border-start-end-radius: 0; border-end-end-radius: 0; }
     
     display: flex;
     flex-direction: column;
     align-items: stretch;
     
-    // Note: currently works up to two levels deep, in the future could use `@scope () to (.bk-list-box)` for this
-    &:not(:has(> :nth-child(1 of .bk-list-box__item), > :not(.bk-list-box) > :nth-child(1 of .bk-list-box__item))) {
-      &::before {
-        content: attr(data-empty-placeholder, 'No items');
-        padding: bk.$spacing-2 bk.$spacing-4;
-        display: flex;
-        color: bk.$theme-text-small-text-subtle;
-      }
-    }
-    
     .bk-list-box__item {
+      @include bk.focus-hidden; // Make sure the default `Button` focus styling is not applied (e.g. through shift key)
+      
       // https://github.com/TanStack/virtual/issues/860
       contain: paint;
       will-change: transform;
@@ -75,9 +73,18 @@
         @include bk.text-one-line($include-padding: false);
       }
       
-      border-block-start: bk.rem-from-px(1) solid transparent; // Keep a transparent border for consistent height
-      &:not(:first-child) {
-        border-block-start-color: bk.$theme-dropdown-menu-menu-border-default;
+      > .bk-list-box__item__icon {
+        &.bk-list-box__item__icon--highlight {
+          --bk-icon-accent-color: color-mix(
+            in oklch, #{bk.$theme-dropdown-menu-menu-icon-background-default}, 30% transparent
+          );
+          padding: 4px;
+        }
+      }
+      
+      // Add a separator between each item
+      &:not(:nth-child(1 of .bk-list-box__item)) {
+        border-block-start: bk.$size-1 solid bk.$theme-dropdown-menu-menu-border-default;
       }
       
       &:not(.bk-list-box__item--static) {
@@ -95,8 +102,15 @@
         }
       }
       &:is(:disabled, .bk-list-box__item--disabled) {
+        user-select: none;
         color: bk.$theme-text-small-text-subtle;
       }
+      &:focus {
+        &:not(.bk-list-box__item--disabled) {
+          background: bk.$theme-dropdown-menu-menu-background-focused;
+        }
+      }
+      
       &:focus-visible {
         background: bk.$theme-dropdown-menu-menu-background-focused;
         
@@ -122,6 +136,8 @@
           position: sticky;
           inset-block-start: 0;
           z-index: 1;
+          
+          @include bk.scroll-shadow($dir: start);
         }
         
         /* In the future, we could use a scroll state query to add a shadow while stuck
@@ -138,16 +154,26 @@
         padding-inline-start: calc(var(--bk-list-box-item-padding-inline) + bk.$spacing-2);
       }
       
-      @include bk.focus-hidden; // Make sure the default `Button` focus styling is not applied (e.g. through shift key)
+      &.bk-list-box__item--loading {
+        user-select: none;
+        
+        color: bk.$theme-text-small-text-subtle;
+        font-size: bk.$font-size-s;
+        text-transform: uppercase;
+      }
     }
     
     // Wrapper for sticky footer items. Need a wrapper element for this, otherwise all the sticky elements will
     // overlap each other. We want them to stack.
     .bk-list-box__footer-actions {
+      // Place at the end of the list. Needed for the empty placeholder position. Everything else has `order: 0`.
+      order: 1;
+      
       position: sticky;
       inset-block-end: 0;
       z-index: 1;
       
+      @include bk.scroll-shadow($dir: end);
       background: bk.$theme-dropdown-menu-menu-background-default;
       
       display: flex;
@@ -163,9 +189,15 @@
       }
       
       // Draw a "chin" so that it covers the scrolling items behind it
-      $chin-h: calc(var(--bk-list-box-padding-end) + 1px); // Add 1px to work around pixel rounding issues
+      $chin-h: calc(var(--bk-list-box-chin-size) + 1px); // Add 1px to work around pixel rounding issues
       $chin-c: conic-gradient(bk.$theme-dropdown-menu-menu-background-default 0 0);
       border-image: fill 0 / 0 / 0 0 $chin-h 0 $chin-c;
+    }
+    
+    &.bk-list-box--empty {
+      .bk-list-box__empty-placeholder {
+        color: bk.$theme-dropdown-menu-menu-text-empty;
+      }
     }
     
     @include bk.focus-hidden;

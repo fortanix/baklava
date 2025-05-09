@@ -54,7 +54,7 @@
     "lint:style": "stylelint 'src/**/*.scss'",
     "lint:script": "biome lint",
     "lint": "npm run lint:style; npm run lint:script",
-    "test": "npm run check:types && npm run lint:style",
+    "test": "npm run check:types && npm run lint:style && npm run verify verify:source",
     "test-ui": "vitest --ui",
     "coverage": "vitest run --coverage",
     "test:storybook": "test-storybook --failOnConsole --browsers chromium --maxWorkers=1",

@@ -68,7 +68,9 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     getFloatingProps,
     placement: activePlacement,
   } = useFloatingElement({
+    role: 'tooltip',
     action: 'hover',
+    keyboardInteractions: 'default',
     placement,
     offset: 14,
     enablePreciseTracking,

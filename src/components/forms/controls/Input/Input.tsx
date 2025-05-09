@@ -3,8 +3,9 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { ClassNameArgument, classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
+import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import { mergeRefs, mergeCallbacks } from '../../../../util/reactUtil.ts';
+import * as InputUtil from '../../../util/input_util.tsx';
 
 import { type IconName, Icon } from '../../../graphics/Icon/Icon.tsx';
 import { IconButton } from '../../../actions/IconButton/IconButton.tsx';
@@ -29,19 +30,26 @@ const InputAction = (props: React.ComponentProps<typeof IconButton>) => {
   );
 };
 
-export type InputProps = Omit<ComponentProps<'input'>, 'type'> & {
+type InputSpecificProps = Omit<InputUtil.InputSpecificProps, 'type'>;
+type InputContainerProps = Omit<ComponentProps<'div'>, 'ref' | keyof InputSpecificProps>;
+export type InputProps = InputContainerProps & InputSpecificProps & {
+  ref?: undefined | React.Ref<HTMLInputElement>,
+  
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-  
-  /** Class name to apply to the input element. */
-  inputClassName?: undefined | ClassNameArgument,
   
   /** The type of the input. */
   type?: undefined | Exclude<ComponentProps<'input'>['type'], 'button' | 'submit' | 'reset'>,
   
+  /** Props to apply to the container element. */
+  containerProps?: React.ComponentProps<'div'>,
+  
+  /** Props to apply to the inner `<input/>` element. */
+  inputProps?: React.ComponentProps<'input'>,
+  
   /** An icon to show before the input. */
   icon?: undefined | IconName,
-
+  
   /** The accessible name for the icon. */
   iconLabel?: undefined | string,
   
@@ -53,7 +61,7 @@ export type InputProps = Omit<ComponentProps<'input'>, 'type'> & {
    * Note that browser support is still somewhat limited:
    * https://developer.mozilla.org/en-US/docs/Web/CSS/field-sizing
    */
-    automaticResize?: undefined | boolean,
+  automaticResize?: undefined | boolean,
 };
 /**
  * Input control.
@@ -61,16 +69,21 @@ export type InputProps = Omit<ComponentProps<'input'>, 'type'> & {
 export const Input = Object.assign(
   (props: InputProps) => {
     const {
-      unstyled = false,
       className,
-      inputClassName,
+      ref,
+      unstyled = false,
       type = 'text',
+      containerProps = {},
+      inputProps = {},
       icon,
       iconLabel,
       actions,
       automaticResize,
       ...propsRest
     } = props;
+    
+    // Split props into container-specific and input-specific
+    const propsExtracted = InputUtil.extractInputSpecificProps(propsRest);
     
     const inputRef = React.useRef<HTMLInputElement>(null);
     
@@ -84,8 +97,11 @@ export const Input = Object.assign(
     }, []);
     
     // Prevent inputs from being used as (form submit) buttons
-    //if (type === 'button' || type === 'submit' || type === 'image' || type === 'reset') {
-    if (['button', 'submit', 'image', 'reset'].includes(type)) {
+    const bannedTypes = ['button', 'submit', 'image', 'reset'];
+    if (bannedTypes.includes(type)) {
+      throw new Error(`Input: unsupported type '${type}'.`);
+    }
+    if (inputProps.type && bannedTypes.includes(inputProps.type)) {
       throw new Error(`Input: unsupported type '${type}'.`);
     }
     
@@ -96,20 +112,27 @@ export const Input = Object.assign(
     
     return (
       <div
+        {...containerProps}
+        {...propsExtracted.containerProps}
         className={cx(
           'bk',
           { [cl['bk-input']]: !unstyled },
           { [cl['bk-input--automatic-resize']]: automaticResize },
+          containerProps.className,
+          propsExtracted.containerProps,
           className,
         )}
-        onMouseDown={mergeCallbacks([handleContainerClick, propsRest.onMouseDown])}
+        onMouseDown={mergeCallbacks(
+          [handleContainerClick, containerProps.onMouseDown, propsExtracted.containerProps.onMouseDown]
+        )}
       >
         {icon && <Icon icon={icon} aria-label={iconLabel}/>}
         <input
-          {...propsRest}
-          ref={mergeRefs(inputRef, propsRest.ref)}
+          {...inputProps}
+          {...propsExtracted.inputProps}
+          ref={mergeRefs(inputRef, inputProps?.ref, ref)}
           type={type}
-          className={cx(cl['bk-input__input'], inputClassName)}
+          className={cx(cl['bk-input__input'], inputProps?.className)}
         />
         {actions}
       </div>

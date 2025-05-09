@@ -66,12 +66,14 @@ export default {
     
     // Properties
     'csstools/use-logical': 'always',
+    'declaration-block-no-redundant-longhand-properties': null,
+    'declaration-block-single-line-max-declarations': 2,
     'declaration-no-important': true, // Discourage use of `!important`
     'declaration-property-value-disallowed-list': [
       {
         // Disallow auto/scroll. This requires a tabindex="0" for accessibility, which should be handled through the
         // `useScroller()` hook instead.
-        '/^overflow(-x|-y)?/': ['auto', 'scroll'],
+        '/^overflow(-x|-y|-block|-inline)?/': ['auto', 'scroll'],
       },
       {
         message: (selector, value) => {
@@ -87,7 +89,7 @@ export default {
     'scss/no-global-function-names': null,
     
     // CSS extensions (e.g. CSS modules, or future CSS)
-    //'property-no-unknown': [true, { ignoreProperties: [] }],
+    'property-no-unknown': [true, { ignoreProperties: ['reading-flow', 'reading-order'] }],
     //'scss/at-rule-no-unknown': [true, { ignoreAtRules: [] }],
     'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ['global', 'local'] }],
     'selector-pseudo-element-no-unknown': [true, { ignorePseudoElements: [] }],

@@ -7,32 +7,35 @@ import * as React from 'react';
 
 import { Icon } from '../../../components/graphics/Icon/Icon.tsx';
 import { Button } from '../../../components/actions/Button/Button.tsx';
-import { DropdownMenuProvider } from '../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
+import { type ItemDetails, DropdownMenuProvider } from '../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
 
 import cl from './AccountSelector.module.scss';
 
 
 export { cl as AccountSelectorClassNames };
 
-const AccountSelectorOption = (props: React.ComponentProps<typeof DropdownMenuProvider.Option>) => {
-  return <DropdownMenuProvider.Option {...props}/>;
-};
 
-export type AccountSelectorProps = Omit<ComponentProps<typeof Button>, 'label'> & {
+export type AccountSelectorProps = Omit<ComponentProps<typeof Button>, 'label' | 'children'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
+  
+  /** The accounts list to be shown in the dropdown menu. */
+  accounts: React.ReactNode,
+  
+  /** The selected account. To access the selected account, pass a render prop. */
+  children: (selectedAccount: null | ItemDetails) => React.ReactNode,
 };
 export const AccountSelector = Object.assign(
   (props: AccountSelectorProps) => {
-    const { unstyled = false, children, ...propsRest } = props;
+    const { unstyled = false, children, accounts, ...propsRest } = props;
     
     return (
       <DropdownMenuProvider
         label="Account selector"
         placement="bottom-start"
-        items={children}
+        items={accounts}
       >
-        {({ props, state }) =>
+        {({ props, selectedOption }) =>
           <Button unstyled
             {...props({
               ...propsRest,
@@ -42,7 +45,7 @@ export const AccountSelector = Object.assign(
             <Icon icon="account" className={cx(cl['bk-account-selector__icon'])}
               decoration={{ type: 'background-circle' }}
             />
-            {state.selectedOption === null ? 'Accounts' : state.selectedOption}
+            {children(selectedOption ?? null)}
             <Icon icon="caret-down" className={cx(cl['bk-account-selector__caret'])}/>
           </Button>
         }
@@ -50,6 +53,9 @@ export const AccountSelector = Object.assign(
     );
   },
   {
-    Option: AccountSelectorOption,
+    Header: DropdownMenuProvider.Header,
+    Option: DropdownMenuProvider.Option,
+    Action: DropdownMenuProvider.Action,
+    FooterActions: DropdownMenuProvider.FooterActions,
   },
 );

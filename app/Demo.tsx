@@ -27,8 +27,10 @@ export const Demo = () => {
         <Header slot="actions">
           <UserMenu userName="Anand Kashyap"/>
           {/* <UserMenu userName="Anand Kashyap – Very Long Name That Will Overflow"/> */}
-          <AccountSelector className="select-action"/>
-          <SolutionSelector className="select-action"/>
+          <AccountSelector className="select-action" accounts={null}>
+            {accountSelected => accountSelected?.label ?? 'Accounts'}
+          </AccountSelector>
+          <SolutionSelector className="select-action" solutions={null}/>
         </Header>
       </AppLayout.Header>
       {/* Container around the sidebar that grows to full height, allowing the sidebar to be sticky */}
