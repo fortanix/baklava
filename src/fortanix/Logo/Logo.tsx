@@ -30,10 +30,12 @@ export const Logo = ({ subtitle, subtitleTrademark, ...propsRest }: LogoProps) =
       <div className="_logo">
         <img alt={`Fortanix ${subtitle ?? ''}`} src={logoImage} className="_icon"/>
         <span className="_title">Fortanix</span>
-        {subtitle && <span className="_subtitle">
-          {subtitle}
-          {subtitleTrademark && <sup className="_subtitle-trademark">&trade;</sup>}
-        </span>}
+        {subtitle && 
+          <span className="_subtitle">
+            {subtitle}
+            {subtitleTrademark && <sup className="_subtitle-trademark">&trade;</sup>}
+          </span>
+        }
       </div>
     </figure>
   );
