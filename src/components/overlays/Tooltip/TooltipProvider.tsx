@@ -68,7 +68,9 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     getFloatingProps,
     placement: activePlacement,
   } = useFloatingElement({
+    role: 'tooltip',
     action: 'hover',
+    keyboardInteractions: 'default',
     placement,
     offset: 14,
     enablePreciseTracking,
@@ -124,7 +126,11 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
       <Tooltip
         {...floatingProps}
         {...tooltipProps}
-        ref={mergeRefs<HTMLDivElement>(refs.setFloating, tooltipProps.ref)}
+        ref={mergeRefs<HTMLDivElement>(
+          refs.setFloating,
+          floatingProps.ref as React.Ref<HTMLDivElement>,
+          tooltipProps.ref,
+        )}
         className={cx(
           floatingProps.className as ClassNameArgument,
           arrowClassName,

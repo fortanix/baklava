@@ -1,0 +1,38 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-dropdown-menu-provider__list-box {
+    --bk-dropdown-menu-transition-duration: 150ms;
+    
+    &[popover] {
+      &:not(:popover-open) { display: none; }
+      
+      @media (prefers-reduced-motion: no-preference) {
+        transition:
+          display var(--bk-dropdown-menu-transition-duration) allow-discrete,
+          overlay var(--bk-dropdown-menu-transition-duration) allow-discrete,
+          opacity var(--bk-dropdown-menu-transition-duration) ease-out,
+          translate var(--bk-dropdown-menu-transition-duration) ease-out;
+          /* transform */ /* Note: don't animate `transform` with floating-ui, since it relies on it for positioning */
+        opacity: 0;
+        //translate: 0 -1rem;
+      }
+      
+      &:popover-open {
+        opacity: 1;
+        translate: none;
+        
+        @media (prefers-reduced-motion: no-preference) {
+          @starting-style {
+            opacity: 0;
+            //translate: 0 -1rem;
+          }
+        }
+      }
+    }
+  }
+}

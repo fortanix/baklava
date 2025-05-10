@@ -2,8 +2,30 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@mixin flex-center() {
+@mixin flex($dir: column, $gap: 0) {
   display: flex;
+  flex-direction: $dir;
+  align-items: stretch;
+  
+  // By default, flex items have a `min-inline-size: min-content`. This causes issues where flex items that you expect
+  // to shrink (e.g. if it has a long word) will not, even if you set `overflow-wrap: break-word`.
+  > * {
+    min-inline-size: 0;
+  }
+  
+  @if $dir == column {
+    row-gap: $gap;
+  } @else {
+    column-gap: $gap;
+  }
+}
+
+@mixin flex-column($gap: 0) { @include flex($dir: column, $gap: $gap); }
+@mixin flex-row($gap: 0) { @include flex($dir: row, $gap: $gap); }
+
+@mixin flex-center() {
+  @include flex;
+  
   align-items: center;
   justify-content: center;
 }

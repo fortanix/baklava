@@ -51,6 +51,8 @@ export { TextArea } from '../src/components/forms/controls/TextArea/TextArea.tsx
 export { DatePicker } from '../src/components/forms/controls/DatePicker/DatePicker.tsx';
 export { TimePicker } from '../src/components/forms/controls/TimePicker/TimePicker.tsx';
 export { DatePickerRange } from '../src/components/forms/controls/DatePickerRange/DatePickerRange.tsx';
+export { ListBox } from '../src/components/forms/controls/ListBox/ListBox.tsx';
+export { ListBoxLazy } from '../src/components/forms/controls/ListBoxLazy/ListBoxLazy.tsx';
 export { Select } from '../src/components/forms/controls/Select/Select.tsx';
 
 // Forms > Fields
@@ -77,7 +79,6 @@ export { Tab, Tabs } from '../src/components/navigations/Tabs/Tabs.tsx';
 export { SpinnerModal } from '../src/components/overlays/SpinnerModal/SpinnerModal.tsx';
 export { DialogModal } from '../src/components/overlays/DialogModal/DialogModal.tsx';
 export { DialogOverlay } from '../src/components/overlays/DialogOverlay/DialogOverlay.tsx';
-export { DropdownMenu } from '../src/components/overlays/DropdownMenu/DropdownMenu.tsx';
 export { DropdownMenuProvider } from '../src/components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
 export { ToastProvider, notify } from '../src/components/overlays/ToastProvider/ToastProvider.tsx';
 export { Tooltip } from '../src/components/overlays/Tooltip/Tooltip.tsx';

@@ -15,6 +15,7 @@ import {
   flip,
   arrow,
   type ElementProps,
+  type UseRoleProps,
   type UseFloatingOptions,
   type FlipOptions,
   type FloatingContext,
@@ -33,16 +34,43 @@ import {
 
 export type { Placement };
 
+// Sync the `isOpen` state with browser `popover` state
+const usePopover = (context: FloatingContext): ElementProps => {
+  return {
+    floating: {
+      ref: floatingElement => {
+        if (!floatingElement) { return; }
+        
+        const isPopoverShown = floatingElement.matches(':popover-open');
+        if (context.open && !isPopoverShown) {
+          floatingElement.showPopover();
+        } else if (!context.open && isPopoverShown) {
+          floatingElement.hidePopover();
+        }
+      },
+    },
+  };
+};
+
 export type UseFloatingElementOptions = {
-  floatingUiOptions?: UseFloatingOptions,
-  floatingUiFlipOptions?: FlipOptions,
-  floatingUiInteractions?: (context: FloatingContext) => Array<undefined | ElementProps>,
+  floatingUiOptions?: undefined | UseFloatingOptions,
+  floatingUiFlipOptions?: undefined | FlipOptions,
+  floatingUiInteractions?: undefined | ((context: FloatingContext) => Array<undefined | ElementProps>),
+  role?: undefined | UseRoleProps['role'],
   action?: undefined | 'hover' | 'click',
   placement?: undefined | Placement,
   offset?: undefined | number,
-  enablePreciseTracking?: boolean, // Enable more precise tracking of the anchor, at the cost of performance
+  /**
+   * The kind of keyboard interactions to include:
+   * - 'none': No keyboard interactions set.
+   * - 'form-control': Appropriate keyboard interactions for a form control (e.g. Enter should trigger submit).
+   * - 'default': Acts as a menu button [1] (e.g. Enter will activate the popover).
+   *   [1] https://www.w3.org/WAI/ARIA/apg/patterns/menu-button
+   */
+  keyboardInteractions?: undefined | 'none' | 'form-control' | 'default',
+  enablePreciseTracking?: undefined | boolean, // Enable more precise tracking of the anchor, at the cost of performance
   boundary?: undefined | Element,
-  arrowRef?: React.RefObject<Element>, // Reference to the arrow element, if any
+  arrowRef?: undefined | React.RefObject<Element>, // Reference to the arrow element, if any
   hasDelayGroup?: undefined | boolean,
 };
 /**
@@ -54,9 +82,11 @@ export const useFloatingElement = (options: UseFloatingElementOptions = {}) => {
     floatingUiOptions: options.floatingUiOptions ?? {},
     floatingUiFlipOptions: options.floatingUiFlipOptions ?? {},
     floatingUiInteractions: options.floatingUiInteractions ?? (() => []),
+    role: options.role,
     action: options.action ?? 'click',
     placement: options.placement ?? 'top',
     offset: options.offset ?? 0,
+    keyboardInteractions: options.keyboardInteractions ?? 'default',
     enablePreciseTracking: options.enablePreciseTracking ?? false,
     arrowRef: options.arrowRef ?? null,
     hasDelayGroup: options.hasDelayGroup ?? false,
@@ -93,9 +123,20 @@ export const useFloatingElement = (options: UseFloatingElementOptions = {}) => {
   
   const [isOpen, setIsOpen] = React.useState(false);
   
+  const onOpenChange = React.useCallback<Required<UseFloatingOptions>['onOpenChange']>(
+    (isOpen, event, _reason) => {
+      const shouldIgnoreEnter = optionsWithDefaults.keyboardInteractions === 'form-control';
+      if (shouldIgnoreEnter && event instanceof KeyboardEvent && event.key === 'Enter') {
+        return;
+      }
+      setIsOpen(isOpen);
+    },
+    [optionsWithDefaults.keyboardInteractions],
+  );
+  
   const { context, refs, placement, floatingStyles } = useFloating({
     open: isOpen,
-    onOpenChange: setIsOpen,
+    onOpenChange,
     placement: optionsWithDefaults.placement,
     strategy: 'fixed', // Use `fixed` to contain within the viewport (as opposed to containing block with `absolute`)
     whileElementsMounted(referenceEl, floatingEl, update) {
@@ -113,14 +154,20 @@ export const useFloatingElement = (options: UseFloatingElementOptions = {}) => {
   
   // Note: for `role="tooltip", no `aria-haspop` is necessary on the anchor because it is not interactive:
   // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-haspopup
-  const role = useRole(context, { role: 'tooltip' });
+  const role = useRole(context, {
+    ...optionsWithDefaults.role ? { role: optionsWithDefaults.role } : {},
+  });
   
   const interactions: Array<ElementProps> = [
     role,
+    usePopover(context),
   ];
   
   if (action === 'click') {
-    interactions.push(useClick(context, { toggle: true }));
+    interactions.push(useClick(context, {
+      toggle: true,
+      keyboardHandlers: optionsWithDefaults.keyboardInteractions === 'default',
+    }));
     interactions.push(useDismiss(context));
   } else if (action === 'hover') {
     interactions.push(useFocus(context));
@@ -142,19 +189,6 @@ export const useFloatingElement = (options: UseFloatingElementOptions = {}) => {
   
   // Keep the tooltip mounted for a little while after close to allow exit animations to occur
   const { isMounted } = useTransitionStatus(context, { duration: { open: 0, close: 500 } });
-  
-  // Sync the `isOpen` state with browser `popover` state
-  React.useEffect(() => {
-    const floatingElement = refs.floating.current;
-    if (!floatingElement) { return; }
-    
-    const isPopoverShown = floatingElement.matches(':popover-open');
-    if (isOpen && !isPopoverShown) {
-      floatingElement.showPopover();
-    } else if (!isOpen && isPopoverShown) {
-      floatingElement.hidePopover();
-    }
-  }, [isOpen, refs.floating]);
   
   return {
     context,

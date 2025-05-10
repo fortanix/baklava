@@ -36,7 +36,7 @@
     &.bk-icon--background-circle {
       // Note: use this instead of `border-radius: 50%`, because that causes a bug in Safari where the icon is cut off
       // at the padding box even if we set `overflow: visible`.
-      clip-path: circle(50%);
+      clip-path: circle();
       
       aspect-ratio: 1;
       padding: 0.9em;

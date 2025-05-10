@@ -33,6 +33,11 @@ import * as FQ from './filterQuery.ts';
 import cl from './MultiSearch.module.scss';
 
 
+// FIXME: to be done in separate MultiSearch PR
+const DropdownMenu = Object.assign((props: any) => null, { Action: (props: any) => null });
+type DropdownMenuContext = any;
+
+
 // Utilities
 type Primitive = null | string | number | bigint | boolean;
 

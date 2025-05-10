@@ -67,18 +67,16 @@
       margin-block: calc(bk.$spacing-7 / 2) calc(bk.$spacing-7 / 2);
       padding-inline: var(--bk-dialog-padding-inline);
       
-      display: flex;
-      flex-direction: row;
-      gap: bk.$spacing-3;
+      @include bk.flex($dir: row, $gap: bk.$spacing-3);
     }
     
     .bk-dialog__content__icon-aside {
       align-self: flex-start;
       
-      display: flex;
-      flex-direction: row;
-      gap: bk.$spacing-3;
+      @include bk.flex-row($gap: bk.$spacing-3);
     }
+    
+    .bk-dialog__content__body { --keep: ; }
     
     .bk-dialog__actions {
       position: sticky;
