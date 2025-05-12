@@ -52,7 +52,7 @@
       .bk-dialog__header__title {
         @include bk.text-one-line;
         .bk-dialog-layout__logo{
-          @include bk.flex($dir: row );
+          @include bk.flex($dir: row ,$gap: bk.$spacing-1);
           
           .bk-dialog-layout__logo__subtitle{
             font-size: 19px;
