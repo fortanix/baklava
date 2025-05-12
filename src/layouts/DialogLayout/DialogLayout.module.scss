@@ -50,9 +50,8 @@
     
     .bk-dialog-layout__logo__subtitle {
       text-transform: uppercase;
-      font-size: 19px;
-      font-weight: 400;
-      line-height: normal;
+      font-size: bk.rem-from-px(22);
+      font-weight: 400;  
     }
   } 
 }
