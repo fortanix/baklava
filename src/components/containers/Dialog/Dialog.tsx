@@ -86,6 +86,9 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   /** The title of the dialog, to be displayed in the dialog header. */
   title: React.ReactNode,
   
+  /** The subtitle next to title, to be displayed in the dialog header. */
+  subtitle?: undefined | React.ReactNode,
+  
   /** If specified, a close icon is displayed in the header. Default: true. */
   showCloseIcon?: undefined | boolean,
   
@@ -114,6 +117,7 @@ export const Dialog = Object.assign(
       unstyled = false,
       flat = false,
       title,
+      subtitle,
       showCloseIcon = true,
       showCancelAction = true,
       onRequestClose,
@@ -155,7 +159,12 @@ export const Dialog = Object.assign(
           )}
         >
           <header className={cx(cl['bk-dialog__header'])}>
-            <H5 id={`${dialogId}-title`} className={cx(cl['bk-dialog__header__title'])}>{title}</H5>
+            <H5 id={`${dialogId}-title`} className={cx(cl['bk-dialog__header__title'])}>
+              <div className={cl['bk-dialog-layout__logo']}>
+                {title}
+                {subtitle && <span className={cl['bk-dialog-layout__logo__subtitle']}>{subtitle}</span>}
+              </div>
+            </H5>
             
             <div className={cx(cl['bk-dialog__header__actions'])}>
               {showCloseIcon &&

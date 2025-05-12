@@ -22,7 +22,7 @@
     block-size: 32px;
     inline-size: 200px; // FIXME
     //aspect-ratio: 1 / 0.2;
-    
+     
     //margin: 13px 10px;
     //margin-block-end: 7px;
     
@@ -91,7 +91,6 @@
     > :global(._logo):not(:has(:global(._subtitle))) {
       display: flex;
       align-items: center;
-      column-gap: 0.6rem;
 
       > :global(._icon) {
         inline-size: var(--icon-size);
@@ -120,5 +119,10 @@
         }
         @include bk.font(bk.$font-family-display, bk.$font-weight-bold);
       }
+  }
+  
+  .bk-app-logo:not(:has(:global(._subtitle))) {
+    block-size: 24.023px;
+    inline-size: 123px;
   }
 }

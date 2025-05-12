@@ -36,7 +36,8 @@ export const DialogOnboarding: Story = {
     return (
       <Dialog
         // TODO: Replace here after https://github.com/fortanix/baklava/issues/163
-        title={<Logo subtitle="Armor"/>}
+        title={<Logo/>}
+        subtitle="Armor"
         showCancelAction={false}
         onRequestClose={() => console.log('close')}
       >

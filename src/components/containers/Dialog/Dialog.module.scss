@@ -51,6 +51,15 @@
       
       .bk-dialog__header__title {
         @include bk.text-one-line;
+        .bk-dialog-layout__logo{
+          @include bk.flex($dir: row );
+          
+          .bk-dialog-layout__logo__subtitle{
+            font-size: 19px;
+            font-weight: 400;
+            line-height: normal;
+          }
+        }
       }
       
       .bk-dialog__header__actions {
