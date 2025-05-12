@@ -30,14 +30,26 @@ export default {
   },
 } satisfies Meta<DialogLayoutArgs>;
 
-
+const DialogLayoutLogo = (props: React.ComponentProps<typeof Logo>) => {
+  const { subtitle, subtitleTrademark, ...propsLogo } = props;
+  return (
+    <div>
+      <Logo {...propsLogo}/>
+      {subtitle &&
+        <span>
+          {subtitle}
+          {subtitleTrademark && <span>&reg</span>}
+        </span>
+      }
+    </div>
+  );
+};
 export const DialogOnboarding: Story = {
   render: () => {
     return (
       <Dialog
         // TODO: Replace here after https://github.com/fortanix/baklava/issues/163
-        title={<Logo/>}
-        subtitle="Armor"
+        title={<DialogLayout.Logo subtitle="Armor" />}
         showCancelAction={false}
         onRequestClose={() => console.log('close')}
       >

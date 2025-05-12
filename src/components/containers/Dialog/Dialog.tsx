@@ -159,12 +159,7 @@ export const Dialog = Object.assign(
           )}
         >
           <header className={cx(cl['bk-dialog__header'])}>
-            <H5 id={`${dialogId}-title`} className={cx(cl['bk-dialog__header__title'])}>
-              <div className={cl['bk-dialog-layout__logo']}>
-                {title}
-                {subtitle && <span className={cl['bk-dialog-layout__logo__subtitle']}>{subtitle}</span>}
-              </div>
-            </H5>
+            <H5 id={`${dialogId}-title`} className={cx(cl['bk-dialog__header__title'])}>{title}</H5>
             
             <div className={cx(cl['bk-dialog__header__actions'])}>
               {showCloseIcon &&
