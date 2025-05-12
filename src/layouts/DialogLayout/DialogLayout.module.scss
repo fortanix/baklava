@@ -51,7 +51,7 @@
     .bk-dialog-layout__logo__subtitle {
       text-transform: uppercase;
       font-size: bk.rem-from-px(22);
-      font-weight: 400;  
+      font-weight: $font-weight-regular;  
     }
   } 
 }
