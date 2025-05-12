@@ -19,8 +19,6 @@ export default {
   },
   tags: ['autodocs'],
   argTypes: {
-    subtitle: { control: 'text' },
-    subtitleTrademark: { control: 'boolean' },
   },
   render: (args) => <Logo {...args} />,
 } satisfies Meta<LogoArgs>;
