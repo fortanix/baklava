@@ -26,11 +26,11 @@ const DialogLayoutLogo = (props: React.ComponentProps<typeof Logo>) => {
   const { subtitle, subtitleTrademark, ...propsLogo } = props;
   return (
     <div className={cl['bk-dialog-layout__logo']}>
-      <Logo/>
+      <Logo className={cl['bk-dialog-layout__logo__logo']}/>
       {subtitle &&
         <span>
           {subtitle && <span className={cl['bk-dialog-layout__logo__subtitle']}>{subtitle}</span>}
-          {subtitleTrademark && <span>&reg</span>}
+          {subtitleTrademark && <span>&trade;</span>}
         </span>
       }
     </div>

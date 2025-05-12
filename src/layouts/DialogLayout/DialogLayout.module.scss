@@ -7,18 +7,18 @@
 @layer baklava.components {
   .bk-dialog-layout {
     @include bk.component-base(bk-dialog-layout);
-
+    
     display: flex;
     flex-direction: column;
     gap: bk.$spacing-10;
     padding-block-end: bk.$spacing-12;
-
+    
     .bk-dialog-layout__content {
       display: flex;
       flex-direction: row;
       gap: bk.$spacing-12;
     }
-
+    
     .bk-dialog-layout__content__aside {
       inline-size: bk.$spacing-18;
     }
@@ -36,12 +36,17 @@
       font-size: bk.$font-size-m;
       margin-inline-end: bk.$spacing-1;
     }
-  }    
+  }
+  
   .bk-dialog-layout__logo {
     @include bk.component-base(bk-dialog-layout);
     
     @include bk.flex($dir: row, $gap: bk.$spacing-1);
     align-items: center;
+    
+    .bk-dialog-layout__logo__logo {
+      zoom: 0.8; // Scale the logo down a bit
+    }
     
     .bk-dialog-layout__logo__subtitle {
       text-transform: uppercase;

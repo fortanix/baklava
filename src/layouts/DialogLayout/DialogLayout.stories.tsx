@@ -38,7 +38,7 @@ const DialogLayoutLogo = (props: React.ComponentProps<typeof Logo>) => {
       {subtitle &&
         <span>
           {subtitle}
-          {subtitleTrademark && <span>&reg</span>}
+          {subtitleTrademark && <span>&trade;</span>}
         </span>
       }
     </div>
