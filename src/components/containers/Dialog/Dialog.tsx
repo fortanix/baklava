@@ -85,10 +85,7 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   
   /** The title of the dialog, to be displayed in the dialog header. */
   title: React.ReactNode,
-  
-  /** The subtitle next to title, to be displayed in the dialog header. */
-  subtitle?: undefined | string,
-  
+    
   /** If specified, a close icon is displayed in the header. Default: true. */
   showCloseIcon?: undefined | boolean,
   
@@ -117,7 +114,6 @@ export const Dialog = Object.assign(
       unstyled = false,
       flat = false,
       title,
-      subtitle,
       showCloseIcon = true,
       showCancelAction = true,
       onRequestClose,
