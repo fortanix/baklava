@@ -68,6 +68,9 @@ export { PlaceholderEmpty } from '../src/components/graphics/PlaceholderEmpty/Pl
 export { ProgressBar } from '../src/components/graphics/ProgressBar/ProgressBar.tsx';
 export { Spinner } from '../src/components/graphics/Spinner/Spinner.tsx';
 
+// Text
+export { Tag } from '../src/components/text/Tag/Tag.tsx';
+
 // Lists
 export { PropertyList } from '../src/components/lists/PropertyList/PropertyList.tsx';
 
