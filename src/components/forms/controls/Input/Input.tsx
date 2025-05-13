@@ -3,7 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
+import { ClassNameArgument, classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import { mergeRefs, mergeCallbacks } from '../../../../util/reactUtil.ts';
 import * as InputUtil from '../../../util/input_util.tsx';
 
@@ -31,7 +31,7 @@ const InputAction = (props: React.ComponentProps<typeof IconButton>) => {
 };
 
 type InputSpecificProps = Omit<InputUtil.InputSpecificProps, 'type'>;
-type InputContainerProps = Omit<ComponentProps<'div'>, 'ref' | keyof InputSpecificProps>;
+type InputContainerProps = Omit<ComponentProps<'div'>, 'ref' | 'prefix' | keyof InputSpecificProps>;
 export type InputProps = InputContainerProps & InputSpecificProps & {
   ref?: undefined | React.Ref<HTMLInputElement>,
   
@@ -52,6 +52,9 @@ export type InputProps = InputContainerProps & InputSpecificProps & {
   
   /** The accessible name for the icon. */
   iconLabel?: undefined | string,
+  
+  /** Some prefilled content to be shown before the user input. */
+  prefix?: undefined | React.ReactNode,
   
   /** Any additional actions to show after the input control. Use `<Input.Action/>` for a preset action element. */
   actions?: undefined | React.ReactNode,
@@ -77,6 +80,7 @@ export const Input = Object.assign(
       inputProps = {},
       icon,
       iconLabel,
+      prefix,
       actions,
       automaticResize,
       ...propsRest
@@ -119,7 +123,6 @@ export const Input = Object.assign(
           { [cl['bk-input']]: !unstyled },
           { [cl['bk-input--automatic-resize']]: automaticResize },
           containerProps.className,
-          propsExtracted.containerProps,
           className,
         )}
         onMouseDown={mergeCallbacks(
@@ -127,6 +130,7 @@ export const Input = Object.assign(
         )}
       >
         {icon && <Icon icon={icon} aria-label={iconLabel}/>}
+        {prefix}
         <input
           {...inputProps}
           {...propsExtracted.inputProps}

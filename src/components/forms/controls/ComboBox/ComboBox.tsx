@@ -4,49 +4,62 @@
 
 import * as React from 'react';
 import { ClassNameArgument, classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
+import { mergeProps } from '../../../../util/reactUtil.ts';
 
-import { Input } from '../Input/Input.tsx';
+import { Input as InputDefault } from '../Input/Input.tsx';
 import {
   type ItemKey,
   DropdownMenuProvider,
 } from '../../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
 
-import cl from './Select.module.scss';
+import cl from './ComboBox.module.scss';
 
 
-export { cl as SelectClassNames };
+export { cl as ComboBoxClassNames };
 
+
+export type { ItemKey };
+export type ComboBoxInputProps = ComponentProps<typeof InputDefault>;
 
 /*
-A `Select` is a single-select non-editable combobox.
+A `ComboBox` is a text input control combined with a dropdown menu that adapts to the user input, for example for
+automatic suggestions.
 
 References:
 - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
 */
 
-export type SelectProps = ComponentProps<typeof Input> & {
+export type ComboBoxProps = Omit<ComboBoxInputProps, 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
-  /** A human-readable name for the select. */
+  /** A human-readable name for the combobox. */
   label: string,
   
-  /** The selected option. To access the selected option, pass a render prop. */
-  children: (selectedOption: null | ItemKey) => React.ReactNode,
+  /** A custom `Input` component. */
+  Input?: undefined | React.ComponentType<ComboBoxInputProps>,
   
   /** The options list to be shown in the dropdown menu. */
   options: React.ReactNode,
   
+  /** The option to select. If `undefined`, this component will be considered uncontrolled. */
+  selected?: undefined | null | ItemKey,
+  
+  /** Callback for when an option is selected in the dropdown menu. */
+  onSelect?: undefined | React.ComponentProps<typeof DropdownMenuProvider>['onSelect'],
+  
   /** Additional props to be passed to the `DropdownMenuProvider`. */
   dropdownProps?: undefined | React.ComponentProps<typeof DropdownMenuProvider>,
 };
-export const Select = Object.assign(
-  (props: SelectProps) => {
+export const ComboBox = Object.assign(
+  (props: ComboBoxProps) => {
     const {
       unstyled = false,
       label,
-      children,
+      Input = InputDefault,
       options,
+      selected,
+      onSelect,
       dropdownProps = {},
       // Hidden input props
       name,
@@ -59,21 +72,22 @@ export const Select = Object.assign(
         label={label}
         items={options}
         // biome-ignore lint/a11y/useSemanticElements: False positive: this `role` doesn't directly map to HTML `role`
-        role="listbox"
-        keyboardInteractions="form-control"
+        role="combobox"
+        action="focus" // Keep the dropdown menu open while the input is focused
+        keyboardInteractions="default" // FIXME
         placement="bottom-start"
         offset={1}
+        selected={selected}
+        onSelect={onSelect}
         {...dropdownProps}
       >
         {({ props, open, requestOpen, selectedOption }) => {
-          const anchorProps = props({
+          const { ref: anchorPropsRef, ...anchorProps } = props({
             placeholder: 'Select an option',
-            'aria-disabled': true,
-            readOnly: true, // Make the input non-editable, but still focusable
             ...propsRest,
-            className: cx(cl['bk-select'], { [cl['bk-select--open']]: open }),
-            value: selectedOption === null ? '' : selectedOption.label,
-            onChange: () => {},
+            className: cx(cl['bk-combo-box'], { [cl['bk-combo-box--open']]: open }),
+            //value: selectedOption === null ? '' : selectedOption.label,
+            //onChange: () => {},
           });
           
           return (
@@ -81,27 +95,16 @@ export const Select = Object.assign(
               <Input
                 role="combobox"
                 automaticResize
-                {...anchorProps}
-                {...propsRest}
-                className={cx(
-                  anchorProps.className as ClassNameArgument,
-                  propsRest.className,
+                {...mergeProps(
+                  anchorProps,
+                  propsRest,
                 )}
+                // Make sure the anchor ref is applied to the container, not the input
+                containerProps={{ ref: anchorPropsRef as React.Ref<React.ComponentRef<'div'>> }}
                 inputProps={{
                   ...propsRest.inputProps,
-                  className: cx(cl['bk-select__input'], propsRest.inputProps?.className),
+                  className: cx(cl['bk-combo-box__input'], propsRest.inputProps?.className),
                 }}
-                actions={
-                  <Input.Action
-                    // Note: the toggle button should not be focusable, according to:
-                    // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/combobox_role
-                    tabIndex={-1}
-                    icon="caret-down"
-                    className={cx(cl['bk-select__arrow'])}
-                    label={open ? 'Close dropdown' : 'Open dropdown'}
-                    onPress={() => {}}
-                  />
-                }
               />
               {/* Render a hidden input with the selected option key (rather than the human-readable label). */}
               {typeof name === 'string' &&
