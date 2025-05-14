@@ -49,7 +49,7 @@ export type ComboBoxProps = Omit<ComboBoxInputProps, 'onSelect'> & {
   onSelect?: undefined | React.ComponentProps<typeof DropdownMenuProvider>['onSelect'],
   
   /** Additional props to be passed to the `DropdownMenuProvider`. */
-  dropdownProps?: undefined | React.ComponentProps<typeof DropdownMenuProvider>,
+  dropdownProps?: undefined | Partial<React.ComponentProps<typeof DropdownMenuProvider>>,
 };
 export const ComboBox = Object.assign(
   (props: ComboBoxProps) => {

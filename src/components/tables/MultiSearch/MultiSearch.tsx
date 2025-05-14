@@ -372,43 +372,28 @@ export const Filters = (props: FiltersProps) => {
 //
 
 
-export type SuggestionProps = Omit<ComponentProps<'div'>, 'children'> & {
+export type SuggestionProps = {
   label: string,
   items: React.ReactNode,
-  elementRef?: undefined | React.RefObject<null | HTMLInputElement>, // Helps to toggle multiple dropdowns on the same reference element
+  //elementRef?: undefined | React.RefObject<null | HTMLInputElement>, // Helps to toggle multiple dropdowns on the same reference element
   active?: undefined | boolean,
-  onOutsideClick?: undefined | (() => void),
+  //onOutsideClick?: undefined | (() => void),
 };
 export const Suggestions = (props: SuggestionProps) => {
   const {
-    className,
+    //className,
     active = false,
     label = '',
     items = '',
-    elementRef,
-    onOutsideClick,
+    //elementRef,
+    //onOutsideClick,
   } = props;
   
-  const dropdownRef = React.useRef<DropdownRef>(null);
-  
-  const handleOpenChange = (open: boolean) => {
-    if (!open) onOutsideClick?.();
-  };
-  
   if (!active) { return null; }
-  return items;
-  
   return (
-    <DropdownMenuProvider
-      className={cx(cl['bk-multi-search__dropdown'], className)}
-      placement="bottom-start"
-      ref={dropdownRef}
-      label={label}
-      items={items}
-      open={active}
-      onOpenChange={handleOpenChange}
-      anchorRef={elementRef as React.RefObject<HTMLElement | null>}
-    />
+    <div role="group" aria-label={label}>
+      {items}
+    </div>
   );
 };
 
@@ -1066,6 +1051,9 @@ const MultiSearchComboBox = (props: MultiSearchComboBoxProps) => {
       onChange={event => { setInputValue(event.target.value); }}
       prefix={filterParts.join(' ')}
       {...propsRest}
+      dropdownProps={{
+        className: cx(cl['bk-multi-search__dropdown'], propsRest.className),
+      }}
       selected={selectedKey}
       onSelect={(selectedOptionKey, selectedOption) => {
         props.onSelect?.(selectedOptionKey, selectedOption);
@@ -1578,7 +1566,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
   };
   
   return (
-    <div
+    <search
       className={cx(cl['bk-multi-search'], className)}
     >
       <MultiSearchComboBox
@@ -1617,6 +1605,6 @@ export const MultiSearch = (props: MultiSearchProps) => {
         onRemoveFilter={removeFilter}
         onRemoveAllFilters={removeAllFilters}
       />
-    </div>
+    </search>
   );
 };
