@@ -7,7 +7,7 @@ on:
 
 jobs:
   chromatic:
-    #if: false # Uncomment to disable this job
+    if: false # Uncomment to disable this job
     name: Run Chromatic
     runs-on: ubuntu-latest
     steps:
