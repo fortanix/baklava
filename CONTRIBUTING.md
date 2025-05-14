@@ -31,6 +31,7 @@ To create a new release:
 
 ```shell
 VERSION=x.y.z
+if [ "$VERSION" = "x.y.z" ]; then echo "\n\nDid you forget to change the VERSION?"; else
 git checkout -b release/v${VERSION}
 sed -i '' "s/version: '.*'/version: '${VERSION}'/" package.json.js
 npm run install-project
@@ -38,6 +39,7 @@ git add package.json.js package.json package-lock.json
 git commit -m "Release v${VERSION}"
 git push -u origin HEAD
 npm run automate github:create-release-pr
+fi
 # Follow instructions from above command
 ```
 
