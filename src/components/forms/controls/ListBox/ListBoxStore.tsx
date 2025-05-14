@@ -293,6 +293,8 @@ export const useListBox = <E extends HTMLElement>(
   // Focus management (focus on open + restore focus on close)
   const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
   const handleToggle = React.useCallback((event: React.ToggleEvent) => {
+    // FIXME: this causes issues in `MultSearch` where clicking outside the input immediately re-focuses it
+    /*
     const state = storeRef.current?.getState() ?? null;
     if (state === null) { return; }
     
@@ -319,6 +321,7 @@ export const useListBox = <E extends HTMLElement>(
         });
       }
     }
+    */
   }, []);
   
   return {
