@@ -98,7 +98,7 @@ export type DictionaryValidator = (options: { key: string, buffer: string }) => 
 export type Accessor<R> = (item: unknown) => R;
 
 type BaseFieldSpec = {
-  label: React.ReactNode,
+  label: string,
   placeholder?: string,
   operatorInfo?: OperatorInfo,
   onAddFilter?: OnAddFilter,

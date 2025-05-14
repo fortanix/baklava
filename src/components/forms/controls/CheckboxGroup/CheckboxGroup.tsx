@@ -135,6 +135,7 @@ export const CheckboxGroup = Object.assign(
             cl['bk-checkbox-group'],
             { [cl['bk-checkbox-group--horizontal']]: orientation === 'horizontal' },
             { [cl['bk-checkbox-group--vertical']]: orientation === 'vertical' },
+            propsRest.className,
           )}
           contentClassName={cl['bk-checkbox-group__content']}
         >
