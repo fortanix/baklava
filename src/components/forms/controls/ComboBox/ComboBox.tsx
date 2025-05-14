@@ -82,7 +82,7 @@ export const ComboBox = Object.assign(
         {...dropdownProps}
       >
         {({ props, open, requestOpen, selectedOption }) => {
-          const { ref: anchorPropsRef, ...anchorProps } = props({
+          const anchorProps = props({
             placeholder: 'Select an option',
             ...propsRest,
             className: cx(cl['bk-combo-box'], { [cl['bk-combo-box--open']]: open }),
@@ -99,8 +99,6 @@ export const ComboBox = Object.assign(
                   anchorProps,
                   propsRest,
                 )}
-                // Make sure the anchor ref is applied to the container, not the input
-                containerProps={{ ref: anchorPropsRef as React.Ref<React.ComponentRef<'div'>> }}
                 inputProps={{
                   ...propsRest.inputProps,
                   className: cx(cl['bk-combo-box__input'], propsRest.inputProps?.className),

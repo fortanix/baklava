@@ -19,7 +19,7 @@ import {
   VirtualItemKeysUtil,
   useListBoxSelector,
 } from '../ListBox/ListBoxStore.tsx';
-import { ListBox } from '../ListBox/ListBox.tsx';
+import { type ListBoxRef, ListBox } from '../ListBox/ListBox.tsx';
 
 import cl from './ListBoxLazy.module.scss';
 
@@ -62,7 +62,7 @@ const ListItemVirtual = ({ virtualItem, itemsCount, renderItem, renderItemLabel 
 
 
 // Calculate if the user has scrolled to near the end of the scroll container
-const isScrollNearEnd = (virtualizer: Virtualizer<HTMLDivElement, Element>): boolean => {
+const isScrollNearEnd = (virtualizer: Virtualizer<ListBoxRef, Element>): boolean => {
   const scrollRectHeight = virtualizer.scrollRect?.height ?? null;
   if (virtualizer.scrollOffset === null || scrollRectHeight === null) {
     return false;

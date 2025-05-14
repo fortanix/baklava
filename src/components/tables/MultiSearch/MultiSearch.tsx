@@ -419,7 +419,6 @@ type FieldsDropdownProps = {
   onClick: (fieldName?: string) => void,
   onOutsideClick?: undefined | (() => void),
 };
-
 const FieldsDropdown = (props: FieldsDropdownProps) => {
   const {
     inputRef,
@@ -434,11 +433,11 @@ const FieldsDropdown = (props: FieldsDropdownProps) => {
   }
 
   const menuItems = Object.entries(fields || {}).map(([fieldName, { label }]) => (
-    <DropdownMenuProvider.Action
+    <DropdownMenuProvider.Option
       key={fieldName}
       itemKey={fieldName}
       label={label}
-      onActivate={() => { onClick(fieldName); }}
+      onSelect={() => { onClick(fieldName); }}
     />
   ));
 
@@ -531,11 +530,11 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
 
   const renderSingleSelectAlternatives = () =>
     Object.entries(alternatives).map(([key, { label }]) => (
-      <DropdownMenuProvider.Action
+      <DropdownMenuProvider.Option
         key={key}
         itemKey={key}
         label={label}
-        onActivate={() => onChange([key])}
+        onSelect={() => onChange([key])}
       />
     ));
 
@@ -816,11 +815,11 @@ const SuggestedKeysDropdown = (props: SuggestedKeysDropdownProps) => {
   const items = (
     <>
       {Object.entries(suggestedKeys || {}).map(([suggestedKey, { label }]) => (
-        <DropdownMenuProvider.Action
+        <DropdownMenuProvider.Option
           key={suggestedKey}
           itemKey={suggestedKey}
           label={label}
-          onActivate={() => onChange(suggestedKey)}
+          onSelect={() => onChange(suggestedKey)}
         />
       ))}
 
@@ -894,12 +893,12 @@ const OperatorsDropdown = (props: OperatorsDropdownProps) => {
   const items = operators.map((op) => {
     const operatorSymbol = symbolMap[op] ?? op;
     return (
-      <DropdownMenuProvider.Action
+      <DropdownMenuProvider.Option
         className={cx(cl[' bk-multi-search__operator'])}
         key={op}
         itemKey={op}
         label={String(operatorSymbol)}
-        onActivate={() => {
+        onSelect={() => {
           onClick(op);
         }}
       />
@@ -987,17 +986,17 @@ const MultiSearchInput = (props: MultiSearchInputProps) => {
     key = field.suggestedKeys?.[fieldQueryBuffer.key.trim()]?.label ?? fieldQueryBuffer.key.trim();
   }
   
-  const onWrapperClick = (evt: React.MouseEvent) => {
-    evt.preventDefault();
+  const onWrapperClick = (event: React.MouseEvent) => {
+    event.preventDefault();
     
     if (inputRef?.current) {
       inputRef.current.click();
     }
   };
   
-  const onWrapperKeyDown = (evt: React.KeyboardEvent) => {
-    if (evt.key === 'Enter') {
-      evt.preventDefault();
+  const onWrapperKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
 
       if (inputRef?.current) {
         inputRef.current.click();
@@ -1050,11 +1049,13 @@ type MultiSearchComboBoxProps = Partial<ComponentProps<typeof ComboBox>> & {
   //inputRef: React.RefObject<null | HTMLInputElement>,
 };
 const MultiSearchComboBox = (props: MultiSearchComboBoxProps) => {
+  const { fields, fieldQueryBuffer, ...propsRest } = props;
+  
   const [inputValue, setInputValue] = React.useState('');
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
-  const [blocks, setBlocks] = React.useState<Array<string>>([]);
-  const pushBlock = (block: string) => { setBlocks(blocks => [...blocks, block]); };
-  const popBlock = () => { setBlocks(blocks => blocks.slice(0, -1)); };
+  const [filterParts, setFilterParts] = React.useState<Array<string>>([]);
+  const pushFilterPart = (part: string) => { setFilterParts(parts => [...parts, part]); };
+  const popFilterPart = () => { setFilterParts(parts => parts.slice(0, -1)); };
   
   return (
     <ComboBox
@@ -1063,14 +1064,14 @@ const MultiSearchComboBox = (props: MultiSearchComboBoxProps) => {
       Input={InputSearch}
       value={inputValue}
       onChange={event => { setInputValue(event.target.value); }}
-      prefix={blocks.join(' ')}
-      {...props}
+      prefix={filterParts.join(' ')}
+      {...propsRest}
       selected={selectedKey}
-      onSelect={selectedOption => {
-        props.onSelect?.(selectedOption);
+      onSelect={(selectedOptionKey, selectedOption) => {
+        props.onSelect?.(selectedOptionKey, selectedOption);
         
         if (selectedOption !== null) {
-          pushBlock(selectedOption.label);
+          pushFilterPart(selectedOption.label);
           setInputValue('');
         }
         
@@ -1081,10 +1082,10 @@ const MultiSearchComboBox = (props: MultiSearchComboBoxProps) => {
         props.onKeyDown?.(event);
         
         if (event.key === 'Enter' && inputValue.trim() !== '') {
-          pushBlock(inputValue);
+          pushFilterPart(inputValue);
           setInputValue('');
         } else if (event.key === 'Backspace' && inputValue === '') {
-          popBlock();
+          popFilterPart();
         }
       }}
     />
@@ -1212,9 +1213,9 @@ export const MultiSearch = (props: MultiSearchProps) => {
     return { isValid, message };
   };
   
-  const onInputKeyDown = (evt: React.KeyboardEvent) => {
-    if (evt.key === 'Enter') {
-      evt.preventDefault();
+  const onInputKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
       
       const validatorResponse = validateFieldQuery(fieldQueryBuffer);
       if (validatorResponse.isValid) {
@@ -1237,8 +1238,8 @@ export const MultiSearch = (props: MultiSearchProps) => {
         });
         updateFieldQueryBuffer(initializeFieldQueryBuffer());
       }
-    } else if (evt.key === 'Backspace' && fieldQueryBuffer.value === '' && fieldQueryBuffer.fieldName) {
-      evt.preventDefault();
+    } else if (event.key === 'Backspace' && fieldQueryBuffer.value === '' && fieldQueryBuffer.fieldName) {
+      event.preventDefault();
       
       if (fieldQueryBuffer.key) {
         updateFieldQueryBuffer({ ...fieldQueryBuffer, key: '' });
@@ -1254,17 +1255,17 @@ export const MultiSearch = (props: MultiSearchProps) => {
     }
   };
   
-  const onInputChange = (evt: React.ChangeEvent) => {
-    const value = (evt.currentTarget as HTMLInputElement).value;
+  const onInputChange = (event: React.ChangeEvent) => {
+    const value = (event.currentTarget as HTMLInputElement).value;
     updateFieldQueryBuffer({ ...fieldQueryBuffer, value });
     if (value === '') {
       setValidatorResponse({ isValid: true, message: '' });
     }
   };
   
-  const onSearchInputFocus = (evt: React.FocusEvent<HTMLInputElement>) => {
+  const onSearchInputFocus = (event: React.FocusEvent<HTMLInputElement>) => {
     setIsInputFocused(true);
-    onFocus?.(evt);
+    onFocus?.(event);
   };
   
   const onOutsideClick = () => {
