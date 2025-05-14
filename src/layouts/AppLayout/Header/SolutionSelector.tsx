@@ -17,10 +17,6 @@ import cl from './SolutionSelector.module.scss';
 
 export { cl as SolutionSelectorClassNames };
 
-const SolutionSelectorOption = (props: React.ComponentProps<typeof DropdownMenuProvider.Option>) => {
-  return <DropdownMenuProvider.Option {...props}/>;
-};
-
 export type SolutionSelectorProps = Omit<ComponentProps<typeof Button>, 'label'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
@@ -59,6 +55,9 @@ export const SolutionSelector = Object.assign(
     );
   },
   {
-    Option: SolutionSelectorOption,
+    Header: DropdownMenuProvider.Header,
+    Option: DropdownMenuProvider.Option,
+    Action: DropdownMenuProvider.Action,
+    FooterActions: DropdownMenuProvider.FooterActions,
   },
 );
