@@ -82,10 +82,10 @@
         &::after {
           display: inline-block;
           content: '®';
-          margin-inline-start: 0.5ch;
+          margin-inline-start: 0.1ch;
           
-          vertical-align: 1.6cap;
-          font-size: 0.4em;
+          vertical-align: 1.8cap;
+          font-size: 0.3em;
         }
       }
       > :global(._subtitle) {
