@@ -15,11 +15,11 @@ export const useTypeAhead = (maxDuration = 400/*ms*/) => {
   const lastKeyPressTime = React.useRef(Date.now());
   
   const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+    const now = Date.now();
+    const shouldReset = now - lastKeyPressTime.current > maxDuration;
+    lastKeyPressTime.current = now;
+    
     setSequence((prevSequence) => {
-      const now = Date.now();
-      const shouldReset = now - lastKeyPressTime.current > maxDuration;
-      lastKeyPressTime.current = now;
-      
       const currentSequence = shouldReset ? [] : prevSequence;
       
       // Ignore isolated space inputs, since we likely instead want this to trigger an action (e.g. clicking a button
@@ -33,7 +33,9 @@ export const useTypeAhead = (maxDuration = 400/*ms*/) => {
       // - Allow Alt/AltGraph (commonly used for composition, e.g. Alt+Shift+2 could become "€").
       const hasModifier = (['Control', 'Meta'] as const).some(mod => event.getModifierState(mod));
       
-      if (!isPrintable || hasModifier) { return currentSequence; }
+      const isInput = event.target instanceof HTMLInputElement;
+      
+      if (!isPrintable || hasModifier || isInput) { return currentSequence; }
       
       event.preventDefault();
       event.stopPropagation();

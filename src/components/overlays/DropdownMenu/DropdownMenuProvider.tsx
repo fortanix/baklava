@@ -183,7 +183,7 @@ export const DropdownMenuProvider = Object.assign(
           'aria-haspopup': 'listbox',
           'aria-expanded': isOpen,
           // biome-ignore lint/suspicious/noExplicitAny: `onKeyDown` should be a function here
-          onKeyDown: mergeCallbacks([handleAnchorKeyDown, props.onKeyDown as any]),
+          onKeyDown: mergeCallbacks([props.onKeyDown as any, handleAnchorKeyDown]),
         };
       };
       
@@ -231,7 +231,7 @@ export const DropdownMenuProvider = Object.assign(
         style: floatingStyles,
         ...propsRest,
         className: cx(cl['bk-dropdown-menu-provider__list-box'], propsRest.className),
-        onKeyDown: mergeCallbacks([handleDropdownKeyDown, propsRest.onKeyDown]),
+        onKeyDown: mergeCallbacks([propsRest.onKeyDown, handleDropdownKeyDown]),
       });
       
       return (
