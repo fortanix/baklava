@@ -121,6 +121,18 @@ export const useModalDialog = (
     }
     */
     
+    // Note: browsers do not automatically close nested modals. Instead, we need to do this manually
+    if (event.target instanceof HTMLElement) {
+      // Note: in the future (once browser support is available), we can just do:
+      //event.target.querySelectorAll(':open').forEach(element => { element.requestClose(); });
+      
+      event.target.querySelectorAll('dialog[open]').forEach(element => {
+        if (element instanceof HTMLDialogElement) {
+          element.close();
+        }
+      });
+    }
+    
     controller.deactivate(); // Sync with the controller
   }, [controller]);
   

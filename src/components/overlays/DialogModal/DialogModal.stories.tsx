@@ -225,8 +225,22 @@ const DialogModalControlledWithSubject = (props: React.ComponentProps<typeof Dia
   return (
     <article className="bk-prose">
       {modal.subject &&
-        <DialogModal {...modal.props} {...props} title={modal.subject.name}>
-          Details about {modal.subject.name} here.
+        <DialogModal {...modal.props} {...props} className="outer" title={modal.subject.name}>
+          <p style={{ marginBottom: 20 }}>Details about {modal.subject.name} here.</p>
+          
+          <DialogModal
+            className="inner"
+            title="Submodal"
+            trigger={({ activate }) => <Button kind="primary" label="Open submodal" onPress={activate}/>}
+          >
+            <p style={{ marginBottom: 20 }}>
+              This is a submodal. Closing the outer modal with a ref should close me as well. Notifications should
+              still be rendered after closing.
+            </p>
+            
+            <Button kind="primary" onPress={() => { notify.info('Some message'); }}>Trigger notification</Button>
+            <Button kind="primary" onPress={() => { modal.deactivate(); }}>Close outer modal</Button>
+          </DialogModal>
         </DialogModal>
       }
       

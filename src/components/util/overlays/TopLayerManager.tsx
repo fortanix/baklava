@@ -115,7 +115,7 @@ export const useModalDialogTracker = (active: boolean, dialogRef: React.RefObjec
     
     // On unmount, deactivate
     return () => {
-      context?.modalDialogStack.deactivate(ref);
+      context.modalDialogStack.deactivate(ref);
     };
   }, [context, active, ref]);
 };
