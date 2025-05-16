@@ -34,7 +34,7 @@ export type AnchorRenderArgs = {
   close: () => void,
   selectedOption: null | ListBox.ItemDetails,
 };
-export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' | 'selected' > & {
+export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label'> & {
   // ---
   // TEMP
   
@@ -54,6 +54,8 @@ export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 
   // ---
   
   
+  /** Whether this component should be unstyled. */
+  unstyled?: undefined | boolean,
   
   /** An accessible name for this dropdown menu. Required */
   label: string,
@@ -63,9 +65,6 @@ export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 
   * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
   */
   children?: ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode,
-  
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
   
   /** The dropdown items. */
   items: React.ReactNode,

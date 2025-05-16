@@ -3,20 +3,23 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { mergeCallbacks } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 
-import { Input } from '../Input/Input.tsx';
+import { Input as InputDefault } from '../Input/Input.tsx';
 import {
   type ItemKey,
   DropdownMenuProvider,
 } from '../../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
 
 import cl from './Select.module.scss';
+import { mergeProps } from '../../../../util/reactUtil.ts';
 
 
 export { cl as SelectClassNames };
 
+
+export type { ItemKey };
+export type SelectInputProps = ComponentProps<typeof InputDefault>;
 
 /*
 A `Select` is a single-select non-editable combobox.
@@ -25,26 +28,34 @@ References:
 - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
 */
 
-export type SelectProps = ComponentProps<typeof Input> & {
+export type SelectProps = Omit<SelectInputProps, 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
-  /** The selected account. To access the selected account, pass a render prop. */
-  children: (selectedAccount: null | ItemKey) => React.ReactNode,
-  
   /** The options list to be shown in the dropdown menu. */
   options: React.ReactNode,
+  
+  /** A custom `Input` component. */
+  Input?: undefined | React.ComponentType<SelectInputProps> & {
+    Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
+  },
+  
+  /** Additional props to pass to the dropdown menu provider. */
+  dropdownProps?: undefined | React.ComponentProps<typeof DropdownMenuProvider>,
 };
 export const Select = Object.assign(
   (props: SelectProps) => {
     const {
       unstyled = false,
-      children,
       options,
       name,
       form,
+      Input = InputDefault,
+      dropdownProps = {},
       ...propsRest
     } = props;
+    
+    const InputAction = Input.Action ?? InputDefault.Action;
     
     return (
       <DropdownMenuProvider
@@ -54,10 +65,11 @@ export const Select = Object.assign(
         role="listbox"
         keyboardInteractions="form-control"
         placement="bottom-start"
-        offset={1}
+        offset={1} // 1px offset so it doesn't overlap with the bottom border of the input
+        {...dropdownProps}
       >
         {({ props, open, requestOpen, selectedOption }) => {
-          const anchorProps = props({
+          const { ref: anchorRef, ...anchorProps } = props({
             placeholder: 'Select an option',
             'aria-disabled': true,
             readOnly: true, // Make the input non-editable, but still focusable
@@ -67,15 +79,17 @@ export const Select = Object.assign(
             onChange: () => {},
           });
           
+          const propsMerged = mergeProps(
+            propsRest,
+            anchorProps,
+          );
+          
           return (
             <>
               <Input
                 automaticResize
-                {...propsRest}
-                {...anchorProps}
-                inputProps={{ className: cx(cl['bk-select__input']) }}
                 actions={
-                  <Input.Action
+                  <InputAction
                     // Note: the toggle button should not be focusable, according to:
                     // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/combobox_role
                     tabIndex={-1}
@@ -85,6 +99,16 @@ export const Select = Object.assign(
                     onPress={() => {}}
                   />
                 }
+                {...propsMerged}
+                inputProps={{
+                  ...propsMerged.inputProps,
+                  className: cx(cl['bk-select__input'], propsMerged.inputProps?.className),
+                }}
+                containerProps={{
+                  ...propsMerged.containerProps,
+                  // Anchor the dropdown to the container, not the inner input
+                  ref: anchorRef as React.Ref<HTMLDivElement>,
+                }}
               />
               {/* Render a hidden input with the selected option key (rather than the human-readable label). */}
               <input type="hidden" form={form} name={name} value={selectedOption?.itemKey ?? ''}/>

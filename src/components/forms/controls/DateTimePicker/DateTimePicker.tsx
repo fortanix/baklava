@@ -16,10 +16,10 @@ export type DateTimePickerProps = Omit<ComponentProps<'div'>, 'onChange'> & {
   /** A Date object to hold the date and time. */
   date: null | Date,
   
-  /** A Date object limit min selectable date. */
+  /** The minimum date that can be selected. Optional. */
   minDate: null | Date,
   
-  /** A Date object limit max selectable date. */
+  /** The maximum date that can be selected. Optional. */
   maxDate: null | Date,
   
   /** A callback function that is called when either the date or the time picker is changed. */
