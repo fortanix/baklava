@@ -66,6 +66,7 @@ export const SelectWithCustomInput: Story = {
   },
 };
 
+/*
 const SelectControlledC = (props: React.ComponentProps<typeof Select>) => {
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
   
@@ -96,6 +97,7 @@ const SelectControlledC = (props: React.ComponentProps<typeof Select>) => {
 export const SelectControlled: Story = {
   render: args => <SelectControlledC {...args}/>,
 };
+*/
 
 export const SelectInForm: Story = {
   decorators: [
