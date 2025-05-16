@@ -7,6 +7,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import * as React from 'react';
 
 import { Button } from '../../actions/Button/Button.tsx';
+import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 
 import { DropdownMenuProvider } from './DropdownMenuProvider.tsx';
 
@@ -22,14 +23,6 @@ export default {
   tags: ['autodocs'],
   argTypes: {
   },
-  args: {
-  },
-  render: (args) => <DropdownMenuProvider {...args}/>,
-} satisfies Meta<DropdownMenuProviderArgs>;
-
-
-export const Standard: Story = {
-  name: 'DropdownMenuProvider',
   args: {
     children: ({ props, selectedOption }) => (
       <Button kind="primary" {...props()}>
@@ -49,9 +42,26 @@ export const Standard: Story = {
       </>
     ),
   },
+  render: (args) => <DropdownMenuProvider {...args}/>,
+} satisfies Meta<DropdownMenuProviderArgs>;
+
+
+export const DropdownMenuProviderStandard: Story = {};
+
+export const DropdownMenuProviderWithInput: Story = {
+  args: {
+    items: (
+      <>
+        <DropdownMenuProvider.Header unstyled itemKey="header-1" label="Input">
+          <InputSearch/>
+        </DropdownMenuProvider.Header>
+        <DropdownMenuProvider.Option itemKey="option-1" label="Option 1"/>
+      </>
+    ),
+  }
 };
 
-export const WithPlacement: Story = {
+export const DropdownMenuProviderWithPlacement: Story = {
   args: {
     placement: 'right',
     children: ({ props, selectedOption }) => (
