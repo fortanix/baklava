@@ -10,6 +10,11 @@ import type { Argument as ClassNameArgument, ArgumentArray } from 'classnames';
 
 export type { ClassNameArgument };
 
+export const isClassNameArgument = (arg: unknown): arg is ClassNameArgument => {
+  // Note: `classNames` accepts anything at the moment, including null, undefined, functions (which are ignored), etc.
+  return true;
+};
+
 export const classNames = (...args: ArgumentArray): string => {
   const className = classNamesDedupe(...args);
   
