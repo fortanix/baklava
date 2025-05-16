@@ -112,13 +112,12 @@ export const useModalDialogTracker = (active: boolean, dialogRef: React.RefObjec
     } else {
       context.modalDialogStack.deactivate(ref);
     }
+    
+    // On unmount, deactivate
+    return () => {
+      context?.modalDialogStack.deactivate(ref);
+    };
   }, [context, active, ref]);
-  
-  // On unmount, deactivate
-  useEffectOnce(() => {
-    if (context === null) { return; } // May sometimes become `null` even if a Provider is present in the tree?
-    return () => context.modalDialogStack.deactivate(ref);
-  });
 };
 
 /**

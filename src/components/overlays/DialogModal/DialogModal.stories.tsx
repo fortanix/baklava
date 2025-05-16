@@ -117,6 +117,43 @@ export const DialogModalWithToast: Story = {
   },
 };
 
+/**
+ * Same as the prior story, but where the modals are immediately unmounted, preventing exit animations as well as
+ * the exit `onToggle` event listener. We need to take care that toast notifications do not break in this case.
+ */
+const DialogModalWithToastUnmountC = (props: React.ComponentProps<typeof DialogModal>) => {
+  const [mounted, setMounted] = React.useState(true);
+  
+  // Simulate a sudden unmount of the entire `DialogModal`
+  if (!mounted) { return null; }
+  
+  return (
+    <DialogModal {...props}>
+      <Button kind="primary" onPress={() => { notifyTest(); }}>
+        Trigger toast notification
+      </Button>
+      <DialogModal
+        className="inner"
+        title="Submodal"
+        trigger={({ activate }) => <Button kind="primary" label="Open submodal" onPress={activate}/>}
+        onClose={() => { setMounted(false); }}
+      >
+        <p>Test rendering toast notifications over the modal:</p>
+        <Button kind="primary" onPress={() => { notifyTest(); }}>
+          Trigger toast notification
+        </Button>
+      </DialogModal>
+    </DialogModal>
+  );
+};
+export const DialogModalWithToastUnmount: Story = {
+  render: args => <DialogModalWithToastUnmountC {...args}/>,
+  args: {
+    title: 'Modal with a submodal',
+    className: 'outer',
+  },
+};
+
 export const DialogModalWithDropdown: Story = {
   args: {
     title: 'Modal with a dropdown',
