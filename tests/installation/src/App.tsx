@@ -6,7 +6,7 @@ import {
   DialogModal,
   Panel,
   AppLayout,
-  Logo,
+  FortanixLogo,
   Header,
   UserMenu,
   AccountSelector,
@@ -21,7 +21,7 @@ export const App = () => {
     <AppLayout>
       <AppLayout.Header>
         <Link unstyled href="#" slot="logo">
-          <Logo subtitle="Data Security Manager" subtitleTrademark={true}/>
+          <FortanixLogo subtitle="Data Security Manager" subtitleTrademark={true}/>
         </Link>
         <Header slot="actions">
           <UserMenu userName="Anand Kashyap"/>

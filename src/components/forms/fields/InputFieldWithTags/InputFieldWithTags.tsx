@@ -14,7 +14,7 @@ import cl from './InputFieldWithTags.module.scss';
 
 export { cl as InputFieldWithTagsClassNames };
 
-export type InputFieldWithTagsProps = Omit<ComponentProps<'input'>, 'value'> & {
+export type InputFieldWithTagsProps = ComponentProps<typeof Input> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
@@ -24,8 +24,8 @@ export type InputFieldWithTagsProps = Omit<ComponentProps<'input'>, 'value'> & {
   /** Props for the `<label>` element, if `label` is defined. */
   labelProps?: undefined | ComponentProps<'label'>,
 
-  /** Props for the wrapper element. */
-  wrapperProps?: undefined | ComponentProps<'div'>,
+  /** Props for the container element. */
+  containerProps?: undefined | ComponentProps<'div'>,
 
   /** Value of the input field */
   value?: undefined | string,
@@ -47,7 +47,7 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
     unstyled = false,
     label,
     labelProps = {},
-    wrapperProps = {},
+    containerProps = {},
     value = '',
     tags = [],
     onUpdate,
@@ -98,11 +98,11 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
 
   return (
     <div
-      {...wrapperProps}
+      {...containerProps}
       className={cx(
         'bk',
         { [cl['bk-input-field-with-tags']]: !unstyled },
-        wrapperProps.className,
+        containerProps.className,
       )}
     >
       {label &&
@@ -116,7 +116,10 @@ export const InputFieldWithTags = (props: InputFieldWithTagsProps) => {
       }
       <Input
         {...inputProps}
-        id={controlId}
+        inputProps={{
+          ...inputProps.inputProps,
+          id: controlId,
+        }}
         form={formContext.formId}
         className={cx(cl['bk-input-field-with-tags__control'], inputProps.className)}
         onChange={onChange}

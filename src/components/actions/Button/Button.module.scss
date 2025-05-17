@@ -31,6 +31,7 @@
     display: inline-flex;
     flex-flow: row wrap;
     align-items: center;
+    justify-content: center;
     gap: bk.$spacing-1;
     
     @include bk.font(bk.$font-family-display, bk.$font-weight-semibold);

@@ -28,6 +28,7 @@ export const LayoutDecorator = (props: LayoutDecoratorProps) => {
       className={cx(
         { [cl['util-layout-decorator']]: true },
         { [cl['util-layout-decorator--small']]: size === 'small' },
+        { [cl['util-layout-decorator--medium']]: size === 'medium' },
         { [cl['util-layout-decorator--large']]: size === 'large' },
         { [cl['util-layout-decorator--resizable']]: resize !== 'none' },
         propsRest.className,
