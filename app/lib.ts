@@ -53,6 +53,7 @@ export { TimePicker } from '../src/components/forms/controls/TimePicker/TimePick
 export { DatePickerRange } from '../src/components/forms/controls/DatePickerRange/DatePickerRange.tsx';
 export { ListBox } from '../src/components/forms/controls/ListBox/ListBox.tsx';
 export { ListBoxLazy } from '../src/components/forms/controls/ListBoxLazy/ListBoxLazy.tsx';
+export { ComboBox } from '../src/components/forms/controls/ComboBox/ComboBox.tsx';
 export { Select } from '../src/components/forms/controls/Select/Select.tsx';
 
 // Forms > Fields
@@ -95,6 +96,7 @@ export * as DataTablePlaceholder from '../src/components/tables/DataTable/table/
 export * as DataTableEager from '../src/components/tables/DataTable/DataTableEager.tsx';
 export * as DataTableLazy from '../src/components/tables/DataTable/DataTableLazy.tsx';
 export * as DataTableStream from '../src/components/tables/DataTable/DataTableStream.tsx';
+export * as MultiSearch from '../src/components/tables/MultiSearch/MultiSearch.tsx';
 
 /**
  * Layouts

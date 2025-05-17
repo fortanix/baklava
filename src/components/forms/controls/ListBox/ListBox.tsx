@@ -38,6 +38,11 @@ export { type ItemKey, type ItemDef, type ItemDetails, ListBoxContext, useListBo
 export { cl as ListBoxClassNames };
 
 
+export interface ListBoxRef extends HTMLDivElement {
+  _bkListBoxFocusFirst: () => void,
+  _bkListBoxFocusLast: () => void,
+};
+
 type ListBoxIcon = React.ComponentType<Pick<React.ComponentProps<typeof BkIcon>, 'icon' | 'className' | 'decoration'>>;
 
 
@@ -243,9 +248,12 @@ export const FooterActions = (props: React.ComponentProps<'div'>) => {
 // List box
 //
 
-export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
+export type ListBoxProps = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
+  
+  /** A React ref to pass to the list box element. */
+  ref?: undefined | React.Ref<null | ListBoxRef>,
   
   /** An accessible name for this listbox menu. Required. */
   label: string,
@@ -257,7 +265,7 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
   selected?: undefined | null | ItemKey,
   
   /** Event handler to be called when the selected option state changes. */
-  onSelect?: undefined | ((selectedItem: null | ItemDetails) => void),
+  onSelect?: undefined | ((selectedItemKey: null | ItemKey, selectedItemDetails: null | ItemDetails) => void),
   
   /** Whether the list box is disabled or not. Default: false. */
   disabled?: undefined | boolean,
@@ -330,6 +338,7 @@ const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
 export const ListBox = Object.assign(
   (props: ListBoxProps) => {
     const {
+      ref,
       children,
       unstyled = false,
       label,
@@ -348,7 +357,7 @@ export const ListBox = Object.assign(
     } = props;
     
     const id = React.useId();
-    const ref = React.useRef<HTMLDivElement>(null);
+    const listBoxRef = React.useRef<ListBoxRef>(null);
     const inputRef = React.useRef<React.ComponentRef<typeof HiddenSelectedState>>(null);
     const scrollerProps = useScroller();
     
@@ -361,13 +370,29 @@ export const ListBox = Object.assign(
       - Use `listBox.store.subscribe` for side effects.
     */
     const selectedItemKeyDefault = selected ?? defaultSelected ?? null;
-    const listBox = useListBox(ref, {
+    const listBox = useListBox(listBoxRef, {
       id: props.id ?? id,
       disabled,
       selectedItem: selectedItemKeyDefault,
       focusedItem: selectedItemKeyDefault,
       virtualItemKeys,
     });
+    
+    // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
+    React.useImperativeHandle<null | ListBoxRef, null | ListBoxRef>(ref, () => {
+      const listBoxElement = listBoxRef.current;
+      if (listBoxElement === null) { return null; }
+      return Object.assign(listBoxElement, {
+        focus: () => {
+          const state = listBox.store.getState();
+          if (state.focusedItem) {
+            state.focusItem(state.focusedItem);
+          }
+        },
+        _bkListBoxFocusFirst: () => { listBox.store.getState().focusItemAt('first'); },
+        _bkListBoxFocusLast: () => { listBox.store.getState().focusItemAt('last'); },
+      });
+    }, [listBox]);
     
     // Keep the `virtualItemKeys` prop in sync with the store
     React.useEffect(() => {
@@ -392,7 +417,7 @@ export const ListBox = Object.assign(
             label,
           };
           
-          onSelect?.(selectedItem);
+          onSelect?.(itemKey, selectedItem);
         }
       });
     }, [listBox.store, onSelect, formatItemLabel]);
@@ -432,8 +457,8 @@ export const ListBox = Object.assign(
           {...ariaProps}
           {...propsRest}
           {...listBox.props}
-          ref={mergeRefs(ref, props.ref)}
-          onKeyDown={mergeCallbacks([propsRest.onKeyDown, handleKeyDown, listBox.props.onKeyDown])}
+          ref={listBoxRef}
+          onKeyDown={mergeCallbacks([handleKeyDown, propsRest.onKeyDown, listBox.props.onKeyDown])}
           onToggle={mergeCallbacks([props.onToggle, listBox.props.onToggle])}
           className={cx(
             scrollerProps.className,

@@ -22,6 +22,7 @@ export default {
   argTypes: {
   },
   args: {
+    label: 'Test select',
   },
   render: (args) => <Select {...args}/>,
 } satisfies Meta<SelectArgs>;
@@ -38,6 +39,38 @@ export const SelectStandard: Story = {
     ),
   },
 };
+
+/*
+export const SelectControlled: Story = {
+  decorators: [
+    (Story, { args }) => {
+      const [value, setValue] = React.useState<undefined | string>();
+      return (
+        <>
+          <Story
+            args={{
+              ...args,
+              value,
+              onChange: event => { setValue(event.target.value); },
+            }}
+          />
+          <div>Value: {value}</div>
+        </>
+      );
+    },
+  ],
+  args: {
+    readOnly: false,
+    options: (
+      <>
+        {Array.from({ length: 8 }, (_, i) => i + 1).map(index =>
+          <Select.Option key={`option-${index}`} itemKey={`option-${index}`} label={`Option ${index}`}/>
+        )}
+      </>
+    ),
+  },
+};
+*/
 
 export const SelectInForm: Story = {
   decorators: [

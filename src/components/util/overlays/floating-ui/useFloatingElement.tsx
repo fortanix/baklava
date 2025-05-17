@@ -13,6 +13,7 @@ import {
   shift,
   limitShift,
   flip,
+  hide,
   arrow,
   type ElementProps,
   type UseRoleProps,
@@ -20,6 +21,7 @@ import {
   type FlipOptions,
   type FloatingContext,
   useFloating,
+  // Interactions
   useRole,
   useFocus,
   useClick,
@@ -28,7 +30,6 @@ import {
   useHover,
   useInteractions,
   useTransitionStatus,
-  hide,
 } from '@floating-ui/react';
 
 
@@ -57,7 +58,7 @@ export type UseFloatingElementOptions = {
   floatingUiFlipOptions?: undefined | FlipOptions,
   floatingUiInteractions?: undefined | ((context: FloatingContext) => Array<undefined | ElementProps>),
   role?: undefined | UseRoleProps['role'],
-  action?: undefined | 'hover' | 'click',
+  action?: undefined | 'hover' | 'focus' | 'click',
   placement?: undefined | Placement,
   offset?: undefined | number,
   /**
@@ -169,12 +170,15 @@ export const useFloatingElement = (options: UseFloatingElementOptions = {}) => {
       keyboardHandlers: optionsWithDefaults.keyboardInteractions === 'default',
     }));
     interactions.push(useDismiss(context));
-  } else if (action === 'hover') {
+  }
+  if (action === 'focus' || action === 'hover') {
     interactions.push(useFocus(context));
+  }
+  if (action === 'hover') {
     const { delay: groupDelay } = useDelayGroup(context);
     const delay = optionsWithDefaults.hasDelayGroup ? groupDelay : {
       open: 500/*ms*/, // Fallback time to open after if the cursor never "rests"
-      close: 200/*ms*/, // Allows the user to move the cursor from anchor to tooltip without closing
+      close: 200/*ms*/, // Allows the user to move the cursor from anchor to floating element without closing
     };
     interactions.push(useHover(context, {
       restMs: 20/*ms*/, // User's cursor must be at rest before opening

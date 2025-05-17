@@ -3,7 +3,6 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { idToCssIdent } from '../../../util/reactUtil.ts';
 import { startViewTransition } from '../../../util/reactDomUtil.ts';
 
 import type { Meta, StoryObj } from '@storybook/react';
@@ -22,7 +21,7 @@ type Story = StoryObj<BannerArgs>;
 
 // Controlled version of `Banner` (handles close state)
 const BannerControlled = (props: React.ComponentProps<typeof Banner>) => {
-  const viewTransitionName = idToCssIdent(React.useId());
+  const viewTransitionName = React.useId();
   const [isVisible, setIsVisible] = React.useState(true);
   
   // Use a view transition to get an exit animation (in supported browsers)

@@ -42,3 +42,35 @@ export default {
  * for accessibility.
  */
 export const InputSearchStandard: Story = {};
+
+export const InputSearchWithPrefix: Story = {
+  decorators: [
+    (Story, context) => {
+      const [value, setValue] = React.useState('');
+      const [blocks, setBlocks] = React.useState<Array<string>>([]);
+      const pushBlock = (block: string) => { setBlocks(blocks => [...blocks, block]); };
+      const popBlock = () => { setBlocks(blocks => blocks.slice(0, -1)); };
+      
+      return (
+        <Story
+          args={{
+            ...context.args,
+            value,
+            onChange: event => { setValue(event.target.value); },
+            prefix: blocks.join(' '),
+            onKeyDown: event => {
+              if (event.key === 'Enter' && value.trim() !== '') {
+                pushBlock(value);
+                setValue('');
+              } else if (event.key === 'Backspace' && value === '') {
+                popBlock();
+              }
+            },
+          }}
+        />
+      );
+    },
+  ],
+  args: {
+  },
+};
