@@ -5,7 +5,7 @@
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../util/componentUtil.ts';
 
-import { H1 } from '../../typography/Heading/Heading.tsx';
+import { type IconName } from '../../components/graphics/Icon/Icon.tsx';
 import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
 import { Card } from '../../components/containers/Card/Card.tsx';
 
@@ -35,64 +35,88 @@ const FortanixArmorLogo = (props: FortanixArmorLogoProps) => {
   );
 };
 
+type HeadingProps = ComponentProps<'header'>;
+const Heading = (props: HeadingProps) => {
+  const { children, ...propsRest } = props;
+  return (
+    <header {...propsRest} className={cx(propsRest.className)}>
+      {children}
+    </header>
+  );
+};
+
+type ProductInfoCardHeadingProps = ComponentProps<typeof Card.Heading> & {
+  /** The icon to show along with the heading. */
+  icon?: undefined | IconName,
+};
+const ProductInfoCardHeading = (props: ProductInfoCardHeadingProps) => {
+  const { children, icon, ...propsRest } = props;
+  return (
+    <Card.Heading {...propsRest} className={cx(cl['bk-public-layout__product-info-card__heading'])}>
+      {children}
+    </Card.Heading>
+  );
+};
+
+type ProductInfoCardProps = ComponentProps<typeof Card>;
+const ProductInfoCard = Object.assign(
+  (props: ProductInfoCardProps) => {
+    const { children, ...propsRest } = props;
+    return (
+      <Card {...propsRest} className={cx(cl['bk-public-layout__product-info-card'], 'bk-prose')}>
+        {children}
+      </Card>
+    );
+  },
+  {
+    Heading: ProductInfoCardHeading,
+  },
+);
+
 export type PublicLayoutProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
-  /** Some property specific to `PublicLayout`. */
-  variant?: undefined | 'x' | 'y',
+  /** Content heading. */
+  heading?: undefined | React.ReactNode,
+  
+  /** Product information to show alongside the main content. */
+  productInfoCards?: undefined | React.ReactNode,
 };
 /**
  * Layout for public pages that require no authentication (e.g. login, signup.).
  */
-export const PublicLayout = (props: PublicLayoutProps) => {
-  const { unstyled = false, variant, ...propsRest } = props;
-  return (
-    <div
-      {...propsRest}
-      className={cx(
-        'bk',
-        { [cl['bk-public-layout']]: !unstyled },
-        { [cl['bk-public-layout--x']]: variant === 'x' },
-        { [cl['bk-public-layout--y']]: variant === 'y' },
-        propsRest.className,
-      )}
-    >
-      <div className={cx(cl['bk-public-layout__content'])}>
-        <H1>Login</H1>
-        <FortanixArmorLogo stacked={false}/>
-      </div>
-      
-      <div className={cx(cl['bk-public-layout__guide'])}>
-        <FortanixArmorLogo stacked className={cx('bk-theme--dark', cl['bk-public-layout__guide__logo'])}/>
+export const PublicLayout = Object.assign(
+  (props: PublicLayoutProps) => {
+    const { unstyled = false, children, heading, productInfoCards, ...propsRest } = props;
+    return (
+      <div
+        {...propsRest}
+        className={cx(
+          'bk',
+          { [cl['bk-public-layout']]: !unstyled },
+          propsRest.className,
+        )}
+      >
+        <div className={cx(cl['bk-public-layout__content'])}>
+          {heading}
+          
+          {children}
+        </div>
         
-        <div className={cx(cl['bk-public-layout__guide__cards'])}>
-          <Card className={cx(cl['bk-public-layout__guide__card'], 'bk-prose')}>
-            <Card.Heading>Test</Card.Heading>
-            <ul>
-              <li>Point 1</li>
-              <li>Point 2</li>
-              <li>Point 3</li>
-            </ul>
-          </Card>
-          <Card className={cx(cl['bk-public-layout__guide__card'], 'bk-prose')}>
-            <Card.Heading>Test</Card.Heading>
-            <ul>
-              <li>Point 1</li>
-              <li>Point 2</li>
-              <li>Point 3</li>
-            </ul>
-          </Card>
-          <Card className={cx(cl['bk-public-layout__guide__card'], 'bk-prose')}>
-            <Card.Heading>Test</Card.Heading>
-            <ul>
-              <li>Point 1</li>
-              <li>Point 2</li>
-              <li>Point 3</li>
-            </ul>
-          </Card>
+        <div className={cx(cl['bk-public-layout__product-info'])}>
+          <FortanixArmorLogo stacked className={cx('bk-theme--dark', cl['bk-public-layout__product-info__logo'])}/>
+          
+          <div className={cx(cl['bk-public-layout__product-info__cards'])}>
+            {productInfoCards}
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  },
+  {
+    FortanixArmorLogo,
+    Heading,
+    ProductInfoCard,
+  },
+);

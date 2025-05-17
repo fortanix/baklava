@@ -8,11 +8,24 @@
   .bk-fortanix-armor-logo {
     @include bk.component-base(bk-fortanix-armor-logo);
     
+    direction: ltr;
+    user-select: none;
+    
     display: flex;
     
     .product-name {
       @include bk.font(bk.$font-family-display, bk.$font-weight-medium);
       text-transform: uppercase;
+    }
+    
+    &:not(.bk-fortanix-armor-logo--stacked) {
+      @include bk.flex-row;
+      align-items: center;
+      
+      .product-name {
+        margin-block-start: 0.2em;
+        font-size: 2em;
+      }
     }
     
     &.bk-fortanix-armor-logo--stacked {
@@ -24,24 +37,54 @@
       
       .product-name {
         justify-self: end;
+        margin-block-start: -0.3lh;
+        margin-inline-end: 1.35ch;
+        font-size: 1.2em;
+      }
+    }
+  }
+  
+  .bk-public-layout__product-info-card {
+    @include bk.component-base(bk-public-layout__product-info-card);
+    
+    padding: bk.$spacing-8;
+    padding-block-start: bk.$spacing-4;
+    
+    .bk-public-layout__product-info-card__heading {
+      @include bk.flex-column;
+      align-items: center;
+      row-gap: bk.$spacing-2;
+      
+      font-size: bk.$font-size-l;
+      
+      [role="img"] {
+        font-size: bk.$font-size-xl;
       }
     }
   }
   
   .bk-public-layout {
     @include bk.component-base(bk-public-layout);
+    container-type: size;
     
     overflow: hidden;
     
     // Note: the background image is a semi-transparent png. We add a solid color behind it to shade the image.
-    background: url('@/assets/images/public-bg.png') no-repeat, #253264;
+    background: url('@/assets/images/public-bg.png') no-repeat;
+    background-color: #253264;
     background-size: cover;
     
+    --bk-public-layout-content-size: 300px; // Roughly mobile size
     display: grid;
-    grid-template-columns: 30rem 1fr;
+    grid-template-columns:
+      minmax(min(100cqi, var(--bk-public-layout-content-size)), calc(var(--bk-public-layout-content-size) + 15cqi))
+      minmax(0, 1fr);
+    grid-template-rows: 100cqb;
     
     .bk-public-layout__content {
-      padding: bk.$sizing-l;
+      padding-block: bk.$spacing-13;
+      padding-inline: calc(bk.$spacing-3 + 3cqi);
+      
       background: bk.$theme-page-login;
       
       @include bk.text-layout;
@@ -51,32 +94,57 @@
       @include bk.flex-column;
       align-items: center;
       justify-content: center;
+      
+      > header {
+        margin-block-end: bk.$spacing-10;
+        
+        @include bk.flex-column;
+        align-items: center;
+        
+        .bk-fortanix-armor-logo {
+          zoom: 0.8;
+        }
+      }
+      
+      > form {
+        align-self: stretch;
+      }
     }
     
-    .bk-public-layout__guide {
-      padding: bk.$sizing-l;
+    .bk-public-layout__product-info {
+      overflow: clip;
+      
+      padding: bk.$spacing-13;
+      padding-block-start: calc(bk.$spacing-8 + 5cqi);
+      
+      @include bk.flex-column;
+      align-items: center;
+      justify-content: start;
       
       @include bk.text-layout;
       @include bk.font(bk.$font-family-body);
       font-size: bk.$font-size-m;
       
-      @include bk.flex-column;
-      align-items: center;
-      justify-content: center;
-      
-      .bk-public-layout__guide__logo {
+      .bk-public-layout__product-info__logo {
+        margin-block-end: bk.$spacing-6;
         zoom: 2;
-        filter: drop-shadow(1px 3px 4px #00000088);
+        filter: drop-shadow(1px 3px 4px #00000088); // Have the logo stand up a bit on the background image
       }
       
-      .bk-public-layout__guide__cards {
-        display: flex;
-        flex-flow: row wrap;
+      .bk-public-layout__product-info__cards {
+        --card-size: #{bk.$spacing-16};
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(var(--card-size), 100%), 1fr));
         gap: bk.$spacing-4;
-        
-        .bk-public-layout__guide__card {
-          //background-color: color-mix(in oklch, bk.$theme-card-background-default, transparent 15%);
-        }
+      }
+    }
+    
+    @container (inline-size <= 720px) {
+      > .bk-public-layout__content {
+        inline-size: 100cqi;
+      }
+      > .bk-public-layout__product-info {
+        display: none;
       }
     }
   }

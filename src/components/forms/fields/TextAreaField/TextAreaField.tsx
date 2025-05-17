@@ -26,8 +26,8 @@ export type TextAreaFieldProps = Omit<ComponentProps<'textarea'>, 'value'> & {
   /** Whether to display (Optional) next to the label. */
   optional?: undefined | boolean,
 
-  /** Props for the wrapper element. */
-  wrapperProps?: undefined | ComponentProps<'div'>,
+  /** Props for the container element. */
+  containerProps?: undefined | ComponentProps<'div'>,
 
   /** Text to be displayed under the textarea element. */
   hint?: undefined | string,
@@ -41,7 +41,7 @@ export const TextAreaField = (props: TextAreaFieldProps) => {
     unstyled = false,
     label,
     labelProps = {},
-    wrapperProps = {},
+    containerProps = {},
     optional = false,
     hint = '',
     ...textareaProps
@@ -52,11 +52,11 @@ export const TextAreaField = (props: TextAreaFieldProps) => {
 
   return (
     <div
-      {...wrapperProps}
+      {...containerProps}
       className={cx(
         'bk',
         { [cl['bk-text-area-field']]: !unstyled },
-        wrapperProps.className,
+        containerProps.className,
       )}
     >
       {label && (
