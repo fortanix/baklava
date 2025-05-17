@@ -1,0 +1,247 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/* stylelint-disable no-duplicate-selectors */
+/* stylelint-disable selector-class-pattern */
+
+@use '../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-fortanix-logo {
+    @include bk.component-base(bk-fortanix-logo);
+    //container-type: size; // Container for size (in both directions)
+    
+    overflow: clip;
+    user-select: none;
+    direction: ltr; // Should always be left-to-right, even in rtl context
+    
+    // Note: "size" here is block size, and the inline size is determined relative to it. The size should be a relative
+    // to the font size so that consumers can scale it.
+    --bk-fortanix-logo-size: 1.6lh;
+    
+    block-size: var(--bk-fortanix-logo-size);
+    
+    display: grid;
+    grid:
+      'icon title title-reg' 1fr
+      / 2em min-content min-content;
+    
+    > :global(._icon) { grid-area: icon; }
+    > :global(._title) { grid-area: title; }
+    > :global(._title-reg) { grid-area: title-reg; }
+    > :global(._subtitle) { grid-area: subtitle; }
+    
+    @include bk.font(bk.$font-family-display);
+    
+    :global(._icon) {
+      place-self: stretch;
+      object-fit: cover;
+      margin-inline-end: 0.2em;
+    }
+    
+    :global(._title) {
+      align-self: center;
+      
+      text-box: trim-both cap alphabetic;
+      font-weight: bk.$font-weight-bold;
+      font-size: 2.6em;
+      text-transform: none; // Allow setting `text-transform` on the component without it affecting the logo
+    }
+    > :global(._title-reg) {
+      align-self: start;
+      margin-block-start: 1.2em;
+      
+      text-box: trim-both cap alphabetic;
+      font-size: 0.6em;
+    }
+    
+    &:has(> :global(._subtitle)) {
+      grid:
+        'icon title title-reg' 2fr
+        'icon subtitle subtitle' 1fr
+        / 2em min-content min-content;
+    }
+    
+    /*
+    > :global(._logo) {
+      display: grid;
+      grid:
+        'icon title' max-content
+        'icon subtitle' 1fr
+        / var(--bk-fortanix-logo-icon-size) 1fr;
+      column-gap: 22cqb;
+      
+      > :global(._icon) { grid-area: icon; }
+      > :global(._title) { grid-area: title; }
+      > :global(._subtitle) { grid-area: subtitle; }
+      
+      color: bk.$theme-text-logo-default;
+      
+      > :global(._icon) {
+        place-self: center end;
+        inline-size: 66cqb;
+      }
+      > :global(._title), > :global(._subtitle) {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: clip;
+      }
+      > :global(._title) {
+        align-self: end;
+        margin-block-start: -0.05lh; // Tweak positioning (once `text-box` is supported we could do away with this)
+        line-height: 1.2;
+        font-size: 55cqb;
+        text-transform: none; // Allow setting `text-transform` on the component without it affecting the logo
+      }
+      > :global(._subtitle) {
+        align-self: end;
+        margin-block-end: -0.04lh;
+        line-height: 1.2;
+        font-size: 38cqb;
+        
+        > :global(._subtitle-trademark) {
+          vertical-align: top;
+          font-size: 0.7em;
+        }
+      }
+      
+      // Fortanix logo styling
+      > :global(._title) {
+        font-weight: bk.$font-weight-bold;
+        line-height: 1;
+        align-self: start;
+        
+        &::after {
+          display: inline-block;
+          content: '®';
+          margin-inline-start: 0.1ch;
+          
+          vertical-align: 1.8cap;
+          font-size: min(0.3em, 8px);
+        }
+      }
+      > :global(._subtitle) {
+        font-weight: bk.$font-weight-medium;
+      }
+    }
+    
+    > :global(._logo):not(:has(:global(._subtitle))) {
+      grid:
+        'icon title' max-content
+        / var(--bk-fortanix-logo-icon-size) 1fr;
+      column-gap: bk.$spacing-1;
+      
+      > :global(._title) {
+        font-size: 96cqb;
+        margin-block-start: 0;
+      }
+    }
+    */
+  }
+  
+  
+  
+  
+  
+  
+  .bk-fortanix-logo-2 {
+    @include bk.component-base(bk-fortanix-logo);
+    container-type: size;
+    
+    direction: ltr;
+    overflow: clip;
+    user-select: none;
+    
+    //--bk-fortanix-logo-icon-size: 0.16fr;
+    --bk-fortanix-logo-icon-size: 66cqb;
+    
+    // Note: since we are using `container-type: size`, we need to provide explicit sizes somehow (rather than having
+    // it scale based on the content). In the future we may want to do this a bit smarter (e.g. with `aspect-ratio`
+    // or relying on the parent grid/flex context).
+    block-size: bk.rem-from-px(32);
+    inline-size: bk.rem-from-px(200); // Some minimum inline size, should be large enough to fit any subtitle
+    //aspect-ratio: 1 / 0.2;
+    
+    &:not(:has(:global(._subtitle))) {
+      inline-size: bk.rem-from-px(175);
+    }
+    
+    display: grid;
+    @include bk.font(bk.$font-family-display);
+    
+    > :global(._logo) {
+      display: grid;
+      grid:
+        'icon title' max-content
+        'icon subtitle' 1fr
+        / var(--bk-fortanix-logo-icon-size) 1fr;
+      column-gap: 22cqb;
+      
+      > :global(._icon) { grid-area: icon; }
+      > :global(._title) { grid-area: title; }
+      > :global(._subtitle) { grid-area: subtitle; }
+      
+      color: bk.$theme-text-logo-default;
+      
+      > :global(._icon) {
+        place-self: center end;
+        inline-size: 66cqb;
+      }
+      > :global(._title), > :global(._subtitle) {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: clip;
+      }
+      > :global(._title) {
+        align-self: end;
+        margin-block-start: -0.05lh; // Tweak positioning (once `text-box` is supported we could do away with this)
+        line-height: 1.2;
+        font-size: 55cqb;
+        text-transform: none; // Allows setting `text-transform` to the subtitle without it affecting the logo
+      }
+      > :global(._subtitle) {
+        align-self: end;
+        margin-block-end: -0.04lh;
+        line-height: 1.2;
+        font-size: 38cqb;
+        
+        > :global(._subtitle-trademark) {
+          vertical-align: top;
+          font-size: 0.7em;
+        }
+      }
+      
+      // Fortanix logo styling
+      > :global(._title) {
+        font-weight: bk.$font-weight-bold;
+        line-height: 1;
+        align-self: start;
+        
+        &::after {
+          display: inline-block;
+          content: '®';
+          margin-inline-start: 0.1ch;
+          
+          vertical-align: 1.8cap;
+          font-size: min(0.3em, 8px);
+        }
+      }
+      > :global(._subtitle) {
+        font-weight: bk.$font-weight-medium;
+      }
+    }
+    
+    > :global(._logo):not(:has(:global(._subtitle))) {
+      grid:
+        'icon title' max-content
+        / var(--bk-fortanix-logo-icon-size) 1fr;
+      column-gap: bk.$spacing-1;
+      
+      > :global(._title) {
+        font-size: 96cqb;
+        margin-block-start: 0;
+      }
+    }
+  }
+}

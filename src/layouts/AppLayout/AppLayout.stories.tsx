@@ -15,7 +15,7 @@ import { DialogModal } from '../../components/overlays/DialogModal/DialogModal.t
 
 import { Header } from './Header/Header.tsx';
 import { Sidebar } from './Sidebar/Sidebar.tsx';
-import { Logo } from '../../fortanix/Logo/Logo.tsx';
+import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
 import { Nav } from './Nav/Nav.tsx';
 import { UserMenu } from './Header/UserMenu.tsx';
 import { SolutionSelector } from './Header/SolutionSelector.tsx';
@@ -46,7 +46,7 @@ export const Standard: Story = {
       <>
         <AppLayout.Header>
           <DummyLink slot="logo">
-            <Logo subtitle="Data Security Manager" subtitleTrademark={true}/>
+            <FortanixLogo subtitle="Data Security Manager" subtitleTrademark={true}/>
           </DummyLink>
           <Header slot="actions">
             <UserMenu userName="Anand Kashyap">
@@ -147,7 +147,7 @@ export const NoSidebar: Story = {
       <>
         <AppLayout.Header>
           <DummyLink slot="logo">
-            <Logo subtitle="Data Security Manager" subtitleTrademark={true}/>
+            <FortanixLogo subtitle="Data Security Manager" subtitleTrademark={true}/>
           </DummyLink>
           <Header slot="actions">
             <UserMenu userName="Anand Kashyap">

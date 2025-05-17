@@ -5,14 +5,17 @@
 @use '../../styling/defs.scss' as bk;
 @use '../../styling/features/typography.scss' as typography;
 
-@mixin prose {
+// Inheritable styles
+@mixin prose-root {
   --bk-prose-line-height: 1.6;
   --bk-body-block-spacing: 0.8lh;
   
   font-family: var(--bk-font-family-body);
   font-weight: 400;
   font-size: 1rem;
-  
+}
+
+@mixin prose {
   line-height: var(--bk-prose-line-height);
   overflow-wrap: break-word; // Prevent long words causing overflow
   text-wrap: pretty; // Favor better typography for text wrapping (e.g. prevent orphans)
@@ -241,6 +244,10 @@
   // FIXME: browser support for `@scope` is not quite there yet (but we can't do `@supports at-rule()` yet either)
   // See: https://css-tricks.com/solved-by-css-donuts-scopes
   @scope (.bk-prose) to (.isolate, .bk:not(.bk-prose)) {
+    :scope {
+      @include prose-root;
+    }
+    
     :scope, :scope * {
       //@include bk.component-base(bk-prose);
       @include prose;
@@ -250,6 +257,10 @@
   // Workaround for Firefox, which (as of early 2025) does not support `@scope`. Note: it would be better if we could
   // do this with feature testing, but we cannot yet use `@supports (at-rule())` to check for at-rules like `@scope`.
   @supports (-moz-appearance: none) {
+    .bk-prose {
+      @include prose-root;
+    }
+    
     // Shallow implementation (note: this does not work well, breaks with any nested components.
     //.bk-prose:not(.bk, .bk *) { @include prose; }
     
