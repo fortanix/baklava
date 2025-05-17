@@ -36,6 +36,7 @@ export const SolutionSelector = Object.assign(
         label="Solution selector"
         placement="bottom-start"
         items={solutions}
+        offset={7}
       >
         {({ props, selectedOption }) =>
           <Button unstyled

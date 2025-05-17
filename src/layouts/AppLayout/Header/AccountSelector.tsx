@@ -34,6 +34,7 @@ export const AccountSelector = Object.assign(
         label="Account selector"
         placement="bottom-start"
         items={accounts}
+        offset={7}
       >
         {({ props, selectedOption }) =>
           <Button unstyled

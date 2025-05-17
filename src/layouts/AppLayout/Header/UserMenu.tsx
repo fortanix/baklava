@@ -43,6 +43,7 @@ export const UserMenu = Object.assign(
         label="User menu"
         placement="bottom-end"
         items={children}
+        offset={7}
       >
         <Button unstyled
           {...propsRest}
