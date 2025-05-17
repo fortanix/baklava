@@ -47,10 +47,10 @@ a `light-dark()` expression in a variable and reuse that in a different theme. M
   // Invert if overridden by a `bk-theme` class
   // NOTE: this will not work for additional `bk-theme-invert` mixins deeper inside the current, because this mixin does
   // not produce a `bk-theme` class.
-  @at-root :global(.bk-theme--dark) #{$selector} {
+  @at-root .bk-theme--dark #{$selector} {
     @include theme('only light');
   }
-  @at-root :global(.bk-theme--light) #{$selector} {
+  @at-root .bk-theme--light #{$selector} {
     @include theme('only dark');
   }
   // Once `@scope` is available, convert the above selectors to use `@scope` to prevent the second overring the first

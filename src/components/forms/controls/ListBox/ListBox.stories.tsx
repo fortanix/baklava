@@ -12,6 +12,7 @@ import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
 import { type ItemKey, type ListBoxRef, ListBox } from './ListBox.tsx';
+import { InputSearch } from '../Input/InputSearch.tsx';
 
 
 const notifyPressed = () => { notify.info('Pressed the item'); };
@@ -138,6 +139,24 @@ export const ListBoxWithCustomIcon: Story = {
       <>
         <ListBox.Option Icon={CustomIcon} icon="account" itemKey="option-1" label="Option with an icon"/>
         <ListBox.Option Icon={CustomIcon} icon="user" itemKey="option-2" label="Another option"/>
+      </>
+    ),
+  },
+};
+
+export const ListBoxWithCustomItem: Story = {
+  args: {
+    children: (
+      <>
+        <ListBox.Header unstyled itemKey="item-1" label="Custom Header">
+          <InputSearch/>
+        </ListBox.Header>
+        <ListBox.Action unstyled itemKey="item-2" label="Custom option" onActivate={() => {}}>
+          Custom option
+        </ListBox.Action>
+        <ListBox.Action unstyled itemKey="item-3" label="Another custom option" onActivate={() => {}}>
+          Another custom option
+        </ListBox.Action>
       </>
     ),
   },

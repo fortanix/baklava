@@ -7,6 +7,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import * as React from 'react';
 
 import { Button } from '../../actions/Button/Button.tsx';
+import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 
 import { type ItemDetails, DropdownMenuProvider, ItemKey } from './DropdownMenuProvider.tsx';
 
@@ -48,6 +49,19 @@ export default {
 
 
 export const DropdownMenuProviderStandard: Story = {};
+
+export const DropdownMenuProviderWithInput: Story = {
+  args: {
+    items: (
+      <>
+        <DropdownMenuProvider.Header unstyled itemKey="header-1" label="Input">
+          <InputSearch/>
+        </DropdownMenuProvider.Header>
+        <DropdownMenuProvider.Option itemKey="option-1" label="Option 1"/>
+      </>
+    ),
+  }
+};
 
 export const DropdownMenuProviderWithPlacement: Story = {
   args: {

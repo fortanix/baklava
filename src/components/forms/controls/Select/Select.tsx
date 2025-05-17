@@ -71,7 +71,7 @@ export const Select = Object.assign(
             'aria-disabled': true,
             readOnly: true, // Make the input non-editable, but still focusable
             ...propsRest,
-            className: cx(cl['bk-select'], { [cl['bk-select--open']]: open }),
+            className: cx(cl['bk-select'], { [cl['bk-select--open']]: open }, propsRest.className),
             value: selectedOption === null ? '' : selectedOption.label,
             onChange: () => {},
           });

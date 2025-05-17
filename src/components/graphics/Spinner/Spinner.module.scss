@@ -54,6 +54,7 @@
       mask-image: radial-gradient(transparent 0 var(--mask-radius), black calc(var(--mask-radius) + var(--antialias)));
     }
     
+    display: block;
     &.bk-spinner--inline {
       display: inline-block;
     }

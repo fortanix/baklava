@@ -85,7 +85,7 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   
   /** The title of the dialog, to be displayed in the dialog header. */
   title: React.ReactNode,
-  
+    
   /** If specified, a close icon is displayed in the header. Default: true. */
   showCloseIcon?: undefined | boolean,
   

@@ -33,7 +33,9 @@ export const useTypeAhead = (maxDuration = 400/*ms*/) => {
       // - Allow Alt/AltGraph (commonly used for composition, e.g. Alt+Shift+2 could become "€").
       const hasModifier = (['Control', 'Meta'] as const).some(mod => event.getModifierState(mod));
       
-      if (!isPrintable || hasModifier) { return currentSequence; }
+      const isInput = event.target instanceof HTMLInputElement;
+      
+      if (!isPrintable || hasModifier || isInput) { return currentSequence; }
       
       event.preventDefault();
       event.stopPropagation();

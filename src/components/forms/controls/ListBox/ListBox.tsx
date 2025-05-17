@@ -73,7 +73,7 @@ export type OptionProps = ComponentProps<typeof Button> & {
  * A list box item that can be selected.
  */
 export const Option = (props: OptionProps) => {
-  const { itemKey, label, icon, iconDecoration, onSelect, Icon = BkIcon, ...propsRest } = props;
+  const { unstyled, itemKey, label, icon, iconDecoration, onSelect, Icon = BkIcon, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef, isContentItem: true }), [itemKey]);
@@ -96,7 +96,7 @@ export const Option = (props: OptionProps) => {
       aria-selected={isSelected}
       {...propsRest}
       className={cx(
-        cl['bk-list-box__item'],
+        { [cl['bk-list-box__item']]: !unstyled },
         { [cl['bk-list-box__item--disabled']]: isNonactive },
         cl['bk-list-box__item--option'],
         propsRest.className,
@@ -146,14 +146,14 @@ export type HeaderProps = ComponentProps<typeof Button> & {
  * A static text item that can be used as a heading.
  */
 export const Header = (props: HeaderProps) => {
-  const { itemKey, label, icon, sticky = 'start', Icon = BkIcon, ...propsRest } = props;
+  const { unstyled, itemKey, label, icon, sticky = 'start', Icon = BkIcon, ...propsRest } = props;
   
   return (
     <span
       data-item-key={itemKey}
       {...propsRest}
       className={cx(
-        cl['bk-list-box__item'],
+        { [cl['bk-list-box__item']]: !unstyled },
         cl['bk-list-box__item--static'],
         cl['bk-list-box__item--header'],
         { [cl['bk-list-box__item--sticky-start']]: sticky === 'start' },
@@ -197,7 +197,7 @@ export type ActionProps = ComponentProps<typeof Button> & {
  * A list box item that can be activated to perform some action.
  */
 export const Action = (props: ActionProps) => {
-  const { itemKey, itemPos, label, icon, sticky = false, onActivate, Icon = BkIcon, ...propsRest } = props;
+  const { unstyled, itemKey, itemPos, label, icon, sticky = false, onActivate, Icon = BkIcon, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemWithKey>(() => ({
@@ -220,7 +220,7 @@ export const Action = (props: ActionProps) => {
       aria-posinset={itemPos}
       {...propsRest}
       className={cx(
-        cl['bk-list-box__item'],
+        { [cl['bk-list-box__item']]: !unstyled },
         { [cl['bk-list-box__item--disabled']]: isNonactive },
         cl['bk-list-box__item--action'],
         propsRest.className,
@@ -458,8 +458,8 @@ export const ListBox = Object.assign(
           {...propsRest}
           {...listBox.props}
           ref={listBoxRef}
-          onKeyDown={mergeCallbacks([handleKeyDown, listBox.props.onKeyDown, propsRest.onKeyDown])}
-          onToggle={mergeCallbacks([listBox.props.onToggle, props.onToggle])}
+          onKeyDown={mergeCallbacks([handleKeyDown, propsRest.onKeyDown, listBox.props.onKeyDown])}
+          onToggle={mergeCallbacks([props.onToggle, listBox.props.onToggle])}
           className={cx(
             scrollerProps.className,
             'bk',

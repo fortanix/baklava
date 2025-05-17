@@ -38,9 +38,16 @@ export default {
 export const InputStandard: Story = {
 };
 
-export const InputWithFocus: Story = {
+export const InputFocused: Story = {
   args: {
     className: 'pseudo-focus',
+  },
+};
+
+export const InputDisabled: Story = {
+  args: {
+    defaultValue: 'A disabled input',
+    disabled: true,
   },
 };
 

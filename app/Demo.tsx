@@ -6,7 +6,7 @@ import { Link } from '../src/components/actions/Link/Link.tsx';
 import { Icon } from '../src/components/graphics/Icon/Icon.tsx';
 import { Panel } from '../src/components/containers/Panel/Panel.tsx';
 
-import { Logo } from '../src/layouts/AppLayout/Logo/Logo.tsx';
+import { Logo } from '../src/fortanix/Logo/Logo.tsx';
 import { UserMenu } from '../src/layouts/AppLayout/Header/UserMenu.tsx';
 import { AccountSelector } from '../src/layouts/AppLayout/Header/AccountSelector.tsx';
 import { SolutionSelector } from '../src/layouts/AppLayout/Header/SolutionSelector.tsx';

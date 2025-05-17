@@ -20,6 +20,12 @@ import cl from './DropdownMenuProvider.module.scss';
 export type ItemDetails = ListBox.ItemDetails;
 export type ItemKey = ListBox.ItemKey;
 
+export type DropdownRef = {
+  setIsOpen: (open: boolean) => void,
+  isOpen: boolean,
+  floatingEl: null | HTMLElement,
+};
+
 type ListBoxProps = ComponentProps<typeof ListBox.ListBox>;
 export type AnchorRenderArgs = {
   props: (userProps?: undefined | React.HTMLProps<Element>) => Record<string, unknown>,
@@ -28,9 +34,26 @@ export type AnchorRenderArgs = {
   close: () => void,
   selectedOption: null | ListBox.ItemDetails,
 };
-export type DropdownMenuProviderProps = Omit<ListBoxProps, 'children' | 'label'> & {
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
+export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label'> & {
+  // ---
+  // TEMP
+  
+  /** A React ref to control the dropdown menu provider imperatively. */
+  ref?: undefined | React.Ref<null | DropdownRef>,
+  
+  /** For controlled open state. */
+  open?: boolean,
+
+  /** When controlled, callback to set state. */
+  onOpenChange?: (isOpen: boolean) => void,
+
+  /** (optional) Use an existing DOM node as the positioning anchor. */
+  anchorRef?: React.RefObject<HTMLElement | null>,
+  
+  // END TEMP
+  // ---
+  
+  
   
   /** An accessible name for this dropdown menu. Required */
   label: string,
@@ -74,7 +97,6 @@ export type DropdownMenuProviderProps = Omit<ListBoxProps, 'children' | 'label'>
 export const DropdownMenuProvider = Object.assign(
   (props: DropdownMenuProviderProps) => {
     const {
-      unstyled = false,
       label,
       children,
       items,
@@ -86,6 +108,12 @@ export const DropdownMenuProvider = Object.assign(
       placement = 'bottom',
       offset = 8,
       enablePreciseTracking,
+      
+      ref: forwardRef,
+      open: controlledOpen,
+      onOpenChange: controlledOnOpenChange,
+      anchorRef: anchorRefSeparate,
+      
       ...propsRest
     } = props;
     
@@ -111,6 +139,22 @@ export const DropdownMenuProvider = Object.assign(
         fallbackAxisSideDirection: 'none',
         fallbackStrategy: 'initialPlacement',
       },
+      
+      // TEMP
+      floatingUiOptions: {
+        ...(
+          typeof controlledOpen !== 'undefined' ?
+            {
+              open: controlledOpen,
+              ...(
+                typeof controlledOnOpenChange !== 'undefined' ?
+                  { onOpenChange: controlledOnOpenChange } : {}
+              ),
+
+            } : {}
+        ),
+      },
+      // END TEMP
     });
     
     const [shouldMountDropdown] = useDebounce(isOpen, isOpen ? 0 : 1000);
@@ -164,7 +208,7 @@ export const DropdownMenuProvider = Object.assign(
           'aria-haspopup': 'listbox',
           'aria-expanded': isOpen,
           // biome-ignore lint/suspicious/noExplicitAny: `onKeyDown` should be a function here
-          onKeyDown: mergeCallbacks([handleAnchorKeyDown, props.onKeyDown as any]),
+          onKeyDown: mergeCallbacks([props.onKeyDown as any, handleAnchorKeyDown]),
         };
       };
       
@@ -267,7 +311,7 @@ export const DropdownMenuProvider = Object.assign(
         style: floatingStyles,
         ...propsRest,
         className: cx(cl['bk-dropdown-menu-provider__list-box'], propsRest.className),
-        onKeyDown: mergeCallbacks([handleDropdownKeyDown, propsRest.onKeyDown]),
+        onKeyDown: mergeCallbacks([propsRest.onKeyDown, handleDropdownKeyDown]),
       });
       
       return (
@@ -278,7 +322,7 @@ export const DropdownMenuProvider = Object.assign(
             listBoxRef,
             refs.setFloating,
             floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBox.ListBox>>,
-            propsRest.ref,
+            //propsRest.ref,
           )}
           id={listBoxId}
           selected={selectedOption}
@@ -290,6 +334,34 @@ export const DropdownMenuProvider = Object.assign(
         </ListBox.ListBox>
       );
     };
+    
+    
+    // TEMP
+    // keep internal state in sync with the controlled prop
+    React.useEffect(() => {
+      if (controlledOpen !== undefined) {
+        setIsOpen(controlledOpen);
+      }
+    }, [controlledOpen, setIsOpen]);
+    
+    // Use external element as the reference, if provided
+    React.useLayoutEffect(() => {
+      if (anchorRefSeparate?.current) {
+        refs.setReference(anchorRefSeparate.current);
+      }
+    }, [anchorRefSeparate?.current, refs.setReference]);
+    
+    const dropdownRef = React.useMemo<DropdownRef>(() => ({
+      isOpen,
+      setIsOpen,
+      get floatingEl() {
+        return refs.floating.current;
+      },
+    }), [isOpen, setIsOpen, refs.floating]);
+    
+    React.useImperativeHandle(forwardRef, () => dropdownRef, [dropdownRef]);
+    // END TEMP
+    
     
     return (
       <>

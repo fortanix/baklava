@@ -56,6 +56,7 @@ export type ModalWithSubject<S> = {
   props: Partial<DialogModalProps>,
   subject: undefined | S,
   activateWith: (subject: S | (() => S)) => void,
+  deactivate: () => void,
 };
 /**
  * Utility hook to get a reference to a `DialogModal` for imperative usage. To open, you can call `activate()`, or
@@ -80,6 +81,9 @@ export const useModalWithSubject = <S,>(
       flushSync(() => { setSubject(subject); });
       
       modalRef.current?.activate();
+    },
+    deactivate: () => {
+      modalRef.current?.deactivate();
     },
   };
 };
@@ -180,8 +184,8 @@ export const DialogModal = Object.assign(
               { [cl['bk-dialog-modal--center']]: display === 'center' },
               { [cl['bk-dialog-modal--full-screen']]: display === 'full-screen' },
               { [cl['bk-dialog-modal--slide-over']]: display === 'slide-over' },
-              { [cl['bk-dialog-modal--slide-over--left']]: slideOverPosition === 'left' },
-              { [cl['bk-dialog-modal--slide-over--right']]: slideOverPosition === 'right' },
+              { [cl['bk-dialog-modal--slide-over--left']]: display === 'slide-over' && slideOverPosition === 'left' },
+              { [cl['bk-dialog-modal--slide-over--right']]: display === 'slide-over' && slideOverPosition === 'right' },
               { [cl['bk-dialog-modal--small']]: size === 'small' },
               { [cl['bk-dialog-modal--medium']]: size === 'medium' },
               { [cl['bk-dialog-modal--large']]: size === 'large' },

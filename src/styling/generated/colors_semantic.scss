@@ -75,9 +75,9 @@ $light-button-tertiary-text-focused: $color-blueberry-800 !default;
 $light-button-tertiary-text-hover: $color-blueberry-700 !default;
 $light-button-tertiary-text-non-active: $color-blueberry-100 !default;
 $light-card-background-default: $color-neutral-0 !default;
-$light-card-background-selected: #ffffff !default; // FIXME: needs to be linked to a token
+$light-card-background-selected: $color-neutral-20 !default;
 $light-card-border-default: $color-blackberry-20 !default;
-$light-card-border-selected: #ffffff !default; // FIXME: needs to be linked to a token
+$light-card-border-selected: $color-blueberry-600 !default;
 $light-checkbox-background-default: $color-blueberry-600 !default;
 $light-checkbox-background-non-active: $color-blueberry-200 !default;
 $light-checkbox-border-default: $color-neutral-300 !default;
@@ -110,7 +110,7 @@ $light-dropdown-menu-menu-background-focused: $color-neutral-20 !default;
 $light-dropdown-menu-menu-background-hover: $color-neutral-20 !default;
 $light-dropdown-menu-menu-border-default: $color-blackberry-20 !default;
 $light-dropdown-menu-menu-border-focus: $color-blueberry-300 !default;
-$light-dropdown-menu-menu-icon-background-default: $color-neutral-60 !default;
+$light-dropdown-menu-menu-icon-background-default: $color-neutral-50 !default;
 $light-dropdown-menu-menu-tab-default: $color-blueberry-500 !default;
 $light-dropdown-menu-menu-text-default: $color-neutral-900 !default;
 $light-dropdown-menu-menu-text-empty: $color-neutral-60 !default;
@@ -136,18 +136,18 @@ $light-form-text-focused: $color-neutral-900 !default;
 $light-form-text-hint: $color-neutral-900 !default;
 $light-form-text-link: $color-blueberry-600 !default;
 $light-graphs-graphs-apple: $color-apple-500 !default;
-$light-graphs-graphs-blue: $color-blueberry-500 !default;
+$light-graphs-graphs-blue: $color-blueberry-600 !default;
 $light-graphs-graphs-burnt-orange: $color-orange-600 !default;
 $light-graphs-graphs-coral: $color-cherry-300 !default;
-$light-graphs-graphs-grape: $color-grape-500 !default;
+$light-graphs-graphs-grape: $color-grape-700 !default;
 $light-graphs-graphs-green: $color-apple-800 !default;
 $light-graphs-graphs-lavender: $color-grape-500 !default;
 $light-graphs-graphs-light-blue: $color-blueberry-300 !default;
 $light-graphs-graphs-mustard: $color-lemon-700 !default;
-$light-graphs-graphs-orange: $color-orange-400 !default;
+$light-graphs-graphs-orange: $color-orange-500 !default;
 $light-graphs-graphs-red: $color-cherry-500 !default;
 $light-graphs-graphs-yellow-2: $color-lemon-300 !default;
-$light-graphs-graphs-yellow: $color-lemon-400 !default;
+$light-graphs-graphs-yellow: $color-lemon-500 !default;
 $light-graphs-status-apple: $color-apple-600 !default;
 $light-graphs-status-blue: $color-blueberry-500 !default;
 $light-graphs-status-burnt-orange: $color-orange-700 !default;
@@ -296,7 +296,7 @@ $light-text-label-disabled: $color-neutral-60 !default;
 $light-text-link-active: $color-blueberry-800 !default;
 $light-text-link-default: $color-blueberry-600 !default;
 $light-text-link-hover: $color-blueberry-700 !default;
-$light-text-logo-default: $color-neutral-10 !default;
+$light-text-logo-default: $color-blackberry-1000 !default;
 $light-text-numeric-default: $color-neutral-900 !default;
 $light-text-small-text-default: $color-neutral-900 !default;
 $light-text-small-text-subtle: $color-neutral-300 !default;
@@ -310,6 +310,7 @@ $light-tooltip-background-default: $color-neutral-0 !default;
 $light-tooltip-border-default: $color-blackberry-20 !default;
 $light-tooltip-text-default: $color-blackberry-1000 !default;
 $light-tooltip-text-error: $color-cherry-600 !default;
+$light-tooltip-text-secondary: $color-neutral-800 !default;
 
 // Dark theme
 $dark-accordion-background-default: $color-blackberry-600 !default;
@@ -440,10 +441,10 @@ $dark-form-text-focused: $color-neutral-10 !default;
 $dark-form-text-hint: $color-neutral-60 !default;
 $dark-form-text-link: $color-blueberry-500 !default;
 $dark-graphs-graphs-apple: $color-apple-400 !default;
-$dark-graphs-graphs-blue: $color-blueberry-600 !default;
+$dark-graphs-graphs-blue: $color-blueberry-500 !default;
 $dark-graphs-graphs-burnt-orange: $color-orange-700 !default;
 $dark-graphs-graphs-coral: $color-cherry-200 !default;
-$dark-graphs-graphs-grape: $color-grape-700 !default;
+$dark-graphs-graphs-grape: $color-grape-600 !default;
 $dark-graphs-graphs-green: $color-apple-800 !default;
 $dark-graphs-graphs-lavender: $color-grape-400 !default;
 $dark-graphs-graphs-light-blue: $color-blueberry-200 !default;
@@ -614,6 +615,7 @@ $dark-tooltip-background-default: $color-blackberry-900 !default;
 $dark-tooltip-border-default: $color-blackberry-200 !default;
 $dark-tooltip-text-default: $color-neutral-10 !default;
 $dark-tooltip-text-error: $color-cherry-400 !default;
+$dark-tooltip-text-secondary: $color-neutral-60 !default;
 
 // Dynamic theme
 $theme-accordion-background-default: #{ld($light-accordion-background-default, $dark-accordion-background-default)} !default;
@@ -918,6 +920,7 @@ $theme-tooltip-background-default: #{ld($light-tooltip-background-default, $dark
 $theme-tooltip-border-default: #{ld($light-tooltip-border-default, $dark-tooltip-border-default)} !default;
 $theme-tooltip-text-default: #{ld($light-tooltip-text-default, $dark-tooltip-text-default)} !default;
 $theme-tooltip-text-error: #{ld($light-tooltip-text-error, $dark-tooltip-text-error)} !default;
+$theme-tooltip-text-secondary: #{ld($light-tooltip-text-secondary, $dark-tooltip-text-secondary)} !default;
 
 // FIXME: missing in Figma
 $light-segmented-control-background-default: $color-neutral-0 !default;

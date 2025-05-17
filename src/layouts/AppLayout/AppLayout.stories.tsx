@@ -15,7 +15,7 @@ import { DialogModal } from '../../components/overlays/DialogModal/DialogModal.t
 
 import { Header } from './Header/Header.tsx';
 import { Sidebar } from './Sidebar/Sidebar.tsx';
-import { Logo } from './Logo/Logo.tsx';
+import { Logo } from '../../fortanix/Logo/Logo.tsx';
 import { Nav } from './Nav/Nav.tsx';
 import { UserMenu } from './Header/UserMenu.tsx';
 import { SolutionSelector } from './Header/SolutionSelector.tsx';
