@@ -3,7 +3,6 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { mergeCallbacks } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 
 import { Input } from '../Input/Input.tsx';
@@ -33,7 +32,7 @@ export type SelectProps = ComponentProps<typeof Input> & {
   children: (selectedAccount: null | ItemKey) => React.ReactNode,
   
   /** The options list to be shown in the dropdown menu. */
-  options: React.ReactNode,
+  options: React.ComponentProps<typeof DropdownMenuProvider>['items'],
 };
 export const Select = Object.assign(
   (props: SelectProps) => {

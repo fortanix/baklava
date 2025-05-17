@@ -20,7 +20,7 @@ export type AccountSelectorProps = Omit<ComponentProps<typeof Button>, 'label' |
   unstyled?: undefined | boolean,
   
   /** The accounts list to be shown in the dropdown menu. */
-  accounts: React.ReactNode,
+  accounts: React.ComponentProps<typeof DropdownMenuProvider>['items'],
   
   /** The selected account. To access the selected account, pass a render prop. */
   children: (selectedAccount: null | ItemDetails) => React.ReactNode,

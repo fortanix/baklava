@@ -22,7 +22,7 @@ export type SolutionSelectorProps = Omit<ComponentProps<typeof Button>, 'label'>
   unstyled?: undefined | boolean,
   
   /** The solutions list to be shown in the dropdown menu. */
-  solutions: React.ReactNode,
+  solutions: React.ComponentProps<typeof DropdownMenuProvider>['items'],
 
   /** The selected solution. To access the selected solution, pass a render prop. */
   children?: undefined | ((selectedAccount: null | ItemDetails) => React.ReactNode),
