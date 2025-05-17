@@ -7,7 +7,7 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Dialog } from '../../components/containers/Dialog/Dialog.tsx';
-import { Logo } from '../../fortanix/Logo/Logo.tsx';
+import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
 import { H3 } from '../../typography/Heading/Heading.tsx';
 import { Form } from '../../components/forms/context/Form/Form.tsx';
 import { FormLayout } from '../FormLayout/FormLayout.tsx';
@@ -30,11 +30,11 @@ export default {
   },
 } satisfies Meta<DialogLayoutArgs>;
 
-const DialogLayoutLogo = (props: React.ComponentProps<typeof Logo>) => {
+const DialogLayoutLogo = (props: React.ComponentProps<typeof FortanixLogo>) => {
   const { subtitle, subtitleTrademark, ...propsLogo } = props;
   return (
     <div>
-      <Logo {...propsLogo}/>
+      <FortanixLogo {...propsLogo}/>
       {subtitle &&
         <span>
           {subtitle}

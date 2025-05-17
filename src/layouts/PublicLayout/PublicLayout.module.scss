@@ -1,0 +1,83 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-fortanix-armor-logo {
+    @include bk.component-base(bk-fortanix-armor-logo);
+    
+    display: flex;
+    
+    .product-name {
+      @include bk.font(bk.$font-family-display, bk.$font-weight-medium);
+      text-transform: uppercase;
+    }
+    
+    &.bk-fortanix-armor-logo--stacked {
+      display: grid;
+      grid:
+        "logo" min-content 1fr
+        "product-name" 1fr
+        / auto auto;
+      
+      .product-name {
+        justify-self: end;
+      }
+    }
+  }
+  
+  .bk-public-layout {
+    @include bk.component-base(bk-public-layout);
+    
+    overflow: hidden;
+    
+    // Note: the background image is a semi-transparent png. We add a solid color behind it to shade the image.
+    background: url('@/assets/images/public-bg.png') no-repeat, #253264;
+    background-size: cover;
+    
+    display: grid;
+    grid-template-columns: 30rem 1fr;
+    
+    .bk-public-layout__content {
+      padding: bk.$sizing-l;
+      background: bk.$theme-page-login;
+      
+      @include bk.text-layout;
+      @include bk.font(bk.$font-family-body);
+      font-size: bk.$font-size-m;
+      
+      @include bk.flex-column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .bk-public-layout__guide {
+      padding: bk.$sizing-l;
+      
+      @include bk.text-layout;
+      @include bk.font(bk.$font-family-body);
+      font-size: bk.$font-size-m;
+      
+      @include bk.flex-column;
+      align-items: center;
+      justify-content: center;
+      
+      .bk-public-layout__guide__logo {
+        zoom: 2;
+        filter: drop-shadow(1px 3px 4px #00000088);
+      }
+      
+      .bk-public-layout__guide__cards {
+        display: flex;
+        flex-flow: row wrap;
+        gap: bk.$spacing-4;
+        
+        .bk-public-layout__guide__card {
+          //background-color: color-mix(in oklch, bk.$theme-card-background-default, transparent 15%);
+        }
+      }
+    }
+  }
+}
