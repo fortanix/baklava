@@ -74,6 +74,11 @@ case where we set CSS variables (using a `--bk-` prefix to minimize conflicts wi
     @include text-defaults;
   }
   
+  // Injected by Google Translate on translated content with a right-to-left language
+  .translated-rtl {
+    direction: rtl;
+  }
+  
   // Workaround for https://github.com/vbenjs/vite-plugin-svg-icons/issues/90
   #baklava-icon-sprite { display: none; }
 }

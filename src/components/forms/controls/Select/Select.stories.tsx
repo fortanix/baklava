@@ -7,11 +7,31 @@ import type { Meta, StoryObj } from '@storybook/react';
 import * as React from 'react';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
-import { Select } from './Select.tsx';
+import { Input } from '../Input/Input.tsx';
+
+import { type ItemKey, Select } from './Select.tsx';
 
 
 type SelectArgs = React.ComponentProps<typeof Select>;
 type Story = StoryObj<SelectArgs>;
+
+// Sample items
+const fruits = [
+  'Apple',
+  'Apricot',
+  'Blueberry',
+  'Cherry',
+  'Durian',
+  'Jackfruit',
+  'Melon',
+  'Mango',
+  'Mangosteen',
+  'Orange',
+  'Peach',
+  'Pineapple',
+  'Razzberry',
+  'Strawberry',
+];
 
 export default {
   component: Select,
@@ -23,13 +43,6 @@ export default {
   },
   args: {
     label: 'Test select',
-  },
-  render: (args) => <Select {...args}/>,
-} satisfies Meta<SelectArgs>;
-
-
-export const SelectStandard: Story = {
-  args: {
     options: (
       <>
         {Array.from({ length: 8 }, (_, i) => i + 1).map(index =>
@@ -38,7 +51,52 @@ export const SelectStandard: Story = {
       </>
     ),
   },
+  render: (args) => <Select {...args}/>,
+} satisfies Meta<SelectArgs>;
+
+
+export const SelectStandard: Story = {};
+
+const CustomInput: React.ComponentProps<typeof Select>['Input'] = props => (
+  <Input {...props} icon="bell" iconLabel="Bell"/>
+);
+export const SelectWithCustomInput: Story = {
+  args: {
+    Input: CustomInput,
+  },
 };
+
+/*
+const SelectControlledC = (props: React.ComponentProps<typeof Select>) => {
+  const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
+  
+  const fruitsFiltered = fruits.filter(fruit => fruit.toLowerCase().includes((value ?? '').toLowerCase()));
+  return (
+    <>
+      <div>Selected: {selectedKey ?? '(none)'}</div>
+      <Select
+        {...props}
+        placeholder="Choose a fruit"
+        value={selectedKey}
+        onChange={event => { setSelectedKey(event.target.value); }}
+        options={fruitsFiltered.map(fruit =>
+          <Select.Option key={`option-${fruit}`} itemKey={`option-${fruit}`} label={fruit}/>
+        )}
+        selected={selectedKey}
+        onSelect={(_key, selectedOption) => {
+          setSelectedKey(selectedOption?.itemKey ?? null);
+          if (selectedOption !== null) {
+            setValue(selectedOption.label);
+          }
+        }}
+      />
+    </>
+  );
+};
+export const SelectControlled: Story = {
+  render: args => <SelectControlledC {...args}/>,
+};
+*/
 
 /*
 export const SelectControlled: Story = {

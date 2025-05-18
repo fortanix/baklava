@@ -2,14 +2,12 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { delay } from '../../../../util/time.ts';
-
 import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, fireEvent, within } from '@storybook/test';
 
 import * as React from 'react';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
+import { Icon } from '../../../graphics/Icon/Icon.tsx';
 
 import { Input } from './Input.tsx';
 
@@ -80,6 +78,13 @@ export const InputWithIcon: Story = {
   args: {
     icon: 'search',
     iconLabel: 'Search',
+  },
+};
+
+const CustomIcon: React.ComponentProps<typeof Input>['Icon'] = props => "🍕";
+export const InputWithCustomIcon: Story = {
+  args: {
+    Icon: CustomIcon,
   },
 };
 
