@@ -70,7 +70,7 @@
     overflow: hidden;
     
     // Note: the background image is a semi-transparent png. We add a solid color behind it to shade the image.
-    background: url('@/assets/images/public-bg.png') no-repeat;
+    background: url('@/assets/images/public-bg.png?no-inline') no-repeat;
     background-color: #253264;
     background-size: cover;
     
