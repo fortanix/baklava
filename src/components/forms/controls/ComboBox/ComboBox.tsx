@@ -82,6 +82,7 @@ export const ComboBox = Object.assign(
         {...dropdownProps}
       >
         {({ props, open, requestOpen, selectedOption }) => {
+          // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
           const anchorProps = props({
             placeholder: 'Select an option',
             ...propsRest,
