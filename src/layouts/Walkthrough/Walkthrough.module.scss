@@ -1,0 +1,133 @@
+@use '../../styling/defs.scss' as bkl;
+
+@layer baklava.components {
+	.bk-walkthrough{
+			$arrowSize: 8px;
+			$borderColor: #5F5A7C;
+			$backgroundColor: #14152E;
+
+			&-tooltip{     
+					position: fixed;
+					background-color: $backgroundColor;
+					border-radius:0.4rem;
+					padding: 1.6rem;
+					color: #FBFBFB;
+					border: 1px solid $borderColor;
+					min-width: 34.5rem;
+					max-width: 36rem;
+					z-index: 1000;
+					@include bkl.font(bkl.$font-family-body, bkl.$font-weight-semibold, bkl.$font-size-s);
+					display: flex;
+					flex-direction: column;
+					gap: 1.6rem;
+
+					&:focus-visible{
+							.bk-walkthrough-tooltip-arrow{
+									border-left: 0.1rem solid #ffffff;
+									border-bottom: 0.1rem solid #ffffff;
+							}
+					}
+
+					&-header{
+							display: flex;
+							justify-content: space-between;
+							align-items: center;
+							gap: 1rem;
+
+							& h5{
+									margin: 0;
+									font-size: bkl.$font-size-m;
+									font-weight: 600;
+									color:#FBFBFB;
+							}
+
+							& .close-icon{
+									height: 1rem;
+									width: 1rem;
+									cursor: pointer;
+							}
+					}
+
+					&-content{
+							font-size: 1.4rem;
+							color: #FBFBFB;
+							font-weight: bkl.$font-weight-regular;
+					}
+
+					&-footer{
+							display: flex;
+							justify-content: space-between;
+							align-items: center;
+
+							&-step-count{
+									color:#bdbec1;
+									font-size: 1.4rem;
+							}
+
+							&-action-btns{
+									margin-left: auto;
+									display: flex;
+									gap: 2rem;
+									align-items: center;
+							}
+					}
+
+					&-arrow{
+							position: absolute;
+							height: 1.4rem;
+							width: 1.4rem;
+							background-color: $backgroundColor;
+							border-left: 0.1rem solid $borderColor;
+							border-bottom: 0.1rem solid $borderColor;
+
+							&.arrow{
+									&-left-center, &-left-top, &-left-bottom {
+											right: -0.9rem;
+											top: calc(50% - 0.7rem);
+											transform: rotate(225deg);
+									}
+								
+									&-right-center, &-right-top, &-right-bottom {
+										left: -0.9rem;
+										top: calc(50% - 0.7rem);
+										transform: rotate(45deg);
+									}
+									
+									&-center-bottom{
+											top: -0.9rem;
+											left: calc(50% - 0.7rem);
+											transform: rotate(135deg);
+									}
+
+									&-center-top, &-center-center{
+											bottom: -0.9rem;
+											left: calc(50% - 0.7rem);
+											transform: rotate(-45deg);
+									}
+							}         
+						}
+					}
+			&-spotlight{
+					position: fixed;
+					border-radius: 0.8rem;
+					box-shadow: 0 0 0 9999px #00000099;        ;
+					pointer-events: none;
+					z-index: 998;
+			}
+
+			&-overlay {
+					position: fixed;
+					top: 0;
+					left: 0;
+					width: 100vw;
+					height: 100vh;
+					background: transparent;
+					z-index: 997; 
+					pointer-events: all; 
+			}
+	}
+
+	.bk-walkthrough-open{
+			overflow: hidden;
+	}
+}
