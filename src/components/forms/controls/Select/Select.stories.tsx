@@ -9,7 +9,7 @@ import * as React from 'react';
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Input } from '../Input/Input.tsx';
 
-import { type ItemKey, Select } from './Select.tsx';
+import { type ItemDetails, Select } from './Select.tsx';
 
 
 type SelectArgs = React.ComponentProps<typeof Select>;
@@ -66,29 +66,20 @@ export const SelectWithCustomInput: Story = {
   },
 };
 
-/*
 const SelectControlledC = (props: React.ComponentProps<typeof Select>) => {
-  const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
+  const [selectedOption, setSelectedOption] = React.useState<null | ItemDetails>(null);
   
-  const fruitsFiltered = fruits.filter(fruit => fruit.toLowerCase().includes((value ?? '').toLowerCase()));
   return (
     <>
-      <div>Selected: {selectedKey ?? '(none)'}</div>
+      <div>Selected: {selectedOption?.label ?? '(none)'}</div>
       <Select
         {...props}
         placeholder="Choose a fruit"
-        value={selectedKey}
-        onChange={event => { setSelectedKey(event.target.value); }}
-        options={fruitsFiltered.map(fruit =>
+        options={fruits.map(fruit =>
           <Select.Option key={`option-${fruit}`} itemKey={`option-${fruit}`} label={fruit}/>
         )}
-        selected={selectedKey}
-        onSelect={(_key, selectedOption) => {
-          setSelectedKey(selectedOption?.itemKey ?? null);
-          if (selectedOption !== null) {
-            setValue(selectedOption.label);
-          }
-        }}
+        selected={selectedOption?.itemKey ?? null}
+        onSelect={(_key, details) => { setSelectedOption(details); }}
       />
     </>
   );
@@ -96,39 +87,6 @@ const SelectControlledC = (props: React.ComponentProps<typeof Select>) => {
 export const SelectControlled: Story = {
   render: args => <SelectControlledC {...args}/>,
 };
-*/
-
-/*
-export const SelectControlled: Story = {
-  decorators: [
-    (Story, { args }) => {
-      const [value, setValue] = React.useState<undefined | string>();
-      return (
-        <>
-          <Story
-            args={{
-              ...args,
-              value,
-              onChange: event => { setValue(event.target.value); },
-            }}
-          />
-          <div>Value: {value}</div>
-        </>
-      );
-    },
-  ],
-  args: {
-    readOnly: false,
-    options: (
-      <>
-        {Array.from({ length: 8 }, (_, i) => i + 1).map(index =>
-          <Select.Option key={`option-${index}`} itemKey={`option-${index}`} label={`Option ${index}`}/>
-        )}
-      </>
-    ),
-  },
-};
-*/
 
 export const SelectInForm: Story = {
   decorators: [

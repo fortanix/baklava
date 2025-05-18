@@ -103,7 +103,7 @@ const DropdownMenuProviderControlledC = (props: React.ComponentProps<typeof Drop
       <DropdownMenuProvider
         {...props}
         selected={selectedOption?.itemKey ?? null}
-        onSelect={(_key, details) => setSelectedOption(details)}
+        onSelect={(_key, details) => { setSelectedOption(details); }}
       />
     </>
   );

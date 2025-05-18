@@ -10,6 +10,7 @@ import { classNames as cx, type ComponentProps } from '../../../../util/componen
 import { Input as InputDefault } from '../Input/Input.tsx';
 import {
   type ItemKey,
+  type ItemDetails,
   DropdownMenuProvider,
 } from '../../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
 
@@ -18,7 +19,7 @@ import cl from './Select.module.scss';
 
 export { cl as SelectClassNames };
 
-export type { ItemKey };
+export type { ItemKey, ItemDetails };
 export type SelectInputProps = ComponentProps<typeof InputDefault>;
 
 /*
@@ -28,7 +29,7 @@ References:
 - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
 */
 
-export type SelectProps = Omit<SelectInputProps, 'onSelect'> & {
+export type SelectProps = Omit<SelectInputProps, 'selected' | 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -46,6 +47,12 @@ export type SelectProps = Omit<SelectInputProps, 'onSelect'> & {
     Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
   },
   
+  /** The option to select. If `undefined`, this component will be considered uncontrolled. */
+  selected?: undefined | null | ItemKey,
+  
+  /** Event handler to be called when the selected option state changes. */
+  onSelect?: undefined | ((selectedItemKey: null | ItemKey, selectedItemDetails: null | ItemDetails) => void),
+  
   /** Additional props to be passed to the `DropdownMenuProvider`. */
   dropdownProps?: undefined | React.ComponentProps<typeof DropdownMenuProvider>,
 };
@@ -57,6 +64,9 @@ export const Select = Object.assign(
       children,
       options,
       Input = InputDefault,
+      // Dropdown props
+      selected,
+      onSelect,
       dropdownProps = {},
       // Hidden input props
       name,
@@ -75,6 +85,8 @@ export const Select = Object.assign(
         keyboardInteractions="form-control"
         placement="bottom-start"
         offset={0} // Make the dropdown flush with the select element
+        selected={selected}
+        onSelect={onSelect}
         {...dropdownProps}
       >
         {({ props, open, requestOpen, selectedOption }) => {
