@@ -3,6 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 @use '../../../styling/defs.scss' as bk;
+@use '../../../typography/Heading/Heading.mixins.scss' as heading;
 
 @mixin bk-card($name: bk-card) {
   --bk-card-background-color: #{bk.$theme-card-background-default};
@@ -17,6 +18,12 @@
   background: var(--bk-card-background-color);
   border: bk.$size-1 solid var(--bk-card-border-color);
   border-radius: bk.$radius-m;
+  
+  .#{$name}__heading-link {
+    display: block;
+    cursor: pointer;
+    @include heading.h5;
+  }
   
   .#{$name}__heading {
     margin-block-end: bk.$spacing-5;
