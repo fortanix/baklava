@@ -39,7 +39,7 @@ export type ItemsRenderArgs = {
   close: () => void,
 };
 
-export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' | 'selected' > & {
+export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label'> & {
   // ---
   // TEMP
   
@@ -69,14 +69,14 @@ export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 
   */
   children?: ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode,
   
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
-  
   /** The dropdown items. */
   items: React.ReactNode | ((args: ItemsRenderArgs) => React.ReactNode),
   
   /** The accessible role of the dropdown. */
   role?: undefined | UseFloatingElementOptions['role'],
+  
+  /** The action that should trigger the dropdown to open. */
+  action?: undefined | UseFloatingElementOptions['action'],
   
   /**
    * The kind of keyboard interactions to include:
@@ -104,14 +104,15 @@ export const DropdownMenuProvider = Object.assign(
     const {
       label,
       children,
-      unstyled = false,
       items,
+      selected,
+      onSelect,
       role,
+      action,
       keyboardInteractions,
       placement = 'bottom',
       offset = 8,
       enablePreciseTracking,
-      onSelect,
       
       ref: forwardRef,
       open: controlledOpen,
@@ -135,6 +136,7 @@ export const DropdownMenuProvider = Object.assign(
       setIsOpen,
     } = useFloatingElement({
       role,
+      action,
       keyboardInteractions,
       placement,
       offset,
@@ -162,16 +164,39 @@ export const DropdownMenuProvider = Object.assign(
     
     const [shouldMountDropdown] = useDebounce(isOpen, isOpen ? 0 : 1000);
     
-    const [selectedOption, setSelectedOption] = React.useState<null | ListBox.ItemDetails>(null);
+    const selectedLabelRef = React.useRef<null | string>(null);
+    const [selectedOptionInternal, setSelectedOptionInternal] = React.useState<null | ItemKey>(null);
+    const selectedOption = typeof selected !== 'undefined' ? selected : selectedOptionInternal;
+    const setSelectedOption = React.useCallback((itemKey: null | ItemKey) => {
+      if (typeof selected === 'undefined') {
+        setSelectedOptionInternal(itemKey);
+      }
+      
+      onSelect?.(itemKey, itemKey === null ? null : { itemKey, label: (selectedLabelRef.current ?? '') });
+    }, [selected, onSelect]);
     
+    const toggleCause = React.useRef<null | 'ArrowUp' | 'ArrowDown'>(null);
     const handleAnchorKeyDown = React.useCallback((event: React.KeyboardEvent) => {
-      if (['ArrowUp', 'ArrowDown', ' '].includes(event.key)) {
+      if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+        toggleCause.current = event.key; // Store for later use in `handleToggle`
         event.preventDefault(); // Prevent scrolling
         setIsOpen(true);
+        
+        if (action === 'focus') {
+          const listBoxElement = listBoxRef.current;
+          if (!listBoxElement) { return; }
+          
+          if (event.key === 'ArrowDown') {
+            listBoxElement._bkListBoxFocusFirst();
+          } else if (event.key === 'ArrowUp') {
+            listBoxElement._bkListBoxFocusLast();
+          }
+        }
       }
-    }, [setIsOpen]);
+    }, [setIsOpen, action]);
     
     const renderAnchor = () => {
+      // FIXME: make `React.HTMLProps<Element>` generic, since not all component props extend from this type
       const anchorProps: AnchorRenderArgs['props'] = (userProps?: undefined | React.HTMLProps<Element>) => {
         const userPropsRef: undefined | string | React.Ref<Element> = userProps?.ref ?? undefined;
         if (typeof userPropsRef === 'string') {
@@ -198,7 +223,9 @@ export const DropdownMenuProvider = Object.assign(
           open: isOpen,
           requestOpen: () => { setIsOpen(true); },
           close: () => { setIsOpen(false); },
-          selectedOption,
+          selectedOption: selectedOption === null
+            ? null
+            : { itemKey: selectedOption, label: (selectedLabelRef.current ?? '') },
         });
       }
       
@@ -215,20 +242,73 @@ export const DropdownMenuProvider = Object.assign(
       return children;
     };
     
-    const handleSelect = React.useCallback((itemDetails: null | ListBox.ItemDetails) => {
-      setSelectedOption(itemDetails);
+    const handleSelect = React.useCallback((_key: null | ListBox.ItemKey, itemDetails: null | ListBox.ItemDetails) => {
+      selectedLabelRef.current = itemDetails?.label ?? null;
+      setSelectedOption(itemDetails?.itemKey ?? null);
       
-      // Note: add a slight delay before closing, to make it less jarring (and allow "select" animations to run)
+      // Note: add a slight delay before closing, to make it less jarring (and allow "select" animations to complete)
       window.setTimeout(() => {
-        setIsOpen(false);
+        const previousActiveElement = previousActiveElementRef.current;
+        
+        if (previousActiveElement) {
+          previousActiveElement.focus({
+            // @ts-ignore Supported in some browsers (e.g. Firefox).
+            focusVisible: false,
+          });
+        }
+        
+        if (action !== 'focus') {
+          setIsOpen(false);
+        }
       }, 150);
-    }, [setIsOpen]);
+    }, [setIsOpen, setSelectedOption, action]);
+    
+    // Focus management (focus on open + restore focus on close)
+    const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
+    const handleToggle = React.useCallback((event: React.ToggleEvent) => {
+      const listBoxElement = listBoxRef.current;
+      if (!listBoxElement) { return; }
+      
+      if (event.oldState === 'closed' && event.newState === 'open') {
+        if (document.activeElement instanceof HTMLElement) {
+          previousActiveElementRef.current = document.activeElement;
+        }
+        
+        // For click actions, move focus to the list box upon toggling
+        if (action !== 'click') { return; }
+        
+        if (toggleCause.current === 'ArrowDown') {
+          listBoxElement._bkListBoxFocusFirst();
+        } else if (toggleCause.current === 'ArrowUp') {
+          listBoxElement._bkListBoxFocusLast();
+        } else {
+          listBoxElement.focus();
+        }
+        toggleCause.current = null;
+      } else if (event.oldState === 'open' && event.newState === 'closed') {
+        const previousActiveElement = previousActiveElementRef.current;
+        
+        if (previousActiveElement && listBoxElement.matches(':focus-within')) {
+          previousActiveElement.focus({
+            // @ts-ignore Supported in some browsers (e.g. Firefox).
+            focusVisible: false,
+          });
+        }
+      }
+    }, [action]);
     
     const handleDropdownKeyDown = React.useCallback((event: React.KeyboardEvent) => {
       if (event.key === 'Enter') {
-        handleSelect(selectedOption);
+        const selectedOptionDetails = selectedOption === null
+          ? null
+          : { itemKey: selectedOption, label: (selectedLabelRef.current ?? '') };
+        handleSelect(selectedOption, selectedOption === null ? null : selectedOptionDetails);
       }
-    }, [selectedOption, handleSelect]);
+      
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+      }
+    }, [selectedOption, handleSelect, setIsOpen]);
     
     const renderDropdown = () => {
       const floatingProps = getFloatingProps({
@@ -250,8 +330,9 @@ export const DropdownMenuProvider = Object.assign(
             //propsRest.ref,
           )}
           id={listBoxId}
-          selected={selectedOption?.itemKey ?? null}
-          onSelect={mergeCallbacks([handleSelect, onSelect])}
+          selected={selectedOption}
+          onSelect={handleSelect}
+          onToggle={handleToggle}
           data-placement={placementEffective}
         >
           {typeof items === 'function' ? items({ close: () => { setIsOpen(false); } }) : items}

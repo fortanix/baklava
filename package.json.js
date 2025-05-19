@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 
 const packageConfig = {
   name: '@fortanix/baklava',
-  version: '1.0.0-beta-20250516',
+  version: '1.0.0-beta-20250519',
   license: 'MPL-2.0',
   author: 'Fortanix',
   description: 'Fortanix Baklava design system',
@@ -153,7 +153,7 @@ const packageConfig = {
     // Styling
     'typescript-plugin-css-modules': '^5.0.1',
     'sass-embedded': '^1.83.1',
-    'lightningcss': '^1.29.1',
+    'lightningcss': '^1.30.1',
     
     // React
     '@types/react': '^19.0.8',

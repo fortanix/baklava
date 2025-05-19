@@ -11,7 +11,7 @@ import cl from './LayoutDecorator.module.scss';
  * Utility component to wrap around storybook stories to provide a nicer base layout.
  */
 export type LayoutDecoratorProps = ComponentProps<'div'> & {
-  size?: undefined | 'small' | 'medium' | 'large',
+  size?: undefined | 'small' | 'medium' | 'large' | 'x-large',
   resize?: undefined | 'none' | 'inline' | 'block' | 'both',
 };
 export const LayoutDecorator = (props: LayoutDecoratorProps) => {
@@ -30,6 +30,7 @@ export const LayoutDecorator = (props: LayoutDecoratorProps) => {
         { [cl['util-layout-decorator--small']]: size === 'small' },
         { [cl['util-layout-decorator--medium']]: size === 'medium' },
         { [cl['util-layout-decorator--large']]: size === 'large' },
+        { [cl['util-layout-decorator--x-large']]: size === 'x-large' },
         { [cl['util-layout-decorator--resizable']]: resize !== 'none' },
         propsRest.className,
       )}

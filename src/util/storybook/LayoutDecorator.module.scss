@@ -14,6 +14,7 @@
     &.util-layout-decorator--small { max-inline-size: 60ch; }
     &.util-layout-decorator--medium { max-inline-size: 80ch; }
     &.util-layout-decorator--large { max-inline-size: 100ch; }
+    &.util-layout-decorator--x-large { max-inline-size: 140ch; }
     
     &.util-layout-decorator--resizable {
       padding-block-end: 10px; // Make space for the resize control in the corner
