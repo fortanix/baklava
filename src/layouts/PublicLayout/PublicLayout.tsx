@@ -4,13 +4,14 @@
 
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../util/componentUtil.ts';
+import { useScroller } from '../util/Scroller.tsx';
 
 import { type IconName } from '../../components/graphics/Icon/Icon.tsx';
-import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
+//import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
 import { Card } from '../../components/containers/Card/Card.tsx';
 
+import fortanixLogo from '../../assets/fortanix/fortanix-logo.svg';
 import cl from './PublicLayout.module.scss';
-import { useScroller } from '../util/Scroller.tsx';
 
 
 export { cl as PublicLayoutClassNames };
@@ -30,7 +31,8 @@ const FortanixArmorLogo = (props: FortanixArmorLogoProps) => {
         propsRest.className,
     )}
     >
-      <FortanixLogo/>
+      {/* <FortanixLogo/> */}
+      <img alt="Fortanix" src={fortanixLogo} width="180" className={cl['fortanix-logo-image']}/>
       <span className={cx(cl['product-name'])}>Armor</span>
     </figure>
   );

@@ -90,6 +90,7 @@ export const DropdownMenuProviderWithAction: Story = {
     ),
   },
 };
+
 export const DropdownMenuProviderWithClickAction: Story = {
   args: {
     action: 'click',

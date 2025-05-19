@@ -5,7 +5,7 @@
 import { classNames as cx, type ComponentProps } from '../../util/componentUtil.ts';
 import * as React from 'react';
 
-import logoIconImage from  '../../assets/fortanix/fortanix_logo_icon.svg';
+import logoIconImage from  '../../assets/fortanix/fortanix-logo-icon.svg';
 import cl from './FortanixLogo.module.scss';
 
 

@@ -29,7 +29,8 @@ export default {
     layout: 'fullscreen',
   },
   decorators: [
-    Story => <div style={{ display: 'grid' }}><Story/></div>
+    // Needs an explicit height, since `PublicLayout` has `size` containment (in Firefox this won't work without)
+    Story => <div style={{ display: 'grid', blockSize: '100vh' }}><Story/></div>,
   ],
   argTypes: {},
   args: {

@@ -23,6 +23,10 @@
       @include bk.flex-row;
       align-items: center;
       
+      .fortanix-logo-image {
+        margin-inline-end: 1ch;
+      }
+      
       .product-name {
         margin-block-start: 0.2em;
         font-size: 2em;
@@ -36,10 +40,15 @@
         "product-name" 1fr
         / auto;
       
+      .fortanix-logo-image {
+        margin-block-end: 0.1lh;
+      }
+      
       .product-name {
         justify-self: end;
         margin-block-start: -0.3lh;
-        margin-inline-end: 1.35ch;
+        //margin-inline-end: 1.35ch;
+        margin-inline-end: 5px; // FIXME
         font-size: 1.2em;
       }
     }
@@ -51,6 +60,8 @@
     padding: bk.$spacing-8;
     padding-inline: bk.$spacing-10;
     padding-block-start: bk.$spacing-4;
+    
+    text-wrap: pretty;
     
     .bk-public-layout__product-info-card__heading {
       @include bk.flex-column;
@@ -113,8 +124,8 @@
     }
     
     .bk-public-layout__product-info {
-      padding-inline: calc(bk.$spacing-4 + 2cqi);
-      padding-block: calc(bk.$spacing-8 + 10cqi) bk.$spacing-8;
+      padding-inline: calc(bk.$spacing-4 + 5cqi);
+      padding-block: calc(bk.$spacing-12 + 10cqb) bk.$spacing-8;
       
       @include bk.flex-column;
       align-items: center;
@@ -132,11 +143,11 @@
       .bk-public-layout__product-info__cards {
         align-self: stretch; // Fill the full width
         margin-block-start: bk.$spacing-12;
-        min-block-size: 15lh;
         
         --card-size: #{bk.$spacing-18};
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(var(--card-size), 1fr));
+        grid-auto-rows: minmax(12lh, 1fr); // Make sure the rows are tall enough for the content
         gap: bk.$spacing-4;
       }
     }
