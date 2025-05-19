@@ -14,6 +14,7 @@
     display: flex;
     
     .product-name {
+      cursor: default; // Safari still shows a text cursor even when `user-select` is none
       @include bk.font(bk.$font-family-display, bk.$font-weight-medium);
       text-transform: uppercase;
     }
@@ -31,9 +32,9 @@
     &.bk-fortanix-armor-logo--stacked {
       display: grid;
       grid:
-        "logo" min-content 1fr
+        "logo" max-content
         "product-name" 1fr
-        / auto auto;
+        / auto;
       
       .product-name {
         justify-self: end;
@@ -48,6 +49,7 @@
     @include bk.component-base(bk-public-layout__product-info-card);
     
     padding: bk.$spacing-8;
+    padding-inline: bk.$spacing-10;
     padding-block-start: bk.$spacing-4;
     
     .bk-public-layout__product-info-card__heading {
@@ -67,11 +69,9 @@
     @include bk.component-base(bk-public-layout);
     container-type: size;
     
-    overflow: hidden;
-    
     // Note: the background image is a semi-transparent png. We add a solid color behind it to shade the image.
     background: url('@/assets/images/public-bg.png?no-inline') no-repeat;
-    background-color: #253264;
+    background-color: light-dark(#2d4ab8, #253264);
     background-size: cover;
     
     --bk-public-layout-content-size: 300px; // Roughly mobile size
@@ -79,15 +79,16 @@
     grid-template-columns:
       minmax(min(100cqi, var(--bk-public-layout-content-size)), calc(var(--bk-public-layout-content-size) + 15cqi))
       minmax(0, 1fr);
-    grid-template-rows: 100cqb;
+    grid-template-rows: minmax(100cqb, 1fr);
     
     .bk-public-layout__content {
+      min-block-size: max-content;
+      
       padding-block: bk.$spacing-13;
       padding-inline: calc(bk.$spacing-3 + 3cqi);
       
       background: bk.$theme-page-login;
       
-      @include bk.text-layout;
       @include bk.font(bk.$font-family-body);
       font-size: bk.$font-size-m;
       
@@ -112,10 +113,8 @@
     }
     
     .bk-public-layout__product-info {
-      overflow: clip;
-      
-      padding: bk.$spacing-13;
-      padding-block-start: calc(bk.$spacing-8 + 5cqi);
+      padding-inline: calc(bk.$spacing-4 + 2cqi);
+      padding-block: calc(bk.$spacing-8 + 10cqi) bk.$spacing-8;
       
       @include bk.flex-column;
       align-items: center;
@@ -126,20 +125,23 @@
       font-size: bk.$font-size-m;
       
       .bk-public-layout__product-info__logo {
-        margin-block-end: bk.$spacing-6;
         zoom: 2;
         filter: drop-shadow(1px 3px 4px #00000088); // Have the logo stand up a bit on the background image
       }
       
       .bk-public-layout__product-info__cards {
-        --card-size: #{bk.$spacing-16};
+        align-self: stretch; // Fill the full width
+        margin-block-start: bk.$spacing-12;
+        min-block-size: 15lh;
+        
+        --card-size: #{bk.$spacing-18};
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(var(--card-size), 100%), 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(var(--card-size), 1fr));
         gap: bk.$spacing-4;
       }
     }
     
-    @container (inline-size <= 720px) {
+    @container (inline-size <= 820px) {
       > .bk-public-layout__content {
         inline-size: 100cqi;
       }

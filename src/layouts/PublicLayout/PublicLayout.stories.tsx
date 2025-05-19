@@ -42,7 +42,7 @@ export const PublicLayoutStandard: Story = {
   args: {
     heading: (
       <PublicLayout.Heading>
-        <H1>Login</H1>
+        <H1>Log In</H1>
         <PublicLayout.FortanixArmorLogo stacked={false}/>
       </PublicLayout.Heading>
     ),

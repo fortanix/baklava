@@ -10,6 +10,7 @@ import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
 import { Card } from '../../components/containers/Card/Card.tsx';
 
 import cl from './PublicLayout.module.scss';
+import { useScroller } from '../util/Scroller.tsx';
 
 
 export { cl as PublicLayoutClassNames };
@@ -89,6 +90,10 @@ export type PublicLayoutProps = ComponentProps<'div'> & {
 export const PublicLayout = Object.assign(
   (props: PublicLayoutProps) => {
     const { unstyled = false, children, heading, productInfoCards, ...propsRest } = props;
+    
+    const contentScroller = useScroller();
+    const productInfoScroller = useScroller();
+    
     return (
       <div
         {...propsRest}
@@ -98,13 +103,16 @@ export const PublicLayout = Object.assign(
           propsRest.className,
         )}
       >
-        <div className={cx(cl['bk-public-layout__content'])}>
+        <div {...contentScroller} className={cx(cl['bk-public-layout__content'], contentScroller.className)}>
           {heading}
           
           {children}
         </div>
         
-        <div className={cx(cl['bk-public-layout__product-info'])}>
+        <div
+          {...productInfoScroller}
+          className={cx(cl['bk-public-layout__product-info'], productInfoScroller.className)}
+        >
           <FortanixArmorLogo stacked className={cx('bk-theme--dark', cl['bk-public-layout__product-info__logo'])}/>
           
           <div className={cx(cl['bk-public-layout__product-info__cards'])}>
