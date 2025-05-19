@@ -190,7 +190,8 @@ export const DropdownMenuProvider = Object.assign(
       }
     }, [setIsOpen, action]);
     
-    const renderAnchor = () => {
+    // Note: memoize this, so that the anchor does not get rerendered every time the floating element position changes
+    const anchor = React.useMemo(() => {
       // FIXME: make `React.HTMLProps<Element>` generic, since not all component props extend from this type
       const anchorProps: AnchorRenderArgs['props'] = (userProps?: undefined | React.HTMLProps<Element>) => {
         const userPropsRef: undefined | string | React.Ref<Element> = userProps?.ref ?? undefined;
@@ -235,7 +236,16 @@ export const DropdownMenuProvider = Object.assign(
       
       console.error(`Invalid children passed to DropdownMenuProvider, expected a render prop or single child element.`);
       return children;
-    };
+    }, [
+      children,
+      getReferenceProps,
+      handleAnchorKeyDown,
+      isOpen,
+      setIsOpen,
+      listBoxId,
+      refs.setReference,
+      selectedOption,
+    ]);
     
     const handleSelect = React.useCallback((_key: null | ListBox.ItemKey, itemDetails: null | ListBox.ItemDetails) => {
       selectedLabelRef.current = itemDetails?.label ?? null;
@@ -362,10 +372,9 @@ export const DropdownMenuProvider = Object.assign(
     React.useImperativeHandle(forwardRef, () => dropdownRef, [dropdownRef]);
     // END TEMP
     
-    
     return (
       <>
-        {renderAnchor()}
+        {anchor}
         {shouldMountDropdown && renderDropdown()}
       </>
     );
