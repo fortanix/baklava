@@ -66,6 +66,12 @@ export const SelectWithCustomInput: Story = {
   },
 };
 
+export const SelectInScrollContainer: Story = {
+  decorators: [
+    Story => <div style={{ blockSize: '200vb', paddingBlockStart: '30vb' }}><Story/></div>,
+  ],
+};
+
 const SelectControlledC = (props: React.ComponentProps<typeof Select>) => {
   const [selectedOption, setSelectedOption] = React.useState<null | ItemDetails>(null);
   

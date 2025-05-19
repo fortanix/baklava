@@ -54,7 +54,7 @@ export type SelectProps = Omit<SelectInputProps, 'selected' | 'onSelect'> & {
   onSelect?: undefined | ((selectedItemKey: null | ItemKey, selectedItemDetails: null | ItemDetails) => void),
   
   /** Additional props to be passed to the `DropdownMenuProvider`. */
-  dropdownProps?: undefined | React.ComponentProps<typeof DropdownMenuProvider>,
+  dropdownProps?: undefined | Partial<React.ComponentProps<typeof DropdownMenuProvider>>,
 };
 export const Select = Object.assign(
   (props: SelectProps) => {
