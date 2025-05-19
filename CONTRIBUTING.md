@@ -30,10 +30,15 @@ To create a new release:
 **Script:**
 
 ```shell
+# Define the new version
+# Note: this should be the version number without any prefix, for example: "VERSION=1.0.0"
 VERSION=x.y.z
+
+# Bump the version and create a PR
 if [ "$VERSION" = "x.y.z" ]; then echo "\n\nDid you forget to change the VERSION?"; else
 git checkout -b release/v${VERSION}
-sed -i '' "s/version: '.*'/version: '${VERSION}'/" package.json.js
+sed -i.bak "s/version: '.*'/version: '${VERSION}'/" package.json.js
+rm package.json.js.bak
 npm run install-project
 git add package.json.js package.json package-lock.json
 git commit -m "Release v${VERSION}"
