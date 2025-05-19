@@ -26,10 +26,7 @@ export type ItemDef = {
 export type ItemMap = Map<ItemKey, ItemDef>;
 export type ItemWithKey = ItemDef & { itemKey: ItemKey };
 
-export type ItemDetails = {
-  itemKey: ItemKey,
-  label: string,
-};
+export type ItemDetails = { itemKey: ItemKey, label: string };
 
 /**
  * The minimal subtype of `Array<ItemKey>` that we need to be able to render a virtualized list. We keep it minimal
@@ -92,6 +89,9 @@ export type ListBoxStateApi = ListBoxState & {
   /** Request the given `itemKey` to be focused. If `null`, unset focus. */
   focusItem: (item: null | ItemKey) => void,
   
+  /** Request the item at the given position in the list to be focused. If no items, this is ignored. */
+  focusItemAt: (position: 'first' | 'last') => void,
+  
   /** Request the given `itemKey` to be selected. If `null`, unset selection. */
   selectItem: (itemKey: null | ItemKey) => void,
 };
@@ -127,7 +127,6 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
         return VirtualItemKeysUtil.indexForItemKey([...state._internalItemsRegistry.keys()], itemKey);
       }
     },
-    selectItem: itemKey => { set({ selectedItem: itemKey }); },
     focusItem: itemKey => {
       set({ focusedItem: itemKey });
       
@@ -136,9 +135,27 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
         
         // Note: this only works if the item is already rendered, for virtual lists the component will need to handle
         // the scroll.
-        itemTargetRef?.current?.focus();
+        itemTargetRef?.current?.focus({
+          // @ts-ignore Supported in some browsers (e.g. Firefox).
+          focusVisible: false,
+        });
       }
     },
+    focusItemAt: position => {
+      const state = get();
+      const virtualItemKeys = state.virtualItemKeys;
+      const registeredItems = state._internalItemsRegistry;
+      const registeredItemKeys = [...registeredItems.keys()]; // FIXME: sort registered items?
+      
+      // Get the complete list of item keys (possibly lazily computed in case of virtualization)
+      const itemKeys: VirtualItemKeys = virtualItemKeys ?? registeredItemKeys;
+      
+      const itemKey = itemKeys.at(position === 'first' ? 0 : -1) ?? null;
+      if (itemKey !== null) {
+        state.focusItem(itemKey);
+      }
+    },
+    selectItem: itemKey => { set({ selectedItem: itemKey }); },
   }));
 };
 export type ListBoxStore = ReturnType<typeof createListBoxStore>;
@@ -290,47 +307,12 @@ export const useListBox = <E extends HTMLElement>(
     }
   }, [typeAhead.handleKeyDown]);
   
-  // Focus management (focus on open + restore focus on close)
-  const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
-  const handleToggle = React.useCallback((event: React.ToggleEvent) => {
-    // FIXME: this causes issues in `MultSearch` where clicking outside the input immediately re-focuses it
-    /*
-    const state = storeRef.current?.getState() ?? null;
-    if (state === null) { return; }
-    
-    const focusedItem: null | ItemKey = state?.focusedItem ?? null;
-    if (focusedItem === null) { return; }
-    
-    const focusedElement = state._internalItemsRegistry.get(focusedItem) ?? null;
-    if (focusedElement === null)  { return; }
-    
-    if (event.oldState === 'closed' && event.newState === 'open') {
-      if (document.activeElement instanceof HTMLElement) {
-        previousActiveElementRef.current = document.activeElement;
-      }
-      focusedElement.itemRef?.current?.focus({
-        // @ts-ignore Supported in some browsers (e.g. Firefox).
-        focusVisible: false,
-      });
-    } else if (event.oldState === 'open' && event.newState === 'closed') {
-      const previousActiveElement = previousActiveElementRef.current;
-      if (previousActiveElement) {
-        previousActiveElement.focus({
-          // @ts-ignore Supported in some browsers (e.g. Firefox).
-          focusVisible: false,
-        });
-      }
-    }
-    */
-  }, []);
-  
   return {
     store: storeRef.current,
     Provider,
     props: {
       ref,
       onKeyDown: handleKeyDown,
-      onToggle: handleToggle,
     },
   };
 };

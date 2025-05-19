@@ -120,6 +120,7 @@ const preview = {
                 'TextArea',
                 'ListBox',
                 'ListBoxLazy',
+                'ComboBox',
                 'Select',
                 'DatePicker',
                 'DatePickerRange',

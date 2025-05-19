@@ -5,22 +5,21 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  $bk-select-min-inline-size: 14rem;
-  $bk-caret-size: 17px;
-  
   .bk-select {
     @include bk.component-base(bk-select);
     
     cursor: pointer;
     
     .bk-select__input {
-      user-select: none;
-      
       min-inline-size: 12ch;
       
-      // Note: `user-select` does not seem to work for `input`, instead we can make the highlight color transparent
-      &::selection {
-        background-color: transparent;
+      &:read-only {
+        user-select: none;
+        
+        // Note: `user-select` does not seem to work for `input`, instead we can make the highlight color transparent
+        &::selection {
+          background-color: transparent;
+        }
       }
     }
     

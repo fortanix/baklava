@@ -9,7 +9,7 @@ import * as React from 'react';
 import { Button } from '../../actions/Button/Button.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 
-import { DropdownMenuProvider } from './DropdownMenuProvider.tsx';
+import { type ItemDetails, DropdownMenuProvider, ItemKey } from './DropdownMenuProvider.tsx';
 
 
 type DropdownMenuProviderArgs = React.ComponentProps<typeof DropdownMenuProvider>;
@@ -24,6 +24,7 @@ export default {
   argTypes: {
   },
   args: {
+    label: 'Test dropdown menu provider',
     children: ({ props, selectedOption }) => (
       <Button kind="primary" {...props()}>
         {typeof selectedOption !== 'undefined' ? `Selected: ${selectedOption?.label ?? 'none'}` : 'Open dropdown'}
@@ -41,6 +42,7 @@ export default {
         <DropdownMenuProvider.Option itemKey="option-8" label="Option 8"/>
       </>
     ),
+    onSelect: selectedOption => { console.log('Selected:', selectedOption); },
   },
   render: (args) => <DropdownMenuProvider {...args}/>,
 } satisfies Meta<DropdownMenuProviderArgs>;
@@ -72,15 +74,40 @@ export const DropdownMenuProviderWithPlacement: Story = {
         }
       </Button>
     ),
-    items: (
-      <>
-        <DropdownMenuProvider.Option itemKey="option-1" label="Option 1"/>
-        <DropdownMenuProvider.Option itemKey="option-2" label="Option 2"/>
-        <DropdownMenuProvider.Option itemKey="option-3" label="Option 3"/>
-        <DropdownMenuProvider.Option itemKey="option-4" label="Option 4"/>
-        <DropdownMenuProvider.Option itemKey="option-5" label="Option 5"/>
-        <DropdownMenuProvider.Option itemKey="option-6" label="Option 6"/>
-      </>
-    ),
   },
+};
+
+export const DropdownMenuProviderWithClickAction: Story = {
+  args: {
+    action: 'click',
+  },
+};
+
+export const DropdownMenuProviderWithFocusAction: Story = {
+  args: {
+    action: 'focus',
+  },
+};
+
+export const DropdownMenuProviderWithHoverAction: Story = {
+  args: {
+    action: 'hover',
+  },
+};
+
+const DropdownMenuProviderControlledC = (props: React.ComponentProps<typeof DropdownMenuProvider>) => {
+  const [selectedOption, setSelectedOption] = React.useState<null | ItemDetails>(null);
+  return (
+    <>
+      <p>Selected: {selectedOption?.label ?? 'none'}</p>
+      <DropdownMenuProvider
+        {...props}
+        selected={selectedOption?.itemKey ?? null}
+        onSelect={(_key, details) => { setSelectedOption(details); }}
+      />
+    </>
+  );
+};
+export const DropdownMenuProviderControlled: Story = {
+  render: args => <DropdownMenuProviderControlledC {...args}/>,
 };
