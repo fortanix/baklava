@@ -23,6 +23,7 @@ import { AccountSelector } from './Header/AccountSelector.tsx';
 import { SysadminSwitcher } from './Header/SysadminSwitcher.tsx';
 import { Breadcrumbs } from './Breadcrumbs/Breadcrumbs.tsx';
 import { AppLayout } from './AppLayout.tsx';
+import { Select } from '../../components/forms/controls/Select/Select.tsx';
 
 
 type AppLayoutArgs = React.ComponentProps<typeof AppLayout>;
@@ -124,8 +125,20 @@ export const Standard: Story = {
               title="Modal"
               trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={() => { activate(); }}/>}
             >
-              Test
+              Test modal
             </DialogModal>
+            
+            <Select
+              label="Test select"
+              placeholder="Test select"
+              options={
+                <>
+                  <Select.Option itemKey="option-1" label="Option 1">Option 1</Select.Option>
+                  <Select.Option itemKey="option-2" label="Option 2">Option 2</Select.Option>
+                  <Select.Option itemKey="option-3" label="Option 3">Option 3</Select.Option>
+                </>
+              }
+            />
           </Panel>
           
           {/* Clicking the link should scroll to the anchor, with enough top padding (`scroll-padding-top`) */}

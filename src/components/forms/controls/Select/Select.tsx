@@ -36,9 +36,6 @@ export type SelectProps = Omit<SelectInputProps, 'selected' | 'onSelect'> & {
   /** A human-readable name for the select. */
   label: string,
   
-  /** The selected option. To access the selected option, pass a render prop. */
-  children: (selectedOption: null | ItemKey) => React.ReactNode,
-  
   /** The options list to be shown in the dropdown menu. */
   options: React.ComponentProps<typeof DropdownMenuProvider>['items'],
   
@@ -54,14 +51,13 @@ export type SelectProps = Omit<SelectInputProps, 'selected' | 'onSelect'> & {
   onSelect?: undefined | ((selectedItemKey: null | ItemKey, selectedItemDetails: null | ItemDetails) => void),
   
   /** Additional props to be passed to the `DropdownMenuProvider`. */
-  dropdownProps?: undefined | React.ComponentProps<typeof DropdownMenuProvider>,
+  dropdownProps?: undefined | Partial<React.ComponentProps<typeof DropdownMenuProvider>>,
 };
 export const Select = Object.assign(
   (props: SelectProps) => {
     const {
       unstyled = false,
       label,
-      children,
       options,
       Input = InputDefault,
       // Dropdown props
