@@ -11,7 +11,7 @@ import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
-import { type ItemDetails, ListBox } from './ListBox.tsx';
+import { type ItemKey, type ListBoxRef, ListBox } from './ListBox.tsx';
 import { InputSearch } from '../Input/InputSearch.tsx';
 
 
@@ -19,21 +19,6 @@ const notifyPressed = () => { notify.info('Pressed the item'); };
 
 type ListBoxArgs = React.ComponentProps<typeof ListBox>;
 type Story = StoryObj<ListBoxArgs>;
-
-export default {
-  component: ListBox,
-  parameters: {
-    layout: 'centered',
-  },
-  tags: ['autodocs'],
-  argTypes: {
-  },
-  args: {
-    label: 'Test list box',
-  },
-  render: (args) => <ListBox {...args}/>,
-} satisfies Meta<ListBoxArgs>;
-
 
 // Sample items
 const fruits = [
@@ -53,9 +38,16 @@ const fruits = [
   'Strawberry',
 ];
 
-
-export const ListBoxStandard: Story = {
+export default {
+  component: ListBox,
+  parameters: {
+    layout: 'centered',
+  },
+  tags: ['autodocs'],
+  argTypes: {
+  },
   args: {
+    label: 'Test list box',
     children: (
       <>
         {fruits.map((fruit) =>
@@ -63,6 +55,13 @@ export const ListBoxStandard: Story = {
         )}
       </>
     ),
+  },
+  render: (args) => <ListBox {...args}/>,
+} satisfies Meta<ListBoxArgs>;
+
+
+export const ListBoxStandard: Story = {
+  args: {
     defaultSelected: 'Blueberry',
   },
 };
@@ -332,16 +331,15 @@ export const ListBoxMany: Story = {
 
 type ListBoxControlledProps = Omit<React.ComponentProps<typeof ListBox>, 'selected'>;
 const ListBoxControlledC = (props: ListBoxControlledProps) => {
-  const [selectedItem, setSelectedItem] = React.useState<null | ItemDetails>(null);
+  const [selectedItem, setSelectedItem] = React.useState<null | ItemKey>(null);
   
   return (
     <>
-      <p>Selected fruit: {selectedItem?.label ?? <em>none</em>}</p>
-      <ListBox {...props} selected={selectedItem?.itemKey ?? null} onSelect={setSelectedItem}/>
+      <p>Selected fruit: {selectedItem ?? <em>none</em>}</p>
+      <ListBox {...props} selected={selectedItem} onSelect={setSelectedItem}/>
     </>
   );
 };
-
 export const ListBoxControlled: Story = {
   render: args => <ListBoxControlledC {...args}/>,
   args: {
@@ -382,4 +380,20 @@ export const ListBoxInForm: Story = {
       </>
     ),
   },
+};
+
+const ListBoxWithRefC = (props: React.ComponentProps<typeof ListBox>) => {
+  const ref = React.useRef<ListBoxRef>(null);
+  
+  React.useEffect(() => {
+    if (ref.current) {
+      ref.current._bkListBoxFocusLast();
+    }
+  }, []);
+  
+  return <ListBox {...props} ref={ref}/>;
+};
+export const ListBoxWithRef: Story = {
+  render: args => <ListBoxWithRefC {...args}/>,
+  args: {},
 };

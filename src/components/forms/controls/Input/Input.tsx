@@ -7,13 +7,17 @@ import { classNames as cx, type ComponentProps } from '../../../../util/componen
 import { mergeRefs, mergeCallbacks } from '../../../../util/reactUtil.ts';
 import * as InputUtil from '../../../util/input_util.tsx';
 
-import { type IconName, Icon } from '../../../graphics/Icon/Icon.tsx';
+import { type IconName, Icon as IconDefault } from '../../../graphics/Icon/Icon.tsx';
 import { IconButton } from '../../../actions/IconButton/IconButton.tsx';
 
 import cl from './Input.module.scss';
 
 
 export { cl as InputClassNames };
+
+export type InputIconProps = Omit<ComponentProps<typeof IconDefault>, 'icon'> & {
+  icon?: undefined | string, // Loosen `icon` constraint (for custom `Icon` components)
+};
 
 const InputAction = (props: React.ComponentProps<typeof IconButton>) => {
   const preventDefault = React.useCallback((event: React.MouseEvent) => {
@@ -31,7 +35,7 @@ const InputAction = (props: React.ComponentProps<typeof IconButton>) => {
 };
 
 type InputSpecificProps = Omit<InputUtil.InputSpecificProps, 'type'>;
-type InputContainerProps = Omit<ComponentProps<'div'>, 'ref' | keyof InputSpecificProps>;
+type InputContainerProps = Omit<ComponentProps<'div'>, 'ref' | 'prefix' | keyof InputSpecificProps>;
 export type InputProps = InputContainerProps & InputSpecificProps & {
   ref?: undefined | React.Ref<HTMLInputElement>,
   
@@ -47,11 +51,20 @@ export type InputProps = InputContainerProps & InputSpecificProps & {
   /** Props to apply to the inner `<input/>` element. */
   inputProps?: React.ComponentProps<'input'>,
   
+  /** A custom `Icon` component. */
+  Icon?: undefined | React.ComponentType<InputIconProps>,
+  
   /** An icon to show before the input. */
   icon?: undefined | IconName,
   
   /** The accessible name for the icon. */
   iconLabel?: undefined | string,
+  
+  /** Additional props to pass to the `Icon`. */
+  iconProps?: undefined | Partial<InputIconProps>,
+  
+  /** Some prefilled content to be shown before the user input. */
+  prefix?: undefined | React.ReactNode,
   
   /** Any additional actions to show after the input control. Use `<Input.Action/>` for a preset action element. */
   actions?: undefined | React.ReactNode,
@@ -75,8 +88,11 @@ export const Input = Object.assign(
       type = 'text',
       containerProps = {},
       inputProps = {},
+      Icon = (IconDefault as React.ComponentType<InputIconProps>),
       icon,
       iconLabel,
+      iconProps = {},
+      prefix,
       actions,
       automaticResize,
       ...propsRest
@@ -119,14 +135,14 @@ export const Input = Object.assign(
           { [cl['bk-input']]: !unstyled },
           { [cl['bk-input--automatic-resize']]: automaticResize },
           containerProps.className,
-          propsExtracted.containerProps,
           className,
         )}
         onMouseDown={mergeCallbacks(
           [handleContainerClick, containerProps.onMouseDown, propsExtracted.containerProps.onMouseDown]
         )}
       >
-        {icon && <Icon icon={icon} aria-label={iconLabel}/>}
+        {(icon || Icon !== IconDefault) && <Icon icon={icon} aria-label={iconLabel} {...iconProps}/>}
+        {prefix}
         <input
           {...inputProps}
           {...propsExtracted.inputProps}
