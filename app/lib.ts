@@ -106,13 +106,21 @@ export { DialogLayout } from '../src/layouts/DialogLayout/DialogLayout.tsx';
 
 export { FormLayout } from '../src/layouts/FormLayout/FormLayout.tsx';
 
+export { PublicLayout } from '../src/layouts/PublicLayout/PublicLayout.tsx';
+
 export { Breadcrumbs } from '../src/layouts/AppLayout/Breadcrumbs/Breadcrumbs.tsx';
 export { Header } from '../src/layouts/AppLayout/Header/Header.tsx';
 export { AccountSelector } from '../src/layouts/AppLayout/Header/AccountSelector.tsx';
 export { SolutionSelector } from '../src/layouts/AppLayout/Header/SolutionSelector.tsx';
 export { SysadminSwitcher } from '../src/layouts/AppLayout/Header/SysadminSwitcher.tsx';
 export { UserMenu } from '../src/layouts/AppLayout/Header/UserMenu.tsx';
-export { Logo } from '../src/fortanix/Logo/Logo.tsx';
 export { Nav } from '../src/layouts/AppLayout/Nav/Nav.tsx';
 export { Sidebar } from '../src/layouts/AppLayout/Sidebar/Sidebar.tsx';
 export { AppLayout } from '../src/layouts/AppLayout/AppLayout.tsx';
+
+/**
+ * Fortanix-specific.
+ */
+
+export { FortanixLogo } from '../src/fortanix/FortanixLogo/FortanixLogo.tsx';
+export { FortanixLogo as Logo } from '../src/fortanix/FortanixLogo/FortanixLogo.tsx'; // Temporarily alias as `Logo` until migrations are complete

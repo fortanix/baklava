@@ -77,6 +77,20 @@ export const DropdownMenuProviderWithPlacement: Story = {
   },
 };
 
+export const DropdownMenuProviderWithAction: Story = {
+  args: {
+    items: ({ close }) => (
+      <>
+        <DropdownMenuProvider.Option itemKey="option-1" label="Option 1"/>
+        <DropdownMenuProvider.Option itemKey="option-2" label="Option 2"/>
+        <DropdownMenuProvider.Action itemKey="action-close" onActivate={close} label="Close">
+          Close
+        </DropdownMenuProvider.Action>
+      </>
+    ),
+  },
+};
+
 export const DropdownMenuProviderWithClickAction: Story = {
   args: {
     action: 'click',

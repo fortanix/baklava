@@ -31,7 +31,9 @@
     display: inline-flex;
     flex-flow: row wrap;
     align-items: center;
+    justify-content: center;
     gap: bk.$spacing-1;
+    text-align: center;
     
     @include bk.font(bk.$font-family-display, bk.$font-weight-semibold);
     text-transform: uppercase;

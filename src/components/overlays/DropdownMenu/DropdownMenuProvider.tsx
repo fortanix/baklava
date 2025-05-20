@@ -27,6 +27,7 @@ export type DropdownRef = {
 };
 
 type ListBoxProps = ComponentProps<typeof ListBox.ListBox>;
+
 export type AnchorRenderArgs = {
   props: (userProps?: undefined | React.HTMLProps<Element>) => Record<string, unknown>,
   open: boolean,
@@ -34,6 +35,10 @@ export type AnchorRenderArgs = {
   close: () => void,
   selectedOption: null | ListBox.ItemDetails,
 };
+export type ItemsRenderArgs = {
+  close: () => void,
+};
+
 export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label'> & {
   // ---
   // TEMP
@@ -65,7 +70,7 @@ export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 
   children?: ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode,
   
   /** The dropdown items. */
-  items: React.ReactNode,
+  items: React.ReactNode | ((args: ItemsRenderArgs) => React.ReactNode),
   
   /** The accessible role of the dropdown. */
   role?: undefined | UseFloatingElementOptions['role'],
@@ -340,7 +345,7 @@ export const DropdownMenuProvider = Object.assign(
           onToggle={handleToggle}
           data-placement={placementEffective}
         >
-          {items}
+          {typeof items === 'function' ? items({ close: () => { setIsOpen(false); } }) : items}
         </ListBox.ListBox>
       );
     };
