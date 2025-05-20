@@ -5,8 +5,8 @@
 import { classNames as cx, type ComponentProps } from '../../util/componentUtil.ts';
 import * as React from 'react';
 
-import logoImage from  '../../assets/fortanix/fortanix_logo_icon.svg';
-import cl from './Logo.module.scss';
+import logoIconImage from  '../../assets/fortanix/fortanix-logo-icon.svg';
+import cl from './FortanixLogo.module.scss';
 
 
 export type LogoProps = ComponentProps<'figure'> & {
@@ -17,20 +17,22 @@ export type LogoProps = ComponentProps<'figure'> & {
 /**
  * Logo component.
  */
-export const Logo = ({ subtitle, subtitleTrademark, ...propsRest }: LogoProps) => {
+export const FortanixLogo = ({ subtitle, subtitleTrademark, ...propsRest }: LogoProps) => {
   return (
     <figure
       {...propsRest}
       className={cx(
         'bk',
-        cl['bk-app-logo'],
+        cl['bk-fortanix-logo'],
         propsRest.className,
       )}
     >
       <div className="_logo">
-        <img alt={`Fortanix ${subtitle ?? ''}`.trim()} src={logoImage} className="_icon"/>
+        {/* Note: the logo icon should not be announced, do not give it an `alt`. */}
+        <img alt="" src={logoIconImage} className="_icon"/>
         <span className="_title">Fortanix</span>
-        {subtitle && 
+        <span className="_title-reg">&reg;</span>
+        {subtitle &&
           <span className="_subtitle">
             {subtitle}
             {subtitleTrademark && <sup className="_subtitle-trademark">&trade;</sup>}

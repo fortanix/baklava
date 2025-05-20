@@ -24,7 +24,7 @@ export default {
   render: (args) => <Stepper {...args}/>,
 } satisfies Meta<StepperArgs>;
 
-const defaultSteps: Step[] = [1,2,3,4].map(index => { 
+const defaultSteps: Array<Step> = [1,2,3,4].map(index => { 
   return {
     stepKey: `${index}`,
     title: `Step ${index}`,
@@ -51,18 +51,29 @@ const BaseStory: Story = {
   render: (args) => <StepperWithTrigger {...args} />,
 };
 
-export const Standard: Story = {
-    ...BaseStory,
-  name: 'Standard',
+export const StepperStandard: Story = {
+  ...BaseStory,
   args: { ...BaseStory.args },
 };
 
-export const Horizontal: Story = {
-    ...BaseStory,
-  name: 'Horizontal',
+/** A step may be disabled. In this case, it will not be clickable. */
+export const StepperWithDisabledStep: Story = {
+  ...BaseStory,
+  args: {
+    ...BaseStory.args,
+    steps: [
+      { stepKey: '1', title: 'Step 1', isDisabled: false },
+      { stepKey: '2', title: 'Step 2', isDisabled: false },
+      { stepKey: '3', title: 'Step 3 (disabled)', isDisabled: true },
+      { stepKey: '4', title: 'Step 4', isDisabled: false },
+    ],
+  },
+};
+
+export const StepperHorizontal: Story = {
+  ...BaseStory,
   args: {
     ...BaseStory.args,
     direction: 'horizontal',
   },
 };
-
