@@ -114,7 +114,7 @@ export const ToastWithAutoClose: Story = {
   },
 };
 
-export const ToastWithDismissAll: Story = {
+export const ToastWithDismiss: Story = {
   args: {
     children: (
       <>
