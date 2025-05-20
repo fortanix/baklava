@@ -97,5 +97,9 @@
         }
       }
     }
+    
+    .bk-stepper__item--disabled {
+      cursor: not-allowed;
+    }
   }
 }
