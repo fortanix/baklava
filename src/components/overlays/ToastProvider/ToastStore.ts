@@ -121,6 +121,12 @@ export class ToastStore {
     }, this.#options.exitAnimationDelay);
   }
   
+  dismissAllToasts() {
+    for (const toastKey of Object.keys(this.#toasts)) {
+      this.dismissToast(this.idFromKey(toastKey));
+    }
+  }
+  
   scheduleClose(toastId: ToastId, closeDelay: number /*ms*/): Timer {
     return new Timer(() => { this.dismissToast(toastId); }, closeDelay);
   }
