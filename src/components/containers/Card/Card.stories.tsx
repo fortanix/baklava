@@ -85,3 +85,24 @@ export const CardGrid: Story = {
     </div>
   ),
 };
+
+export const CardNested: Story = {
+  decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
+  args: {
+    children: (
+      <>
+        <Card.Heading>A parent card</Card.Heading>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)' }}>
+          <Card unstyled>
+            <Card.Heading>A nested card</Card.Heading>
+            Content
+          </Card>
+          <Card unstyled>
+            <Card.Heading>Another nested card</Card.Heading>
+            Content
+          </Card>
+        </div>
+      </>
+    ),
+  },
+};
