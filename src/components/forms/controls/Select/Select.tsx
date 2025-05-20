@@ -80,7 +80,7 @@ export const Select = Object.assign(
         role="listbox"
         keyboardInteractions="form-control"
         placement="bottom-start"
-        offset={0} // Make the dropdown flush with the select element
+        offset={0} // Make the dropdown flush with the anchor element
         selected={selected}
         onSelect={onSelect}
         {...dropdownProps}

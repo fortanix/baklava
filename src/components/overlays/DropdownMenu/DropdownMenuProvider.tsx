@@ -160,7 +160,7 @@ export const DropdownMenuProvider = Object.assign(
     const [shouldMountDropdown] = useDebounce(isOpen, isOpen ? 0 : 1000);
     
     const selectedLabelRef = React.useRef<null | string>(null);
-    const [selectedOptionInternal, setSelectedOptionInternal] = React.useState<null | ItemKey>(null);
+    const [selectedOptionInternal, setSelectedOptionInternal] = React.useState<null | ItemKey>(selected ?? null);
     const selectedOption = typeof selected !== 'undefined' ? selected : selectedOptionInternal;
     const setSelectedOption = React.useCallback((itemKey: null | ItemKey) => {
       if (typeof selected === 'undefined') {

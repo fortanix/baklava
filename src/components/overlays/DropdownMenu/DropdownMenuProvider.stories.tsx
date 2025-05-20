@@ -96,7 +96,10 @@ export const DropdownMenuProviderWithHoverAction: Story = {
 };
 
 const DropdownMenuProviderControlledC = (props: React.ComponentProps<typeof DropdownMenuProvider>) => {
-  const [selectedOption, setSelectedOption] = React.useState<null | ItemDetails>(null);
+  const [selectedOption, setSelectedOption] = React.useState<null | ItemDetails>({
+    itemKey: 'option-2',
+    label: 'Option 2',
+  });
   return (
     <>
       <p>Selected: {selectedOption?.label ?? 'none'}</p>
@@ -104,7 +107,13 @@ const DropdownMenuProviderControlledC = (props: React.ComponentProps<typeof Drop
         {...props}
         selected={selectedOption?.itemKey ?? null}
         onSelect={(_key, details) => { setSelectedOption(details); }}
-      />
+      >
+        {({ props, selectedOption }) =>
+          <Button kind="primary" {...props()}>
+            {typeof selectedOption !== 'undefined' ? `Selected: ${selectedOption?.label ?? 'none'}` : 'Open dropdown'}
+          </Button>
+        }
+      </DropdownMenuProvider>
     </>
   );
 };

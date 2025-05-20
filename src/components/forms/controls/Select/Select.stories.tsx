@@ -73,7 +73,10 @@ export const SelectInScrollContainer: Story = {
 };
 
 const SelectControlledC = (props: React.ComponentProps<typeof Select>) => {
-  const [selectedOption, setSelectedOption] = React.useState<null | ItemDetails>(null);
+  const [selectedOption, setSelectedOption] = React.useState<null | ItemDetails>({
+    itemKey: 'option-Apricot',
+    label: 'Apricot'
+  });
   
   return (
     <>

@@ -41,6 +41,8 @@ export { cl as ListBoxClassNames };
 export interface ListBoxRef extends HTMLDivElement {
   _bkListBoxFocusFirst: () => void,
   _bkListBoxFocusLast: () => void,
+  /** Format the given `itemKey` as a human-readable label. Returns `null` if no such `itemKey` is found. */
+  _bkListBoxFormatLabel: (itemKey: ItemKey) => null | string,
 };
 
 type ListBoxIcon = React.ComponentType<Pick<React.ComponentProps<typeof BkIcon>, 'icon' | 'className' | 'decoration'>>;
@@ -391,8 +393,14 @@ export const ListBox = Object.assign(
         },
         _bkListBoxFocusFirst: () => { listBox.store.getState().focusItemAt('first'); },
         _bkListBoxFocusLast: () => { listBox.store.getState().focusItemAt('last'); },
+        _bkListBoxFormatLabel: (itemKey: ItemKey) => {
+          const state = listBox.store.getState();
+          return formatItemLabel?.(itemKey)
+            ?? state._internalItemsRegistry.get(itemKey)?.itemRef.current?.textContent
+            ?? null;
+        },
       });
-    }, [listBox]);
+    }, [listBox, formatItemLabel]);
     
     // Keep the `virtualItemKeys` prop in sync with the store
     React.useEffect(() => {
