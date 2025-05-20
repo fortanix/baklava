@@ -57,6 +57,7 @@ const preview = {
             ],
             'text',
             [
+              'TextLine',
               'Tag',
             ],
             'containers',
