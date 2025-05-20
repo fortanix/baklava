@@ -7,11 +7,10 @@ import { createPortal } from 'react-dom';
 import { mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
-import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { type BannerVariant, Banner } from '../../containers/Banner/Banner.tsx';
 import { TopLayerContext, useActiveModalDialog } from '../../util/overlays/TopLayerManager.tsx';
 
-import { type ToastDescriptor, type ToastOptions, type ToastStorage, ToastStore } from './ToastStore.ts';
+import { type ToastId, type ToastDescriptor, type ToastOptions, type ToastStorage, ToastStore } from './ToastStore.ts';
 
 import cl from './ToastProvider.module.scss';
 
@@ -44,6 +43,12 @@ export const createToastNotifier = (toastStore: ToastStore) => {
       notifyVariant('error', toast, options),
     success: (toast: string | Omit<ToastDescriptor, 'variant'>, options?: undefined | ToastOptions) =>
       notifyVariant('success', toast, options),
+    dismiss: (toastId: ToastId) => {
+      toastStore.dismissToast(toastId);
+    },
+    dismissAll: () => {
+      toastStore.dismissAllToasts();
+    },
   });
 };
 

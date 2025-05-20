@@ -51,10 +51,12 @@ export const ToastProviderWithTrigger: Story = {
   args: {
     children: (
       <Button kind="primary" label="Notify (success)"
-        onPress={() => notify.success({ title: 'Notification title', message: 'This is a success notification.' })}
+        onPress={() => {
+          notify.success({ title: 'Notification title', message: 'This is a success notification.' });
+        }}
       />
     ),
-  }
+  },
 };
 
 export const ToastVariantInfo: Story = {
@@ -65,7 +67,7 @@ export const ToastVariantInfo: Story = {
         <p className="bk-prose">A notification should appear on screen.</p>
       </>
     ),
-  }
+  },
 };
 
 export const ToastVariantWarning: Story = {
@@ -76,7 +78,7 @@ export const ToastVariantWarning: Story = {
         <p className="bk-prose">A notification should appear on screen.</p>
       </>
     ),
-  }
+  },
 };
 
 export const ToastVariantError: Story = {
@@ -87,7 +89,7 @@ export const ToastVariantError: Story = {
         <p className="bk-prose">A notification should appear on screen.</p>
       </>
     ),
-  }
+  },
 };
 
 export const ToastVariantSuccess: Story = {
@@ -98,7 +100,7 @@ export const ToastVariantSuccess: Story = {
         <p className="bk-prose">A notification should appear on screen.</p>
       </>
     ),
-  }
+  },
 };
 
 export const ToastWithAutoClose: Story = {
@@ -109,6 +111,30 @@ export const ToastWithAutoClose: Story = {
         <p className="bk-prose">A notification should appear on screen, and then auto-close in 3 seconds.</p>
       </>
     ),
-  }
+  },
 };
 
+export const ToastWithDismissAll: Story = {
+  args: {
+    children: (
+      <>
+        <p>
+          <Button kind="primary" label="Notify (success)"
+            onPress={() => {
+              notify.success({ title: 'Notification title', message: 'This is a success notification.' });
+            }}
+          />
+        </p>
+        
+        <p>
+        <Button kind="secondary" label="Dismiss one"
+            onPress={() => { notify.dismiss('1'); }}
+          />
+          <Button kind="secondary" label="Dismiss all"
+            onPress={() => { notify.dismissAll(); }}
+          />
+        </p>
+      </>
+    ),
+  },
+};
