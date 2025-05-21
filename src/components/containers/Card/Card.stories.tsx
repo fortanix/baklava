@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 
-import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
+import { LoremIpsum, loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
 import { DummyBkLinkWithNotify } from '../../../util/storybook/StorybookLink.tsx';
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 import type { Meta, StoryObj } from '@storybook/react';
@@ -49,12 +49,36 @@ export const CardWithHeading: Story = {
   },
 };
 
+export const CardWithHeadingOverflow: Story = {
+  decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
+  args: {
+    children: (
+      <>
+        <Card.Heading>{loremIpsumSentence}</Card.Heading>
+        <LoremIpsum/>
+      </>
+    ),
+  },
+};
+
 export const CardWithHeadingLink: Story = {
   decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
   args: {
     children: (
       <>
         <Card.HeadingLink Link={DummyBkLinkWithNotify}>A heading that acts as a link</Card.HeadingLink>
+        <LoremIpsum/>
+      </>
+    ),
+  },
+};
+
+export const CardWithHeadingLinkOverflow: Story = {
+  decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
+  args: {
+    children: (
+      <>
+        <Card.HeadingLink Link={DummyBkLinkWithNotify}>{loremIpsumSentence}</Card.HeadingLink>
         <LoremIpsum/>
       </>
     ),
@@ -92,14 +116,14 @@ export const CardNested: Story = {
     children: (
       <>
         <Card.Heading>A parent card</Card.Heading>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)' }}>
-          <Card unstyled>
-            <Card.Heading>A nested card</Card.Heading>
-            Content
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 50%)', gridGap: '1.5ch' }}>
+          <Card flat>
+            <Card.HeadingLink Link={DummyBkLinkWithNotify}>A nested card</Card.HeadingLink>
+            <LoremIpsum/>
           </Card>
-          <Card unstyled>
-            <Card.Heading>Another nested card</Card.Heading>
-            Content
+          <Card flat>
+            <Card.HeadingLink Link={DummyBkLinkWithNotify}>Another nested card</Card.HeadingLink>
+            <LoremIpsum/>
           </Card>
         </div>
       </>

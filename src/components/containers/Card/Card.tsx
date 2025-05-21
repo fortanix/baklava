@@ -35,13 +35,16 @@ export const CardHeadingLink = ({ Link = LinkDefault, ...propsRest }: CardHeadin
 export type CardProps = ComponentProps<'section'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
+  
+  /** If enabled, removes the outside border/padding. For use in nested contexts. Default: false. */
+  flat?: undefined | boolean,
 };
 /**
  * Card component, a container similar to a panel but smaller and usually used in a list or grid.
  */
 export const Card = Object.assign(
   (props: CardProps) => {
-    const { children, unstyled = false, ...propsRest } = props;
+    const { children, unstyled = false, flat = false, ...propsRest } = props;
     
     return (
       <section
@@ -49,6 +52,7 @@ export const Card = Object.assign(
         className={cx(
           'bk',
           { [cl['bk-card']]: !unstyled },
+          { [cl['bk-card--flat']]: flat },
           propsRest.className,
         )}
       >
