@@ -97,6 +97,8 @@ export * as DataTablePlaceholder from '../src/components/tables/DataTable/table/
 export * as DataTableEager from '../src/components/tables/DataTable/DataTableEager.tsx';
 export * as DataTableLazy from '../src/components/tables/DataTable/DataTableLazy.tsx';
 export * as DataTableStream from '../src/components/tables/DataTable/DataTableStream.tsx';
+export * as DataTableFiltering from '../src/components/tables/DataTable/filtering/Filtering.ts';
+export * as DataTableFilterQuery from '../src/components/tables/MultiSearch/filterQuery.ts';
 export * as MultiSearch from '../src/components/tables/MultiSearch/MultiSearch.tsx';
 
 /**
