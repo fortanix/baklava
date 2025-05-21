@@ -70,6 +70,7 @@ export { ProgressBar } from '../src/components/graphics/ProgressBar/ProgressBar.
 export { Spinner } from '../src/components/graphics/Spinner/Spinner.tsx';
 
 // Text
+export { TextLine } from '../src/components/text/TextLine/TextLine.tsx';
 export { Tag } from '../src/components/text/Tag/Tag.tsx';
 
 // Lists
