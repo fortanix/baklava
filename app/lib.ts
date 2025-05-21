@@ -54,6 +54,7 @@ export { TimePicker } from '../src/components/forms/controls/TimePicker/TimePick
 export { DatePickerRange } from '../src/components/forms/controls/DatePickerRange/DatePickerRange.tsx';
 export { ListBox } from '../src/components/forms/controls/ListBox/ListBox.tsx';
 export { ListBoxLazy } from '../src/components/forms/controls/ListBoxLazy/ListBoxLazy.tsx';
+export { ListBoxMulti } from '../src/components/forms/controls/ListBoxMulti/ListBoxMulti.tsx';
 export { ComboBox } from '../src/components/forms/controls/ComboBox/ComboBox.tsx';
 export { Select } from '../src/components/forms/controls/Select/Select.tsx';
 

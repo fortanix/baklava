@@ -41,7 +41,7 @@
     border: bk.rem-from-px(1) solid bk.$theme-checkbox-border-default;
     border-radius: bk.$radius-1;
     
-    &:checked, &:indeterminate {
+    &:is(:checked, :global(.pseudo-checked)), &:indeterminate {
       border: none;
       background-color: bk.$theme-checkbox-background-default;
       background-position: center;
@@ -57,7 +57,7 @@
       border-color: bk.$theme-checkbox-border-disabled;
       color: bk.$theme-checkbox-checkmark-disabled;
       
-      &:checked, &:indeterminate {
+      &:is(:checked, :global(.pseudo-checked)), &:indeterminate {
         background-color: bk.$theme-checkbox-background-non-active;
       }
     }
@@ -84,7 +84,7 @@
         transition: margin-block-start $bk-checkbox-transition-duration ease-out;
       }
     }
-    &:checked:not(:indeterminate) { @include bk-checkbox-checkmark; }
+    &:is(:checked, :global(.pseudo-checked)):not(:indeterminate) { @include bk-checkbox-checkmark; }
     &:indeterminate { @include bk-checkbox-dash; }
   }
 }
