@@ -46,8 +46,7 @@
   hr {
     margin-block: bk.$spacing-3;
     border: none;
-    // FIXME: should have its own dedicated `card` token
-    border-block-start: bk.rem-from-px(1) solid bk.$theme-side-nav-menu-divider-default;
+    border-block-start: bk.rem-from-px(1) solid bk.$theme-rule-default;
   }
 }
 
