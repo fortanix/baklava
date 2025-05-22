@@ -27,14 +27,14 @@ export type FormProps = React.PropsWithChildren<ComponentProps<'form'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
-  /** Whether this form should be nestable (i.e. can contain other `<form>` elements). */
+  /** Whether this form should be nestable (i.e. can contain other `<form>` elements). Default: false. */
   nestable?: undefined | boolean,
 }>;
 /**
  * Top-level form wrapper component.
  */
 export const Form = (props: FormProps) => {
-  const { unstyled = false, nestable, children, className, ...propsRest } = props;
+  const { unstyled = false, nestable = false, children, className, ...propsRest } = props;
   
   const formId = React.useId();
   const [wrapperRef, setWrapperRef] = React.useState<null | React.ComponentRef<'div'>>(null);
