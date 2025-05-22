@@ -15,7 +15,7 @@
     direction: ltr;
     overflow: clip;
     user-select: none;
-    cursor: default; // Safari still shows a text cursor even when `user-select` is none
+    cursor: var(--cursor, default); // Safari still shows a text cursor even when `user-select` is none
     
     //--bk-fortanix-logo-icon-size: 0.16fr;
     --bk-fortanix-logo-icon-size: 66cqb;
