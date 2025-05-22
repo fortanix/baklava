@@ -232,7 +232,7 @@ export const ListBoxWithActions: Story = {
         <ListBox.Option itemKey="option-1" label="Option 1"/>
         <ListBox.Option itemKey="option-2" label="Option 2"/>
         <ListBox.Action itemKey="action-1" icon="edit" label="Action 1" onActivate={() => { notifyPressed(); }}/>
-        <ListBox.Action itemKey="action-2" icon="delete" label="Action 2" onActivate={() => { notifyPressed(); }}/>
+        <ListBox.Action disabled itemKey="action-2" icon="delete" label="Action 2" onActivate={() => { notifyPressed(); }}/>
       </>
     ),
   },
