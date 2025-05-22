@@ -14,22 +14,22 @@ import {
   MenuProvider,
 } from '../../../overlays/MenuProvider/MenuProvider.tsx';
 
-import cl from './Select.module.scss';
+import cl from './SelectMulti.module.scss';
 
 
-export { cl as SelectClassNames };
+export { cl as SelectMultiClassNames };
 
 export type { ItemKey, ItemDetails };
-export type SelectInputProps = ComponentProps<typeof InputDefault>;
+export type SelectMultiInputProps = ComponentProps<typeof InputDefault>;
 
 /*
-A `Select` is a single-select non-editable combobox.
+A `SelectMulti` is a single-select non-editable combobox.
 
 References:
 - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
 */
 
-export type SelectProps = Omit<SelectInputProps, 'selected' | 'onSelect'> & {
+export type SelectMultiProps = Omit<SelectMultiInputProps, 'selected' | 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -40,7 +40,7 @@ export type SelectProps = Omit<SelectInputProps, 'selected' | 'onSelect'> & {
   options: React.ComponentProps<typeof MenuProvider>['items'],
   
   /** A custom `Input` component. */
-  Input?: undefined | React.ComponentType<SelectInputProps> & {
+  Input?: undefined | React.ComponentType<SelectMultiInputProps> & {
     Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
   },
   
@@ -53,8 +53,8 @@ export type SelectProps = Omit<SelectInputProps, 'selected' | 'onSelect'> & {
   /** Additional props to be passed to the `MenuProvider`. */
   dropdownProps?: undefined | Partial<React.ComponentProps<typeof MenuProvider>>,
 };
-export const Select = Object.assign(
-  (props: SelectProps) => {
+export const SelectMulti = Object.assign(
+  (props: SelectMultiProps) => {
     const {
       unstyled = false,
       label,

@@ -83,7 +83,8 @@ const preview = {
               'DialogOverlay',
               'ToastProvider',
               'Tooltip',
-              'DropdownMenu',
+              'MenuProvider',
+              'MenuMultiProvider',
             ],
             'lists',
             [

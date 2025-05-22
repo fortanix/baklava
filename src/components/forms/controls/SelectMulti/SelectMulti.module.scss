@@ -1,0 +1,37 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-select-multi {
+    @include bk.component-base(bk-select-multi);
+    
+    cursor: pointer;
+    
+    .bk-select-multi__input {
+      min-inline-size: 12ch;
+      
+      &:read-only {
+        user-select: none;
+        
+        // Note: `user-select` does not seem to work for `input`, instead we can make the highlight color transparent
+        &::selection {
+          background-color: transparent;
+        }
+      }
+    }
+    
+    .bk-select-multi__arrow {
+      pointer-events: none; // Let the container handle pointer events instead
+      
+      @media (prefers-reduced-motion: no-preference) {
+        transition: rotate 150ms ease-in-out;
+      }
+    }
+    &.bk-select-multi--open .bk-select-multi__arrow {
+      rotate: x 0.5turn;
+    }
+  }
+}

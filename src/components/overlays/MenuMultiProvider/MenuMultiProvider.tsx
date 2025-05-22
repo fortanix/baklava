@@ -12,39 +12,39 @@ import {
   useFloatingElement,
 } from '../../util/overlays/floating-ui/useFloatingElement.tsx';
 
-import * as ListBox from '../../forms/controls/ListBox/ListBox.tsx';
+import * as ListBoxMulti from '../../forms/controls/ListBoxMulti/ListBoxMulti.tsx';
 
-import cl from './DropdownMenuProvider.module.scss';
+import { MenuProviderClassNames } from '../MenuProvider/MenuProvider.tsx';
 
 
-export type ItemDetails = ListBox.ItemDetails;
-export type ItemKey = ListBox.ItemKey;
+export type ItemDetails = ListBoxMulti.ItemDetails;
+export type ItemKey = ListBoxMulti.ItemKey;
 
-export type DropdownRef = {
+export type MenuMultiProviderRef = {
   setIsOpen: (open: boolean) => void,
   isOpen: boolean,
   floatingEl: null | HTMLElement,
 };
 
-type ListBoxProps = ComponentProps<typeof ListBox.ListBox>;
+type ListBoxMultiProps = ComponentProps<typeof ListBoxMulti.ListBoxMulti>;
 
 export type AnchorRenderArgs = {
   props: (userProps?: undefined | React.HTMLProps<Element>) => Record<string, unknown>,
   open: boolean,
   requestOpen: () => void, // FIXME: better naming
   close: () => void,
-  selectedOption: null | ListBox.ItemDetails,
+  selectedOptions: Map<ItemKey, ItemDetails>,
 };
 export type ItemsRenderArgs = {
   close: () => void,
 };
 
-export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label'> & {
+export type MenuMultiProviderProps = Omit<ListBoxMultiProps, 'ref' | 'children' | 'label'> & {
   // ---
   // TEMP
   
-  /** A React ref to control the dropdown menu provider imperatively. */
-  ref?: undefined | React.Ref<null | DropdownRef>,
+  /** A React ref to control the menu provider imperatively. */
+  ref?: undefined | React.Ref<null | MenuMultiProviderRef>,
   
   /** For controlled open state. */
   open?: boolean,
@@ -60,7 +60,7 @@ export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 
   
   
   
-  /** An accessible name for this dropdown menu. Required */
+  /** An accessible name for this menu provider. Required. */
   label: string,
   
   /**
@@ -69,13 +69,13 @@ export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 
   */
   children?: ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode,
   
-  /** The dropdown items. */
+  /** The menu items. */
   items: React.ReactNode | ((args: ItemsRenderArgs) => React.ReactNode),
   
-  /** The accessible role of the dropdown. */
+  /** The accessible role of the menu. */
   role?: undefined | UseFloatingElementOptions['role'],
   
-  /** The action that should trigger the dropdown to open. */
+  /** The action that should trigger the menu to open. */
   action?: undefined | UseFloatingElementOptions['action'],
   
   /**
@@ -90,17 +90,17 @@ export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 
   /** Override the default placement */
   placement?: undefined | UseFloatingElementOptions['placement'],
   
-  /** Offset size for the dropdown relative to the anchor. */
+  /** Offset size for the menu relative to the anchor. */
   offset?: undefined | UseFloatingElementOptions['offset'],
   
   /** Enable more precise tracking of the anchor, at the cost of performance. */
   enablePreciseTracking?: undefined | UseFloatingElementOptions['enablePreciseTracking'],
 };
 /**
- * Provider for a dropdown menu overlay with its trigger.
+ * Provider for a menu overlay that is triggered by (and positioned relative to) some anchor element.
  */
-export const DropdownMenuProvider = Object.assign(
-  (props: DropdownMenuProviderProps) => {
+export const MenuMultiProvider = Object.assign(
+  (props: MenuMultiProviderProps) => {
     const {
       label,
       children,
@@ -123,7 +123,7 @@ export const DropdownMenuProvider = Object.assign(
     } = props;
     
     const anchorRef = React.useRef<HTMLElement>(null);
-    const listBoxRef = React.useRef<React.ComponentRef<typeof ListBox.ListBox>>(null);
+    const listBoxRef = React.useRef<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>(null);
     const listBoxId = `listbox-${React.useId()}`;
     
     const {
@@ -162,18 +162,25 @@ export const DropdownMenuProvider = Object.assign(
       // END TEMP
     });
     
-    const [shouldMountDropdown] = useDebounce(isOpen, isOpen ? 0 : 1000);
+    const [shouldMountMenu] = useDebounce(isOpen, isOpen ? 0 : 1000);
     
-    const selectedLabelRef = React.useRef<null | string>(null);
-    const [selectedOptionInternal, setSelectedOptionInternal] = React.useState<null | ItemKey>(null);
-    const selectedOption = typeof selected !== 'undefined' ? selected : selectedOptionInternal;
-    const setSelectedOption = React.useCallback((itemKey: null | ItemKey) => {
+    const selectedLabelsRef = React.useRef<Map<ItemKey, string>>(new Map());
+    const selectedOptionsWithDetails = React.useCallback((itemKeys: Set<ItemKey>): Map<ItemKey, ItemDetails> => {
+      return new Map([...itemKeys].map(itemKey => {
+        const label = selectedLabelsRef.current.get(itemKey) ?? '';
+        return [itemKey, { itemKey, label }];
+      }));
+    }, []);
+    
+    const [selectedOptionsInternal, setSelectedOptionsInternal] = React.useState<Set<ItemKey>>(new Set());
+    const selectedOptions = typeof selected !== 'undefined' ? selected : selectedOptionsInternal;
+    const setSelectedOptions = React.useCallback((itemKeys: Set<ItemKey>) => {
       if (typeof selected === 'undefined') {
-        setSelectedOptionInternal(itemKey);
+        setSelectedOptionsInternal(itemKeys);
       }
       
-      onSelect?.(itemKey, itemKey === null ? null : { itemKey, label: (selectedLabelRef.current ?? '') });
-    }, [selected, onSelect]);
+      onSelect?.(selectedOptionsWithDetails(itemKeys));
+    }, [selected, selectedOptionsWithDetails, onSelect]);
     
     const toggleCause = React.useRef<null | 'ArrowUp' | 'ArrowDown'>(null);
     const handleAnchorKeyDown = React.useCallback((event: React.KeyboardEvent) => {
@@ -202,7 +209,7 @@ export const DropdownMenuProvider = Object.assign(
         const userPropsRef: undefined | string | React.Ref<Element> = userProps?.ref ?? undefined;
         if (typeof userPropsRef === 'string') {
           // We can't merge refs if one of the refs is a string
-          console.error(`Failed to render DropdownMenuProvider, due to use of legacy string ref`);
+          console.error(`Failed to render MenuMultiProvider, due to use of legacy string ref`);
           return (userProps ?? {}) as Record<string, unknown>;
         }
         
@@ -224,9 +231,7 @@ export const DropdownMenuProvider = Object.assign(
           open: isOpen,
           requestOpen: () => { setIsOpen(true); },
           close: () => { setIsOpen(false); },
-          selectedOption: selectedOption === null
-            ? null
-            : { itemKey: selectedOption, label: (selectedLabelRef.current ?? '') },
+          selectedOptions: selectedOptionsWithDetails(selectedOptions),
         });
       }
       
@@ -239,7 +244,7 @@ export const DropdownMenuProvider = Object.assign(
         return React.cloneElement(children, anchorProps(children.props as React.HTMLProps<Element>));
       }
       
-      console.error(`Invalid children passed to DropdownMenuProvider, expected a render prop or single child element.`);
+      console.error(`Invalid children passed to MenuMultiProvider, expected a render prop or single child element.`);
       return children;
     }, [
       children,
@@ -249,11 +254,11 @@ export const DropdownMenuProvider = Object.assign(
       setIsOpen,
       listBoxId,
       refs.setReference,
-      selectedOption,
+      selectedOptions,
     ]);
     
-    const handleSelect = React.useCallback((_key: null | ListBox.ItemKey, itemDetails: null | ListBox.ItemDetails) => {
-      selectedLabelRef.current = itemDetails?.label ?? null;
+    const handleSelect = React.useCallback((_key: null | ListBoxMulti.ItemKey, itemDetails: null | ListBoxMulti.ItemDetails) => {
+      selectedLabelsRef.current = itemDetails?.label ?? null;
       setSelectedOption(itemDetails?.itemKey ?? null);
       
       // Note: add a slight delay before closing, to make it less jarring (and allow "select" animations to complete)
@@ -267,9 +272,8 @@ export const DropdownMenuProvider = Object.assign(
           });
         }
         
-        if (action !== 'focus') {
-          setIsOpen(false);
-        }
+        // Note: do *not* close the menu automatically after select in multi-select mode
+        //setIsOpen(false);
       }, 150);
     }, [setIsOpen, setSelectedOption, action]);
     
@@ -307,11 +311,11 @@ export const DropdownMenuProvider = Object.assign(
       }
     }, [action]);
     
-    const handleDropdownKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+    const handleMenuKeyDown = React.useCallback((event: React.KeyboardEvent) => {
       if (event.key === 'Enter') {
         const selectedOptionDetails = selectedOption === null
           ? null
-          : { itemKey: selectedOption, label: (selectedLabelRef.current ?? '') };
+          : { itemKey: selectedOption, label: (selectedLabelsRef.current ?? '') };
         handleSelect(selectedOption, selectedOption === null ? null : selectedOptionDetails);
       }
       
@@ -320,23 +324,23 @@ export const DropdownMenuProvider = Object.assign(
       }
     }, [selectedOption, handleSelect, setIsOpen]);
     
-    const renderDropdown = () => {
+    const renderMenu = () => {
       const floatingProps = getFloatingProps({
         popover: 'manual',
         style: floatingStyles,
         ...propsRest,
-        className: cx(cl['bk-dropdown-menu-provider__list-box'], propsRest.className),
-        onKeyDown: mergeCallbacks([propsRest.onKeyDown, handleDropdownKeyDown]),
+        className: cx(MenuProviderClassNames['bk-menu-provider__list-box'], propsRest.className),
+        onKeyDown: mergeCallbacks([propsRest.onKeyDown, handleMenuKeyDown]),
       });
       
       return (
-        <ListBox.ListBox
+        <ListBoxMulti.ListBoxMulti
           label={label}
           {...floatingProps}
-          ref={mergeRefs<React.ComponentRef<typeof ListBox.ListBox>>(
+          ref={mergeRefs<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>(
             listBoxRef,
             refs.setFloating,
-            floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBox.ListBox>>,
+            floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>,
             //propsRest.ref,
           )}
           id={listBoxId}
@@ -346,7 +350,7 @@ export const DropdownMenuProvider = Object.assign(
           data-placement={placementEffective}
         >
           {typeof items === 'function' ? items({ close: () => { setIsOpen(false); } }) : items}
-        </ListBox.ListBox>
+        </ListBoxMulti.ListBoxMulti>
       );
     };
     
@@ -366,7 +370,7 @@ export const DropdownMenuProvider = Object.assign(
       }
     }, [anchorRefSeparate?.current, refs.setReference]);
     
-    const dropdownRef = React.useMemo<DropdownRef>(() => ({
+    const menuProviderRef = React.useMemo<MenuMultiProviderRef>(() => ({
       isOpen,
       setIsOpen,
       get floatingEl() {
@@ -374,20 +378,20 @@ export const DropdownMenuProvider = Object.assign(
       },
     }), [isOpen, setIsOpen, refs.floating]);
     
-    React.useImperativeHandle(forwardRef, () => dropdownRef, [dropdownRef]);
+    React.useImperativeHandle(forwardRef, () => menuProviderRef, [menuProviderRef]);
     // END TEMP
     
     return (
       <>
         {anchor}
-        {shouldMountDropdown && renderDropdown()}
+        {shouldMountMenu && renderMenu()}
       </>
     );
   },
   {
-    Option: ListBox.Option,
-    Action: ListBox.Action,
-    Header: ListBox.Header,
-    FooterActions: ListBox.FooterActions,
+    Option: ListBoxMulti.Option,
+    Action: ListBoxMulti.Action,
+    Header: ListBoxMulti.Header,
+    FooterActions: ListBoxMulti.FooterActions,
   },
 );

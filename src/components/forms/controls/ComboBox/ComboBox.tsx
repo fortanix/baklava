@@ -9,8 +9,8 @@ import { mergeProps } from '../../../../util/reactUtil.ts';
 import { Input as InputDefault } from '../Input/Input.tsx';
 import {
   type ItemKey,
-  DropdownMenuProvider,
-} from '../../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
+  MenuProvider,
+} from '../../../overlays/MenuProvider/MenuProvider.tsx';
 
 import cl from './ComboBox.module.scss';
 
@@ -46,10 +46,10 @@ export type ComboBoxProps = Omit<ComboBoxInputProps, 'onSelect'> & {
   selected?: undefined | null | ItemKey,
   
   /** Callback for when an option is selected in the dropdown menu. */
-  onSelect?: undefined | React.ComponentProps<typeof DropdownMenuProvider>['onSelect'],
+  onSelect?: undefined | React.ComponentProps<typeof MenuProvider>['onSelect'],
   
-  /** Additional props to be passed to the `DropdownMenuProvider`. */
-  dropdownProps?: undefined | Partial<React.ComponentProps<typeof DropdownMenuProvider>>,
+  /** Additional props to be passed to the `MenuProvider`. */
+  dropdownProps?: undefined | Partial<React.ComponentProps<typeof MenuProvider>>,
 };
 export const ComboBox = Object.assign(
   (props: ComboBoxProps) => {
@@ -68,7 +68,7 @@ export const ComboBox = Object.assign(
     } = props;
     
     return (
-      <DropdownMenuProvider
+      <MenuProvider
         label={label}
         items={options}
         // biome-ignore lint/a11y/useSemanticElements: False positive: this `role` doesn't directly map to HTML `role`
@@ -112,13 +112,13 @@ export const ComboBox = Object.assign(
             </>
           );
         }}
-      </DropdownMenuProvider>
+      </MenuProvider>
     );
   },
   {
-    Header: DropdownMenuProvider.Header,
-    Option: DropdownMenuProvider.Option,
-    Action: DropdownMenuProvider.Action,
-    FooterActions: DropdownMenuProvider.FooterActions,
+    Header: MenuProvider.Header,
+    Option: MenuProvider.Option,
+    Action: MenuProvider.Action,
+    FooterActions: MenuProvider.FooterActions,
   },
 );

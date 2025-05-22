@@ -6,7 +6,7 @@ import { classNames as cx } from '../../../../util/componentUtil.ts';
 
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
-import { DropdownMenuProvider } from '../../../overlays/DropdownMenu/DropdownMenuProvider.tsx';
+import { MenuProvider } from '../../../overlays/MenuProvider/MenuProvider.tsx';
 
 import { useTable } from '../DataTableContext.tsx';
 
@@ -29,11 +29,11 @@ export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
     <div className={cx(cl['bk-page-size-selector'])}>
       {pageSizeLabel}:
       
-      <DropdownMenuProvider
+      <MenuProvider
         label="Page size selector"
         className={cx(cl['page-size-selector__dropdown'])}
         items={pageSizeOptions.map((pageSize) => (
-          <DropdownMenuProvider.Option
+          <MenuProvider.Option
             key={pageSize.toString()}
             itemKey={pageSize.toString()}
             label={`${pageSize}`}
@@ -57,7 +57,7 @@ export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
             <Icon icon="caret-down" className={cx(cl['page-size-selector__trigger__icon'])}/>
           </Button>
         )}
-      </DropdownMenuProvider>
+      </MenuProvider>
     </div>
   );
 };
