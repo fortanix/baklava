@@ -10,6 +10,7 @@ import { useScroller } from '../../../../layouts/util/Scroller.tsx';
 import { type IconName, Icon as BkIcon } from '../../../graphics/Icon/Icon.tsx';
 import { Spinner } from '../../../graphics/Spinner/Spinner.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
+import { CheckboxClassNames } from '../Checkbox/Checkbox.tsx';
 
 import {
   type ItemKey,
@@ -23,7 +24,7 @@ import {
   useListBoxItem,
 } from './ListBoxStore.tsx';
 
-import cl from './ListBox.module.scss';
+import cl from './ListBoxMulti.module.scss';
 
 
 /*
@@ -38,7 +39,7 @@ export { type ItemKey, type ItemDef, type ItemDetails, ListBoxContext, useListBo
 export { cl as ListBoxClassNames };
 
 
-export interface ListBoxRef extends HTMLDivElement {
+export interface ListBoxMultiRef extends HTMLDivElement {
   _bkListBoxFocusFirst: () => void,
   _bkListBoxFocusLast: () => void,
 };
@@ -64,7 +65,7 @@ export type OptionProps = ComponentProps<typeof Button> & {
   iconDecoration?: undefined | 'highlight',
   
   /** A callback to be called when the option is selected. */
-  onSelect?: undefined | (() => void),
+  onSelect?: undefined | ((isSelected: boolean) => void),
   
   /** Custom icon component. */
   Icon?: undefined | ListBoxIcon,
@@ -78,10 +79,13 @@ export const Option = (props: OptionProps) => {
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef, isContentItem: true }), [itemKey]);
   
-  const { id, disabled, isFocused, isSelected, requestSelection } = useListBoxItem(itemDef);
+  const { id, disabled, isFocused, isSelected, toggleSelection } = useListBoxItem(itemDef);
   const isNonactive = propsRest.disabled || propsRest.nonactive || disabled;
   
-  const handlePress = React.useCallback(() => { requestSelection(); onSelect?.(); }, [requestSelection, onSelect]);
+  const handlePress = React.useCallback(() => {
+    const isSelected = toggleSelection();
+    onSelect?.(isSelected);
+  }, [toggleSelection, onSelect]);
   
   return (
     <Button
@@ -96,9 +100,9 @@ export const Option = (props: OptionProps) => {
       aria-selected={isSelected}
       {...propsRest}
       className={cx(
-        { [cl['bk-list-box__item']]: !unstyled },
-        { [cl['bk-list-box__item--disabled']]: isNonactive },
-        cl['bk-list-box__item--option'],
+        { [cl['bk-list-box-multi__item']]: !unstyled },
+        { [cl['bk-list-box-multi__item--disabled']]: isNonactive },
+        cl['bk-list-box-multi__item--option'],
         propsRest.className,
       )}
       // See: https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Keyboard-navigable_JavaScript_widgets#grouping_controls
@@ -106,17 +110,20 @@ export const Option = (props: OptionProps) => {
       nonactive={isNonactive}
       onPress={handlePress}
     >
+      {/* Note: should not be an actual `<input type="checkbox">` element, buttons can't have interactive children */}
+      <span className={cx(CheckboxClassNames['bk-checkbox'], { 'pseudo-checked': isSelected })}/>
+      
       {icon &&
         <Icon
           icon={icon}
           decoration={iconDecoration !== 'highlight' ? undefined : { type: 'background-circle' }}
           className={cx(
-            cl['bk-list-box__item__icon'],
-            { [cl['bk-list-box__item__icon--highlight']]: iconDecoration === 'highlight' },
+            cl['bk-list-box-multi__item__icon'],
+            { [cl['bk-list-box-multi__item__icon--highlight']]: iconDecoration === 'highlight' },
           )}
         />
       }
-      <span className={cl['bk-list-box__item__label']}>{propsRest.children ?? label}</span>
+      <span className={cl['bk-list-box-multi__item__label']}>{propsRest.children ?? label}</span>
     </Button>
   );
 };
@@ -153,15 +160,15 @@ export const Header = (props: HeaderProps) => {
       data-item-key={itemKey}
       {...propsRest}
       className={cx(
-        { [cl['bk-list-box__item']]: !unstyled },
-        cl['bk-list-box__item--static'],
-        cl['bk-list-box__item--header'],
-        { [cl['bk-list-box__item--sticky-start']]: sticky === 'start' },
+        { [cl['bk-list-box-multi__item']]: !unstyled },
+        cl['bk-list-box-multi__item--static'],
+        cl['bk-list-box-multi__item--header'],
+        { [cl['bk-list-box-multi__item--sticky-start']]: sticky === 'start' },
         propsRest.className,
       )}
     >
-      {icon && <Icon icon={icon} className={cl['bk-list-box__item__icon']}/>}
-      <span className={cl['bk-list-box__item__label']}>{propsRest.children ?? label}</span>
+      {icon && <Icon icon={icon} className={cl['bk-list-box-multi__item__icon']}/>}
+      <span className={cl['bk-list-box-multi__item__label']}>{propsRest.children ?? label}</span>
     </span>
   );
 };
@@ -220,9 +227,9 @@ export const Action = (props: ActionProps) => {
       aria-posinset={itemPos}
       {...propsRest}
       className={cx(
-        { [cl['bk-list-box__item']]: !unstyled },
-        { [cl['bk-list-box__item--disabled']]: isNonactive },
-        cl['bk-list-box__item--action'],
+        { [cl['bk-list-box-multi__item']]: !unstyled },
+        { [cl['bk-list-box-multi__item--disabled']]: isNonactive },
+        cl['bk-list-box-multi__item--action'],
         propsRest.className,
       )}
       // See: https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Keyboard-navigable_JavaScript_widgets#grouping_controls
@@ -230,8 +237,8 @@ export const Action = (props: ActionProps) => {
       nonactive={isNonactive}
       onPress={() => { requestFocus(); onActivate?.(); }}
     >
-      {icon && <Icon icon={icon} className={cl['bk-list-box__item__icon']}/>}
-      <span className={cl['bk-list-box__item__label']}>{propsRest.children ?? label}</span>
+      {icon && <Icon icon={icon} className={cl['bk-list-box-multi__item__icon']}/>}
+      <span className={cl['bk-list-box-multi__item__label']}>{propsRest.children ?? label}</span>
     </Button>
   );
 };
@@ -240,7 +247,7 @@ export const FooterAction = (props: Omit<ActionProps, 'sticky'>) => {
   return <Action {...props} sticky="end"/>;
 };
 export const FooterActions = (props: React.ComponentProps<'div'>) => {
-  return <div {...props} className={cx(cl['bk-list-box__footer-actions'], props.className)}/>;
+  return <div {...props} className={cx(cl['bk-list-box-multi__footer-actions'], props.className)}/>;
 };
 
 
@@ -253,19 +260,21 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
   unstyled?: undefined | boolean,
   
   /** A React ref to pass to the list box element. */
-  ref?: undefined | React.Ref<null | ListBoxRef>,
+  ref?: undefined | React.Ref<null | ListBoxMultiRef>,
   
   /** An accessible name for this listbox menu. Required. */
   label: string,
   
   /** The default option to select. Only relevant for uncontrolled usage (`selected` is `undefined`). */
-  defaultSelected?: undefined | ItemKey,
+  defaultSelected?: undefined | Set<ItemKey>,
 
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */
-  selected?: undefined | null | ItemKey,
+  selected?: undefined | null | Set<ItemKey>,
   
   /** Event handler to be called when the selected option state changes. */
-  onSelect?: undefined | ((selectedItemKey: null | ItemKey, selectedItemDetails: null | ItemDetails) => void),
+  onSelect?: undefined | ((
+    selectedItemDetails: Map<ItemKey, ItemDetails>,
+  ) => void),
   
   /** Whether the list box is disabled or not. Default: false. */
   disabled?: undefined | boolean,
@@ -297,18 +306,23 @@ type HiddenSelectedStateProps = Pick<ListBoxProps, 'name' | 'form' | 'inputProps
 };
 /** Hidden input, so that this component can be connected to a <form> element. */
 const HiddenSelectedState = ({ ref, name, form, inputProps }: HiddenSelectedStateProps) => {
-  const selectedItem = useListBoxSelector(s => s.selectedItem);
+  const selectedItems = useListBoxSelector(s => s.selectedItems);
   const onChange = React.useCallback(() => {}, []);
   return (
-    <input
-      type="hidden"
-      name={name}
-      form={form}
-      {...inputProps}
-      ref={mergeRefs(ref, inputProps?.ref)}
-      value={selectedItem ?? ''}
-      onChange={onChange}
-    />
+    <>
+      {[...selectedItems.values()].map(selectedItem =>
+        <input
+          key={selectedItem}
+          type="hidden"
+          name={`${name}[]`}
+          form={form}
+          {...inputProps}
+          ref={mergeRefs(ref, inputProps?.ref)}
+          value={selectedItem ?? ''}
+          onChange={onChange}
+        />
+      )}
+    </>
   );
 };
 
@@ -318,10 +332,10 @@ const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
       <div
         {...props}
         className={cx(
-          cl['bk-list-box__item'],
-          cl['bk-list-box__item--static'],
-          cl['bk-list-box__item--disabled'],
-          cl['bk-list-box__empty-placeholder'],
+          cl['bk-list-box-multi__item'],
+          cl['bk-list-box-multi__item--static'],
+          cl['bk-list-box-multi__item--disabled'],
+          cl['bk-list-box-multi__empty-placeholder'],
           props.className,
         )}
       />
@@ -335,7 +349,7 @@ const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
  * also `ListBoxLazy`). In this case, the `itemKeys` prop must be provided so that the list box can determine the
  * identity and ordering of the full list.
  */
-export const ListBox = Object.assign(
+export const ListBoxMulti = Object.assign(
   (props: ListBoxProps) => {
     const {
       ref,
@@ -357,7 +371,7 @@ export const ListBox = Object.assign(
     } = props;
     
     const id = React.useId();
-    const listBoxRef = React.useRef<ListBoxRef>(null);
+    const listBoxRef = React.useRef<ListBoxMultiRef>(null);
     const inputRef = React.useRef<React.ComponentRef<typeof HiddenSelectedState>>(null);
     const scrollerProps = useScroller();
     
@@ -369,17 +383,17 @@ export const ListBox = Object.assign(
       - Separate logic out to a separate component (as in `HiddenSelectedState`).
       - Use `listBox.store.subscribe` for side effects.
     */
-    const selectedItemKeyDefault = selected ?? defaultSelected ?? null;
+    const selectedItemKeysDefault = selected ?? defaultSelected ?? new Set();
     const listBox = useListBox(listBoxRef, {
       id: props.id ?? id,
       disabled,
-      selectedItem: selectedItemKeyDefault,
-      focusedItem: selectedItemKeyDefault,
+      selectedItems: selectedItemKeysDefault,
+      focusedItem: null,
       virtualItemKeys,
     });
     
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
-    React.useImperativeHandle<null | ListBoxRef, null | ListBoxRef>(ref, () => {
+    React.useImperativeHandle<null | ListBoxMultiRef, null | ListBoxMultiRef>(ref, () => {
       const listBoxElement = listBoxRef.current;
       if (listBoxElement === null) { return null; }
       return Object.assign(listBoxElement, {
@@ -407,17 +421,22 @@ export const ListBox = Object.assign(
     
     React.useEffect(() => {
       return listBox.store.subscribe((state, prevState) => {
-        if (state.selectedItem !== prevState.selectedItem && state.selectedItem !== null) {
-          const itemKey = state.selectedItem;
-          const label: string = formatItemLabel?.(itemKey)
-            ?? state._internalItemsRegistry.get(itemKey)?.itemRef.current?.textContent
-            ?? itemKey;
-          const selectedItem: null | ItemDetails = state.selectedItem === null ? null : {
-            itemKey,
-            label,
-          };
+        if (state.selectedItems !== prevState.selectedItems) {
+          const itemKeys = state.selectedItems;
           
-          onSelect?.(itemKey, selectedItem);
+          const itemDetails: Map<ItemKey, ItemDetails> = new Map([...itemKeys.values()].map(itemKey => {
+            const label: string = formatItemLabel?.(itemKey)
+              ?? state._internalItemsRegistry.get(itemKey)?.itemRef.current?.textContent
+              ?? itemKey;
+            
+            const details: ItemDetails = {
+              itemKey,
+              label,
+            };
+            return [label, details];
+          }));
+          
+          onSelect?.(itemDetails);
         }
       });
     }, [listBox.store, onSelect, formatItemLabel]);
@@ -463,8 +482,8 @@ export const ListBox = Object.assign(
           className={cx(
             scrollerProps.className,
             'bk',
-            { [cl['bk-list-box']]: !unstyled },
-            { [cl['bk-list-box--empty']]: isEmpty },
+            { [cl['bk-list-box-multi']]: !unstyled },
+            { [cl['bk-list-box-multi--empty']]: isEmpty },
             listBox.props.className,
             propsRest.className,
           )}
@@ -479,7 +498,7 @@ export const ListBox = Object.assign(
           
           {isLoading &&
             <span
-              className={cx(cl['bk-list-box__item'], cl['bk-list-box__item--static'], cl['bk-list-box__item--loading'])}
+              className={cx(cl['bk-list-box-multi__item'], cl['bk-list-box-multi__item--static'], cl['bk-list-box-multi__item--loading'])}
             >
               Loading... <Spinner inline size="small"/>
             </span>
