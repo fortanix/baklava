@@ -61,111 +61,116 @@ export type ButtonProps = React.PropsWithChildren<Omit<ComponentProps<'button'>,
 /**
  * Button component.
  */
-export const Button = (props: ButtonProps) => {
-  const {
-    children,
-    unstyled = false,
-    trimmed = false,
-    label,
-    icon,
-    kind = 'tertiary',
-    variant = 'normal',
-    disabled = false,
-    nonactive = false,
-    onPress,
-    asyncTimeout = 30_000,
-    ...propsRest
-  } = props;
-  
-  const [isPressPending, startPressTransition] = React.useTransition();
-  
-  const isPending = isPressPending;
-  const isInteractive = !disabled && !nonactive && !isPending;
-  const isNonactive = nonactive || isPending;
-  
-  const handlePress = React.useCallback(() => {
-    if (typeof onPress !== 'function') { return; }
+export const Button = Object.assign(
+  (props: ButtonProps) => {
+    const {
+      children,
+      unstyled = false,
+      trimmed = false,
+      label,
+      icon,
+      kind = 'tertiary',
+      variant = 'normal',
+      disabled = false,
+      nonactive = false,
+      onPress,
+      asyncTimeout = 30_000,
+      ...propsRest
+    } = props;
     
-    const onPressResult = onPress();
+    const [isPressPending, startPressTransition] = React.useTransition();
     
-    // Note: do not start a transition unless `onPress` is actually async, because otherwise sync press actions
-    // will cause a brief rerender with disabled state and loading indicator, which messes with things like
-    // button focus.
-    if (onPressResult instanceof Promise) {
-      startPressTransition(async () => {
-        await Promise.race([onPressResult, timeout(asyncTimeout)]);
-      });
+    const isPending = isPressPending;
+    const isInteractive = !disabled && !nonactive && !isPending;
+    const isNonactive = nonactive || isPending;
+    
+    const handlePress = React.useCallback(() => {
+      if (typeof onPress !== 'function') { return; }
+      
+      const onPressResult = onPress();
+      
+      // Note: do not start a transition unless `onPress` is actually async, because otherwise sync press actions
+      // will cause a brief rerender with disabled state and loading indicator, which messes with things like
+      // button focus.
+      if (onPressResult instanceof Promise) {
+        startPressTransition(async () => {
+          await Promise.race([onPressResult, timeout(asyncTimeout)]);
+        });
+      }
+    }, [onPress, asyncTimeout]);
+    
+    const handleClick = React.useCallback(async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      if (!isInteractive) { return; }
+      
+      // `onClick` should not be used in most cases, only if the consumer needs low level control over click events.
+      // Instead, use `onPress` or a `<form>` component with `action`.
+      props.onClick?.(event); // Call this first, to allow cancellation
+      
+      if (typeof onPress === 'function') {
+        event.preventDefault();
+        handlePress();
+      }
+      
+      // Fallback: trigger default browser action (e.g. form submit)
+    }, [props.onClick, isInteractive, onPress, handlePress]);
+    
+    const renderContent = (): React.ReactNode => {
+      // If `children` is specified, that overrides the button content
+      if (children) {
+        return children;
+      }
+      
+      return (
+        <>
+          {isPending && <Spinner className="icon" inline/>}
+          {icon && <Icon className="icon" icon={icon}/>}
+          {label}
+        </>
+      );
+    };
+    
+    // We do not support `type="submit"`, because we want to prevent accidental form submission without a proper form
+    // context. Use `SubmitButton` instead.
+    // biome-ignore lint/suspicious/noExplicitAny: `type` is not in the public type but can be there for internal use
+    const type: unknown = (propsRest as any).type;
+    let buttonType: 'button' | 'submit' = 'button';
+    
+    if (type === 'submit') {
+      throw new Error(`Button component cannot have type 'submit', use SubmitButton instead.`);
     }
-  }, [onPress, asyncTimeout]);
-  
-  const handleClick = React.useCallback(async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    if (!isInteractive) { return; }
-    
-    // `onClick` should not be used in most cases, only if the consumer needs low level control over click events.
-    // Instead, use `onPress` or a `<form>` component with `action`.
-    props.onClick?.(event); // Call this first, to allow cancellation
-    
-    if (typeof onPress === 'function') {
-      event.preventDefault();
-      handlePress();
+    if (type === internalSubmitSymbol) { // Internal use only
+      buttonType = 'submit';
     }
     
-    // Fallback: trigger default browser action (e.g. form submit)
-  }, [props.onClick, isInteractive, onPress, handlePress]);
-  
-  const renderContent = (): React.ReactNode => {
-    // If `children` is specified, that overrides the button content
-    if (children) {
-      return children;
-    }
+    // If both children and label are specified, use the `label` as the accessible name by default
+    const accessibleName = typeof children !== 'undefined' && label ? label : undefined;
     
     return (
-      <>
-        {isPending && <Spinner className="icon" inline/>}
-        {icon && <Icon className="icon" icon={icon}/>}
-        {label}
-      </>
+      <button
+        aria-label={accessibleName}
+        aria-disabled={isInteractive ? undefined : true}
+        disabled={disabled}
+        {...propsRest}
+        type={buttonType} // Not overridable
+        className={cx({
+          bk: true,
+          [cl['bk-button']]: !unstyled,
+          [cl['bk-button--trimmed']]: trimmed,
+          [cl['bk-button--primary']]: kind === 'primary',
+          [cl['bk-button--secondary']]: kind === 'secondary',
+          [cl['bk-button--tertiary']]: kind === 'tertiary',
+          [cl['bk-button--card']]: variant === 'card',
+          [cl['bk-button--disabled']]: !isInteractive,
+          [cl['bk-button--nonactive']]: isNonactive,
+          'nonactive': isNonactive, // Global class name so that consumers can style nonactive states
+        }, props.className)}
+        onClick={handleClick}
+      >
+        {renderContent()}
+      </button>
     );
-  };
-  
-  // We do not support `type="submit"`, because we want to prevent accidental form submission without a proper form
-  // context. Use `SubmitButton` instead.
-  // biome-ignore lint/suspicious/noExplicitAny: `type` is not in the public type but can be there for internal use
-  const type: unknown = (propsRest as any).type;
-  let buttonType: 'button' | 'submit' = 'button';
-  
-  if (type === 'submit') {
-    throw new Error(`Button component cannot have type 'submit', use SubmitButton instead.`);
-  }
-  if (type === internalSubmitSymbol) { // Internal use only
-    buttonType = 'submit';
-  }
-  
-  // If both children and label are specified, use the `label` as the accessible name by default
-  const accessibleName = typeof children !== 'undefined' && label ? label : undefined;
-  
-  return (
-    <button
-      aria-label={accessibleName}
-      aria-disabled={isInteractive ? undefined : true}
-      disabled={disabled}
-      {...propsRest}
-      type={buttonType} // Not overridable
-      className={cx({
-        bk: true,
-        [cl['bk-button']]: !unstyled,
-        [cl['bk-button--trimmed']]: trimmed,
-        [cl['bk-button--primary']]: kind === 'primary',
-        [cl['bk-button--secondary']]: kind === 'secondary',
-        [cl['bk-button--tertiary']]: kind === 'tertiary',
-        [cl['bk-button--card']]: variant === 'card',
-        [cl['bk-button--disabled']]: !isInteractive,
-        [cl['bk-button--nonactive']]: isNonactive,
-        'nonactive': isNonactive, // Global class name so that consumers can style nonactive states
-      }, props.className)}
-      onClick={handleClick}
-    >
-      {renderContent()}
-    </button>
-  );
-};
+  },
+  {
+    internalSubmitSymbol,
+  },
+);
