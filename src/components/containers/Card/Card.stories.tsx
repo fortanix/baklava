@@ -85,6 +85,20 @@ export const CardWithHeadingLinkOverflow: Story = {
   },
 };
 
+export const CardWithHorizontalSeparator: Story = {
+  decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
+  args: {
+    children: (
+      <>
+        <Card.Heading>Heading</Card.Heading>
+        <LoremIpsum/>
+        <hr/>
+        <LoremIpsum/>
+      </>
+    ),
+  },
+};
+
 /** Multiple cards in a grid. */
 export const CardGrid: Story = {
   decorators: [

@@ -41,6 +41,14 @@
   &.#{$name}--flat > .#{$name}__heading {
     margin-block-end: bk.$spacing-1;
   }
+  
+  // Separators
+  hr {
+    margin-block: bk.$spacing-3;
+    border: none;
+    // FIXME: should have its own dedicated `card` token
+    border-block-start: bk.rem-from-px(1) solid bk.$theme-side-nav-menu-divider-default;
+  }
 }
 
 @layer baklava.components {
