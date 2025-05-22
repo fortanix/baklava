@@ -13,6 +13,10 @@ import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
 import cl from './Button.module.scss';
 
 
+/**
+ * The `Button` component does not allow a button with `type="submit"`. Instead, you should use the `SubmitButton`
+ * component which ensures there is a parent `<form>` element.
+ */
 export const internalSubmitSymbol = Symbol('baklava.Button.internalSubmit');
 
 export { cl as ButtonClassNames };
