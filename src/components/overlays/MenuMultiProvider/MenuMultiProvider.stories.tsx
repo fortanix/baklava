@@ -9,7 +9,7 @@ import * as React from 'react';
 import { Button } from '../../actions/Button/Button.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 
-import { type ItemDetails, MenuMultiProvider } from './MenuMultiProvider.tsx';
+import { type ItemKey, type ItemDetails, MenuMultiProvider } from './MenuMultiProvider.tsx';
 
 
 type MenuMultiProviderArgs = React.ComponentProps<typeof MenuMultiProvider>;
@@ -110,14 +110,16 @@ export const MenuMultiProviderWithHoverAction: Story = {
 };
 
 const MenuMultiProviderControlledC = (props: React.ComponentProps<typeof MenuMultiProvider>) => {
-  const [selectedOption, setSelectedOption] = React.useState<null | ItemDetails>(null);
+  const [selectedOptions, setSelectedOptions] = React.useState<Map<ItemKey, ItemDetails>>(new Map());
   return (
     <>
-      <p>Selected: {selectedOption?.label ?? 'none'}</p>
+      <p>Selected: {[...selectedOptions.values()].map(({ label }) => label || '(unknown)').join(', ')}</p>
       <MenuMultiProvider
         {...props}
-        selected={selectedOption?.itemKey ?? null}
-        onSelect={(_key, details) => { setSelectedOption(details); }}
+        selected={new Set(selectedOptions.keys())}
+        onSelect={(args) => {
+          console.log(args);
+        }}
       />
     </>
   );

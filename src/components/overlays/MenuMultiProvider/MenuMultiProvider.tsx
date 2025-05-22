@@ -255,27 +255,15 @@ export const MenuMultiProvider = Object.assign(
       listBoxId,
       refs.setReference,
       selectedOptions,
+      selectedOptionsWithDetails,
     ]);
     
-    const handleSelect = React.useCallback((_key: null | ListBoxMulti.ItemKey, itemDetails: null | ListBoxMulti.ItemDetails) => {
-      selectedLabelsRef.current = itemDetails?.label ?? null;
-      setSelectedOption(itemDetails?.itemKey ?? null);
-      
-      // Note: add a slight delay before closing, to make it less jarring (and allow "select" animations to complete)
-      window.setTimeout(() => {
-        const previousActiveElement = previousActiveElementRef.current;
-        
-        if (previousActiveElement) {
-          previousActiveElement.focus({
-            // @ts-ignore Supported in some browsers (e.g. Firefox).
-            focusVisible: false,
-          });
-        }
-        
-        // Note: do *not* close the menu automatically after select in multi-select mode
-        //setIsOpen(false);
-      }, 150);
-    }, [setIsOpen, setSelectedOption, action]);
+    const handleSelect = React.useCallback((selectedItemDetails: Map<ItemKey, ItemDetails>) => {
+      selectedLabelsRef.current = new Map([...selectedItemDetails.values()].map(details => {
+        return [details.itemKey, details.label];
+      }));
+      setSelectedOptions(new Set(selectedItemDetails.keys()));
+    }, [setSelectedOptions]);
     
     // Focus management (focus on open + restore focus on close)
     const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
@@ -312,17 +300,18 @@ export const MenuMultiProvider = Object.assign(
     }, [action]);
     
     const handleMenuKeyDown = React.useCallback((event: React.KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        const selectedOptionDetails = selectedOption === null
-          ? null
-          : { itemKey: selectedOption, label: (selectedLabelsRef.current ?? '') };
-        handleSelect(selectedOption, selectedOption === null ? null : selectedOptionDetails);
-      }
-      
-      if (event.key === 'Escape') {
-        setIsOpen(false);
-      }
-    }, [selectedOption, handleSelect, setIsOpen]);
+      // if (event.key === 'Enter') {
+      //   console.log('enter');
+      //   const selectedOptionDetails = selectedOption === null
+      //     ? null
+      //     : { itemKey: selectedOption, label: (selectedLabelsRef.current ?? '') };
+      //   handleSelect(selectedOption, selectedOption === null ? null : selectedOptionDetails);
+      // }
+      // 
+      // if (event.key === 'Escape') {
+      //   setIsOpen(false);
+      // }
+    }, [selectedOptions, handleSelect, setIsOpen]);
     
     const renderMenu = () => {
       const floatingProps = getFloatingProps({
@@ -344,7 +333,7 @@ export const MenuMultiProvider = Object.assign(
             //propsRest.ref,
           )}
           id={listBoxId}
-          selected={selectedOption}
+          selected={selectedOptions}
           onSelect={handleSelect}
           onToggle={handleToggle}
           data-placement={placementEffective}
