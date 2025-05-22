@@ -50,6 +50,7 @@
       gap: bk.$spacing-4;
       
       .bk-dialog__header__title {
+        flex-grow: 1;
         @include bk.text-one-line;
       }
       
@@ -76,7 +77,7 @@
       @include bk.flex-row($gap: bk.$spacing-3);
     }
     
-    .bk-dialog__content__body { --keep: ; }
+    .bk-dialog__content__body { flex-grow: 1; }
     
     .bk-dialog__actions {
       position: sticky;

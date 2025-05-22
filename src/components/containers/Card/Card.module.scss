@@ -11,24 +11,43 @@
   
   overflow: hidden;
   
-  min-block-size: bk.$spacing-16;
-  padding: bk.$spacing-4;
-  padding-block-end: bk.$spacing-8;
-  
-  background: var(--bk-card-background-color);
-  border: bk.$size-1 solid var(--bk-card-border-color);
-  border-radius: bk.$radius-m;
-  
-  .#{$name}__heading-link {
-    display: block;
-    cursor: pointer;
-    @include heading.h5;
+  &:not(.#{$name}--flat) {
+    min-block-size: bk.$spacing-16;
+    padding: bk.$spacing-4;
+    padding-block-end: bk.$spacing-8;
+    
+    background: var(--bk-card-background-color);
+    border: bk.$size-1 solid var(--bk-card-border-color);
+    border-radius: bk.$radius-m;
   }
   
+  @include bk.flex-column;
+  
   .#{$name}__heading {
+    &.#{$name}__heading-link {
+      align-self: start;
+      max-inline-size: 100%;
+      cursor: pointer;
+      @include heading.h5;
+    }
+    
+    &, &.#{$name}__heading-link { // Note: need the extra specificity to override the above
+      @include bk.text-one-line;
+    }
+    
     margin-block-end: bk.$spacing-5;
-    text-wrap: nowrap;
-    text-overflow: ellipsis;
+  }
+  
+  &.#{$name}--flat > .#{$name}__heading {
+    margin-block-end: bk.$spacing-1;
+  }
+  
+  // Separators
+  hr {
+    margin-block: bk.$spacing-3;
+    border: none;
+    // FIXME: should have its own dedicated `card` token
+    border-block-start: bk.rem-from-px(1) solid bk.$theme-side-nav-menu-divider-default;
   }
 }
 

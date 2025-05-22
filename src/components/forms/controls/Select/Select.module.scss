@@ -15,6 +15,7 @@
       
       &:read-only {
         user-select: none;
+        caret-color: transparent; // Note: the caret is still shown in some browsers for readonly inputs (e.g. Firefox)
         
         // Note: `user-select` does not seem to work for `input`, instead we can make the highlight color transparent
         &::selection {
