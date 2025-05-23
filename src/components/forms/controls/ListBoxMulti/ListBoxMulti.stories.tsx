@@ -371,8 +371,7 @@ const ListBoxMultiControlledC = (props: ListBoxMultiControlledProps<FruitKey>) =
   );
 };
 export const ListBoxMultiControlled: Story = {
-  // @ts-ignore
-  render: (args: React.ComponentProps<typeof ListBoxMulti<FruitKey>>) => <ListBoxMultiControlledC {...args}/>,
+  render: ({ label, children }) => <ListBoxMultiControlledC label={label}>{children}</ListBoxMultiControlledC>,
 };
 
 export const ListBoxMultiInForm: Story = {

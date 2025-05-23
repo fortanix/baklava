@@ -25,9 +25,9 @@ export default {
   },
   args: {
     label: 'Test dropdown menu provider',
-    children: ({ props, selectedOption }) => (
+    children: ({ props, selectedOptions }) => (
       <Button kind="primary" {...props()}>
-        {typeof selectedOption !== 'undefined' ? `Selected: ${selectedOption?.label ?? 'none'}` : 'Open dropdown'}
+        {selectedOptions.size > 0 ? `Selected: ${selectedOptions.size}` : 'Open dropdown'}
       </Button>
     ),
     items: (
@@ -66,10 +66,10 @@ export const MenuMultiProviderWithInput: Story = {
 export const MenuMultiProviderWithPlacement: Story = {
   args: {
     placement: 'right',
-    children: ({ props, selectedOption }) => (
+    children: ({ props, selectedOptions }) => (
       <Button kind="primary" {...props()}>
-        {typeof selectedOption !== 'undefined'
-          ? `Selected: ${selectedOption?.label ?? 'none'}`
+        {selectedOptions.size > 0
+          ? `Selected: ${selectedOptions.size}`
           : 'Open dropdown placed to the right'
         }
       </Button>
@@ -83,7 +83,7 @@ export const MenuMultiProviderWithAction: Story = {
       <>
         <MenuMultiProvider.Option itemKey="option-1" label="Option 1"/>
         <MenuMultiProvider.Option itemKey="option-2" label="Option 2"/>
-        <MenuMultiProvider.Action itemKey="action-close" onActivate={close} label="Close">
+        <MenuMultiProvider.Action itemKey="action-close" onActivate={close} label="Close" icon="logout">
           Close
         </MenuMultiProvider.Action>
       </>

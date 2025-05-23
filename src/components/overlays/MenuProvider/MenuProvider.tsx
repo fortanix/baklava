@@ -48,13 +48,13 @@ export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label'>
   ref?: undefined | React.Ref<null | MenuProviderRef>,
   
   /** For controlled open state. */
-  open?: boolean,
-
+  open?: undefined | boolean,
+  
   /** When controlled, callback to set state. */
-  onOpenChange?: (isOpen: boolean) => void,
-
+  onOpenChange?: undefined | ((isOpen: boolean) => void),
+  
   /** (optional) Use an existing DOM node as the positioning anchor. */
-  anchorRef?: React.RefObject<HTMLElement | null>,
+  anchorRef?: undefined | React.RefObject<HTMLElement | null>,
   
   // END TEMP
   // ---
@@ -183,7 +183,9 @@ export const MenuProvider = Object.assign(
         event.preventDefault(); // Prevent scrolling
         setIsOpen(true);
         
-        if (action === 'focus') {
+        // Note: need to wait until the list has actually opened
+        // FIXME: need a more reliable way to do this (ref callback?)
+        window.setTimeout(() => {
           const listBoxElement = listBoxRef.current;
           if (!listBoxElement) { return; }
           
@@ -192,9 +194,9 @@ export const MenuProvider = Object.assign(
           } else if (event.key === 'ArrowUp') {
             listBoxElement._bkListBoxFocusLast();
           }
-        }
+        }, 100);
       }
-    }, [setIsOpen, action]);
+    }, [setIsOpen]);
     
     // Note: memoize this, so that the anchor does not get rerendered every time the floating element position changes
     const anchor = React.useMemo(() => {
@@ -309,17 +311,14 @@ export const MenuProvider = Object.assign(
     }, [action]);
     
     const handleMenuKeyDown = React.useCallback((event: React.KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        const selectedOptionDetails = selectedOption === null
-          ? null
-          : { itemKey: selectedOption, label: (selectedLabelRef.current ?? '') };
-        handleSelect(selectedOption, selectedOption === null ? null : selectedOptionDetails);
-      }
+      // On "enter", select the currently focused item and close the menu
+      // Note: already handled through the `ListBox` element
+      //if (event.key === 'Enter') { ... }
       
-      if (event.key === 'Escape') {
-        setIsOpen(false);
-      }
-    }, [selectedOption, handleSelect, setIsOpen]);
+      // On "escape", close the menu
+      // Note: already handled by floating-ui
+      //if (event.key === 'Escape') { setIsOpen(false); }
+    }, []);
     
     const renderMenu = () => {
       const floatingProps = getFloatingProps({
