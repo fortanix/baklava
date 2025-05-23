@@ -29,7 +29,7 @@ References:
 - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
 */
 
-export type SelectProps = Omit<SelectInputProps, 'selected' | 'onSelect'> & {
+export type SelectProps = Omit<SelectInputProps, 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -43,6 +43,9 @@ export type SelectProps = Omit<SelectInputProps, 'selected' | 'onSelect'> & {
   Input?: undefined | React.ComponentType<SelectInputProps> & {
     Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
   },
+  
+  /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
+  defaultSelected?: undefined | null | ItemKey,
   
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */
   selected?: undefined | null | ItemKey,
@@ -62,6 +65,7 @@ export const Select = Object.assign(
       automaticResize,
       Input = InputDefault,
       // Dropdown props
+      defaultSelected,
       selected,
       onSelect,
       dropdownProps = {},

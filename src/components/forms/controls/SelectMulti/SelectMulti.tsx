@@ -11,8 +11,8 @@ import { Input as InputDefault } from '../Input/Input.tsx';
 import {
   type ItemKey,
   type ItemDetails,
-  MenuProvider,
-} from '../../../overlays/MenuProvider/MenuProvider.tsx';
+  MenuMultiProvider,
+} from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
 
 import cl from './SelectMulti.module.scss';
 
@@ -29,7 +29,7 @@ References:
 - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
 */
 
-export type SelectMultiProps = Omit<SelectMultiInputProps, 'selected' | 'onSelect'> & {
+export type SelectMultiProps = Omit<SelectMultiInputProps, 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -37,21 +37,24 @@ export type SelectMultiProps = Omit<SelectMultiInputProps, 'selected' | 'onSelec
   label: string,
   
   /** The options list to be shown in the dropdown menu. */
-  options: React.ComponentProps<typeof MenuProvider>['items'],
+  options: React.ComponentProps<typeof MenuMultiProvider>['items'],
   
   /** A custom `Input` component. */
   Input?: undefined | React.ComponentType<SelectMultiInputProps> & {
     Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
   },
   
+  /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
+  defaultSelected?: undefined | Set<ItemKey>,
+  
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */
-  selected?: undefined | null | ItemKey,
+  selected?: undefined | Set<ItemKey>,
   
   /** Event handler to be called when the selected option state changes. */
-  onSelect?: undefined | ((selectedItemKey: null | ItemKey, selectedItemDetails: null | ItemDetails) => void),
+  onSelect?: undefined | ((selectedItems: Set<ItemKey>, itemDetails: Map<ItemKey, ItemDetails>) => void),
   
-  /** Additional props to be passed to the `MenuProvider`. */
-  dropdownProps?: undefined | Partial<React.ComponentProps<typeof MenuProvider>>,
+  /** Additional props to be passed to the `MenuMultiProvider`. */
+  dropdownProps?: undefined | Partial<React.ComponentProps<typeof MenuMultiProvider>>,
 };
 export const SelectMulti = Object.assign(
   (props: SelectMultiProps) => {
@@ -59,8 +62,10 @@ export const SelectMulti = Object.assign(
       unstyled = false,
       label,
       options,
+      automaticResize,
       Input = InputDefault,
       // Dropdown props
+      defaultSelected,
       selected,
       onSelect,
       dropdownProps = {},
@@ -73,7 +78,7 @@ export const SelectMulti = Object.assign(
     const InputAction = Input.Action ?? InputDefault.Action;
     
     return (
-      <MenuProvider
+      <MenuMultiProvider
         label={label}
         items={options}
         // biome-ignore lint/a11y/useSemanticElements: False positive: this `role` doesn't directly map to HTML `role`
@@ -85,7 +90,7 @@ export const SelectMulti = Object.assign(
         onSelect={onSelect}
         {...dropdownProps}
       >
-        {({ props, open, requestOpen, selectedOption }) => {
+        {({ props, open, requestOpen, selectedOptions }) => {
           // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
           const { ref: anchorRef, ...anchorProps } = props({
             placeholder: 'Select an option',
@@ -93,7 +98,7 @@ export const SelectMulti = Object.assign(
             readOnly: true, // Make the input non-editable, but still focusable
             ...propsRest,
             className: cx(cl['bk-select-multi'], { [cl['bk-select-multi--open']]: open }, propsRest.className),
-            value: selectedOption === null ? '' : selectedOption.label,
+            value: [...selectedOptions.values()].map(({ label }) => label).join(', '),
             onChange: () => {},
           });
           
@@ -106,7 +111,7 @@ export const SelectMulti = Object.assign(
             <>
               <Input
                 role="combobox"
-                automaticResize
+                automaticResize={automaticResize}
                 actions={
                   <InputAction
                     // Note: the toggle button should not be focusable, according to:
@@ -131,18 +136,27 @@ export const SelectMulti = Object.assign(
               />
               {/* Render a hidden input with the selected option key (rather than the human-readable label). */}
               {typeof name === 'string' &&
-                <input type="hidden" form={form} name={name} value={selectedOption?.itemKey ?? ''}/>
+                [...selectedOptions.entries()].map(([selectedOptionKey, selectedOption]) =>
+                  <input
+                    key={selectedOptionKey}
+                    type="hidden"
+                    name={`${name}[]`}
+                    form={form}
+                    value={selectedOptionKey}
+                    onChange={() => {}}
+                  />
+                )
               }
             </>
           );
         }}
-      </MenuProvider>
+      </MenuMultiProvider>
     );
   },
   {
-    Header: MenuProvider.Header,
-    Option: MenuProvider.Option,
-    Action: MenuProvider.Action,
-    FooterActions: MenuProvider.FooterActions,
+    Header: MenuMultiProvider.Header,
+    Option: MenuMultiProvider.Option,
+    Action: MenuMultiProvider.Action,
+    FooterActions: MenuMultiProvider.FooterActions,
   },
 );

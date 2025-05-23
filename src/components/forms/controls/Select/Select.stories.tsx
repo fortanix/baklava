@@ -9,29 +9,31 @@ import * as React from 'react';
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Input } from '../Input/Input.tsx';
 
-import { type ItemDetails, Select } from './Select.tsx';
+import { type ItemKey, Select } from './Select.tsx';
 
 
 type SelectArgs = React.ComponentProps<typeof Select>;
 type Story = StoryObj<SelectArgs>;
 
-// Sample items
-const fruits = [
-  'Apple',
-  'Apricot',
-  'Blueberry',
-  'Cherry',
-  'Durian',
-  'Jackfruit',
-  'Melon',
-  'Mango',
-  'Mangosteen',
-  'Orange',
-  'Peach',
-  'Pineapple',
-  'Razzberry',
-  'Strawberry',
-];
+// Sample options
+const fruits = {
+  apple: 'Apple',
+  apricot: 'Apricot',
+  blueberry: 'Blueberry',
+  cherry: 'Cherry',
+  durian: 'Durian',
+  jackfruit: 'Jackfruit',
+  melon: 'Melon',
+  mango: 'Mango',
+  mangosteen: 'Mangosteen',
+  orange: 'Orange',
+  peach: 'Peach',
+  pineapple: 'Pineapple',
+  razzberry: 'Razzberry',
+  strawberry: 'Strawberry',
+};
+type FruitKey = keyof typeof fruits;
+const formatFruitLabel = (itemKey: FruitKey): string => fruits[itemKey];
 
 export default {
   component: Select,
@@ -49,8 +51,8 @@ export default {
         <Select.Option key="long-option" itemKey="long-option"
           label="A very long option label to show automatic resizing"
         />
-        {fruits.map(fruit =>
-          <Select.Option key={`fruit-${fruit}`} itemKey={`fruit-${fruit}`} label={fruit}/>
+        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
+          <Select.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
       </>
     ),
@@ -83,19 +85,20 @@ export const SelectWithAutoResize: Story = {
 };
 
 const SelectControlledC = (props: React.ComponentProps<typeof Select>) => {
-  const [selectedOption, setSelectedOption] = React.useState<null | ItemDetails>(null);
+  const [selectedOption, setSelectedOption] = React.useState<null | FruitKey>('blueberry');
   
   return (
     <>
-      <div>Selected: {selectedOption?.label ?? '(none)'}</div>
+      <div>Selected: {selectedOption === null ? '(none)' : formatFruitLabel(selectedOption)}</div>
       <Select
         {...props}
         placeholder="Choose a fruit"
-        options={fruits.map(fruit =>
-          <Select.Option key={`option-${fruit}`} itemKey={`option-${fruit}`} label={fruit}/>
+        options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
+          <Select.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
-        selected={selectedOption?.itemKey ?? null}
-        onSelect={(_key, details) => { setSelectedOption(details); }}
+        selected={selectedOption}
+        // @ts-ignore FIXME: use generic to pass down `FruitKey` subtype?
+        onSelect={setSelectedOption}
       />
     </>
   );

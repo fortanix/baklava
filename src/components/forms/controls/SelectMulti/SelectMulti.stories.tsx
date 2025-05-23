@@ -9,29 +9,31 @@ import * as React from 'react';
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Input } from '../Input/Input.tsx';
 
-import { type ItemDetails, SelectMulti } from './SelectMulti.tsx';
+import { type ItemKey, SelectMulti } from './SelectMulti.tsx';
 
 
 type SelectMultiArgs = React.ComponentProps<typeof SelectMulti>;
 type Story = StoryObj<SelectMultiArgs>;
 
-// Sample items
-const fruits = [
-  'Apple',
-  'Apricot',
-  'Blueberry',
-  'Cherry',
-  'Durian',
-  'Jackfruit',
-  'Melon',
-  'Mango',
-  'Mangosteen',
-  'Orange',
-  'Peach',
-  'Pineapple',
-  'Razzberry',
-  'Strawberry',
-];
+// Sample options
+const fruits = {
+  apple: 'Apple',
+  apricot: 'Apricot',
+  blueberry: 'Blueberry',
+  cherry: 'Cherry',
+  durian: 'Durian',
+  jackfruit: 'Jackfruit',
+  melon: 'Melon',
+  mango: 'Mango',
+  mangosteen: 'Mangosteen',
+  orange: 'Orange',
+  peach: 'Peach',
+  pineapple: 'Pineapple',
+  razzberry: 'Razzberry',
+  strawberry: 'Strawberry',
+};
+type FruitKey = keyof typeof fruits;
+const formatFruitLabel = (itemKey: FruitKey): string => fruits[itemKey];
 
 export default {
   component: SelectMulti,
@@ -45,8 +47,8 @@ export default {
     label: 'Test select',
     options: (
       <>
-        {Array.from({ length: 8 }, (_, i) => i + 1).map(index =>
-          <SelectMulti.Option key={`option-${index}`} itemKey={`option-${index}`} label={`Option ${index}`}/>
+        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
+          <SelectMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
       </>
     ),
@@ -73,19 +75,19 @@ export const SelectMultiInScrollContainer: Story = {
 };
 
 const SelectMultiControlledC = (props: React.ComponentProps<typeof SelectMulti>) => {
-  const [selectedOption, setSelectMultiedOption] = React.useState<null | ItemDetails>(null);
+  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(new Set(['blueberry', 'melon']));
   
   return (
     <>
-      <div>SelectMultied: {selectedOption?.label ?? '(none)'}</div>
+      <div>Selected: {[...selectedOptions].map(key => formatFruitLabel(key as FruitKey)).join(', ')}</div>
       <SelectMulti
         {...props}
         placeholder="Choose a fruit"
-        options={fruits.map(fruit =>
-          <SelectMulti.Option key={`option-${fruit}`} itemKey={`option-${fruit}`} label={fruit}/>
+        options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
+          <SelectMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
-        selected={selectedOption?.itemKey ?? null}
-        onSelect={(_key, details) => { setSelectMultiedOption(details); }}
+        selected={selectedOptions}
+        onSelect={setSelectedOptions}
       />
     </>
   );
