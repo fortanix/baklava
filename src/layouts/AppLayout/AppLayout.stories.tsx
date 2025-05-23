@@ -5,7 +5,7 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { DummyLink } from '../../util/storybook/StorybookLink.tsx';
+import { DummyBkLinkUnstyled } from '../../util/storybook/StorybookLink.tsx';
 
 import { notify } from '../../components/overlays/ToastProvider/ToastProvider.tsx';
 import { OverflowTester } from '../../util/storybook/OverflowTester.tsx';
@@ -46,9 +46,9 @@ export const Standard: Story = {
     children: (
       <>
         <AppLayout.Header>
-          <DummyLink slot="logo">
+          <DummyBkLinkUnstyled slot="logo">
             <FortanixLogo subtitle="Data Security Manager" subtitleTrademark={true}/>
-          </DummyLink>
+          </DummyBkLinkUnstyled>
           <Header slot="actions">
             <UserMenu userName="Anand Kashyap">
               <UserMenu.Action itemKey="profile" label="Profile"
@@ -92,15 +92,15 @@ export const Standard: Story = {
         <AppLayout.Sidebar>
           <Sidebar className="bk-app-layout__sidebar">
             <Nav aria-label="Overview and assessment" /* If there are multiple `Nav`s, they must get unique labels */>
-              <Nav.NavItem Link={DummyLink} active icon="dashboard" label="Overview" href="/dashboard"/>
-              <Nav.NavItem Link={DummyLink} icon="badge-assessment" label="Assessment" href="/assessment"/>
-              <Nav.NavItem Link={DummyLink} icon="services" label="Services" href="/services" disabled/>
+              <Nav.NavItem Link={DummyBkLinkUnstyled} active icon="dashboard" label="Overview" href="/dashboard"/>
+              <Nav.NavItem Link={DummyBkLinkUnstyled} icon="badge-assessment" label="Assessment" href="/assessment"/>
+              <Nav.NavItem Link={DummyBkLinkUnstyled} icon="services" label="Services" href="/services" disabled/>
             </Nav>
             <hr/>
             <Nav aria-label="Connections and policies">
-              <Nav.NavItem Link={DummyLink} icon="cloud-accounts" label="Connections" href="/connections"/>
-              <Nav.NavItem Link={DummyLink} icon="policy" label="Policy Center" href="/policy-center"/>
-              <Nav.NavItem Link={DummyLink} icon="user-authentication" label="Authentication" href="/authentication"/>
+              <Nav.NavItem Link={DummyBkLinkUnstyled} icon="cloud-accounts" label="Connections" href="/connections"/>
+              <Nav.NavItem Link={DummyBkLinkUnstyled} icon="policy" label="Policy Center" href="/policy-center"/>
+              <Nav.NavItem Link={DummyBkLinkUnstyled} icon="user-authentication" label="Authentication" href="/authentication"/>
             </Nav>
             <OverflowTester lines={45}/>
           </Sidebar>
@@ -142,7 +142,7 @@ export const Standard: Story = {
           </Panel>
           
           {/* Clicking the link should scroll to the anchor, with enough top padding (`scroll-padding-top`) */}
-          <DummyLink id="anchor">Anchor</DummyLink>
+          <DummyBkLinkUnstyled id="anchor">Anchor</DummyBkLinkUnstyled>
           <OverflowTester openDefault/>
           <a href="#anchor">Scroll to anchor</a>
         </AppLayout.Content>
@@ -159,9 +159,9 @@ export const NoSidebar: Story = {
     children: (
       <>
         <AppLayout.Header>
-          <DummyLink slot="logo">
+          <DummyBkLinkUnstyled slot="logo">
             <FortanixLogo subtitle="Data Security Manager" subtitleTrademark={true}/>
-          </DummyLink>
+          </DummyBkLinkUnstyled>
           <Header slot="actions">
             <UserMenu userName="Anand Kashyap">
               <UserMenu.Action itemKey="profile" label="Profile"
@@ -227,7 +227,7 @@ export const NoSidebar: Story = {
           </Panel>
           
           {/* Clicking the link should scroll to the anchor, with enough top padding (`scroll-padding-top`) */}
-          <DummyLink id="anchor">Anchor</DummyLink>
+          <DummyBkLinkUnstyled id="anchor">Anchor</DummyBkLinkUnstyled>
           <OverflowTester openDefault/>
           <a href="#anchor">Scroll to anchor</a>
         </AppLayout.Content>

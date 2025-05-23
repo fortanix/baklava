@@ -27,3 +27,7 @@ export const DummyBkLink = (props: DummyBkLinkProps) =>
 type DummyBkLinkWithNotifyProps = React.ComponentProps<typeof Link>;
 export const DummyBkLinkWithNotify = (props: DummyBkLinkWithNotifyProps) =>
   <Link href="/" onClick={handleClickWithNotify} {...props}/>;
+
+type DummyBkLinkUnstyledProps = React.ComponentProps<typeof Link>;
+export const DummyBkLinkUnstyled = (props: DummyBkLinkUnstyledProps) =>
+  <Link unstyled href="/" onClick={handleClickWithNotify} {...props}/>;

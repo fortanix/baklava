@@ -7,8 +7,12 @@
 
 @layer baklava.components {
   .bk-link {
-    @include bk.component-base(bk-link);
+    --cursor: pointer; // Useful for descendents in case they want to "unset" their cursor
     
-    @include typography.link;
+    &:not(.bk-link--unstyled) {
+      @include bk.component-base(bk-link);
+      
+      @include typography.link;
+    }
   }
 }
