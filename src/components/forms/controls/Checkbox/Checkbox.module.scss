@@ -47,11 +47,11 @@
       background-position: center;
       background-repeat: no-repeat;
     }
-    &:not(:disabled):active {
+    &:not(:is(:disabled, :global(.pseudo-disabled))):active {
       scale: 0.95; // Give the checkbox a subtle bounce effect when pressing down
     }
     
-    &:disabled {
+    &:is(:disabled, :global(.pseudo-disabled)) {
       cursor: not-allowed;
       background-color: transparent;
       border-color: bk.$theme-checkbox-border-disabled;

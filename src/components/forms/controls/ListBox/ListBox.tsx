@@ -255,7 +255,7 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
   /** A React ref to pass to the list box element. */
   ref?: undefined | React.Ref<null | ListBoxRef>,
   
-  /** An accessible name for this listbox menu. Required. */
+  /** An accessible name for this list box. Required. */
   label: string,
   
   /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
@@ -273,7 +273,7 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
   /** The machine readable name of the list box control, used as part of `<form>` submission. */
   name?: undefined | string,
   
-  /** A placheholder text message to display when there are no items in the list. Set to `false` to prevent showing. */
+  /** A placeholder message to display when there are no items in the list. Set to `false` to prevent showing. */
   placeholderEmpty?: undefined | false | React.ReactNode,
   
   /** The ID of the `<form>` element to associate this list box with. Optional. */
@@ -314,18 +314,16 @@ const HiddenSelectedState = ({ ref, name, form, inputProps }: HiddenSelectedStat
 
 const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
   return (
-    <>
-      <div
-        {...props}
-        className={cx(
-          cl['bk-list-box__item'],
-          cl['bk-list-box__item--static'],
-          cl['bk-list-box__item--disabled'],
-          cl['bk-list-box__empty-placeholder'],
-          props.className,
-        )}
-      />
-    </>
+    <div
+      {...props}
+      className={cx(
+        cl['bk-list-box__item'],
+        cl['bk-list-box__item--static'],
+        cl['bk-list-box__item--disabled'],
+        cl['bk-list-box__empty-placeholder'],
+        props.className,
+      )}
+    />
   );
 };
 

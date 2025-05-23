@@ -42,6 +42,9 @@ export { cl as ListBoxClassNames };
 export interface ListBoxMultiRef extends HTMLDivElement {
   _bkListBoxFocusFirst: () => void,
   _bkListBoxFocusLast: () => void,
+  // TODO:
+  //_bkListBoxSelectNone: () => void,
+  //_bkListBoxSelectAll: () => void,
 };
 
 type ListBoxIcon = React.ComponentType<Pick<React.ComponentProps<typeof BkIcon>, 'icon' | 'className' | 'decoration'>>;
@@ -111,7 +114,13 @@ export const Option = (props: OptionProps) => {
       onPress={handlePress}
     >
       {/* Note: should not be an actual `<input type="checkbox">` element, buttons can't have interactive children */}
-      <span className={cx(CheckboxClassNames['bk-checkbox'], { 'pseudo-checked': isSelected })}/>
+      <span
+        className={cx(
+          CheckboxClassNames['bk-checkbox'],
+          { 'pseudo-disabled': isNonactive },
+          { 'pseudo-checked': isSelected },
+        )}
+      />
       
       {icon &&
         <Icon
@@ -254,27 +263,24 @@ export const FooterActions = (props: React.ComponentProps<'div'>) => {
 //
 // List box
 //
-
-export type ListBoxProps = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
+export type ListBoxProps<K extends ItemKey = ItemKey> = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
   /** A React ref to pass to the list box element. */
   ref?: undefined | React.Ref<null | ListBoxMultiRef>,
   
-  /** An accessible name for this listbox menu. Required. */
+  /** An accessible name for this list box. Required. */
   label: string,
   
   /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
-  defaultSelected?: undefined | Set<ItemKey>,
+  defaultSelected?: undefined | Set<K>,
   
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */
-  selected?: undefined | Set<ItemKey>,
+  selected?: undefined | Set<K>,
   
   /** Event handler to be called when the selected option state changes. */
-  onSelect?: undefined | ((
-    selectedItemDetails: Map<ItemKey, ItemDetails>,
-  ) => void),
+  onSelect?: undefined | ((selectedItems: Set<K>, itemDetails: Map<K, ItemDetails>) => void),
   
   /** Whether the list box is disabled or not. Default: false. */
   disabled?: undefined | boolean,
@@ -282,7 +288,7 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
   /** The machine readable name of the list box control, used as part of `<form>` submission. */
   name?: undefined | string,
   
-  /** A placheholder text message to display when there are no items in the list. Set to `false` to prevent showing. */
+  /** A placeholder message to display when there are no items in the list. Set to `false` to prevent showing. */
   placeholderEmpty?: undefined | false | React.ReactNode,
   
   /** The ID of the `<form>` element to associate this list box with. Optional. */
@@ -292,7 +298,7 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
   inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
   
   /** Render the given item key as a string label. If not given, will use the item element's text value. */
-  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
+  formatItemLabel?: undefined | ((itemKey: K) => undefined | string),
   
   /** Whether the list is currently in loading state. Default: false. */
   isLoading?: undefined | boolean,
@@ -328,18 +334,16 @@ const HiddenSelectedState = ({ ref, name, form, inputProps }: HiddenSelectedStat
 
 const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
   return (
-    <>
-      <div
-        {...props}
-        className={cx(
-          cl['bk-list-box-multi__item'],
-          cl['bk-list-box-multi__item--static'],
-          cl['bk-list-box-multi__item--disabled'],
-          cl['bk-list-box-multi__empty-placeholder'],
-          props.className,
-        )}
-      />
-    </>
+    <div
+      {...props}
+      className={cx(
+        cl['bk-list-box-multi__item'],
+        cl['bk-list-box-multi__item--static'],
+        cl['bk-list-box-multi__item--disabled'],
+        cl['bk-list-box-multi__empty-placeholder'],
+        props.className,
+      )}
+    />
   );
 };
 
@@ -350,14 +354,14 @@ const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
  * identity and ordering of the full list.
  */
 export const ListBoxMulti = Object.assign(
-  (props: ListBoxProps) => {
+  <K extends ItemKey = ItemKey>(props: ListBoxProps<K>) => {
     const {
       ref,
       children,
       unstyled = false,
       label,
       defaultSelected,
-      selected = null,
+      selected,
       onSelect,
       disabled = false,
       name,
@@ -422,21 +426,16 @@ export const ListBoxMulti = Object.assign(
     React.useEffect(() => {
       return listBox.store.subscribe((state, prevState) => {
         if (state.selectedItems !== prevState.selectedItems) {
-          const itemKeys = state.selectedItems;
+          const itemKeys = state.selectedItems as Set<K>;
           
-          const itemDetails: Map<ItemKey, ItemDetails> = new Map([...itemKeys.values()].map(itemKey => {
+          const itemDetails = new Map<K, ItemDetails>([...itemKeys.values()].map(itemKey => {
             const label: string = formatItemLabel?.(itemKey)
               ?? state._internalItemsRegistry.get(itemKey)?.itemRef.current?.textContent
               ?? itemKey;
-            
-            const details: ItemDetails = {
-              itemKey,
-              label,
-            };
-            return [label, details];
+            return [itemKey, { label }];
           }));
           
-          onSelect?.(itemDetails);
+          onSelect?.(itemKeys, itemDetails);
         }
       });
     }, [listBox.store, onSelect, formatItemLabel]);

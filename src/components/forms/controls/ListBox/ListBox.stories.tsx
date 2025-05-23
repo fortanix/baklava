@@ -72,6 +72,13 @@ export const ListBoxEmpty: Story = {
   },
 };
 
+export const ListBoxEmptyWithCustomPlaceholder: Story = {
+  args: {
+    placeholderEmpty: <><Icon icon="warning-filled"/> This is a custom placeholder</>,
+    children: null,
+  },
+};
+
 export const ListBoxWithOverflow: Story = {
   args: {
     children: (
@@ -82,13 +89,6 @@ export const ListBoxWithOverflow: Story = {
         )}
       </>
     ),
-  },
-};
-
-export const ListBoxEmptyWithCustomPlaceholder: Story = {
-  args: {
-    placeholderEmpty: <><Icon icon="warning-filled"/> This is a custom placeholder</>,
-    children: null,
   },
 };
 
