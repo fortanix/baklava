@@ -265,9 +265,9 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
   /** An accessible name for this listbox menu. Required. */
   label: string,
   
-  /** The default option to select. Only relevant for uncontrolled usage (`selected` is `undefined`). */
+  /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
   defaultSelected?: undefined | Set<ItemKey>,
-
+  
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */
   selected?: undefined | Set<ItemKey>,
   
@@ -498,7 +498,11 @@ export const ListBoxMulti = Object.assign(
           
           {isLoading &&
             <span
-              className={cx(cl['bk-list-box-multi__item'], cl['bk-list-box-multi__item--static'], cl['bk-list-box-multi__item--loading'])}
+              className={cx(
+                cl['bk-list-box-multi__item'],
+                cl['bk-list-box-multi__item--static'],
+                cl['bk-list-box-multi__item--loading']
+              )}
             >
               Loading... <Spinner inline size="small"/>
             </span>

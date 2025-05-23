@@ -125,6 +125,7 @@ const preview = {
                 'ListBoxMulti',
                 'ComboBox',
                 'Select',
+                'SelectMulti',
                 'DatePicker',
                 'DatePickerRange',
                 'TimePicker',

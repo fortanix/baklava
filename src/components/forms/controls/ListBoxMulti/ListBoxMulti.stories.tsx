@@ -2,17 +2,17 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import * as React from 'react';
+
 import { loremIpsum } from '../../../../util/storybook/LoremIpsum.tsx';
 import type { Meta, StoryObj } from '@storybook/react';
-
-import * as React from 'react';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
+import { InputSearch } from '../Input/InputSearch.tsx';
 
 import { type ItemKey, type ItemDetails, type ListBoxMultiRef, ListBoxMulti } from './ListBoxMulti.tsx';
-import { InputSearch } from '../Input/InputSearch.tsx';
 
 
 const notifyPressed = () => { notify.info('Pressed the item'); };
@@ -165,11 +165,13 @@ export const ListBoxMultiWithCustomItem: Story = {
 /** Disabled items should still be focusable. */
 export const ListBoxMultiWithDisabledOption: Story = {
   args: {
+    defaultSelected: new Set('option-3'),
     children: (
       <>
         <ListBoxMulti.Option itemKey="option-1" label="This option is enabled"/>
         <ListBoxMulti.Option itemKey="option-2" label="This option is disabled, but you can still focus me" disabled/>
-        <ListBoxMulti.Option itemKey="option-3" label="This option is enabled"/>
+        <ListBoxMulti.Option itemKey="option-3" label="This option is disabled and selected" disabled/>
+        <ListBoxMulti.Option itemKey="option-4" label="This option is enabled"/>
       </>
     ),
   },

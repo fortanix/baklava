@@ -43,10 +43,14 @@ export default {
   },
   args: {
     label: 'Test select',
+    defaultSelected: 'long-option',
     options: (
       <>
-        {Array.from({ length: 8 }, (_, i) => i + 1).map(index =>
-          <Select.Option key={`option-${index}`} itemKey={`option-${index}`} label={`Option ${index}`}/>
+        <Select.Option key="long-option" itemKey="long-option"
+          label="A very long option label to show automatic resizing"
+        />
+        {fruits.map(fruit =>
+          <Select.Option key={`fruit-${fruit}`} itemKey={`fruit-${fruit}`} label={fruit}/>
         )}
       </>
     ),
@@ -70,6 +74,12 @@ export const SelectInScrollContainer: Story = {
   decorators: [
     Story => <div style={{ blockSize: '200vb', paddingBlockStart: '30vb' }}><Story/></div>,
   ],
+};
+
+export const SelectWithAutoResize: Story = {
+  args: {
+    automaticResize: true,
+  },
 };
 
 const SelectControlledC = (props: React.ComponentProps<typeof Select>) => {

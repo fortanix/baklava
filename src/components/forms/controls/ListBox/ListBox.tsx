@@ -258,7 +258,7 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
   /** An accessible name for this listbox menu. Required. */
   label: string,
   
-  /** The default option to select. Only relevant for uncontrolled usage (`selected` is `undefined`). */
+  /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
   defaultSelected?: undefined | ItemKey,
 
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */

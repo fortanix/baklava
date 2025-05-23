@@ -92,7 +92,7 @@ export const SelectMulti = Object.assign(
             'aria-disabled': true,
             readOnly: true, // Make the input non-editable, but still focusable
             ...propsRest,
-            className: cx(cl['bk-select'], { [cl['bk-select--open']]: open }, propsRest.className),
+            className: cx(cl['bk-select-multi'], { [cl['bk-select-multi--open']]: open }, propsRest.className),
             value: selectedOption === null ? '' : selectedOption.label,
             onChange: () => {},
           });
@@ -113,7 +113,7 @@ export const SelectMulti = Object.assign(
                     // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/combobox_role
                     tabIndex={-1}
                     icon="caret-down"
-                    className={cx(cl['bk-select__arrow'])}
+                    className={cx(cl['bk-select-multi__arrow'])}
                     label={open ? 'Close dropdown' : 'Open dropdown'}
                     onPress={() => {}}
                   />
@@ -121,7 +121,7 @@ export const SelectMulti = Object.assign(
                 {...propsMerged}
                 inputProps={{
                   ...propsMerged.inputProps,
-                  className: cx(cl['bk-select__input'], propsMerged.inputProps?.className),
+                  className: cx(cl['bk-select-multi__input'], propsMerged.inputProps?.className),
                 }}
                 containerProps={{
                   ...propsMerged.containerProps,

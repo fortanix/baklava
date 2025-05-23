@@ -59,6 +59,7 @@ export const Select = Object.assign(
       unstyled = false,
       label,
       options,
+      automaticResize,
       Input = InputDefault,
       // Dropdown props
       selected,
@@ -106,7 +107,7 @@ export const Select = Object.assign(
             <>
               <Input
                 role="combobox"
-                automaticResize
+                automaticResize={automaticResize}
                 actions={
                   <InputAction
                     // Note: the toggle button should not be focusable, according to:
