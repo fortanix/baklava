@@ -268,7 +268,7 @@
     
     position-try-fallbacks: --bk-tooltip-position-top, --bk-tooltip-position-bottom, --bk-tooltip-position-left, --bk-tooltip-position-right;
     
-    filter: drop-shadow(4px 4px 4px rgba(50 50 50 / 30%));
+    filter: drop-shadow(4px 4px 4px rgb(50 50 50 / 30%));
     
     @media (prefers-reduced-motion: no-preference) {
       --transition-duration: 150ms;

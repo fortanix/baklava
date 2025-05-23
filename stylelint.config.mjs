@@ -41,6 +41,10 @@ export default {
     'scss/operator-no-unspaced': null,
     'scss/dollar-variable-empty-line-before': null,
     
+    // At rules
+    'layer-name-pattern': null,
+    'container-name-pattern': null,
+    
     // Selectors
     'selector-class-pattern': [
 			'^([a-z][a-z0-9]*)((-|--|_|__)[a-z0-9]+)*$',

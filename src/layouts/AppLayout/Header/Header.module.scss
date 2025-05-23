@@ -19,7 +19,7 @@
     
     background: bk.$theme-header-background-default;
     --header-box-shadow-size: var(--bk-sizing-1);
-    box-shadow: 0 0 var(--header-box-shadow-size) rgba(0 0 0 / 10%);
+    box-shadow: 0 0 var(--header-box-shadow-size) rgb(0 0 0 / 10%);
     clip-path: inset(0 0 calc(-1 * var(--header-box-shadow-size)) 0); /* Only show shadow at bottom */
     
     display: flex;
