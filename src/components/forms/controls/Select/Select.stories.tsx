@@ -81,6 +81,13 @@ export const SelectWithAutoResize: Story = {
     automaticResize: true,
     label: 'Test select',
     defaultSelected: 'long-option',
+    formatItemLabel: (itemKey: ItemKey) => {
+      if (itemKey === 'long-option') {
+        return 'A very long option label to show automatic resizing';
+      } else {
+        return formatFruitLabel(itemKey);
+      }
+    },
     options: (
       <>
         <Select.Option key="long-option" itemKey="long-option"

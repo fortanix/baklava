@@ -76,6 +76,31 @@ export const SelectMultiInScrollContainer: Story = {
   ],
 };
 
+export const SelectWithAutoResize: Story = {
+  args: {
+    automaticResize: true,
+    label: 'Test select',
+    defaultSelected: new Set(['long-option']),
+    formatItemLabel: (itemKey: ItemKey) => {
+      if (itemKey === 'long-option') {
+        return 'A very long option label to show automatic resizing';
+      } else {
+        return formatFruitLabel(itemKey);
+      }
+    },
+    options: (
+      <>
+        <SelectMulti.Option key="long-option" itemKey="long-option"
+          label="A very long option label to show automatic resizing"
+        />
+        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
+          <SelectMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        )}
+      </>
+    ),
+  },
+};
+
 const SelectMultiControlledC = (props: React.ComponentProps<typeof SelectMulti>) => {
   const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(new Set(['blueberry', 'melon']));
   
