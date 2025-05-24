@@ -64,6 +64,9 @@ export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label'>
   /** An accessible name for this menu provider. Required. */
   label: string,
   
+  /** Render the given item key as a string label. */
+  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
+  
   /**
   * The content to render, which should contain the anchor. This should be a render prop which takes props to
   * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
@@ -104,8 +107,10 @@ export const MenuProvider = Object.assign(
   (props: MenuProviderProps) => {
     const {
       label,
+      formatItemLabel,
       children,
       items,
+      defaultSelected,
       selected,
       onSelect,
       role,
@@ -165,15 +170,20 @@ export const MenuProvider = Object.assign(
     
     const [shouldMountMenu] = useDebounce(isOpen, isOpen ? 0 : 1000);
     
-    const selectedLabelRef = React.useRef<null | string>(null);
-    const [selectedOptionInternal, setSelectedOptionInternal] = React.useState<null | ItemKey>(null);
+    const renderDefaultSelected = (): null | string => {
+      const defaultSelectedKey = defaultSelected ?? null;
+      return defaultSelectedKey === null ? null : (formatItemLabel?.(defaultSelectedKey) ?? defaultSelectedKey);
+    };
+    
+    const selectedLabelRef = React.useRef<null | string>(renderDefaultSelected());
+    const [selectedOptionInternal, setSelectedOptionInternal] = React.useState<null | ItemKey>(defaultSelected ?? null);
     const selectedOption = typeof selected !== 'undefined' ? selected : selectedOptionInternal;
     const setSelectedOption = React.useCallback((itemKey: null | ItemKey) => {
       if (typeof selected === 'undefined') {
         setSelectedOptionInternal(itemKey);
       }
       
-      onSelect?.(itemKey, itemKey === null ? null : { itemKey, label: (selectedLabelRef.current ?? '') });
+      onSelect?.(itemKey, itemKey === null ? null : { itemKey, label: (selectedLabelRef.current ?? itemKey) });
     }, [selected, onSelect]);
     
     const toggleCause = React.useRef<null | 'ArrowUp' | 'ArrowDown'>(null);
@@ -229,7 +239,8 @@ export const MenuProvider = Object.assign(
           close: () => { setIsOpen(false); },
           selectedOption: selectedOption === null
             ? null
-            : { itemKey: selectedOption, label: (selectedLabelRef.current ?? '') },
+            // FIXME: this does not have a label on the first render with `defaultSelected`
+            : { itemKey: selectedOption, label: (selectedLabelRef.current ?? selectedOption) },
         });
       }
       
@@ -340,6 +351,7 @@ export const MenuProvider = Object.assign(
             //propsRest.ref,
           )}
           id={listBoxId}
+          defaultSelected={defaultSelected}
           selected={selectedOption}
           onSelect={handleSelect}
           onToggle={handleToggle}

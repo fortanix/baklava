@@ -259,7 +259,7 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
   label: string,
   
   /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
-  defaultSelected?: undefined | ItemKey,
+  defaultSelected?: undefined | null | ItemKey,
 
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */
   selected?: undefined | null | ItemKey,

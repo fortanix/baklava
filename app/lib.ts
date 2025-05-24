@@ -57,6 +57,7 @@ export { ListBoxLazy } from '../src/components/forms/controls/ListBoxLazy/ListBo
 export { ListBoxMulti } from '../src/components/forms/controls/ListBoxMulti/ListBoxMulti.tsx';
 export { ComboBox } from '../src/components/forms/controls/ComboBox/ComboBox.tsx';
 export { Select } from '../src/components/forms/controls/Select/Select.tsx';
+export { SelectMulti } from '../src/components/forms/controls/SelectMulti/SelectMulti.tsx';
 
 // Forms > Fields
 export { CheckboxField } from '../src/components/forms/fields/CheckboxField/CheckboxField.tsx';
@@ -88,6 +89,7 @@ export { DialogModal } from '../src/components/overlays/DialogModal/DialogModal.
 export { DialogOverlay } from '../src/components/overlays/DialogOverlay/DialogOverlay.tsx';
 export { MenuProvider } from '../src/components/overlays/MenuProvider/MenuProvider.tsx';
 export { MenuProvider as DropdownMenuProvider } from '../src/components/overlays/MenuProvider/MenuProvider.tsx'; // alias
+export { MenuMultiProvider } from '../src/components/overlays/MenuMultiProvider/MenuMultiProvider.tsx';
 export { ToastProvider, notify } from '../src/components/overlays/ToastProvider/ToastProvider.tsx';
 export { Tooltip } from '../src/components/overlays/Tooltip/Tooltip.tsx';
 export { TooltipProvider } from '../src/components/overlays/Tooltip/TooltipProvider.tsx';

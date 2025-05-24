@@ -45,6 +45,7 @@ export default {
   },
   args: {
     label: 'Test select',
+    defaultSelected: new Set(['blueberry', 'cherry', 'melon']),
     options: (
       <>
         {Object.entries(fruits).map(([fruitKey, fruitName]) =>

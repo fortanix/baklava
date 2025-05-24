@@ -15,6 +15,26 @@ import { type ItemDetails, MenuProvider, ItemKey } from './MenuProvider.tsx';
 type MenuProviderArgs = React.ComponentProps<typeof MenuProvider>;
 type Story = StoryObj<MenuProviderArgs>;
 
+// Sample options
+const fruits = {
+  apple: 'Apple',
+  apricot: 'Apricot',
+  blueberry: 'Blueberry',
+  cherry: 'Cherry',
+  durian: 'Durian',
+  jackfruit: 'Jackfruit',
+  melon: 'Melon',
+  mango: 'Mango',
+  mangosteen: 'Mangosteen',
+  orange: 'Orange',
+  peach: 'Peach',
+  pineapple: 'Pineapple',
+  razzberry: 'Razzberry',
+  strawberry: 'Strawberry',
+};
+type FruitKey = keyof typeof fruits;
+const formatFruitLabel = (itemKey: ItemKey): string => fruits[itemKey as FruitKey] ?? 'UNKNOWN';
+
 export default {
   component: MenuProvider,
   parameters: {
@@ -32,14 +52,9 @@ export default {
     ),
     items: (
       <>
-        <MenuProvider.Option itemKey="option-1" label="Option 1"/>
-        <MenuProvider.Option itemKey="option-2" label="Option 2"/>
-        <MenuProvider.Option itemKey="option-3" label="Option 3"/>
-        <MenuProvider.Option itemKey="option-4" label="Option 4"/>
-        <MenuProvider.Option itemKey="option-5" label="Option 5"/>
-        <MenuProvider.Option itemKey="option-6" label="Option 6"/>
-        <MenuProvider.Option itemKey="option-7" label="Option 7"/>
-        <MenuProvider.Option itemKey="option-8" label="Option 8"/>
+        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
+          <MenuProvider.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        )}
       </>
     ),
     onSelect: selectedOption => { console.log('Selected:', selectedOption); },
@@ -48,7 +63,12 @@ export default {
 } satisfies Meta<MenuProviderArgs>;
 
 
-export const MenuProviderStandard: Story = {};
+export const MenuProviderStandard: Story = {
+  args: {
+    formatItemLabel: formatFruitLabel,
+    defaultSelected: 'blueberry',
+  },
+};
 
 export const MenuProviderWithInput: Story = {
   args: {

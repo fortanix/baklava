@@ -63,6 +63,9 @@ export type MenuMultiProviderProps = Omit<ListBoxMultiProps, 'ref' | 'children' 
   /** An accessible name for this menu provider. Required. */
   label: string,
   
+  /** Render the given item key as a string label. */
+  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
+  
   /**
   * The content to render, which should contain the anchor. This should be a render prop which takes props to
   * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
@@ -103,8 +106,10 @@ export const MenuMultiProvider = Object.assign(
   (props: MenuMultiProviderProps) => {
     const {
       label,
+      formatItemLabel,
       children,
       items,
+      defaultSelected,
       selected,
       onSelect,
       role,
@@ -164,15 +169,27 @@ export const MenuMultiProvider = Object.assign(
     
     const [shouldMountMenu] = useDebounce(isOpen, isOpen ? 0 : 1000);
     
-    const selectedLabelsRef = React.useRef<Map<ItemKey, string>>(new Map());
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Should not depend on `defaultSelected` (run once only)
+    const defaultSelectedLabels = React.useMemo((): Map<ItemKey, string> => {
+      const defaultSelectedKeys: null | Set<ItemKey> = defaultSelected ?? null;
+      if (defaultSelectedKeys === null) { return new Map(); }
+      
+      return new Map([...defaultSelectedKeys].map(itemKey => {
+        return [itemKey, formatItemLabel?.(itemKey) ?? itemKey];
+      }));
+    }, []);
+    
+    const selectedLabelsRef = React.useRef<Map<ItemKey, string>>(defaultSelectedLabels);
     const selectedOptionsWithDetails = React.useCallback((itemKeys: Set<ItemKey>): Map<ItemKey, ItemDetails> => {
       return new Map([...itemKeys].map(itemKey => {
-        const label = selectedLabelsRef.current.get(itemKey) ?? '';
+        const label = selectedLabelsRef.current.get(itemKey) ?? itemKey;
         return [itemKey, { itemKey, label }];
       }));
     }, []);
     
-    const [selectedOptionsInternal, setSelectedOptionsInternal] = React.useState<Set<ItemKey>>(new Set());
+    const [selectedOptionsInternal, setSelectedOptionsInternal] = React.useState<Set<ItemKey>>(
+      defaultSelected ?? new Set()
+    );
     const selectedOptions = typeof selected !== 'undefined' ? selected : selectedOptionsInternal;
     const setSelectedOptions = React.useCallback((itemKeys: Set<ItemKey>) => {
       if (typeof selected === 'undefined') {
@@ -331,6 +348,7 @@ export const MenuMultiProvider = Object.assign(
             //propsRest.ref,
           )}
           id={listBoxId}
+          defaultSelected={defaultSelected}
           selected={selectedOptions}
           onSelect={handleSelect}
           onToggle={handleToggle}

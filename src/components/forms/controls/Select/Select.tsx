@@ -86,11 +86,14 @@ export const Select = Object.assign(
         keyboardInteractions="form-control"
         placement="bottom-start"
         offset={0} // Make the dropdown flush with the select element
+        defaultSelected={defaultSelected}
         selected={selected}
         onSelect={onSelect}
         {...dropdownProps}
       >
         {({ props, open, requestOpen, selectedOption }) => {
+          console.log('x', selectedOption);
+          
           // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
           const { ref: anchorRef, ...anchorProps } = props({
             placeholder: 'Select an option',

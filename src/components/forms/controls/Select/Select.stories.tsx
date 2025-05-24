@@ -45,12 +45,9 @@ export default {
   },
   args: {
     label: 'Test select',
-    defaultSelected: 'long-option',
+    defaultSelected: 'blueberry',
     options: (
       <>
-        <Select.Option key="long-option" itemKey="long-option"
-          label="A very long option label to show automatic resizing"
-        />
         {Object.entries(fruits).map(([fruitKey, fruitName]) =>
           <Select.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
@@ -81,6 +78,18 @@ export const SelectInScrollContainer: Story = {
 export const SelectWithAutoResize: Story = {
   args: {
     automaticResize: true,
+    label: 'Test select',
+    defaultSelected: 'long-option',
+    options: (
+      <>
+        <Select.Option key="long-option" itemKey="long-option"
+          label="A very long option label to show automatic resizing"
+        />
+        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
+          <Select.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        )}
+      </>
+    ),
   },
 };
 
