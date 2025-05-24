@@ -9,11 +9,11 @@ import * as React from 'react';
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Input } from '../Input/Input.tsx';
 
-import { type ItemKey, Select } from './Select.tsx';
+import { type ItemKey, SelectMulti } from './SelectMulti.tsx';
 
 
-type SelectArgs = React.ComponentProps<typeof Select>;
-type Story = StoryObj<SelectArgs>;
+type SelectMultiArgs = React.ComponentProps<typeof SelectMulti>;
+type Story = StoryObj<SelectMultiArgs>;
 
 // Sample options
 const fruits = {
@@ -36,7 +36,7 @@ type FruitKey = keyof typeof fruits;
 const formatFruitLabel = (itemKey: ItemKey): string => fruits[itemKey as FruitKey] ?? 'UNKNOWN';
 
 export default {
-  component: Select,
+  component: SelectMulti,
   parameters: {
     layout: 'centered',
   },
@@ -46,78 +46,59 @@ export default {
   args: {
     label: 'Test select',
     formatItemLabel: formatFruitLabel,
-    defaultSelected: 'blueberry',
+    defaultSelected: new Set(['blueberry', 'cherry', 'melon']),
     options: (
       <>
         {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <Select.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+          <SelectMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
       </>
     ),
   },
-  render: (args) => <Select {...args}/>,
-} satisfies Meta<SelectArgs>;
+  render: (args) => <SelectMulti {...args}/>,
+} satisfies Meta<SelectMultiArgs>;
 
 
-export const SelectStandard: Story = {};
+export const SelectMultiStandard: Story = {};
 
-const CustomInput: React.ComponentProps<typeof Select>['Input'] = props => (
+const CustomInput: React.ComponentProps<typeof SelectMulti>['Input'] = props => (
   <Input {...props} icon="bell" iconLabel="Bell"/>
 );
-export const SelectWithCustomInput: Story = {
+export const SelectMultiWithCustomInput: Story = {
   args: {
     Input: CustomInput,
   },
 };
 
-export const SelectInScrollContainer: Story = {
+export const SelectMultiInScrollContainer: Story = {
   decorators: [
     Story => <div style={{ blockSize: '200vb', paddingBlockStart: '30vb' }}><Story/></div>,
   ],
 };
 
-export const SelectWithAutoResize: Story = {
-  args: {
-    automaticResize: true,
-    label: 'Test select',
-    defaultSelected: 'long-option',
-    options: (
-      <>
-        <Select.Option key="long-option" itemKey="long-option"
-          label="A very long option label to show automatic resizing"
-        />
-        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <Select.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
-        )}
-      </>
-    ),
-  },
-};
-
-const SelectControlledC = (props: React.ComponentProps<typeof Select>) => {
-  const [selectedOption, setSelectedOption] = React.useState<null | FruitKey>('blueberry');
+const SelectMultiControlledC = (props: React.ComponentProps<typeof SelectMulti>) => {
+  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(new Set(['blueberry', 'melon']));
   
   return (
     <>
-      <div>Selected: {selectedOption === null ? '(none)' : formatFruitLabel(selectedOption)}</div>
-      <Select
+      <div>Selected: {[...selectedOptions].map(key => formatFruitLabel(key as FruitKey)).join(', ')}</div>
+      <SelectMulti
         {...props}
         placeholder="Choose a fruit"
         options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <Select.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+          <SelectMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
-        selected={selectedOption}
-        // @ts-ignore FIXME: use generic to pass down `FruitKey` subtype?
-        onSelect={setSelectedOption}
+        selected={selectedOptions}
+        onSelect={setSelectedOptions}
       />
     </>
   );
 };
-export const SelectControlled: Story = {
-  render: args => <SelectControlledC {...args}/>,
+export const SelectMultiControlled: Story = {
+  render: args => <SelectMultiControlledC {...args}/>,
 };
 
-export const SelectInForm: Story = {
+export const SelectMultiInForm: Story = {
   decorators: [
     Story => (
       <>
@@ -139,7 +120,7 @@ export const SelectInForm: Story = {
     options: (
       <>
         {Array.from({ length: 8 }, (_, i) => i + 1).map(index =>
-          <Select.Option key={`option-${index}`} itemKey={`option-${index}`} label={`Option ${index}`}/>
+          <SelectMulti.Option key={`option-${index}`} itemKey={`option-${index}`} label={`Option ${index}`}/>
         )}
       </>
     ),

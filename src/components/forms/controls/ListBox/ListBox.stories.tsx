@@ -2,17 +2,17 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import * as React from 'react';
+
 import { loremIpsum } from '../../../../util/storybook/LoremIpsum.tsx';
 import type { Meta, StoryObj } from '@storybook/react';
-
-import * as React from 'react';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
+import { InputSearch } from '../Input/InputSearch.tsx';
 
 import { type ItemKey, type ListBoxRef, ListBox } from './ListBox.tsx';
-import { InputSearch } from '../Input/InputSearch.tsx';
 
 
 const notifyPressed = () => { notify.info('Pressed the item'); };
@@ -72,6 +72,13 @@ export const ListBoxEmpty: Story = {
   },
 };
 
+export const ListBoxEmptyWithCustomPlaceholder: Story = {
+  args: {
+    placeholderEmpty: <><Icon icon="warning-filled"/> This is a custom placeholder</>,
+    children: null,
+  },
+};
+
 export const ListBoxWithOverflow: Story = {
   args: {
     children: (
@@ -82,13 +89,6 @@ export const ListBoxWithOverflow: Story = {
         )}
       </>
     ),
-  },
-};
-
-export const ListBoxEmptyWithCustomPlaceholder: Story = {
-  args: {
-    placeholderEmpty: <><Icon icon="warning-filled"/> This is a custom placeholder</>,
-    children: null,
   },
 };
 

@@ -93,19 +93,17 @@
         &:not(:disabled, .bk-list-box-multi__item--disabled):hover {
           background: bk.$theme-dropdown-menu-menu-background-hover;
         }
-        &[aria-selected="true"] {
-          background: bk.$theme-dropdown-menu-menu-background-hover;
-          // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
-          box-shadow: inset 5px 0 bk.$theme-dropdown-menu-menu-tab-default !important;
-        }
         
         @media (prefers-reduced-motion: no-preference) {
           transition: box-shadow 150ms ease-in;
         }
       }
       &:is(:disabled, .bk-list-box-multi__item--disabled) {
-        user-select: none;
-        color: bk.$theme-text-small-text-subtle;
+        &:is(:disabled, .bk-list-box-multi__item--disabled) {
+          user-select: none;
+          cursor: not-allowed;
+          color: bk.$theme-text-small-text-subtle;
+        }
       }
       &:focus {
         &:not(.bk-list-box-multi__item--disabled) {

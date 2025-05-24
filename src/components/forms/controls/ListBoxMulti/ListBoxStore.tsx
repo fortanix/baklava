@@ -26,7 +26,7 @@ export type ItemDef = {
 export type ItemMap = Map<ItemKey, ItemDef>;
 export type ItemWithKey = ItemDef & { itemKey: ItemKey };
 
-export type ItemDetails = { itemKey: ItemKey, label: string };
+export type ItemDetails = { label: string };
 
 /**
  * The minimal subtype of `Array<ItemKey>` that we need to be able to render a virtualized list. We keep it minimal

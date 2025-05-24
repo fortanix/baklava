@@ -14,13 +14,14 @@ import {
 
 import * as ListBox from '../../forms/controls/ListBox/ListBox.tsx';
 
-import cl from './DropdownMenuProvider.module.scss';
+import cl from './MenuProvider.module.scss';
 
 
 export type ItemDetails = ListBox.ItemDetails;
 export type ItemKey = ListBox.ItemKey;
 
-export type DropdownRef = {
+export { cl as MenuProviderClassNames };
+export type MenuProviderRef = {
   setIsOpen: (open: boolean) => void,
   isOpen: boolean,
   floatingEl: null | HTMLElement,
@@ -33,35 +34,38 @@ export type AnchorRenderArgs = {
   open: boolean,
   requestOpen: () => void, // FIXME: better naming
   close: () => void,
-  selectedOption: null | ListBox.ItemDetails,
+  selectedOption: null | ItemDetails,
 };
 export type ItemsRenderArgs = {
   close: () => void,
 };
 
-export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label'> & {
+export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label'> & {
   // ---
   // TEMP
   
-  /** A React ref to control the dropdown menu provider imperatively. */
-  ref?: undefined | React.Ref<null | DropdownRef>,
+  /** A React ref to control the menu provider imperatively. */
+  ref?: undefined | React.Ref<null | MenuProviderRef>,
   
   /** For controlled open state. */
-  open?: boolean,
-
+  open?: undefined | boolean,
+  
   /** When controlled, callback to set state. */
-  onOpenChange?: (isOpen: boolean) => void,
-
+  onOpenChange?: undefined | ((isOpen: boolean) => void),
+  
   /** (optional) Use an existing DOM node as the positioning anchor. */
-  anchorRef?: React.RefObject<HTMLElement | null>,
+  anchorRef?: undefined | React.RefObject<HTMLElement | null>,
   
   // END TEMP
   // ---
   
   
   
-  /** An accessible name for this dropdown menu. Required */
+  /** An accessible name for this menu provider. Required. */
   label: string,
+  
+  /** Render the given item key as a string label. */
+  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
   
   /**
   * The content to render, which should contain the anchor. This should be a render prop which takes props to
@@ -69,13 +73,13 @@ export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 
   */
   children?: ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode,
   
-  /** The dropdown items. */
+  /** The menu items. */
   items: React.ReactNode | ((args: ItemsRenderArgs) => React.ReactNode),
   
-  /** The accessible role of the dropdown. */
+  /** The accessible role of the menu. */
   role?: undefined | UseFloatingElementOptions['role'],
   
-  /** The action that should trigger the dropdown to open. */
+  /** The action that should trigger the menu to open. */
   action?: undefined | UseFloatingElementOptions['action'],
   
   /**
@@ -90,21 +94,23 @@ export type DropdownMenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 
   /** Override the default placement */
   placement?: undefined | UseFloatingElementOptions['placement'],
   
-  /** Offset size for the dropdown relative to the anchor. */
+  /** Offset size for the menu relative to the anchor. */
   offset?: undefined | UseFloatingElementOptions['offset'],
   
   /** Enable more precise tracking of the anchor, at the cost of performance. */
   enablePreciseTracking?: undefined | UseFloatingElementOptions['enablePreciseTracking'],
 };
 /**
- * Provider for a dropdown menu overlay with its trigger.
+ * Provider for a menu overlay that is triggered by (and positioned relative to) some anchor element.
  */
-export const DropdownMenuProvider = Object.assign(
-  (props: DropdownMenuProviderProps) => {
+export const MenuProvider = Object.assign(
+  (props: MenuProviderProps) => {
     const {
       label,
+      formatItemLabel,
       children,
       items,
+      defaultSelected,
       selected,
       onSelect,
       role,
@@ -162,17 +168,22 @@ export const DropdownMenuProvider = Object.assign(
       // END TEMP
     });
     
-    const [shouldMountDropdown] = useDebounce(isOpen, isOpen ? 0 : 1000);
+    const [shouldMountMenu] = useDebounce(isOpen, isOpen ? 0 : 1000);
     
-    const selectedLabelRef = React.useRef<null | string>(null);
-    const [selectedOptionInternal, setSelectedOptionInternal] = React.useState<null | ItemKey>(null);
+    const renderDefaultSelected = (): null | string => {
+      const defaultSelectedKey = defaultSelected ?? null;
+      return defaultSelectedKey === null ? null : (formatItemLabel?.(defaultSelectedKey) ?? defaultSelectedKey);
+    };
+    
+    const selectedLabelRef = React.useRef<null | string>(renderDefaultSelected());
+    const [selectedOptionInternal, setSelectedOptionInternal] = React.useState<null | ItemKey>(defaultSelected ?? null);
     const selectedOption = typeof selected !== 'undefined' ? selected : selectedOptionInternal;
     const setSelectedOption = React.useCallback((itemKey: null | ItemKey) => {
       if (typeof selected === 'undefined') {
         setSelectedOptionInternal(itemKey);
       }
       
-      onSelect?.(itemKey, itemKey === null ? null : { itemKey, label: (selectedLabelRef.current ?? '') });
+      onSelect?.(itemKey, itemKey === null ? null : { itemKey, label: (selectedLabelRef.current ?? itemKey) });
     }, [selected, onSelect]);
     
     const toggleCause = React.useRef<null | 'ArrowUp' | 'ArrowDown'>(null);
@@ -182,7 +193,9 @@ export const DropdownMenuProvider = Object.assign(
         event.preventDefault(); // Prevent scrolling
         setIsOpen(true);
         
-        if (action === 'focus') {
+        // Note: need to wait until the list has actually opened
+        // FIXME: need a more reliable way to do this (ref callback?)
+        window.setTimeout(() => {
           const listBoxElement = listBoxRef.current;
           if (!listBoxElement) { return; }
           
@@ -191,9 +204,9 @@ export const DropdownMenuProvider = Object.assign(
           } else if (event.key === 'ArrowUp') {
             listBoxElement._bkListBoxFocusLast();
           }
-        }
+        }, 100);
       }
-    }, [setIsOpen, action]);
+    }, [setIsOpen]);
     
     // Note: memoize this, so that the anchor does not get rerendered every time the floating element position changes
     const anchor = React.useMemo(() => {
@@ -202,7 +215,7 @@ export const DropdownMenuProvider = Object.assign(
         const userPropsRef: undefined | string | React.Ref<Element> = userProps?.ref ?? undefined;
         if (typeof userPropsRef === 'string') {
           // We can't merge refs if one of the refs is a string
-          console.error(`Failed to render DropdownMenuProvider, due to use of legacy string ref`);
+          console.error(`Failed to render MenuProvider, due to use of legacy string ref`);
           return (userProps ?? {}) as Record<string, unknown>;
         }
         
@@ -226,7 +239,8 @@ export const DropdownMenuProvider = Object.assign(
           close: () => { setIsOpen(false); },
           selectedOption: selectedOption === null
             ? null
-            : { itemKey: selectedOption, label: (selectedLabelRef.current ?? '') },
+            // FIXME: this does not have a label on the first render with `defaultSelected`
+            : { itemKey: selectedOption, label: (selectedLabelRef.current ?? selectedOption) },
         });
       }
       
@@ -239,7 +253,7 @@ export const DropdownMenuProvider = Object.assign(
         return React.cloneElement(children, anchorProps(children.props as React.HTMLProps<Element>));
       }
       
-      console.error(`Invalid children passed to DropdownMenuProvider, expected a render prop or single child element.`);
+      console.error(`Invalid children passed to MenuProvider, expected a render prop or single child element.`);
       return children;
     }, [
       children,
@@ -307,26 +321,38 @@ export const DropdownMenuProvider = Object.assign(
       }
     }, [action]);
     
-    const handleDropdownKeyDown = React.useCallback((event: React.KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        const selectedOptionDetails = selectedOption === null
-          ? null
-          : { itemKey: selectedOption, label: (selectedLabelRef.current ?? '') };
-        handleSelect(selectedOption, selectedOption === null ? null : selectedOptionDetails);
-      }
+    const handleMenuKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+      // On "enter", select the currently focused item and close the menu
+      // Note: already handled through the `ListBox` element
+      //if (event.key === 'Enter') { ... }
       
-      if (event.key === 'Escape') {
-        setIsOpen(false);
-      }
-    }, [selectedOption, handleSelect, setIsOpen]);
+      // On "escape", close the menu
+      // Note: already handled by floating-ui
+      //if (event.key === 'Escape') { setIsOpen(false); }
+    }, []);
     
-    const renderDropdown = () => {
+    // A ref callback for focus management of the list box
+    const listBoxFocusRef: React.RefCallback<ListBox.ListBoxRef> = React.useCallback((listBoxElement) => {
+      if (!listBoxElement) { return; }
+      
+      const controller = new AbortController();
+      listBoxElement.addEventListener('focusout', event => {
+        const focusTarget = event.relatedTarget; // The new element being focused
+        if (!focusTarget || (focusTarget instanceof Node && !listBoxElement.contains(focusTarget))) {
+          setIsOpen(false);
+        }
+      }, { signal: controller.signal });
+      
+      return () => { controller.abort(); };
+    }, [setIsOpen]);
+    
+    const renderMenu = () => {
       const floatingProps = getFloatingProps({
         popover: 'manual',
         style: floatingStyles,
         ...propsRest,
-        className: cx(cl['bk-dropdown-menu-provider__list-box'], propsRest.className),
-        onKeyDown: mergeCallbacks([propsRest.onKeyDown, handleDropdownKeyDown]),
+        className: cx(cl['bk-menu-provider__list-box'], propsRest.className),
+        onKeyDown: mergeCallbacks([propsRest.onKeyDown, handleMenuKeyDown]),
       });
       
       return (
@@ -335,11 +361,13 @@ export const DropdownMenuProvider = Object.assign(
           {...floatingProps}
           ref={mergeRefs<React.ComponentRef<typeof ListBox.ListBox>>(
             listBoxRef,
+            listBoxFocusRef,
             refs.setFloating,
             floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBox.ListBox>>,
             //propsRest.ref,
           )}
           id={listBoxId}
+          defaultSelected={defaultSelected}
           selected={selectedOption}
           onSelect={handleSelect}
           onToggle={handleToggle}
@@ -366,7 +394,7 @@ export const DropdownMenuProvider = Object.assign(
       }
     }, [anchorRefSeparate?.current, refs.setReference]);
     
-    const dropdownRef = React.useMemo<DropdownRef>(() => ({
+    const menuProviderRef = React.useMemo<MenuProviderRef>(() => ({
       isOpen,
       setIsOpen,
       get floatingEl() {
@@ -374,13 +402,13 @@ export const DropdownMenuProvider = Object.assign(
       },
     }), [isOpen, setIsOpen, refs.floating]);
     
-    React.useImperativeHandle(forwardRef, () => dropdownRef, [dropdownRef]);
+    React.useImperativeHandle(forwardRef, () => menuProviderRef, [menuProviderRef]);
     // END TEMP
     
     return (
       <>
         {anchor}
-        {shouldMountDropdown && renderDropdown()}
+        {shouldMountMenu && renderMenu()}
       </>
     );
   },

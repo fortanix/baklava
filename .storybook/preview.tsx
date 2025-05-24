@@ -83,7 +83,8 @@ const preview = {
               'DialogOverlay',
               'ToastProvider',
               'Tooltip',
-              'DropdownMenu',
+              'MenuProvider',
+              'MenuMultiProvider',
             ],
             'lists',
             [
@@ -124,6 +125,7 @@ const preview = {
                 'ListBoxMulti',
                 'ComboBox',
                 'Select',
+                'SelectMulti',
                 'DatePicker',
                 'DatePickerRange',
                 'TimePicker',

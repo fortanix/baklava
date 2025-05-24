@@ -5,7 +5,7 @@
     // Emission
     "noEmit": true, // Do not emit by default (only type check)
     //"emitDeclarationOnly": false,
-    "target": "ES2023", // JavaScript language version to emit
+    "target": "ES2024", // JavaScript language version to emit
     "module": "ESNext", // The type of file to emit (CommonJS/ESM/etc.)
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,

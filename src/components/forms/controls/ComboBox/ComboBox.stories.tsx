@@ -207,6 +207,10 @@ const ComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof ComboB
     />
   );
 };
+/** Note: when you use the `ComboBox` for autocomplete, you must also set `aria-autocomplete="true"`.  */
 export const ComboBoxAutocomplete: Story = {
   render: args => <ComboBoxAutocompleteC {...args}/>,
+  args: {
+    'aria-autocomplete': 'list',
+  },
 };

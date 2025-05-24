@@ -25,7 +25,7 @@ import { Tag } from '../../text/Tag/Tag.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { Input } from '../../forms/controls/Input/Input.tsx';
 import { CheckboxGroup } from '../../forms/controls/CheckboxGroup/CheckboxGroup.tsx';
-import { DropdownMenuProvider, type DropdownRef } from '../../overlays/DropdownMenu/DropdownMenuProvider.tsx';
+import { MenuProvider, type MenuProviderRef } from '../../overlays/MenuProvider/MenuProvider.tsx';
 import { DateTimePicker } from '../../forms/controls/DateTimePicker/DateTimePicker.tsx';
 
 import * as FQ from './filterQuery.ts';
@@ -393,14 +393,14 @@ export const Suggestions = (props: SuggestionProps) => {
     onOutsideClick,
   } = props;
 
-  const dropdownRef = React.useRef<DropdownRef>(null);
+  const dropdownRef = React.useRef<MenuProviderRef>(null);
 
   const handleOpenChange = (open: boolean) => {
     if (!open) onOutsideClick?.();
   };
 
   return (
-    <DropdownMenuProvider
+    <MenuProvider
       className={cx(cl['bk-multi-search__dropdown'], className)}
       placement='bottom-start'
       ref={dropdownRef}
@@ -541,7 +541,7 @@ const FieldsDropdown = (props: FieldsDropdownProps) => {
   }
 
   const menuItems = Object.entries(fields || {}).map(([fieldName, { label }]) => (
-    <DropdownMenuProvider.Action
+    <MenuProvider.Action
       key={fieldName}
       itemKey={fieldName}
       label={label}
@@ -638,7 +638,7 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
 
   const renderSingleSelectAlternatives = () =>
     Object.entries(alternatives).map(([key, { label }]) => (
-      <DropdownMenuProvider.Action
+      <MenuProvider.Action
         key={key}
         itemKey={key}
         label={label}
@@ -923,7 +923,7 @@ const SuggestedKeysDropdown = (props: SuggestedKeysDropdownProps) => {
   const items = (
     <>
       {Object.entries(suggestedKeys || {}).map(([suggestedKey, { label }]) => (
-        <DropdownMenuProvider.Action
+        <MenuProvider.Action
           key={suggestedKey}
           itemKey={suggestedKey}
           label={label}
@@ -1001,7 +1001,7 @@ const OperatorsDropdown = (props: OperatorsDropdownProps) => {
   const items = operators.map((op) => {
     const operatorSymbol = symbolMap[op] ?? op;
     return (
-      <DropdownMenuProvider.Action
+      <MenuProvider.Action
         className={cx(cl[' bk-multi-search__operator'])}
         key={op}
         itemKey={op}
