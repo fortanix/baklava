@@ -331,6 +331,21 @@ export const MenuProvider = Object.assign(
       //if (event.key === 'Escape') { setIsOpen(false); }
     }, []);
     
+    // A ref callback for focus management of the list box
+    const listBoxFocusRef: React.RefCallback<ListBox.ListBoxRef> = React.useCallback((listBoxElement) => {
+      if (!listBoxElement) { return; }
+      
+      const controller = new AbortController();
+      listBoxElement.addEventListener('focusout', event => {
+        const focusTarget = event.relatedTarget; // The new element being focused
+        if (!focusTarget || (focusTarget instanceof Node && !listBoxElement.contains(focusTarget))) {
+          setIsOpen(false);
+        }
+      }, { signal: controller.signal });
+      
+      return () => { controller.abort(); };
+    }, [setIsOpen]);
+    
     const renderMenu = () => {
       const floatingProps = getFloatingProps({
         popover: 'manual',
@@ -346,6 +361,7 @@ export const MenuProvider = Object.assign(
           {...floatingProps}
           ref={mergeRefs<React.ComponentRef<typeof ListBox.ListBox>>(
             listBoxRef,
+            listBoxFocusRef,
             refs.setFloating,
             floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBox.ListBox>>,
             //propsRest.ref,
