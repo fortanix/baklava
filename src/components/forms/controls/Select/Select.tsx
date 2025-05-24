@@ -36,6 +36,9 @@ export type SelectProps = Omit<SelectInputProps, 'onSelect'> & {
   /** A human-readable name for the select. */
   label: string,
   
+  /** Render the given item key as a string label. */
+  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
+  
   /** The options list to be shown in the dropdown menu. */
   options: React.ComponentProps<typeof MenuProvider>['items'],
   
@@ -61,6 +64,7 @@ export const Select = Object.assign(
     const {
       unstyled = false,
       label,
+      formatItemLabel,
       options,
       automaticResize,
       Input = InputDefault,
@@ -80,6 +84,7 @@ export const Select = Object.assign(
     return (
       <MenuProvider
         label={label}
+        formatItemLabel={formatItemLabel}
         items={options}
         // biome-ignore lint/a11y/useSemanticElements: False positive: this `role` doesn't directly map to HTML `role`
         role="listbox"

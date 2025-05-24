@@ -33,7 +33,7 @@ const fruits = {
   strawberry: 'Strawberry',
 };
 type FruitKey = keyof typeof fruits;
-const formatFruitLabel = (itemKey: FruitKey): string => fruits[itemKey];
+const formatFruitLabel = (itemKey: ItemKey): string => fruits[itemKey as FruitKey] ?? 'UNKNOWN';
 
 export default {
   component: SelectMulti,
@@ -45,6 +45,7 @@ export default {
   },
   args: {
     label: 'Test select',
+    formatItemLabel: formatFruitLabel,
     defaultSelected: new Set(['blueberry', 'cherry', 'melon']),
     options: (
       <>
