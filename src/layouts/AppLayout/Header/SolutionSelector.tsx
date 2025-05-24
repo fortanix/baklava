@@ -9,8 +9,8 @@ import { Icon } from '../../../components/graphics/Icon/Icon.tsx';
 import { Button } from '../../../components/actions/Button/Button.tsx';
 import {
   type ItemDetails,
-  DropdownMenuProvider,
-} from '../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
+  MenuProvider,
+} from '../../../components/overlays/MenuProvider/MenuProvider.tsx';
 
 import cl from './SolutionSelector.module.scss';
 
@@ -22,7 +22,7 @@ export type SolutionSelectorProps = Omit<ComponentProps<typeof Button>, 'label'>
   unstyled?: undefined | boolean,
   
   /** The solutions list to be shown in the dropdown menu. */
-  solutions: React.ReactNode,
+  solutions: React.ComponentProps<typeof MenuProvider>['items'],
 
   /** The selected solution. To access the selected solution, pass a render prop. */
   children?: undefined | ((selectedAccount: null | ItemDetails) => React.ReactNode),
@@ -32,10 +32,11 @@ export const SolutionSelector = Object.assign(
     const { unstyled = false, solutions, children, ...propsRest } = props;
     
     return (
-      <DropdownMenuProvider
+      <MenuProvider
         label="Solution selector"
         placement="bottom-start"
         items={solutions}
+        offset={7}
       >
         {({ props, selectedOption }) =>
           <Button unstyled
@@ -51,13 +52,13 @@ export const SolutionSelector = Object.assign(
             <Icon icon="caret-down" className={cl['bk-solution-selector__caret']}/>
           </Button>
         }
-      </DropdownMenuProvider>
+      </MenuProvider>
     );
   },
   {
-    Header: DropdownMenuProvider.Header,
-    Option: DropdownMenuProvider.Option,
-    Action: DropdownMenuProvider.Action,
-    FooterActions: DropdownMenuProvider.FooterActions,
+    Header: MenuProvider.Header,
+    Option: MenuProvider.Option,
+    Action: MenuProvider.Action,
+    FooterActions: MenuProvider.FooterActions,
   },
 );

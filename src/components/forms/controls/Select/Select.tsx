@@ -11,8 +11,8 @@ import { Input as InputDefault } from '../Input/Input.tsx';
 import {
   type ItemKey,
   type ItemDetails,
-  DropdownMenuProvider,
-} from '../../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
+  MenuProvider,
+} from '../../../overlays/MenuProvider/MenuProvider.tsx';
 
 import cl from './Select.module.scss';
 
@@ -29,23 +29,26 @@ References:
 - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
 */
 
-export type SelectProps = Omit<SelectInputProps, 'selected' | 'onSelect'> & {
+export type SelectProps = Omit<SelectInputProps, 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
   /** A human-readable name for the select. */
   label: string,
   
-  /** The selected option. To access the selected option, pass a render prop. */
-  children: (selectedOption: null | ItemKey) => React.ReactNode,
+  /** Render the given item key as a string label. */
+  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
   
   /** The options list to be shown in the dropdown menu. */
-  options: React.ComponentProps<typeof DropdownMenuProvider>['items'],
+  options: React.ComponentProps<typeof MenuProvider>['items'],
   
   /** A custom `Input` component. */
   Input?: undefined | React.ComponentType<SelectInputProps> & {
     Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
   },
+  
+  /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
+  defaultSelected?: undefined | null | ItemKey,
   
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */
   selected?: undefined | null | ItemKey,
@@ -53,18 +56,20 @@ export type SelectProps = Omit<SelectInputProps, 'selected' | 'onSelect'> & {
   /** Event handler to be called when the selected option state changes. */
   onSelect?: undefined | ((selectedItemKey: null | ItemKey, selectedItemDetails: null | ItemDetails) => void),
   
-  /** Additional props to be passed to the `DropdownMenuProvider`. */
-  dropdownProps?: undefined | React.ComponentProps<typeof DropdownMenuProvider>,
+  /** Additional props to be passed to the `MenuProvider`. */
+  dropdownProps?: undefined | Partial<React.ComponentProps<typeof MenuProvider>>,
 };
 export const Select = Object.assign(
   (props: SelectProps) => {
     const {
       unstyled = false,
       label,
-      children,
+      formatItemLabel,
       options,
+      automaticResize,
       Input = InputDefault,
       // Dropdown props
+      defaultSelected,
       selected,
       onSelect,
       dropdownProps = {},
@@ -77,14 +82,16 @@ export const Select = Object.assign(
     const InputAction = Input.Action ?? InputDefault.Action;
     
     return (
-      <DropdownMenuProvider
+      <MenuProvider
         label={label}
+        formatItemLabel={formatItemLabel}
         items={options}
         // biome-ignore lint/a11y/useSemanticElements: False positive: this `role` doesn't directly map to HTML `role`
         role="listbox"
         keyboardInteractions="form-control"
         placement="bottom-start"
         offset={0} // Make the dropdown flush with the select element
+        defaultSelected={defaultSelected}
         selected={selected}
         onSelect={onSelect}
         {...dropdownProps}
@@ -109,7 +116,7 @@ export const Select = Object.assign(
             <>
               <Input
                 role="combobox"
-                automaticResize
+                automaticResize={automaticResize}
                 actions={
                   <InputAction
                     // Note: the toggle button should not be focusable, according to:
@@ -139,13 +146,13 @@ export const Select = Object.assign(
             </>
           );
         }}
-      </DropdownMenuProvider>
+      </MenuProvider>
     );
   },
   {
-    Header: DropdownMenuProvider.Header,
-    Option: DropdownMenuProvider.Option,
-    Action: DropdownMenuProvider.Action,
-    FooterActions: DropdownMenuProvider.FooterActions,
+    Header: MenuProvider.Header,
+    Option: MenuProvider.Option,
+    Action: MenuProvider.Action,
+    FooterActions: MenuProvider.FooterActions,
   },
 );

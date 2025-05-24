@@ -7,15 +7,15 @@ import * as React from 'react';
 
 import { Icon } from '../../../components/graphics/Icon/Icon.tsx';
 import { Button } from '../../../components/actions/Button/Button.tsx';
-import { DropdownMenuProvider } from '../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
+import { MenuProvider } from '../../../components/overlays/MenuProvider/MenuProvider.tsx';
 
 import cl from './UserMenu.module.scss';
 
 
 export { cl as UserMenuClassNames };
 
-const UserMenuAction = (props: React.ComponentProps<typeof DropdownMenuProvider.Action>) => {
-  return <DropdownMenuProvider.Action {...props}/>;
+const UserMenuAction = (props: React.ComponentProps<typeof MenuProvider.Action>) => {
+  return <MenuProvider.Action {...props}/>;
 };
 
 export type UserMenuProps = Omit<ComponentProps<typeof Button>, 'label'> & {
@@ -39,10 +39,11 @@ export const UserMenu = Object.assign(
     };
     
     return (
-      <DropdownMenuProvider
+      <MenuProvider
         label="User menu"
         placement="bottom-end"
         items={children}
+        offset={7}
       >
         <Button unstyled
           {...propsRest}
@@ -50,7 +51,7 @@ export const UserMenu = Object.assign(
         >
           {renderContent()}
         </Button>
-      </DropdownMenuProvider>
+      </MenuProvider>
     );
   },
   {

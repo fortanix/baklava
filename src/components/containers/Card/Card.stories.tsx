@@ -4,6 +4,9 @@
 
 import * as React from 'react';
 
+import { LoremIpsum, loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
+import { DummyBkLinkWithNotify } from '../../../util/storybook/StorybookLink.tsx';
+import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Banner } from '../Banner/Banner.tsx';
@@ -13,11 +16,6 @@ import { Card } from './Card.tsx';
 
 type CardArgs = React.ComponentProps<typeof Card>;
 type Story = StoryObj<typeof Card>;
-
-const lorem = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-  dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-  consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-  Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`;
 
 export default {
   component: Card,
@@ -29,20 +27,90 @@ export default {
   argTypes: {},
   args: {
     unstyled: false,
-    children: <><Card.Heading>Card</Card.Heading>{lorem}</>,
+    children: <LoremIpsum/>,
   },
   render: (args) => <Card {...args}/>,
 } satisfies Meta<CardArgs>;
 
 
-export const Standard: Story = {
-  decorators: [
-    Story => <div style={{ inlineSize: '30vw' }}><Story/></div>
-  ],
+export const CardStandard: Story = {
+  decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
+};
+
+export const CardWithHeading: Story = {
+  decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
+  args: {
+    children: (
+      <>
+        <Card.Heading>Heading</Card.Heading>
+        <LoremIpsum/>
+      </>
+    ),
+  },
+};
+
+export const CardWithHeadingOverflow: Story = {
+  decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
+  args: {
+    children: (
+      <>
+        <Card.Heading>{loremIpsumSentence}</Card.Heading>
+        <LoremIpsum/>
+      </>
+    ),
+  },
+};
+
+export const CardWithHeadingLink: Story = {
+  decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
+  args: {
+    children: (
+      <>
+        <Card.HeadingLink Link={DummyBkLinkWithNotify}>A heading that acts as a link</Card.HeadingLink>
+        <LoremIpsum/>
+      </>
+    ),
+  },
+};
+
+export const CardWithHeadingLinkOverflow: Story = {
+  decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
+  args: {
+    children: (
+      <>
+        <Card.HeadingLink Link={DummyBkLinkWithNotify}>{loremIpsumSentence}</Card.HeadingLink>
+        <LoremIpsum/>
+      </>
+    ),
+  },
+};
+
+export const CardWithHorizontalSeparator: Story = {
+  decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
+  args: {
+    children: (
+      <>
+        <Card.Heading>Heading</Card.Heading>
+        <LoremIpsum/>
+        <hr/>
+        <LoremIpsum/>
+      </>
+    ),
+  },
 };
 
 /** Multiple cards in a grid. */
-export const Multiple: Story = {
+export const CardGrid: Story = {
+  decorators: [
+    Story => (
+      <LayoutDecorator size="x-large" style={{ display: 'flex', flexFlow: 'column', gap: '1.2rem' }}>
+        <Banner variant="info" title="Note:">
+          Cards have no margin by default. Use a flex/grid container to space the cards.
+        </Banner>
+        <Story/>
+      </LayoutDecorator>
+    ),
+  ],
   render: (args) => (
     <div style={{
       display: 'grid',
@@ -50,18 +118,29 @@ export const Multiple: Story = {
       gridTemplateColumns: 'repeat(auto-fit, minmax(min(30vw, 100%), 1fr))',
     }}>
       <Card {...args}><Card.Heading>Card 1</Card.Heading>Card content.</Card>
-      <Card {...args}><Card.Heading>Card 2</Card.Heading>{lorem}</Card>
+      <Card {...args}><Card.Heading>Card 2</Card.Heading><LoremIpsum/></Card>
       <Card {...args}><Card.Heading>Card 3</Card.Heading>Card content.</Card>
     </div>
   ),
-  decorators: [
-    Story => (
-      <div style={{ inlineSize: '70vw', display: 'flex', flexFlow: 'column', gap: '1.2rem' }}>
-        <Banner variant="info" title="Note:">
-          Cards have no margin by default. Use a flex/grid container to space the cards.
-        </Banner>
-        <Story/>
-      </div>
+};
+
+export const CardNested: Story = {
+  decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
+  args: {
+    children: (
+      <>
+        <Card.Heading>A parent card</Card.Heading>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 50%)', gridGap: '1.5ch' }}>
+          <Card flat>
+            <Card.HeadingLink Link={DummyBkLinkWithNotify}>A nested card</Card.HeadingLink>
+            <LoremIpsum/>
+          </Card>
+          <Card flat>
+            <Card.HeadingLink Link={DummyBkLinkWithNotify}>Another nested card</Card.HeadingLink>
+            <LoremIpsum/>
+          </Card>
+        </div>
+      </>
     ),
-  ],
+  },
 };

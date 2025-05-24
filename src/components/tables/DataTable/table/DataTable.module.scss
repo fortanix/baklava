@@ -84,11 +84,6 @@
           &:hover,
           &.selected {
             background-color: bk.$theme-table-background-hover;
-            
-            // Item cell
-            > td {
-              font-size: bk.$font-size-m;
-            }
           }
         }
       }

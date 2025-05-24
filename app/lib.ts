@@ -12,6 +12,7 @@ export { BaklavaProvider } from '../src/context/BaklavaProvider.tsx';
 
 // Typography
 export { H1, H2, H3, H4, H5, H6 } from '../src/typography/Heading/Heading.tsx';
+export { Prose } from '../src/typography/Prose/Prose.tsx';
 
 // Actions
 export { Button } from '../src/components/actions/Button/Button.tsx';
@@ -53,8 +54,10 @@ export { TimePicker } from '../src/components/forms/controls/TimePicker/TimePick
 export { DatePickerRange } from '../src/components/forms/controls/DatePickerRange/DatePickerRange.tsx';
 export { ListBox } from '../src/components/forms/controls/ListBox/ListBox.tsx';
 export { ListBoxLazy } from '../src/components/forms/controls/ListBoxLazy/ListBoxLazy.tsx';
+export { ListBoxMulti } from '../src/components/forms/controls/ListBoxMulti/ListBoxMulti.tsx';
 export { ComboBox } from '../src/components/forms/controls/ComboBox/ComboBox.tsx';
 export { Select } from '../src/components/forms/controls/Select/Select.tsx';
+export { SelectMulti } from '../src/components/forms/controls/SelectMulti/SelectMulti.tsx';
 
 // Forms > Fields
 export { CheckboxField } from '../src/components/forms/fields/CheckboxField/CheckboxField.tsx';
@@ -70,6 +73,7 @@ export { ProgressBar } from '../src/components/graphics/ProgressBar/ProgressBar.
 export { Spinner } from '../src/components/graphics/Spinner/Spinner.tsx';
 
 // Text
+export { TextLine } from '../src/components/text/TextLine/TextLine.tsx';
 export { Tag } from '../src/components/text/Tag/Tag.tsx';
 
 // Lists
@@ -83,7 +87,9 @@ export { Tab, Tabs } from '../src/components/navigations/Tabs/Tabs.tsx';
 export { SpinnerModal } from '../src/components/overlays/SpinnerModal/SpinnerModal.tsx';
 export { DialogModal } from '../src/components/overlays/DialogModal/DialogModal.tsx';
 export { DialogOverlay } from '../src/components/overlays/DialogOverlay/DialogOverlay.tsx';
-export { DropdownMenuProvider } from '../src/components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
+export { MenuProvider } from '../src/components/overlays/MenuProvider/MenuProvider.tsx';
+export { MenuProvider as DropdownMenuProvider } from '../src/components/overlays/MenuProvider/MenuProvider.tsx'; // alias
+export { MenuMultiProvider } from '../src/components/overlays/MenuMultiProvider/MenuMultiProvider.tsx';
 export { ToastProvider, notify } from '../src/components/overlays/ToastProvider/ToastProvider.tsx';
 export { Tooltip } from '../src/components/overlays/Tooltip/Tooltip.tsx';
 export { TooltipProvider } from '../src/components/overlays/Tooltip/TooltipProvider.tsx';
@@ -96,6 +102,8 @@ export * as DataTablePlaceholder from '../src/components/tables/DataTable/table/
 export * as DataTableEager from '../src/components/tables/DataTable/DataTableEager.tsx';
 export * as DataTableLazy from '../src/components/tables/DataTable/DataTableLazy.tsx';
 export * as DataTableStream from '../src/components/tables/DataTable/DataTableStream.tsx';
+export * as DataTableFiltering from '../src/components/tables/DataTable/filtering/Filtering.ts';
+export * as DataTableFilterQuery from '../src/components/tables/MultiSearch/filterQuery.ts';
 export * as MultiSearch from '../src/components/tables/MultiSearch/MultiSearch.tsx';
 
 /**
@@ -106,13 +114,21 @@ export { DialogLayout } from '../src/layouts/DialogLayout/DialogLayout.tsx';
 
 export { FormLayout } from '../src/layouts/FormLayout/FormLayout.tsx';
 
+export { PublicLayout } from '../src/layouts/PublicLayout/PublicLayout.tsx';
+
 export { Breadcrumbs } from '../src/layouts/AppLayout/Breadcrumbs/Breadcrumbs.tsx';
 export { Header } from '../src/layouts/AppLayout/Header/Header.tsx';
 export { AccountSelector } from '../src/layouts/AppLayout/Header/AccountSelector.tsx';
 export { SolutionSelector } from '../src/layouts/AppLayout/Header/SolutionSelector.tsx';
 export { SysadminSwitcher } from '../src/layouts/AppLayout/Header/SysadminSwitcher.tsx';
 export { UserMenu } from '../src/layouts/AppLayout/Header/UserMenu.tsx';
-export { Logo } from '../src/fortanix/Logo/Logo.tsx';
 export { Nav } from '../src/layouts/AppLayout/Nav/Nav.tsx';
 export { Sidebar } from '../src/layouts/AppLayout/Sidebar/Sidebar.tsx';
 export { AppLayout } from '../src/layouts/AppLayout/AppLayout.tsx';
+
+/**
+ * Fortanix-specific.
+ */
+
+export { FortanixLogo } from '../src/fortanix/FortanixLogo/FortanixLogo.tsx';
+export { FortanixLogo as Logo } from '../src/fortanix/FortanixLogo/FortanixLogo.tsx'; // Temporarily alias as `Logo` until migrations are complete

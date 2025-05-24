@@ -5,7 +5,7 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { DummyLink } from '../../util/storybook/StorybookLink.tsx';
+import { DummyBkLinkUnstyled } from '../../util/storybook/StorybookLink.tsx';
 
 import { notify } from '../../components/overlays/ToastProvider/ToastProvider.tsx';
 import { OverflowTester } from '../../util/storybook/OverflowTester.tsx';
@@ -15,7 +15,7 @@ import { DialogModal } from '../../components/overlays/DialogModal/DialogModal.t
 
 import { Header } from './Header/Header.tsx';
 import { Sidebar } from './Sidebar/Sidebar.tsx';
-import { Logo } from '../../fortanix/Logo/Logo.tsx';
+import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
 import { Nav } from './Nav/Nav.tsx';
 import { UserMenu } from './Header/UserMenu.tsx';
 import { SolutionSelector } from './Header/SolutionSelector.tsx';
@@ -23,6 +23,7 @@ import { AccountSelector } from './Header/AccountSelector.tsx';
 import { SysadminSwitcher } from './Header/SysadminSwitcher.tsx';
 import { Breadcrumbs } from './Breadcrumbs/Breadcrumbs.tsx';
 import { AppLayout } from './AppLayout.tsx';
+import { Select } from '../../components/forms/controls/Select/Select.tsx';
 
 
 type AppLayoutArgs = React.ComponentProps<typeof AppLayout>;
@@ -45,9 +46,9 @@ export const Standard: Story = {
     children: (
       <>
         <AppLayout.Header>
-          <DummyLink slot="logo">
-            <Logo subtitle="Data Security Manager" subtitleTrademark={true}/>
-          </DummyLink>
+          <DummyBkLinkUnstyled slot="logo">
+            <FortanixLogo subtitle="Data Security Manager" subtitleTrademark={true}/>
+          </DummyBkLinkUnstyled>
           <Header slot="actions">
             <UserMenu userName="Anand Kashyap">
               <UserMenu.Action itemKey="profile" label="Profile"
@@ -91,15 +92,15 @@ export const Standard: Story = {
         <AppLayout.Sidebar>
           <Sidebar className="bk-app-layout__sidebar">
             <Nav aria-label="Overview and assessment" /* If there are multiple `Nav`s, they must get unique labels */>
-              <Nav.NavItem Link={DummyLink} active icon="dashboard" label="Overview" href="/dashboard"/>
-              <Nav.NavItem Link={DummyLink} icon="badge-assessment" label="Assessment" href="/assessment"/>
-              <Nav.NavItem Link={DummyLink} icon="services" label="Services" href="/services" disabled/>
+              <Nav.NavItem Link={DummyBkLinkUnstyled} active icon="dashboard" label="Overview" href="/dashboard"/>
+              <Nav.NavItem Link={DummyBkLinkUnstyled} icon="badge-assessment" label="Assessment" href="/assessment"/>
+              <Nav.NavItem Link={DummyBkLinkUnstyled} icon="services" label="Services" href="/services" disabled/>
             </Nav>
             <hr/>
             <Nav aria-label="Connections and policies">
-              <Nav.NavItem Link={DummyLink} icon="cloud-accounts" label="Connections" href="/connections"/>
-              <Nav.NavItem Link={DummyLink} icon="policy" label="Policy Center" href="/policy-center"/>
-              <Nav.NavItem Link={DummyLink} icon="user-authentication" label="Authentication" href="/authentication"/>
+              <Nav.NavItem Link={DummyBkLinkUnstyled} icon="cloud-accounts" label="Connections" href="/connections"/>
+              <Nav.NavItem Link={DummyBkLinkUnstyled} icon="policy" label="Policy Center" href="/policy-center"/>
+              <Nav.NavItem Link={DummyBkLinkUnstyled} icon="user-authentication" label="Authentication" href="/authentication"/>
             </Nav>
             <OverflowTester lines={45}/>
           </Sidebar>
@@ -124,12 +125,24 @@ export const Standard: Story = {
               title="Modal"
               trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={() => { activate(); }}/>}
             >
-              Test
+              Test modal
             </DialogModal>
+            
+            <Select
+              label="Test select"
+              placeholder="Test select"
+              options={
+                <>
+                  <Select.Option itemKey="option-1" label="Option 1">Option 1</Select.Option>
+                  <Select.Option itemKey="option-2" label="Option 2">Option 2</Select.Option>
+                  <Select.Option itemKey="option-3" label="Option 3">Option 3</Select.Option>
+                </>
+              }
+            />
           </Panel>
           
           {/* Clicking the link should scroll to the anchor, with enough top padding (`scroll-padding-top`) */}
-          <DummyLink id="anchor">Anchor</DummyLink>
+          <DummyBkLinkUnstyled id="anchor">Anchor</DummyBkLinkUnstyled>
           <OverflowTester openDefault/>
           <a href="#anchor">Scroll to anchor</a>
         </AppLayout.Content>
@@ -146,9 +159,9 @@ export const NoSidebar: Story = {
     children: (
       <>
         <AppLayout.Header>
-          <DummyLink slot="logo">
-            <Logo subtitle="Data Security Manager" subtitleTrademark={true}/>
-          </DummyLink>
+          <DummyBkLinkUnstyled slot="logo">
+            <FortanixLogo subtitle="Data Security Manager" subtitleTrademark={true}/>
+          </DummyBkLinkUnstyled>
           <Header slot="actions">
             <UserMenu userName="Anand Kashyap">
               <UserMenu.Action itemKey="profile" label="Profile"
@@ -214,7 +227,7 @@ export const NoSidebar: Story = {
           </Panel>
           
           {/* Clicking the link should scroll to the anchor, with enough top padding (`scroll-padding-top`) */}
-          <DummyLink id="anchor">Anchor</DummyLink>
+          <DummyBkLinkUnstyled id="anchor">Anchor</DummyBkLinkUnstyled>
           <OverflowTester openDefault/>
           <a href="#anchor">Scroll to anchor</a>
         </AppLayout.Content>

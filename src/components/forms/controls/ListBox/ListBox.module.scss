@@ -105,6 +105,7 @@
       }
       &:is(:disabled, .bk-list-box__item--disabled) {
         user-select: none;
+        cursor: not-allowed;
         color: bk.$theme-text-small-text-subtle;
       }
       &:focus {

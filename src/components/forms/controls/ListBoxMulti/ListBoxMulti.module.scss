@@ -1,0 +1,205 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-list-box-multi {
+    @include bk.component-base(bk-list-box-multi);
+    
+    --bk-list-box-multi-chin-size: #{bk.$spacing-2}; // There's a slight "chin" at the end of the list box
+    --bk-list-box-multi-item-padding-inline: #{bk.$spacing-3};
+    --bk-list-box-multi-item-padding-block: #{bk.$spacing-2};
+    --bk-list-box-multi-item-block-size: calc(#{bk.rem-from-px(1)} + var(--bk-list-box-multi-item-padding-block) * 2 + 1lh);
+    
+    overflow: hidden;
+    scroll-behavior: smooth;
+    
+    // Add a scroll padding, so that focusing items will scroll them into view even if there are sticky items
+    --sticky-items-start: 1; // Increase this if there is more than one sticky item
+    scroll-padding-block-start: calc(var(--sticky-items-start) * var(--bk-list-box-multi-item-block-size));
+    --sticky-items-end: 1; // Increase this if there is more than one sticky item
+    scroll-padding-block-end: calc(
+      var(--sticky-items-end) * var(--bk-list-box-multi-item-block-size) + var(--bk-list-box-multi-chin-size)
+    );
+    
+    min-inline-size: 34ch;
+    max-inline-size: 80svi;
+    min-block-size: 2lh;
+    max-block-size: 18lh;
+    padding-block-end: var(--bk-list-box-multi-chin-size);
+    
+    background: bk.$theme-dropdown-menu-menu-background-default;
+    border: bk.rem-from-px(1) solid bk.$theme-dropdown-menu-menu-border-default;
+    color: bk.$theme-dropdown-menu-menu-text-default;
+    
+    border-radius: bk.$radius-3;
+    
+    // For use in popovers
+    &[data-placement^="top"] { border-end-start-radius: 0; border-end-end-radius: 0; }
+    &[data-placement^="right"] { border-start-start-radius: 0; border-end-start-radius: 0; }
+    &[data-placement^="bottom"] { border-start-start-radius: 0; border-start-end-radius: 0; }
+    &[data-placement^="left"] { border-start-end-radius: 0; border-end-end-radius: 0; }
+    
+    &, > [role="group"] {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .bk-list-box-multi__item {
+      @include bk.focus-hidden; // Make sure the default `Button` focus styling is not applied (e.g. through shift key)
+      
+      // https://github.com/TanStack/virtual/issues/860
+      contain: paint;
+      will-change: transform;
+      
+      // FIXME: enabling this causes a strange issue with keyboard navigation (scrolling goes too far down/up)
+      //content-visibility: auto;
+      // Border + padding + content
+      //contain-intrinsic-block-size: calc(bk.rem-from-px(1) + var(--bk-list-box-multi-item-padding-block) * 2 + 1lh);
+      
+      padding: var(--bk-list-box-multi-item-padding-block) var(--bk-list-box-multi-item-padding-inline);
+      background: bk.$theme-dropdown-menu-menu-background-default;
+      
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: bk.$sizing-2;
+      
+      @include bk.font(bk.$font-family-body);
+      font-size: bk.$font-size-m;
+      
+      > .bk-list-box-multi__item__label {
+        @include bk.text-one-line($include-padding: false);
+      }
+      
+      > .bk-list-box-multi__item__icon {
+        &.bk-list-box-multi__item__icon--highlight {
+          --bk-icon-accent-color: color-mix(
+            in oklch, #{bk.$theme-dropdown-menu-menu-icon-background-default}, 30% transparent
+          );
+          padding: 4px;
+        }
+      }
+      
+      // Add a separator between each item
+      &:not(:nth-child(1 of .bk-list-box-multi__item)) {
+        border-block-start: bk.$size-1 solid bk.$theme-dropdown-menu-menu-border-default;
+      }
+      
+      &:not(.bk-list-box-multi__item--static) {
+        &:not(:disabled, .bk-list-box-multi__item--disabled):hover {
+          background: bk.$theme-dropdown-menu-menu-background-hover;
+        }
+        
+        @media (prefers-reduced-motion: no-preference) {
+          transition: box-shadow 150ms ease-in;
+        }
+      }
+      &:is(:disabled, .bk-list-box-multi__item--disabled) {
+        &:is(:disabled, .bk-list-box-multi__item--disabled) {
+          user-select: none;
+          cursor: not-allowed;
+          color: bk.$theme-text-small-text-subtle;
+        }
+      }
+      &:focus {
+        &:not(.bk-list-box-multi__item--disabled) {
+          background: bk.$theme-dropdown-menu-menu-background-focused;
+        }
+      }
+      
+      &:focus-visible {
+        background: bk.$theme-dropdown-menu-menu-background-focused;
+        
+        // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
+        outline: var(--bk-focus-outline-width) solid var(--bk-focus-outline-color) !important;
+        // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
+        outline-offset: calc(-1 * var(--bk-focus-outline-width)) !important;
+      }
+      
+      &.bk-list-box-multi__item--option {
+        // Options get indented a little bit more
+        padding-inline-start: calc(var(--bk-list-box-multi-item-padding-inline) + bk.$spacing-2);
+      }
+      
+      &.bk-list-box-multi__item--header {
+        user-select: none;
+        
+        color: bk.$theme-text-small-text-subtle;
+        font-size: bk.$font-size-s;
+        text-transform: uppercase;
+        
+        &.bk-list-box-multi__item--sticky-start {
+          position: sticky;
+          inset-block-start: 0;
+          z-index: 1;
+          
+          @include bk.scroll-shadow($dir: start);
+        }
+        
+        /* In the future, we could use a scroll state query to add a shadow while stuck
+        @container scroll-state(stuck: top) {
+          box-shadow: ...
+        }
+        */
+      }
+      
+      &.bk-list-box-multi__item--action {
+        user-select: none;
+        
+        // Actions (non-sticky) get indented a little bit more
+        padding-inline-start: calc(var(--bk-list-box-multi-item-padding-inline) + bk.$spacing-2);
+      }
+      
+      &.bk-list-box-multi__item--loading {
+        user-select: none;
+        
+        color: bk.$theme-text-small-text-subtle;
+        font-size: bk.$font-size-s;
+        text-transform: uppercase;
+      }
+    }
+    
+    // Wrapper for sticky footer items. Need a wrapper element for this, otherwise all the sticky elements will
+    // overlap each other. We want them to stack.
+    .bk-list-box-multi__footer-actions {
+      // Place at the end of the list. Needed for the empty placeholder position. Everything else has `order: 0`.
+      order: 1;
+      
+      position: sticky;
+      inset-block-end: 0;
+      z-index: 1;
+      
+      @include bk.scroll-shadow($dir: end);
+      background: bk.$theme-dropdown-menu-menu-background-default;
+      
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      
+      .bk-list-box-multi__item--action {
+        padding-inline-start: var(--bk-list-box-multi-item-padding-inline); // Reset the item inset
+        
+        font-weight: bk.$font-weight-semibold;
+        font-size: bk.$font-size-s;
+        text-transform: uppercase;
+      }
+      
+      // Draw a "chin" so that it covers the scrolling items behind it
+      $chin-h: calc(var(--bk-list-box-multi-chin-size) + 1px); // Add 1px to work around pixel rounding issues
+      $chin-c: conic-gradient(bk.$theme-dropdown-menu-menu-background-default 0 0);
+      border-image: fill 0 / 0 / 0 0 $chin-h 0 $chin-c;
+    }
+    
+    &.bk-list-box-multi--empty {
+      .bk-list-box-multi__empty-placeholder {
+        color: bk.$theme-dropdown-menu-menu-text-empty;
+      }
+    }
+    
+    @include bk.focus-hidden;
+  }
+}

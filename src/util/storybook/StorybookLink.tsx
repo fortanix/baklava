@@ -4,6 +4,30 @@
 
 import * as React from 'react';
 
+import { notify } from '../../components/overlays/ToastProvider/ToastProvider.tsx';
+import { Link } from '../../components/actions/Link/Link.tsx';
 
-export const DummyLink = (props: React.ComponentProps<'a'>) =>
-  <a href="/" onClick={event => { event.preventDefault(); }} {...props}/>;
+
+const handleClick = (event: React.MouseEvent) => {
+  event.preventDefault();
+};
+const handleClickWithNotify = (event: React.MouseEvent) => {
+  event.preventDefault();
+  notify.info('Clicked the link');
+};
+
+type DummyLinkProps = React.ComponentProps<'a'>;
+export const DummyLink = (props: DummyLinkProps) =>
+  <a href="/" onClick={handleClick} {...props}/>;
+
+type DummyBkLinkProps = React.ComponentProps<typeof Link>;
+export const DummyBkLink = (props: DummyBkLinkProps) =>
+  <Link href="/" onClick={handleClick} {...props}/>;
+
+type DummyBkLinkWithNotifyProps = React.ComponentProps<typeof Link>;
+export const DummyBkLinkWithNotify = (props: DummyBkLinkWithNotifyProps) =>
+  <Link href="/" onClick={handleClickWithNotify} {...props}/>;
+
+type DummyBkLinkUnstyledProps = React.ComponentProps<typeof Link>;
+export const DummyBkLinkUnstyled = (props: DummyBkLinkUnstyledProps) =>
+  <Link unstyled href="/" onClick={handleClickWithNotify} {...props}/>;

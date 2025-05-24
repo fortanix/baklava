@@ -23,7 +23,7 @@ export type TooltipProviderProps = Omit<TooltipProps, 'children'> & {
    * The tooltip message. If `null`, the tooltip will not be shown at all. This is useful in case the tooltip should
    * be shown conditionally.
    */
-  tooltip: null | React.ReactNode,
+  tooltip: null | React.ReactNode | (() => React.ReactNode),
   
   /** Where to show the tooltip relative to the anchor. */
   // here we are not using Placement as exposed from Popover because Tooltip only supports a subset of Popover's default placements.
@@ -62,6 +62,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
   const {
     context,
     isMounted,
+    isOpen,
     refs,
     floatingStyles,
     getReferenceProps,
@@ -88,8 +89,14 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     }
   }, [isMounted, onTooltipActivated, onTooltipDeactivated]);
   
-  const renderTooltip = () => {
-    if (!isMounted || !tooltip) { return null; }
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Depend on `isOpen` to rerender content on open
+  const tooltipContent = React.useMemo(() => {
+    return typeof tooltip === 'function' ? tooltip() : tooltip;
+  }, [tooltip, isOpen]);
+  
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Need to exclude `tooltipProps`
+  const tooltipRendered = React.useMemo(() => {
+    if (!isMounted || !tooltipContent) { return null; }
     
     const arrowClassName = (() => {
       const placement = activePlacement.split('-')[0] as 'top' | 'right' | 'bottom' | 'left';
@@ -143,7 +150,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
         } as React.CSSProperties}
         size={size}
       >
-        {tooltip}
+        {tooltipContent}
         {/*
         Fake arrow element for position tracking, the real arrow is drawn using `border-image`.
         Note: `floating-ui` has a `FloatingArrow` component using a positioned <svg> arrow, but this doesn't work if
@@ -152,9 +159,20 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
         <span ref={arrowRef} hidden aria-hidden/>
       </Tooltip>
     );
-  };
+  }, [
+    isMounted,
+    tooltipContent,
+    activePlacement,
+    arrow,
+    floatingStyles,
+    getFloatingProps,
+    refs.setFloating,
+    size,
+    //tooltipProps, // Changes on every render
+  ]);
   
-  const renderAnchor = () => {
+  // Note: memoize this, so that the anchor does not get rerendered every time the floating element position changes
+  const anchorRendered = React.useMemo(() => {
     const renderPropArg: GetReferenceProps = (userProps?: undefined | React.HTMLProps<Element>) => {
       const userPropsRef: undefined | string | React.Ref<Element> = userProps?.ref ?? undefined;
       if (typeof userPropsRef === 'string') {
@@ -184,12 +202,16 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     
     console.error(`Invalid children passed to TooltipContainer, expected a render prop or single child element.`);
     return children;
-  };
+  }, [
+    children,
+    refs.setReference,
+    getReferenceProps,
+  ]);
   
   return (
     <>
-      {renderTooltip()}
-      {renderAnchor()}
+      {tooltipRendered}
+      {anchorRendered}
     </>
   );
 };

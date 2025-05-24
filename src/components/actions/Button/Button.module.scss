@@ -16,7 +16,7 @@
     user-select: none;
     
     margin: 0;
-    padding: calc(bk.$spacing-2 - 0.125lh) bk.$spacing-3; /* Note: compensate for line-height difference with Figma */
+    padding: calc(bk.$spacing-2 - 0.2lh) bk.$spacing-3; /* Note: compensate for line-height difference with Figma */
     
     border: bk.$size-1 solid var(--bk-button-color-border);
     border-radius: bk.$radius-s;
@@ -31,9 +31,12 @@
     display: inline-flex;
     flex-flow: row wrap;
     align-items: center;
+    justify-content: center;
     gap: bk.$spacing-1;
+    text-align: center;
     
     @include bk.font(bk.$font-family-display, bk.$font-weight-semibold);
+    font-size: bk.$font-size-s;
     text-transform: uppercase;
     
     &.bk-button--tertiary {

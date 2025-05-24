@@ -66,6 +66,11 @@ a `light-dark()` expression in a variable and reuse that in a different theme. M
 // Styles to be applied specifically on the `:root` element (see `global.scss`)
 @mixin root-styles {
   @include theme('light dark'); // Indicates that we support light and dark themes (in no particular order)
+  
+  @media print {
+    color-scheme: only light;
+  }
+  
   background: var(--bk-page-color-background); // Must be set on the root so that we style the entire viewport
   color: var(--bk-page-color-text);
 }

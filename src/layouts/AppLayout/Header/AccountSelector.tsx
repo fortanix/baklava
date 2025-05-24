@@ -7,7 +7,7 @@ import * as React from 'react';
 
 import { Icon } from '../../../components/graphics/Icon/Icon.tsx';
 import { Button } from '../../../components/actions/Button/Button.tsx';
-import { type ItemDetails, DropdownMenuProvider } from '../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
+import { type ItemDetails, MenuProvider } from '../../../components/overlays/MenuProvider/MenuProvider.tsx';
 
 import cl from './AccountSelector.module.scss';
 
@@ -20,7 +20,7 @@ export type AccountSelectorProps = Omit<ComponentProps<typeof Button>, 'label' |
   unstyled?: undefined | boolean,
   
   /** The accounts list to be shown in the dropdown menu. */
-  accounts: React.ReactNode,
+  accounts: React.ComponentProps<typeof MenuProvider>['items'],
   
   /** The selected account. To access the selected account, pass a render prop. */
   children: (selectedAccount: null | ItemDetails) => React.ReactNode,
@@ -30,10 +30,11 @@ export const AccountSelector = Object.assign(
     const { unstyled = false, children, accounts, ...propsRest } = props;
     
     return (
-      <DropdownMenuProvider
+      <MenuProvider
         label="Account selector"
         placement="bottom-start"
         items={accounts}
+        offset={7}
       >
         {({ props, selectedOption }) =>
           <Button unstyled
@@ -49,13 +50,13 @@ export const AccountSelector = Object.assign(
             <Icon icon="caret-down" className={cx(cl['bk-account-selector__caret'])}/>
           </Button>
         }
-      </DropdownMenuProvider>
+      </MenuProvider>
     );
   },
   {
-    Header: DropdownMenuProvider.Header,
-    Option: DropdownMenuProvider.Option,
-    Action: DropdownMenuProvider.Action,
-    FooterActions: DropdownMenuProvider.FooterActions,
+    Header: MenuProvider.Header,
+    Option: MenuProvider.Option,
+    Action: MenuProvider.Action,
+    FooterActions: MenuProvider.FooterActions,
   },
 );

@@ -58,7 +58,7 @@
       block-size: auto;
       
       // stylelint-disable-next-line declaration-no-important -- Using box-shadow as shadow rather than as focus outline
-      box-shadow: rgba(0 0 0 / 35%) 0 bk.rem-from-px(5) bk.rem-from-px(15) !important;
+      box-shadow: rgb(0 0 0 / 35%) 0 bk.rem-from-px(5) bk.rem-from-px(15) !important;
       
       --bk-dialog-overlay-slide-over-size: 0.8;
       &.bk-dialog-overlay--small { --bk-dialog-overlay-slide-over-size: 0.3; }

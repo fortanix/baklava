@@ -8,12 +8,8 @@
   .bk-form-layout {
     @include bk.component-base(bk-form-layout);
     
-    min-inline-size: 300px;
-    
     display: flex;
     flex-direction: column;
     gap: bk.$sizing-m;
-    
-    padding-block: 1px;
   }
 }

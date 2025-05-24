@@ -57,6 +57,7 @@ const preview = {
             ],
             'text',
             [
+              'TextLine',
               'Tag',
             ],
             'containers',
@@ -82,7 +83,8 @@ const preview = {
               'DialogOverlay',
               'ToastProvider',
               'Tooltip',
-              'DropdownMenu',
+              'MenuProvider',
+              'MenuMultiProvider',
             ],
             'lists',
             [
@@ -120,8 +122,10 @@ const preview = {
                 'TextArea',
                 'ListBox',
                 'ListBoxLazy',
+                'ListBoxMulti',
                 'ComboBox',
                 'Select',
+                'SelectMulti',
                 'DatePicker',
                 'DatePickerRange',
                 'TimePicker',
@@ -155,6 +159,7 @@ const preview = {
           [
             'FormLayout',
             'DialogLayout',
+            'PublicLayout',
             'AppLayout',
             [
               'Logo',
