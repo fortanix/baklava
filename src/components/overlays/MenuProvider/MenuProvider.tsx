@@ -413,6 +413,7 @@ export const MenuProvider = Object.assign(
     );
   },
   {
+    Static: ListBox.Static,
     Option: ListBox.Option,
     Action: ListBox.Action,
     Header: ListBox.Header,

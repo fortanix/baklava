@@ -147,20 +147,19 @@ export const ListBoxMultiWithCustomIcon: Story = {
   },
 };
 
-export const ListBoxMultiWithCustomItem: Story = {
+export const ListBoxWithCustomItems: Story = {
   args: {
-    defaultSelected: new Set(),
+    defaultSelected: new Set([]),
     children: (
       <>
-        <ListBoxMulti.Header unstyled itemKey="item-1" label="Custom Header">
-          <InputSearch/>
-        </ListBoxMulti.Header>
-        <ListBoxMulti.Action unstyled itemKey="item-2" label="Custom option" onActivate={() => {}}>
-          Custom option
-        </ListBoxMulti.Action>
-        <ListBoxMulti.Action unstyled itemKey="item-3" label="Another custom option" onActivate={() => {}}>
-          Another custom option
-        </ListBoxMulti.Action>
+        <ListBoxMulti.Static sticky="start">
+          <InputSearch style={{ flexGrow: 1 }} placeholder="Sticky static item"/>
+        </ListBoxMulti.Static>
+        {Array.from({ length: 20 }, (_, i) => i).map(index => // A lot of items to test scroll for sticky item
+          <ListBoxMulti.Static key={index}>
+            Static item
+          </ListBoxMulti.Static>
+        )}
       </>
     ),
   },
