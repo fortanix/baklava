@@ -171,7 +171,7 @@ export const MenuProvider = Object.assign(
     const [shouldMountMenu] = useDebounce(isOpen, isOpen ? 0 : 1000);
     
     const renderDefaultSelected = (): null | string => {
-      const defaultSelectedKey = defaultSelected ?? null;
+      const defaultSelectedKey = typeof selected !== 'undefined' ? selected : (defaultSelected ?? null);
       return defaultSelectedKey === null ? null : (formatItemLabel?.(defaultSelectedKey) ?? defaultSelectedKey);
     };
     
