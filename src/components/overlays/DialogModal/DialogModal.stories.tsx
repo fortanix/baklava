@@ -10,6 +10,7 @@ import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 import { notify } from '../ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { AccountSelector } from '../../../layouts/AppLayout/Header/AccountSelector.tsx';
+import { TooltipProvider } from '../Tooltip/TooltipProvider.tsx';
 
 import { DialogModal } from './DialogModal.tsx';
 
@@ -89,6 +90,17 @@ export const DialogModalNested: Story = {
       >
         This is a submodal. Closing this modal should keep the outer modal still open.
       </DialogModal>
+    ),
+  },
+};
+
+export const DialogModalWithTooltip: Story = {
+  args: {
+    title: 'Modal with a tooltip',
+    children: (
+      <TooltipProvider tooltip="Test">
+        Hover over me
+      </TooltipProvider>
     ),
   },
 };
