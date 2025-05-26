@@ -23,6 +23,7 @@
     --pos-end: calc(100% - var(--r));
     --bk-switch-pos: var(--pos-start);
     
+    flex: 0;
     cursor: pointer;
     
     appearance: none;
