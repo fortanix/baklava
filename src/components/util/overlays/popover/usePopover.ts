@@ -66,9 +66,11 @@ export const usePopover = <E extends HTMLElement>(
   // biome-ignore lint/correctness/useExhaustiveDependencies: Lists dependencies used in `sync`
   React.useEffect(sync, [controller.active, controller.deactivate, requestPopoverClose]);
   
-  // Handle popover `close` event. This event is called when the popover has already been closed (cannot be canceled).
-  // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/close_event
   const handlePopoverToggle = React.useCallback((event: React.ToggleEvent<E>) => {
+    // Note: it seems this event handler is also called for popovers/dialogs nested inside. Even though the event
+    // should not bubble?
+    if (event.target !== popoverRef.current) { return; }
+    
     // Sync with the controller
     if (event.newState === 'open') {
       controller.activate();

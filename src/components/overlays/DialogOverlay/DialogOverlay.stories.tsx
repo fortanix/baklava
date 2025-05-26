@@ -97,7 +97,7 @@ export const DialogOverlayWithTooltip: Story = {
     display: 'slide-over',
     children: (
       <TooltipProvider tooltip="Test">
-        Hover over me
+        <Button>Hover over me</Button>
       </TooltipProvider>
     ),
   },
