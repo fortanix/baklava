@@ -99,7 +99,7 @@ export const SelectMulti = Object.assign(
         {({ props, open, requestOpen, selectedOptions }) => {
           // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
           const { ref: anchorRef, ...anchorProps } = props({
-            placeholder: 'Select an option',
+            placeholder: 'Select options',
             'aria-disabled': true,
             readOnly: true, // Make the input non-editable, but still focusable
             ...propsRest,

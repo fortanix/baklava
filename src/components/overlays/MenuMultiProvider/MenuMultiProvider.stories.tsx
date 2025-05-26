@@ -17,20 +17,20 @@ type Story = StoryObj<MenuMultiProviderArgs>;
 
 // Sample options
 const fruits = {
-  apple: 'Apple',
-  apricot: 'Apricot',
-  blueberry: 'Blueberry',
-  cherry: 'Cherry',
-  durian: 'Durian',
-  jackfruit: 'Jackfruit',
-  melon: 'Melon',
-  mango: 'Mango',
-  mangosteen: 'Mangosteen',
-  orange: 'Orange',
-  peach: 'Peach',
-  pineapple: 'Pineapple',
-  razzberry: 'Razzberry',
-  strawberry: 'Strawberry',
+  'item-apple': 'Apple',
+  'item-apricot': 'Apricot',
+  'item-blueberry': 'Blueberry',
+  'item-cherry': 'Cherry',
+  'item-durian': 'Durian',
+  'item-jackfruit': 'Jackfruit',
+  'item-melon': 'Melon',
+  'item-mango': 'Mango',
+  'item-mangosteen': 'Mangosteen',
+  'item-orange': 'Orange',
+  'item-peach': 'Peach',
+  'item-pineapple': 'Pineapple',
+  'item-razzberry': 'Razzberry',
+  'item-strawberry': 'Strawberry',
 };
 type FruitKey = keyof typeof fruits;
 const formatFruitLabel = (itemKey: ItemKey): string => fruits[itemKey as FruitKey] ?? 'UNKNOWN';
@@ -44,12 +44,16 @@ export default {
   argTypes: {
   },
   args: {
-    label: 'Test dropdown menu provider',
-    children: ({ props, selectedOptions }) => (
-      <Button kind="primary" {...props()}>
-        {selectedOptions.size > 0 ? `Selected: ${selectedOptions.size}` : 'Open dropdown'}
-      </Button>
-    ),
+    label: 'Test menu provider',
+    formatItemLabel: formatFruitLabel,
+    children: ({ props, selectedOptions }) => {
+      const selectedLabels = [...selectedOptions.values()].map(({ label }) => label).join(', ');
+      return (
+        <Button kind="primary" {...props()}>
+          {selectedOptions.size > 0 ? `Selected: ${selectedLabels}` : 'Open dropdown'}
+        </Button>
+      );
+    },
     items: (
       <>
         {Object.entries(fruits).map(([fruitKey, fruitName]) =>
@@ -63,18 +67,11 @@ export default {
 } satisfies Meta<MenuMultiProviderArgs>;
 
 
-export const MenuMultiProviderStandard: Story = {
+export const MenuMultiProviderStandard: Story = {};
+
+export const MenuMultiProviderWithDefault: Story = {
   args: {
-    formatItemLabel: formatFruitLabel,
-    defaultSelected: new Set(['blueberry', 'cherry', 'mango']),
-    children: ({ props, selectedOptions }) => {
-      const selectedLabels = [...selectedOptions.values()].map(({ label }) => label);
-      return (
-        <Button kind="primary" {...props()}>
-          {selectedOptions.size > 0 ? `Selected: ${selectedLabels.join(', ')}` : 'Open dropdown'}
-        </Button>
-      );
-    },
+    defaultSelected: new Set(['item-blueberry', 'item-cherry', 'item-mango']),
   },
 };
 
@@ -86,6 +83,7 @@ export const MenuMultiProviderWithInput: Story = {
           <InputSearch/>
         </MenuMultiProvider.Header>
         <MenuMultiProvider.Option itemKey="option-1" label="Option 1"/>
+        <MenuMultiProvider.Option itemKey="option-2" label="Option 2"/>
       </>
     ),
   }
@@ -119,39 +117,58 @@ export const MenuMultiProviderWithAction: Story = {
   },
 };
 
-export const MenuMultiProviderWithClickAction: Story = {
+export const MenuMultiProviderWithClickTrigger: Story = {
   args: {
     action: 'click',
   },
 };
 
-export const MenuMultiProviderWithFocusAction: Story = {
+export const MenuMultiProviderWithFocusTrigger: Story = {
   args: {
     action: 'focus',
   },
 };
 
-export const MenuMultiProviderWithHoverAction: Story = {
+export const MenuMultiProviderWithHoverTrigger: Story = {
   args: {
     action: 'hover',
   },
 };
 
 const MenuMultiProviderControlledC = (props: React.ComponentProps<typeof MenuMultiProvider>) => {
-  const [selectedOptions, setSelectedOptions] = React.useState<Map<ItemKey, ItemDetails>>(new Map());
+  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(new Set());
   return (
     <>
-      <p>Selected: {[...selectedOptions.values()].map(({ label }) => label || '(unknown)').join(', ')}</p>
+      <p>Selected: {[...selectedOptions].map(itemKey => formatFruitLabel(itemKey)).join(', ') || '(none)'}</p>
       <MenuMultiProvider
         {...props}
-        selected={new Set(selectedOptions.keys())}
-        onSelect={(args) => {
-          console.log(args);
-        }}
+        selected={selectedOptions}
+        onSelect={setSelectedOptions}
       />
     </>
   );
 };
 export const MenuMultiProviderControlled: Story = {
   render: args => <MenuMultiProviderControlledC {...args}/>,
+};
+
+const MenuMultiProviderControlledWithDefaultC = (props: React.ComponentProps<typeof MenuMultiProvider>) => {
+  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(new Set([
+    'item-blueberry',
+    'item-cherry',
+    'item-mango',
+  ]));
+  return (
+    <>
+      <p>Selected: {[...selectedOptions].map(itemKey => formatFruitLabel(itemKey)).join(', ') || '(none)'}</p>
+      <MenuMultiProvider
+        {...props}
+        selected={selectedOptions}
+        onSelect={setSelectedOptions}
+      />
+    </>
+  );
+};
+export const MenuMultiProviderControlledWithDefault: Story = {
+  render: args => <MenuMultiProviderControlledWithDefaultC {...args}/>,
 };

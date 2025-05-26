@@ -46,7 +46,6 @@ export default {
   args: {
     label: 'Test select',
     formatItemLabel: formatFruitLabel,
-    defaultSelected: 'blueberry',
     options: (
       <>
         {Object.entries(fruits).map(([fruitKey, fruitName]) =>
@@ -61,12 +60,24 @@ export default {
 
 export const SelectStandard: Story = {};
 
+export const SelectStandardWithDefault: Story = {
+  args: {
+    defaultSelected: 'blueberry',
+  },
+};
+
 const CustomInput: React.ComponentProps<typeof Select>['Input'] = props => (
   <Input {...props} icon="bell" iconLabel="Bell"/>
 );
 export const SelectWithCustomInput: Story = {
   args: {
     Input: CustomInput,
+  },
+};
+export const SelectWithCustomInputAndDefault: Story = {
+  args: {
+    Input: CustomInput,
+    defaultSelected: 'blueberry',
   },
 };
 
@@ -101,8 +112,8 @@ export const SelectWithAutoResize: Story = {
   },
 };
 
-const SelectControlledC = (props: React.ComponentProps<typeof Select>) => {
-  const [selectedOption, setSelectedOption] = React.useState<null | FruitKey>('blueberry');
+const SelectControlledC = ({ defaultSelected, ...props }: React.ComponentProps<typeof Select>) => {
+  const [selectedOption, setSelectedOption] = React.useState<null | FruitKey>((defaultSelected as FruitKey) ?? null);
   
   return (
     <>
@@ -122,6 +133,9 @@ const SelectControlledC = (props: React.ComponentProps<typeof Select>) => {
 };
 export const SelectControlled: Story = {
   render: args => <SelectControlledC {...args}/>,
+};
+export const SelectControlledWithDefault: Story = {
+  render: args => <SelectControlledC {...args} defaultSelected="blueberry"/>,
 };
 
 export const SelectInForm: Story = {

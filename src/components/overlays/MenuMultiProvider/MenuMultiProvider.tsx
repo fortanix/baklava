@@ -171,7 +171,9 @@ export const MenuMultiProvider = Object.assign(
     
     // biome-ignore lint/correctness/useExhaustiveDependencies: Should not depend on `defaultSelected` (run once only)
     const defaultSelectedLabels = React.useMemo((): Map<ItemKey, string> => {
-      const defaultSelectedKeys: null | Set<ItemKey> = defaultSelected ?? null;
+      const defaultSelectedKeys: null | Set<ItemKey> = typeof selected !== 'undefined'
+        ? selected
+        : (defaultSelected ?? null);
       if (defaultSelectedKeys === null) { return new Map(); }
       
       return new Map([...defaultSelectedKeys].map(itemKey => {
