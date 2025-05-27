@@ -20,9 +20,17 @@ export type NavItemProps = ComponentProps<'li'> & {
     Pick<React.ComponentProps<'a'>, 'tabIndex' | 'aria-disabled' | 'href' | 'className' | 'onClick'>
   >,
   
+  /** The target of the nav item link. */
   href?: undefined | string,
+  
+  /** An icon to show before the link label. */
   icon?: undefined | IconName,
+  
+  /** The nav item link label. */
   label?: undefined | string,
+  
+  /** Any additional indicators to be shown after the label. */
+  indicators?: undefined | React.ReactNode,
   
   /** Whether this nav item is the currently active one. Default: false. */
   active?: undefined | boolean,
@@ -37,8 +45,9 @@ export const NavItem = (props: NavItemProps) => {
     Link: LinkP,
     className,
     href,
-    label,
     icon,
+    label,
+    indicators,
     active = false,
     disabled = false,
     ...propsRest
@@ -65,6 +74,7 @@ export const NavItem = (props: NavItemProps) => {
         >
           {icon && <Icon className={cx(cl['bk-nav__item__link__icon'])} icon={icon}/>}
           <span className={cx(cl['bk-nav__item__link__label'])}>{label}</span>
+          {indicators && <span className={cx(cl['bk-nav__item__link__indicators'])}>{indicators}</span>}
         </LinkC>
       );
     }

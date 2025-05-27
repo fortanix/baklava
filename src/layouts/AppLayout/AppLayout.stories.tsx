@@ -12,6 +12,7 @@ import { OverflowTester } from '../../util/storybook/OverflowTester.tsx';
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
 import { DialogModal } from '../../components/overlays/DialogModal/DialogModal.tsx';
+import { Spinner } from '../../components/graphics/Spinner/Spinner.tsx';
 
 import { Header } from './Header/Header.tsx';
 import { Sidebar } from './Sidebar/Sidebar.tsx';
@@ -95,6 +96,9 @@ export const Standard: Story = {
               <Nav.NavItem Link={DummyBkLinkUnstyled} active icon="dashboard" label="Overview" href="/dashboard"/>
               <Nav.NavItem Link={DummyBkLinkUnstyled} icon="badge-assessment" label="Assessment" href="/assessment"/>
               <Nav.NavItem Link={DummyBkLinkUnstyled} icon="services" label="Services" href="/services" disabled/>
+              <Nav.NavItem Link={DummyBkLinkUnstyled} icon="dashboard" label="Activities" href="/activities"
+                indicators={<Spinner inline/>}
+              />
             </Nav>
             <hr/>
             <Nav aria-label="Connections and policies">
