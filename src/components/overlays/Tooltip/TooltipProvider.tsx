@@ -7,7 +7,11 @@ import { classNames as cx, type ClassNameArgument } from '../../../util/componen
 import { mergeRefs } from '../../../util/reactUtil.ts';
 import * as React from 'react';
 
-import { useFloatingElement, useFloatingElementArrow } from '../../util/overlays/floating-ui/useFloatingElement.tsx';
+import {
+  type UseFloatingElementOptions,
+  useFloatingElement,
+  useFloatingElementArrow,
+} from '../../util/overlays/floating-ui/useFloatingElement.tsx';
 import { type TooltipProps, TooltipClassNames, Tooltip } from './Tooltip.tsx';
 
 
@@ -24,6 +28,9 @@ export type TooltipProviderProps = Omit<TooltipProps, 'children'> & {
    * be shown conditionally.
    */
   tooltip: null | React.ReactNode | (() => React.ReactNode),
+  
+  /** The action that should trigger the menu to open. Default: 'hover'. */
+  triggerAction?: undefined | UseFloatingElementOptions['action'],
   
   /** Where to show the tooltip relative to the anchor. */
   // here we are not using Placement as exposed from Popover because Tooltip only supports a subset of Popover's default placements.
@@ -48,6 +55,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
   const {
     children,
     tooltip,
+    triggerAction = 'hover',
     placement,
     size,
     enablePreciseTracking = false,
@@ -70,7 +78,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     placement: activePlacement,
   } = useFloatingElement({
     role: 'tooltip',
-    action: 'hover',
+    action: triggerAction,
     keyboardInteractions: 'default',
     placement,
     offset: 14,
