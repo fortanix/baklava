@@ -93,8 +93,6 @@
     grid-template-rows: minmax(100cqb, 1fr);
     
     .bk-public-layout__content {
-      min-block-size: max-content;
-      
       padding-block: bk.$spacing-13;
       padding-inline: calc(bk.$spacing-3 + 3cqi);
       
@@ -105,7 +103,7 @@
       
       @include bk.flex-column;
       align-items: center;
-      justify-content: center;
+      justify-content: safe center; // Note: needs `safe` keyword so as not cause overflow on narrow screen height
       
       > header {
         margin-block-end: bk.$spacing-10;
