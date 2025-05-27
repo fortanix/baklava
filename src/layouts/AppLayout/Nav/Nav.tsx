@@ -74,7 +74,7 @@ export const NavItem = (props: NavItemProps) => {
         >
           {icon && <Icon className={cx(cl['bk-nav__item__link__icon'])} icon={icon}/>}
           <span className={cx(cl['bk-nav__item__link__label'])}>{label}</span>
-          {indicators && <span className={cx(cl['bk-nav__item__link__indicators'])}>{indicators}</span>}
+          {indicators}
         </LinkC>
       );
     }
