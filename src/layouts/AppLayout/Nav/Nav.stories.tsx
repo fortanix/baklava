@@ -16,7 +16,7 @@ type Story = StoryObj<LayoutArgs>;
 export default {
   component: Nav,
   parameters: {
-    layout: 'fullscreen',
+    layout: 'centered',
   },
   tags: ['autodocs'],
   argTypes: {
@@ -30,8 +30,17 @@ export default {
       </>
     ),
   },
-  render: () => <Nav/>,
+  render: args => <Nav {...args}/>,
 } satisfies Meta<LayoutArgs>;
 
 
-export const Standard: Story = {};
+export const NavStandard: Story = {};
+
+const CustomIcon: React.ComponentProps<typeof Nav.NavItem>['Icon'] = ({ icon }) => <span>{icon}</span>;
+export const NavItemWithCustomIcon: Story = {
+  args: {
+    children: (
+      <Nav.NavItem Icon={CustomIcon} iconProps={{ icon: "🍕" }} label="Overview" href="/dashboard"/>
+    ),
+  },
+};

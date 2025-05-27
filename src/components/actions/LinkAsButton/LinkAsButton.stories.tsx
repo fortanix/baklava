@@ -5,6 +5,7 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
+import { DummyBkLinkWithNotify } from '../../../util/storybook/StorybookLink.tsx';
 
 import { LinkAsButton } from './LinkAsButton.tsx';
 
@@ -20,7 +21,6 @@ export default {
   tags: ['autodocs'],
   argTypes: {},
   args: {
-    unstyled: false,
     kind: 'primary',
     label: 'Link',
     href: 'https://fortanix.com',
@@ -31,9 +31,16 @@ export default {
 } satisfies Meta<LinkAsButtonArgs>;
 
 
-export const Standard: Story = {};
+export const LinkAsButtonStandard: Story = {};
 
-export const Variants: Story = {
+export const LinkAsButtonWithCustomLink: Story = {
+  args: {
+    Link: DummyBkLinkWithNotify,
+    onClick: undefined,
+  },
+};
+
+export const LinkAsButtonVariants: Story = {
   render: (args) => (
     <div style={{
       display: 'grid',
@@ -60,7 +67,7 @@ export const Variants: Story = {
  * The `download` property can be used to trigger the download of a file, where `download` specifies the file name and
  * `href` contains the content of the file to be downloaded as a `data:` URL.
  */
-export const Download: Story = {
+export const LinkAsButtonWithDownload: Story = {
   args: {
     kind: 'tertiary',
     download: 'my_file.txt',

@@ -5,16 +5,15 @@
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import * as React from 'react';
 
-import { type LinkProps, Link } from '../Link/Link.tsx';
+import { Link as LinkDefault } from '../Link/Link.tsx';
 import { type ButtonProps, ButtonClassNames } from '../Button/Button.tsx';
 
 
-/**
- * A link, but with the visual appearance of a button.
- */
-export type LinkAsButtonProps = React.PropsWithChildren<ComponentProps<'a'> & {
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
+type LinkProps = React.ComponentProps<typeof LinkDefault>;
+
+type LinkAsButtonProps = LinkProps & {
+  /** A custom `Link` component. Optional. */
+  Link?: undefined | React.ComponentType<LinkProps>,
   
   // Link props
   //size?: LinkProps['size'], // Not relevant
@@ -24,17 +23,16 @@ export type LinkAsButtonProps = React.PropsWithChildren<ComponentProps<'a'> & {
   kind?: NonNullable<ButtonProps['kind']>,
   nonactive?: NonNullable<ButtonProps['nonactive']>,
   disabled?: NonNullable<ButtonProps['disabled']>,
-}>;
-
+};
 
 /**
- * Link component, but with the appearance of a button.
+ * Link component, but with the visual appearance of a button.
  */
 export const LinkAsButton = (props: LinkAsButtonProps) => {
   const {
-    unstyled = false,
+    Link = LinkDefault,
     label,
-    kind,
+    kind = 'tertiary',
     nonactive,
     disabled,
     ...propsRest
@@ -42,19 +40,20 @@ export const LinkAsButton = (props: LinkAsButtonProps) => {
   
   return (
     <Link
+      label={label}
+      size="medium"
       {...propsRest}
       unstyled
-      label={label}
-      className={cx({
-        bk: true,
-        [ButtonClassNames['bk-button']]: !unstyled,
-        [ButtonClassNames['bk-button--primary']]: kind === 'primary',
-        [ButtonClassNames['bk-button--secondary']]: kind === 'secondary',
-        [ButtonClassNames['bk-button--tertiary']]: kind === 'tertiary',
-        [ButtonClassNames['bk-button--nonactive']]: nonactive,
-        [ButtonClassNames['bk-button--disabled']]: disabled,
-      }, props.className)}
-      size="medium"
+      className={cx(
+        'bk',
+        ButtonClassNames['bk-button'],
+        { [ButtonClassNames['bk-button--primary']]: kind === 'primary' },
+        { [ButtonClassNames['bk-button--secondary']]: kind === 'secondary' },
+        { [ButtonClassNames['bk-button--tertiary']]: kind === 'tertiary' },
+        { [ButtonClassNames['bk-button--nonactive']]: nonactive },
+        { [ButtonClassNames['bk-button--disabled']]: disabled },
+        props.className,
+      )}
     />
   );
 };

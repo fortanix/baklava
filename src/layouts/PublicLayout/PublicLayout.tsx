@@ -42,7 +42,7 @@ type HeadingProps = ComponentProps<'header'>;
 const Heading = (props: HeadingProps) => {
   const { children, ...propsRest } = props;
   return (
-    <header {...propsRest} className={cx(propsRest.className)}>
+    <header {...propsRest} className={cx(cl['bk-public-layout__content__header'], propsRest.className)}>
       {children}
     </header>
   );

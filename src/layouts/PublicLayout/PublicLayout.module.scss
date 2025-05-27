@@ -105,8 +105,9 @@
       align-items: center;
       justify-content: safe center; // Note: needs `safe` keyword so as not cause overflow on narrow screen height
       
-      > header {
+      .bk-public-layout__content__header {
         margin-block-end: bk.$spacing-10;
+        text-align: center;
         
         @include bk.flex-column;
         align-items: center;
