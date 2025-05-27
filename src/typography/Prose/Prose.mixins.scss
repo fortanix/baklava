@@ -64,7 +64,7 @@
       
       // Nested lists
       > :is(ul, ol, dl):not(.bk) {
-        margin-block-start: calc(var(--bk-body-block-spacing) / 2);
+        margin-block-start: calc(var(--bk-body-block-spacing) / 3);
         margin-inline-start: var(--list-indent);
       }
     }
@@ -74,16 +74,16 @@
     // https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists
     list-style: disc outside;
     
-    /*
+    margin-inline-start: 3ch; // Make space for the `::marker`
+    
     > li:not(.bk)::marker {
       // Override the marker style so we customize the gap size
       // https://css-tricks.com/everything-you-need-to-know-about-the-gap-after-the-list-marker
-      content: '\2022' ' ';
+      content: '\2022\00A0\00A0';
       margin: 0; // Margin and padding are not supported by `::marker` currently
       font-size: 1.2em;
       line-height: 1;
     }
-    */
     
     > li:not(:first-of-type, .bk) { // Note: in the future we could use `margin-trim` instead
       margin-block-start: calc(var(--bk-body-block-spacing) / 4);
@@ -92,7 +92,9 @@
   &:is(ol) {
     // Note: do not use list-style: none, this causes accessibility issues:
     // https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists
-    list-style: decimal inside;
+    list-style: decimal outside;
+    
+    margin-inline-start: 3ch; // Make space for the `::marker`
     
     > li:not(:first-of-type, .bk) {
       margin-block-start: calc(var(--bk-body-block-spacing) / 4);
