@@ -29,3 +29,15 @@
   align-items: center;
   justify-content: center;
 }
+
+@mixin circle($size: 2.5rem) {
+  box-sizing: border-box; // Allow padding to shrink the contents, rather than expanding the circle itself
+  flex: none; // Do not allow this item to shrink/grow
+  block-size: $size;
+  inline-size: $size;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background-color: currentColor;
+  
+  @include flex-center;
+}
