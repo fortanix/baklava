@@ -412,9 +412,10 @@ export const MenuMultiProvider = Object.assign(
     );
   },
   {
+    Static: ListBoxMulti.Static,
     Option: ListBoxMulti.Option,
-    Action: ListBoxMulti.Action,
     Header: ListBoxMulti.Header,
+    Action: ListBoxMulti.Action,
     FooterActions: ListBoxMulti.FooterActions,
   },
 );
