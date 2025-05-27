@@ -140,6 +140,7 @@ export const RadioGroup = Object.assign(
             { [cl['bk-radio-group']]: !unstyled },
             { [cl['bk-radio-group--horizontal']]: orientation === 'horizontal' },
             { [cl['bk-radio-group--vertical']]: orientation === 'vertical' },
+            propsRest.className,
           )}
           contentClassName={cl['bk-radio-group__content']}
         >
