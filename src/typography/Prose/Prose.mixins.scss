@@ -65,7 +65,7 @@
       // Nested lists
       > :is(ul, ol, dl):not(.bk) {
         margin-block-start: calc(var(--bk-body-block-spacing) / 3);
-        margin-inline-start: var(--list-indent);
+        padding-inline-start: var(--list-indent);
       }
     }
   }
@@ -74,7 +74,7 @@
     // https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists
     list-style: disc outside;
     
-    margin-inline-start: 3ch; // Make space for the `::marker`
+    padding-inline-start: 3ch; // Make space for the `::marker`
     
     > li:not(.bk)::marker {
       // Override the marker style so we customize the gap size
@@ -94,7 +94,7 @@
     // https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists
     list-style: decimal outside;
     
-    margin-inline-start: 3ch; // Make space for the `::marker`
+    padding-inline-start: 3ch; // Make space for the `::marker`
     
     > li:not(:first-of-type, .bk) {
       margin-block-start: calc(var(--bk-body-block-spacing) / 4);
