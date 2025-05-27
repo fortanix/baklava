@@ -47,6 +47,35 @@ type ListBoxIcon = React.ComponentType<Pick<React.ComponentProps<typeof BkIcon>,
 
 
 //
+// Static item
+//
+
+export type StaticProps = ComponentProps<'div'> & {
+  /** Whether this component should be unstyled. */
+  unstyled?: undefined | boolean,
+  
+  /** Whether the item should stick on scroll. Default: false. */
+  sticky?: undefined | false | 'start',
+};
+/**
+ * A static item, that can be customized for any content that does not need to interact with the list box store.
+ */
+export const Static = ({ unstyled, sticky = false, ...propsRest }: StaticProps) => {
+  return (
+    <div
+      {...propsRest}
+      className={cx(
+        { [cl['bk-list-box__item']]: !unstyled },
+        cl['bk-list-box__item--static'],
+        { [cl['bk-list-box__item--sticky-start']]: sticky === 'start' },
+        propsRest.className,
+      )}
+    />
+  );
+};
+
+
+//
 // Option item
 //
 
@@ -487,11 +516,12 @@ export const ListBox = Object.assign(
     );
   },
   {
-    EmptyPlaceholder,
+    Static,
     Option,
     Header,
     Action,
     FooterAction,
     FooterActions,
+    EmptyPlaceholder,
   },
 );

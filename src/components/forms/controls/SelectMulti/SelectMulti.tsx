@@ -160,8 +160,9 @@ export const SelectMulti = Object.assign(
     );
   },
   {
-    Header: MenuMultiProvider.Header,
+    Static: MenuMultiProvider.Static,
     Option: MenuMultiProvider.Option,
+    Header: MenuMultiProvider.Header,
     Action: MenuMultiProvider.Action,
     FooterActions: MenuMultiProvider.FooterActions,
   },

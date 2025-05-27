@@ -144,19 +144,18 @@ export const ListBoxWithCustomIcon: Story = {
   },
 };
 
-export const ListBoxWithCustomItem: Story = {
+export const ListBoxWithCustomItems: Story = {
   args: {
     children: (
       <>
-        <ListBox.Header unstyled itemKey="item-1" label="Custom Header">
-          <InputSearch/>
-        </ListBox.Header>
-        <ListBox.Action unstyled itemKey="item-2" label="Custom option" onActivate={() => {}}>
-          Custom option
-        </ListBox.Action>
-        <ListBox.Action unstyled itemKey="item-3" label="Another custom option" onActivate={() => {}}>
-          Another custom option
-        </ListBox.Action>
+        <ListBox.Static sticky="start">
+          <InputSearch style={{ flexGrow: 1 }} placeholder="Sticky static item"/>
+        </ListBox.Static>
+        {Array.from({ length: 20 }, (_, i) => i).map(index => // A lot of items to test scroll for sticky item
+          <ListBox.Static key={index}>
+            Static item
+          </ListBox.Static>
+        )}
       </>
     ),
   },

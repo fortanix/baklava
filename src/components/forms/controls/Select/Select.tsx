@@ -151,8 +151,9 @@ export const Select = Object.assign(
     );
   },
   {
-    Header: MenuProvider.Header,
+    Static: MenuProvider.Static,
     Option: MenuProvider.Option,
+    Header: MenuProvider.Header,
     Action: MenuProvider.Action,
     FooterActions: MenuProvider.FooterActions,
   },
