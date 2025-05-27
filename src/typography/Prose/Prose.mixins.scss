@@ -47,25 +47,18 @@
   }
   
   &:is(ul, ol, dl) {
-    --list-indent: 2.5ch;
+    --list-indent: 3ch;
     
     display: block;
-    margin-block-start: var(--bk-body-block-spacing);
+    margin-block-start: calc(var(--bk-body-block-spacing) / 2);
+    padding-inline-start: var(--list-indent); // Make space for `::marker`
     
     > li:not(.bk) {
-      /*
-      // Increase gap size
-      // https://stackoverflow.com/a/26336092/233884
-      &::before {
-        content: '';
-        padding-inline-start: bk.$spacing-2;
-      }
-      */
+      margin-block-start: calc(var(--bk-body-block-spacing) / 4); // Spacing between items
       
       // Nested lists
       > :is(ul, ol, dl):not(.bk) {
         margin-block-start: calc(var(--bk-body-block-spacing) / 3);
-        padding-inline-start: var(--list-indent);
       }
     }
   }
@@ -73,8 +66,6 @@
     // Note: do not use list-style: none, this causes accessibility issues:
     // https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists
     list-style: disc outside;
-    
-    padding-inline-start: 3ch; // Make space for the `::marker`
     
     > li:not(.bk)::marker {
       // Override the marker style so we customize the gap size
@@ -84,21 +75,11 @@
       font-size: 1.2em;
       line-height: 1;
     }
-    
-    > li:not(:first-of-type, .bk) { // Note: in the future we could use `margin-trim` instead
-      margin-block-start: calc(var(--bk-body-block-spacing) / 4);
-    }
   }
   &:is(ol) {
     // Note: do not use list-style: none, this causes accessibility issues:
     // https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists
     list-style: decimal outside;
-    
-    padding-inline-start: 3ch; // Make space for the `::marker`
-    
-    > li:not(:first-of-type, .bk) {
-      margin-block-start: calc(var(--bk-body-block-spacing) / 4);
-    }
   }
   
   &:is(hr) {
