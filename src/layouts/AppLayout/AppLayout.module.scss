@@ -38,7 +38,6 @@
       / minmax(0, 1fr);
     
     &:has(> [slot='header']) {
-      --bk-app-layout-header-height: ;
       grid:
         'header' var(--bk-app-layout-header-height)
         'content' 1fr
