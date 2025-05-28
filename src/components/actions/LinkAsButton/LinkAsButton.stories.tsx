@@ -33,6 +33,13 @@ export default {
 
 export const LinkAsButtonStandard: Story = {};
 
+export const LinkAsButtonTrimmed: Story = {
+  args: {
+    kind: 'tertiary',
+    trimmed: true,
+  },
+};
+
 export const LinkAsButtonWithCustomLink: Story = {
   args: {
     Link: DummyBkLinkWithNotify,

@@ -23,6 +23,7 @@ type LinkAsButtonProps = LinkProps & {
   kind?: NonNullable<ButtonProps['kind']>,
   nonactive?: NonNullable<ButtonProps['nonactive']>,
   disabled?: NonNullable<ButtonProps['disabled']>,
+  trimmed?: NonNullable<ButtonProps['trimmed']>,
 };
 
 /**
@@ -35,6 +36,7 @@ export const LinkAsButton = (props: LinkAsButtonProps) => {
     kind = 'tertiary',
     nonactive,
     disabled,
+    trimmed,
     ...propsRest
   } = props;
   
@@ -52,6 +54,7 @@ export const LinkAsButton = (props: LinkAsButtonProps) => {
         { [ButtonClassNames['bk-button--tertiary']]: kind === 'tertiary' },
         { [ButtonClassNames['bk-button--nonactive']]: nonactive },
         { [ButtonClassNames['bk-button--disabled']]: disabled },
+        { [ButtonClassNames['bk-button--trimmed']]: trimmed },
         props.className,
       )}
     />
