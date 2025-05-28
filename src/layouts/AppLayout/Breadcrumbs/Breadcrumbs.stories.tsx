@@ -2,15 +2,29 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import type { Meta, StoryObj } from '@storybook/react';
+import { type NonUndefined } from '../../../util/types.ts';
 
 import * as React from 'react';
 
-import { Breadcrumbs, type BreadcrumbItem } from './Breadcrumbs.tsx';
+import type { Meta, StoryObj } from '@storybook/react';
+import { DummyBkLinkWithNotify } from '../../../util/storybook/StorybookLink.tsx';
+import { Link } from '../../../components/actions/Link/Link.tsx';
+import { Button } from '../../../components/actions/Button/Button.tsx';
+
+import { Breadcrumbs } from './Breadcrumbs.tsx';
 
 
 type BreadcrumbsArgs = React.ComponentProps<typeof Breadcrumbs>;
 type Story = StoryObj<BreadcrumbsArgs>;
+
+const exampleBreadcrumbs1 = (
+  <>
+    <Breadcrumbs.Item href="/" label="Crumb 1"/>
+    <Breadcrumbs.Item href="/" label="Crumb 2"/>
+    <Breadcrumbs.Item href="/" label="Crumb 3"/>
+    <Breadcrumbs.Item href="/" label="Crumb 4" active/>
+  </>
+);
 
 export default {
   component: Breadcrumbs,
@@ -21,46 +35,48 @@ export default {
   argTypes: {
   },
   args: {
+    children: exampleBreadcrumbs1,
   },
   render: (args) => <Breadcrumbs {...args}/>,
 } satisfies Meta<BreadcrumbsArgs>;
 
-const defaultBreadcrumbsItems: BreadcrumbItem[] = [1,2,3,4].map(item => { 
-  return {
-    title: `Test${item}`,
-    href: '#',
-  }
-});
 
-const BaseStory: Story = {
-  args: {},
-  render: (args) => <Breadcrumbs {...args}/>,
-};
+export const BreadcrumbsStandard: Story = {};
 
-export const StandardStory: Story = {
-  ...BaseStory,
-  name: 'Standard',
-  args: { items: defaultBreadcrumbsItems },
-};
-
-export const StandardFocus: Story = {
-  ...BaseStory,
-  name: 'Standard [focus]',
+export const BreadcrumbsWithDisabled: Story = {
   args: {
-    items: defaultBreadcrumbsItems.map((item, index) => {
-      if (index === 1) {
-        return {
-          ...item,
-          className: 'pseudo-focus-visible',
-        }
-      }
-      return item;
-    }),
-  }
+    children: (
+      <>
+        <Breadcrumbs.Item href="/" label="Crumb 1"/>
+        <Breadcrumbs.Item href="/" label="Crumb 2" disabled/>
+        <Breadcrumbs.Item href="/" label="Crumb 3"/>
+        <Breadcrumbs.Item href="/" label="Crumb 4" active/>
+      </>
+    ),
+  },
 };
 
-export const StandardTrailingSlash: Story = {
-  ...BaseStory,
-  name: 'Standard [trailing slash]',
-  args: { items: defaultBreadcrumbsItems, hasTrailingSlash: true },
+type CustomLinkProps = React.ComponentProps<NonUndefined<React.ComponentProps<typeof Breadcrumbs.Item>['Link']>> & {
+  customLabel: string,
+};
+const CustomLink = ({ customLabel, ...props }: CustomLinkProps) => <Link {...props}>{customLabel}</Link>;
+
+type CustomButtonProps = React.ComponentProps<NonUndefined<React.ComponentProps<typeof Breadcrumbs.Item>['Link']>> & {
+  customLabel: string,
+};
+const CustomButton = ({ className, customLabel, ...props }: CustomButtonProps) =>
+  <Button unstyled className={className}>{customLabel}</Button>;
+
+export const BreadcrumbsWithCustomLink: Story = {
+  args: {
+    children: (
+      <>
+        <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Notify"/>
+        <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Disabled" disabled/>
+        <Breadcrumbs.Item Link={CustomLink} href="/" linkProps={{ customLabel: 'Custom label' }} label="Custom link"/>
+        <Breadcrumbs.Item Link={CustomButton} href="/" linkProps={{ customLabel: 'Button' }} label="Button"/>
+        <Breadcrumbs.Item href="/" label="Standard" active/>
+      </>
+    ),
+  },
 };
