@@ -21,7 +21,7 @@
     //* { min-inline-size: 0; } // Reset flexbox item min-width? https://github.com/elad2412/the-new-css-reset/issues/45
     
     // :focus-visible {
-    //   /* outline: calc(var(--bk-sizing-1) / 2) solid color-contrast(var(--bk-page-color-background) vs white, black); */
+    //   /* outline: calc(bk.$size-1 / 2) solid color-contrast(var(--bk-page-color-background) vs white, black); */
     //   /*
     //   Note:
     //     - The following should be overridable by components (e.g. `outline-offset` might not always look good)

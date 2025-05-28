@@ -43,7 +43,7 @@ export const UserMenu = Object.assign(
         label="User menu"
         placement="bottom-end"
         items={children}
-        offset={7}
+        offset={12} // Compensate for header padding
       >
         <Button unstyled
           {...propsRest}

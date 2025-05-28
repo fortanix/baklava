@@ -54,7 +54,7 @@ case where we set CSS variables (using a `--bk-` prefix to minimize conflicts wi
   
   &:has(:target) {
     // Add enough scroll padding so anchors don't get hidden behind the `AppLayout` header
-    scroll-padding-top: calc(var(--bk-app-layout-header-height) + var(--bk-sizing-2));
+    scroll-padding-top: calc(var(--bk-app-layout-header-height) + 0.5lh);
   }
   @media (prefers-reduced-motion: no-preference) {
     scroll-behavior: smooth;

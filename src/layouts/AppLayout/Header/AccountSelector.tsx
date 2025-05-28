@@ -34,7 +34,7 @@ export const AccountSelector = Object.assign(
         label="Account selector"
         placement="bottom-start"
         items={accounts}
-        offset={7}
+        offset={12} // Compensate for header padding
       >
         {({ props, selectedOption }) =>
           <Button unstyled
