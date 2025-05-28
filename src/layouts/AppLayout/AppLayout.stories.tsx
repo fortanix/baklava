@@ -25,6 +25,7 @@ import { SysadminSwitcher } from './Header/SysadminSwitcher.tsx';
 import { Breadcrumbs } from './Breadcrumbs/Breadcrumbs.tsx';
 import { AppLayout } from './AppLayout.tsx';
 import { Select } from '../../components/forms/controls/Select/Select.tsx';
+import { Tag } from '../../components/text/Tag/Tag.tsx';
 
 
 type AppLayoutArgs = React.ComponentProps<typeof AppLayout>;
@@ -97,7 +98,7 @@ export const Standard: Story = {
               <Nav.NavItem Link={DummyBkLinkUnstyled} icon="badge-assessment" label="Assessment" href="/assessment"/>
               <Nav.NavItem Link={DummyBkLinkUnstyled} icon="services" label="Services" href="/services" disabled/>
               <Nav.NavItem Link={DummyBkLinkUnstyled} icon="dashboard" label="Activities" href="/activities"
-                indicators={<Spinner inline/>}
+                indicators={<Tag content="NEW"/>}
               />
             </Nav>
             <hr/>
