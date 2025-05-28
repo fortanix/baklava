@@ -8,8 +8,12 @@
 @layer baklava.base {
   :root {
     // Height of the header needs to be known at root level so we can use it for things like `scroll-padding-top`.
-    // Calculate by: content height (spacing-9) + 2 times the block padding (padding-3).
-    --bk-app-layout-header-height: calc(#{bk.$spacing-9} + 2 * #{bk.$spacing-3});
+    --bk-app-layout-header-height: 0;
+    
+    &:has(.bk-app-layout > [slot='header']) {
+      // Calculate by: content height (spacing-9) + 2 times the block padding (padding-3).
+      --bk-app-layout-header-height: calc(#{bk.$spacing-9} + 2 * #{bk.$spacing-3});
+    }
   }
 }
 
@@ -29,12 +33,25 @@
     display: grid;
     // Note: use `minmax(0, 1fr)` to prevent blowout: https://css-tricks.com/preventing-a-grid-blowout
     grid:
-      'header' var(--bk-app-layout-header-height)
       'content' 1fr
       'footer' max-content
       / minmax(0, 1fr);
     
+    &:has(> [slot='header']) {
+      --bk-app-layout-header-height: ;
+      grid:
+        'header' var(--bk-app-layout-header-height)
+        'content' 1fr
+        'footer' max-content
+        / minmax(0, 1fr);
+    }
     &:has(> [slot='sidebar']) {
+      grid:
+        'sidebar content' 1fr
+        'sidebar footer' max-content
+        / var(--bk-app-layout-sidebar-width) minmax(0, 1fr);
+    }
+    &:has(> [slot='sidebar'], > [slot='sidebar']) {
       grid:
         'header  header' var(--bk-app-layout-header-height)
         'sidebar content' 1fr
