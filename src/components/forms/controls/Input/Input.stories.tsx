@@ -81,6 +81,12 @@ export const InputWithIcon: Story = {
   },
 };
 
+export const InputWithCustomFontSize: Story = {
+  args: {
+    style: { fontSize: '2em' },
+  },
+};
+
 const CustomIcon: React.ComponentProps<typeof Input>['Icon'] = props => "🍕";
 export const InputWithCustomIcon: Story = {
   args: {

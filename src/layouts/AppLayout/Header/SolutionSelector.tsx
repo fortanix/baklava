@@ -36,7 +36,7 @@ export const SolutionSelector = Object.assign(
         label="Solution selector"
         placement="bottom-start"
         items={solutions}
-        offset={7}
+        offset={12} // Compensate for header padding
       >
         {({ props, selectedOption }) =>
           <Button unstyled
