@@ -74,6 +74,7 @@
     
     .bk-dialog__content__icon-aside {
       align-self: flex-start;
+      font-size: 1.4em;
       
       @include bk.flex-row($gap: bk.$spacing-3);
     }
