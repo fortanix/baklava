@@ -31,6 +31,7 @@ export const AccountSelector = Object.assign(
     
     return (
       <MenuProvider
+        menuSize="large"
         label="Account selector"
         placement="bottom-start"
         items={accounts}

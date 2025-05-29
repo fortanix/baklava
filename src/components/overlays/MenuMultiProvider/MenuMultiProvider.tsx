@@ -39,7 +39,7 @@ export type ItemsRenderArgs = {
   close: () => void,
 };
 
-export type MenuMultiProviderProps = Omit<ListBoxMultiProps, 'ref' | 'children' | 'label'> & {
+export type MenuMultiProviderProps = Omit<ListBoxMultiProps, 'ref' | 'children' | 'label' | 'size'> & {
   // ---
   // TEMP
   
@@ -81,6 +81,9 @@ export type MenuMultiProviderProps = Omit<ListBoxMultiProps, 'ref' | 'children' 
   /** The action that should trigger the menu to open. */
   action?: undefined | UseFloatingElementOptions['action'],
   
+  /** The (inline) size of the menu. */
+  menuSize?: ListBoxMultiProps['size'],
+  
   /**
    * The kind of keyboard interactions to include:
    * - 'none': No keyboard interactions set.
@@ -114,6 +117,7 @@ export const MenuMultiProvider = Object.assign(
       onSelect,
       role,
       action,
+      menuSize,
       keyboardInteractions,
       placement = 'bottom',
       offset = 8,
@@ -356,6 +360,7 @@ export const MenuMultiProvider = Object.assign(
       
       return (
         <ListBoxMulti.ListBoxMulti
+          size={menuSize}
           label={label}
           {...floatingProps}
           ref={mergeRefs<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>(

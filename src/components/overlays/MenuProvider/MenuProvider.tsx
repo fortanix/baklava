@@ -40,7 +40,7 @@ export type ItemsRenderArgs = {
   close: () => void,
 };
 
-export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label'> & {
+export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' | 'size'> & {
   // ---
   // TEMP
   
@@ -82,6 +82,9 @@ export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label'>
   /** The action that should trigger the menu to open. */
   action?: undefined | UseFloatingElementOptions['action'],
   
+  /** The (inline) size of the menu. */
+  menuSize?: ListBoxProps['size'],
+  
   /**
    * The kind of keyboard interactions to include:
    * - 'none': No keyboard interactions set.
@@ -115,6 +118,7 @@ export const MenuProvider = Object.assign(
       onSelect,
       role,
       action,
+      menuSize,
       keyboardInteractions,
       placement = 'bottom',
       offset = 8,
@@ -357,6 +361,7 @@ export const MenuProvider = Object.assign(
       
       return (
         <ListBox.ListBox
+          size={menuSize}
           label={label}
           {...floatingProps}
           ref={mergeRefs<React.ComponentRef<typeof ListBox.ListBox>>(

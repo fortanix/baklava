@@ -7,6 +7,7 @@ import { mergeRefs, mergeCallbacks } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import { useScroller } from '../../../../layouts/util/Scroller.tsx';
 
+import { TextLine } from '../../../text/TextLine/TextLine.tsx';
 import { type IconName, Icon as BkIcon } from '../../../graphics/Icon/Icon.tsx';
 import { Spinner } from '../../../graphics/Spinner/Spinner.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
@@ -145,7 +146,7 @@ export const Option = (props: OptionProps) => {
           )}
         />
       }
-      <span className={cl['bk-list-box__item__label']}>{propsRest.children ?? label}</span>
+      <TextLine className={cl['bk-list-box__item__label']}>{propsRest.children ?? label}</TextLine>
     </Button>
   );
 };
@@ -284,6 +285,9 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
   /** A React ref to pass to the list box element. */
   ref?: undefined | React.Ref<null | ListBoxRef>,
   
+  /** The (inline) size of the list box. Optional. Default: `medium`. */
+  size?: undefined | 'shrink' | 'small' | 'medium' | 'large',
+  
   /** An accessible name for this list box. Required. */
   label: string,
   
@@ -368,6 +372,7 @@ export const ListBox = Object.assign(
       ref,
       children,
       unstyled = false,
+      size = 'medium',
       label,
       defaultSelected,
       selected = null,
@@ -492,6 +497,10 @@ export const ListBox = Object.assign(
             'bk',
             { [cl['bk-list-box']]: !unstyled },
             { [cl['bk-list-box--empty']]: isEmpty },
+            { [cl['bk-list-box--size-shrink']]: size === 'shrink' },
+            { [cl['bk-list-box--size-small']]: size === 'small' },
+            { [cl['bk-list-box--size-medium']]: size === 'medium' },
+            { [cl['bk-list-box--size-large']]: size === 'large' },
             listBox.props.className,
             propsRest.className,
           )}
