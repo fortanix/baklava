@@ -329,6 +329,12 @@ const validateIcon = async (path: string): Promise<IconValidity> => {
   try {
     const iconSvg: string = (await fs.readFile(path)).toString();
     
+    // Check: fill color
+    const fillColor = iconSvg.match(/<svg[^>]+fillColor="currentColor"[^>]+>/);
+    if (!fillColor) {
+      throw new Error('Incorrect fillColor');
+    }
+    
     // Check: dimensions
     const width = iconSvg.match(/width="(\d+)"/)?.[1];
     const height = iconSvg.match(/height="(\d+)"/)?.[1];
