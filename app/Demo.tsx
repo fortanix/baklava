@@ -22,7 +22,7 @@ export const Demo = () => {
     <AppLayout>
       <AppLayout.Header>
         <Link unstyled href="#" slot="logo">
-          <FortanixLogo subtitle="Data Security Manager" subtitleTrademark={true}/>
+          <FortanixLogo subtitle="Armor"/>
         </Link>
         <Header slot="actions">
           <UserMenu userName="Anand Kashyap"/>
@@ -45,18 +45,10 @@ export const Demo = () => {
       <AppLayout.Content>
         <Icon icon="accounts"/>
         
-        <Breadcrumbs
-          items={[
-            {
-              title: 'Fortanix Armor',
-              href: '#',
-            },
-            {
-              title: 'Dashboard',
-              href: '#',
-            }
-          ]}
-        />
+        <Breadcrumbs>
+          <Breadcrumbs.Item href="/" label="Fortanix Armor"/>
+          <Breadcrumbs.Item href="/" label="Dashboard" active/>
+        </Breadcrumbs>
         <Panel>
           <Panel.Heading>Panel</Panel.Heading>
         </Panel>

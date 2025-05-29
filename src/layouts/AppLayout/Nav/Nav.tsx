@@ -27,14 +27,14 @@ export type NavItemProps<
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
-  /** The target of the nav item link. */
-  href?: undefined | string,
-  
   /** A custom `Link` component. Optional. */
   Link?: undefined | React.ComponentType<LinkProps>,
   
   /** Additional props to pass to the `Link` component. */
   linkProps?: undefined | LinkProps,
+  
+  /** The target of the nav item link. */
+  href?: undefined | string,
   
   /** An icon to show before the link label. */
   icon?: undefined | IconName,
@@ -64,9 +64,9 @@ export const NavItem = <
   const {
     children,
     unstyled,
+    className,
     Link = LinkDefault,
     linkProps = {} as LinkProps,
-    className,
     href,
     icon,
     Icon = IconDefault,
@@ -121,6 +121,7 @@ export const NavItem = <
       {...propsRest}
       className={cx(
         { [cl['bk-nav__item']]: !unstyled },
+        className,
       )}
     >
       {renderItem()}
