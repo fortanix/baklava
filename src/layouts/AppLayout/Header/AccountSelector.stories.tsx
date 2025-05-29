@@ -2,9 +2,10 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import type { Meta, StoryObj } from '@storybook/react';
-
 import * as React from 'react';
+
+import type { Meta, StoryObj } from '@storybook/react';
+import { loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { AccountSelector } from './AccountSelector.tsx';
 
@@ -30,6 +31,26 @@ export const AccountSelectorStandard: Story = {
   args: {
     accounts: (
       <>
+        {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
+          <AccountSelector.Option key={`account_${name}`} itemKey={`account_${name}`} icon="account"
+            label={name}
+            //onSelect={() => { notify.info(`Selected ${name}`); }}
+          />
+        )}
+        <AccountSelector.FooterActions>
+          <AccountSelector.Action itemKey="action_add-account" label="Add account" onActivate={() => {}}/>
+        </AccountSelector.FooterActions>
+      </>
+    ),
+    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label
+  },
+};
+
+export const AccountSelectorWithOverflow: Story = {
+  args: {
+    accounts: (
+      <>
+        <AccountSelector.Option key="account_long" itemKey="account_long" icon="account" label={loremIpsumSentence}/>
         {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
           <AccountSelector.Option key={`account_${name}`} itemKey={`account_${name}`} icon="account"
             label={name}

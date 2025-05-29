@@ -66,6 +66,11 @@ export const ListBoxStandard: Story = {
   },
 };
 
+export const ListBoxShrink: Story = { args: { size: 'shrink' } };
+export const ListBoxSmall: Story = { args: { size: 'small' } };
+export const ListBoxMedium: Story = { args: { size: 'medium' } };
+export const ListBoxLarge: Story = { args: { size: 'large' } };
+
 export const ListBoxEmpty: Story = {
   args: {
     children: null,

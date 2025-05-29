@@ -24,11 +24,26 @@
       var(--sticky-items-end) * var(--bk-list-box-multi-item-block-size) + var(--bk-list-box-multi-chin-size)
     );
     
-    min-inline-size: 34ch;
-    max-inline-size: 80svi;
     min-block-size: 2lh;
     max-block-size: 18lh;
     padding-block-end: var(--bk-list-box-multi-chin-size);
+    
+    &.bk-list-box-multi--size-shrink {
+      min-inline-size: 0;
+      max-inline-size: 30svi;
+    }
+    &.bk-list-box-multi--size-small {
+      min-inline-size: 18ch;
+      max-inline-size: 30svi;
+    }
+    &.bk-list-box-multi--size-medium {
+      min-inline-size: 28ch;
+      max-inline-size: 40svi;
+    }
+    &.bk-list-box-multi--size-large {
+      min-inline-size: 38ch;
+      max-inline-size: 70svi;
+    }
     
     background: bk.$theme-dropdown-menu-menu-background-default;
     border: bk.rem-from-px(1) solid bk.$theme-dropdown-menu-menu-border-default;
