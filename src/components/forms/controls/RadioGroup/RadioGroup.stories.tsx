@@ -29,7 +29,7 @@ export default {
   argTypes: {
   },
   args: {
-    label: 'Choose a color',
+    label: 'Choose a color:',
     defaultSelected: 'red',
     children: (
       <>
@@ -44,6 +44,12 @@ export default {
 
 export const RadioGroupStandard: Story = {};
 
+export const RadioGroupWithHorizontalLabel: Story = {
+  args: {
+    labelOrientation: 'horizontal',
+  },
+};
+
 export const RadioGroupWithWrap: Story = {
   args: {
     style: { overflow: 'hidden', resize: 'horizontal', inlineSize: 180 },
@@ -53,6 +59,13 @@ export const RadioGroupWithWrap: Story = {
 export const RadioGroupVertical: Story = {
   args: {
     orientation: 'vertical',
+  },
+};
+
+export const RadioGroupVerticalWithHorizontalLabel: Story = {
+  args: {
+    orientation: 'vertical',
+    labelOrientation: 'horizontal',
   },
 };
 
