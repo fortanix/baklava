@@ -94,6 +94,7 @@
     > [slot='sidebar'] {
       container: bk-app-layout__sidebar / inline-size;
       
+      padding-block-end: bk.$spacing-8; // Some padding (e.g. for if the sidebar is larger than the viewport height)
       background: bk.$theme-side-nav-background-default;
       
       > aside {
