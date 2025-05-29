@@ -5,7 +5,6 @@ import {
   Link,
   DialogModal,
   Panel,
-  AppLayout,
   FortanixLogo,
   Header,
   UserMenu,
@@ -14,6 +13,7 @@ import {
   Nav,
   Sidebar,
   Breadcrumbs,
+  AppLayout,
 } from '@fortanix/baklava';
 
 export const App = () => {
@@ -44,18 +44,10 @@ export const App = () => {
       <AppLayout.Content>
         <Icon icon="accounts"/>
         
-        <Breadcrumbs
-          items={[
-            {
-              title: 'Fortanix Armor',
-              href: '#',
-            },
-            {
-              title: 'Dashboard',
-              href: '#',
-            }
-          ]}
-        />
+        <Breadcrumbs>
+          <Breadcrumbs.Item href="/" label="Fortanix Armor"/>
+          <Breadcrumbs.Item href="/" label="Dashboard" active/>
+        </Breadcrumbs>
         <Panel>
           <Panel.Heading>Panel</Panel.Heading>
           

@@ -5,7 +5,7 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { DummyBkLinkUnstyled } from '../../util/storybook/StorybookLink.tsx';
+import { DummyBkLinkUnstyled, DummyBkLinkWithNotify } from '../../util/storybook/StorybookLink.tsx';
 
 import { notify } from '../../components/overlays/ToastProvider/ToastProvider.tsx';
 import { OverflowTester } from '../../util/storybook/OverflowTester.tsx';
@@ -45,7 +45,7 @@ export default {
 const header1 = (
   <AppLayout.Header>
     <DummyBkLinkUnstyled slot="logo">
-      <FortanixLogo subtitle="Data Security Manager" subtitleTrademark={true}/>
+      <FortanixLogo subtitle="Armor"/>
     </DummyBkLinkUnstyled>
     <Header slot="actions">
       <UserMenu userName="Anand Kashyap">
@@ -78,7 +78,7 @@ const header1 = (
       </AccountSelector>
       <SolutionSelector className="select-action"
         solutions={
-          ['Identity & Access Management', 'Key Insight', 'Data Security Manager'].map(name =>
+          ['Identity & Access Management', 'Key Insight', 'Armor'].map(name =>
             <SolutionSelector.Option key={name} itemKey={name} icon="user" label={name}
               onSelect={() => { notify.info(`Selected ${name}`); }}
             />
@@ -113,18 +113,10 @@ const sidebar1 = (
 
 const content1 = (
   <AppLayout.Content>
-    <Breadcrumbs
-      items={[
-        {
-          title: 'Data Security Manager',
-          href: '#',
-        },
-        {
-          title: 'Dashboard',
-          href: '#',
-        }
-      ]}
-    />
+    <Breadcrumbs>
+      <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Fortanix Armor"/>
+      <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Dashboard" active/>
+    </Breadcrumbs>
     <Panel>
       <Panel.Heading>Panel</Panel.Heading>
       

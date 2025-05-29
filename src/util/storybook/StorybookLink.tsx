@@ -14,21 +14,23 @@ const handleClick = (event: React.MouseEvent) => {
 };
 const handleClickWithNotify = (event: React.MouseEvent) => {
   event.preventDefault();
-  notify.info('Clicked the link');
+  if (!event.isPropagationStopped()) {
+    notify.info('Clicked the link');
+  }
 };
 
 type DummyLinkProps = React.ComponentProps<'a'>;
 export const DummyLink = (props: DummyLinkProps) =>
-  <a href="/" {...props} onClick={mergeCallbacks([handleClick, props.onClick])}/>;
+  <a href="/" {...props} onClick={mergeCallbacks([props.onClick, handleClick])}/>;
 
 type DummyBkLinkProps = React.ComponentProps<typeof Link>;
 export const DummyBkLink = (props: DummyBkLinkProps) =>
-  <Link href="/" {...props} onClick={mergeCallbacks([handleClick, props.onClick])}/>;
+  <Link href="/" {...props} onClick={mergeCallbacks([props.onClick, handleClick])}/>;
 
 type DummyBkLinkWithNotifyProps = React.ComponentProps<typeof Link>;
 export const DummyBkLinkWithNotify = (props: DummyBkLinkWithNotifyProps) =>
-  <Link href="/" {...props} onClick={mergeCallbacks([handleClickWithNotify, props.onClick])}/>;
+  <Link href="/" {...props} onClick={mergeCallbacks([props.onClick, handleClickWithNotify])}/>;
 
 type DummyBkLinkUnstyledProps = React.ComponentProps<typeof Link>;
 export const DummyBkLinkUnstyled = (props: DummyBkLinkUnstyledProps) =>
-  <Link unstyled href="/" {...props} onClick={mergeCallbacks([handleClickWithNotify, props.onClick])}/>;
+  <Link unstyled href="/" {...props} onClick={mergeCallbacks([props.onClick, handleClickWithNotify])}/>;
