@@ -330,9 +330,9 @@ const validateIcon = async (path: string): Promise<IconValidity> => {
     const iconSvg: string = (await fs.readFile(path)).toString();
     
     // Check: fill color
-    const fillColor = iconSvg.match(/<svg[^>]+fillColor="currentColor"[^>]+>/);
+    const fillColor = iconSvg.match(/<svg[^>]+fill="currentColor"[^>]*>/);
     if (!fillColor) {
-      throw new Error('Incorrect fillColor');
+      throw new Error('Incorrect fill color');
     }
     
     // Check: dimensions
@@ -411,9 +411,14 @@ const runImportIcons = async (args: ScriptArgs) => {
     const pathSource = path.join(pathIconsSource, fileName);
     const pathTarget = path.join(pathIconsTarget, `${iconName}.svg`)
     
-    const validity = await validateIcon(pathSource);
-    if (!validity.isValid) {
-      throw new Error(`Found invalid icon '${iconName}': ${validity.message}`);
+    try {
+      const validity = await validateIcon(pathSource);
+      if (!validity.isValid) {
+        throw new Error(`Found invalid icon '${iconName}': ${validity.message}`);
+      }
+    } catch (error) {
+      console.error(error);
+      continue;
     }
     
     logger.log(`Copying '${rel(pathSource)}' to '${rel(pathTarget)}'`);
