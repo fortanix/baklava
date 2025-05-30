@@ -13,6 +13,7 @@ import { AccountSelector } from '../../../layouts/AppLayout/Header/AccountSelect
 import { TooltipProvider } from '../Tooltip/TooltipProvider.tsx';
 
 import { DialogModal } from './DialogModal.tsx';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
 
 
 type DialogModalArgs = React.ComponentProps<typeof DialogModal>;
@@ -277,12 +278,20 @@ const DialogModalControlledConfirmation = (props: React.ComponentProps<typeof Di
     actionLabel: 'Delete',
     onConfirm(subject) { setDeleted(deleted => new Set([...deleted, subject.name])); },
     onCancel(subject) { console.log(`Canceled deleting ${subject.name}`); },
+    confirmActionProps: {
+      icon: 'delete',
+    },
   });
   
   return (
     <article className="bk-prose">
       {deleteConfirmer.subject &&
-        <DialogModal {...deleteConfirmer.props} {...props} title="Confirm Delete">
+        <DialogModal
+          {...deleteConfirmer.props}
+          {...props}
+          title="Confirm Delete"
+          iconAside={<Icon.Event event="warning"/>}
+        >
           Are you sure you want to delete "{deleteConfirmer.subject.name}"?
         </DialogModal>
       }
