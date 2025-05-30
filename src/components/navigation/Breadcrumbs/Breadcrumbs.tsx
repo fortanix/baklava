@@ -114,7 +114,7 @@ type BreadcrumbsProps = React.PropsWithChildren<ComponentProps<'nav'> & {
 }>;
 
 /**
- * An ordered set of links forming the path of the current page.
+ * Breadcrumbs component, displaying an ordered set of links forming the path of the current location of the user.
  */
 export const Breadcrumbs = Object.assign(
   (props: BreadcrumbsProps) => {

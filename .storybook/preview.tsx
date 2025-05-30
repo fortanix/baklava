@@ -141,11 +141,6 @@ const preview = {
                 'TextAreaField',
               ],
             ],
-            'navigations',
-            [
-              'Tabs',
-              'Stepper',
-            ],
             'tables',
             [
               'DataTableEager',
@@ -153,6 +148,12 @@ const preview = {
               'DataTableStream',
               'SearchInput',
               'MultiSearch',
+            ],
+            'navigation',
+            [
+              'Tabs',
+              'Stepper',
+              'Breadcrumbs',
             ],
           ],
           'layouts',
@@ -162,11 +163,9 @@ const preview = {
             'PublicLayout',
             'AppLayout',
             [
-              'Logo',
               'Header',
               'Nav',
               'Sidebar',
-              'Breadcrumbs',
             ],
           ],
         ],
