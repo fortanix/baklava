@@ -9,5 +9,6 @@
     @include bk.component-base(bk-text-line);
     
     @include bk.text-one-line;
+    display: inline-block;
   }
 }
