@@ -81,8 +81,8 @@ export { Tag } from '../src/components/text/Tag/Tag.tsx';
 export { PropertyList } from '../src/components/lists/PropertyList/PropertyList.tsx';
 
 // Navigations
-export { Stepper } from '../src/components/navigations/Stepper/Stepper.tsx';
-export { Tab, Tabs } from '../src/components/navigations/Tabs/Tabs.tsx';
+export { Stepper } from '../src/components/navigation/Stepper/Stepper.tsx';
+export { Tab, Tabs } from '../src/components/navigation/Tabs/Tabs.tsx';
 
 // Overlays
 export { SpinnerModal } from '../src/components/overlays/SpinnerModal/SpinnerModal.tsx';

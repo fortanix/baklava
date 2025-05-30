@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { Tabs, Tab } from './Tabs.tsx';
+import { Tabs } from './Tabs.tsx';
 
 
 type TabsArgs = React.ComponentProps<typeof Tabs>;
@@ -47,7 +47,7 @@ const TabWithTrigger = (props: TabWithTriggerProps) => {
     <Tabs onSwitch={setActiveTabKey} activeKey={activeTabKey} {...tabContext}>
       {options.map(tab => {
         return (
-          <Tab
+          <Tabs.Tab
             key={tab.index}
             data-label={`tab${tab.index}`}
             tabKey={`tab${tab.index}`}

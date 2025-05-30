@@ -8,6 +8,7 @@
   .bk-stepper {
     @include bk.component-base(bk-stepper);
     
+    /*
     --bk-stepper-indicator-size: #{bk.rem-from-px(28)};
     display: flex;
     
@@ -101,5 +102,6 @@
     .bk-stepper__item--disabled {
       cursor: not-allowed;
     }
+    */
   }
 }

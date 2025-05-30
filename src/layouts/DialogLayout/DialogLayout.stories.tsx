@@ -14,7 +14,7 @@ import { FormLayout } from '../FormLayout/FormLayout.tsx';
 import { CheckboxGroup } from '../../components/forms/controls/CheckboxGroup/CheckboxGroup.tsx';
 import { InputField } from '../../components/forms/fields/InputField/InputField.tsx';
 import { Button } from '../../components/actions/Button/Button.tsx';
-import { Stepper } from '../../components/navigations/Stepper/Stepper.tsx';
+import { Stepper } from '../../components/navigation/Stepper/Stepper.tsx';
 import { FieldLayout } from '../../components/forms/fields/FieldLayout/FieldLayout.tsx';
 
 import { DialogLayout } from './DialogLayout';

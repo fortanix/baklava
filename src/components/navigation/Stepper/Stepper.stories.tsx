@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { type Step, Stepper } from './Stepper.tsx';
+import { Stepper } from './Stepper.tsx';
 
 
 type StepperArgs = React.ComponentProps<typeof Stepper>;
@@ -24,6 +24,18 @@ export default {
   render: (args) => <Stepper {...args}/>,
 } satisfies Meta<StepperArgs>;
 
+
+export const BreadcrumbsStandard: Story = {
+  args: {
+    children: (
+      <>
+        <Stepper.Step/>
+      </>
+    ),
+  },
+};
+
+/*
 const defaultSteps: Array<Step> = [1,2,3,4].map(index => { 
   return {
     stepKey: `${index}`,
@@ -56,7 +68,7 @@ export const StepperStandard: Story = {
   args: { ...BaseStory.args },
 };
 
-/** A step may be disabled. In this case, it will not be clickable. */
+/** A step may be disabled. In this case, it will not be clickable. * /
 export const StepperWithDisabledStep: Story = {
   ...BaseStory,
   args: {
@@ -77,3 +89,4 @@ export const StepperHorizontal: Story = {
     direction: 'horizontal',
   },
 };
+*/
