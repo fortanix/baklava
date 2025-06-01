@@ -207,7 +207,7 @@ export const DialogModalUncloseable: Story = {
 };
 
 const DialogModalControlledWithRef = (props: React.ComponentProps<typeof DialogModal>) => {
-  const ref = DialogModal.useModalRef(null);
+  const ref = DialogModal.useModalRef();
   
   // biome-ignore lint/correctness/useExhaustiveDependencies: want to only trigger this once
   React.useEffect(() => {

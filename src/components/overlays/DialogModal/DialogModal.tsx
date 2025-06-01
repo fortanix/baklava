@@ -69,7 +69,7 @@ export const useModalWithSubject = <S,>(
 ): ModalWithSubject<S> => {
   const { subjectInitial } = config ?? {};
   
-  const modalRef = ModalProvider.useRef(null);
+  const modalRef = ModalProvider.useRef();
   const [subject, setSubject] = React.useState<undefined | S>(subjectInitial);
   
   return {

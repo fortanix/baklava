@@ -19,7 +19,7 @@ export type ModalRef = {
   deactivate: () => void,
 };
 
-export const useRef = React.useRef<ModalRef>;
+export const useRef = (initialValue?: ModalRef) => React.useRef(initialValue ?? null);
 
 export type ModalProviderProps = {
   ref?: undefined | React.Ref<ModalRef>,
