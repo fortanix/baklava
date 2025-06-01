@@ -58,8 +58,9 @@
     @include bk.component-base(bk-public-layout__product-info-card);
     
     padding: bk.$spacing-8;
-    padding-inline: bk.$spacing-10;
+    padding-inline: bk.$spacing-5;
     padding-block-start: bk.$spacing-4;
+    padding-block-end: calc(4cqi);
     
     text-wrap: pretty;
     
@@ -71,7 +72,7 @@
       font-size: bk.$font-size-l;
       
       [role="img"] {
-        font-size: bk.$font-size-xl;
+        font-size: 2em;
       }
     }
   }
@@ -142,6 +143,7 @@
       .bk-public-layout__product-info__cards {
         align-self: stretch; // Fill the full width
         margin-block-start: bk.$spacing-12;
+        padding-inline: calc(20cqi - 300px);
         
         --card-size: #{bk.$spacing-18};
         display: grid;
