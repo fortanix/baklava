@@ -11,7 +11,7 @@
     user-select: none;
     
     // Allow the element to shrink down to just the icon
-    overflow: hidden;
+    //overflow: hidden;
     flex-shrink: 4; // Shrink relatively fast (since there is no important information besides the icon)
     min-inline-size: 3rem;
     
@@ -31,6 +31,11 @@
       block-size: auto;
       padding: 0.7em;
     }
+    
+    .bk-account-selector__label {
+      @include bk.text-one-line;
+    }
+    
     .bk-account-selector__caret {
       // Tweak the caret positioning slightly
       margin-inline-start: -0.2rem;

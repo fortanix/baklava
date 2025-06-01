@@ -23,9 +23,7 @@
     }
     
     > .bk-user-menu__user-name {
-      overflow: hidden;
-      text-wrap: nowrap;
-      text-overflow: ellipsis;
+      @include bk.text-one-line;
     }
     
     .bk-user-menu__caret-icon {

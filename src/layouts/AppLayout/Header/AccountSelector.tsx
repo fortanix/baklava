@@ -47,7 +47,7 @@ export const AccountSelector = Object.assign(
             <Icon icon="account" className={cx(cl['bk-account-selector__icon'])}
               decoration={{ type: 'background-circle' }}
             />
-            {children(selectedOption ?? null)}
+            <span className={cx(cl['bk-account-selector__label'])}>{children(selectedOption ?? null)}</span>
             <Icon icon="caret-down" className={cx(cl['bk-account-selector__caret'])}/>
           </Button>
         }

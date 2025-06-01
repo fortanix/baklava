@@ -6,6 +6,7 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 import { loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
+import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 
 import { AccountSelector } from './AccountSelector.tsx';
 
@@ -18,6 +19,7 @@ export default {
   parameters: {
     layout: 'centered',
   },
+  decorators: [Story => <LayoutDecorator><Story/></LayoutDecorator>],
   tags: ['autodocs'],
   argTypes: {
   },
