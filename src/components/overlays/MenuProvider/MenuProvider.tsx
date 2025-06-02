@@ -371,6 +371,7 @@ export const MenuProvider = Object.assign(
             floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBox.ListBox>>,
             //propsRest.ref,
           )}
+          formatItemLabel={formatItemLabel}
           id={listBoxId}
           defaultSelected={defaultSelected}
           selected={selectedOption}
