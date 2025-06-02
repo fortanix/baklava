@@ -370,6 +370,7 @@ export const MenuMultiProvider = Object.assign(
             floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>,
             //propsRest.ref,
           )}
+          formatItemLabel={formatItemLabel}
           id={listBoxId}
           defaultSelected={defaultSelected}
           selected={selectedOptions}
