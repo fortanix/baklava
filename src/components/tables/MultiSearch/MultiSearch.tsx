@@ -409,6 +409,7 @@ export const Suggestions = (props: SuggestionProps) => {
       open={active}
       onOpenChange={handleOpenChange}
       anchorRef={elementRef as React.RefObject<HTMLElement | null>}
+      placeholderEmpty={null}
     />
   );
 };
