@@ -14,6 +14,7 @@ import { Button } from '../../actions/Button/Button.tsx';
 import { SegmentedControl } from '../../forms/controls/SegmentedControl/SegmentedControl.tsx';
 
 import { Banner } from './Banner.tsx';
+import { DialogModal } from '../../overlays/DialogModal/DialogModal.tsx';
 
 
 type BannerArgs = React.ComponentProps<typeof Banner>;
@@ -167,6 +168,19 @@ export const BannerWithThemedContent: Story = {
             <SegmentedControl.Button buttonKey="test-2" label="Test 2"/>
             <SegmentedControl.Button buttonKey="test-3" label="Test 3"/>
           </SegmentedControl>
+        </div>
+        <div style={{ display: 'flex', gap: '2ch', marginTop: '0.5lh' }}>
+          <Button kind="tertiary">Tertiary button</Button>
+          <Button kind="tertiary" nonactive>Tertiary button (nonactive)</Button>
+        </div>
+        
+        <div style={{ display: 'flex', gap: '2ch', marginTop: '0.5lh' }}>
+          <DialogModal
+            trigger={({ activate }) => <Button kind="primary" label="Open submodal" onPress={activate}/>}
+            title="Test modal"
+          >
+            Content
+          </DialogModal>
         </div>
       </article>
     ),
