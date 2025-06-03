@@ -121,8 +121,11 @@ export const runVerifySource = async (args: ScriptArgs) => {
 export const runVerifyBuild = async (args: ScriptArgs) => {
   const { logger } = getServices();
   
-  const cssContent = await readDistCss();
-  const cssContentStripped = cssContent.replaceAll(`@charset "UTF-8";`, '').trim();
+  // DISABLED: this doesn't work anymore now that lightning-css takes care of reordering all the layers itself. There
+  // is a no longer a single `@layer` "header" in the beginning.
+  
+  //const cssContent = await readDistCss();
+  //const cssContentStripped = cssContent.replaceAll(`@charset "UTF-8";`, '').trim();
   
   // We need to make sure that an `@layer` ordering is at the beginning of the CSS build file.
   // if (!cssContentStripped.match(/^@layer [^{]+?;/)) {

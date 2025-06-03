@@ -23,6 +23,7 @@
   "type": "module",
   "exports": {
     ".": {
+      "sass": "./dist/baklava.css",
       "types": "./dist/baklava.d.ts",
       "default": "./dist/baklava.js"
     },

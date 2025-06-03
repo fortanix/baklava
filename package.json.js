@@ -26,6 +26,7 @@ const packageConfig = {
   type: 'module',
   exports: {
     '.': {
+      'sass': './dist/baklava.css',
       'types': './dist/baklava.d.ts',
       //'require': './dist/baklava.cjs',
       'default': './dist/baklava.js',
