@@ -87,6 +87,7 @@ const RadioGroupControlledC = () => {
   type Color = (typeof Color)[number];
   
   const [selectedColor, setSelectedColor] = React.useState<Color>('red');
+  
   return (
     <RadioGroup
       name="storyRadioGroup"

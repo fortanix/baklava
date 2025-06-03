@@ -35,7 +35,7 @@ export const useRadioGroupContext = () => {
 };
 
 
-export type RadioGroupButtonProps = React.ComponentProps<typeof Radio.Labeled> & {
+export type RadioGroupButtonProps = Omit<React.ComponentProps<typeof Radio.Labeled>, 'checked'> & {
   /** The unique key of this radio button within the radio group. */
   radioKey: RadioKey,
 };
@@ -60,9 +60,9 @@ export const RadioGroupButton = ({ radioKey, ...propsRest }: RadioGroupButtonPro
       form={context.formId}
       name={context.name}
       value={radioKey}
-      checked={checked}
       onChange={typeof checked === 'undefined' ? undefined : onChange}
       {...propsRest}
+      checked={checked} // Do not allow this to be overridden
     />
   );
 };
@@ -113,6 +113,12 @@ export const RadioGroup = Object.assign(
     } = props;
     
     const [selectedButton, setSelectedButton] = React.useState<undefined | RadioKey>(selected ?? defaultSelected);
+    
+    React.useEffect(() => {
+      if (typeof selected !== 'undefined') {
+        setSelectedButton(selected);
+      }
+    }, [selected]);
     
     const selectButton = React.useCallback((radioKey: RadioKey) => {
       setSelectedButton(selectedButton => {
