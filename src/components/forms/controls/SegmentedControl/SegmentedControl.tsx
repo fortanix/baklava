@@ -157,11 +157,12 @@ export const SegmentedControl = Object.assign(
       });
     }, []);
     
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Do not include event callbacks as dep.
     React.useEffect(() => {
       if (typeof selectedButton !== 'undefined') {
         onUpdate?.(selectedButton);
       }
-    }, [selectedButton, onUpdate]);
+    }, [selectedButton]);
     
     // After initial rendering, check whether `defaultSelected` refers to one of the rendered buttons
     useEffectOnce(() => {

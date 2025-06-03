@@ -39,10 +39,10 @@ export const CheckboxItem = ({ checkboxKey, ...propsRest }: CheckboxItemProps) =
     ? undefined // Uncontrolled
     : context.selectedItems.has(checkboxKey); // Controlled
   
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     propsRest.onChange?.(event);
     context.updateItem(checkboxKey, event.target.checked);
-  };
+  }, [propsRest.onChange, context.updateItem, checkboxKey]);
   
   return (
     <Checkbox.Labeled
