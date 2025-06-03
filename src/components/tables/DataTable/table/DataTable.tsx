@@ -116,7 +116,9 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                 const { key: cellKey, ...cellProps } = cell.getCellProps();
                 return (
                   <td {...cellProps} key={cellKey}>
-                    {cell.render('Cell')}
+                    <div className={cx(cl['bk-data-table__text-cell'])}>
+                      {cell.render('Cell')}
+                    </div>
                   </td>
                 );
               })}
