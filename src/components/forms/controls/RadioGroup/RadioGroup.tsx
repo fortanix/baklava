@@ -114,6 +114,12 @@ export const RadioGroup = Object.assign(
     
     const [selectedButton, setSelectedButton] = React.useState<undefined | RadioKey>(selected ?? defaultSelected);
     
+    React.useEffect(() => {
+      if (typeof selected !== 'undefined') {
+        setSelectedButton(selected);
+      }
+    }, [selected]);
+    
     const selectButton = React.useCallback((radioKey: RadioKey) => {
       setSelectedButton(selectedButton => {
         if (radioKey !== selectedButton) {
