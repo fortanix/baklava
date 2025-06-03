@@ -46,7 +46,7 @@ export const TextLine = (props: TextLineProps) => {
   
   if (showOverflowTooltip) {
     return (
-      <TooltipProvider tooltip={renderTooltip}>
+      <TooltipProvider tooltip={renderTooltip} triggerAction="click">
         {text}
       </TooltipProvider>
     );
