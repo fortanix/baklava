@@ -130,6 +130,31 @@ export const DialogModalWithToast: Story = {
   },
 };
 
+export const DialogModalFullScreenNested: Story = {
+  args: {
+    title: 'Full-screen modal with a submodal',
+    display: 'full-screen',
+    className: 'outer',
+    children: (
+      <>
+        <Button kind="primary" onPress={() => { notifyTest(); }}>
+          Trigger toast notification
+        </Button>
+        <DialogModal
+          className="inner"
+          title="Submodal"
+          trigger={({ activate }) => <Button kind="primary" label="Open submodal" onPress={activate}/>}
+        >
+          <p>Test rendering toast notifications over the modal:</p>
+          <Button kind="primary" onPress={() => { notifyTest(); }}>
+            Trigger toast notification
+          </Button>
+        </DialogModal>
+      </>
+    ),
+  },
+};
+
 /**
  * Same as the prior story, but where the modals are immediately unmounted, preventing exit animations as well as
  * the exit `onToggle` event listener. We need to take care that toast notifications do not break in this case.
