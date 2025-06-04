@@ -79,8 +79,9 @@
   .bk-multi-search__alternatives {
     .bk-multi-search__alternatives-group {
       padding: bk.$spacing-3;
-      .bk-checkbox {
-        padding: bk.$spacing-3;
+      
+      .bk-multi-search__alternatives-group__content {
+        flex-wrap: nowrap;
       }
     }
 
