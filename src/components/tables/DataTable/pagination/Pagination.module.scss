@@ -35,21 +35,30 @@
       }
     }
     .pagination__page-input {
-      min-inline-size: bk.$spacing-8;
       border: bk.$size-1 solid bk.$theme-pagination-border-default;
       border-radius: bk.$size-2;
       text-align: center;
       
-      // Try to hide the number spin controls
-      // https://stackoverflow.com/questions/3790935/can-i-hide-the-html5-number-input-s-spin-box
-      &input[type="number" i], input[type="number" i] {
-        // stylelint-disable-next-line property-no-vendor-prefix
-        -moz-appearance: textfield;
-        &::-webkit-outer-spin-button,
-        &::-webkit-inner-spin-button {
+      .pagination__page-input__input {
+        @supports (field-sizing: content) {
+          field-sizing: content;
+          min-inline-size: 5ch;
+        }
+        @supports not (field-sizing: content) {
+          inline-size: 5ch;
+        }
+        
+        &[type="number"] {
+          // Try to hide the number spin controls
+          // https://stackoverflow.com/questions/3790935/can-i-hide-the-html5-number-input-s-spin-box
           // stylelint-disable-next-line property-no-vendor-prefix
-          -webkit-appearance: none;
-          margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+          -moz-appearance: textfield;
+          &::-webkit-outer-spin-button,
+          &::-webkit-inner-spin-button {
+            // stylelint-disable-next-line property-no-vendor-prefix
+            -webkit-appearance: none;
+            margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+          }
         }
       }
     }
