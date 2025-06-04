@@ -33,3 +33,10 @@ export const SysadminSwitcherWithSubtitle: Story = {
     subtitle: 'Some subtitle',
   },
 };
+
+export const SysadminSwitcherWithIcon: Story = {
+  args: {
+    icon: 'account',
+    subtitle: 'Some subtitle',
+  },
+};

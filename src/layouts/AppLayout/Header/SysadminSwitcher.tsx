@@ -27,7 +27,7 @@ export type SysadminSwitcherProps = ComponentProps<typeof Button> & {
  * Button to switch to the system administration view.
  */
 export const SysadminSwitcher = (props: SysadminSwitcherProps) => {
-  const { title, subtitle, ...propsRest } = props;
+  const { icon = 'system-admin', title, subtitle, ...propsRest } = props;
   return (
     <Button unstyled
       {...propsRest}
@@ -37,7 +37,7 @@ export const SysadminSwitcher = (props: SysadminSwitcherProps) => {
         propsRest.className,
       )}
     >
-      <Icon icon="system-admin" className={cx(cl['bk-sysadmin-switcher__icon'])}/>
+      <Icon icon={icon} className={cx(cl['bk-sysadmin-switcher__icon'])}/>
       
       <span className={cx(cl['bk-sysadmin-switcher__title'])}>
         {title ?? 'System Administration'}
