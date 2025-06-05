@@ -138,6 +138,67 @@ export const SelectControlledWithDefault: Story = {
   render: args => <SelectControlledC {...args} defaultSelected="blueberry"/>,
 };
 
+type ExtendedFruitKey = FruitKey | 'lychee' | 'fig';
+
+const formatExtendedFruitLabel = (
+  option: null | ExtendedFruitKey,
+  items: null | Partial<Record<ExtendedFruitKey, { label: string }>>
+) => {
+  let label: string = '';
+  
+  if (option) {
+    if (items) {
+      label = items[option]?.label ?? '';
+    }
+    
+    if (!label) {
+      label = formatFruitLabel(option) ?? '(none)';
+    } 
+  }
+  
+  return label;
+};
+
+const SelectControlledLazyC = ({ defaultSelected, ...props }: React.ComponentProps<typeof Select>) => {
+  const [selectedOption, setSelectedOption] = React.useState<null | ExtendedFruitKey>(
+    (defaultSelected as ExtendedFruitKey) ?? null
+  );
+  const [items, setItems] = React.useState<null | Partial<Record<ExtendedFruitKey, { label: string }>>>(null);
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setItems({ 'fig': { label: 'Fig' } });
+      setSelectedOption('fig');
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+  
+  return (
+    <>
+      <p style={{ color: 'GrayText' }}>
+        Wait for 2 seconds to see Selected label changing to Fig but Select component still displays Apple
+      </p>
+      <div>Selected: {formatExtendedFruitLabel(selectedOption, items)}</div>
+      <Select
+        {...props}
+        placeholder="Choose a fruit"
+        formatItemLabel={(itemKey: string) => formatExtendedFruitLabel(itemKey as ExtendedFruitKey, items)}
+        options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
+          <Select.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        )}
+        selected={selectedOption}
+        // @ts-ignore FIXME: use generic to pass down `FruitKey` subtype?
+        onSelect={setSelectedOption}
+      />
+    </>
+  );
+};
+
+export const SelectControlledLazyWithDefault: Story = {
+  render: args => <SelectControlledLazyC {...args} defaultSelected="apple"/>,
+};
+
 export const SelectInForm: Story = {
   decorators: [
     Story => (
