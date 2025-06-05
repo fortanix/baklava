@@ -430,6 +430,19 @@ export const ListBoxMulti = Object.assign(
       virtualItemKeys,
     });
     
+    // Sync `selected` prop to the store
+    React.useEffect(() => {
+      if (typeof selected !== 'undefined') {
+        const state = listBox.store.getState();
+        state.setSelectedItems(selected);
+        
+        const firstItemKey = selected.values().next().value;
+        if (typeof firstItemKey !== 'undefined') {
+          state.focusItem(firstItemKey);
+        }
+      }
+    }, [selected, listBox.store]);
+    
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
     React.useImperativeHandle<null | ListBoxMultiRef, null | ListBoxMultiRef>(ref, () => {
       const listBoxElement = listBoxRef.current;
