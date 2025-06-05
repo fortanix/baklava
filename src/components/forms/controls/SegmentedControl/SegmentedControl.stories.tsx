@@ -22,6 +22,7 @@ export default {
   },
   args: {
     'aria-label': 'Choose a color',
+    onUpdate: selected => { console.log('update', selected); },
     defaultSelected: 'red',
     children: (
       <>
