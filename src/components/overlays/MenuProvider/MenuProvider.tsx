@@ -190,6 +190,14 @@ export const MenuProvider = Object.assign(
       onSelect?.(itemKey, itemKey === null ? null : { itemKey, label: (selectedLabelRef.current ?? itemKey) });
     }, [selected, onSelect]);
     
+    // Sync `selected` prop with internal state
+    React.useEffect(() => {
+      if (typeof selected !== 'undefined') {
+        selectedLabelRef.current = selected === null ? selected : (formatItemLabel?.(selected) ?? selected);
+        setSelectedOptionInternal(selected);
+      }
+    }, [selected, formatItemLabel]);
+    
     const toggleCause = React.useRef<null | 'ArrowUp' | 'ArrowDown'>(null);
     const handleAnchorKeyDown = React.useCallback((event: React.KeyboardEvent) => {
       if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
@@ -213,6 +221,7 @@ export const MenuProvider = Object.assign(
     }, [setIsOpen]);
     
     // Note: memoize this, so that the anchor does not get rerendered every time the floating element position changes
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Should rerender on `selectedOptionInternal` change.
     const anchor = React.useMemo(() => {
       // FIXME: make `React.HTMLProps<Element>` generic, since not all component props extend from this type
       const anchorProps: AnchorRenderArgs['props'] = (userProps?: undefined | React.HTMLProps<Element>) => {
@@ -268,6 +277,7 @@ export const MenuProvider = Object.assign(
       listBoxId,
       refs.setReference,
       selectedOption,
+      selectedOptionInternal,
     ]);
     
     const handleSelect = React.useCallback((_key: null | ListBox.ItemKey, itemDetails: null | ListBox.ItemDetails) => {
