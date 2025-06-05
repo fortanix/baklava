@@ -431,6 +431,8 @@ export const ListBoxMulti = Object.assign(
     });
     
     // Sync `selected` prop to the store
+    const selectedSerialized = typeof selected === 'undefined' ? '' : JSON.stringify([...selected.values()]);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Using a serialized version of `selected`.
     React.useEffect(() => {
       if (typeof selected !== 'undefined') {
         const state = listBox.store.getState();
@@ -441,7 +443,7 @@ export const ListBoxMulti = Object.assign(
           state.focusItem(firstItemKey);
         }
       }
-    }, [selected, listBox.store]);
+    }, [selectedSerialized, listBox.store]);
     
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
     React.useImperativeHandle<null | ListBoxMultiRef, null | ListBoxMultiRef>(ref, () => {
