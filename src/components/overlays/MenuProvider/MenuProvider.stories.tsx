@@ -79,6 +79,7 @@ export const MenuProviderWithInput: Story = {
         <MenuProvider.Header unstyled itemKey="header-1" label="Input">
           <InputSearch/>
         </MenuProvider.Header>
+        <MenuProvider.Static><input type="file"/></MenuProvider.Static>
         <MenuProvider.Option itemKey="option-1" label="Option 1"/>
         <MenuProvider.Option itemKey="option-2" label="Option 2"/>
       </>

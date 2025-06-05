@@ -341,6 +341,11 @@ export const MenuProvider = Object.assign(
       
       const controller = new AbortController();
       listBoxElement.addEventListener('focusout', event => {
+        // Special case: in Firefox triggering a file select causes a `focusout` which we don't want closing the menu
+        if (event.target instanceof HTMLInputElement && event.target.type === 'file' && event.relatedTarget === null) {
+          return;
+        }
+        
         const focusTarget = event.relatedTarget; // The new element being focused
         if (!focusTarget || (focusTarget instanceof Node && !listBoxElement.contains(focusTarget))) {
           setIsOpen(false);
