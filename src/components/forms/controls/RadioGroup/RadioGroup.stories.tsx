@@ -82,6 +82,18 @@ export const RadioGroupDisabled: Story = {
   },
 };
 
+export const RadioGroupWithDisabled: Story = {
+  args: {
+    children: (
+      <>
+        <RadioGroup.Button radioKey="red" label="Red"/>
+        <RadioGroup.Button radioKey="green" label="Green" disabled/>
+        <RadioGroup.Button radioKey="blue" label="Blue"/>
+      </>
+    ),
+  },
+};
+
 const RadioGroupControlledC = () => {
   const Color = ['red', 'green', 'blue'];
   type Color = (typeof Color)[number];

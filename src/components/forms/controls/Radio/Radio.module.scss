@@ -5,6 +5,15 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
+  .bk-radio-labeled {
+    @include bk.component-base(bk-radio-labeled);
+    
+    &.bk-radio-labeled--disabled, fieldset:disabled & {
+      cursor: not-allowed;
+      color: bk.$theme-text-label-disabled;
+    }
+  }
+  
   .bk-radio {
     @include bk.component-base(bk-radio);
     

@@ -19,10 +19,22 @@ export type RadioProps = ComponentProps<'input'> & {
 
 export type RadioLabeledProps = RadioProps & {
   label: React.ComponentProps<typeof Label>['label'],
-  labelProps?: undefined | React.ComponentProps<typeof Label>,
+  labelProps?: undefined | Partial<React.ComponentProps<typeof Label>>,
 };
-export const RadioLabeled = ({ label, labelProps, ...props }: RadioLabeledProps) =>
-  <Label position="inline-end" label={label} {...labelProps}><Radio {...props}/></Label>;
+export const RadioLabeled = ({ label, labelProps = {}, ...props }: RadioLabeledProps) => {
+  const isDisabled = props.disabled;
+  return (
+    <Label position="inline-end" label={label} {...labelProps}
+      className={cx(
+        cl['bk-radio-labeled'],
+        { [cl['bk-radio-labeled--disabled']]: isDisabled },
+        labelProps.className,
+      )}
+    >
+      <Radio {...props}/>
+    </Label>
+  );
+};
 
 /**
  * A single radio button. Can be selected, but not deselected unless it's part of a (mutually exclusive) radio group.
