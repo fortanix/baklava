@@ -40,6 +40,8 @@
       text-align: center;
       
       .pagination__page-input__input {
+        padding-inline: 1ch;
+        
         @supports (field-sizing: content) {
           field-sizing: content;
           min-inline-size: 5ch;
