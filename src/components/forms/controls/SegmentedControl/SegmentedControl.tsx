@@ -133,6 +133,13 @@ export const SegmentedControl = Object.assign(
     const buttonDefsRef = React.useRef<Map<ButtonKey, ButtonDef>>(new Map());
     const [selectedButton, setSelectedButton] = React.useState<undefined | ButtonKey>(selected ?? defaultSelected);
     
+    // Sync `selected` prop to internal state
+    React.useEffect(() => {
+      if (typeof selected !== 'undefined') {
+        setSelectedButton(selected);
+      }
+    }, [selected]);
+    
     const register = React.useCallback((buttonDef: ButtonDef) => {
       const buttonDefs = buttonDefsRef.current;
       if (buttonDefs.has(buttonDef.buttonKey)) {
