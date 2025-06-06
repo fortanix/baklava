@@ -31,10 +31,22 @@ export type CheckboxProps = Omit<ComponentProps<'input'>, 'defaultChecked' | 'ch
 
 export type CheckboxLabeledProps = CheckboxProps & {
   label: React.ComponentProps<typeof Label>['label'],
-  labelProps?: undefined | React.ComponentProps<typeof Label>,
+  labelProps?: undefined | Partial<React.ComponentProps<typeof Label>>,
 };
-export const CheckboxLabeled = ({ label, labelProps, ...props }: CheckboxLabeledProps) =>
-  <Label position="inline-end" label={label} {...labelProps}><Checkbox {...props}/></Label>;
+export const CheckboxLabeled = ({ label, labelProps = {}, ...props }: CheckboxLabeledProps) => {
+  const isDisabled = props.disabled;
+  return (
+    <Label position="inline-end" label={label} {...labelProps}
+      className={cx(
+        cl['bk-checkbox-labeled'],
+        { [cl['bk-checkbox-labeled--disabled']]: isDisabled },
+        labelProps.className,
+      )}
+    >
+      <Checkbox {...props}/>
+    </Label>
+  );
+};
 
 /**
  * A checkbox control is a basic on/off toggle.
