@@ -52,6 +52,18 @@ export const CheckboxGroupDisabled: Story = {
   },
 };
 
+export const CheckboxGroupWithDisabled: Story = {
+  args: {
+    children: (
+      <>
+        <CheckboxGroup.Checkbox checkboxKey="red" label="Red" defaultChecked/>
+        <CheckboxGroup.Checkbox checkboxKey="green" label="Green" defaultChecked disabled/>
+        <CheckboxGroup.Checkbox checkboxKey="blue" label="Blue"/>
+      </>
+    ),
+  },
+};
+
 const CheckboxGroupControlledC = () => {
   const Color = ['red', 'green', 'blue'];
   type Color = (typeof Color)[number];
