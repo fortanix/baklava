@@ -6,8 +6,9 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { type ButtonKey, SegmentedControl } from './SegmentedControl.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
+
+import { type ButtonKey, SegmentedControl } from './SegmentedControl.tsx';
 
 
 type SegmentedControlArgs = React.ComponentProps<typeof SegmentedControl>;
@@ -113,7 +114,7 @@ const SegmentedControlControlledC = (props: SegmentedControlControlledProps) => 
     <>
       <p>Selected color: {selectedButton ?? <em>none</em>}</p>
       <SegmentedControl {...props} selected={selectedButton} onUpdate={setSelectedButton}/>
-      <Button label="Update Selected" onPress={() => { setSelectedButton('blue'); }}/>
+      <Button label="Update state" onPress={() => { setSelectedButton('blue'); }}/>
     </>
   );
 };

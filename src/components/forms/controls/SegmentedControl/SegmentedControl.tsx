@@ -133,13 +133,13 @@ export const SegmentedControl = Object.assign(
     const buttonDefsRef = React.useRef<Map<ButtonKey, ButtonDef>>(new Map());
     const [selectedButton, setSelectedButton] = React.useState<undefined | ButtonKey>(selected ?? defaultSelected);
     
-    //Note:  this is to update the selected state when updated from outside.
+    // Sync `selected` prop to internal state
     React.useEffect(() => {
       if (typeof selected !== 'undefined') {
         setSelectedButton(selected);
       }
     }, [selected]);
-
+    
     const register = React.useCallback((buttonDef: ButtonDef) => {
       const buttonDefs = buttonDefsRef.current;
       if (buttonDefs.has(buttonDef.buttonKey)) {
@@ -194,7 +194,7 @@ export const SegmentedControl = Object.assign(
       selectedButton,
       selectButton,
       disabled,
-    }), [register, selectedButton, selectButton, disabled,selected]);
+    }), [register, selectedButton, selectButton, disabled]);
     
     const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
       const selectedButton = context.selectedButton;
@@ -247,7 +247,7 @@ export const SegmentedControl = Object.assign(
     }, [context]);
     
     return (
-      <SegmentedControlContext.Provider value={context}>
+      <SegmentedControlContext value={context}>
         <div
           role="radiogroup"
           aria-required
@@ -267,7 +267,7 @@ export const SegmentedControl = Object.assign(
           
           {children}
         </div>
-      </SegmentedControlContext.Provider>
+      </SegmentedControlContext>
     );
   },
   {
