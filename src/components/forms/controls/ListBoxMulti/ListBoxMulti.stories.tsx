@@ -365,17 +365,25 @@ export const ListBoxMultiMany: Story = {
 
 type ListBoxMultiControlledProps<K extends ItemKey> = Omit<React.ComponentProps<typeof ListBoxMulti<K>>, 'selected'>;
 const ListBoxMultiControlledC = (props: ListBoxMultiControlledProps<FruitKey>) => {
-  const [selectedItems, setSelectedItems] = React.useState<Set<FruitKey>>(new Set(['blueberry', 'cherry', 'orange']));
+  const [selectedItems, setSelectedItems] = React.useState<Set<FruitKey>>(props.defaultSelected ?? new Set());
   
   return (
     <>
       <p>Selected fruits: {[...selectedItems].map(key => formatFruitLabel(key)).join(', ') || '(none)'}</p>
       <ListBoxMulti<FruitKey> {...props} selected={new Set(selectedItems.keys())} onSelect={setSelectedItems}/>
+      <Button label="Update state" onPress={() => { setSelectedItems(new Set(['razzberry', 'strawberry'])); }}/>
     </>
   );
 };
 export const ListBoxMultiControlled: Story = {
   render: ({ label, children }) => <ListBoxMultiControlledC label={label}>{children}</ListBoxMultiControlledC>,
+};
+export const ListBoxMultiControlledWithDefault: Story = {
+  render: ({ label, children }) => (
+    <ListBoxMultiControlledC label={label} defaultSelected={new Set(['blueberry', 'cherry', 'orange'])}>
+      {children}
+    </ListBoxMultiControlledC>
+  ),
 };
 
 export const ListBoxMultiInForm: Story = {

@@ -134,24 +134,8 @@ export const MenuProviderWithHoverTrigger: Story = {
 };
 
 const MenuProviderControlledC = (props: React.ComponentProps<typeof MenuProvider>) => {
-  const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>(null);
-  return (
-    <>
-      <p>Selected: {selectedOption === null ? '(none)' : formatFruitLabel(selectedOption)}</p>
-      <MenuProvider
-        {...props}
-        selected={selectedOption}
-        onSelect={setSelectedOption}
-      />
-    </>
-  );
-};
-export const MenuProviderControlled: Story = {
-  render: args => <MenuProviderControlledC {...args}/>,
-};
-
-const MenuProviderControlledWithDefaultC = (props: React.ComponentProps<typeof MenuProvider>) => {
-  const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>('item-blueberry');
+  const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>(props.defaultSelected ?? null);
+  
   return (
     <>
       <p>Selected: {selectedOption === null ? '(none)' : formatFruitLabel(selectedOption)}</p>
@@ -161,9 +145,13 @@ const MenuProviderControlledWithDefaultC = (props: React.ComponentProps<typeof M
         selected={selectedOption}
         onSelect={setSelectedOption}
       />
+      <div><Button label="Update state" onPress={() => { setSelectedOption('item-strawberry'); }}/></div>
     </>
   );
 };
+export const MenuProviderControlled: Story = {
+  render: args => <MenuProviderControlledC {...args}/>,
+};
 export const MenuProviderControlledWithDefault: Story = {
-  render: args => <MenuProviderControlledWithDefaultC {...args}/>,
+  render: args => <MenuProviderControlledC {...args} defaultSelected="item-blueberry"/>,
 };
