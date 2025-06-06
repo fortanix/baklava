@@ -133,7 +133,7 @@ export const SegmentedControlControlled: Story = {
 };
 
 export const SegmentedControlControlledWithDefault: Story = {
-  render: args => <SegmentedControlControlledC {...args} defaultSelected='green'/>,
+  render: args => <SegmentedControlControlledC {...args} defaultSelected="green"/>,
   args: {
     children: (
       <>
