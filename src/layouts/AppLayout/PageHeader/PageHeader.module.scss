@@ -1,0 +1,23 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-page-header {
+    @include bk.component-base(bk-page-header);
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: bk.$spacing-7 0;
+    
+    .bk-page-header__actions {
+      display: flex;
+      flex-direction: row;
+      gap: bk.$spacing-7;
+    }
+  }
+}

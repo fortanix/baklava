@@ -1,0 +1,53 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+import * as React from 'react';
+import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
+
+import { H3 } from '../../../typography/Heading/Heading.tsx';
+
+import cl from './PageHeader.module.scss';
+
+
+export { cl as PageHeaderClassNames };
+
+
+type PageHeaderProps = React.PropsWithChildren<ComponentProps<'header'> & {
+  /** Whether this component should be unstyled. */
+  unstyled?: undefined | boolean,
+  
+  /** A page title to be displayed on the left. */
+  title?: undefined | string,
+}>;
+
+/**
+ * A page header with a title and action buttons
+ */
+export const PageHeader = Object.assign(
+  (props: PageHeaderProps) => {
+    const { children, unstyled = false, title, ...propsRest } = props;
+    
+    return (
+      <header
+        {...propsRest}
+        className={cx(
+          'bk',
+          { [cl['bk-page-header']]: !unstyled },
+          propsRest.className,
+        )}
+      >
+        {title && (
+          <H3>{title}</H3>
+        )}
+        <div className={cx(
+          'bk',
+          { [cl['bk-page-header__actions']]: !unstyled },
+        )}>
+          {children}
+        </div>
+      </header>
+    );
+  },
+  {},
+);
