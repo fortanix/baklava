@@ -498,6 +498,10 @@ export const run = async (argsRaw: Array<string>): Promise<void> => {
   });
 };
 
+if (!('main' in import.meta)) {
+  throw new Error(`Please upgrade to Node v24.2+`);
+}
+
 // Detect if this module is being run directly from the command line
 const [_argExec, _argScript, ...args] = process.argv; // First two arguments should be the executable + script
 // @ts-ignore `import.meta.main` is not supported in `@types/node` currently, once v24.2 is out remove this comment

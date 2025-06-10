@@ -191,9 +191,8 @@ export const run = async (argsRaw: Array<string>): Promise<void> => {
 };
 
 // Detect if this module is being run directly from the command line
-const [_argExec, _argScript, ...args] = process.argv; // First two arguments should be the executable + script
-// @ts-ignore `import.meta.main` is not supported in `@types/node` currently, once v24.2 is out remove this comment
-if (import.meta.main) {
+const [_argExec, argScript, ...args] = process.argv; // First two arguments should be the executable + script
+if (argScript && await fs.realpath(argScript) === fileURLToPath(import.meta.url)) {
   try {
     await run(args);
     process.exit(0);
