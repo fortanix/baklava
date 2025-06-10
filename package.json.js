@@ -119,7 +119,7 @@ const packageConfig = {
     
     // Static analysis
     'typescript': '^5.7.3',
-    '@types/node': '^22.15.21',
+    '@types/node': '^24.0.0',
     'stylelint': '^16.19.1',
     'stylelint-config-standard-scss': '^15.0.1',
     'stylelint-use-logical': '^2.1.2',
