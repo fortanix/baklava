@@ -33,6 +33,8 @@
           overflow: hidden;
           display: flex;
           
+          padding: 1px; // Add a 1px padding, as a workaround for browser rounding issues (see also #358 on GitHub)
+          
           > * {
             min-inline-size: 0;
           }
