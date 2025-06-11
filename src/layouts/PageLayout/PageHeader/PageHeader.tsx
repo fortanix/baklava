@@ -20,16 +20,13 @@ type PageHeaderProps = React.PropsWithChildren<ComponentProps<'header'> & {
   
   /** A page title to be displayed. */
   title?: undefined | string,
-  
-  /** Breadcrumbs to be displayed on top of the title */
-  breadcrumbs?: undefined | React.ReactNode,
 }>;
 /**
  * A page header with a title and action buttons
  */
 export const PageHeader = Object.assign(
   (props: PageHeaderProps) => {
-    const { unstyled = false, breadcrumbs, title, children, ...propsRest } = props;
+    const { unstyled = false, title, children, ...propsRest } = props;
     
     return (
       <header
@@ -40,29 +37,19 @@ export const PageHeader = Object.assign(
           propsRest.className,
         )}
       >
-        {breadcrumbs && (
+        {title && (
+          <H3>
+            <TextLine>{title}</TextLine>
+          </H3>
+        )}
+        {children && (
           <div className={cx(
             'bk',
-            { [cl['bk-page-header__breadcrumbs']]: !unstyled },
+            { [cl['bk-page-header__actions']]: !unstyled },
           )}>
-            {breadcrumbs}
+            {children}
           </div>
         )}
-        <div className={cl['bk-page-header__content']}>
-          {title && (
-            <H3>
-              <TextLine>{title}</TextLine>
-            </H3>
-          )}
-          {children && (
-            <div className={cx(
-              'bk',
-              { [cl['bk-page-header__content__actions']]: !unstyled },
-            )}>
-              {children}
-            </div>
-          )}
-        </div>
       </header>
     );
   },

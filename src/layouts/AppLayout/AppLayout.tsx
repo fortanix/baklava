@@ -17,6 +17,10 @@ const AppLayoutSidebar = (props: React.ComponentProps<'div'>) => {
   return <div slot="sidebar" {...props} className={cx('bk-theme--dark', props.className)}/>;
 };
 
+const AppLayoutBreadcrumbs = (props: React.ComponentProps<'div'>) => {
+  return <div slot="breadcrumbs" {...props} className={cx(props.className)}/>;
+};
+
 const AppLayoutContent = (props: React.ComponentProps<'main'>) => {
   return <main slot="content" {...props} className={cx(props.className)}/>;
 };
@@ -49,6 +53,7 @@ export const AppLayout = Object.assign(
   {
     Header: AppLayoutHeader,
     Sidebar: AppLayoutSidebar,
+    Breadcrumbs: AppLayoutBreadcrumbs,
     Content: AppLayoutContent,
     Footer: AppLayoutFooter,
   },

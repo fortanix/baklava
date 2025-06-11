@@ -7,8 +7,6 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Button } from '../../../components/actions/Button/Button.tsx';
-import { Breadcrumbs } from '../../AppLayout/Breadcrumbs/Breadcrumbs.tsx';
-import { DummyBkLinkWithNotify } from '../../../util/storybook/StorybookLink.tsx';
 
 import { PageHeader } from './PageHeader.tsx';
 
@@ -35,12 +33,6 @@ export default {
   ),
 } satisfies Meta<PageHeaderArgs>;
 
-const breadcrumbs1 = (
-  <Breadcrumbs>
-    <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Fortanix Armor"/>
-    <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Dashboard" active/>
-  </Breadcrumbs>
-);
 const title1 = 'Page Title';
 const actions1 = (
   <>
@@ -50,19 +42,6 @@ const actions1 = (
   </>
 );
 
-export const PageHeaderJustTitle: Story = {
-  args: {
-    title: title1,
-  },
-};
-
-export const PageHeaderTitleAndBreadcrumbs: Story = {
-  args: {
-    breadcrumbs: breadcrumbs1,
-    title: title1,
-  },
-};
-
 export const PageHeaderTitleAndActions: Story = {
   args: {
     title: title1,
@@ -70,10 +49,9 @@ export const PageHeaderTitleAndActions: Story = {
   }
 };
 
-export const PageHeaderTitleAndActionsAndBreadcrumbs: Story = {
+export const PageHeaderJustTitle: Story = {
   args: {
-    breadcrumbs: breadcrumbs1,
     title: title1,
-    children: actions1,
   },
 };
+

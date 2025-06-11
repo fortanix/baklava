@@ -112,12 +112,17 @@ const sidebar1 = (
   </AppLayout.Sidebar>
 );
 
-const content1 = (
-  <AppLayout.Content>
+const breadcrumbs1 = (
+  <AppLayout.Breadcrumbs>
     <Breadcrumbs>
       <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Fortanix Armor"/>
       <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Dashboard" active/>
     </Breadcrumbs>
+  </AppLayout.Breadcrumbs>
+);
+
+const content1 = (
+  <AppLayout.Content>
     <Panel>
       <Panel.Heading>Panel</Panel.Heading>
       
@@ -151,12 +156,7 @@ const content1 = (
 const contentWithPageLayout = (
   <AppLayout.Content>
     <PageLayout>
-      <PageLayout.Header title="Page Title" breadcrumbs={
-        <Breadcrumbs>
-          <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Fortanix Armor"/>
-          <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Dashboard" active/>
-        </Breadcrumbs>
-      }>
+      <PageLayout.Header title="Page Title">
         <Button kind="tertiary">Tertiary Button</Button>
         <Button kind="secondary">Secondary Button</Button>
         <Button kind="primary">Primary Button</Button>
@@ -180,6 +180,7 @@ export const AppLayoutStandard: Story = {
       <>
         {header1}
         {sidebar1}
+        {breadcrumbs1}
         {content1}
         {footer1}
       </>
@@ -193,6 +194,7 @@ export const AppLayoutPage: Story = {
       <>
         {header1}
         {sidebar1}
+        {breadcrumbs1}
         {contentWithPageLayout}
         {footer1}
       </>
@@ -205,6 +207,7 @@ export const AppLayoutWithoutSidebar: Story = {
     children: (
       <>
         {header1}
+        {breadcrumbs1}
         {content1}
         {footer1}
       </>
@@ -217,6 +220,7 @@ export const AppLayoutWithoutHeader: Story = {
     children: (
       <>
         {sidebar1}
+        {breadcrumbs1}
         {content1}
         {footer1}
       </>

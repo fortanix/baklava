@@ -7,8 +7,6 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Button } from '../../components/actions/Button/Button.tsx';
-import { Breadcrumbs } from '../AppLayout/Breadcrumbs/Breadcrumbs.tsx';
-import { DummyBkLinkWithNotify } from '../../util/storybook/StorybookLink.tsx';
 
 import { PageLayout } from './PageLayout.tsx';
 
@@ -27,12 +25,6 @@ export default {
   render: args => <PageLayout {...args}/>,
 } satisfies Meta<PageLayoutArgs>;
 
-const breadcrumbs1 = (
-  <Breadcrumbs>
-    <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Fortanix Armor"/>
-    <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Dashboard" active/>
-  </Breadcrumbs>
-);
 const title1 = 'Page Title';
 const actions1 = (
   <>
@@ -44,11 +36,11 @@ const actions1 = (
 
 const contentWithPageHeader = (
   <>
-    <PageLayout.Header breadcrumbs={breadcrumbs1} title={title1}>
+    <PageLayout.Header title={title1}>
       {actions1}
     </PageLayout.Header>
     <PageLayout.Body>
-      <p>Content Area. Notice this has no external padding on purpose; that's added by AppLayout.</p>
+      <p>Content Area. Notice this has no external padding and no breadcrumbs; those are added by AppLayout.</p>
     </PageLayout.Body>
   </>
 );
