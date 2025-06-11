@@ -117,7 +117,7 @@
     > [slot='breadcrumbs'] {
       container: bk-app-layout__breadcrumbs / inline-size;
       padding: bk.$spacing-5;
-      padding-bottom: calc(bk.$spacing-7 - bk.$spacing-5);
+      padding-block-end: calc(bk.$spacing-7 - bk.$spacing-5);
     }
     
     > [slot='content'] {
