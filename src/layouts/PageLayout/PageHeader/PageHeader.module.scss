@@ -9,12 +9,17 @@
     @include bk.component-base(bk-page-header);
     
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: bk.$spacing-7 0;
+    flex-direction: column;
+    gap: bk.$spacing-7;
     
-    .bk-page-header__actions {
+    .bk-page-header__content {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .bk-page-header__content__actions {
       display: flex;
       flex-direction: row;
       gap: bk.$spacing-7;

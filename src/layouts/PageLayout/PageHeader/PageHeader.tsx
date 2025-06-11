@@ -6,6 +6,7 @@ import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
 import { H3 } from '../../../typography/Heading/Heading.tsx';
+import { TextLine } from '../../../components/text/TextLine/TextLine.tsx';
 
 import cl from './PageHeader.module.scss';
 
@@ -17,16 +18,18 @@ type PageHeaderProps = React.PropsWithChildren<ComponentProps<'header'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
-  /** A page title to be displayed on the left. */
+  /** A page title to be displayed. */
   title?: undefined | string,
+  
+  /** Breadcrumbs to be displayed on top of the title */
+  breadcrumbs?: undefined | React.ReactNode,
 }>;
-
 /**
  * A page header with a title and action buttons
  */
 export const PageHeader = Object.assign(
   (props: PageHeaderProps) => {
-    const { children, unstyled = false, title, ...propsRest } = props;
+    const { unstyled = false, breadcrumbs, title, children, ...propsRest } = props;
     
     return (
       <header
@@ -37,14 +40,28 @@ export const PageHeader = Object.assign(
           propsRest.className,
         )}
       >
-        {title && (
-          <H3>{title}</H3>
+        {breadcrumbs && (
+          <div className={cx(
+            'bk',
+            { [cl['bk-page-header__breadcrumbs']]: !unstyled },
+          )}>
+            {breadcrumbs}
+          </div>
         )}
-        <div className={cx(
-          'bk',
-          { [cl['bk-page-header__actions']]: !unstyled },
-        )}>
-          {children}
+        <div className={cl['bk-page-header__content']}>
+          {title && (
+            <H3>
+              <TextLine>{title}</TextLine>
+            </H3>
+          )}
+          {children && (
+            <div className={cx(
+              'bk',
+              { [cl['bk-page-header__content__actions']]: !unstyled },
+            )}>
+              {children}
+            </div>
+          )}
         </div>
       </header>
     );

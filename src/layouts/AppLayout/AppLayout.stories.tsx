@@ -11,7 +11,6 @@ import { notify } from '../../components/overlays/ToastProvider/ToastProvider.ts
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { DialogModal } from '../../components/overlays/DialogModal/DialogModal.tsx';
 import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
-import { LoremIpsum } from '../../util/storybook/LoremIpsum.tsx';
 import { OverflowTester } from '../../util/storybook/OverflowTester.tsx';
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
 import { Select } from '../../components/forms/controls/Select/Select.tsx';
@@ -25,7 +24,7 @@ import { SolutionSelector } from './Header/SolutionSelector.tsx';
 import { AccountSelector } from './Header/AccountSelector.tsx';
 import { SysadminSwitcher } from './Header/SysadminSwitcher.tsx';
 import { Nav } from './Nav/Nav.tsx';
-import { PageHeader } from './PageHeader/PageHeader.tsx';
+import { PageLayout } from '../PageLayout/PageLayout.tsx';
 import { Sidebar } from './Sidebar/Sidebar.tsx';
 
 
@@ -149,20 +148,23 @@ const content1 = (
   </AppLayout.Content>
 );
 
-const contentWithPageHeader = (
+const contentWithPageLayout = (
   <AppLayout.Content>
-    <Breadcrumbs>
-      <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Fortanix Armor"/>
-      <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Dashboard" active/>
-    </Breadcrumbs>
-    <PageHeader title="Page Title">
-      <Button kind="tertiary">Tertiary Button</Button>
-      <Button kind="secondary">Secondary Button</Button>
-      <Button kind="primary">Primary Button</Button>
-    </PageHeader>
-    <Panel>
-      <p>Content Area</p>
-    </Panel>
+    <PageLayout>
+      <PageLayout.Header title="Page Title" breadcrumbs={
+        <Breadcrumbs>
+          <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Fortanix Armor"/>
+          <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Dashboard" active/>
+        </Breadcrumbs>
+      }>
+        <Button kind="tertiary">Tertiary Button</Button>
+        <Button kind="secondary">Secondary Button</Button>
+        <Button kind="primary">Primary Button</Button>
+      </PageLayout.Header>
+      <PageLayout.Body>
+        <p>Content Area</p>
+      </PageLayout.Body>
+    </PageLayout>
   </AppLayout.Content>
 );
 
@@ -191,7 +193,7 @@ export const AppLayoutPage: Story = {
       <>
         {header1}
         {sidebar1}
-        {contentWithPageHeader}
+        {contentWithPageLayout}
         {footer1}
       </>
     ),

@@ -33,7 +33,7 @@ type AppLayoutProps = React.PropsWithChildren<ComponentProps<'div'> & {
  * AppLayout component.
  */
 export const AppLayout = Object.assign(
-    (props: AppLayoutProps) => {
+  (props: AppLayoutProps) => {
     const { unstyled = false, ...propsRest } = props;
     return (
       <div
