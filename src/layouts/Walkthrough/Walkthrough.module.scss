@@ -1,4 +1,4 @@
-@use '../../styling/defs.scss' as bkl;
+@use '../../styling/defs.scss' as bk;
 
 @layer baklava.components {
 	.bk-walkthrough{
@@ -7,51 +7,59 @@
 			$backgroundColor: #14152E;
 
 			&-tooltip{     
-					position: fixed;
-					background-color: $backgroundColor;
-					border-radius:0.4rem;
-					padding: 1.6rem;
+					@include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-s);
+					position: absolute;
+					border-radius: bk.$spacing-1;
+					padding: bk.$spacing-4;
 					color: #FBFBFB;
-					border: 1px solid $borderColor;
-					min-width: 34.5rem;
-					max-width: 36rem;
+					min-width: calc(calc(bk.$spacing-8 + bk.$spacing-1) * 10);
+					max-width: calc(calc(bk.$spacing-8 + bk.$spacing-1) * 10);
+					max-height: calc(bk.$spacing-6 * 10);
 					z-index: 1000;
-					@include bkl.font(bkl.$font-family-body, bkl.$font-weight-semibold, bkl.$font-size-s);
-					display: flex;
-					flex-direction: column;
-					gap: 1.6rem;
+					
+					& > div:first-child{
+						display: flex;
+						flex-direction: column;
+						gap: bk.$spacing-4;
+					}
 
 					&:focus-visible{
 							.bk-walkthrough-tooltip-arrow{
-									border-left: 0.1rem solid #ffffff;
-									border-bottom: 0.1rem solid #ffffff;
+									border-left: bk.$size-1 solid #ffffff;
+									border-bottom: bk.$size-1 solid #ffffff;
 							}
+					}
+					
+					&__content{
+						display: flex;
+						flex-direction: column;
+						gap: bk.$spacing-4;
 					}
 
 					&-header{
 							display: flex;
 							justify-content: space-between;
 							align-items: center;
-							gap: 1rem;
+							gap: bk.$font-size-xs;
 
 							& h5{
 									margin: 0;
-									font-size: bkl.$font-size-m;
+									font-size: bk.$font-size-m;
 									font-weight: 600;
 									color:#FBFBFB;
 							}
 
 							& .close-icon{
-									height: 1rem;
-									width: 1rem;
+									height: bk.$font-size-xs;
+									width: bk.$font-size-xs;
 									cursor: pointer;
 							}
 					}
 
 					&-content{
-							font-size: 1.4rem;
+							font-size: bk.$font-size-m;
 							color: #FBFBFB;
-							font-weight: bkl.$font-weight-regular;
+							font-weight: bk.$font-weight-regular;
 					}
 
 					&-footer{
@@ -61,24 +69,24 @@
 
 							&-step-count{
 									color:#bdbec1;
-									font-size: 1.4rem;
+									font-size: bk.$font-size-m;
 							}
 
 							&-action-btns{
 									margin-left: auto;
 									display: flex;
-									gap: 2rem;
+									gap: bk.$spacing-3;
 									align-items: center;
 							}
 					}
 
 					&-arrow{
 							position: absolute;
-							height: 1.4rem;
-							width: 1.4rem;
+							height: bk.$font-size-m;
+							width: bk.$font-size-m;
 							background-color: $backgroundColor;
-							border-left: 0.1rem solid $borderColor;
-							border-bottom: 0.1rem solid $borderColor;
+							border-left: bk.$size-1 solid $borderColor;
+							border-bottom: bk.$size-1 solid $borderColor;
 
 							&.arrow{
 									&-left-center, &-left-top, &-left-bottom {
@@ -109,8 +117,8 @@
 					}
 			&-spotlight{
 					position: fixed;
-					border-radius: 0.8rem;
-					box-shadow: 0 0 0 9999px #00000099;        ;
+					border-radius: bk.$spacing-2;
+					box-shadow: 0 0 0 9999px #00000099 !important;    
 					pointer-events: none;
 					z-index: 998;
 			}

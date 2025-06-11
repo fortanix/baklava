@@ -77,6 +77,7 @@ export const NavItem = (props: NavItemProps) => {
       {...propsRest}
       className={cx(
         { [cl['bk-nav__item']]: !unstyled },
+        className
       )}
     >
       {renderItem()}

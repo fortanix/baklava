@@ -1,27 +1,25 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Icon } from '@fortanix/baklava';
+
+import { Button } from '../../components/actions/Button/Button';
+import { Icon } from '../../components/graphics/Icon/Icon';
+import { Tooltip } from '../../components/overlays/Tooltip/Tooltip';
+
 import cl from './Walkthrough.module.scss';
+
 import useScrollLock from '../../util/hooks/useScrollLock';
-import { classNames as cx } from '../../util/componentUtil';
-
-console.log(cl)
-
 
 type Status = 'next' | 'prev' | 'skip' | 'finished';
 
 // Anchor origin for tooltip positioning
-type AnchorOrigin = {
-  horizontal: 'left' | 'center' | 'right',
-  vertical: 'top' | 'center' | 'bottom',
-};
+type Placement = 'left'| 'right' | 'top' | 'bottom';
 
 // A single walkthrough step
 type Step = {
   target: string,
   title?: string,
   description?: string,
-  anchorOrigin: AnchorOrigin,
+  anchorOrigin: Placement,
   spotlightPadding?: number,
   disableOverlay?: boolean,
   disableScrolling?: boolean,
@@ -52,26 +50,93 @@ type WalkThroughProps = {
 };
 
 // Wait for element to scroll into view and become visible
-function waitForScrollIntoView(element: HTMLElement): Promise<DOMRect> {
+const waitForScrollIntoView = (element: HTMLElement, scrollableParent?:HTMLElement): Promise<DOMRect> => {
   return new Promise((resolve) => {
-    const observer = new IntersectionObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          observer.disconnect();
-          resolve(entry.boundingClientRect);
-          break;
-        }
-      }
-    }, {
-      root: null,
-      threshold: 0.6,
-    });
+   if (!element) return;
 
-    if(element){
-      observer.observe(element);
-      element.scrollIntoView({ behavior: 'auto', block: 'center', inline: 'center' });
-    }
-  });
+   if (scrollableParent) {
+     // Scroll to the element
+     scrollableParent?.scrollIntoView({
+       behavior: 'auto',
+       block: 'center',
+       inline: 'center',
+     });
+   } else {
+     // Scroll to the element
+     element?.scrollIntoView({
+       behavior: 'auto',
+       block: 'center',
+       inline: 'center',
+     });
+   }
+
+   let frameCount = 0;
+   let lastRect = element?.getBoundingClientRect();
+
+   // Check for stable rect after scroll
+   const checkStableRect = () => {
+     const currentRect = element?.getBoundingClientRect();
+     const isStable =
+       Math.abs(currentRect.top - lastRect.top) < 1 &&
+       Math.abs(currentRect.left - lastRect.left) < 1;
+
+     if (isStable || frameCount > 10) {
+       observer.disconnect();
+       resolve(currentRect);
+     } else {
+       lastRect = currentRect;
+       frameCount++;
+       requestAnimationFrame(checkStableRect);
+     }
+   };
+
+   // Start observing visibility
+   const observer = new IntersectionObserver((entries) => {
+     for (const entry of entries) {
+       if (entry.isIntersecting) {
+         requestAnimationFrame(() => {
+           // Wait at least 2 frames for layout stabilization
+           requestAnimationFrame(() => {
+             checkStableRect();
+           });
+         });
+       }
+     }
+   }, {
+     root: null,
+     threshold: 0.6,
+   });
+
+   observer.observe(element);
+ });
+}
+
+const getTooltipVerticalPlacement = (rect: DOMRect, position: React.CSSProperties) => {
+  let newPos: React.CSSProperties = {};
+  if(rect.top < 100){
+    newPos.top = 0;
+  } else if(rect.top > (window.innerHeight - 100)) {
+    newPos.top = rect.top;
+    newPos.transform = `translateY(-50%)`;
+  } else {
+    newPos.top = rect.top + (rect.height/2);
+    newPos.transform = `translateY(-50%)`;
+  }
+  return {...position, ...newPos};
+}
+
+const getTooltipHorizontalPlacement = (rect: DOMRect, position: React.CSSProperties) => {
+  let newPos: React.CSSProperties = {};
+  if(rect.left < 190){
+    newPos.left = 0;
+  } else if(rect.left > (window.innerWidth - 380)) {
+    newPos.left = rect.left;
+    newPos.transform = 'translateX(-50%)';
+  } else {
+    newPos.left = rect.left + (rect.width/2);
+    newPos.transform = 'translateX(-50%)';
+  }
+  return {...position, ...newPos};
 }
 
 
@@ -97,7 +162,6 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
 }) => {
   const [activeStep, setActiveStep] = React.useState(stepIndex);
   const [targetReady, setTargetReady] = React.useState(false);
-  const tooltipRef = React.useRef<HTMLDivElement>(null);
   const previouslyFocusedElement = React.useRef<HTMLElement | null>(null);
   const observerRef = React.useRef<MutationObserver | null>(null);
   const { enableScrollLock, disableScrollLock } = useScrollLock(cl['bk-walkthrough-open']);
@@ -111,7 +175,6 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
   
     // Check if all required targets exist
     const allTargetsExist = useCallback((target?: string, steps:Step[]) => {
-      console.log(document.querySelector('.bk-theme--dark'))
       if (target) return !!document.querySelector(target);
       return steps.every(step => step.disableWait || !!document.querySelector(step.target));
     }, []);
@@ -126,7 +189,6 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
       observerRef.current?.disconnect();
       observerRef.current = new MutationObserver(() => {
         if (allTargetsExist(target, steps)) {
-          console.log(target)
           observerRef.current?.disconnect();
           onReady();
         }
@@ -179,13 +241,6 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
 
     return disableScrollLock;
   }, [run, enableScrollLock, disableScrollLock]);
-
-  // Focus tooltip for accessibility
-  React.useEffect(() => {
-    if (run && tooltipRef.current) {
-      tooltipRef.current.focus();
-    }
-  }, [run, activeStep]);
 
   // Keyboard navigation
   React.useEffect(() => {
@@ -258,90 +313,104 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
       });
     }
   }, [callback, steps, activeStep, waitForTarget]);
+  
+  const tooltipPlacement: Placement = useMemo(()=>{
+    if(!currentStep || !rect) return "right"
+    let newAnchor = currentStep?.anchorOrigin;
+    const tooltipWidth = 380;
+    const screenWidth = window.innerWidth - tooltipWidth;
+  
+    if(newAnchor === 'left' && rect.left > screenWidth){
+      newAnchor = 'right';
+    } else if(newAnchor === 'right' && rect.left < 380) {
+      newAnchor = 'left';
+    } else if(newAnchor === 'bottom' && rect.top < 100) {
+      newAnchor = 'top';
+    } else if(newAnchor === 'top' && rect.top > (window.innerHeight - 100)) {
+      newAnchor = 'bottom';
+    }  
+    
+    return newAnchor;
+  },[currentStep, rect])
 
   // Tooltip position calculation based on anchor origin
-  const getTooltipPosition = useCallback((rect: DOMRect, anchor: AnchorOrigin, pad: number): React.CSSProperties => {
+  const getTooltipPosition = useCallback((rect: DOMRect, pad: number): React.CSSProperties => {
     let position: React.CSSProperties = {};
+    const arrowSize = 12;
 
-    // Horizontal placement
-    switch (anchor.horizontal) {
-      case 'left':
-        position.left = rect.left - pad;
-        position.transform = 'translateX(-100%)';
-        break;
+    // Tooltip placement
+    switch (tooltipPlacement) {
       case 'right':
-        position.left = rect.left + rect.width + pad;
+        position.left = rect.left - arrowSize;
+        position.transform = 'translateX(-100%)'; 
+        position = getTooltipVerticalPlacement(rect, position);
+        // position.top = rect.top + rect.height / 2;
+        // position.transform = `${position.transform ?? ''} translateY(-50%)`;
         break;
-      case 'center':
-      default:
-        position.left = rect.left + rect.width / 2;
-        position.transform = 'translateX(-50%)';
-        break;
-    }
-
-    // Vertical placement
-    switch (anchor.vertical) {
-      case 'top':
-        position.top = rect.top - pad;
-        position.transform = `${position.transform ?? ''} translateY(-100%)`;
-        break;
-      case 'center':
+      case 'left':
+        position.left = rect.left + rect.width + pad + arrowSize;
         position.top = rect.top + rect.height / 2;
-        position.transform = `${position.transform ?? ''} translateY(-50%)`;
+        position = getTooltipVerticalPlacement(rect, position);
+        // position.transform = `${position.transform ?? ''} translateY(-50%)`;
         break;
       case 'bottom':
+        position.top = rect.top - pad - arrowSize;
+        position.transform = `translateY(-100%)`;
+        position = getTooltipHorizontalPlacement(rect, position);
+        break;  
+      case 'top':
+        position.top = rect.bottom + pad + arrowSize;
+        position = getTooltipHorizontalPlacement(rect, position);
+        break;
       default:
-        position.top = rect.bottom + pad;
+        position.left = rect.left + rect.width + pad + arrowSize;
+        position.top = rect.top + rect.height / 2;
+        position = getTooltipVerticalPlacement(rect, position);
         break;
     }
-
     return position;
-  }, []);
-
+  }, [tooltipPlacement]);
+  
   if (!run) return null;
   
-  console.log(cl)
-
   return (
     <WalkthroughPortal>
-      <div className="bk" aria-hidden={!run}>
+      <div className="bk bk-walkthrough" aria-hidden={!run}>
         {/* Spotlight */}
-        {isInViewport && rect && currentStep && !currentStep?.disableOverlay && (
+        {isInViewport && rect && currentStep && (
           <div
-            className={cl["bk-walkthrough-spotlight"]}
-            style={{
-              top: rect.top - spotlightPadding,
-              left: rect.left - spotlightPadding,
-              width: rect.width + 2 * spotlightPadding,
-              height: rect.height + 2 * spotlightPadding,
-              ...currentStep.spotlightStyles,
-            }}
-          />
+          className={cl["bk-walkthrough-spotlight"]}
+          style={{
+            top: rect.top - spotlightPadding,
+            left: rect.left - spotlightPadding,
+            width: rect.width + 2 * spotlightPadding,
+            height: rect.height + 2 * spotlightPadding,
+            ...currentStep.spotlightStyles,
+          }}
+        />
         )}
 
         {/* Tooltip */}
         {isInViewport && rect && currentStep && (
-          <div
-            ref={tooltipRef}
+          <Tooltip
             className={cl["bk-walkthrough-tooltip"]}
-            tabIndex={-1}
             role="dialog"
             aria-modal="true"
             aria-labelledby="walkthrough-title"
             aria-describedby="walkthrough-description"
+            arrow={tooltipPlacement}
             style={{
-              ...getTooltipPosition(rect, currentStep.anchorOrigin, spotlightPadding),
+              ...getTooltipPosition(rect, spotlightPadding),
               ...currentStep.styles,
             }}
-          >
-            <div className={cl[`bk-walkthrough-tooltip-arrow arrow-${currentStep.anchorOrigin.horizontal}-${currentStep.anchorOrigin.vertical}`]} />
+          > 
             {renderProps ? renderProps(currentStep) : (
               <>
                 <div className={cl["bk-walkthrough-tooltip-header"]}>
                   <h5 id="walkthrough-title">{currentStep.title}</h5>
                   <Icon
                     role="button"
-                    icon="cross-thin"
+                    icon="cross"
                     className={cl["close-icon"]}
                     onClick={handleSkip}
                     aria-label="Close Walkthrough"
@@ -358,18 +427,18 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
                     {activeStep > 0 && (
                       <Button onClick={handlePrevStep}>Previous</Button>
                     )}
-                    <Button primary onClick={handleNextStep}>
+                    <Button onClick={handleNextStep}>
                       {activeStep < steps.length - 1 ? "Next" : "Finish"}
                     </Button>
                   </div>
                 </div>
               </>
             )}
-          </div>
+            </Tooltip>
         )}
 
         {/* Overlay background */}
-        <div className={cl["bk-custom-walkthrough-overlay"]} />
+        <div className={cl["bk-walkthrough-overlay"]} />
       </div>
     </WalkthroughPortal>
   );

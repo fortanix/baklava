@@ -30,26 +30,20 @@ const WALKTHROUGH_STEPS: Step[] = [
   {
     target: '.nav-item-overview',
     title: "Your Post Quantum Readiness",
-    description: "See your PQC readiness score and vulnerabilities across all connections, keys, and services.",
+    description: "See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services.",
     spotlightPadding: 20,
     disableScrolling: true,
-    anchorOrigin:{
-      horizontal:"center",
-      vertical:"bottom"
-    },
+    anchorOrigin:"left",
   },
-  // {
-  //   target: '.cloud-connection-switcher__dropdown',
-  //   title: "PQC Readiness at Different Levels",
-  //   description: "Toggle between an organization-wide view or focus on an individual connection for deeper insights.",
-  //   spotlightPadding: 40,
-  //   disableScrolling: true,
-  //   disableWait: true,
-  //   anchorOrigin:{
-  //     horizontal:"right",
-  //     vertical:"center"
-  //   },
-  // },
+  {
+    target: '.open-modal-btn',
+    title: "PQC Readiness at Different Levels",
+    description: "Toggle between an organization-wide view or focus on an individual connection for deeper insights.",
+    spotlightPadding: 20,
+    disableScrolling: true,
+    disableWait: true,
+    anchorOrigin:"left",
+  },
   // {
   //   target: '.pqc-vulnerability-card__visualization',
   //   title: "Identify Vulnerable Keys and Services",
@@ -99,7 +93,7 @@ export default {
           </Banner>
         }
       >
-              <WalkThrough stepIndex={0} steps={WALKTHROUGH_STEPS} run={true} />
+              <WalkThrough stepIndex={0} steps={WALKTHROUGH_STEPS} run={true} callback={()=>{}} />
               <Story />
       </ErrorBoundary>
     ),
@@ -158,7 +152,7 @@ export const Standard: Story = {
             <Nav aria-label="Connections and policies">
               <Nav.NavItem Link={DummyLink} icon="cloud-accounts" label="Connections" href="/connections"/>
               <Nav.NavItem Link={DummyLink} icon="policy" label="Policy Center" href="/policy-center"/>
-              <Nav.NavItem Link={DummyLink} icon="user-authentication" label="Authentication" href="/authentication"/>
+              <Nav.NavItem className="nav-authentication" Link={DummyLink} icon="user-authentication" label="Authentication" href="/authentication"/>
             </Nav>
             <OverflowTester lines={45}/>
           </Sidebar>
@@ -181,7 +175,7 @@ export const Standard: Story = {
             
             <DialogModal
               title="Modal"
-              trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={() => { activate(); }}/>}
+              trigger={({ activate }) => <Button className="open-modal-btn" kind="primary" label="Open modal" onPress={() => { activate(); }}/>}
             >
               Test
             </DialogModal>
