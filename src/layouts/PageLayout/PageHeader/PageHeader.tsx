@@ -5,7 +5,7 @@
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
-import { H3 } from '../../../typography/Heading/Heading.tsx';
+import { H3, H6 } from '../../../typography/Heading/Heading.tsx';
 import { TextLine } from '../../../components/text/TextLine/TextLine.tsx';
 
 import cl from './PageHeader.module.scss';
@@ -20,13 +20,16 @@ type PageHeaderProps = React.PropsWithChildren<ComponentProps<'header'> & {
   
   /** A page title to be displayed. */
   title?: undefined | string,
+  
+  /** A select to be displayed instead of a title. */
+  titleSelect?: undefined | React.ReactNode;
 }>;
 /**
  * A page header with a title and action buttons
  */
 export const PageHeader = Object.assign(
   (props: PageHeaderProps) => {
-    const { unstyled = false, title, children, ...propsRest } = props;
+    const { unstyled = false, title, titleSelect, children, ...propsRest } = props;
     
     return (
       <header
@@ -41,6 +44,9 @@ export const PageHeader = Object.assign(
           <H3>
             <TextLine>{title}</TextLine>
           </H3>
+        )}
+        {titleSelect && (
+          <H6 className={cl['bk-page-header__select']}>{titleSelect}</H6>
         )}
         {children && (
           <div className={cx(

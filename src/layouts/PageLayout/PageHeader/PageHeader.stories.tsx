@@ -7,6 +7,8 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Button } from '../../../components/actions/Button/Button.tsx';
+import { Input } from '../../../components/forms/controls/Input/Input.tsx';
+import { Select } from '../../../components/forms/controls/Select/Select.tsx';
 
 import { PageHeader } from './PageHeader.tsx';
 
@@ -41,6 +43,28 @@ const actions1 = (
     <Button kind="primary">Primary Button</Button>
   </>
 );
+const CustomInput: React.ComponentProps<typeof Select>['Input'] = props => (
+  <Input {...props} icon="bell" iconLabel="Bell"/>
+);
+const projects = {
+  p1: 'Connection/Project name',
+  p2: 'Connection/Project name 2',
+  p3: 'Connection/Project name 3',
+};
+const selectOptions = (
+  Object.entries(projects).map(([projectKey, projectName]) =>
+    <Select.Option key={projectKey} itemKey={projectKey} label={projectName}/>
+  )
+);
+const title2 = (
+  <Select
+    label="Select project"
+    placeholder="Select project"
+    defaultSelected={projects.p1}
+    options={selectOptions}
+    Input={CustomInput}
+  />
+);
 
 export const PageHeaderTitleAndActions: Story = {
   args: {
@@ -55,3 +79,9 @@ export const PageHeaderJustTitle: Story = {
   },
 };
 
+export const PageHeaderTitleSelect: Story = {
+  args: {
+    titleSelect: title2,
+    children: actions1,
+  },
+};

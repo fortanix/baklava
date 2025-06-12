@@ -7,6 +7,8 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Button } from '../../components/actions/Button/Button.tsx';
+import { Input } from '../../components/forms/controls/Input/Input.tsx';
+import { Select } from '../../components/forms/controls/Select/Select.tsx';
 
 import { PageLayout } from './PageLayout.tsx';
 
@@ -33,20 +35,66 @@ const actions1 = (
     <Button kind="primary">Primary Button</Button>
   </>
 );
+const CustomInput: React.ComponentProps<typeof Select>['Input'] = props => (
+  <Input {...props} icon="bell" iconLabel="Bell"/>
+);
+const projects = {
+  p1: 'Connection/Project name',
+  p2: 'Connection/Project name 2',
+  p3: 'Connection/Project name 3',
+};
+const selectOptions = (
+  Object.entries(projects).map(([projectKey, projectName]) =>
+    <Select.Option key={projectKey} itemKey={projectKey} label={projectName}/>
+  )
+);
+const title2 = (
+  <Select
+    label="Select project"
+    placeholder="Select project"
+    defaultSelected={projects.p1}
+    options={selectOptions}
+    Input={CustomInput}
+  />
+);
 
-const contentWithPageHeader = (
-  <>
-    <PageLayout.Header title={title1}>
-      {actions1}
-    </PageLayout.Header>
-    <PageLayout.Body>
-      <p>Content Area. Notice this has no external padding and no breadcrumbs; those are added by AppLayout.</p>
-    </PageLayout.Body>
-  </>
+const header1 = (
+  <PageLayout.Header title={title1}>
+    {actions1}
+  </PageLayout.Header>
+);
+
+const header2 = (
+  <PageLayout.Header titleSelect={title2}>
+    {actions1}
+  </PageLayout.Header>
+);
+
+const body = (
+  <PageLayout.Body>
+    <p>Content Area. Notice this has no external padding and no breadcrumbs; those are added by AppLayout.</p>
+  </PageLayout.Body>
 );
 
 export const PageLayoutStandard: Story = {
   args: {
-    children: contentWithPageHeader,
+    children: (
+      <>
+        {header1}
+        {body}
+      </>
+    ),
   },
 };
+
+export const PageLayoutSelect: Story = {
+  args: {
+    children: (
+      <>
+        {header2}
+        {body}
+      </>
+    ),
+  },
+};
+

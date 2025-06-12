@@ -11,6 +11,7 @@ import { notify } from '../../components/overlays/ToastProvider/ToastProvider.ts
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { DialogModal } from '../../components/overlays/DialogModal/DialogModal.tsx';
 import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
+import { Input } from '../../components/forms/controls/Input/Input.tsx';
 import { OverflowTester } from '../../util/storybook/OverflowTester.tsx';
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
 import { Select } from '../../components/forms/controls/Select/Select.tsx';
@@ -153,13 +154,55 @@ const content1 = (
   </AppLayout.Content>
 );
 
-const contentWithPageLayout = (
+const actions1 = (
+  <>
+    <Button kind="tertiary">Tertiary Button</Button>
+    <Button kind="secondary">Secondary Button</Button>
+    <Button kind="primary">Primary Button</Button>
+  </>
+);
+
+const contentWithPageLayoutWithTitle = (
   <AppLayout.Content>
     <PageLayout>
       <PageLayout.Header title="Page Title">
-        <Button kind="tertiary">Tertiary Button</Button>
-        <Button kind="secondary">Secondary Button</Button>
-        <Button kind="primary">Primary Button</Button>
+        {actions1}
+      </PageLayout.Header>
+      <PageLayout.Body>
+        <p>Content Area</p>
+      </PageLayout.Body>
+    </PageLayout>
+  </AppLayout.Content>
+);
+
+const CustomInput: React.ComponentProps<typeof Select>['Input'] = props => (
+  <Input {...props} icon="bell" iconLabel="Bell"/>
+);
+const projects = {
+  p1: 'Connection/Project name',
+  p2: 'Connection/Project name 2',
+  p3: 'Connection/Project name 3',
+};
+const selectOptions = (
+  Object.entries(projects).map(([projectKey, projectName]) =>
+    <Select.Option key={projectKey} itemKey={projectKey} label={projectName}/>
+  )
+);
+const title2 = (
+  <Select
+    label="Select project"
+    placeholder="Select project"
+    defaultSelected={projects.p1}
+    options={selectOptions}
+    Input={CustomInput}
+  />
+);
+
+const contentWithPageLayoutWithSelect = (
+  <AppLayout.Content>
+    <PageLayout>
+      <PageLayout.Header titleSelect={title2}>
+        {actions1}
       </PageLayout.Header>
       <PageLayout.Body>
         <p>Content Area</p>
@@ -188,14 +231,28 @@ export const AppLayoutStandard: Story = {
   },
 };
 
-export const AppLayoutPage: Story = {
+export const AppLayoutPageWithTitle: Story = {
   args: {
     children: (
       <>
         {header1}
         {sidebar1}
         {breadcrumbs1}
-        {contentWithPageLayout}
+        {contentWithPageLayoutWithTitle}
+        {footer1}
+      </>
+    ),
+  },
+};
+
+export const AppLayoutPageWithSelect: Story = {
+  args: {
+    children: (
+      <>
+        {header1}
+        {sidebar1}
+        {breadcrumbs1}
+        {contentWithPageLayoutWithSelect}
         {footer1}
       </>
     ),
