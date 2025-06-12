@@ -30,45 +30,37 @@ const WALKTHROUGH_STEPS: Step[] = [
   {
     target: '.nav-item-overview',
     title: "Your Post Quantum Readiness",
-    description: "See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services.",
+    description: "See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services.",
     spotlightPadding: 20,
     disableScrolling: true,
-    anchorOrigin:"left",
+    placement:"left",
   },
   {
-    target: '.open-modal-btn',
+    target: '.nav-item-authentication',
     title: "PQC Readiness at Different Levels",
-    description: "Toggle between an organization-wide view or focus on an individual connection for deeper insights.",
+    description: "Toggle between an organization-wide view or focus on an individual connection for deeper insights. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. ",
     spotlightPadding: 20,
     disableScrolling: true,
     disableWait: true,
-    anchorOrigin:"left",
+    placement:"left",
   },
-  // {
-  //   target: '.pqc-vulnerability-card__visualization',
-  //   title: "Identify Vulnerable Keys and Services",
-  //   description: "Interactive visualization to trace vulnerabilities to their root causes, identifying specific keys, services, or resources requiring attention.",
-  //   spotlightPadding: 20,
-  //   disableScrolling: false,
-  //   anchorOrigin:{
-  //     horizontal:"right",
-  //     vertical:"center"
-  //   },
-  // },
-  // {
-  //   target: '.pqc-vulnerability-card__info-panel',
-  //   title: "All Critical Insights at a Glance",
-  //   description: "Find all the critical details like Account/Subscription, Regions, Service Types, and Key Types for deeper analysis.",
-  //   spotlightPadding: 20,
-  //   disableScrolling: false,
-  //   anchorOrigin:{
-  //     horizontal:"left",
-  //     vertical:"center"
-  //   },
-  // },
+  {
+    target: '.open-modal-btn',
+    title: "Identify Vulnerable Keys and Services",
+    description: "Interactive visualization to trace vulnerabilities to their root causes, identifying specific keys, services, or resources requiring attention.",
+    spotlightPadding: 20,
+    disableScrolling: false,
+    placement:"left",
+  },
+  {
+    target: '.profile-section',
+    title: "All Critical Insights at a Glance",
+    description: "Find all the critical details like Account/Subscription, Regions, Service Types, and Key Types for deeper analysis.",
+    spotlightPadding: 20,
+    disableScrolling: false,
+    placement:"left",
+  },
 ];
-
-
 
 type AppLayoutArgs = React.ComponentProps<typeof AppLayout>;
 type Story = StoryObj<AppLayoutArgs>;
@@ -102,7 +94,7 @@ export default {
 
 
 
-export const Standard: Story = {
+export const Basic: Story = {
   args: {
     children: (
       <>
@@ -111,7 +103,7 @@ export const Standard: Story = {
             <Logo subtitle="Data Security Manager" subtitleTrademark={true}/>
           </DummyLink>
           <Header slot="actions">
-            <UserMenu userName="Anand Kashyap">
+            <UserMenu className="profile-section" userName="Anand Kashyap">
               <UserMenu.Action itemKey="profile" label="Profile"
                 onActivate={() => { notify.info(`Opening user profile.`); }}
               />
@@ -152,7 +144,7 @@ export const Standard: Story = {
             <Nav aria-label="Connections and policies">
               <Nav.NavItem Link={DummyLink} icon="cloud-accounts" label="Connections" href="/connections"/>
               <Nav.NavItem Link={DummyLink} icon="policy" label="Policy Center" href="/policy-center"/>
-              <Nav.NavItem className="nav-authentication" Link={DummyLink} icon="user-authentication" label="Authentication" href="/authentication"/>
+              <Nav.NavItem className="nav-item-authentication" Link={DummyLink} icon="user-authentication" label="Authentication" href="/authentication"/>
             </Nav>
             <OverflowTester lines={45}/>
           </Sidebar>
