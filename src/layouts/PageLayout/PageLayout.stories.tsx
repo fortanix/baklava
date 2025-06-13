@@ -9,6 +9,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { Input } from '../../components/forms/controls/Input/Input.tsx';
 import { Select } from '../../components/forms/controls/Select/Select.tsx';
+import { Tabs, Tab } from '../../components/navigations/Tabs/Tabs.tsx';
 
 import { PageLayout } from './PageLayout.tsx';
 
@@ -76,6 +77,48 @@ const body = (
   </PageLayout.Body>
 );
 
+type DefaultTabOption = {
+  index: number,
+  className?: string,
+};
+const defaultTabOptions: DefaultTabOption[] = [1,2,3,4].map(index => { 
+  return { index };
+});
+
+type TabsArgs = React.ComponentProps<typeof Tabs>;
+type TabWithTriggerProps = React.PropsWithChildren<Partial<TabsArgs>> & {
+  options?: undefined | Array<DefaultTabOption>,
+  defaultActiveTabKey?: undefined | string,
+};
+const TabWithTrigger = (props: TabWithTriggerProps) => {
+  const { options = defaultTabOptions, defaultActiveTabKey, ...tabContext } = props;
+  
+  const [activeTabKey, setActiveTabKey] = React.useState<undefined | string>(defaultActiveTabKey);
+  
+  return (
+    <Tabs onSwitch={setActiveTabKey} activeKey={activeTabKey} {...tabContext}>
+      {options.map(tab => {
+        return (
+          <Tab
+            key={tab.index}
+            data-label={`tab${tab.index}`}
+            tabKey={`tab${tab.index}`}
+            title={`Tab ${tab.index}`}
+            render={() => <PageLayout.Body>Tab {tab.index} contents</PageLayout.Body>}
+            className={tab.className}
+          />
+        )
+      })}
+    </Tabs>
+  );
+};
+
+// TODO: The defaultActiveTabKey option is not working atm
+// See https://github.com/fortanix/baklava/issues/261
+const tabs1 = (
+  <TabWithTrigger defaultActiveTabKey="1" />
+);
+
 export const PageLayoutStandard: Story = {
   args: {
     children: (
@@ -98,3 +141,13 @@ export const PageLayoutSelect: Story = {
   },
 };
 
+export const PageLayoutTabs: Story = {
+  args: {
+    children: (
+      <>
+        {header1}
+        {tabs1}
+      </>
+    ),
+  },
+};

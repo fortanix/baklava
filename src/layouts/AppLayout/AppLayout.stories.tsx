@@ -15,6 +15,7 @@ import { Input } from '../../components/forms/controls/Input/Input.tsx';
 import { OverflowTester } from '../../util/storybook/OverflowTester.tsx';
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
 import { Select } from '../../components/forms/controls/Select/Select.tsx';
+import { Tabs, Tab } from '../../components/navigations/Tabs/Tabs.tsx';
 import { Tag } from '../../components/text/Tag/Tag.tsx';
 
 import { AppLayout } from './AppLayout.tsx';
@@ -211,6 +212,59 @@ const contentWithPageLayoutWithSelect = (
   </AppLayout.Content>
 );
 
+type DefaultTabOption = {
+  index: number,
+  className?: string,
+};
+const defaultTabOptions: DefaultTabOption[] = [1,2,3,4].map(index => { 
+  return { index };
+});
+
+type TabsArgs = React.ComponentProps<typeof Tabs>;
+type TabWithTriggerProps = React.PropsWithChildren<Partial<TabsArgs>> & {
+  options?: undefined | Array<DefaultTabOption>,
+  defaultActiveTabKey?: undefined | string,
+};
+const TabWithTrigger = (props: TabWithTriggerProps) => {
+  const { options = defaultTabOptions, defaultActiveTabKey, ...tabContext } = props;
+  
+  const [activeTabKey, setActiveTabKey] = React.useState<undefined | string>(defaultActiveTabKey);
+  
+  return (
+    <Tabs onSwitch={setActiveTabKey} activeKey={activeTabKey} {...tabContext}>
+      {options.map(tab => {
+        return (
+          <Tab
+            key={tab.index}
+            data-label={`tab${tab.index}`}
+            tabKey={`tab${tab.index}`}
+            title={`Tab ${tab.index}`}
+            render={() => <PageLayout.Body>Tab {tab.index} contents</PageLayout.Body>}
+            className={tab.className}
+          />
+        )
+      })}
+    </Tabs>
+  );
+};
+
+// TODO: The defaultActiveTabKey option is not working atm
+// See https://github.com/fortanix/baklava/issues/261
+const tabs1 = (
+  <TabWithTrigger defaultActiveTabKey="1" />
+);
+
+const contentWithPageLayoutWithTabs = (
+  <AppLayout.Content>
+    <PageLayout>
+      <PageLayout.Header title="Page Title">
+        {actions1}
+      </PageLayout.Header>
+      {tabs1}
+    </PageLayout>
+  </AppLayout.Content>
+);
+
 const footer1 = (
   <AppLayout.Footer>
     <span className="version">Version: 1.2.2343</span>
@@ -253,6 +307,20 @@ export const AppLayoutPageWithSelect: Story = {
         {sidebar1}
         {breadcrumbs1}
         {contentWithPageLayoutWithSelect}
+        {footer1}
+      </>
+    ),
+  },
+};
+
+export const AppLayoutPageWithTabs: Story = {
+  args: {
+    children: (
+      <>
+        {header1}
+        {sidebar1}
+        {breadcrumbs1}
+        {contentWithPageLayoutWithTabs}
         {footer1}
       </>
     ),

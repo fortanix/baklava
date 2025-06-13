@@ -7,9 +7,17 @@
 @layer baklava.components {
   .bk-page-layout {
     @include bk.component-base(bk-page-layout);
-    
+
     display: flex;
     flex-direction: column;
     gap: bk.$spacing-7;
+
+    > [role=tablist] {
+      margin-block-start: calc(-1 * (bk.$spacing-7 - bk.$spacing-4));
+
+      > ul {
+        margin-block-end: calc(-1 * (bk.$spacing-7 - bk.$spacing-2));
+      }
+    }
   }
 }
