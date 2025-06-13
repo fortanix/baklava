@@ -20,7 +20,7 @@
         
         &:not(:nth-last-child(1 of .bk-breadcrumb__item)) {
           .bk-breadcrumb__item__link::after {
-            content: '/';
+            content: '/' / '';
             margin-inline-start: bk.$spacing-1;
           }
         }
