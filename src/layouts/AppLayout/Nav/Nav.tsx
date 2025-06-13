@@ -90,7 +90,7 @@ export const NavItem = <
         <Link
           unstyled
           tabIndex={disabled ? -1 : undefined}
-          aria-disabled={disabled}
+          aria-disabled={disabled ? true : undefined}
           href={href}
           {...linkProps}
           className={cx(
