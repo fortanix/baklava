@@ -9,15 +9,14 @@ import logoIconImage from  '../../assets/fortanix/fortanix-logo-icon.svg';
 import cl from './FortanixLogo.module.scss';
 
 
-export type LogoProps = ComponentProps<'figure'> & {
+type FortanixLogoProps = ComponentProps<'figure'> & {
   subtitle?: undefined | React.ReactNode,
   subtitleTrademark?: undefined | boolean,
 };
-
 /**
  * Logo component.
  */
-export const FortanixLogo = ({ subtitle, subtitleTrademark, ...propsRest }: LogoProps) => {
+export const FortanixLogo = ({ subtitle, subtitleTrademark, ...propsRest }: FortanixLogoProps) => {
   return (
     <figure
       {...propsRest}
