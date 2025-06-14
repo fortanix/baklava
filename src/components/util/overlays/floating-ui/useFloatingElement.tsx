@@ -19,6 +19,7 @@ import {
   type UseRoleProps,
   type UseFloatingOptions,
   type FlipOptions,
+  type ShiftOptions,
   type FloatingContext,
   useFloating,
   // Interactions
@@ -54,145 +55,195 @@ const usePopover = (context: FloatingContext): ElementProps => {
 };
 
 export type UseFloatingElementOptions = {
-  floatingUiOptions?: undefined | UseFloatingOptions,
-  floatingUiFlipOptions?: undefined | FlipOptions,
-  floatingUiInteractions?: undefined | ((context: FloatingContext) => Array<undefined | ElementProps>),
+  /* The ARIA role for this element (e.g. `'tooltip'`). */
   role?: undefined | UseRoleProps['role'],
-  triggerAction?: undefined | 'hover' | 'focus' | 'click',
-  placement?: undefined | Placement,
-  offset?: undefined | number,
+  
   /**
-   * The kind of keyboard interactions to include:
+   * The kind of keyboard interactions to configure on the floating element. Default: `'default'`.
    * - 'none': No keyboard interactions set.
-   * - 'form-control': Appropriate keyboard interactions for a form control (e.g. Enter should trigger submit).
-   * - 'default': Acts as a menu button [1] (e.g. Enter will activate the popover).
+   * - 'form-control': Appropriate keyboard interactions for a form control (e.g. Enter key should trigger submit).
+   * - 'default': Acts as a menu button [1] (e.g. Enter key will activate the popover).
    *   [1] https://www.w3.org/WAI/ARIA/apg/patterns/menu-button
    */
   keyboardInteractions?: undefined | 'none' | 'form-control' | 'default',
+  
+  /** The action on the reference element that should cause the floating element to open. */
+  triggerAction?: undefined | 'hover' | 'focus' | 'click',
+  
+  /** Where to place the floating element, relative to the reference element. */
+  placement?: undefined | Placement,
+  
+  /** The offset (in pixels) of the floating element relative to the reference element. */
+  offset?: undefined | number,
+  
   /* Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
   enablePreciseTracking?: undefined | boolean,
+  
+  /** Boundary around the floating element that will be used for things like overflow detection. */
   boundary?: undefined | Element,
-  /* Reference to the arrow element, if any. */
+  
+  /* Reference to an arrow element (like a tooltip arrow), if any. */
   arrowRef?: undefined | null | React.RefObject<Element>,
+  
+  /**
+   * Whether this has a delay group.
+   * @see https://floating-ui.com/docs/floatingdelaygroup
+   */
   hasDelayGroup?: undefined | boolean,
+  
+  /** Additional options to pass to the internal `useFloating` hook. */
+  floatingUiOptions?: undefined | UseFloatingOptions,
+  /** Additional options to pass to the internal `flip` middleware. */
+  floatingUiFlipOptions?: undefined | FlipOptions,
+  /** Additional options to pass to the internal `shift` middleware. */
+  floatingUiShiftOptions?: undefined | ShiftOptions,
+  /** Additional interactions to pass to the internal `useFloating` hook. */
+  floatingUiInteractions?: undefined | ((context: FloatingContext) => Array<undefined | ElementProps>),
 };
 /**
- * Configure an element to float on top of the content, and is anchored to some reference element. Internally relies on
+ * Configure an element to float on top of the content, and is anchored to some reference element. Internally uses
  * `useFloating` from `floating-ui`.
  */
-export const useFloatingElement = (options: UseFloatingElementOptions = {}) => {
-  const optionsWithDefaults = {
+export const useFloatingElement = <E extends HTMLElement>(options: UseFloatingElementOptions = {}) => {
+  const opts = {
     ...options,
-    floatingUiOptions: options.floatingUiOptions ?? {},
-    floatingUiFlipOptions: options.floatingUiFlipOptions ?? {},
-    floatingUiInteractions: options.floatingUiInteractions ?? (() => []),
     role: options.role,
     triggerAction: options.triggerAction ?? 'click',
     placement: options.placement ?? 'top',
     offset: options.offset ?? 0,
     keyboardInteractions: options.keyboardInteractions ?? 'default',
     enablePreciseTracking: options.enablePreciseTracking ?? false,
+    boundary: options.boundary ?? undefined,
     arrowRef: options.arrowRef ?? null,
     hasDelayGroup: options.hasDelayGroup ?? false,
-  } as const satisfies UseFloatingElementOptions;
+    
+    floatingUiOptions: options.floatingUiOptions ?? {},
+    floatingUiFlipOptions: options.floatingUiFlipOptions ?? {},
+    floatingUiShiftOptions: options.floatingUiShiftOptions ?? {},
+    floatingUiInteractions: options.floatingUiInteractions ?? (() => []),
+  } as const satisfies Required<UseFloatingElementOptions>;
   
-  // Memoize `triggerAction` to make sure it doesn't change, to prevent conditional use of hooks
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Purposefully not using `triggerAction` as a dependency.
-  const triggerAction = React.useMemo(() => optionsWithDefaults.triggerAction, []);
-  
+  // Floating UI middleware. Note: the order matters here (each modifies the coordinates in sequence).
   const middleware: UseFloatingOptions['middleware'] = [
-    offset(optionsWithDefaults.offset),
+    // Offset the floating element from the reference element.
+    offset(opts.offset),
+    // Flip the side in case of overflow
     flip({
       fallbackAxisSideDirection: 'end',
       //fallbackStrategy: 'initialPlacement',
       crossAxis: false, // Useful with `shift()`, see: https://floating-ui.com/docs/flip
-      ...(optionsWithDefaults.boundary ? { boundary: optionsWithDefaults.boundary } : {}),
-      ...optionsWithDefaults.floatingUiFlipOptions,
+      ...(opts.boundary ? { boundary: opts.boundary } : {}),
+      ...opts.floatingUiFlipOptions,
     }),
+    // Shift the floating element on the cross-axis in case of overflow
     shift({
       limiter: limitShift({ offset: 10 }),
-      ...(optionsWithDefaults.boundary ? { boundary: optionsWithDefaults.boundary } : {}),
+      ...(opts.boundary ? { boundary: opts.boundary } : {}),
+      ...opts.floatingUiShiftOptions,
     }),
   ];
   
-  if (triggerAction === 'hover') {
+  if (opts.triggerAction === 'hover') {
     middleware.push(hide({
       strategy: 'escaped',
-      ...(optionsWithDefaults.boundary ? { boundary: optionsWithDefaults.boundary } : {}),
+      ...(opts.boundary ? { boundary: opts.boundary } : {}),
     }));
   }
-  if (optionsWithDefaults.arrowRef) {
-    middleware.push(arrow({ element: optionsWithDefaults.arrowRef }));
+  if (opts.arrowRef) {
+    middleware.push(arrow({ element: opts.arrowRef }));
   }
   
   const [isOpen, setIsOpen] = React.useState(false);
   
   const onOpenChange = React.useCallback<Required<UseFloatingOptions>['onOpenChange']>(
     (isOpen, event, _reason) => {
-      const shouldIgnoreEnter = optionsWithDefaults.keyboardInteractions === 'form-control';
-      if (shouldIgnoreEnter && event instanceof KeyboardEvent && event.key === 'Enter') {
+      // For form controls (e.g. listbox), 'Enter' key events on the reference element should be ignored, these should
+      // instead trigger the default form submit behavior. This holds both when currently open or not open.
+      const shouldIgnoreEnter = opts.keyboardInteractions === 'form-control';
+      const isEnterKeyEvent = event instanceof KeyboardEvent && event.key === 'Enter';
+      if (shouldIgnoreEnter && isEnterKeyEvent) {
         return;
       }
+      
       setIsOpen(isOpen);
     },
-    [optionsWithDefaults.keyboardInteractions],
+    [opts.keyboardInteractions],
   );
   
-  const { context, refs, placement, floatingStyles } = useFloating({
+  const { context, refs, placement, floatingStyles } = useFloating<E>({
+    // Controlled state
     open: isOpen,
     onOpenChange,
-    placement: optionsWithDefaults.placement,
+    
+    // Options
+    placement: opts.placement,
     strategy: 'fixed', // Use `fixed` to contain within the viewport (as opposed to containing block with `absolute`)
-    whileElementsMounted(referenceEl, floatingEl, update) {
+    
+    // Callback to update the positioning
+    whileElementsMounted: (referenceEl, floatingEl, update) => {
       const cleanup = autoUpdate(referenceEl, floatingEl, update, {
-        animationFrame: optionsWithDefaults.enablePreciseTracking,
+        animationFrame: opts.enablePreciseTracking,
       });
       return cleanup;
     },
-    ...optionsWithDefaults.floatingUiOptions,
+    
+    ...opts.floatingUiOptions,
     middleware: [
       ...middleware,
-      ...(optionsWithDefaults.floatingUiOptions.middleware ?? []),
+      ...(opts.floatingUiOptions.middleware ?? []),
     ],
   });
   
-  // Note: for `role="tooltip", no `aria-haspop` is necessary on the anchor because it is not interactive:
+  // Note: for `role="tooltip"`, no `aria-haspopup` is necessary on the anchor because it is not interactive:
   // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-haspopup
   const role = useRole(context, {
-    ...optionsWithDefaults.role ? { role: optionsWithDefaults.role } : {},
+    ...opts.role ? { role: opts.role } : {},
   });
+  
+  
+  // Interactions
   
   const interactions: Array<ElementProps> = [
     role,
     usePopover(context),
   ];
   
-  if (triggerAction === 'click') {
-    interactions.push(useClick(context, {
+  const clickInteractions = [
+    useClick(context, {
+      enabled: opts.triggerAction === 'click',
       toggle: true,
-      keyboardHandlers: optionsWithDefaults.keyboardInteractions === 'default',
-    }));
-    interactions.push(useDismiss(context));
-  }
-  if (triggerAction === 'focus' || triggerAction === 'hover') {
-    interactions.push(useFocus(context));
-  }
-  if (triggerAction === 'hover') {
-    const { delay: groupDelay } = useDelayGroup(context);
-    const delay = optionsWithDefaults.hasDelayGroup ? groupDelay : {
-      open: 500/*ms*/, // Fallback time to open after if the cursor never "rests"
-      close: 200/*ms*/, // Allows the user to move the cursor from anchor to floating element without closing
-    };
-    interactions.push(useHover(context, {
+      keyboardHandlers: opts.keyboardInteractions === 'default',
+    }),
+    useDismiss(context, { enabled: opts.triggerAction === 'click' }),
+  ];
+  
+  const focusInteractions = [
+    useFocus(context, { enabled: opts.triggerAction === 'focus' }),
+  ];
+  
+  const { delay: groupDelay } = useDelayGroup(context, { enabled: opts.triggerAction === 'hover' });
+  const delay = opts.hasDelayGroup ? groupDelay : {
+    open: 300/*ms*/, // Fallback time to open after if the cursor never "rests"
+    close: 200/*ms*/, // Allows the user to move the cursor from anchor to floating element without closing
+  };
+  const hoverInteractions = [
+    useFocus(context, { enabled: opts.triggerAction === 'hover' }),
+    useHover(context, {
+      enabled: opts.triggerAction === 'hover',
       restMs: 20/*ms*/, // User's cursor must be at rest before opening
       delay,
-    }));
-  }
+    }),
+  ];
+  
+  if (opts.triggerAction === 'click') { interactions.concat(clickInteractions); }
+  if (opts.triggerAction === 'focus') { interactions.concat(focusInteractions); }
+  if (opts.triggerAction === 'hover') { interactions.concat(hoverInteractions); }
   
   const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([
     ...interactions,
-    ...optionsWithDefaults.floatingUiInteractions(context),
+    ...opts.floatingUiInteractions(context),
   ]);
+  
   
   // Keep the tooltip mounted for a little while after close to allow exit animations to occur
   const { isMounted } = useTransitionStatus(context, { duration: { open: 0, close: 500 } });
