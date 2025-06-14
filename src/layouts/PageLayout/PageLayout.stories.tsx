@@ -20,7 +20,7 @@ type Story = StoryObj<PageLayoutArgs>;
 export default {
   component: PageLayout,
   parameters: {
-    layout: 'fullscreen',
+    layout: 'padded',
   },
   tags: ['autodocs'],
   argTypes: {
@@ -56,6 +56,7 @@ const title2 = (
     defaultSelected={projects.p1}
     options={selectOptions}
     Input={CustomInput}
+    automaticResize
   />
 );
 
