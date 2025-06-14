@@ -58,7 +58,7 @@ export type UseFloatingElementOptions = {
   floatingUiFlipOptions?: undefined | FlipOptions,
   floatingUiInteractions?: undefined | ((context: FloatingContext) => Array<undefined | ElementProps>),
   role?: undefined | UseRoleProps['role'],
-  action?: undefined | 'hover' | 'focus' | 'click',
+  triggerAction?: undefined | 'hover' | 'focus' | 'click',
   placement?: undefined | Placement,
   offset?: undefined | number,
   /**
@@ -69,13 +69,16 @@ export type UseFloatingElementOptions = {
    *   [1] https://www.w3.org/WAI/ARIA/apg/patterns/menu-button
    */
   keyboardInteractions?: undefined | 'none' | 'form-control' | 'default',
-  enablePreciseTracking?: undefined | boolean, // Enable more precise tracking of the anchor, at the cost of performance
+  /* Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
+  enablePreciseTracking?: undefined | boolean,
   boundary?: undefined | Element,
-  arrowRef?: undefined | React.RefObject<Element>, // Reference to the arrow element, if any
+  /* Reference to the arrow element, if any. */
+  arrowRef?: undefined | null | React.RefObject<Element>,
   hasDelayGroup?: undefined | boolean,
 };
 /**
- * Wrapper around `useFloating` from `floating-ui`.
+ * Configure an element to float on top of the content, and is anchored to some reference element. Internally relies on
+ * `useFloating` from `floating-ui`.
  */
 export const useFloatingElement = (options: UseFloatingElementOptions = {}) => {
   const optionsWithDefaults = {
@@ -84,18 +87,18 @@ export const useFloatingElement = (options: UseFloatingElementOptions = {}) => {
     floatingUiFlipOptions: options.floatingUiFlipOptions ?? {},
     floatingUiInteractions: options.floatingUiInteractions ?? (() => []),
     role: options.role,
-    action: options.action ?? 'click',
+    triggerAction: options.triggerAction ?? 'click',
     placement: options.placement ?? 'top',
     offset: options.offset ?? 0,
     keyboardInteractions: options.keyboardInteractions ?? 'default',
     enablePreciseTracking: options.enablePreciseTracking ?? false,
     arrowRef: options.arrowRef ?? null,
     hasDelayGroup: options.hasDelayGroup ?? false,
-  };
+  } as const satisfies UseFloatingElementOptions;
   
-  // Memoize `action` to make sure it doesn't change, to prevent conditional use of hooks
-  // biome-ignore lint/correctness/useExhaustiveDependencies: explicitly not using `action` as a dependency
-  const action = React.useMemo(() => optionsWithDefaults.action, []);
+  // Memoize `triggerAction` to make sure it doesn't change, to prevent conditional use of hooks
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Purposefully not using `triggerAction` as a dependency.
+  const triggerAction = React.useMemo(() => optionsWithDefaults.triggerAction, []);
   
   const middleware: UseFloatingOptions['middleware'] = [
     offset(optionsWithDefaults.offset),
@@ -112,7 +115,7 @@ export const useFloatingElement = (options: UseFloatingElementOptions = {}) => {
     }),
   ];
   
-  if (action === 'hover') {
+  if (triggerAction === 'hover') {
     middleware.push(hide({
       strategy: 'escaped',
       ...(optionsWithDefaults.boundary ? { boundary: optionsWithDefaults.boundary } : {}),
@@ -164,17 +167,17 @@ export const useFloatingElement = (options: UseFloatingElementOptions = {}) => {
     usePopover(context),
   ];
   
-  if (action === 'click') {
+  if (triggerAction === 'click') {
     interactions.push(useClick(context, {
       toggle: true,
       keyboardHandlers: optionsWithDefaults.keyboardInteractions === 'default',
     }));
     interactions.push(useDismiss(context));
   }
-  if (action === 'focus' || action === 'hover') {
+  if (triggerAction === 'focus' || triggerAction === 'hover') {
     interactions.push(useFocus(context));
   }
-  if (action === 'hover') {
+  if (triggerAction === 'hover') {
     const { delay: groupDelay } = useDelayGroup(context);
     const delay = optionsWithDefaults.hasDelayGroup ? groupDelay : {
       open: 500/*ms*/, // Fallback time to open after if the cursor never "rests"
