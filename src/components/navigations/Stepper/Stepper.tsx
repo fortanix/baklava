@@ -23,9 +23,10 @@ export { cl as SteppersClassNames };
 export type Step = {
   stepKey: string,
   title: React.ReactNode,
-  className?: ClassNameArgument,
-  hide?: boolean,
-  isOptional?: boolean,
+  className?: undefined | ClassNameArgument,
+  hide?: undefined | boolean,
+  isOptional?: undefined | boolean,
+  isDisabled?: undefined | boolean,
 };
 export type StepperKey = Step['stepKey'];
 export type StepperDirection = 'vertical' | 'horizontal';
@@ -66,18 +67,22 @@ export const Stepper = (props: StepperProps) => {
     >
       <ol>
         {steps.map((step, index) => {
-          if (step.hide) return null;
+          if (step.hide) { return null; }
+          
           const isActive = step.stepKey === activeKey;
           const stepNumber = index + 1;
           const isChecked = index < steps.findIndex(step => step.stepKey === activeKey);
+          const isDisabled = step.isDisabled ?? false;
+          
           return (
             <li key={step.stepKey} aria-current={isActive}>
               <Button
                 unstyled
-                //nonactive={!isActive} // Note: the buttons *look* nonactive, but are actually clickable
+                nonactive={isDisabled} // Note: disabled steps should still be focusable, so use `nonactive` here
                 className={cx(
                   cl['bk-stepper__item'],
                   { [cl['bk-stepper__item--checked']]: isChecked },
+                  { [cl['bk-stepper__item--disabled']]: isDisabled },
                   step.className,
                 )}
                 onPress={() => { onSwitch(step.stepKey); }}

@@ -97,6 +97,7 @@ export const DialogWithAside: Story = {
             </FieldLayout>
           </FormLayout>
         </Form>
+        <p>ThisIsAVeryLongStringOfTextWithoutAnySpacesToTestWhetherWeHandleWordBreaksCorrectlyWhenTheTextOverflowsTheContainingElement</p>
       </Dialog>
     );
   },

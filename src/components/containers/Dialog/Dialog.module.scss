@@ -16,10 +16,6 @@
     
     overflow: hidden;
     
-    // The default `auto` inherits from the parent, which we do not want. In the future if `contain: user-select`
-    // becomes supported, we could use that instead.
-    user-select: text;
-    
     margin: 0;
     padding: 0; // Do not apply padding on the outermost container (do it on the lower level elements instead)
     
@@ -50,6 +46,7 @@
       gap: bk.$spacing-4;
       
       .bk-dialog__header__title {
+        flex-grow: 1;
         @include bk.text-one-line;
       }
       
@@ -67,18 +64,17 @@
       margin-block: calc(bk.$spacing-7 / 2) calc(bk.$spacing-7 / 2);
       padding-inline: var(--bk-dialog-padding-inline);
       
-      display: flex;
-      flex-direction: row;
-      gap: bk.$spacing-3;
+      @include bk.flex($dir: row, $gap: bk.$spacing-3);
     }
     
     .bk-dialog__content__icon-aside {
       align-self: flex-start;
+      font-size: 1.4em;
       
-      display: flex;
-      flex-direction: row;
-      gap: bk.$spacing-3;
+      @include bk.flex-row($gap: bk.$spacing-3);
     }
+    
+    .bk-dialog__content__body { flex-grow: 1; }
     
     .bk-dialog__actions {
       position: sticky;

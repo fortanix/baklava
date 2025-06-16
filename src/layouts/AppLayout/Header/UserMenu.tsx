@@ -7,15 +7,15 @@ import * as React from 'react';
 
 import { Icon } from '../../../components/graphics/Icon/Icon.tsx';
 import { Button } from '../../../components/actions/Button/Button.tsx';
-import { DropdownMenuProvider } from '../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
+import { MenuProvider } from '../../../components/overlays/MenuProvider/MenuProvider.tsx';
 
 import cl from './UserMenu.module.scss';
 
 
 export { cl as UserMenuClassNames };
 
-const UserMenuAction = (props: React.ComponentProps<typeof DropdownMenuProvider.Action>) => {
-  return <DropdownMenuProvider.Action {...props}/>;
+const UserMenuAction = (props: React.ComponentProps<typeof MenuProvider.Action>) => {
+  return <MenuProvider.Action {...props}/>;
 };
 
 export type UserMenuProps = Omit<ComponentProps<typeof Button>, 'label'> & {
@@ -34,15 +34,17 @@ export const UserMenu = Object.assign(
         <>
           <Icon icon="user" className={cx(cl['bk-user-menu__user-icon'])}/>
           <span className={cx(cl['bk-user-menu__user-name'])}>{userName}</span>
+          <Icon icon="caret-down" className={cx(cl['bk-user-menu__caret-icon'])}/>
         </>
       );
     };
     
     return (
-      <DropdownMenuProvider
+      <MenuProvider
         label="User menu"
         placement="bottom-end"
         items={children}
+        offset={12} // Compensate for header padding
       >
         <Button unstyled
           {...propsRest}
@@ -50,7 +52,7 @@ export const UserMenu = Object.assign(
         >
           {renderContent()}
         </Button>
-      </DropdownMenuProvider>
+      </MenuProvider>
     );
   },
   {

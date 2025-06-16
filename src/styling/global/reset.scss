@@ -18,9 +18,10 @@
   // References:
   // - [1] https://www.youtube.com/watch?v=cCAtD_BAHNw ("Under the radar CSS features for your CSS reset")
   @layer custom {
+    //* { min-inline-size: 0; } // Reset flexbox item min-width? https://github.com/elad2412/the-new-css-reset/issues/45
     
     // :focus-visible {
-    //   /* outline: calc(var(--bk-sizing-1) / 2) solid color-contrast(var(--bk-page-color-background) vs white, black); */
+    //   /* outline: calc(bk.$size-1 / 2) solid color-contrast(var(--bk-page-color-background) vs white, black); */
     //   /*
     //   Note:
     //     - The following should be overridable by components (e.g. `outline-offset` might not always look good)
@@ -61,7 +62,7 @@
     }
     
     label {
-      cursor: default;
+      cursor: pointer;
       user-select: none;
     }
     
@@ -104,9 +105,12 @@
     dialog {
       // Issue: if the parent has `user-select: none` (e.g. button), then the dialog will inherit this by default.
       // In the future, if `contain: user-select` is implemented, we could use that instead.
-      user-select: text;
       &::backdrop {
         user-select: none; // Without this, clicking on the backdrop selects the dialog text in Firefox
+      }
+      // Note: doing this on the parent `dialog` doesn't seem to work in Chrome, the `::backdrop` takes precedence
+      > * {
+        user-select: text;
       }
       
       // Do not position absolutely by default (make that an opt in for modal dialogs only)
@@ -161,7 +165,7 @@
       &::backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(0 0 0 / 20%);
+        background: rgb(0 0 0 / 20%);
       }
     }
   }

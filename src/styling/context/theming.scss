@@ -47,10 +47,10 @@ a `light-dark()` expression in a variable and reuse that in a different theme. M
   // Invert if overridden by a `bk-theme` class
   // NOTE: this will not work for additional `bk-theme-invert` mixins deeper inside the current, because this mixin does
   // not produce a `bk-theme` class.
-  @at-root :global(.bk-theme--dark) #{$selector} {
+  @at-root .bk-theme--dark #{$selector} {
     @include theme('only light');
   }
-  @at-root :global(.bk-theme--light) #{$selector} {
+  @at-root .bk-theme--light #{$selector} {
     @include theme('only dark');
   }
   // Once `@scope` is available, convert the above selectors to use `@scope` to prevent the second overring the first
@@ -66,6 +66,11 @@ a `light-dark()` expression in a variable and reuse that in a different theme. M
 // Styles to be applied specifically on the `:root` element (see `global.scss`)
 @mixin root-styles {
   @include theme('light dark'); // Indicates that we support light and dark themes (in no particular order)
+  
+  @media print {
+    color-scheme: only light;
+  }
+  
   background: var(--bk-page-color-background); // Must be set on the root so that we style the entire viewport
   color: var(--bk-page-color-text);
 }

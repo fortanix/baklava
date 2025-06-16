@@ -8,9 +8,11 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { notify } from '../ToastProvider/ToastProvider.tsx';
-import { DialogOverlay } from './DialogOverlay.tsx';
 import { DialogModal } from '../DialogModal/DialogModal.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
+import { TooltipProvider } from '../Tooltip/TooltipProvider.tsx';
+
+import { DialogOverlay } from './DialogOverlay.tsx';
 
 
 type DialogOverlayArgs = React.ComponentProps<typeof DialogOverlay>;
@@ -86,6 +88,17 @@ export const DialogOverlayWithNestedModal: Story = {
       >
         Modal nested inside a popover.
       </DialogModal>
+    ),
+  },
+};
+
+export const DialogOverlayWithTooltip: Story = {
+  args: {
+    display: 'slide-over',
+    children: (
+      <TooltipProvider tooltip="Test">
+        <Button>Hover over me</Button>
+      </TooltipProvider>
     ),
   },
 };

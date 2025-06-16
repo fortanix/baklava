@@ -7,32 +7,66 @@ import * as React from 'react';
 
 import { Icon } from '../../../components/graphics/Icon/Icon.tsx';
 import { Button } from '../../../components/actions/Button/Button.tsx';
-import { DropdownMenuProvider } from '../../../components/overlays/DropdownMenu/DropdownMenuProvider.tsx';
+import {
+  type ItemKey,
+  type ItemDetails,
+  MenuProvider,
+} from '../../../components/overlays/MenuProvider/MenuProvider.tsx';
 
 import cl from './SolutionSelector.module.scss';
 
 
 export { cl as SolutionSelectorClassNames };
 
-const SolutionSelectorOption = (props: React.ComponentProps<typeof DropdownMenuProvider.Option>) => {
-  return <DropdownMenuProvider.Option {...props}/>;
-};
+export type { ItemKey };
 
-export type SolutionSelectorProps = Omit<ComponentProps<typeof Button>, 'label'> & {
+export type SolutionSelectorProps = Omit<ComponentProps<typeof Button>, 'label' | 'children' | 'selected' | 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
+  
+  /** The solutions list to be shown in the dropdown menu. */
+  solutions: React.ComponentProps<typeof MenuProvider>['items'],
+
+  /** The selected solution. To access the selected solution, pass a render prop. */
+  children?: undefined | ((selectedAccount: null | ItemDetails) => React.ReactNode),
+  
+  /** The selected solution. If given, this will be a controlled component. */
+  selected?: undefined | React.ComponentProps<typeof MenuProvider>['selected'],
+  
+  /** Callback which is called when the selected state changes. */
+  onSelect?: undefined | React.ComponentProps<typeof MenuProvider>['onSelect'],
+  
+  /** Custom formatting of the selected solution. */
+  formatItemLabel?: undefined | React.ComponentProps<typeof MenuProvider>['formatItemLabel'],
+  
+  /** Additional props to pass to the `MenuProvider`. Optional. */
+  menuProviderProps?: undefined | React.ComponentProps<typeof MenuProvider>,
 };
 export const SolutionSelector = Object.assign(
   (props: SolutionSelectorProps) => {
-    const { unstyled = false, children, ...propsRest } = props;
+    const {
+      unstyled = false,
+      children,
+      solutions,
+      selected,
+      onSelect,
+      formatItemLabel,
+      menuProviderProps = {},
+      ...propsRest
+    } = props;
     
     return (
-      <DropdownMenuProvider
+      <MenuProvider
         label="Solution selector"
         placement="bottom-start"
-        items={children}
+        items={solutions}
+        offset={12} // Compensate for header padding
+        selected={selected}
+        onSelect={onSelect}
+        formatItemLabel={formatItemLabel}
+        {...menuProviderProps}
       >
-        {({ props }) =>
+        {({ props, selectedOption }) =>
           <Button unstyled
             {...props({
               ...propsRest,
@@ -42,14 +76,17 @@ export const SolutionSelector = Object.assign(
             <Icon icon="solutions" className={cl['bk-solution-selector__icon']}
               decoration={{ type: 'background-circle' }}
             />
-            Solutions
+            {typeof children === 'function' ? children(selectedOption ?? null) : <>Solutions</>}
             <Icon icon="caret-down" className={cl['bk-solution-selector__caret']}/>
           </Button>
         }
-      </DropdownMenuProvider>
+      </MenuProvider>
     );
   },
   {
-    Option: SolutionSelectorOption,
+    Header: MenuProvider.Header,
+    Option: MenuProvider.Option,
+    Action: MenuProvider.Action,
+    FooterActions: MenuProvider.FooterActions,
   },
 );

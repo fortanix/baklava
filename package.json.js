@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 
 const packageConfig = {
   name: '@fortanix/baklava',
-  version: '1.0.0-beta-20250219',
+  version: '1.0.0-beta-20250610',
   license: 'MPL-2.0',
   author: 'Fortanix',
   description: 'Fortanix Baklava design system',
@@ -26,6 +26,7 @@ const packageConfig = {
   type: 'module',
   exports: {
     '.': {
+      'sass': './dist/baklava.css',
       'types': './dist/baklava.d.ts',
       //'require': './dist/baklava.cjs',
       'default': './dist/baklava.js',
@@ -79,7 +80,7 @@ const packageConfig = {
     // Test
     // Note: use `vitest run --root=. src/...` to run a single test file
     //'test:unit': 'vitest run --root=.', // Need to specify `--root=.` since the vite root is set to `./app`
-    'test': 'npm run check:types && npm run lint:style', // TODO: add `lint:script`, `test:unit`
+    'test': 'npm run check:types && npm run lint:style && npm run verify verify:source', // TODO: add `lint:script`, `test:unit`
     'test-ui': 'vitest --ui',
     'coverage': 'vitest run --coverage',
     
@@ -105,60 +106,59 @@ const packageConfig = {
   devDependencies: {
     // CLI
     'plop': '^4.0.1',
-    'tsx': '^4.19.2',
-    'glob': '^11.0.1',
+    'tsx': '^4.19.4',
+    'glob': '^11.0.2',
     
     // Build
-    'browserslist': '^4.24.4',
-    'vite': '^5.4.11', // Cannot yet upgrade to v6, causes some odd pre-transform errors in lightningcss
-    '@vitejs/plugin-react': '^4.3.4',
-    'vite-plugin-dts': '^4.5.0',
+    'browserslist': '^4.24.5',
+    'vite': '^6.3.5', // Cannot yet upgrade to v6, causes some odd pre-transform errors in lightningcss
+    '@vitejs/plugin-react': '^4.5.0',
+    'vite-plugin-dts': '^4.5.4',
     'vite-plugin-lib-inject-css': '^2.2.1',
     'vite-plugin-svg-icons': '^2.0.1',
     
     // Static analysis
     'typescript': '^5.7.3',
-    '@types/node': '^22.13.1',
-    'stylelint': '^16.14.1',
-    'stylelint-config-standard-scss': '^14.0.0',
+    '@types/node': '^24.0.0',
+    'stylelint': '^16.19.1',
+    'stylelint-config-standard-scss': '^15.0.1',
     'stylelint-use-logical': '^2.1.2',
     '@biomejs/biome': '^1.9.4',
     
     // Testing
-    'vitest': '^3.0.5',
-    '@vitest/ui': '^3.0.5',
+    'vitest': '^3.1.4',
+    '@vitest/ui': '^3.1.4',
     'axe-playwright': '^2.0.3',
     '@ngneat/falso': '^7.3.0',
     
     // Storybook
-    'storybook': '^8.6.12',
-    '@storybook/react': '^8.6.12',
-    '@storybook/react-vite': '^8.6.12',
-    '@storybook/blocks': '^8.6.12',
-    '@storybook/test': '^8.6.12',
+    'storybook': '^8.6.14',
+    '@storybook/react': '^8.6.14',
+    '@storybook/react-vite': '^8.6.14',
+    '@storybook/blocks': '^8.6.14',
+    '@storybook/test': '^8.6.14',
     '@storybook/test-runner': '^0.22.0',
-    '@storybook/addon-essentials': '^8.6.12',
-    '@storybook/addon-a11y': '^8.6.12',
-    '@storybook/addon-interactions': '^8.6.12',
-    '@storybook/addon-links': '^8.6.12',
-    '@storybook/addon-storysource': '^8.6.12',
+    '@storybook/addon-essentials': '^8.6.14',
+    '@storybook/addon-a11y': '^8.6.14',
+    '@storybook/addon-interactions': '^8.6.14',
+    '@storybook/addon-links': '^8.6.14',
+    '@storybook/addon-storysource': '^8.6.14',
     '@storybook/addon-designs': '^8.2.1',
-    'chromatic': '^11.25.2',
+    'chromatic': '^11.28.3',
     '@chromatic-com/storybook': '^3.2.6', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     'storybook-dark-mode': '^4.0.2',
-    '@percy/cli': '^1.30.9',
+    '@percy/cli': '^1.30.11',
     '@percy/storybook': '^6.0.3',
     
     // Styling
-    'vite-css-modules': '^1.6.0',
     'typescript-plugin-css-modules': '^5.0.1',
-    'sass-embedded': '^1.83.1',
-    'lightningcss': '^1.29.1',
+    'sass-embedded': '^1.89.0',
+    'lightningcss': '^1.30.1',
     
     // React
-    '@types/react': '^19.0.8',
-    '@types/react-dom': '^19.0.2',
+    '@types/react': '^19.1.5',
+    '@types/react-dom': '^19.1.5',
     
     // Data table
     '@types/react-table': '^7.7.20',
@@ -171,18 +171,19 @@ const packageConfig = {
     'message-tag': '^0.10.0',
     
     // React
-    'classnames': '^2.5.1',
     'react': '^19.0.0',
     'react-dom': '^19.0.0',
-    'react-error-boundary': '^5.0.0',
-    //'@uidotdev/usehooks': '^2.4.1',
+    'react-error-boundary': '^6.0.0',
+    'classnames': '^2.5.1',
+    'zustand': '^5.0.5',
     
-    '@floating-ui/react': '^0.27.6',
+    '@floating-ui/react': '^0.27.9',
     'react-table': '^7.8.0',
     'react-datepicker': '^8.0.0',
     
-    'effect': '^3.12.9',
-    'react-hook-form': '^7.54.2',
+    'effect': '^3.15.3',
+    'react-hook-form': '^7.56.4',
+    '@tanstack/react-virtual': '^3.13.9',
     
     'optics-ts': '^2.4.1',
   },

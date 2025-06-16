@@ -7,7 +7,7 @@
 
 @layer baklava.components {
   $caret-width: bk.rem-from-px(18);
-
+  
   .bk-date-picker {
     @include bk.component-base(bk-date-picker);
     display: flex;
@@ -15,20 +15,20 @@
     align-items: center;
     margin-inline-end: calc(-1 * $caret-width);
   }
-
+  
   .bk-date-picker--input {
     inline-size: bk.rem-from-px(134);
     color: bk.$theme-form-text-default;
   }
-
+  
   .bk-date-picker--caret {
-    inline-size: $caret-width;
-    block-size: $caret-width;
     position: relative;
     inset-inline-start: calc(-1 * $caret-width);
     inset-block-start: bk.rem-from-px(-1);
+    inline-size: $caret-width;
+    block-size: $caret-width;
   }
-
+  
   .bk-date-picker--caret__down {
     // only when the date picker is closed, allow click on caret to pass through the input behind it;
     // if it is open, then we don't, so it counts as a click outside of the input and date picker, which closes it.

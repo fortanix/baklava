@@ -5,7 +5,7 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, within } from '@storybook/test';
+import { DummyBkLinkUnstyled } from '../../../util/storybook/StorybookLink.tsx';
 
 import { Nav } from './Nav.tsx';
 
@@ -16,17 +16,31 @@ type Story = StoryObj<LayoutArgs>;
 export default {
   component: Nav,
   parameters: {
-    layout: 'fullscreen',
+    layout: 'centered',
   },
   tags: ['autodocs'],
   argTypes: {
   },
+  args: {
+    children: (
+      <>
+        <Nav.NavItem Link={DummyBkLinkUnstyled} active icon="dashboard" label="Overview" href="/dashboard"/>
+        <Nav.NavItem Link={DummyBkLinkUnstyled} icon="badge-assessment" label="Assessment" href="/assessment"/>
+        <Nav.NavItem Link={DummyBkLinkUnstyled} icon="services" label="Services" href="/services" disabled/>
+      </>
+    ),
+  },
+  render: args => <Nav {...args}/>,
 } satisfies Meta<LayoutArgs>;
 
 
-export const Standard: Story = {
-  render: () => <Nav/>,
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+export const NavStandard: Story = {};
+
+const CustomIcon: React.ComponentProps<typeof Nav.NavItem>['Icon'] = ({ icon }) => <span>{icon}</span>;
+export const NavItemWithCustomIcon: Story = {
+  args: {
+    children: (
+      <Nav.NavItem Icon={CustomIcon} iconProps={{ icon: "🍕" }} label="Overview" href="/dashboard"/>
+    ),
   },
 };

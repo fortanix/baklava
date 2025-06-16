@@ -1,0 +1,163 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-fortanix-armor-logo {
+    @include bk.component-base(bk-fortanix-armor-logo);
+    
+    direction: ltr;
+    user-select: none;
+    
+    display: flex;
+    
+    .product-name {
+      cursor: default; // Safari still shows a text cursor even when `user-select` is none
+      @include bk.font(bk.$font-family-display, bk.$font-weight-medium);
+      text-transform: uppercase;
+    }
+    
+    &:not(.bk-fortanix-armor-logo--stacked) {
+      @include bk.flex-row;
+      align-items: center;
+      
+      .fortanix-logo-image {
+        margin-inline-end: 1ch;
+      }
+      
+      .product-name {
+        margin-block-start: 0.2em;
+        font-size: 2em;
+      }
+    }
+    
+    &.bk-fortanix-armor-logo--stacked {
+      display: grid;
+      grid:
+        "logo" max-content
+        "product-name" 1fr
+        / auto;
+      
+      .fortanix-logo-image {
+        margin-block-end: 0.1lh;
+      }
+      
+      .product-name {
+        justify-self: end;
+        margin-block-start: -0.3lh;
+        //margin-inline-end: 1.35ch;
+        margin-inline-end: 5px; // FIXME
+        font-size: 1.2em;
+      }
+    }
+  }
+  
+  .bk-public-layout__product-info-card {
+    @include bk.component-base(bk-public-layout__product-info-card);
+    
+    padding: bk.$spacing-7;
+    padding-block-end: calc(4cqi);
+    
+    text-wrap: pretty;
+    
+    .bk-public-layout__product-info-card__heading {
+      @include bk.flex-column;
+      align-items: center;
+      row-gap: bk.$spacing-2;
+      
+      font-size: bk.$font-size-l;
+      
+      [role="img"] {
+        font-size: 2em;
+      }
+    }
+  }
+  
+  .bk-public-layout {
+    @include bk.component-base(bk-public-layout);
+    container-type: size;
+    
+    // Note: the background image is a semi-transparent png. We add a solid color behind it to shade the image.
+    background: url('@/assets/images/public-bg.png?no-inline') no-repeat;
+    background-color: light-dark(#2d4ab8, #253264);
+    background-size: cover;
+    
+    --bk-public-layout-content-size: 300px; // Roughly mobile size
+    display: grid;
+    grid-template-columns:
+      minmax(min(100cqi, var(--bk-public-layout-content-size)), calc(var(--bk-public-layout-content-size) + 15cqi))
+      minmax(0, 1fr);
+    grid-template-rows: minmax(100cqb, 1fr);
+    
+    .bk-public-layout__content {
+      padding-block: bk.$spacing-13;
+      padding-inline: calc(bk.$spacing-3 + 3cqi);
+      
+      background: bk.$theme-page-login;
+      
+      @include bk.font(bk.$font-family-body);
+      font-size: bk.$font-size-m;
+      
+      @include bk.flex-column;
+      align-items: center;
+      justify-content: safe center; // Note: needs `safe` keyword so as not cause overflow on narrow screen height
+      
+      .bk-public-layout__content__header {
+        margin-block-end: bk.$spacing-10;
+        text-align: center;
+        
+        @include bk.flex-column;
+        align-items: center;
+        
+        .bk-fortanix-armor-logo {
+          zoom: 0.8;
+        }
+      }
+      
+      > form {
+        align-self: stretch;
+      }
+    }
+    
+    .bk-public-layout__product-info {
+      padding-inline: 3cqi;
+      padding-block: calc(bk.$spacing-12 + 10cqb) bk.$spacing-8;
+      
+      @include bk.flex-column;
+      align-items: center;
+      justify-content: start;
+      
+      @include bk.text-layout;
+      @include bk.font(bk.$font-family-body);
+      font-size: bk.$font-size-m;
+      
+      .bk-public-layout__product-info__logo {
+        zoom: 2;
+        //filter: drop-shadow(1px 3px 4px #00000088); // Have the logo stand up a bit on the background image
+      }
+      
+      .bk-public-layout__product-info__cards {
+        align-self: stretch; // Fill the full width
+        margin-block-start: bk.$spacing-12;
+        padding-inline: calc(20cqi - 300px);
+        
+        --card-size: #{bk.$spacing-17};
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(var(--card-size), 1fr));
+        grid-auto-rows: minmax(12lh, 1fr); // Make sure the rows are tall enough for the content
+        gap: bk.$spacing-4;
+      }
+    }
+    
+    @container (inline-size <= 820px) {
+      > .bk-public-layout__content {
+        inline-size: 100cqi;
+      }
+      > .bk-public-layout__product-info {
+        display: none;
+      }
+    }
+  }
+}

@@ -3,7 +3,6 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { idToCssIdent } from '../../../util/reactUtil.ts';
 import { startViewTransition } from '../../../util/reactDomUtil.ts';
 
 import type { Meta, StoryObj } from '@storybook/react';
@@ -15,6 +14,7 @@ import { Button } from '../../actions/Button/Button.tsx';
 import { SegmentedControl } from '../../forms/controls/SegmentedControl/SegmentedControl.tsx';
 
 import { Banner } from './Banner.tsx';
+import { DialogModal } from '../../overlays/DialogModal/DialogModal.tsx';
 
 
 type BannerArgs = React.ComponentProps<typeof Banner>;
@@ -22,7 +22,7 @@ type Story = StoryObj<BannerArgs>;
 
 // Controlled version of `Banner` (handles close state)
 const BannerControlled = (props: React.ComponentProps<typeof Banner>) => {
-  const viewTransitionName = idToCssIdent(React.useId());
+  const viewTransitionName = React.useId();
   const [isVisible, setIsVisible] = React.useState(true);
   
   // Use a view transition to get an exit animation (in supported browsers)
@@ -168,6 +168,19 @@ export const BannerWithThemedContent: Story = {
             <SegmentedControl.Button buttonKey="test-2" label="Test 2"/>
             <SegmentedControl.Button buttonKey="test-3" label="Test 3"/>
           </SegmentedControl>
+        </div>
+        <div style={{ display: 'flex', gap: '2ch', marginTop: '0.5lh' }}>
+          <Button kind="tertiary">Tertiary button</Button>
+          <Button kind="tertiary" nonactive>Tertiary button (nonactive)</Button>
+        </div>
+        
+        <div style={{ display: 'flex', gap: '2ch', marginTop: '0.5lh' }}>
+          <DialogModal
+            trigger={({ activate }) => <Button kind="primary" label="Open submodal" onPress={activate}/>}
+            title="Test modal"
+          >
+            Content
+          </DialogModal>
         </div>
       </article>
     ),

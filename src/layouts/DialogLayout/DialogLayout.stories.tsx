@@ -7,7 +7,7 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Dialog } from '../../components/containers/Dialog/Dialog.tsx';
-import { Logo } from '../../layouts/AppLayout/Logo/Logo.tsx';
+import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
 import { H3 } from '../../typography/Heading/Heading.tsx';
 import { Form } from '../../components/forms/context/Form/Form.tsx';
 import { FormLayout } from '../FormLayout/FormLayout.tsx';
@@ -30,13 +30,26 @@ export default {
   },
 } satisfies Meta<DialogLayoutArgs>;
 
-
+const DialogLayoutLogo = (props: React.ComponentProps<typeof FortanixLogo>) => {
+  const { subtitle, subtitleTrademark, ...propsLogo } = props;
+  return (
+    <div>
+      <FortanixLogo {...propsLogo}/>
+      {subtitle &&
+        <span>
+          {subtitle}
+          {subtitleTrademark && <span>&trade;</span>}
+        </span>
+      }
+    </div>
+  );
+};
 export const DialogOnboarding: Story = {
   render: () => {
     return (
       <Dialog
         // TODO: Replace here after https://github.com/fortanix/baklava/issues/163
-        title={<Logo subtitle="Armor"/>}
+        title={<DialogLayout.Logo subtitle="Armor" />}
         showCancelAction={false}
         onRequestClose={() => console.log('close')}
       >

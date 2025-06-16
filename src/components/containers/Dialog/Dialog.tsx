@@ -85,7 +85,7 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   
   /** The title of the dialog, to be displayed in the dialog header. */
   title: React.ReactNode,
-  
+    
   /** If specified, a close icon is displayed in the header. Default: true. */
   showCloseIcon?: undefined | boolean,
   
@@ -182,7 +182,7 @@ export const Dialog = Object.assign(
               role="document" // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/document_role
               // FIXME: make this focusable instead of the <dialog> as per guidelines on MDN?
               //tabIndex={0}
-              className={cx('bk-prose')}
+              className={cx(cl['bk-dialog__content__body'], 'bk-prose')}
             >
               {children}
             </section>

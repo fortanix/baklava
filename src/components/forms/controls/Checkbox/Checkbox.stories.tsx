@@ -116,3 +116,11 @@ export const CheckboxLabeled: Story = {
     defaultChecked: true,
   },
 };
+
+export const CheckboxLabeledDisabled: Story = {
+  render: (args) => <Checkbox.Labeled label="Label" {...args}/>,
+  args: {
+    defaultChecked: true,
+    disabled: true,
+  },
+};

@@ -6,7 +6,7 @@ import { Link } from '../src/components/actions/Link/Link.tsx';
 import { Icon } from '../src/components/graphics/Icon/Icon.tsx';
 import { Panel } from '../src/components/containers/Panel/Panel.tsx';
 
-import { Logo } from '../src/layouts/AppLayout/Logo/Logo.tsx';
+import { FortanixLogo } from '../src/fortanix/FortanixLogo/FortanixLogo.tsx';
 import { UserMenu } from '../src/layouts/AppLayout/Header/UserMenu.tsx';
 import { AccountSelector } from '../src/layouts/AppLayout/Header/AccountSelector.tsx';
 import { SolutionSelector } from '../src/layouts/AppLayout/Header/SolutionSelector.tsx';
@@ -22,13 +22,15 @@ export const Demo = () => {
     <AppLayout>
       <AppLayout.Header>
         <Link unstyled href="#" slot="logo">
-          <Logo subtitle="Data Security Manager" subtitleTrademark={true}/>
+          <FortanixLogo subtitle="Armor"/>
         </Link>
         <Header slot="actions">
           <UserMenu userName="Anand Kashyap"/>
           {/* <UserMenu userName="Anand Kashyap – Very Long Name That Will Overflow"/> */}
-          <AccountSelector className="select-action"/>
-          <SolutionSelector className="select-action"/>
+          <AccountSelector className="select-action" accounts={null}>
+            {accountSelected => accountSelected?.label ?? 'Accounts'}
+          </AccountSelector>
+          <SolutionSelector className="select-action" solutions={null}/>
         </Header>
       </AppLayout.Header>
       {/* Container around the sidebar that grows to full height, allowing the sidebar to be sticky */}
@@ -43,18 +45,10 @@ export const Demo = () => {
       <AppLayout.Content>
         <Icon icon="accounts"/>
         
-        <Breadcrumbs
-          items={[
-            {
-              title: 'Fortanix Armor',
-              href: '#',
-            },
-            {
-              title: 'Dashboard',
-              href: '#',
-            }
-          ]}
-        />
+        <Breadcrumbs>
+          <Breadcrumbs.Item href="/" label="Fortanix Armor"/>
+          <Breadcrumbs.Item href="/" label="Dashboard" active/>
+        </Breadcrumbs>
         <Panel>
           <Panel.Heading>Panel</Panel.Heading>
         </Panel>

@@ -32,6 +32,28 @@ export default {
 } satisfies Meta<TooltipProviderArgs>;
 
 
+export const TooltipProviderStandard: Story = {};
+
+export const TooltipProviderWithHoverAction: Story = {
+  args: {
+    triggerAction: 'hover',
+  },
+};
+
+export const TooltipProviderWithClickAction: Story = {
+  args: {
+    triggerAction: 'click',
+    children: (props) => <Button {...props()} kind="primary" label="Click me"/>,
+  },
+};
+
+export const TooltipProviderWithFocusAction: Story = {
+  args: {
+    triggerAction: 'focus',
+    children: (props) => <Button {...props()} kind="primary" label="Focus me"/>,
+  },
+};
+
 export const PlacementTop: Story = {
   args: {
     placement: 'top',

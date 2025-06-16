@@ -2,7 +2,6 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import * as Random from '../../../util/random.ts';
 import * as ObjectUtil from '../../../util/objectUtil.ts';
 import {
   isEqual,
@@ -16,11 +15,8 @@ import {
 } from 'date-fns';
 
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../util/componentUtil.ts';
-// import * as Popper from 'react-popper';
 import { mergeRefs } from '../../../util/reactUtil.ts';
-import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandler.ts';
 import { useFocus } from '../../../util/hooks/useFocus.ts';
 
 import { Icon } from '../../graphics/Icon/Icon.tsx';
@@ -28,13 +24,17 @@ import { Tag } from '../../text/Tag/Tag.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { Input } from '../../forms/controls/Input/Input.tsx';
 import { CheckboxGroup } from '../../forms/controls/CheckboxGroup/CheckboxGroup.tsx';
-// import * as Dropdown from '../../overlays/dropdown/Dropdown.tsx';
-import { DropdownMenu, DropdownMenuContext } from '../../overlays/DropdownMenu/DropdownMenu.tsx';
-// import { DateTimePicker } from '../../forms/datetime/DateTimePicker.tsx';
+import { MenuProvider, type MenuProviderRef } from '../../overlays/MenuProvider/MenuProvider.tsx';
+import { DateTimePicker } from '../../forms/controls/DateTimePicker/DateTimePicker.tsx';
 
 import * as FQ from './filterQuery.ts';
 
-//import './MultiSearch.scss';
+import cl from './MultiSearch.module.scss';
+
+
+// FIXME: to be done in separate MultiSearch PR
+const DropdownMenu = Object.assign((props: any) => null, { Action: (props: any) => null });
+type DropdownMenuContext = any;
 
 
 // Utilities
@@ -137,7 +137,7 @@ const useFilters = (props: UseFiltersProps) => {
     
     if (fieldName && fields && typeof fields[fieldName]?.onAddFilter === 'function' && fieldQuery) {
       const field = fields[fieldName];
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      // biome-ignore lint/style/noNonNullAssertion: onAddFilter is guaranteed to exist by the guard above
       const updatedFilters = field.onAddFilter!(fieldQuery, filters);
       query?.(updatedFilters);
     } else if (fieldQuery) {
@@ -185,7 +185,7 @@ export const Filters = (props: FiltersProps) => {
     let symbol = ':';
 
     if (field && operatorSymbol && field.type === 'datetime') {
-      if (operatorSymbol === 'Range') {
+      if (operatorSymbol === 'range') {
         symbol = '';
       } else {
         symbol = ` ${operatorSymbol}`;
@@ -195,7 +195,7 @@ export const Filters = (props: FiltersProps) => {
     let operandLabel: { from: string, to: string } | string = '';
 
     if (field && field.type === 'datetime') {
-      if (operatorSymbol === 'Range') {
+      if (operatorSymbol === 'range') {
         if (FQ.isRangeOperationValue(operand)) {
           const rangeOperand = operand as [number, number];
           const startDateTime = dateFormat(rangeOperand[0] * 1000, 'MMMM do yyyy HH:mm');
@@ -215,13 +215,13 @@ export const Filters = (props: FiltersProps) => {
         <>
           <span>{`${fieldNameLabel}${symbol}`} </span>
           {typeof operandLabel === 'string'
-            ? <span className="filter-value">{operandLabel}</span>
+            ? <span className={cx(cl['filter-value'])}>{operandLabel}</span>
             : (
               <>
-                <span className="filter-operand">from</span>
-                <span className="filter-value">{operandLabel.from}</span>
-                <span className="filter-operand">to</span>
-                <span className="filter-value">{operandLabel.to}</span>
+                <span className={cx(cl['filter-operand'])}>from</span>
+                <span className={cx(cl['filter-value'])}>{operandLabel.from}</span>
+                <span className={cx(cl['filter-operand'])}>to</span>
+                <span className={cx(cl['filter-value'])}>{operandLabel.to}</span>
               </>
             )
           }
@@ -230,7 +230,7 @@ export const Filters = (props: FiltersProps) => {
     
     return (
       <Tag
-        className="bk-multi-search__filter"
+        className={cx(cl['bk-multi-search__filter'])}
         onRemove={() => { onRemoveFilter?.(index); }}
         content={content}
       />
@@ -264,16 +264,16 @@ export const Filters = (props: FiltersProps) => {
     
     return (
       <Tag
-        className="bk-multi-search__filter"
+        className={cx(cl['bk-multi-search__filter'])}
         onRemove={() => { onRemoveFilter?.(index); }}
         content={
           fieldNameLabel
-          ? (
-            <>
-              <span>{`${fieldNameLabel}${symbol}`} </span>
-              <span className="filter-value">{operandLabel}</span>
-            </>
-          ) : `${operandLabel}`
+            ? (
+              <>
+                <span>{`${fieldNameLabel}${symbol}`} </span>
+                <span className={cx(cl['filter-value'])}>{operandLabel}</span>
+              </>
+            ) : `${operandLabel}`
         }
       />
     );
@@ -321,17 +321,17 @@ export const Filters = (props: FiltersProps) => {
     
     return (
       <Tag
-        key={Random.generateRandomId()}
-        className="bk-multi-search__filter"
+        key={filter.fieldName}
+        className={cx(cl['bk-multi-search__filter'])}
         onRemove={() => { onRemoveFilter?.(index); }}
         content={
           fieldNameLabel
-          ? (
-            <>
-              <span>{`${fieldNameLabel}${symbol}`} </span>
-              <span className="filter-value">{operandLabel}</span>
-            </>
-          ) : `${operandLabel}`
+            ? (
+              <>
+                <span>{`${fieldNameLabel}${symbol}`} </span>
+                <span className={cx(cl['filter-value'])}>{operandLabel}</span>
+              </>
+            ) : `${operandLabel}`
         }
       />
     );
@@ -339,12 +339,13 @@ export const Filters = (props: FiltersProps) => {
 
   const renderActions = () => {
     return filters.length > 0 && (
-      <div className="bk-multi-search__filter-actions">
+      <div className={cx(cl['bk-multi-search__filter-actions'])}>
         <span
-          // biome-ignore lint/a11y/useSemanticElements: <explanation>
+          // biome-ignore lint/a11y/useSemanticElements:
+          // span used as clickable wrapper to keep custom layout & avoid button semantics
           role="button"
           tabIndex={0}
-          className="clear-all"
+          className={cx(cl['clear-all'])}
           onKeyDown={onRemoveAllFilters}
           onClick={onRemoveAllFilters}
         >
@@ -359,8 +360,8 @@ export const Filters = (props: FiltersProps) => {
   }
   
   return (
-    <div className="bk-multi-search__filters">
-      <div className="bk-multi-search__filters-wrapper">
+    <div className={cx(cl['bk-multi-search__filters'])}>
+      <div className={cx(cl['bk-multi-search__filters-wrapper'])}>
         {filters.map(renderFilter)}
       </div>
       {renderActions()}
@@ -373,110 +374,44 @@ export const Filters = (props: FiltersProps) => {
 // Suggestions dropdown
 //
 
-const SuggestionItem = DropdownMenu.Action;
 
 export type SuggestionProps = Omit<ComponentProps<'div'>, 'children'> & {
-  children: React.ReactNode | ((props: { close: () => void }) => React.ReactNode),
-  elementRef?: undefined | React.RefObject<HTMLInputElement>, // Helps to toggle multiple dropdowns on the same reference element
+  label: string,
+  items: React.ReactNode,
+  elementRef?: undefined | React.RefObject<HTMLInputElement | null>, // Helps to toggle multiple dropdowns on the same reference element
   active?: undefined | boolean,
-  withArrow?: undefined | boolean,
-  primary?: undefined | boolean,
-  secondary?: undefined | boolean,
-  basic?: undefined | boolean,
-  // popperOptions?: undefined | Dropdown.PopperOptions,
   onOutsideClick?: undefined | (() => void),
-  containerRef?: undefined | React.RefObject<HTMLInputElement>,
 };
-// export const Suggestions = (props: SuggestionProps) => {
-//   const {
-//     active = false,
-//     className = '',
-//     withArrow = false,
-//     primary = false,
-//     secondary = false,
-//     basic = false,
-//     children = '',
-//     elementRef,
-//     // popperOptions = {},
-//     onOutsideClick,
-//     containerRef,
-//   } = props;
-  
-//   const [isActive, setIsActive] = React.useState(false);
-  
-//   const [referenceElement, setReferenceElement] = React.useState<HTMLElement | null>(elementRef?.current ?? null);
-//   const [popperElement, setPopperElement] = React.useState<HTMLElement | null>(null);
-//   const [arrowElement, setArrowElement] = React.useState<HTMLElement | null>(null);
-//   const popper = Popper.usePopper(referenceElement, popperElement, {
-//     modifiers: [
-//       { name: 'arrow', options: { element: arrowElement } },
-//       { name: 'preventOverflow', enabled: true },
-//       ...(popperOptions.modifiers || []),
-//     ],
-//     placement: popperOptions.placement,
-//   });
-  
-//   React.useEffect(() => {
-//     if (elementRef?.current) {
-//       setReferenceElement(elementRef?.current);
-//     }
-//   }, [elementRef]);
-  
-//   const onClose = () => {
-//     setIsActive(false);
-//   };
-  
-//   const dropdownRef = { current: popperElement };
-//   const toggleRef = { current: referenceElement };
-//   useOutsideClickHandler([dropdownRef, toggleRef, ...(containerRef ? [containerRef] : [])], onOutsideClick ?? onClose);
-  
-//   const renderDropdownItems = (dropdownItems: React.ReactElement) => {
-//     const dropdownChildren = dropdownItems.type === React.Fragment
-//       ? dropdownItems.props.children
-//       : dropdownItems;
-    
-//     return React.Children.map(dropdownChildren, child => {
-//       const { onActivate: childOnActivate, onClose: childOnClose } = child.props;
-      
-//       return child.type !== SuggestionItem
-//         ? child
-//         : React.cloneElement(child, {
-//           onActivate: (value: string | number) => { childOnActivate(value); },
-//           onClose: childOnClose ?? onClose,
-//         });
-//     });
-//   };
-  
-//   const renderDropdown = () => {
-//     return (
-//       <div
-//         ref={setPopperElement}
-//         className={cx('bk-dropdown', className, {
-//           'bk-dropdown--primary': primary,
-//           'bk-dropdown--secondary': secondary,
-//           'bk-dropdown--basic': basic,
-//           'bk-dropdown--with-arrow': withArrow,
-//         })}
-//         style={popper.styles.popper}
-//         {...popper.attributes.popper}
-//       >
-//         <ul className="bk-dropdown__menu" role="menu" aria-labelledby="menubutton">
-//           {typeof children === 'function'
-//             ? children({ close: onClose })
-//             : renderDropdownItems(children as React.ReactElement)
-//           }
-//         </ul>
-//         {withArrow && <div className="bk-dropdown__arrow" ref={setArrowElement} style={popper.styles.arrow}/>}
-//       </div>
-//     );
-//   };
-  
-//   return (
-//     <>
-//       {(isActive || active) && ReactDOM.createPortal(renderDropdown(), document.body)}
-//     </>
-//   );
-// };
+export const Suggestions = (props: SuggestionProps) => {
+  const {
+    className,
+    active = false,
+    label = '',
+    items = '',
+    elementRef,
+    onOutsideClick,
+  } = props;
+
+  const dropdownRef = React.useRef<MenuProviderRef>(null);
+
+  const handleOpenChange = (open: boolean) => {
+    if (!open) onOutsideClick?.();
+  };
+
+  return (
+    <MenuProvider
+      className={cx(cl['bk-multi-search__dropdown'], className)}
+      placement='bottom-start'
+      ref={dropdownRef}
+      label={label}
+      items={items}
+      open={active}
+      onOpenChange={handleOpenChange}
+      anchorRef={elementRef as React.RefObject<HTMLElement | null>}
+      placeholderEmpty={null}
+    />
+  );
+};
 
 export type SearchInputProps = ComponentProps<typeof Input> & {
   fields: FQ.Fields,
@@ -557,22 +492,23 @@ export const SearchInput = (props: SearchInputProps) => {
   
   return (
     <div
-      // biome-ignore lint/a11y/useSemanticElements: <explanation>
+      // biome-ignore lint/a11y/useSemanticElements:
+      // div used as clickable wrapper to keep custom layout & avoid button semantics
       role="button"
       tabIndex={0}
-      className={cx('bk-search-input', className, { 'bk-search-input--active': isFocused })}
+      className={cx(cl['bk-search-input'], className, { [cl['bk-search-input--active']]: isFocused })}
       onClick={onWrapperClick}
       onKeyDown={onWrapperKeyDown}
     >
-      <Icon icon="search" className="bk-search-input__search-icon"/>
+      <Icon icon="search" className={cx(cl['bk-search-input__search-icon'])} />
       {field &&
-        <span className="bk-search-input__search-key">
+        <span className={cx(cl['bk-search-input__search-key'])}>
           {field.label}{operator}{subOperator} {key ? `${key} =` : ''}
         </span>
       }
       <Input
         placeholder={renderPlaceholder()}
-        className="bk-search-input__input"
+        className={cx(cl['bk-search-input__input'])}
         onKeyDown={onKeyDown}
         onFocus={handleFocus}
         onBlur={handleBlur}
@@ -587,7 +523,6 @@ type FieldsDropdownProps = {
   inputRef?: React.RefObject<HTMLInputElement | null>,
   isActive?: boolean,
   fields?: FQ.Fields,
-  // popperOptions?: Dropdown.PopperOptions,
   onClick: (fieldName?: string) => void,
   onOutsideClick?: () => void,
 };
@@ -597,7 +532,6 @@ const FieldsDropdown = (props: FieldsDropdownProps) => {
     inputRef,
     isActive = false,
     fields,
-    // popperOptions,
     onClick,
     onOutsideClick,
   } = props;
@@ -606,30 +540,30 @@ const FieldsDropdown = (props: FieldsDropdownProps) => {
     return null;
   }
 
+  const menuItems = Object.entries(fields || {}).map(([fieldName, { label }]) => (
+    <MenuProvider.Action
+      key={fieldName}
+      itemKey={fieldName}
+      label={label}
+      onActivate={() => { onClick(fieldName); }}
+    />
+  ));
+
   return (
-    <></>
-    // <Suggestions
-    //   active={isActive}
-    //   // popperOptions={popperOptions}
-    //   elementRef={inputRef}
-    //   onOutsideClick={onOutsideClick}
-    //   basic
-    // >
-    //   {Object.entries(fields || {}).map(([fieldName, { label }]) => (
-    //     <SuggestionItem key={fieldName} value={fieldName} onActivate={onClick}>
-    //       {label}
-    //     </SuggestionItem>
-    //   ))}
-    // </Suggestions>
+    <Suggestions
+      label="Fields"
+      items={menuItems}
+      elementRef={inputRef}
+      onOutsideClick={onOutsideClick}
+      active={isActive}
+    />
   );
 };
 
 type AlternativesDropdownProps = {
   inputRef?: React.RefObject<HTMLInputElement | null>,
   isActive?: boolean,
-  operators?: FQ.EnumFieldOperator[] | FQ.ArrayFieldOperator[],
   alternatives?: FQ.Alternatives,
-  // popperOptions?: Dropdown.PopperOptions,
   selectedOperator: FQ.Operator,
   onChange: (value: Primitive[]) => void,
   onOutsideClick?: () => void,
@@ -640,37 +574,27 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
   const {
     inputRef,
     isActive = false,
-    operators,
     alternatives,
-    // popperOptions,
     onChange,
     onOutsideClick,
     selectedOperator,
     validator,
   } = props;
 
+  if (!alternatives) return null;
+
   const [selectedAlternatives, setSelectedAlternatives] = React.useState<Array<string>>([]);
   
   const canSelectMultipleItems = ['$in', '$nin', '$any', '$all'].includes(selectedOperator);
   
-  const onOptionClick = (context: DropdownMenuContext) => {
-    if (typeof context.selectedOption !== 'undefined') {
-      onChange([context.selectedOption]);
-    }
-  };
-  
   const ValidateSelection = () => {
-    let isValid = false;
+    let isValid = selectedAlternatives.length > 0;
     let message = '';
-    if (selectedAlternatives.length > 0) {
-      isValid = true;
-    }
-    if (typeof validator === 'function' && selectedAlternatives.length > 0) {
+    if (validator && selectedAlternatives.length > 0) {
       const validatorResponse = validator({ buffer: selectedAlternatives });
       isValid = validatorResponse.isValid;
       message = validatorResponse.message;
     }
-    
     return { isValid, message };
   };
   
@@ -679,41 +603,33 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
   const onSelectionComplete = () => {
     onChange(selectedAlternatives);
   };
-  
-  const onSelectionChange = (alternativeName: string, shouldBeChecked: boolean) => {
-    if (shouldBeChecked) {
-      setSelectedAlternatives([...selectedAlternatives, alternativeName]);
-    } else {
-      setSelectedAlternatives([...selectedAlternatives.filter(item => item !== alternativeName)]);
-    }
-  };
-  
   const renderMultiSelectAlternatives = () => (
     <>
       <CheckboxGroup
-        className="bk-multi-search__alternatives-group"
+        orientation="vertical"
+        selected={new Set(selectedAlternatives)}
+        onUpdate={set => setSelectedAlternatives(Array.from(set))}
+        className={cx(cl['bk-multi-search__alternatives-group'])}
+        contentClassName={cx(cl['bk-multi-search__alternatives-group__content'])}
       >
-        {Object.entries(alternatives || {}).map(([alternativesName, { label }], index) => (
+        {Object.entries(alternatives).map(([key, { label }]) => (
           <CheckboxGroup.Checkbox
-            key={alternativesName}
-            checkboxKey={alternativesName}
+            key={key}
+            checkboxKey={key}
             label={label}
-            checked={selectedAlternatives.includes(alternativesName)}
-            className="bk-dropdown__menu-item"
-            onChange={(event) => { onSelectionChange(alternativesName, event.target.checked); }}
           />
         ))}
       </CheckboxGroup>
       {!arrayValidation.isValid && arrayValidation.message && (
-        <span className="bk-multi-search__dropdown-error-msg">
+        <span className={cx(cl['bk-multi-search__dropdown-error-msg'])}>
           {arrayValidation.message}
         </span>
       )}
-      <div className="bk-multi-search__alternatives-action">
+      <div className={cx(cl['bk-multi-search__alternatives-action'])}>
         <Button
           kind="primary"
           onPress={onSelectionComplete}
-          disabled={!arrayValidation.isValid}
+          nonactive={!arrayValidation.isValid}
         >
           Done
         </Button>
@@ -721,37 +637,35 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
     </>
   );
 
-  const renderAlternatives = () => (
-    Object.entries(alternatives || {}).map(([alternativesName, { label }]) => (
-      <SuggestionItem
-        key={alternativesName}
-        value={alternativesName}
-        onActivate={onOptionClick}
+  const renderSingleSelectAlternatives = () =>
+    Object.entries(alternatives).map(([key, { label }]) => (
+      <MenuProvider.Action
+        key={key}
+        itemKey={key}
         label={label}
-        itemKey={alternativesName}
+        onActivate={() => onChange([key])}
       />
-    ))
-  );
+    ));
 
   return (
-    <></>
-    // <Suggestions
-    //   className="bk-multi-search__alternatives"
-    //   active={isActive}
-    //   // popperOptions={popperOptions}
-    //   elementRef={inputRef}
-    //   onOutsideClick={onOutsideClick}
-    //   basic
-    // >
-    //   {canSelectMultipleItems ? renderMultiSelectAlternatives() : renderAlternatives()}
-    // </Suggestions>
+    <Suggestions
+    className={cx(cl['bk-multi-search__alternatives'])}
+      label="Alternatives"
+      active={isActive}
+      elementRef={inputRef}
+      onOutsideClick={onOutsideClick}
+      items={
+        canSelectMultipleItems
+          ? renderMultiSelectAlternatives()
+          : renderSingleSelectAlternatives()
+      }
+    />
   );
 };
 
 type DateTimeDropdownProps = {
   inputRef?: React.RefObject<HTMLInputElement | null>,
   isActive?: boolean,
-  // popperOptions?: Dropdown.PopperOptions,
   onChange: (value: number | [number, number]) => void,
   onOutsideClick?: () => void,
   maxDate?: Date | number | undefined,
@@ -765,7 +679,6 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
   const {
     inputRef,
     isActive = false,
-    // popperOptions,
     onChange,
     onOutsideClick,
     maxDate,
@@ -804,7 +717,7 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
     Array.isArray(date) && date.length === 2;
   
 
-  const initDateTime = (selectedDate: FQ.SelectedDate | undefined, range: 'start' | 'end') => {
+  const initDateTime = (selectedDate: FQ.SelectedDate | undefined | null, range: 'start' | 'end') => {
     const defaultDate = setDate(new Date(), { seconds: 0, milliseconds: 0 });
     if (!selectedDate) {
       return defaultDate;
@@ -832,7 +745,7 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
   const [startDateTime, setStartDateTime] = React.useState(initDateTime(selectedDate, 'start'));
   const [endDateTime, setEndDateTime] = React.useState(initDateTime(selectedDate, 'end'));
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: selectedDate is the only variable
   React.useEffect(() => {
     if (isValidSelectedDate(selectedDate)) {
       const updatedDateTime = initDateTime(selectedDate, 'start');
@@ -912,38 +825,36 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
   
   const renderDateTimeRangePicker = () => (
     <>
-      <div className="bk-multi-search__date-time-group">
-        <div className="bk-multi-search__date-time-label"><span>Start Date</span></div>
-        {/* <DateTimePicker
-          dateTime={startDateTime}
-          onChange={setStartDateTime}
-          minDate={minDate ? new Date(minDate) : undefined}
-          maxDate={maxDate ? new Date(maxDate) : undefined}
-          dropdownReference={dateTimeMeridiemRef}
-        /> */}
+      <div className={cx(cl['bk-multi-search__date-time-group'])}>
+        <div className={cx(cl['bk-multi-search__date-time-label'])}><span>Start Date</span></div>
+        <DateTimePicker
+          date={startDateTime}
+          onChange={(date) => setStartDateTime(initDateTime(date, 'start'))}
+          minDate={minDate ? new Date(minDate) : null}
+          maxDate={maxDate ? new Date(maxDate) : null}
+        />
       </div>
 
-      <div className="bk-multi-search__date-time-group">
-        <div className="bk-multi-search__date-time-label"><span>End Date</span></div>
-        {/* <DateTimePicker
-          dateTime={endDateTime}
-          onChange={setEndDateTime}
-          minDate={minDate ? new Date(minDate) : undefined}
-          maxDate={maxDate ? new Date(maxDate) : undefined}
-          dropdownReference={dateTimeMeridiemRef}
-        /> */}
+      <div className={cx(cl['bk-multi-search__date-time-group'])}>
+        <div className={cx(cl['bk-multi-search__date-time-label'])}><span>End Date</span></div>
+        <DateTimePicker
+          date={endDateTime}
+          onChange={(date) => setEndDateTime(initDateTime(date, 'end'))}
+          minDate={minDate ? new Date(minDate) : null}
+          maxDate={maxDate ? new Date(maxDate) : null}
+        />
       </div>
     
       {!dateTimeRangeValidation.isValid
-          && dateTimeRangeValidation.message
-          && (
-            <span className="bk-multi-search__dropdown-error-msg">
-              {dateTimeRangeValidation.message}
-            </span>
-          )
-        }
-        
-      <div className="bk-multi-search__date-time-action">
+        && dateTimeRangeValidation.message
+        && (
+          <span className={cx(cl['bk-multi-search__dropdown-error-msg'])}>
+            {dateTimeRangeValidation.message}
+          </span>
+        )
+      }
+      
+      <div className={cx(cl['bk-multi-search__date-time-action'])}>
         <Button
           kind="primary"
           onPress={onSelectionComplete}
@@ -957,17 +868,16 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
 
   const renderDateTimePicker = () => (
     <>
-      <div className="bk-multi-search__date-time-group">
-        {/* <DateTimePicker
-          dateTime={dateTime}
-          onChange={setDateTime}
-          minDate={minDate ? new Date(minDate) : undefined}
-          maxDate={maxDate ? new Date(maxDate) : undefined}
-          dropdownReference={dateTimeMeridiemRef}
-        /> */}
+      <div className={cx(cl['bk-multi-search__date-time-group'])}>
+        <DateTimePicker
+          date={dateTime}
+          onChange={(date) => setDateTime(initDateTime(date, 'start'))}
+          minDate={minDate ? new Date(minDate) : null}
+          maxDate={maxDate ? new Date(maxDate) : null}
+        />
       </div>
 
-      <div className="bk-multi-search__date-time-action">
+      <div className={cx(cl['bk-multi-search__date-time-action'])}>
         <Button
           kind="primary"
           onPress={onSelectionComplete}
@@ -980,18 +890,14 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
   );
 
   return (
-    <></>
-    // <Suggestions
-    //   className="bk-multi-search__date-time"
-    //   active={isActive}
-    //   popperOptions={popperOptions}
-    //   elementRef={inputRef}
-    //   containerRef={dateTimeMeridiemRef}
-    //   onOutsideClick={onOutsideClick}
-    //   basic
-    // >
-    //   {canSelectDateTimeRange ? renderDateTimeRangePicker() : renderDateTimePicker()}
-    // </Suggestions>
+    <Suggestions
+      className={cx(cl['bk-multi-search__date-time'])}
+      label="Date/Time"
+      active={isActive}
+      elementRef={inputRef}
+      onOutsideClick={onOutsideClick}
+      items={canSelectDateTimeRange ? renderDateTimeRangePicker() : renderDateTimePicker()}
+    />
   );
 };
 
@@ -1000,7 +906,6 @@ type SuggestedKeysDropdownProps = {
   isActive?: boolean,
   operators?: FQ.DictionaryFieldOperators[],
   suggestedKeys?: FQ.SuggestedKeys | undefined,
-  // popperOptions?: Dropdown.PopperOptions,
   onChange: (value: string) => void,
   onOutsideClick?: () => void,
 };
@@ -1009,68 +914,49 @@ const SuggestedKeysDropdown = (props: SuggestedKeysDropdownProps) => {
   const {
     inputRef,
     isActive = false,
-    operators,
     suggestedKeys,
-    // popperOptions,
     onChange,
     onOutsideClick,
   } = props;
 
-  const [suggestedKeyValue, setSuggestedKeyValue] = React.useState('');
+  const [customKey, setCustomKey] = React.useState('');
 
-  const onOptionClick = (dropdownContext?: DropdownMenuContext) => {
-    if (typeof dropdownContext?.selectedOption !== 'undefined') {
-      onChange(dropdownContext.selectedOption as string);
-    }
-  };
+  const items = (
+    <>
+      {Object.entries(suggestedKeys || {}).map(([suggestedKey, { label }]) => (
+        <MenuProvider.Action
+          key={suggestedKey}
+          itemKey={suggestedKey}
+          label={label}
+          onActivate={() => onChange(suggestedKey)}
+        />
+      ))}
 
-  const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const key = event.target.value;
-    setSuggestedKeyValue(key);
-  };
-
-  const onInputKeyDown = (evt: React.KeyboardEvent) => {
-    if (evt.key === 'Enter' && suggestedKeyValue !== '') {
-      onChange(suggestedKeyValue);
-      setSuggestedKeyValue('');
-    }
-  };
-
-  const renderSuggestedKeys = () => (
-    Object.entries(suggestedKeys || {}).map(([suggestedKey, { label }]) => (
-      <SuggestionItem
-        key={suggestedKey}
-        value={suggestedKey}
-        onActivate={onOptionClick}
-        label={label}
-        itemKey={suggestedKey}
-      />
-    ))
-  );
-
-  const renderSuggestedKeyInput = () => (
-    <Input
-      className="bk-dropdown__menu-item bk-multi-search__suggested-key-input"
-      placeholder="Enter a custom key"
-      value={suggestedKeyValue}
-      onChange={onInputChange}
-      onKeyDown={onInputKeyDown}
-    />
+      <div key="custom" className={cx(cl['bk-multi-search__suggested-key-input'])}>
+        <Input
+          placeholder="Enter a custom key"
+          value={customKey}
+          onChange={e => setCustomKey(e.currentTarget.value)}
+          onKeyDown={e => {
+            if (e.key === 'Enter' && customKey.trim() !== '') {
+              onChange(customKey.trim());
+              setCustomKey('');
+            }
+          }}
+        />
+      </div>
+    </>
   );
 
   return (
-    <></>
-    // <Suggestions
-    //   className="bk-multi-search__suggested-keys"
-    //   active={isActive}
-    //   // popperOptions={popperOptions}
-    //   elementRef={inputRef}
-    //   onOutsideClick={onOutsideClick}
-    //   basic
-    // >
-    //   {renderSuggestedKeys()}
-    //   {renderSuggestedKeyInput()}
-    // </Suggestions>
+    <Suggestions
+      className={cx(cl[' bk-multi-search__suggested-keys'])}
+      label="Keys"
+      active={isActive}
+      elementRef={inputRef}
+      onOutsideClick={onOutsideClick}
+      items={items}
+    />
   );
 };
 
@@ -1079,8 +965,7 @@ type OperatorsDropdownProps = {
   inputRef: React.RefObject<HTMLInputElement | null>,
   isActive: boolean,
   operators: Array<FQ.NumberFieldOperator | FQ.DateTimeFieldOperator | FQ.EnumFieldOperator | FQ.ArrayFieldOperator>,
-  // popperOptions?: Dropdown.PopperOptions,
-  onClick: (conext: DropdownMenuContext) => void,
+  onClick: (key?: FQ.NumberFieldOperator | FQ.DateTimeFieldOperator | FQ.EnumFieldOperator | FQ.ArrayFieldOperator) => void,
   onOutsideClick?: () => void,
   operatorInfo?: FQ.OperatorInfo | undefined,
 };
@@ -1091,7 +976,6 @@ const OperatorsDropdown = (props: OperatorsDropdownProps) => {
     inputRef,
     isActive = false,
     operators,
-    // popperOptions,
     onClick,
     onOutsideClick,
     operatorInfo = {},
@@ -1099,7 +983,7 @@ const OperatorsDropdown = (props: OperatorsDropdownProps) => {
 
   if (operators.length === 0) { return null; }
 
-  let symbolMap = {};
+  let symbolMap: Partial<Record<FQ.Operator, string>> = {};
 
   if (type === 'enum') {
     symbolMap = enumOperatorsToSymbolMap;
@@ -1111,31 +995,33 @@ const OperatorsDropdown = (props: OperatorsDropdownProps) => {
     symbolMap = dateTimeFieldOperatorsToSymbolMap;
   }
 
-  symbolMap = ObjectUtil.map(symbolMap, (label, operator) => {
-    return operator in operatorInfo
-      ? operatorInfo[operator as FQ.Operator]?.label
-      : label;
+  symbolMap = ObjectUtil.map(symbolMap, (label, operator) =>
+    operator in operatorInfo ? operatorInfo[operator as FQ.Operator]?.label : label,
+  ) as Partial<Record<FQ.Operator, string>>;
+
+  const items = operators.map((op) => {
+    const operatorSymbol = symbolMap[op] ?? op;
+    return (
+      <MenuProvider.Action
+        className={cx(cl[' bk-multi-search__operator'])}
+        key={op}
+        itemKey={op}
+        label={String(operatorSymbol)}
+        onActivate={() => {
+          onClick(op);
+        }}
+      />
+    );
   });
 
   return (
-    <></>
-    // <Suggestions
-    //   className="bk-multi-search__operators"
-    //   active={isActive}
-    //   // popperOptions={popperOptions}
-    //   elementRef={inputRef}
-    //   onOutsideClick={onOutsideClick}
-    //   basic
-    // >
-    //   {ObjectUtil.entries(symbolMap)
-    //     .filter(entry => operators.includes(entry[0]))
-    //     .map(([operator, operatorSymbol]) => (
-    //       <SuggestionItem className="operator" key={operator} value={operator} onActivate={onClick}>
-    //         {operatorSymbol}
-    //       </SuggestionItem>
-    //     ))
-    //   }
-    // </Suggestions>
+    <Suggestions
+      label="Operators"
+      active={isActive}
+      elementRef={inputRef}
+      onOutsideClick={onOutsideClick}
+      items={items}
+    />
   );
 };
 
@@ -1155,10 +1041,9 @@ export const initializeFieldQueryBuffer = (): FieldQueryBuffer => ({
   value: '',
 });
 
-export type MultiSearchProps = Omit<ComponentProps<'input'>, 'className'|'children'> & {
+export type MultiSearchProps = Omit<ComponentProps<'input'>, 'className' | 'children'> & {
   className?: ClassNameArgument,
   fields: FQ.Fields,
-  // popperOptions?: Dropdown.PopperOptions,
   query?: (filters: FQ.FilterQuery) => void;
   filters?: FQ.FilterQuery,
 };
@@ -1168,8 +1053,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
   const {
     className,
     fields,
-    // popperOptions: customPopperOptions,
-    query = () => {},
+    query = () => { },
     onFocus,
     onClick,
     disabled,
@@ -1185,11 +1069,6 @@ export const MultiSearch = (props: MultiSearchProps) => {
   const [isInputFocused, setIsInputFocused] = React.useState(false);
   const [validatorResponse, setValidatorResponse] = React.useState({ isValid: true, message: '' });
   
-  // const popperOptions: Dropdown.PopperOptions = {
-  //   placement: 'bottom-start',
-  //   ...(customPopperOptions ?? {}),
-  // };
-  
   const updateFieldQueryBuffer = (newFieldQuery: FieldQueryBuffer) => {
     setFieldQueryBuffer(newFieldQuery);
   };
@@ -1198,8 +1077,8 @@ export const MultiSearch = (props: MultiSearchProps) => {
     let isValid = fieldQueryBuffer.value?.trim() !== '';
     let message = '';
     
-    if (fieldQueryBuffer.fieldName) {
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    if (fieldQueryBuffer.fieldName && Object.hasOwn(fields, fieldQueryBuffer.fieldName)) {
+      // biome-ignore lint/style/noNonNullAssertion: fieldName is guaranteed to exist by the hasOwn guard above
       const field: FQ.Field = fields[fieldQueryBuffer.fieldName]!;
       if (field.type === 'text') {
         const searchInputValidator = field.validator as FQ.TextValidator;
@@ -1290,9 +1169,9 @@ export const MultiSearch = (props: MultiSearchProps) => {
       const validatorResponse = validateFieldQuery(fieldQueryBuffer);
       if (validatorResponse.isValid) {
         let fieldValue: string | string[] | number = fieldQueryBuffer.value;
-        if (fieldQueryBuffer?.fieldName) {
-          // biome-ignore lint/style/noNonNullAssertion: <explanation>
-          const field = fields[fieldQueryBuffer.fieldName]!;
+        if (fieldQueryBuffer.fieldName && Object.hasOwn(fields, fieldQueryBuffer.fieldName)) {
+          // biome-ignore lint/style/noNonNullAssertion: fieldName is guaranteed to exist by the hasOwn guard above
+          const field: FQ.Field = fields[fieldQueryBuffer.fieldName]!;
           if (field.type === 'enum' || (field.type === 'array' && field.subfield?.type === 'enum')) {
             fieldValue = [fieldQueryBuffer.value];
           } else if (field.type === 'datetime') {
@@ -1339,7 +1218,9 @@ export const MultiSearch = (props: MultiSearchProps) => {
   };
   
   const onOutsideClick = () => {
-    setIsInputFocused(false);
+    if (document.activeElement !== inputRef.current) {
+      setIsInputFocused(false);
+    }
   };
   
   const renderSearchInput = () => (
@@ -1374,12 +1255,12 @@ export const MultiSearch = (props: MultiSearchProps) => {
       };
       
       if (['number', 'datetime', 'enum', 'array'].includes(field.type) && field.operators.length === 1) {
-        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        // biome-ignore lint/style/noNonNullAssertion: Length already checked
         newFieldQuery.operator = field.operators[0]!;
       }
       
       if (field.type === 'array' && field.subfield.operators.length === 1) {
-        // biome-ignore lint/style/noNonNullAssertion: <explanation>
+        // biome-ignore lint/style/noNonNullAssertion: Length already checked
         newFieldQuery.subOperator = field.subfield.operators[0]!;
       }
       
@@ -1395,7 +1276,6 @@ export const MultiSearch = (props: MultiSearchProps) => {
         isActive={isActive}
         inputRef={inputRef}
         fields={fields}
-        // popperOptions={popperOptions}
         onClick={onFieldClick}
         onOutsideClick={onOutsideClick}
       />
@@ -1425,12 +1305,6 @@ export const MultiSearch = (props: MultiSearchProps) => {
       return null;
     }
     
-    let operators: Array<FQ.EnumFieldOperator> | Array<FQ.ArrayFieldOperator> = [];
-    
-    if (field.operators) {
-      operators = field.operators as Array<FQ.EnumFieldOperator> | Array<FQ.ArrayFieldOperator>;
-    }
-    
     const isActive = isInputFocused
       && field
       && ((field.type === 'enum' && !!operator)
@@ -1456,9 +1330,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
       <AlternativesDropdown
         isActive={isActive}
         inputRef={inputRef}
-        operators={operators}
         alternatives={alternatives}
-        // popperOptions={popperOptions}
         onChange={onAlternativesChange}
         onOutsideClick={onOutsideClick}
         selectedOperator={field.type === 'array' ? '$any' : operator}
@@ -1499,7 +1371,6 @@ export const MultiSearch = (props: MultiSearchProps) => {
       <DateTimeDropdown
         isActive={isActive}
         inputRef={inputRef}
-        // popperOptions={popperOptions}
         onChange={onDateTimeRangeChange}
         onOutsideClick={onOutsideClick}
         maxDate={field.maxDate}
@@ -1536,7 +1407,6 @@ export const MultiSearch = (props: MultiSearchProps) => {
         inputRef={inputRef}
         operators={field.operators}
         suggestedKeys={field.suggestedKeys}
-        // popperOptions={popperOptions}
         onChange={onSuggestedKeysChange}
         onOutsideClick={onOutsideClick}
       />
@@ -1570,15 +1440,14 @@ export const MultiSearch = (props: MultiSearchProps) => {
       && fieldQueryBuffer.value === '';
     
     const onOperatorClick = (
-      dropdownMenuContext: DropdownMenuContext,
+      operator?: FQ.NumberFieldOperator | FQ.DateTimeFieldOperator | FQ.EnumFieldOperator | FQ.ArrayFieldOperator,
     ) => {
-      if (typeof dropdownMenuContext?.selectedOption === 'undefined') { return; }
+      if (typeof operator === 'undefined') { return; }
       
-      const newFieldQuery = { ...fieldQueryBuffer, operator: dropdownMenuContext.selectedOption as FQ.Operator };
+      const newFieldQuery = { ...fieldQueryBuffer, operator };
       
       if (field.type === 'array' && field.subfield.operators.length === 1) {
-        // biome-ignore lint/style/noNonNullAssertion: <explanation>
-        newFieldQuery.subOperator = field.subfield.operators[0]!;
+        newFieldQuery.subOperator = field.subfield.operators[0] || null;
       }
       
       updateFieldQueryBuffer(newFieldQuery);
@@ -1594,7 +1463,6 @@ export const MultiSearch = (props: MultiSearchProps) => {
         isActive={isActive}
         inputRef={inputRef}
         operators={field.operators}
-        // popperOptions={popperOptions}
         onClick={onOperatorClick}
         onOutsideClick={onOutsideClick}
         operatorInfo={field.operatorInfo}
@@ -1608,8 +1476,6 @@ export const MultiSearch = (props: MultiSearchProps) => {
     if (!fieldName) { return null; }
     
     const field = fields[fieldName];
-    
-    const operatorTypes = ['array'];
     
     if (!field || field.type !== 'array') { return null; }
     
@@ -1632,11 +1498,11 @@ export const MultiSearch = (props: MultiSearchProps) => {
       && fieldQueryBuffer.value === '';
     
     const onOperatorClick = (
-      dropdownMenuContext: DropdownMenuContext,
+      key?: FQ.NumberFieldOperator | FQ.DateTimeFieldOperator | FQ.EnumFieldOperator | FQ.ArrayFieldOperator
     ) => {
-      if (typeof dropdownMenuContext.selectedOption === 'undefined') { return; }
+      if (typeof key === 'undefined') { return; }
       
-      updateFieldQueryBuffer({ ...fieldQueryBuffer, subOperator: dropdownMenuContext.selectedOption as FQ.Operator });
+      updateFieldQueryBuffer({ ...fieldQueryBuffer, subOperator: key as FQ.Operator });
       
       if (inputRef.current) {
         inputRef.current.focus();
@@ -1651,7 +1517,6 @@ export const MultiSearch = (props: MultiSearchProps) => {
         operators={subField.type === 'enum'
           ? subField.operators.filter(op => op !== '$eq' && op !== '$ne')
           : subField.operators}
-        // popperOptions={popperOptions}
         onClick={onOperatorClick}
         onOutsideClick={onOutsideClick}
         operatorInfo={field.subfield.operatorInfo}
@@ -1660,7 +1525,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
   };
   
   return (
-    <div className={cx('bk-multi-search', className)}>
+    <div className={cx(cl['bk-multi-search'], className)}>
       {renderSearchInput()}
       {renderFieldsDropdown()}
       {renderAlternativesDropdown()}
@@ -1669,7 +1534,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
       {renderOperatorsDropdown()}
       {renderSubOperatorsDropdown()}
       {!validatorResponse.isValid && validatorResponse.message && (
-        <span className="bk-multi-search__error-msg">
+        <span className={cx(cl['bk-multi-search__error-msg'])}>
           {validatorResponse.message}
         </span>
       )}

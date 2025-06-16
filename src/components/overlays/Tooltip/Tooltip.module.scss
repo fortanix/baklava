@@ -134,8 +134,8 @@
     max-inline-size: 30rem;
     max-block-size: 8lh; /* Show about 8 lines of text before scrolling */
     /* Alternatively: https://floating-ui.com/docs/misc#handling-large-content
-    max-inline-size: calc(100svw - var(--bk-sizing-2));
-    max-block-size: calc(100svh - var(--bk-sizing-2));
+    max-inline-size: calc(100svw - bk.$spacing-2);
+    max-block-size: calc(100svh - bk.$spacing-2);
     */
     
     padding: bk.$spacing-2;
@@ -268,7 +268,7 @@
     
     position-try-fallbacks: --bk-tooltip-position-top, --bk-tooltip-position-bottom, --bk-tooltip-position-left, --bk-tooltip-position-right;
     
-    filter: drop-shadow(4px 4px 4px rgba(50 50 50 / 30%));
+    filter: drop-shadow(4px 4px 4px rgb(50 50 50 / 30%));
     
     @media (prefers-reduced-motion: no-preference) {
       --transition-duration: 150ms;

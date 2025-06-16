@@ -4,61 +4,139 @@
 
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
+import { mergeCallbacks } from '../../../util/reactUtil.ts';
+
+import { Link as LinkDefault } from '../../../components/actions/Link/Link.tsx';
 
 import cl from './Breadcrumbs.module.scss';
-import { Link } from '../../../components/actions/Link/Link.tsx';
+
 
 export { cl as BreadcrumbsClassNames };
 
-export type BreadcrumbItem = ComponentProps<'li'> & {
-  title: string,
-  href: string,
-};
-export type BreadcrumbsProps = React.PropsWithChildren<ComponentProps<'nav'> & {
+/*
+References:
+- https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/examples/breadcrumb
+*/
+
+
+type BreadcrumbItemLinkProps = Pick<
+  React.ComponentProps<typeof LinkDefault>,
+  'children' | 'unstyled' | 'tabIndex' | 'aria-disabled' | 'href' | 'className' | 'onClick'
+>;
+
+type BreadcrumbItemProps<LinkProps extends BreadcrumbItemLinkProps> = ComponentProps<'li'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
-  /** The routing informations */
-  items: BreadcrumbItem[],
+  /** A custom `Link` component. Optional. */
+  Link?: undefined | React.ComponentType<LinkProps>,
   
-  /** Whether the last breadcrumb item has slash or not. */
-  hasTrailingSlash?: boolean,
-}>;
-/**
- * A breadcrumbs component
- */
-export const Breadcrumbs = (props: BreadcrumbsProps) => {
-  const { children, unstyled = false, items = [], hasTrailingSlash, ...propsRest } = props;
+  /** Additional props to pass to the `Link` component. */
+  linkProps?: undefined | LinkProps,
+  
+  /** The target of the breadcrumb item link. */
+  href?: undefined | string,
+  
+  /** The breadcrumb item link label. */
+  label?: undefined | string,
+  
+  /** Whether this breadcrumb item is the currently active one. Default: false. */
+  active?: undefined | boolean,
+  
+  /** Whether this breadcrumb item should be disabled. Default: false. */
+  disabled?: undefined | boolean,
+};
+export const BreadcrumbItem = <LinkProps extends BreadcrumbItemLinkProps>(props: BreadcrumbItemProps<LinkProps>) => {
+  const {
+    children,
+    unstyled,
+    className,
+    Link = LinkDefault,
+    linkProps = {} as LinkProps,
+    href,
+    label,
+    active = false,
+    disabled = false,
+    ...propsRest
+  } = props;
+  
+  const handleClick = React.useCallback((event: React.MouseEvent<HTMLElement>) => {
+    if (disabled) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }, [disabled]);
+  
+  const renderItem = () => {
+    if (active) {
+      return label;
+    }
+    
+    if (label) {
+      return (
+        <Link
+          tabIndex={disabled ? -1 : undefined}
+          aria-disabled={disabled}
+          href={href}
+          {...linkProps}
+          className={cx(
+            cl['bk-breadcrumb__item__link'],
+            { [cl['bk-breadcrumb__item__link--disabled']]: disabled },
+            linkProps.className,
+          )}
+          onClick={mergeCallbacks([handleClick, disabled ? undefined : linkProps.onClick])}
+        >
+          {label}
+        </Link>
+      );
+    }
+    return children;
+  };
+  
   return (
-    <nav
+    <li
+      aria-current={active ? 'page' : undefined}
       {...propsRest}
-      aria-label="Breadcrumbs"
-      className={cx({
-        bk: true,
-        [cl['bk-breadcrumbs']]: !unstyled,
-      }, propsRest.className)}
+      className={cx(
+        { [cl['bk-breadcrumb__item']]: !unstyled },
+        className,
+      )}
     >
-      <ol className={cx([cl['bk-breadcrumb']])}>
-        {items.map((item, index) => {
-          const isLast = index === items.length - 1;
-          return (
-            <li
-              // biome-ignore lint/suspicious/noArrayIndexKey: No other unique key available
-              key={index}
-              className={cx({
-                [cl['bk-breadcrumb-item']]: true,
-                [cl['bk-breadcrumb-item--with-trailing-slash']]: hasTrailingSlash,
-              }, item.className)}
-            >
-              {item.href && !isLast
-                ? <Link href={item.href} className={cx([cl['bk-breadcrumb-link']])}>{item.title}</Link>
-                : item.title
-              }
-            </li>
-          );
-        })}
-        {children}
-      </ol>
-    </nav>
+      {renderItem()}
+    </li>
   );
 };
+
+
+type BreadcrumbsProps = React.PropsWithChildren<ComponentProps<'nav'> & {
+  /** Whether this component should be unstyled. */
+  unstyled?: undefined | boolean,
+}>;
+
+/**
+ * An ordered set of links forming the path of the current page.
+ */
+export const Breadcrumbs = Object.assign(
+  (props: BreadcrumbsProps) => {
+    const { children, unstyled = false, ...propsRest } = props;
+    
+    return (
+      <nav
+        aria-label="Breadcrumbs"
+        {...propsRest}
+        className={cx(
+          'bk',
+          { [cl['bk-breadcrumbs']]: !unstyled },
+          propsRest.className,
+        )}
+      >
+        <ol>
+          {children}
+        </ol>
+      </nav>
+    );
+  },
+  {
+    Item: BreadcrumbItem,
+  },
+);

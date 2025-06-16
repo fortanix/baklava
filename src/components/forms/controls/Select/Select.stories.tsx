@@ -6,11 +6,34 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { Select } from './Select.tsx';
+import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
+import { Input } from '../Input/Input.tsx';
+
+import { type ItemKey, Select } from './Select.tsx';
 
 
 type SelectArgs = React.ComponentProps<typeof Select>;
 type Story = StoryObj<SelectArgs>;
+
+// Sample options
+const fruits = {
+  apple: 'Apple',
+  apricot: 'Apricot',
+  blueberry: 'Blueberry',
+  cherry: 'Cherry',
+  durian: 'Durian',
+  jackfruit: 'Jackfruit',
+  melon: 'Melon',
+  mango: 'Mango',
+  mangosteen: 'Mangosteen',
+  orange: 'Orange',
+  peach: 'Peach',
+  pineapple: 'Pineapple',
+  razzberry: 'Razzberry',
+  strawberry: 'Strawberry',
+};
+type FruitKey = keyof typeof fruits;
+const formatFruitLabel = (itemKey: ItemKey): string => fruits[itemKey as FruitKey] ?? 'UNKNOWN';
 
 export default {
   component: Select,
@@ -21,24 +44,124 @@ export default {
   argTypes: {
   },
   args: {
+    label: 'Test select',
+    formatItemLabel: formatFruitLabel,
+    options: (
+      <>
+        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
+          <Select.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        )}
+      </>
+    ),
   },
   render: (args) => <Select {...args}/>,
 } satisfies Meta<SelectArgs>;
 
 
-export const Standard: Story = {
-  name: 'Select',
+export const SelectStandard: Story = {};
+
+export const SelectStandardWithDefault: Story = {
   args: {
-    children: (
+    defaultSelected: 'blueberry',
+  },
+};
+
+const CustomInput: React.ComponentProps<typeof Select>['Input'] = props => (
+  <Input {...props} icon="bell" iconLabel="Bell"/>
+);
+export const SelectWithCustomInput: Story = {
+  args: {
+    Input: CustomInput,
+  },
+};
+export const SelectWithCustomInputAndDefault: Story = {
+  args: {
+    Input: CustomInput,
+    defaultSelected: 'blueberry',
+  },
+};
+
+export const SelectInScrollContainer: Story = {
+  decorators: [
+    Story => <div style={{ blockSize: '200vb', paddingBlockStart: '30vb' }}><Story/></div>,
+  ],
+};
+
+export const SelectWithAutoResize: Story = {
+  args: {
+    automaticResize: true,
+    label: 'Test select',
+    defaultSelected: 'long-option',
+    formatItemLabel: (itemKey: ItemKey) => {
+      if (itemKey === 'long-option') {
+        return 'A very long option label to show automatic resizing';
+      } else {
+        return formatFruitLabel(itemKey);
+      }
+    },
+    options: (
       <>
-        <Select.Option optionKey="option-1" label="Option 1"/>
-        <Select.Option optionKey="option-2" label="Option 2"/>
-        <Select.Option optionKey="option-3" label="Option 3"/>
-        <Select.Option optionKey="option-4" label="Option 4"/>
-        <Select.Option optionKey="option-5" label="Option 5"/>
-        <Select.Option optionKey="option-6" label="Option 6"/>
-        <Select.Option optionKey="option-7" label="Option 7"/>
-        <Select.Option optionKey="option-8" label="Option 8"/>
+        <Select.Option key="long-option" itemKey="long-option"
+          label="A very long option label to show automatic resizing"
+        />
+        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
+          <Select.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        )}
+      </>
+    ),
+  },
+};
+
+const SelectControlledC = ({ defaultSelected, ...props }: React.ComponentProps<typeof Select>) => {
+  const [selectedOption, setSelectedOption] = React.useState<null | FruitKey>((defaultSelected as FruitKey) ?? null);
+  
+  return (
+    <>
+      <div>Selected: {selectedOption === null ? '(none)' : formatFruitLabel(selectedOption)}</div>
+      <Select
+        {...props}
+        placeholder="Choose a fruit"
+        options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
+          <Select.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        )}
+        selected={selectedOption}
+        // @ts-ignore FIXME: use generic to pass down `FruitKey` subtype?
+        onSelect={setSelectedOption}
+      />
+    </>
+  );
+};
+export const SelectControlled: Story = {
+  render: args => <SelectControlledC {...args}/>,
+};
+export const SelectControlledWithDefault: Story = {
+  render: args => <SelectControlledC {...args} defaultSelected="blueberry"/>,
+};
+
+export const SelectInForm: Story = {
+  decorators: [
+    Story => (
+      <>
+        <form
+          id="story-form"
+          onSubmit={event => {
+            event.preventDefault();
+            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || 'none'}`);
+          }}
+        />
+        <Story/>
+        <button type="submit" form="story-form">Submit</button>
+      </>
+    ),
+  ],
+  args: {
+    form: 'story-form',
+    name: 'story_component1',
+    options: (
+      <>
+        {Array.from({ length: 8 }, (_, i) => i + 1).map(index =>
+          <Select.Option key={`option-${index}`} itemKey={`option-${index}`} label={`Option ${index}`}/>
+        )}
       </>
     ),
   },

@@ -4,6 +4,33 @@
 
 import * as React from 'react';
 
+import { mergeCallbacks } from '../reactUtil.ts';
+import { notify } from '../../components/overlays/ToastProvider/ToastProvider.tsx';
+import { Link } from '../../components/actions/Link/Link.tsx';
 
-export const DummyLink = (props: React.ComponentProps<'a'>) =>
-  <a href="/" onClick={event => { event.preventDefault(); }} {...props}/>;
+
+const handleClick = (event: React.MouseEvent) => {
+  event.preventDefault();
+};
+const handleClickWithNotify = (event: React.MouseEvent) => {
+  event.preventDefault();
+  if (!event.isPropagationStopped()) {
+    notify.info('Clicked the link');
+  }
+};
+
+type DummyLinkProps = React.ComponentProps<'a'>;
+export const DummyLink = (props: DummyLinkProps) =>
+  <a href="/" {...props} onClick={mergeCallbacks([props.onClick, handleClick])}/>;
+
+type DummyBkLinkProps = React.ComponentProps<typeof Link>;
+export const DummyBkLink = (props: DummyBkLinkProps) =>
+  <Link href="/" {...props} onClick={mergeCallbacks([props.onClick, handleClick])}/>;
+
+type DummyBkLinkWithNotifyProps = React.ComponentProps<typeof Link>;
+export const DummyBkLinkWithNotify = (props: DummyBkLinkWithNotifyProps) =>
+  <Link href="/" {...props} onClick={mergeCallbacks([props.onClick, handleClickWithNotify])}/>;
+
+type DummyBkLinkUnstyledProps = React.ComponentProps<typeof Link>;
+export const DummyBkLinkUnstyled = (props: DummyBkLinkUnstyledProps) =>
+  <Link unstyled href="/" {...props} onClick={mergeCallbacks([props.onClick, handleClickWithNotify])}/>;

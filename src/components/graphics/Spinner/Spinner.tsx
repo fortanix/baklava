@@ -12,15 +12,16 @@ import cl from './Spinner.module.scss';
 export type SpinnerName = keyof typeof icons;
 export { cl as SpinnerClassNames };
 
-export type SpinnerProps = React.PropsWithChildren<ComponentProps<'div'> & {
+export type SpinnerProps = React.PropsWithChildren<ComponentProps<'span'> & {
   /**
-   * If the spinner should be inline. Optional parameter. Defaults to false.
+   * If the spinner should be inline. Optional. Default: false.
    */
   inline?: undefined | boolean,
+  
   /**
-   * The size of spinner. Optional parameter. Can be "small", "medium" or "large". Defaults to "small".
+   * The size of the spinner, either "small", "medium" or "large". Optional. Default: "small".
    */
-  size?: undefined | 'large' | 'medium' | 'small',
+  size?: undefined | 'small' | 'medium' | 'large',
 }>;
 export const Spinner = ({
   inline,
@@ -28,7 +29,7 @@ export const Spinner = ({
   ...props
 }: SpinnerProps) => {
   return (
-    <div
+    <span
       {...props}
       className={cx({
         bk: true,

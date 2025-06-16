@@ -4,7 +4,7 @@
 
 @layer baklava.base {
   .util-overflow-tester {
-    margin-block: var(--bk-sizing-3);
+    margin-block: 1rem;
     
     summary {
       cursor: pointer;

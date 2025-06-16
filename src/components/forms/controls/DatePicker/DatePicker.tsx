@@ -33,9 +33,9 @@ export const DatePicker = (props: DatePickerProps) => {
     placeholderText = 'MM/DD/YYYY',
     ...propsRest
   } = props;
-
+  
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
-
+  
   return (
     <div
       className={cx(
@@ -52,8 +52,8 @@ export const DatePicker = (props: DatePickerProps) => {
         customInput={
           <Input className={cx([cl['bk-date-picker--input']])}/>
         }
-        onCalendarClose={() => setIsOpen(false)}
-        onCalendarOpen={() => setIsOpen(true)}
+        onCalendarClose={() => { setIsOpen(false); }}
+        onCalendarOpen={() => { setIsOpen(true); }}
         {...propsRest}
         selected={props.selected}
         onChange={props.onChange}

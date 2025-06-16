@@ -15,6 +15,10 @@
       flex-direction: column;
       row-gap: bk.$spacing-3;
       
+      > hr {
+        margin-block: 0;
+      }
+      
       .bk-nav__item {
         --bk-nav-item-border-size: #{bk.$spacing-1};
         
@@ -45,6 +49,7 @@
           
           display: flex;
           flex-direction: row;
+          align-items: center;
           gap: bk.$spacing-2;
           
           .bk-nav__item__link__icon { --keep: ; }

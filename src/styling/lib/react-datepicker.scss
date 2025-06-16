@@ -5,7 +5,7 @@
 @use '../defs.scss' as bk;
 
 // Override react-datepicker styles
-// Note: Sass do not support using suffixes (i.e. &__suffix) when using global selector
+
 :global(.react-datepicker-popper) {
   z-index: bk.$z-index-date-picker;
 }

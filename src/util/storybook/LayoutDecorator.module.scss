@@ -6,11 +6,15 @@
   .util-layout-decorator {
     overflow: hidden; // Note: either `hidden` or `scroll` is required for `resize` to work
     
-    inline-size: 80ch;
+    inline-size: -webkit-fill-available;
+    inline-size: stretch; // https://caniuse.com/mdn-css_properties_width_stretch
+    
     padding: var(--bk-focus-outline-width); // Add some spacing so as not to cut off focus outlines
     
-    &.util-layout-decorator--small { inline-size: 60ch; }
-    &.util-layout-decorator--large { inline-size: 100ch; }
+    &.util-layout-decorator--small { max-inline-size: 60ch; }
+    &.util-layout-decorator--medium { max-inline-size: 80ch; }
+    &.util-layout-decorator--large { max-inline-size: 100ch; }
+    &.util-layout-decorator--x-large { max-inline-size: 140ch; }
     
     &.util-layout-decorator--resizable {
       padding-block-end: 10px; // Make space for the resize control in the corner

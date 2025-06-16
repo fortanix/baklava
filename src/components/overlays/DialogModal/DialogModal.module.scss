@@ -152,6 +152,14 @@
     }
     
     
+    // NOTE: added a workaround to fix the following inheritance issues, by using a portal to render modals 
+    // 
+    // The default `auto` inherits from the parent, which we do not want. In the future if `contain: user-select`
+    // becomes supported, we could use that instead.
+    //user-select: text;
+    //cursor: default; // Unset in case parent element has a different `cursor`
+    
+    
     //
     // Display variants
     //

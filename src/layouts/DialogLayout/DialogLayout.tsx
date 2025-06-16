@@ -10,6 +10,7 @@ import { H2 } from '../../typography/Heading/Heading.tsx';
 import { Icon, type IconProps } from '../../components/graphics/Icon/Icon.tsx';
 
 import cl from './DialogLayout.module.scss';
+import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
 
 
 export { cl as DialogLayoutClassNames };
@@ -21,6 +22,20 @@ const DialogLayoutHint = (props: React.ComponentProps<'p'>) => (
 const DialogLayoutIcon = (props: IconProps) => (
   <Icon {...props} className={cl['bk-dialog-layout__content__aside__hint__icon']}/>
 );
+const DialogLayoutLogo = (props: React.ComponentProps<typeof FortanixLogo>) => {
+  const { subtitle, subtitleTrademark, ...propsLogo } = props;
+  return (
+    <div className={cl['bk-dialog-layout__logo']}>
+      <FortanixLogo className={cl['bk-dialog-layout__logo__logo']}/>
+      {subtitle &&
+        <span>
+          {subtitle && <span className={cl['bk-dialog-layout__logo__subtitle']}>{subtitle}</span>}
+          {subtitleTrademark && <span>&trade;</span>}
+        </span>
+      }
+    </div>
+  );
+};
 
 export type DialogLayoutProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. Default: false. */
@@ -53,5 +68,6 @@ export const DialogLayout = Object.assign(
   }, {
     Hint: DialogLayoutHint,
     Icon: DialogLayoutIcon,
+    Logo: DialogLayoutLogo,
   },
 );

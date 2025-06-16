@@ -12,7 +12,7 @@ import * as MultiSearch from './MultiSearch.tsx';
 
 export default {
   component: MultiSearch, 
-  tags: [], //['autodocs'],
+  tags: ['autodocs'],
   parameters: {
     layout: 'centered',
   },
@@ -43,6 +43,20 @@ export const Standard = () => {
         DECRYPT: { label: 'Decrypt' },
         WRAP: { label: 'Wrap' },
         UNWRAP: { label: 'Unwrap' },
+        Test1: { label: 'Test1' },
+        Test2: { label: 'Test2' },
+        Test3: { label: 'Test3' },
+        Test4: { label: 'Test4' },
+        Test5: { label: 'Test5' },
+        Test6: { label: 'Test6' },
+        Test7: { label: 'Test7' },
+        Test8: { label: 'Test8' },
+        Test9: { label: 'Test9' },
+        Test10: { label: 'Test10' },
+        Test11: { label: 'Test11' },
+        Test12: { label: 'Test12' },
+        Test13: { label: 'Test13' },
+        Test14: { label: 'Test14' },
       },
       operatorInfo: {
         '$in': { label: 'one of' },

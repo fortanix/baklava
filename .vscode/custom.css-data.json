@@ -3,7 +3,9 @@
   "version": 1.1,
   "properties": [
     { "name": "interpolate-size" },
-    { "name": "position-try-fallbacks" }
+    { "name": "position-try-fallbacks" },
+    { "name": "reading-flow" },
+    { "name": "reading-order" }
   ],
   "atDirectives": [
     {

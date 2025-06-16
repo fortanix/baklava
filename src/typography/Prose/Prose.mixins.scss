@@ -5,14 +5,17 @@
 @use '../../styling/defs.scss' as bk;
 @use '../../styling/features/typography.scss' as typography;
 
-@mixin prose {
+// Inheritable styles
+@mixin prose-root {
   --bk-prose-line-height: 1.6;
   --bk-body-block-spacing: 0.8lh;
   
   font-family: var(--bk-font-family-body);
   font-weight: 400;
   font-size: 1rem;
-  
+}
+
+@mixin prose {
   line-height: var(--bk-prose-line-height);
   overflow-wrap: break-word; // Prevent long words causing overflow
   text-wrap: pretty; // Favor better typography for text wrapping (e.g. prevent orphans)
@@ -44,49 +47,39 @@
   }
   
   &:is(ul, ol, dl) {
-    --list-indent: 2.5ch;
+    --list-indent: 3ch;
     
     display: block;
-    margin-block-start: var(--bk-body-block-spacing);
+    margin-block-start: calc(var(--bk-body-block-spacing) / 2);
+    padding-inline-start: var(--list-indent); // Make space for `::marker`
     
     > li:not(.bk) {
-      // Increase gap size
-      // https://stackoverflow.com/a/26336092/233884
-      &::before {
-        content: '';
-        padding-inline-start: bk.$spacing-2;
-      }
+      margin-block-start: calc(var(--bk-body-block-spacing) / 4); // Spacing between items
       
       // Nested lists
       > :is(ul, ol, dl):not(.bk) {
-        margin-block-start: calc(var(--bk-body-block-spacing) / 2);
-        margin-inline-start: var(--list-indent);
+        margin-block-start: calc(var(--bk-body-block-spacing) / 3);
       }
     }
   }
   &:is(ul) {
     // Note: do not use list-style: none, this causes accessibility issues:
     // https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists
-    list-style: disc inside;
+    list-style: disc outside;
     
     > li:not(.bk)::marker {
       // Override the marker style so we customize the gap size
       // https://css-tricks.com/everything-you-need-to-know-about-the-gap-after-the-list-marker
-      content: '\2022' ' ';
+      content: '\2022\00A0\00A0';
       margin: 0; // Margin and padding are not supported by `::marker` currently
-    }
-    > li:not(:first-of-type, .bk) { // Note: in the future we could use `margin-trim` instead
-      margin-block-start: calc(var(--bk-body-block-spacing) / 4);
+      font-size: 1.2em;
+      line-height: 1;
     }
   }
   &:is(ol) {
     // Note: do not use list-style: none, this causes accessibility issues:
     // https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists
-    list-style: decimal inside;
-    
-    > li:not(:first-of-type, .bk) {
-      margin-block-start: calc(var(--bk-body-block-spacing) / 4);
-    }
+    list-style: decimal outside;
   }
   
   &:is(hr) {
@@ -241,6 +234,10 @@
   // FIXME: browser support for `@scope` is not quite there yet (but we can't do `@supports at-rule()` yet either)
   // See: https://css-tricks.com/solved-by-css-donuts-scopes
   @scope (.bk-prose) to (.isolate, .bk:not(.bk-prose)) {
+    :scope {
+      @include prose-root;
+    }
+    
     :scope, :scope * {
       //@include bk.component-base(bk-prose);
       @include prose;
@@ -250,6 +247,10 @@
   // Workaround for Firefox, which (as of early 2025) does not support `@scope`. Note: it would be better if we could
   // do this with feature testing, but we cannot yet use `@supports (at-rule())` to check for at-rules like `@scope`.
   @supports (-moz-appearance: none) {
+    .bk-prose {
+      @include prose-root;
+    }
+    
     // Shallow implementation (note: this does not work well, breaks with any nested components.
     //.bk-prose:not(.bk, .bk *) { @include prose; }
     

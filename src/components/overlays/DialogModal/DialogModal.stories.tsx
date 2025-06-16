@@ -10,8 +10,10 @@ import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 import { notify } from '../ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { AccountSelector } from '../../../layouts/AppLayout/Header/AccountSelector.tsx';
+import { TooltipProvider } from '../Tooltip/TooltipProvider.tsx';
 
 import { DialogModal } from './DialogModal.tsx';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
 
 
 type DialogModalArgs = React.ComponentProps<typeof DialogModal>;
@@ -93,6 +95,17 @@ export const DialogModalNested: Story = {
   },
 };
 
+export const DialogModalWithTooltip: Story = {
+  args: {
+    title: 'Modal with a tooltip',
+    children: (
+      <TooltipProvider tooltip="Test">
+        Hover over me
+      </TooltipProvider>
+    ),
+  },
+};
+
 export const DialogModalWithToast: Story = {
   args: {
     title: 'Modal with a submodal',
@@ -117,13 +130,89 @@ export const DialogModalWithToast: Story = {
   },
 };
 
+export const DialogModalFullScreenNested: Story = {
+  args: {
+    title: 'Full-screen modal with a submodal',
+    display: 'full-screen',
+    className: 'outer',
+    children: (
+      <>
+        <Button kind="primary" onPress={() => { notifyTest(); }}>
+          Trigger toast notification
+        </Button>
+        <DialogModal
+          className="inner"
+          title="Submodal"
+          trigger={({ activate }) => <Button kind="primary" label="Open submodal" onPress={activate}/>}
+        >
+          <p>Test rendering toast notifications over the modal:</p>
+          <Button kind="primary" onPress={() => { notifyTest(); }}>
+            Trigger toast notification
+          </Button>
+        </DialogModal>
+      </>
+    ),
+  },
+};
+
+/**
+ * Same as the prior story, but where the modals are immediately unmounted, preventing exit animations as well as
+ * the exit `onToggle` event listener. We need to take care that toast notifications do not break in this case.
+ */
+const DialogModalWithToastUnmountC = (props: React.ComponentProps<typeof DialogModal>) => {
+  const [mounted, setMounted] = React.useState(true);
+  
+  // Simulate a sudden unmount of the entire `DialogModal`
+  if (!mounted) { return null; }
+  
+  return (
+    <DialogModal {...props}>
+      <Button kind="primary" onPress={() => { notifyTest(); }}>
+        Trigger toast notification
+      </Button>
+      <DialogModal
+        className="inner"
+        title="Submodal"
+        trigger={({ activate }) => <Button kind="primary" label="Open submodal" onPress={activate}/>}
+        onClose={() => { setMounted(false); }}
+      >
+        <p>Test rendering toast notifications over the modal:</p>
+        <Button kind="primary" onPress={() => { notifyTest(); }}>
+          Trigger toast notification
+        </Button>
+      </DialogModal>
+    </DialogModal>
+  );
+};
+export const DialogModalWithToastUnmount: Story = {
+  render: args => <DialogModalWithToastUnmountC {...args}/>,
+  args: {
+    title: 'Modal with a submodal',
+    className: 'outer',
+  },
+};
+
 export const DialogModalWithDropdown: Story = {
   args: {
     title: 'Modal with a dropdown',
     children: (
       <>
         <p>The following dropdown menu should overlay the modal (and not be cut off).</p>
-        <AccountSelector/>
+        <AccountSelector
+          className="select-action"
+          accounts={
+            <>
+              {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
+                <AccountSelector.Option key={`acc_${name}`} itemKey={`acc_${name}`} icon="account" label={name}/>
+              )}
+              <AccountSelector.FooterActions>
+                <AccountSelector.Action itemKey="action_add-account" label="Add account" onActivate={() => {}}/>
+              </AccountSelector.FooterActions>
+            </>
+          }
+        >
+          {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label.replace(/^acc_/, '')}
+        </AccountSelector>
       </>
     ),
   },
@@ -143,7 +232,7 @@ export const DialogModalUncloseable: Story = {
 };
 
 const DialogModalControlledWithRef = (props: React.ComponentProps<typeof DialogModal>) => {
-  const ref = DialogModal.useModalRef(null);
+  const ref = DialogModal.useModalRef();
   
   // biome-ignore lint/correctness/useExhaustiveDependencies: want to only trigger this once
   React.useEffect(() => {
@@ -174,8 +263,22 @@ const DialogModalControlledWithSubject = (props: React.ComponentProps<typeof Dia
   return (
     <article className="bk-prose">
       {modal.subject &&
-        <DialogModal {...modal.props} {...props} title={modal.subject.name}>
-          Details about {modal.subject.name} here.
+        <DialogModal {...modal.props} {...props} className="outer" title={modal.subject.name}>
+          <p style={{ marginBottom: 20 }}>Details about {modal.subject.name} here.</p>
+          
+          <DialogModal
+            className="inner"
+            title="Submodal"
+            trigger={({ activate }) => <Button kind="primary" label="Open submodal" onPress={activate}/>}
+          >
+            <p style={{ marginBottom: 20 }}>
+              This is a submodal. Closing the outer modal with a ref should close me as well. Notifications should
+              still be rendered after closing.
+            </p>
+            
+            <Button kind="primary" onPress={() => { notify.info('Some message'); }}>Trigger notification</Button>
+            <Button kind="primary" onPress={() => { modal.deactivate(); }}>Close outer modal</Button>
+          </DialogModal>
         </DialogModal>
       }
       
@@ -200,12 +303,20 @@ const DialogModalControlledConfirmation = (props: React.ComponentProps<typeof Di
     actionLabel: 'Delete',
     onConfirm(subject) { setDeleted(deleted => new Set([...deleted, subject.name])); },
     onCancel(subject) { console.log(`Canceled deleting ${subject.name}`); },
+    confirmActionProps: {
+      icon: 'delete',
+    },
   });
   
   return (
     <article className="bk-prose">
       {deleteConfirmer.subject &&
-        <DialogModal {...deleteConfirmer.props} {...props} title="Confirm Delete">
+        <DialogModal
+          {...deleteConfirmer.props}
+          {...props}
+          title="Confirm Delete"
+          iconAside={<Icon.Event event="warning"/>}
+        >
           Are you sure you want to delete "{deleteConfirmer.subject.name}"?
         </DialogModal>
       }

@@ -8,8 +8,12 @@
 @layer baklava.base {
   :root {
     // Height of the header needs to be known at root level so we can use it for things like `scroll-padding-top`.
-    // Calculate by: content height (spacing-9) + 2 times the block padding (padding-3).
-    --bk-app-layout-header-height: calc(#{bk.$spacing-9} + 2 * #{bk.$spacing-3});
+    --bk-app-layout-header-height: 0;
+    
+    &:has(.bk-app-layout > [slot='header']) {
+      // Calculate by: content height (spacing-9) + 2 times the block padding (padding-3).
+      --bk-app-layout-header-height: calc(#{bk.$spacing-9} + 2 * #{bk.$spacing-3});
+    }
   }
 }
 
@@ -29,10 +33,30 @@
     display: grid;
     // Note: use `minmax(0, 1fr)` to prevent blowout: https://css-tricks.com/preventing-a-grid-blowout
     grid:
-      'header  header' var(--bk-app-layout-header-height)
-      'sidebar content' 1fr
-      'sidebar footer' max-content
-      / var(--bk-app-layout-sidebar-width) minmax(0, 1fr);
+      'content' 1fr
+      'footer' max-content
+      / minmax(0, 1fr);
+    
+    &:has(> [slot='header']) {
+      grid:
+        'header' var(--bk-app-layout-header-height)
+        'content' 1fr
+        'footer' max-content
+        / minmax(0, 1fr);
+    }
+    &:has(> [slot='sidebar']) {
+      grid:
+        'sidebar content' 1fr
+        'sidebar footer' max-content
+        / var(--bk-app-layout-sidebar-width) minmax(0, 1fr);
+    }
+    &:has(> [slot='sidebar'], > [slot='sidebar']) {
+      grid:
+        'header  header' var(--bk-app-layout-header-height)
+        'sidebar content' 1fr
+        'sidebar footer' max-content
+        / var(--bk-app-layout-sidebar-width) minmax(0, 1fr);
+    }
     
     > [slot='header'] { grid-area: header; }
     > [slot='sidebar'] { grid-area: sidebar; }
@@ -47,7 +71,7 @@
       
       position: sticky;
       inset-block-start: 0;
-      z-index: 1; /* Higher than content */
+      z-index: 1; // Higher than content
       
       display: grid;
       grid:
@@ -69,7 +93,9 @@
     
     > [slot='sidebar'] {
       container: bk-app-layout__sidebar / inline-size;
+      z-index: 1; // E.g. in case the content overflows over the sidebar
       
+      padding-block-end: bk.$spacing-8; // Some padding (e.g. for if the sidebar is larger than the viewport height)
       background: bk.$theme-side-nav-background-default;
       
       > aside {
@@ -85,29 +111,30 @@
     
     > [slot='content'] {
       container: bk-app-layout__content / inline-size;
-      padding: var(--bk-sizing-4);
+      padding: bk.$spacing-5;
     }
     
     > [slot='footer'] {
       container: bk-app-layout__footer / inline-size;
       
-      // overflow: clip;
-      padding: var(--bk-sizing-2) var(--bk-sizing-4);
+      padding: bk.$spacing-4 bk.$spacing-5;
       
       display: flex;
       font-size: 0.8rem;
     }
     
-    @container (width <= 768px) { /* Tablet size */
+    @container (inline-size <= 768px) { // Tablet size
+      --bk-app-layout-sidebar-width: 3.15rem;
+      /*
       grid:
-        'header' max-content
+        'header' var(--bk-app-layout-header-height)
         'sidebar' max-content
         'content' 1fr
         'footer' max-content
         / 1fr;
+        */
     }
     
-    //&:has([slot='sidebar']:hover) { --bk-app-layout-sidebar-width: 80px; } // TEST
     @media (prefers-reduced-motion: no-preference) {
       transition: grid 300ms;
     }

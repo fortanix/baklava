@@ -8,39 +8,36 @@
   .bk-breadcrumbs {
     @include bk.component-base(bk-breadcrumbs);
     
-    .bk-breadcrumb {
-      display: flex;
-      flex-wrap: wrap;
-      gap: bk.$spacing-1;
-    }
+    @include bk.font(bk.$font-family-display, bk.$font-weight-regular, bk.$font-size-s);
     
-    .bk-breadcrumb-item {
-      @include bk.font(bk.$font-family-display, bk.$font-weight-regular, bk.$font-size-s);
-      color: bk.$theme-breadcrumb-text-default;
+    > ol {
+      @include bk.flex-row;
+      flex-wrap: wrap;
+      column-gap: bk.$spacing-1;
       
-      &:last-child:not(.bk-breadcrumb-item--with-trailing-slash) {
-        &::after {
-          content: '';
-          margin-inline-start: 0;
+      .bk-breadcrumb__item {
+        color: bk.$theme-breadcrumb-text-default;
+        
+        &:not(:nth-last-child(1 of .bk-breadcrumb__item)) {
+          .bk-breadcrumb__item__link::after {
+            content: '/' / '';
+            margin-inline-start: bk.$spacing-1;
+          }
         }
-      }
-      
-      &::after {
-        content: '/';
-        font-size: bk.$font-size-s;
-        margin-inline-start: bk.$spacing-1;
-      }
-      
-      .bk-breadcrumb-link {
-        font-size: bk.$font-size-s;
-        text-decoration: none;
-        color: bk.$theme-breadcrumb-text-link;
-      }
-      
-      @include bk.focus-outset;
-      :is(.bk-breadcrumb-link:focus-visible, :global(.pseudo-focus-visible) .bk-breadcrumb-link) {
-        --bk-focus-outline-color: #{bk.$theme-breadcrumb-border-focus};
-        border-radius: bk.$radius-1;
+        
+        .bk-breadcrumb__item__link {
+          text-decoration: none;
+          color: bk.$theme-breadcrumb-text-link;
+          
+          &:hover {
+            color: bk.$theme-text-link-hover; // FIXME: separate token for breadcrumb?
+          }
+          
+          &.bk-breadcrumb__item__link--disabled {
+            cursor: not-allowed;
+            color: bk.$theme-text-label-disabled;
+          }
+        }
       }
     }
   }

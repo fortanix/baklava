@@ -47,11 +47,13 @@ export const Link = (props: LinkProps) => {
       rel={rel}
       href={href}
       {...propsRest}
-      className={cx({
-        bk: true,
-        [cl['bk-link']]: !unstyled,
-        [cl['bk-link--small']]: size === 'small',
-      }, props.className)}
+      className={cx(
+        'bk',
+        cl['bk-link'],
+        { [cl['bk-link--unstyled']]: unstyled },
+        { [cl['bk-link--small']]: size === 'small' },
+        props.className,
+      )}
     >
       {children ?? label}
     </a>

@@ -20,10 +20,23 @@ export default {
   },
   argTypes: {},
   args: {
-    children: 'Example',
+    title: 'System Administration',
   },
   render: (args) => <SysadminSwitcher {...args}/>,
 } satisfies Meta<SysadminSwitcherArgs>;
 
 
 export const SysadminSwitcherStandard: Story = {};
+
+export const SysadminSwitcherWithSubtitle: Story = {
+  args: {
+    subtitle: 'Some subtitle',
+  },
+};
+
+export const SysadminSwitcherWithIcon: Story = {
+  args: {
+    icon: 'account',
+    subtitle: 'Some subtitle',
+  },
+};

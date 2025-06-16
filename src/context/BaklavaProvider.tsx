@@ -8,6 +8,7 @@ import { TopLayerManager } from '../components/util/overlays/TopLayerManager.tsx
 import { ToastProvider, notify } from '../components/overlays/ToastProvider/ToastProvider.tsx';
 
 
+/*
 // Debug utility for toast notifications
 let addedTestNotify = false;
 if (!addedTestNotify && import.meta.env.MODE === 'development') {
@@ -24,6 +25,7 @@ if (!addedTestNotify && import.meta.env.MODE === 'development') {
   });
   addedTestNotify = true;
 }
+*/
 
 export const BaklavaProvider = (props: React.PropsWithChildren) => {
   return (

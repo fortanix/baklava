@@ -3,8 +3,9 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { mergeRefs, useEffectOnce } from '../../../../util/reactUtil.ts';
+import { mergeRefs, useEffectOnce, usePrevious } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
+import { isItemProgrammaticallyFocusable } from '../../../util/composition/compositionUtil.ts';
 
 import { Button } from '../../../actions/Button/Button.tsx';
 
@@ -20,14 +21,6 @@ References:
 */
 
 export { cl as SegmentedControlClassNames };
-
-
-// Check whether the given element is programmatically focusable. Note that we're not checking `tabindex` here, since
-// we want to know whether something is *programmatically* focusable, not necessarily user focusable. Also, we're not
-// doing any element type checks here, we asume that the given element is of some interactive type.
-const isElementFocusable = (element: HTMLElement): boolean => {
-  return element.matches(':not(:disabled, [hidden])');
-};
 
 
 export type ButtonKey = string;
@@ -110,7 +103,7 @@ export type SegmentedControlProps = ComponentProps<'div'> & {
   /** Event handler for segmented control button change events. */
   onUpdate?: undefined | ((buttonKey: ButtonKey) => void),
   
-  /** Whether segmented control is disabled or not. */
+  /** Whether the segmented control is disabled or not. Default: false. */
   disabled?: undefined | boolean,
   
   /** Any additional props to apply to the internal `<input type="hidden"/>`. */
@@ -140,17 +133,12 @@ export const SegmentedControl = Object.assign(
     const buttonDefsRef = React.useRef<Map<ButtonKey, ButtonDef>>(new Map());
     const [selectedButton, setSelectedButton] = React.useState<undefined | ButtonKey>(selected ?? defaultSelected);
     
-    const selectButton = React.useCallback((buttonKey: ButtonKey) => {
-      setSelectedButton(selectedButton => {
-        if (buttonKey !== selectedButton) {
-          onUpdate?.(buttonKey);
-          buttonDefsRef.current.get(buttonKey)?.buttonRef.current?.focus();
-          return buttonKey;
-        } else {
-          return selectedButton;
-        }
-      });
-    }, [onUpdate]);
+    // Sync `selected` prop to internal state
+    React.useEffect(() => {
+      if (typeof selected !== 'undefined') {
+        setSelectedButton(selected);
+      }
+    }, [selected]);
     
     const register = React.useCallback((buttonDef: ButtonDef) => {
       const buttonDefs = buttonDefsRef.current;
@@ -165,6 +153,30 @@ export const SegmentedControl = Object.assign(
       };
     }, []);
     
+    const selectButton = React.useCallback((buttonKey: ButtonKey) => {
+      setSelectedButton(selectedButton => {
+        if (buttonKey !== selectedButton) {
+          buttonDefsRef.current.get(buttonKey)?.buttonRef.current?.focus();
+          return buttonKey;
+        } else {
+          return selectedButton;
+        }
+      });
+    }, []);
+    
+    const selectedButtonPrev = usePrevious(selectedButton);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Do not include event callbacks as dep.
+    React.useEffect(() => {
+      // Note: selected state should be updated to `undefined`, the `undefined` case should only be possible as an
+      // initial state. Subsequent updates should always be some value. Just like how native HTML radio groups work.
+      const isDefined = typeof selectedButton !== 'undefined';
+      const isInitial = selectedButtonPrev === null; // `null` should only ever mean "not yet set"
+      
+      if (isDefined && !isInitial) {
+        onUpdate?.(selectedButton);
+      }
+    }, [selectedButton]);
+    
     // After initial rendering, check whether `defaultSelected` refers to one of the rendered buttons
     useEffectOnce(() => {
       if (typeof defaultSelected === 'undefined') { return; }
@@ -172,7 +184,7 @@ export const SegmentedControl = Object.assign(
       const buttonDef: undefined | ButtonDef = buttonDefsRef.current.get(defaultSelected);
       if (typeof buttonDef === 'undefined' || buttonDef.buttonRef.current === null) {
         console.error(`Unable to find a button matching the specified defaultSelected: ${defaultSelected}`);
-      } else if (!disabled && !isElementFocusable(buttonDef.buttonRef.current)) {
+      } else if (!disabled && !isItemProgrammaticallyFocusable(buttonDef.buttonRef.current)) {
         console.error(`Default button is not focusable: ${defaultSelected}`);
       }
     });
@@ -191,7 +203,7 @@ export const SegmentedControl = Object.assign(
       // Get the list of button keys, ideally in the order that they are displayed to the user.
       // Filter only the buttons that are (programmatically) focusable.
       const buttonKeys: Array<ButtonKey> = [...buttonDefsRef.current.entries()]
-        .filter(([_, { buttonRef }]) => buttonRef.current && isElementFocusable(buttonRef.current))
+        .filter(([_, { buttonRef }]) => buttonRef.current && isItemProgrammaticallyFocusable(buttonRef.current))
         .map(([buttonKey]) => buttonKey);
       
       const buttonIndex: number = buttonKeys.indexOf(selectedButton);

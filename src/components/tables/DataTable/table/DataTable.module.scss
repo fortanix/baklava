@@ -24,14 +24,21 @@
       }
       
       td {
+        overflow: hidden;
         padding: bk.$spacing-5 bk.$spacing-2;
-        vertical-align: middle;
-        white-space: nowrap; // Prevent wrapping by default, can override this on case-by-case basis
-        overflow: hidden; // Hide overflow by default; may need to override this for things like local dropdown menus
         
-        // *If* `white-space: wrap` is enabled, then allow wrapping mid-word if necessary, to prevent overflow caused
-        // by a long word without spaces/hyphens/etc.
-        overflow-wrap: anywhere;
+        // Note: need a wrapper div for this because setting a different `display` on a `<td>` will break the table
+        .bk-data-table__text-cell {
+          // The following are needed for `<TextLine>` to work
+          overflow: hidden;
+          display: flex;
+          
+          padding: 1px; // Add a 1px padding, as a workaround for browser rounding issues (see also #358 on GitHub)
+          
+          > * {
+            min-inline-size: 0;
+          }
+        }
       }
       
       thead {
@@ -84,11 +91,6 @@
           &:hover,
           &.selected {
             background-color: bk.$theme-table-background-hover;
-            
-            // Item cell
-            > td {
-              font-size: bk.$font-size-m;
-            }
           }
         }
       }

@@ -44,6 +44,11 @@
       }
     }
     
+    &:has(> .bk-input__input:disabled) {
+      --bk-input-accent-color: #{bk.$theme-form-text-disabled};
+      color: #{bk.$theme-form-text-disabled};
+    }
+    
     &.bk-input--automatic-resize {
       > .bk-input__input {
         field-sizing: content;

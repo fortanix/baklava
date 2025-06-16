@@ -13,7 +13,6 @@ import dts from 'vite-plugin-dts';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import react from '@vitejs/plugin-react';
-import { patchCssModules } from 'vite-css-modules';
 
 
 export default defineConfig({
@@ -21,7 +20,6 @@ export default defineConfig({
   base: './', // Assets base URL
   
   assetsInclude: ['**/*.md'], // Add `.md` as static asset type
-  
   
   resolve: {
     alias: {
@@ -33,9 +31,6 @@ export default defineConfig({
   plugins: [
     react(),
     
-    // Experimental new approach to compiling CSS modules
-    patchCssModules(), // https://www.npmjs.com/package/vite-css-modules
-    
     // Handle SVG sprite icons
     createSvgIconsPlugin({
       iconDirs: [path.resolve(__dirname, 'src/assets/icons')],
@@ -43,7 +38,7 @@ export default defineConfig({
       inject: 'body-last',
       customDomId: 'baklava-icon-sprite',
     }),
-    libInjectCss(),
+    //libInjectCss(), // Disabled for now (`.css` import causes issues in vitest)
     
     // Generate `.d.ts` files
     dts({
@@ -60,13 +55,6 @@ export default defineConfig({
   ],
   
   css: {
-    // Configure CSS modules
-    modules: {
-      // https://github.com/madyankin/postcss-modules?tab=readme-ov-file#generating-scoped-names
-      generateScopedName: '[local]_[hash:base64:5]',
-      //localsConvention: 'camelCase',
-    },
-    
     // Configure preprocessing using Sass
     preprocessorOptions: {
       scss: {
@@ -83,7 +71,7 @@ export default defineConfig({
       )),
       exclude: LightningCssFeatures.LightDark, // Do not include the `light-dark()` polyfill (it's too buggy)
       cssModules: {
-        // @ts-expect-error This is fixed in vite v6, remove this line once we upgrade.
+        //pattern: '[hash]_[local]',
         grid: false, // Workaround for https://github.com/parcel-bundler/lightningcss/issues/762
       },
     },

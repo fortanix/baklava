@@ -6,7 +6,9 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { SegmentedControl } from './SegmentedControl.tsx';
+import { Button } from '../../../actions/Button/Button.tsx';
+
+import { type ButtonKey, SegmentedControl } from './SegmentedControl.tsx';
 
 
 type SegmentedControlArgs = React.ComponentProps<typeof SegmentedControl>;
@@ -22,6 +24,7 @@ export default {
   },
   args: {
     'aria-label': 'Choose a color',
+    onUpdate: selected => { console.log('update', selected); },
     defaultSelected: 'red',
     children: (
       <>
@@ -97,6 +100,45 @@ export const SegmentedControlDisabledOne: Story = {
       <>
         <SegmentedControl.Button buttonKey="red" label="Red"/>
         <SegmentedControl.Button buttonKey="green" label="Green" disabled/>
+        <SegmentedControl.Button buttonKey="blue" label="Blue"/>
+      </>
+    ),
+  },
+};
+
+type SegmentedControlControlledProps = Omit<React.ComponentProps<typeof SegmentedControl>, 'selected'>;
+const SegmentedControlControlledC = (props: SegmentedControlControlledProps) => {
+  const [selectedButton, setSelectedButton] = React.useState<undefined | ButtonKey>(props.defaultSelected ?? undefined);
+  
+  return (
+    <>
+      <p>Selected color: {selectedButton ?? <em>none</em>}</p>
+      <SegmentedControl {...props} selected={selectedButton} onUpdate={setSelectedButton}/>
+      <Button label="Update state" onPress={() => { setSelectedButton('blue'); }}/>
+    </>
+  );
+};
+
+export const SegmentedControlControlled: Story = {
+  render: args => <SegmentedControlControlledC {...args}/>,
+  args: {
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="red" label="Red"/>
+        <SegmentedControl.Button buttonKey="green" label="Green"/>
+        <SegmentedControl.Button buttonKey="blue" label="Blue"/>
+      </>
+    ),
+  },
+};
+
+export const SegmentedControlControlledWithDefault: Story = {
+  render: args => <SegmentedControlControlledC {...args} defaultSelected="green"/>,
+  args: {
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="red" label="Red"/>
+        <SegmentedControl.Button buttonKey="green" label="Green"/>
         <SegmentedControl.Button buttonKey="blue" label="Blue"/>
       </>
     ),

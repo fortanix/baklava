@@ -5,37 +5,42 @@
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import * as React from 'react';
 
-import { useFormContext } from '../../context/Form/Form.tsx';
-import { Input } from '../../controls/Input/Input.tsx';
-import { TooltipProvider } from '../../../overlays/Tooltip/TooltipProvider.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
+import { TooltipProvider } from '../../../overlays/Tooltip/TooltipProvider.tsx';
+import { useFormContext } from '../../context/Form/Form.tsx';
+import { Input as InputDefault } from '../../controls/Input/Input.tsx';
 
 import cl from './InputField.module.scss';
 
 
 export { cl as InputFieldClassNames };
 
-export type InputFieldProps = Omit<ComponentProps<'input'>, 'value'> & {
+type InputFieldInputProps = Omit<React.ComponentProps<typeof InputDefault>, 'ref'>;
+
+export type InputFieldProps = InputFieldInputProps & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-
+  
   /** Label for the input. */
   label?: undefined | React.ReactNode,
-
+  
   /** Props for the `<label>` element, if `label` is defined. */
   labelProps?: undefined | ComponentProps<'label'>,
-
+  
   /** An optional tooltip to be displayed on an info icon next to the label. */
   labelTooltip?: undefined | string,
-
+  
   /** Whether to display the optional observation on the label. */
   labelOptional?: undefined | boolean,
-
+  
   /** Additional optional supporting text to be displayed under the input. */
   description?: undefined | string,
-
-  /** Props for the wrapper element. */
-  wrapperProps?: undefined | ComponentProps<'div'>,
+  
+  /** Props for the container element. */
+  containerProps?: undefined | ComponentProps<'div'>,
+  
+  /** A custom `Input` element. */
+  Input?: undefined | React.ComponentType<InputFieldInputProps>,
 };
 /**
  * Input field.
@@ -48,26 +53,27 @@ export const InputField = (props: InputFieldProps) => {
     labelOptional,
     labelProps = {},
     description,
-    wrapperProps = {},
+    containerProps = {},
+    Input = InputDefault,
     ...inputProps
   } = props;
-
-  const controlId = React.useId();
+  
+  const controlId = `input-field-${React.useId()}`;
   const formContext = useFormContext();
-
+  
   return (
     <div
-      {...wrapperProps}
+      {...containerProps}
       className={cx(
         'bk',
         { [cl['bk-input-field']]: !unstyled },
-        wrapperProps.className,
+        containerProps.className,
       )}
     >
       {label &&
         <label
-          htmlFor={controlId}
           {...labelProps}
+          htmlFor={controlId}
           className={cx(cl['bk-input-field__label'], labelProps.className)}
         >
           {label}
@@ -82,9 +88,12 @@ export const InputField = (props: InputFieldProps) => {
         </label>
       }
       <Input
-        {...inputProps}
-        id={controlId}
         form={formContext.formId}
+        {...inputProps}
+        inputProps={{
+          ...inputProps.inputProps,
+          id: controlId,
+        }}
         className={cx(cl['bk-input-field__control'], inputProps.className)}
       />
       {description &&
