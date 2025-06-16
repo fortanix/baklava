@@ -49,6 +49,11 @@ type WalkThroughProps = {
   renderProps?: (step: Step) => React.ReactNode,
 };
 
+// Tooltip constants
+const arrowSize = 12;
+const tooltipWidth = 360;
+const tooltipHeight = 200;
+
 // Wait for element to scroll into view and become visible
 const waitForScrollIntoView = (element: HTMLElement, scrollableParent?:HTMLElement): Promise<DOMRect> => {
   return new Promise((resolve) => {
@@ -321,33 +326,33 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
 
   // Tooltip position based on the tooltip placement whether it is going out of the viewport or not
   const tooltipPlacement: Placement = useMemo(()=>{
-    if(!currentStep || !rect) return "right"
-    let newAnchor = currentStep?.placement;
-    const tooltipWidth = 380;
-    const screenWidth = window.innerWidth - tooltipWidth;
-  
-    if(newAnchor === 'left' && rect.left > screenWidth){
-      newAnchor = 'right';
-    } else if(newAnchor === 'right' && rect.left < 380) {
-      newAnchor = 'left';
-    } else if(newAnchor === 'bottom' && rect.top < 200) {
-      newAnchor = 'top';
-    } else if(newAnchor === 'top' && rect.top > (window.innerHeight - 200)) {
-      newAnchor = 'bottom';
+    if(!currentStep || !rect) return "right";
+    let placement = currentStep?.placement;
+    const tooltipWidthWithPadding = tooltipWidth + arrowSize + spotlightPadding;
+    const screenWidth = window.innerWidth - tooltipWidthWithPadding;
+    
+    if(placement === 'left' || placement === 'right'){
+      if(placement === 'right' && rect.left < tooltipWidthWithPadding){
+        placement = "top";
+      }else if((rect.left + rect.width) > screenWidth){
+        placement = "top"
+      }
+    }else if(placement === 'bottom' && rect.top < tooltipHeight) {
+      placement = 'top';
+    } else if(rect.top > (window.innerHeight - tooltipHeight)) {
+      placement = 'bottom';
     }  
     
-    return newAnchor;
-  },[currentStep, rect])
+    return placement;
+  },[currentStep, rect, spotlightPadding])
 
   // Tooltip position calculation based on anchor origin
   const getTooltipPosition = useCallback((rect: DOMRect, pad: number): React.CSSProperties => {
     let position: React.CSSProperties = {};
-    const arrowSize = 12;
-    console.log(rect)
     // Tooltip placement
     switch (tooltipPlacement) {
       case 'right':
-        position.left = rect.left - arrowSize - pad;
+        position.left = rect.left - arrowSize - pad;  
         position.transform = 'translateX(-100%)'; 
         position = getTooltipVerticalPlacement(rect, position);
         break;
@@ -357,7 +362,7 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
         position = getTooltipVerticalPlacement(rect, position);
         break;
       case 'bottom':
-        position.top = rect.top - pad - arrowSize - 200;
+        position.top = rect.top - pad - arrowSize - tooltipHeight;
         position = getTooltipHorizontalPlacement(rect, position);
         
         break;  
@@ -373,7 +378,6 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
     }
     return position;
   }, [tooltipPlacement]);
-  
   
   if (!isRun) return null;
   
@@ -446,4 +450,4 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
   );
 };
 
-export { WalkThrough, type Step, type CallbackProps };
+export { WalkThrough, type Step, type CallbackProps, type WalkThroughProps };

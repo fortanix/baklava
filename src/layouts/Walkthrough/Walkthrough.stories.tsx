@@ -5,16 +5,15 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { DummyLink } from '../../util/storybook/StorybookLink.tsx';
+import { DummyBkLinkUnstyled, DummyBkLinkWithNotify, DummyLink } from '../../util/storybook/StorybookLink.tsx';
 
 import { notify } from '../../components/overlays/ToastProvider/ToastProvider.tsx';
 import { OverflowTester } from '../../util/storybook/OverflowTester.tsx';
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
 import { DialogModal } from '../../components/overlays/DialogModal/DialogModal.tsx';
-import { Step, WalkThrough } from './Walkthrough.tsx';
+import { Step, WalkThrough, WalkThroughProps } from './Walkthrough.tsx';
 import { AppLayout } from '../AppLayout/AppLayout';
-import { Logo } from '../AppLayout/Logo/Logo';
 import { Header } from '../AppLayout/Header/Header';
 import { UserMenu } from '../AppLayout/Header/UserMenu';
 import { SysadminSwitcher } from '../AppLayout/Header/SysadminSwitcher';
@@ -25,163 +24,283 @@ import { Nav } from '../AppLayout/Nav/Nav';
 import { Breadcrumbs } from '../AppLayout/Breadcrumbs/Breadcrumbs';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Banner } from '../../../dist/baklava';
+import { LoremIpsum } from '../../util/storybook/LoremIpsum.tsx';
+import { Select } from '../../components/forms/controls/Select/Select.tsx';
+import { Tag } from '../../components/text/Tag/Tag.tsx';
+import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
+import { Spinner } from '../../components/graphics/Spinner/Spinner.tsx';
+
 
 const WALKTHROUGH_STEPS: Step[] = [
   {
-    target: '.nav-item-overview',
-    title: "Your Post Quantum Readiness",
-    description: "See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services.",
+    target: '.walkthrough-item-1',
+    title: "Step 1",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     spotlightPadding: 20,
     disableScrolling: true,
-    placement:"left",
+    placement:"right",
   },
   {
-    target: '.nav-item-authentication',
-    title: "PQC Readiness at Different Levels",
-    description: "Toggle between an organization-wide view or focus on an individual connection for deeper insights. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. See your PQC readiness score and vulnerabilities across all connections, keys, and services. ",
+    target: '.walkthrough-item-2',
+    title: "Step 2",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     spotlightPadding: 20,
     disableScrolling: true,
     disableWait: true,
     placement:"left",
   },
   {
-    target: '.open-modal-btn',
-    title: "Identify Vulnerable Keys and Services",
-    description: "Interactive visualization to trace vulnerabilities to their root causes, identifying specific keys, services, or resources requiring attention.",
+    target: '.walkthrough-item-3',
+    title: "Step 3",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     spotlightPadding: 20,
     disableScrolling: false,
     placement:"left",
   },
   {
-    target: '.profile-section',
-    title: "All Critical Insights at a Glance",
-    description: "Find all the critical details like Account/Subscription, Regions, Service Types, and Key Types for deeper analysis.",
+    target: '.walkthrough-item-4',
+    title: "Step 4",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     spotlightPadding: 20,
     disableScrolling: false,
     placement:"left",
   },
 ];
 
-type AppLayoutArgs = React.ComponentProps<typeof AppLayout>;
-type Story = StoryObj<AppLayoutArgs>;
+
+
+type WalkThroughStoryProps = {
+  children: React.ReactNode;
+} & WalkThroughProps;
+
+const WalkthroughStory = ({children, ...props}: WalkThroughStoryProps) => {
+  return (
+    <ErrorBoundary
+    FallbackComponent={({ error, resetErrorBoundary }) =>
+      <Banner variant="error" style={{ inlineSize: '60cqi' }}
+        title="Error"
+        actions={<Banner.ActionButton label="Reset" onPress={resetErrorBoundary}/>}
+      >
+        {error?.message}
+      </Banner>
+    }
+  >
+    <WalkThrough {...props} run={true} callback={()=>{}} />
+    {children}
+  </ErrorBoundary>
+  );
+}
+
+type WalkthroughStoryArgs = React.ComponentProps<typeof WalkthroughStory>;
+type Story = StoryObj<WalkthroughStoryArgs>;
 
 export default {
-  component: AppLayout,
+  component: WalkthroughStory,
   parameters: {
     layout: 'fullscreen',
   },
-  tags: ['autodocs'],
   argTypes: {
   },
- decorators: [
-    Story => (
-      <ErrorBoundary
-        FallbackComponent={({ error, resetErrorBoundary }) =>
-          <Banner variant="error" style={{ inlineSize: '60cqi' }}
-            title="Error"
-            actions={<Banner.ActionButton label="Reset" onPress={resetErrorBoundary}/>}
-          >
-            {error?.message}
-          </Banner>
+ render: 
+    (args) => <WalkthroughStory {...args} />,
+} satisfies Meta<WalkthroughStoryArgs>;
+
+
+const header1 = (
+  <AppLayout.Header>
+    <DummyBkLinkUnstyled slot="logo">
+      <FortanixLogo subtitle="Armor"/>
+    </DummyBkLinkUnstyled>
+    <Header slot="actions">
+      <UserMenu userName="Anand Kashyap" className="walkthrough-item-4">
+        <UserMenu.Action itemKey="profile" label="Profile"
+          onActivate={() => { notify.info(`Opening user profile.`); }}
+        />
+        <UserMenu.Action itemKey="sign-out" label="Sign out"
+          onActivate={() => { notify.info(`Signing out.`); }}
+        />
+      </UserMenu>
+      <SysadminSwitcher
+        onPress={() => { notify.info(`Navigating to system administration panel.`); }}
+      />
+      <AccountSelector
+        className="select-action"
+        accounts={
+          <>
+            {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
+              <AccountSelector.Option key={`acc_${name}`} itemKey={`acc_${name}`} icon="account" label={name}/>
+            )}
+            <AccountSelector.FooterActions>
+              <AccountSelector.Action itemKey="action_add-account" label="Add account"
+                onActivate={() => { notify.info(`Navigating to 'Add Account' page.`);  }}
+              />
+            </AccountSelector.FooterActions>
+          </>
         }
       >
-              <WalkThrough stepIndex={0} steps={WALKTHROUGH_STEPS} run={true} callback={()=>{}} />
-              <Story />
-      </ErrorBoundary>
-    ),
-  ],
-} satisfies Meta<AppLayoutArgs>;
+        {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label}
+      </AccountSelector>
+      <SolutionSelector className="select-action"
+        solutions={
+          ['Identity & Access Management', 'Key Insight', 'Armor'].map(name =>
+            <SolutionSelector.Option key={name} itemKey={name} icon="user" label={name}
+              onSelect={() => { notify.info(`Selected ${name}`); }}
+            />
+          )
+        }
+      />
+    </Header>
+  </AppLayout.Header>
+);
 
+const sidebar1 = (
+  <AppLayout.Sidebar>
+    <Sidebar className="bk-app-layout__sidebar">
+      <Nav aria-label="Overview and assessment" /* If there are multiple `Nav`s, they must get unique labels */>
+        <Nav.NavItem Link={DummyBkLinkUnstyled} className="walkthrough-item-1" active icon="dashboard" label="Overview" href="/dashboard"/>
+        <Nav.NavItem Link={DummyBkLinkUnstyled} icon="badge-assessment" label="Assessment" href="/assessment"/>
+        <Nav.NavItem Link={DummyBkLinkUnstyled} icon="services" label="Services" href="/services" disabled/>
+        <Nav.NavItem Link={DummyBkLinkUnstyled} icon="dashboard" label="Activities" href="/activities"
+          indicators={<Tag content="NEW"/>}
+        />
+      </Nav>
+      <hr/>
+      <Nav aria-label="Connections and policies">
+        <Nav.NavItem Link={DummyBkLinkUnstyled} className="walkthrough-item-2" icon="cloud-accounts" label="Connections" href="/connections"/>
+        <Nav.NavItem Link={DummyBkLinkUnstyled} icon="policy" label="Policy Center" href="/policy-center"/>
+        <Nav.NavItem Link={DummyBkLinkUnstyled} icon="user-authentication" label="Authentication" href="/authentication"/>
+      </Nav>
+      <OverflowTester lines={45}/>
+    </Sidebar>
+  </AppLayout.Sidebar>
+);
+
+const content1 = (
+  <AppLayout.Content>
+    <Breadcrumbs>
+      <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Fortanix Armor"/>
+      <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Dashboard" active/>
+    </Breadcrumbs>
+    <Panel>
+      <Panel.Heading>Panel</Panel.Heading>
+      
+      <DialogModal
+        title="Modal"
+        trigger={({ activate }) => <Button kind="primary" className="walkthrough-item-3" label="Open modal" onPress={() => { activate(); }}/>}
+      >
+        Test modal
+      </DialogModal>
+      
+      <Select
+        label="Test select"
+        placeholder="Test select"
+        options={
+          <>
+            <Select.Option itemKey="option-1" label="Option 1">Option 1</Select.Option>
+            <Select.Option itemKey="option-2" label="Option 2">Option 2</Select.Option>
+            <Select.Option itemKey="option-3" label="Option 3">Option 3</Select.Option>
+          </>
+        }
+      />
+    </Panel>
+    
+    {/* Clicking the link should scroll to the anchor, with enough top padding (`scroll-padding-top`) */}
+    <DummyBkLinkUnstyled id="anchor">Anchor</DummyBkLinkUnstyled>
+    <OverflowTester openDefault/>
+    <a href="#anchor">Scroll to anchor</a>
+  </AppLayout.Content>
+);
+
+const footer1 = (
+  <AppLayout.Footer>
+    <span className="version">Version: 1.2.2343</span>
+  </AppLayout.Footer>
+);
 
 
 export const Basic: Story = {
   args: {
+    stepIndex: 0,
+    steps: WALKTHROUGH_STEPS,
     children: (
-      <>
-        <AppLayout.Header>
-          <DummyLink slot="logo">
-            <Logo subtitle="Data Security Manager" subtitleTrademark={true}/>
-          </DummyLink>
-          <Header slot="actions">
-            <UserMenu className="profile-section" userName="Anand Kashyap">
-              <UserMenu.Action itemKey="profile" label="Profile"
-                onActivate={() => { notify.info(`Opening user profile.`); }}
-              />
-              <UserMenu.Action itemKey="sign-out" label="Sign out"
-                onActivate={() => { notify.info(`Signing out.`); }}
-              />
-            </UserMenu>
-            <SysadminSwitcher
-              onPress={() => { notify.info(`Navigating to system administration panel.`); }}
-            />
-            <AccountSelector className="select-action">
-              {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
-                <AccountSelector.Option key={`account_${name}`} optionKey={`account_${name}`} icon="account"
-                  label={name}
-                  onSelect={() => { notify.info(`Selected ${name}`); }}
-                />
-              )}
-              {/* TODO: make this sticky so it's visible even if there are a lot of accounts? */}
-              <AccountSelector.Option key="action_add-account" optionKey="action_add-account" label="Add account"/>
-            </AccountSelector>
-            <SolutionSelector className="select-action">
-              {['Identity & Access Management', 'Key Insight', 'Data Security Manager'].map(name =>
-                <SolutionSelector.Option key={name} optionKey={name} icon="user" label={name}
-                  onSelect={() => { notify.info(`Selected ${name}`); }}
-                />
-              )}
-            </SolutionSelector>
-          </Header>
-        </AppLayout.Header>
-        <AppLayout.Sidebar>
-          <Sidebar className="bk-app-layout__sidebar">
-            <Nav aria-label="Overview and assessment" /* If there are multiple `Nav`s, they must get unique labels */>
-              <Nav.NavItem className="nav-item-overview" Link={DummyLink} active icon="dashboard" label="Overview" href="/dashboard"/>
-              <Nav.NavItem Link={DummyLink} icon="badge-assessment" label="Assessment" href="/assessment"/>
-              <Nav.NavItem Link={DummyLink} icon="services" label="Services" href="/services" disabled/>
-            </Nav>
-            <hr/>
-            <Nav aria-label="Connections and policies">
-              <Nav.NavItem Link={DummyLink} icon="cloud-accounts" label="Connections" href="/connections"/>
-              <Nav.NavItem Link={DummyLink} icon="policy" label="Policy Center" href="/policy-center"/>
-              <Nav.NavItem className="nav-item-authentication" Link={DummyLink} icon="user-authentication" label="Authentication" href="/authentication"/>
-            </Nav>
-            <OverflowTester lines={45}/>
-          </Sidebar>
-        </AppLayout.Sidebar>
-        <AppLayout.Content>
-          <Breadcrumbs
-            items={[
-              {
-                title: 'Data Security Manager',
-                href: '#',
-              },
-              {
-                title: 'Dashboard',
-                href: '#',
-              }
-            ]}
-          />
-          <Panel>
-            <Panel.Heading>Panel</Panel.Heading>
-            
-            <DialogModal
-              title="Modal"
-              trigger={({ activate }) => <Button className="open-modal-btn" kind="primary" label="Open modal" onPress={() => { activate(); }}/>}
-            >
-              Test
-            </DialogModal>
-          </Panel>
-          
-          {/* Clicking the link should scroll to the anchor, with enough top padding (`scroll-padding-top`) */}
-          <DummyLink id="anchor">Anchor</DummyLink>
-          <OverflowTester openDefault/>
-          <a href="#anchor">Scroll to anchor</a>
-        </AppLayout.Content>
-        <AppLayout.Footer>
-          <span className="version">Version: 1.2.2343</span>
-        </AppLayout.Footer>
-      </>
+      <AppLayout>
+        {header1}
+        {sidebar1}
+        {content1}
+        {footer1}
+      </AppLayout>
     ),
   },
 };
+
+
+export const Scroll: Story = {
+  args: {
+    stepIndex: 0,
+    steps: WALKTHROUGH_STEPS,
+    children:(
+      <div style={{ maxWidth: "70%", margin: "auto", marginTop: "20px" }}>
+        <Panel style={{ maxHeight: '20lh'}}>
+          <div className='walkthrough-item-1' style={{ marginBottom: '20px'}}>
+            <Panel.Heading>Panel Heading 1</Panel.Heading>
+            <LoremIpsum paragraphs={3}/>
+          </div>
+          <div className='walkthrough-item-2' style={{ marginBottom: '20px'}}>
+            <Panel.Heading>Panel Heading 2</Panel.Heading>
+            <LoremIpsum paragraphs={3}/>
+          </div>
+          <div className='walkthrough-item-3' style={{ marginBottom: '20px'}}>
+            <Panel.Heading>Panel Heading 3</Panel.Heading>
+            <LoremIpsum paragraphs={3}/>
+          </div>
+          <div className='walkthrough-item-4' style={{ marginBottom: '20px'}}>
+            <Panel.Heading>Panel Heading 4</Panel.Heading>
+            <LoremIpsum paragraphs={3}/>
+          </div>
+        </Panel>
+      </div> 
+    )
+  }
+}
+
+const createLazyComponent = (index: number) => new Promise<{ default: React.ComponentType }>((resolve) => {
+  setTimeout(() => {
+    const Component = () => (
+      <div className={`walkthrough-item-${index}`} style={{ marginBottom: '20px'}}>
+        <Panel.Heading>Panel Heading {index}</Panel.Heading>
+        <LoremIpsum paragraphs={3}/>
+      </div>  
+    );
+    resolve({ default: Component });
+  }, 3000*index); // simulate delay
+})
+
+const LazyComponentOne = React.lazy(() => createLazyComponent(1));
+const LazyComponentTwo = React.lazy(() => createLazyComponent(2));
+const LazyComponentThree = React.lazy(() => createLazyComponent(3));
+const LazyComponentFour = React.lazy(() => createLazyComponent(4));
+
+export const Lazy: Story = {
+  args: {
+    stepIndex: 0,
+    steps: WALKTHROUGH_STEPS,
+    children:( 
+      <div style={{ maxWidth: "70%", margin: "auto", marginTop: "20px" }}>
+          <Panel style={{ maxHeight: '20lh'}}>
+            <React.Suspense fallback={<Spinner />}>
+              <LazyComponentOne />
+            </React.Suspense>
+            <React.Suspense fallback={<Spinner />}>
+              <LazyComponentTwo />
+            </React.Suspense>
+            <React.Suspense fallback={<Spinner />}>
+              <LazyComponentThree />
+            </React.Suspense>
+            <React.Suspense fallback={<Spinner />}>
+              <LazyComponentFour />
+            </React.Suspense>
+          </Panel>
+      </div>
+    )
+  }
+}
