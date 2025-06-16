@@ -24,16 +24,23 @@
       }
       
       td {
+        // Align all table cells to the top, to prevent one large item in a cell from shifting all the other content
+        // down.
+        vertical-align: top;
+        
         overflow: hidden;
         padding: bk.$spacing-5 bk.$spacing-2;
         
         // Note: need a wrapper div for this because setting a different `display` on a `<td>` will break the table
         .bk-data-table__text-cell {
-          // The following are needed for `<TextLine>` to work
+          // Note: for `<TextLine>` to work as a child of this element, we need `display: flex` and `overflow: hidden`
           overflow: hidden;
-          display: flex;
           
+          min-block-size: 1lh;
           padding: 1px; // Add a 1px padding, as a workaround for browser rounding issues (see also #358 on GitHub)
+          
+          display: flex;
+          align-items: center;
           
           > * {
             min-inline-size: 0;
