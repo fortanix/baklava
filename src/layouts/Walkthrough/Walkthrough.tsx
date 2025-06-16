@@ -488,19 +488,19 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
     <WalkthroughPortal>
       <div className="bk bk-walkthrough" aria-hidden={!isRun}>
         {/* Main overlay container */}
-        <div className={cl["bk-walkthrough-overlay"]}>
-          {/* Spotlight highlight around target element */}
-          <div
-            className={cl["bk-walkthrough-spotlight"]}
-            style={{
-              top: rect ? rect.top - spotlightPadding : 0,
-              left: rect ? rect.left - spotlightPadding : 0,
-              width: rect ? rect.width + 2 * spotlightPadding : 0,
-              height: rect ? rect.height + 2 * spotlightPadding : 0,
-              ...(currentStep && currentStep.spotlightStyles ? currentStep.spotlightStyles : {}),
-            }}
-          />
-
+        {!currentStep?.disableOverlay && <div className={cl["bk-walkthrough-overlay"]}>
+            {/* Spotlight highlight around target element */}
+            <div
+              className={cl["bk-walkthrough-spotlight"]}
+              style={{
+                top: rect ? rect.top - spotlightPadding : 0,
+                left: rect ? rect.left - spotlightPadding : 0,
+                width: rect ? rect.width + 2 * spotlightPadding : 0,
+                height: rect ? rect.height + 2 * spotlightPadding : 0,
+                ...(currentStep && currentStep.spotlightStyles ? currentStep.spotlightStyles : {}),
+              }}
+            />
+          </div>}
           {/* Tooltip content - only render when target is in viewport */}
           {isInViewport && rect && currentStep && (
             <Tooltip
@@ -552,7 +552,6 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
               )}
             </Tooltip>
           )}
-        </div>
       </div>
     </WalkthroughPortal>
   );

@@ -234,6 +234,21 @@ export const Basic: Story = {
   },
 };
 
+export const WithoutOverlay: Story = {
+  args: {
+    stepIndex: 0,
+    steps: WALKTHROUGH_STEPS.map((step)=>({...step, disableOverlay: true})),
+    children: (
+      <AppLayout>
+        {header1}
+        {sidebar1}
+        {content1}
+        {footer1}
+      </AppLayout>
+    ),
+  },
+};
+
 
 export const Scroll: Story = {
   args: {
@@ -241,7 +256,7 @@ export const Scroll: Story = {
     steps: WALKTHROUGH_STEPS,
     children:(
       <div style={{ maxWidth: "70%", margin: "auto", marginTop: "20px" }}>
-        <Panel style={{ maxHeight: '10lh'}}>
+        <Panel style={{ maxHeight: '24lh'}}>
           <div className='walkthrough-item-1' style={{ marginBottom: '20px'}}>
             <Panel.Heading>Panel Heading 1</Panel.Heading>
             <LoremIpsum paragraphs={3}/>
