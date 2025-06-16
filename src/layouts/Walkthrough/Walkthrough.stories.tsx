@@ -3,16 +3,17 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 
 import type { Meta, StoryObj } from '@storybook/react';
-import { DummyBkLinkUnstyled, DummyBkLinkWithNotify, DummyLink } from '../../util/storybook/StorybookLink.tsx';
+import { DummyBkLinkUnstyled, DummyBkLinkWithNotify } from '../../util/storybook/StorybookLink.tsx';
 
+import { WalkThrough, WalkThroughProps, Step } from './Walkthrough.tsx';
 import { notify } from '../../components/overlays/ToastProvider/ToastProvider.tsx';
-import { OverflowTester } from '../../util/storybook/OverflowTester.tsx';
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
 import { DialogModal } from '../../components/overlays/DialogModal/DialogModal.tsx';
-import { Step, WalkThrough, WalkThroughProps } from './Walkthrough.tsx';
+import { Spinner } from '../../components/graphics/Spinner/Spinner.tsx';
 import { AppLayout } from '../AppLayout/AppLayout';
 import { Header } from '../AppLayout/Header/Header';
 import { UserMenu } from '../AppLayout/Header/UserMenu';
@@ -22,13 +23,13 @@ import { SolutionSelector } from '../AppLayout/Header/SolutionSelector';
 import { Sidebar } from '../AppLayout/Sidebar/Sidebar';
 import { Nav } from '../AppLayout/Nav/Nav';
 import { Breadcrumbs } from '../AppLayout/Breadcrumbs/Breadcrumbs';
-import { ErrorBoundary } from 'react-error-boundary';
-import { Banner } from '../../../dist/baklava';
 import { LoremIpsum } from '../../util/storybook/LoremIpsum.tsx';
 import { Select } from '../../components/forms/controls/Select/Select.tsx';
 import { Tag } from '../../components/text/Tag/Tag.tsx';
 import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
-import { Spinner } from '../../components/graphics/Spinner/Spinner.tsx';
+
+import { OverflowTester } from '../../util/storybook/OverflowTester.tsx';
+import { Banner } from '../../components/containers/Banner/Banner.tsx';
 
 
 const WALKTHROUGH_STEPS: Step[] = [
@@ -47,7 +48,7 @@ const WALKTHROUGH_STEPS: Step[] = [
     spotlightPadding: 20,
     disableScrolling: true,
     disableWait: true,
-    placement:"left",
+    placement:"right",
   },
   {
     target: '.walkthrough-item-3',
@@ -55,7 +56,7 @@ const WALKTHROUGH_STEPS: Step[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     spotlightPadding: 20,
     disableScrolling: false,
-    placement:"left",
+    placement:"right",
   },
   {
     target: '.walkthrough-item-4',
@@ -63,7 +64,7 @@ const WALKTHROUGH_STEPS: Step[] = [
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     spotlightPadding: 20,
     disableScrolling: false,
-    placement:"left",
+    placement:"right",
   },
 ];
 
@@ -240,7 +241,7 @@ export const Scroll: Story = {
     steps: WALKTHROUGH_STEPS,
     children:(
       <div style={{ maxWidth: "70%", margin: "auto", marginTop: "20px" }}>
-        <Panel style={{ maxHeight: '20lh'}}>
+        <Panel style={{ maxHeight: '10lh'}}>
           <div className='walkthrough-item-1' style={{ marginBottom: '20px'}}>
             <Panel.Heading>Panel Heading 1</Panel.Heading>
             <LoremIpsum paragraphs={3}/>
@@ -286,17 +287,17 @@ export const Lazy: Story = {
     steps: WALKTHROUGH_STEPS,
     children:( 
       <div style={{ maxWidth: "70%", margin: "auto", marginTop: "20px" }}>
-          <Panel style={{ maxHeight: '20lh'}}>
-            <React.Suspense fallback={<Spinner />}>
+          <Panel style={{ maxHeight: '30lh'}}>
+            <React.Suspense fallback={<p>Waiting for Lazy Component 1<Spinner inline={true} /></p>}>
               <LazyComponentOne />
             </React.Suspense>
-            <React.Suspense fallback={<Spinner />}>
+            <React.Suspense fallback={<p>Waiting for Lazy Component 2<Spinner inline={true} /></p>}>
               <LazyComponentTwo />
             </React.Suspense>
-            <React.Suspense fallback={<Spinner />}>
+            <React.Suspense fallback={<p>Waiting for Lazy Component 3<Spinner inline={true} /></p>}>
               <LazyComponentThree />
             </React.Suspense>
-            <React.Suspense fallback={<Spinner />}>
+            <React.Suspense fallback={<p>Waiting for Lazy Component 4<Spinner inline={true} /></p>}>
               <LazyComponentFour />
             </React.Suspense>
           </Panel>
