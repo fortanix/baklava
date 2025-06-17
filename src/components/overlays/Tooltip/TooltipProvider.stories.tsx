@@ -34,7 +34,6 @@ export default {
 
 export const TooltipProviderStandard: Story = {};
 
-/*
 export const TooltipProviderWithHoverAction: Story = {
   args: {
     triggerAction: 'hover',
@@ -118,7 +117,7 @@ export const TooltipLarge: Story = {
 
 /**
  * When a tooltip hits the viewport during scroll, it will automatically reposition to be visible.
- * /
+ */
 export const TooltipWithScroll: Story = {
   render: () => (
     <>
@@ -135,7 +134,7 @@ export const TooltipWithScroll: Story = {
 
 /**
  * Tooltips should activate on focus.
- * /
+ */
 export const TooltipWithFocus: Story = {
   args: {
     tooltip: 'Tooltips will open when the anchor element is focused',
@@ -189,4 +188,3 @@ export const TooltipNull: Story = {
     tooltip: null,
   },
 };
-*/

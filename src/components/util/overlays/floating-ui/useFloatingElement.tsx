@@ -208,6 +208,7 @@ export const useFloatingElement = <E extends HTMLElement>(options: UseFloatingEl
     usePopover(context),
   ];
   
+  // Trigger action: click
   const clickInteractions = [
     useClick(context, {
       enabled: opts.triggerAction === 'click',
@@ -217,27 +218,29 @@ export const useFloatingElement = <E extends HTMLElement>(options: UseFloatingEl
     useDismiss(context, { enabled: opts.triggerAction === 'click' }),
   ];
   
+  // Trigger action: focus
   const focusInteractions = [
     useFocus(context, { enabled: opts.triggerAction === 'focus' }),
   ];
   
+  // Trigger action: hover
   const { delay: groupDelay } = useDelayGroup(context, { enabled: opts.triggerAction === 'hover' });
   const delay = opts.hasDelayGroup ? groupDelay : {
-    open: 200/*ms*/, // Fallback time to open after if the cursor never "rests"
+    open: 500/*ms*/, // Fallback time to open after if the cursor never "rests"
     close: 200/*ms*/, // Allows the user to move the cursor from anchor to floating element without closing
   };
   const hoverInteractions = [
     useFocus(context, { enabled: opts.triggerAction === 'hover' }),
     useHover(context, {
       enabled: opts.triggerAction === 'hover',
-      restMs: 20/*ms*/, // User's cursor must be at rest before triggering
+      restMs: 50/*ms*/, // User's cursor must be at rest before triggering
       delay,
     }),
   ];
   
-  if (opts.triggerAction === 'click') { interactions.concat(clickInteractions); }
-  if (opts.triggerAction === 'focus') { interactions.concat(focusInteractions); }
-  if (opts.triggerAction === 'hover') { interactions.concat(hoverInteractions); }
+  if (opts.triggerAction === 'click') { interactions.push(...clickInteractions); }
+  if (opts.triggerAction === 'focus') { interactions.push(...focusInteractions); }
+  if (opts.triggerAction === 'hover') { interactions.push(...hoverInteractions); }
   
   const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([
     ...interactions,
