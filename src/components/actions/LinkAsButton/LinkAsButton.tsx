@@ -2,8 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import * as React from 'react';
+import { classNames as cx } from '../../../util/componentUtil.ts';
 
 import { Link as LinkDefault } from '../Link/Link.tsx';
 import { type ButtonProps, ButtonClassNames } from '../Button/Button.tsx';
@@ -46,6 +46,7 @@ export const LinkAsButton = (props: LinkAsButtonProps) => {
       size="medium"
       {...propsRest}
       unstyled
+      disabled={disabled}
       className={cx(
         'bk',
         ButtonClassNames['bk-button'],
