@@ -5,10 +5,9 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-data-table-row-select {
+  th.bk-data-table-row-select {
     @include bk.component-base(bk-data-table-row-select);
     
-    inline-size: bk.$spacing-11;
-    max-inline-size: bk.$spacing-11;
+    inline-size: 8ch;
   }
 }
