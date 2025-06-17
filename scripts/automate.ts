@@ -68,7 +68,7 @@ export const runGithubCreateReleasePullRequest = async (args: ScriptArgs) => {
   prUrl.search = new URLSearchParams({
     quick_pull: '1',
     title: `Release v${version}`,
-    labels: `new-release`,
+    labels: `release`,
     body: `Update the version to v${version}.`,
   }).toString();
   
