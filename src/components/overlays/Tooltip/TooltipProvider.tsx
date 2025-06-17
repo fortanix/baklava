@@ -15,6 +15,8 @@ import {
 } from '../../util/overlays/floating-ui/useFloatingElement.tsx';
 import { type TooltipProps, TooltipClassNames, Tooltip } from './Tooltip.tsx';
 
+import cl from './TooltipProvider.module.scss';
+
 
 type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
 
@@ -126,14 +128,13 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
       
       switch (placement) {
         case 'top':
-        case 'bottom': {
+        case 'bottom':
           return arrow?.arrowX ?? '50%';
-        }
         case 'right':
-        case 'left': {
+        case 'left':
           return arrow?.arrowY ?? '50%';
-        }
-        default: return assertUnreachable(placement);
+        default:
+          return assertUnreachable(placement);
       }
     })();
     
@@ -151,6 +152,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
           tooltipProps.ref,
         )}
         className={cx(
+          cl['bk-tooltip-provider__tooltip'],
           floatingProps.className as ClassNameArgument,
           arrowClassName,
           tooltipProps.className,
@@ -168,7 +170,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
         Note: `floating-ui` has a `FloatingArrow` component using a positioned <svg> arrow, but this doesn't work if
         the tooltip has `overflow: hidden/scroll/auto` or `contain: paint` enabled.
         */}
-        <span ref={arrowRef} hidden aria-hidden/>
+        <span ref={arrowRef} hidden/>
       </Tooltip>
     );
   }, [

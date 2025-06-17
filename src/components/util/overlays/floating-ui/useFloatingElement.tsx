@@ -223,14 +223,14 @@ export const useFloatingElement = <E extends HTMLElement>(options: UseFloatingEl
   
   const { delay: groupDelay } = useDelayGroup(context, { enabled: opts.triggerAction === 'hover' });
   const delay = opts.hasDelayGroup ? groupDelay : {
-    open: 300/*ms*/, // Fallback time to open after if the cursor never "rests"
+    open: 200/*ms*/, // Fallback time to open after if the cursor never "rests"
     close: 200/*ms*/, // Allows the user to move the cursor from anchor to floating element without closing
   };
   const hoverInteractions = [
     useFocus(context, { enabled: opts.triggerAction === 'hover' }),
     useHover(context, {
       enabled: opts.triggerAction === 'hover',
-      restMs: 20/*ms*/, // User's cursor must be at rest before opening
+      restMs: 20/*ms*/, // User's cursor must be at rest before triggering
       delay,
     }),
   ];
@@ -287,7 +287,7 @@ export const useFloatingElementArrow = (options: FloatingElementArrowOptions): F
   
   if (!floating) { return null; }
   
-  const [tooltopSide, tooltipAlignment] = placement.split('-') as [Side, Alignment];
+  const [tooltopSide, _tooltipAlignment] = placement.split('-') as [Side, Alignment];
   // const isVerticalSide = side === 'top' || side === 'bottom';
   // 
   // const isRTL = platform.isRTL(floating);
