@@ -80,9 +80,11 @@ export { Tag } from '../src/components/text/Tag/Tag.tsx';
 // Lists
 export { PropertyList } from '../src/components/lists/PropertyList/PropertyList.tsx';
 
-// Navigations
+// Navigation
 export { Stepper } from '../src/components/navigation/Stepper/Stepper.tsx';
-export { Tab, Tabs } from '../src/components/navigation/Tabs/Tabs.tsx';
+export { Tabs } from '../src/components/navigation/Tabs/Tabs.tsx';
+export { Tab } from '../src/components/navigation/Tabs/Tabs.tsx'; // Deprecated, please use `<Tabs.Tab>` instead
+export { Breadcrumbs } from '../src/components/navigation/Breadcrumbs/Breadcrumbs.tsx';
 
 // Overlays
 export { SpinnerModal } from '../src/components/overlays/SpinnerModal/SpinnerModal.tsx';
@@ -117,7 +119,6 @@ export { FormLayout } from '../src/layouts/FormLayout/FormLayout.tsx';
 
 export { PublicLayout } from '../src/layouts/PublicLayout/PublicLayout.tsx';
 
-export { Breadcrumbs } from '../src/layouts/AppLayout/Breadcrumbs/Breadcrumbs.tsx';
 export { Header } from '../src/layouts/AppLayout/Header/Header.tsx';
 export { AccountSelector } from '../src/layouts/AppLayout/Header/AccountSelector.tsx';
 export { SolutionSelector } from '../src/layouts/AppLayout/Header/SolutionSelector.tsx';
