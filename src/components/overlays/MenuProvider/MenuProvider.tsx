@@ -80,7 +80,13 @@ export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' 
   role?: undefined | UseFloatingElementOptions['role'],
   
   /** The action that should trigger the menu to open. */
-  action?: undefined | UseFloatingElementOptions['action'],
+  triggerAction?: undefined | UseFloatingElementOptions['triggerAction'],
+  
+  /**
+   * Alias for `triggerAction`. Deprecated, use `triggerAction` instead.
+   * @deprecated
+   */
+  action?: undefined | UseFloatingElementOptions['triggerAction'],
   
   /** The (inline) size of the menu. */
   menuSize?: ListBoxProps['size'],
@@ -100,7 +106,7 @@ export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' 
   /** Offset size for the menu relative to the anchor. */
   offset?: undefined | UseFloatingElementOptions['offset'],
   
-  /** Enable more precise tracking of the anchor, at the cost of performance. */
+  /** Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
   enablePreciseTracking?: undefined | UseFloatingElementOptions['enablePreciseTracking'],
 };
 /**
@@ -117,6 +123,7 @@ export const MenuProvider = Object.assign(
       selected,
       onSelect,
       role,
+      triggerAction,
       action,
       menuSize,
       keyboardInteractions,
@@ -146,7 +153,7 @@ export const MenuProvider = Object.assign(
       setIsOpen,
     } = useFloatingElement({
       role,
-      action,
+      triggerAction: triggerAction ?? action,
       keyboardInteractions,
       placement,
       offset,

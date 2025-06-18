@@ -177,7 +177,7 @@ const packageConfig = {
     'classnames': '^2.5.1',
     'zustand': '^5.0.5',
     
-    '@floating-ui/react': '^0.27.9',
+    '@floating-ui/react': '^0.27.12',
     'react-table': '^7.8.0',
     'react-datepicker': '^8.0.0',
     

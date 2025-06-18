@@ -119,19 +119,19 @@ export const MenuMultiProviderWithAction: Story = {
 
 export const MenuMultiProviderWithClickTrigger: Story = {
   args: {
-    action: 'click',
+    triggerAction: 'click',
   },
 };
 
 export const MenuMultiProviderWithFocusTrigger: Story = {
   args: {
-    action: 'focus',
+    triggerAction: 'focus',
   },
 };
 
 export const MenuMultiProviderWithHoverTrigger: Story = {
   args: {
-    action: 'hover',
+    triggerAction: 'hover',
   },
 };
 
