@@ -75,7 +75,7 @@ export const PageHeaderJustTitle: Story = {
   },
 };
 
-export const PageHeaderTitleSelect: Story = {
+export const PageHeaderTitleScopeSwitcher: Story = {
   args: {
     titleSelect: title2,
     children: actions1,

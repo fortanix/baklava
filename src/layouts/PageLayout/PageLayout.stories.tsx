@@ -131,7 +131,7 @@ export const PageLayoutStandard: Story = {
   },
 };
 
-export const PageLayoutSelect: Story = {
+export const PageLayoutScopeSwitcher: Story = {
   args: {
     children: (
       <>
@@ -150,5 +150,10 @@ export const PageLayoutTabs: Story = {
         {tabs1}
       </>
     ),
+  },
+  play: async () => {
+    // Workaround to manually click on the first tab.
+    // TODO: Remove once https://github.com/fortanix/baklava/issues/261 is fixed
+    (document.querySelector("li[data-tab]") as HTMLElement).click();
   },
 };
