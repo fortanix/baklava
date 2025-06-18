@@ -71,7 +71,11 @@
       
       position: sticky;
       inset-block-start: 0;
-      z-index: 1; // Higher than content
+      
+      // Necessary despite the `sticky`, because the page content is a container, which generates a stacking context:
+      // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context
+      // Should be higher than the sidebar (which has `z-index: 1`), so that it remains under the header during scroll.
+      z-index: 2;
       
       display: grid;
       grid:
@@ -93,6 +97,10 @@
     
     > [slot='sidebar'] {
       container: bk-app-layout__sidebar / inline-size;
+      
+      // Set a z-index higher than the content, so that overflow from the content (e.g. in case of flex row-reverse)
+      // does not overlay the sidebar. Should be lower than the header since the sidebar should scroll "underneath" it.
+      z-index: 1;
       
       padding-block-end: bk.$spacing-8; // Some padding (e.g. for if the sidebar is larger than the viewport height)
       background: bk.$theme-side-nav-background-default;

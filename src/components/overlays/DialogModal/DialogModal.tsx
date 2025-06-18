@@ -6,7 +6,7 @@ import type { NonUndefined } from '../../../util/types.ts';
 
 import * as React from 'react';
 import { flushSync } from 'react-dom';
-import { mergeRefs } from '../../../util/reactUtil.ts';
+import { mergeCallbacks, mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx } from '../../../util/componentUtil.ts';
 
 import { Dialog } from '../../containers/Dialog/Dialog.tsx';
@@ -69,11 +69,13 @@ export const useModalWithSubject = <S,>(
 ): ModalWithSubject<S> => {
   const { subjectInitial } = config ?? {};
   
-  const modalRef = ModalProvider.useRef(null);
+  const modalRef = ModalProvider.useRef();
   const [subject, setSubject] = React.useState<undefined | S>(subjectInitial);
   
   return {
-    props: { modalRef },
+    props: {
+      modalRef,
+    },
     subject,
     activateWith: (subject: S | (() => S)) => {
       // Use flushSync() to force the modal to render, in case the modal rendering is conditional
@@ -94,13 +96,43 @@ export const useModalWithSubject = <S,>(
 export const useConfirmationModal = <S,>(
   config: {
     subjectInitial?: undefined | S | (() => undefined | S),
+    cancelLabel?: undefined | string,
     actionLabel?: undefined | string,
+    onCancel?: undefined | ((subject: NonUndefined<S>) => void),
     onConfirm: (subject: NonUndefined<S>) => void,
-    onCancel?: undefined | ((subject: NonUndefined<S>) => void)
+    cancelActionProps?: undefined | Partial<React.ComponentProps<typeof Dialog.CancelAction>>,
+    confirmActionProps?: undefined | Partial<React.ComponentProps<typeof Dialog.SubmitAction>>,
   },
 ) => {
-  const { subjectInitial, actionLabel, onConfirm, onCancel } = config;
+  const {
+    subjectInitial,
+    cancelLabel = 'Cancel',
+    actionLabel = 'Confirm',
+    onConfirm,
+    onCancel,
+    cancelActionProps = {},
+    confirmActionProps = {},
+  } = config;
   const modal = useModalWithSubject({ subjectInitial });
+  
+  const handleConfirm = React.useCallback(() => {
+    const subject = modal.subject;
+    if (typeof subject === 'undefined') {
+      console.error(`Unexpected: missing subject in confirmation`);
+      return;
+    }
+    onConfirm(subject);
+  }, [modal.subject, onConfirm]);
+  
+  const handleCancel = React.useCallback(() => {
+    const subject = modal.subject;
+    if (typeof subject === 'undefined') {
+      console.error(`Unexpected: missing subject in confirmation`);
+      return;
+    }
+    onCancel?.(subject);
+  }, [modal.subject, onCancel]);
+  
   return {
     ...modal,
     props: {
@@ -116,27 +148,15 @@ export const useConfirmationModal = <S,>(
       actions: (
         <>
           <Dialog.CancelAction
-            label="Cancel"
-            onPress={() => {
-              const subject = modal.subject;
-              if (typeof subject === 'undefined') {
-                console.error(`Unexpected: missing subject in confirmation`);
-                return;
-              }
-              onCancel?.(subject);
-            }}
+            label={cancelLabel}
+            {...cancelActionProps}
+            onPress={mergeCallbacks([cancelActionProps.onPress, handleCancel])}
           />
           <Dialog.SubmitAction
             //autoFocus // Focus "confirm" by default?
-            label={actionLabel || 'Confirm'}
-            onPress={() => {
-              const subject = modal.subject;
-              if (typeof subject === 'undefined') {
-                console.error(`Unexpected: missing subject in confirmation`);
-                return;
-              }
-              onConfirm(subject);
-            }}
+            label={actionLabel}
+            {...confirmActionProps}
+            onPress={mergeCallbacks([cancelActionProps.onPress, handleConfirm])}
           />
         </>
       ),

@@ -11,7 +11,7 @@
   
   overflow: hidden;
   
-  &:not(.#{$name}--flat) {
+  &:where(:not(.#{$name}--flat)) {
     min-block-size: bk.$spacing-16;
     padding: bk.$spacing-4;
     padding-block-end: bk.$spacing-8;

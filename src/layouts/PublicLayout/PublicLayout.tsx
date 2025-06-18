@@ -11,6 +11,7 @@ import { type IconName } from '../../components/graphics/Icon/Icon.tsx';
 import { Card } from '../../components/containers/Card/Card.tsx';
 
 import fortanixLogo from '../../assets/fortanix/fortanix-logo.svg';
+import fortanixLogoMono from '../../assets/fortanix/fortanix-logo-mono.svg';
 import cl from './PublicLayout.module.scss';
 
 
@@ -19,9 +20,12 @@ export { cl as PublicLayoutClassNames };
 type FortanixArmorLogoProps = ComponentProps<'figure'> & {
   /** Whether to stack the logo and product name. */
   stacked?: undefined | boolean,
+  
+  /** Whether to use a monochrome logo. */
+  monochrome?: undefined | boolean,
 };
 const FortanixArmorLogo = (props: FortanixArmorLogoProps) => {
-  const { stacked = false, ...propsRest } = props;
+  const { stacked = false, monochrome = false, ...propsRest } = props;
   return (
     <figure
       {...propsRest}
@@ -32,7 +36,9 @@ const FortanixArmorLogo = (props: FortanixArmorLogoProps) => {
     )}
     >
       {/* <FortanixLogo/> */}
-      <img alt="Fortanix" src={fortanixLogo} width="180" className={cl['fortanix-logo-image']}/>
+      <img alt="Fortanix" width="180" className={cl['fortanix-logo-image']}
+        src={monochrome ? fortanixLogoMono : fortanixLogo}
+      />
       <span className={cx(cl['product-name'])}>Armor</span>
     </figure>
   );
@@ -115,7 +121,11 @@ export const PublicLayout = Object.assign(
           {...productInfoScroller}
           className={cx(cl['bk-public-layout__product-info'], productInfoScroller.className)}
         >
-          <FortanixArmorLogo stacked className={cx('bk-theme--dark', cl['bk-public-layout__product-info__logo'])}/>
+          <FortanixArmorLogo
+            monochrome
+            stacked
+            className={cx('bk-theme--dark', cl['bk-public-layout__product-info__logo'])}
+          />
           
           <div className={cx(cl['bk-public-layout__product-info__cards'])}>
             {productInfoCards}

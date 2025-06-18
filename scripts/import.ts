@@ -329,12 +329,6 @@ const validateIcon = async (path: string): Promise<IconValidity> => {
   try {
     const iconSvg: string = (await fs.readFile(path)).toString();
     
-    // Check: fill color
-    const fillColor = iconSvg.match(/<svg[^>]+fillColor="currentColor"[^>]+>/);
-    if (!fillColor) {
-      throw new Error('Incorrect fillColor');
-    }
-    
     // Check: dimensions
     const width = iconSvg.match(/width="(\d+)"/)?.[1];
     const height = iconSvg.match(/height="(\d+)"/)?.[1];
@@ -343,6 +337,18 @@ const validateIcon = async (path: string): Promise<IconValidity> => {
     }
     if (Number.parseInt(width) !== 18 || Number.parseInt(height) !== 18) {
       throw new Error(`Expect icon dimensions to be 18x18, found ${width}x${height}`);
+    }
+    
+    // Check: fill color
+    const fillColor = iconSvg.match(/<svg[^>]+fill="currentColor"[^>]*>/);
+    if (!fillColor) {
+      throw new Error('Incorrect fill color');
+    }
+    
+    // Check: monochromaticity
+    const colors = iconSvg.match(/#[0-9a-f]{3,6}/i);
+    if (colors) {
+      throw new Error('Found hardcoded colors, expected only `currentColor`.');
     }
     
     return { isValid: true };
@@ -411,9 +417,14 @@ const runImportIcons = async (args: ScriptArgs) => {
     const pathSource = path.join(pathIconsSource, fileName);
     const pathTarget = path.join(pathIconsTarget, `${iconName}.svg`)
     
-    const validity = await validateIcon(pathSource);
-    if (!validity.isValid) {
-      throw new Error(`Found invalid icon '${iconName}': ${validity.message}`);
+    try {
+      const validity = await validateIcon(pathSource);
+      if (!validity.isValid) {
+        throw new Error(`Found invalid icon '${iconName}': ${validity.message}`);
+      }
+    } catch (error) {
+      console.log(error);
+      continue;
     }
     
     logger.log(`Copying '${rel(pathSource)}' to '${rel(pathTarget)}'`);
@@ -487,9 +498,14 @@ export const run = async (argsRaw: Array<string>): Promise<void> => {
   });
 };
 
+if (!('main' in import.meta)) {
+  throw new Error(`Please upgrade to Node v24.2+`);
+}
+
 // Detect if this module is being run directly from the command line
-const [_argExec, argScript, ...args] = process.argv; // First two arguments should be the executable + script
-if (argScript && await fs.realpath(argScript) === fileURLToPath(import.meta.url)) {
+const [_argExec, _argScript, ...args] = process.argv; // First two arguments should be the executable + script
+// @ts-ignore `import.meta.main` is not supported in `@types/node` currently, once v24.2 is out remove this comment
+if (import.meta.main) {
   try {
     await run(args);
     process.exit(0);

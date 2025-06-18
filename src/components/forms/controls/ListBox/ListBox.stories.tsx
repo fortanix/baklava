@@ -335,26 +335,29 @@ export const ListBoxMany: Story = {
 
 type ListBoxControlledProps = Omit<React.ComponentProps<typeof ListBox>, 'selected'>;
 const ListBoxControlledC = (props: ListBoxControlledProps) => {
-  const [selectedItem, setSelectedItem] = React.useState<null | ItemKey>(null);
+  const [selectedItem, setSelectedItem] = React.useState<null | ItemKey>(props.defaultSelected ?? null);
   
   return (
     <>
       <p>Selected fruit: {selectedItem ?? <em>none</em>}</p>
-      <ListBox {...props} selected={selectedItem} onSelect={setSelectedItem}/>
+      <ListBox
+        {...props}
+        selected={selectedItem}
+        onSelect={setSelectedItem}
+      >
+        {fruits.map((fruit) =>
+          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
+        )}
+      </ListBox>
+      <Button label="Update state" onPress={() => { setSelectedItem('Strawberry'); }}/>
     </>
   );
 };
 export const ListBoxControlled: Story = {
   render: args => <ListBoxControlledC {...args}/>,
-  args: {
-    children: (
-      <>
-        {fruits.map((fruit) =>
-          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
-        )}
-      </>
-    ),
-  },
+};
+export const ListBoxControlledWithDefault: Story = {
+  render: args => <ListBoxControlledC {...args} defaultSelected="Blueberry"/>,
 };
 
 export const ListBoxInForm: Story = {

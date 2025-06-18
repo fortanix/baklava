@@ -3,7 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { mergeRefs, useEffectOnce } from '../../../../util/reactUtil.ts';
+import { mergeRefs, useEffectOnce, usePrevious } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import { isItemProgrammaticallyFocusable } from '../../../util/composition/compositionUtil.ts';
 
@@ -133,6 +133,13 @@ export const SegmentedControl = Object.assign(
     const buttonDefsRef = React.useRef<Map<ButtonKey, ButtonDef>>(new Map());
     const [selectedButton, setSelectedButton] = React.useState<undefined | ButtonKey>(selected ?? defaultSelected);
     
+    // Sync `selected` prop to internal state
+    React.useEffect(() => {
+      if (typeof selected !== 'undefined') {
+        setSelectedButton(selected);
+      }
+    }, [selected]);
+    
     const register = React.useCallback((buttonDef: ButtonDef) => {
       const buttonDefs = buttonDefsRef.current;
       if (buttonDefs.has(buttonDef.buttonKey)) {
@@ -157,11 +164,18 @@ export const SegmentedControl = Object.assign(
       });
     }, []);
     
+    const selectedButtonPrev = usePrevious(selectedButton);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Do not include event callbacks as dep.
     React.useEffect(() => {
-      if (typeof selectedButton !== 'undefined') {
+      // Note: selected state should be updated to `undefined`, the `undefined` case should only be possible as an
+      // initial state. Subsequent updates should always be some value. Just like how native HTML radio groups work.
+      const isDefined = typeof selectedButton !== 'undefined';
+      const isInitial = selectedButtonPrev === null; // `null` should only ever mean "not yet set"
+      
+      if (isDefined && !isInitial) {
         onUpdate?.(selectedButton);
       }
-    }, [selectedButton, onUpdate]);
+    }, [selectedButton]);
     
     // After initial rendering, check whether `defaultSelected` refers to one of the rendered buttons
     useEffectOnce(() => {

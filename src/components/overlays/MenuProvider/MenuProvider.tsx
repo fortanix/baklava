@@ -80,7 +80,13 @@ export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' 
   role?: undefined | UseFloatingElementOptions['role'],
   
   /** The action that should trigger the menu to open. */
-  action?: undefined | UseFloatingElementOptions['action'],
+  triggerAction?: undefined | UseFloatingElementOptions['triggerAction'],
+  
+  /**
+   * Alias for `triggerAction`. Deprecated, use `triggerAction` instead.
+   * @deprecated
+   */
+  action?: undefined | UseFloatingElementOptions['triggerAction'],
   
   /** The (inline) size of the menu. */
   menuSize?: ListBoxProps['size'],
@@ -100,7 +106,7 @@ export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' 
   /** Offset size for the menu relative to the anchor. */
   offset?: undefined | UseFloatingElementOptions['offset'],
   
-  /** Enable more precise tracking of the anchor, at the cost of performance. */
+  /** Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
   enablePreciseTracking?: undefined | UseFloatingElementOptions['enablePreciseTracking'],
 };
 /**
@@ -117,6 +123,7 @@ export const MenuProvider = Object.assign(
       selected,
       onSelect,
       role,
+      triggerAction,
       action,
       menuSize,
       keyboardInteractions,
@@ -146,7 +153,7 @@ export const MenuProvider = Object.assign(
       setIsOpen,
     } = useFloatingElement({
       role,
-      action,
+      triggerAction: triggerAction ?? action,
       keyboardInteractions,
       placement,
       offset,
@@ -190,6 +197,14 @@ export const MenuProvider = Object.assign(
       onSelect?.(itemKey, itemKey === null ? null : { itemKey, label: (selectedLabelRef.current ?? itemKey) });
     }, [selected, onSelect]);
     
+    // Sync `selected` prop with internal state
+    React.useEffect(() => {
+      if (typeof selected !== 'undefined') {
+        selectedLabelRef.current = selected === null ? selected : (formatItemLabel?.(selected) ?? selected);
+        setSelectedOptionInternal(selected);
+      }
+    }, [selected, formatItemLabel]);
+    
     const toggleCause = React.useRef<null | 'ArrowUp' | 'ArrowDown'>(null);
     const handleAnchorKeyDown = React.useCallback((event: React.KeyboardEvent) => {
       if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
@@ -213,6 +228,7 @@ export const MenuProvider = Object.assign(
     }, [setIsOpen]);
     
     // Note: memoize this, so that the anchor does not get rerendered every time the floating element position changes
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Should rerender on `selectedOptionInternal` change.
     const anchor = React.useMemo(() => {
       // FIXME: make `React.HTMLProps<Element>` generic, since not all component props extend from this type
       const anchorProps: AnchorRenderArgs['props'] = (userProps?: undefined | React.HTMLProps<Element>) => {
@@ -268,6 +284,7 @@ export const MenuProvider = Object.assign(
       listBoxId,
       refs.setReference,
       selectedOption,
+      selectedOptionInternal,
     ]);
     
     const handleSelect = React.useCallback((_key: null | ListBox.ItemKey, itemDetails: null | ListBox.ItemDetails) => {
@@ -341,6 +358,11 @@ export const MenuProvider = Object.assign(
       
       const controller = new AbortController();
       listBoxElement.addEventListener('focusout', event => {
+        // Special case: in Firefox triggering a file select causes a `focusout` which we don't want closing the menu
+        if (event.target instanceof HTMLInputElement && event.target.type === 'file' && event.relatedTarget === null) {
+          return;
+        }
+        
         const focusTarget = event.relatedTarget; // The new element being focused
         if (!focusTarget || (focusTarget instanceof Node && !listBoxElement.contains(focusTarget))) {
           setIsOpen(false);
@@ -371,6 +393,7 @@ export const MenuProvider = Object.assign(
             floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBox.ListBox>>,
             //propsRest.ref,
           )}
+          formatItemLabel={formatItemLabel}
           id={listBoxId}
           defaultSelected={defaultSelected}
           selected={selectedOption}

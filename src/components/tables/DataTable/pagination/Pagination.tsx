@@ -36,11 +36,19 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
   - table.previousPage
   - table.setPageSize
   */
-
+  
+  const updatePage = React.useCallback(() => {
+    const requestedIndex = Number.isSafeInteger(pageIndexIndicator) ? pageIndexIndicator - 1 : 0;
+    const targetIndex: number = Math.max(0, Math.min(table.pageCount - 1, requestedIndex));
+    
+    table.gotoPage(targetIndex);
+    setPageIndexIndicator(targetIndex + 1);
+  }, [pageIndexIndicator, table.pageCount, table.gotoPage]);
+  
   return (
     <div className={cx(cl['bk-pagination'])}>
       <PaginationSizeSelector pageSizeOptions={pageSizeOptions} />
-
+      
       <div className={cx(cl['pager'], cl['pager--indexed'])}>
         <IconButton
           className={cx(cl['pager__nav'])}
@@ -63,21 +71,20 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
               setPageIndexIndicator(pageIndexIndicator - 1);
             }}
           />
-
+          
           <Input
             type="number"
             automaticResize
             className={cx(cl['pagination__page-input'])}
+            inputProps={{ className: cx(cl['pagination__page-input__input']) }}
             aria-label={`Current page: ${pageIndexIndicator}`}
             value={pageIndexIndicator}
             max={table.pageCount}
-            onChange={(event) => setPageIndexIndicator(Number.parseInt(event.target.value))}
-            onBlur={() => {
-              if(pageIndexIndicator > 0 && pageIndexIndicator <= table.pageCount){
-                table.gotoPage(pageIndexIndicator - 1);
-              } else {
-                table.gotoPage(table.state.pageIndex);
-                setPageIndexIndicator(table.state.pageIndex + 1);
+            onChange={(event) => { setPageIndexIndicator(Number.parseInt(event.target.value)); }}
+            onBlur={() => { updatePage(); }}
+            onKeyDown={event => {
+              if (event.key === 'Enter') {
+                updatePage();
               }
             }}
           />

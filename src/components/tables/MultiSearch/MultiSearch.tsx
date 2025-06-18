@@ -2,7 +2,6 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import * as Random from '../../../util/random.ts';
 import * as ObjectUtil from '../../../util/objectUtil.ts';
 import {
   isEqual,
@@ -409,6 +408,7 @@ export const Suggestions = (props: SuggestionProps) => {
       open={active}
       onOpenChange={handleOpenChange}
       anchorRef={elementRef as React.RefObject<HTMLElement | null>}
+      placeholderEmpty={null}
     />
   );
 };
@@ -610,6 +610,7 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
         selected={new Set(selectedAlternatives)}
         onUpdate={set => setSelectedAlternatives(Array.from(set))}
         className={cx(cl['bk-multi-search__alternatives-group'])}
+        contentClassName={cx(cl['bk-multi-search__alternatives-group__content'])}
       >
         {Object.entries(alternatives).map(([key, { label }]) => (
           <CheckboxGroup.Checkbox

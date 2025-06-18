@@ -34,6 +34,7 @@ export const UserMenu = Object.assign(
         <>
           <Icon icon="user" className={cx(cl['bk-user-menu__user-icon'])}/>
           <span className={cx(cl['bk-user-menu__user-name'])}>{userName}</span>
+          <Icon icon="caret-down" className={cx(cl['bk-user-menu__caret-icon'])}/>
         </>
       );
     };

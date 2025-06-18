@@ -127,7 +127,7 @@
     
     --bk-tooltip-background-color: #{bk.$theme-tooltip-background-default};
     --bk-tooltip-border-color: #{bk.$theme-tooltip-border-default};
-    --bk-tooltip-border-radius: #{bk.$radius-s};
+    --bk-tooltip-border-radius: #{bk.$radius-2};
     
     cursor: default;
     
@@ -144,7 +144,7 @@
       padding-block-end: bk.$spacing-7;
     }
     
-    border-radius: bk.$radius-s;
+    border-radius: bk.$radius-2;
     background: var(--bk-tooltip-background-color);
     border: 1px solid var(--bk-tooltip-border-color);
     
@@ -234,62 +234,6 @@
     
     .bk-tooltip__alert {
       color: bk.$theme-tooltip-text-error;
-    }
-  }
-  
-  
-  /* Anchor positioning */
-  
-  @position-try --bk-tooltip-position-top {
-    margin-block: var(--bk-app-layout-header-height) 6px; /* Compensate for layout header */
-    /* position-area: top; */
-    inset-block-end: anchor(top);
-    justify-self: anchor-center;
-  }
-  @position-try --bk-tooltip-position-bottom {
-    margin-block-start: 6px;
-    /* position-area: bottom; */
-    justify-self: anchor-center;
-    inset-block-start: anchor(bottom);
-  }
-  @position-try --bk-tooltip-position-left {
-    justify-self: anchor-center;
-    inset-inline-end: anchor(left);
-  }
-  @position-try --bk-tooltip-position-right {
-    justify-self: anchor-center;
-    inset-inline-start: anchor(right);
-  }
-  
-  .bk-tooltip[popover] {
-    inset: auto; /* Note: future versions of Chrome should have this by default */
-    position: fixed;
-    /*position-anchor: --anchor-1;*/ /* Needs to be set dynamically */
-    
-    position-try-fallbacks: --bk-tooltip-position-top, --bk-tooltip-position-bottom, --bk-tooltip-position-left, --bk-tooltip-position-right;
-    
-    filter: drop-shadow(4px 4px 4px rgb(50 50 50 / 30%));
-    
-    @media (prefers-reduced-motion: no-preference) {
-      --transition-duration: 150ms;
-      transition:
-        display var(--transition-duration) allow-discrete,
-        overlay var(--transition-duration) allow-discrete,
-        opacity var(--transition-duration) ease-out,
-        translate var(--transition-duration) ease-out;
-        /* transform */ /* Note: don't animate `transform` with floating-ui, since it relies on it for positioning */
-      opacity: 0;
-      translate: 0 0.3rem;
-    }
-    
-    &:popover-open {
-      opacity: 1;
-      translate: none;
-      
-      @starting-style {
-        opacity: 0;
-        translate: 0 0.3rem;
-      }
     }
   }
 }

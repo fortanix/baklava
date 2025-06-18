@@ -33,6 +33,13 @@ export default {
 
 export const LinkAsButtonStandard: Story = {};
 
+export const LinkAsButtonDisabled: Story = {
+  args: {
+    disabled: true,
+    onClick: undefined,
+  },
+};
+
 export const LinkAsButtonTrimmed: Story = {
   args: {
     kind: 'tertiary',

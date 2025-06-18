@@ -79,6 +79,7 @@ export const MenuProviderWithInput: Story = {
         <MenuProvider.Header unstyled itemKey="header-1" label="Input">
           <InputSearch/>
         </MenuProvider.Header>
+        <MenuProvider.Static><input type="file"/></MenuProvider.Static>
         <MenuProvider.Option itemKey="option-1" label="Option 1"/>
         <MenuProvider.Option itemKey="option-2" label="Option 2"/>
       </>
@@ -116,41 +117,25 @@ export const MenuProviderWithAction: Story = {
 
 export const MenuProviderWithClickTrigger: Story = {
   args: {
-    action: 'click',
+    triggerAction: 'click',
   },
 };
 
 export const MenuProviderWithFocusTrigger: Story = {
   args: {
-    action: 'focus',
+    triggerAction: 'focus',
   },
 };
 
 export const MenuProviderWithHoverTrigger: Story = {
   args: {
-    action: 'hover',
+    triggerAction: 'hover',
   },
 };
 
 const MenuProviderControlledC = (props: React.ComponentProps<typeof MenuProvider>) => {
-  const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>(null);
-  return (
-    <>
-      <p>Selected: {selectedOption === null ? '(none)' : formatFruitLabel(selectedOption)}</p>
-      <MenuProvider
-        {...props}
-        selected={selectedOption}
-        onSelect={setSelectedOption}
-      />
-    </>
-  );
-};
-export const MenuProviderControlled: Story = {
-  render: args => <MenuProviderControlledC {...args}/>,
-};
-
-const MenuProviderControlledWithDefaultC = (props: React.ComponentProps<typeof MenuProvider>) => {
-  const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>('item-blueberry');
+  const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>(props.defaultSelected ?? null);
+  
   return (
     <>
       <p>Selected: {selectedOption === null ? '(none)' : formatFruitLabel(selectedOption)}</p>
@@ -160,9 +145,13 @@ const MenuProviderControlledWithDefaultC = (props: React.ComponentProps<typeof M
         selected={selectedOption}
         onSelect={setSelectedOption}
       />
+      <div><Button label="Update state" onPress={() => { setSelectedOption('item-strawberry'); }}/></div>
     </>
   );
 };
+export const MenuProviderControlled: Story = {
+  render: args => <MenuProviderControlledC {...args}/>,
+};
 export const MenuProviderControlledWithDefault: Story = {
-  render: args => <MenuProviderControlledWithDefaultC {...args}/>,
+  render: args => <MenuProviderControlledC {...args} defaultSelected="item-blueberry"/>,
 };

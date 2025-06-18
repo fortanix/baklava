@@ -92,6 +92,9 @@ export type ListBoxStateApi = ListBoxState & {
   /** Request the item at the given position in the list to be focused. If no items, this is ignored. */
   focusItemAt: (position: 'first' | 'last') => void,
   
+  /** Update the selected items state to the given set. */
+  setSelectedItems: (itemKeys: Set<ItemKey>) => void,
+  
   /** Toggle the selected state of the given item. Returns the new selected state of the item. */
   toggleItemSelection: (itemKey: ItemKey) => boolean,
 };
@@ -154,6 +157,9 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
       if (itemKey !== null) {
         state.focusItem(itemKey);
       }
+    },
+    setSelectedItems: itemKeys => {
+      set({ selectedItems: itemKeys });
     },
     toggleItemSelection: itemKey => {
       const selectedItems = get().selectedItems;

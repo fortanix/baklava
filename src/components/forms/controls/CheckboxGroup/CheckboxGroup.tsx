@@ -39,10 +39,10 @@ export const CheckboxItem = ({ checkboxKey, ...propsRest }: CheckboxItemProps) =
     ? undefined // Uncontrolled
     : context.selectedItems.has(checkboxKey); // Controlled
   
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     propsRest.onChange?.(event);
     context.updateItem(checkboxKey, event.target.checked);
-  };
+  }, [propsRest.onChange, context.updateItem, checkboxKey]);
   
   return (
     <Checkbox.Labeled
@@ -79,6 +79,9 @@ export type CheckboxGroupProps = ComponentProps<typeof FieldSet> & {
   
   /** The orientation of the checkboxes, either vertical or horizontal. Default: 'horizontal'. */
   orientation?: undefined | 'vertical' | 'horizontal',
+  
+  /** A class name to apply on the inner checkbox group (rather than the outer fieldset). */
+  contentClassName?: undefined | ComponentProps<typeof FieldSet>['contentClassName'],
 };
 
 /**
@@ -96,6 +99,7 @@ export const CheckboxGroup = Object.assign(
       selected,
       onUpdate,
       orientation = 'horizontal',
+      contentClassName,
       ...propsRest
     } = props;
     
@@ -137,7 +141,7 @@ export const CheckboxGroup = Object.assign(
             { [cl['bk-checkbox-group--vertical']]: orientation === 'vertical' },
             propsRest.className,
           )}
-          contentClassName={cl['bk-checkbox-group__content']}
+          contentClassName={cx(cl['bk-checkbox-group__content'], contentClassName)}
         >
           {children}
         </FieldSet>

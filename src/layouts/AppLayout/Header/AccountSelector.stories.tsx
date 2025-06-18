@@ -6,8 +6,9 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 import { loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
+import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 
-import { AccountSelector } from './AccountSelector.tsx';
+import { type ItemKey, AccountSelector } from './AccountSelector.tsx';
 
 
 type AccountSelectorArgs = React.ComponentProps<typeof AccountSelector>;
@@ -18,6 +19,7 @@ export default {
   parameters: {
     layout: 'centered',
   },
+  decorators: [Story => <LayoutDecorator><Story/></LayoutDecorator>],
   tags: ['autodocs'],
   argTypes: {
   },
@@ -32,10 +34,7 @@ export const AccountSelectorStandard: Story = {
     accounts: (
       <>
         {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
-          <AccountSelector.Option key={`account_${name}`} itemKey={`account_${name}`} icon="account"
-            label={name}
-            //onSelect={() => { notify.info(`Selected ${name}`); }}
-          />
+          <AccountSelector.Option key={`account_${name}`} itemKey={`account_${name}`} icon="account" label={name}/>
         )}
         <AccountSelector.FooterActions>
           <AccountSelector.Action itemKey="action_add-account" label="Add account" onActivate={() => {}}/>
@@ -52,10 +51,7 @@ export const AccountSelectorWithOverflow: Story = {
       <>
         <AccountSelector.Option key="account_long" itemKey="account_long" icon="account" label={loremIpsumSentence}/>
         {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
-          <AccountSelector.Option key={`account_${name}`} itemKey={`account_${name}`} icon="account"
-            label={name}
-            //onSelect={() => { notify.info(`Selected ${name}`); }}
-          />
+          <AccountSelector.Option key={`account_${name}`} itemKey={`account_${name}`} icon="account" label={name}/>
         )}
         <AccountSelector.FooterActions>
           <AccountSelector.Action itemKey="action_add-account" label="Add account" onActivate={() => {}}/>
@@ -64,4 +60,31 @@ export const AccountSelectorWithOverflow: Story = {
     ),
     children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label
   },
+};
+
+const AccountSelectorControlledC = () => {
+  const [selected, setSelected] = React.useState<null | ItemKey>('account_2');
+  
+  return (
+    <AccountSelector
+      selected={selected}
+      onSelect={setSelected}
+      formatItemLabel={accountKey => accountKey.replace('account_', 'Account ')}
+      accounts={
+        Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map((name, index) =>
+          <AccountSelector.Option
+            key={`account_${index + 1}`}
+            itemKey={`account_${index + 1}`}
+            icon="account"
+            label={name}
+          />
+        )
+      }
+    >
+      {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label}
+    </AccountSelector>
+  );
+};
+export const AccountSelectorControlled: Story = {
+  render: args => <AccountSelectorControlledC {...args}/>,
 };

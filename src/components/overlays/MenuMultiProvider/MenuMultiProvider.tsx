@@ -79,7 +79,13 @@ export type MenuMultiProviderProps = Omit<ListBoxMultiProps, 'ref' | 'children' 
   role?: undefined | UseFloatingElementOptions['role'],
   
   /** The action that should trigger the menu to open. */
-  action?: undefined | UseFloatingElementOptions['action'],
+  triggerAction?: undefined | UseFloatingElementOptions['triggerAction'],
+  
+  /**
+   * Alias for `triggerAction`. Deprecated, use `triggerAction` instead.
+   * @deprecated
+   */
+  action?: undefined | UseFloatingElementOptions['triggerAction'],
   
   /** The (inline) size of the menu. */
   menuSize?: ListBoxMultiProps['size'],
@@ -99,7 +105,7 @@ export type MenuMultiProviderProps = Omit<ListBoxMultiProps, 'ref' | 'children' 
   /** Offset size for the menu relative to the anchor. */
   offset?: undefined | UseFloatingElementOptions['offset'],
   
-  /** Enable more precise tracking of the anchor, at the cost of performance. */
+  /** Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
   enablePreciseTracking?: undefined | UseFloatingElementOptions['enablePreciseTracking'],
 };
 /**
@@ -116,6 +122,7 @@ export const MenuMultiProvider = Object.assign(
       selected,
       onSelect,
       role,
+      triggerAction,
       action,
       menuSize,
       keyboardInteractions,
@@ -145,7 +152,7 @@ export const MenuMultiProvider = Object.assign(
       setIsOpen,
     } = useFloatingElement({
       role,
-      action,
+      triggerAction: triggerAction ?? action,
       keyboardInteractions,
       placement,
       offset,
@@ -205,6 +212,18 @@ export const MenuMultiProvider = Object.assign(
       onSelect?.(itemKeys, selectedOptionsWithDetails(itemKeys));
     }, [selected, selectedOptionsWithDetails, onSelect]);
     
+    // Sync `selected` prop with internal state
+    const selectedSerialized = typeof selected === 'undefined' ? '' : JSON.stringify([...selected.values()]);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Using a serialized version of `selected`.
+    React.useEffect(() => {
+      if (typeof selected !== 'undefined') {
+        selectedLabelsRef.current = new Map([...selected.values()].map(itemKey => {
+          return [itemKey, formatItemLabel?.(itemKey) ?? itemKey];
+        }));
+        setSelectedOptionsInternal(selected);
+      }
+    }, [selectedSerialized, formatItemLabel]);
+    
     const toggleCause = React.useRef<null | 'ArrowUp' | 'ArrowDown'>(null);
     const handleAnchorKeyDown = React.useCallback((event: React.KeyboardEvent) => {
       if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
@@ -228,6 +247,7 @@ export const MenuMultiProvider = Object.assign(
     }, [setIsOpen]);
     
     // Note: memoize this, so that the anchor does not get rerendered every time the floating element position changes
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Should rerender on `selectedOptionsInternal` change.
     const anchor = React.useMemo(() => {
       // FIXME: make `React.HTMLProps<Element>` generic, since not all component props extend from this type
       const anchorProps: AnchorRenderArgs['props'] = (userProps?: undefined | React.HTMLProps<Element>) => {
@@ -281,6 +301,7 @@ export const MenuMultiProvider = Object.assign(
       refs.setReference,
       selectedOptions,
       selectedOptionsWithDetails,
+      selectedOptionsInternal,
     ]);
     
     const handleSelect = React.useCallback((_selectedKeys: Set<ItemKey>, itemDetails: Map<ItemKey, ItemDetails>) => {
@@ -370,6 +391,7 @@ export const MenuMultiProvider = Object.assign(
             floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>,
             //propsRest.ref,
           )}
+          formatItemLabel={formatItemLabel}
           id={listBoxId}
           defaultSelected={defaultSelected}
           selected={selectedOptions}

@@ -40,9 +40,11 @@ To import a component:
 import { Button } from '@fortanix/baklava';
 ```
 
-The package automatically includes CSS through Sass (`.scss`) imports. However, this assumes that you have set up your
-project in such a way that `.scss` imports (as well as assets like images and fonts) are handled. If you're using vite,
-this will be supported out of the box. Otherwise, you may need to configure your bundler accordingly.
+For the styling, add the following import to your main CSS file:
+
+```
+@use '@fortanix/baklava';
+```
 
 Icons are loaded through SVG sprites. This requires some additional setup. If you're using vite, install the
 `vite-plugin-svg-icons` plugin:

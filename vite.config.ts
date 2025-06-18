@@ -38,7 +38,7 @@ export default defineConfig({
       inject: 'body-last',
       customDomId: 'baklava-icon-sprite',
     }),
-    libInjectCss(),
+    //libInjectCss(), // Disabled for now (`.css` import causes issues in vitest)
     
     // Generate `.d.ts` files
     dts({

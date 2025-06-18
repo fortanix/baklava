@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { SolutionSelector } from './SolutionSelector.tsx';
+import { type ItemKey, SolutionSelector } from './SolutionSelector.tsx';
 
 
 type SolutionSelectorArgs = React.ComponentProps<typeof SolutionSelector>;
@@ -26,6 +26,42 @@ export default {
 } satisfies Meta<SolutionSelectorArgs>;
 
 
-export const Standard: Story = {
-  name: 'SolutionSelector',
+export const SolutionSelectorStandard: Story = {
+  args: {
+    solutions: (
+      <>
+        {Array.from({ length: 5 }, (_, index) => `Solution ${index + 1}`).map(name =>
+          <SolutionSelector.Option key={`solution_${name}`} itemKey={`solution_${name}`} icon="badge-assessment" label={name}/>
+        )}
+      </>
+    ),
+    children: selectedSolution => selectedSolution === null ? 'Solutions' : selectedSolution.label
+  },
+};
+
+const SolutionSelectorControlledC = () => {
+  const [selected, setSelected] = React.useState<null | ItemKey>('solution_2');
+  
+  return (
+    <SolutionSelector
+      selected={selected}
+      onSelect={setSelected}
+      formatItemLabel={solutionKey => solutionKey.replace('solution_', 'Solution ')}
+      solutions={
+        Array.from({ length: 30 }, (_, index) => `Solution ${index + 1}`).map((name, index) =>
+          <SolutionSelector.Option
+            key={`solution_${index + 1}`}
+            itemKey={`solution_${index + 1}`}
+            icon="badge-assessment"
+            label={name}
+          />
+        )
+      }
+    >
+      {selectedSolution => selectedSolution === null ? 'Solutions' : selectedSolution.label}
+    </SolutionSelector>
+  );
+};
+export const SolutionSelectorControlled: Story = {
+  render: args => <SolutionSelectorControlledC {...args}/>,
 };

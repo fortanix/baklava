@@ -38,11 +38,10 @@ export const TooltipStandard: Story = {
   },
 };
 
-export const TooltipWithArrow: Story = {
-  args: {
-    arrow: 'bottom',
-  },
-};
+export const TooltipWithArrowBottom: Story = { args: { arrow: 'bottom' } };
+export const TooltipWithArrowLeft: Story = { args: { arrow: 'left' } };
+export const TooltipWithArrowTop: Story = { args: { arrow: 'top' } };
+export const TooltipWithArrowRight: Story = { args: { arrow: 'right' } };
 
 export const TooltipSmall: Story = {
   args: {

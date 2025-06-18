@@ -9,7 +9,7 @@ import * as React from 'react';
 import { Button } from '../../actions/Button/Button.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 
-import { type ItemKey, type ItemDetails, MenuMultiProvider } from './MenuMultiProvider.tsx';
+import { type ItemKey, MenuMultiProvider } from './MenuMultiProvider.tsx';
 
 
 type MenuMultiProviderArgs = React.ComponentProps<typeof MenuMultiProvider>;
@@ -119,24 +119,24 @@ export const MenuMultiProviderWithAction: Story = {
 
 export const MenuMultiProviderWithClickTrigger: Story = {
   args: {
-    action: 'click',
+    triggerAction: 'click',
   },
 };
 
 export const MenuMultiProviderWithFocusTrigger: Story = {
   args: {
-    action: 'focus',
+    triggerAction: 'focus',
   },
 };
 
 export const MenuMultiProviderWithHoverTrigger: Story = {
   args: {
-    action: 'hover',
+    triggerAction: 'hover',
   },
 };
 
 const MenuMultiProviderControlledC = (props: React.ComponentProps<typeof MenuMultiProvider>) => {
-  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(new Set());
+  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(props.defaultSelected ?? new Set());
   return (
     <>
       <p>Selected: {[...selectedOptions].map(itemKey => formatFruitLabel(itemKey)).join(', ') || '(none)'}</p>
@@ -145,30 +145,26 @@ const MenuMultiProviderControlledC = (props: React.ComponentProps<typeof MenuMul
         selected={selectedOptions}
         onSelect={setSelectedOptions}
       />
+      <div>
+        <Button label="Update state"
+          onPress={() => { setSelectedOptions(new Set(['item-razzberry', 'item-strawberry'])); }}
+        />
+      </div>
     </>
   );
 };
 export const MenuMultiProviderControlled: Story = {
   render: args => <MenuMultiProviderControlledC {...args}/>,
 };
-
-const MenuMultiProviderControlledWithDefaultC = (props: React.ComponentProps<typeof MenuMultiProvider>) => {
-  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(new Set([
-    'item-blueberry',
-    'item-cherry',
-    'item-mango',
-  ]));
-  return (
-    <>
-      <p>Selected: {[...selectedOptions].map(itemKey => formatFruitLabel(itemKey)).join(', ') || '(none)'}</p>
-      <MenuMultiProvider
-        {...props}
-        selected={selectedOptions}
-        onSelect={setSelectedOptions}
-      />
-    </>
-  );
-};
 export const MenuMultiProviderControlledWithDefault: Story = {
-  render: args => <MenuMultiProviderControlledWithDefaultC {...args}/>,
+  render: args => (
+    <MenuMultiProviderControlledC
+      {...args}
+      defaultSelected={new Set([
+        'item-blueberry',
+        'item-cherry',
+        'item-mango',
+      ])}
+    />
+  ),
 };
