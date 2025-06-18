@@ -19,5 +19,26 @@
         margin-block-end: calc(-1 * (bk.$spacing-7 - bk.$spacing-2));
       }
     }
+    
+    .bk-page-layout__header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .bk-page-layout__header__actions {
+      display: flex;
+      flex-direction: row;
+      gap: bk.$spacing-7;
+    }
+
+    .bk-page-layout__header__h3 {
+      padding-inline-end: bk.$spacing-10;
+
+      > span {
+        vertical-align: middle;
+      }
+    }
   }
 }

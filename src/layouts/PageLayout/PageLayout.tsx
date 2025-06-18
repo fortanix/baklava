@@ -5,11 +5,54 @@
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../util/componentUtil.ts';
 
-import { PageHeader } from './PageHeader/PageHeader.tsx';
+import { H3, H6 } from '../../typography/Heading/Heading.tsx';
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
+import { TextLine } from '../../components/text/TextLine/TextLine.tsx';
 
 import cl from './PageLayout.module.scss';
 
+
+type PageHeaderProps = React.PropsWithChildren<ComponentProps<'header'> & {
+  /** Whether this component should be unstyled. */
+  unstyled?: undefined | boolean,
+  
+  /** A page title to be displayed. */
+  title?: undefined | string,
+  
+  /** A select to be displayed instead of a title. */
+  titleSelect?: undefined | React.ReactNode;
+}>;
+/**
+ * A page header with a title and action buttons
+ */
+const PageHeader = (props: PageHeaderProps) => {
+  const { unstyled = false, title, titleSelect, children, ...propsRest } = props;
+  
+  return (
+    <header
+      {...propsRest}
+      className={cx(
+        'bk',
+        { [cl['bk-page-layout__header']]: !unstyled },
+        propsRest.className,
+      )}
+    >
+      {title && (
+        <H3 className={cl['bk-page-layout__header__h3']}>
+          <TextLine>{title}</TextLine>
+        </H3>
+      )}
+      {titleSelect && (
+        <H6 className={cl['bk-page-header__select']}>{titleSelect}</H6>
+      )}
+      {children && (
+        <div className={cl['bk-page-layout__header__actions']}>
+          {children}
+        </div>
+      )}
+    </header>
+  );
+};
 
 const PageLayoutNav = (props: React.ComponentProps<'div'>) => (
   <div {...props} className={cx(cl['bk-page-layout__nav'], props.className)}/>
