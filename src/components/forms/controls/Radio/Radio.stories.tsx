@@ -81,3 +81,11 @@ export const RadioLabeled: Story = {
     defaultChecked: false,
   },
 };
+
+export const RadioLabeledDisabled: Story = {
+  render: (args) => <Radio.Labeled label="Label" {...args}/>,
+  args: {
+    defaultChecked: false,
+    disabled: true,
+  },
+};

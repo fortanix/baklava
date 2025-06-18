@@ -60,10 +60,18 @@ const SampleProse = () => {
       <ul>
         <li>List item 1</li>
         <li>List item 2</li>
-        <li> Nested list:
+        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget sem ut neque lobortis pharetra nec vel quam. Etiam sem neque, gravida sed pharetra ut, vehicula quis lectus. Donec ac rhoncus purus. Proin ultricies augue vitae purus feugiat, in ultrices lorem aliquet. Donec eleifend ac dolor a auctor. Cras ac suscipit nibh. Fusce tincidunt iaculis dapibus. Vivamus sit amet neque eu velit tincidunt semper. Donec at magna aliquam mi consectetur imperdiet. Donec pretium placerat quam, in sodales purus porta vitae. Phasellus nisl justo, luctus vel mi vel, sollicitudin euismod neque.</li>
+        <li> Nested unordered list:
+          <ul>
+            <li>Nested list item 1</li>
+            <li>Nested list item 2</li>
+          </ul>
+        </li>
+        <li> Nested ordered list:
           <ol>
             <li>Nested list item 1</li>
             <li>Nested list item 2</li>
+            <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget sem ut neque lobortis pharetra nec vel quam. Etiam sem neque, gravida sed pharetra ut, vehicula quis lectus. Donec ac rhoncus purus. Proin ultricies augue vitae purus feugiat, in ultrices lorem aliquet. Donec eleifend ac dolor a auctor. Cras ac suscipit nibh. Fusce tincidunt iaculis dapibus. Vivamus sit amet neque eu velit tincidunt semper. Donec at magna aliquam mi consectetur imperdiet. Donec pretium placerat quam, in sodales purus porta vitae. Phasellus nisl justo, luctus vel mi vel, sollicitudin euismod neque.</li>
           </ol>
         </li>
       </ul>
@@ -71,11 +79,19 @@ const SampleProse = () => {
       <ol>
         <li>List item 1</li>
         <li>List item 2</li>
-        <li> Nested list:
+        <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget sem ut neque lobortis pharetra nec vel quam. Etiam sem neque, gravida sed pharetra ut, vehicula quis lectus. Donec ac rhoncus purus. Proin ultricies augue vitae purus feugiat, in ultrices lorem aliquet. Donec eleifend ac dolor a auctor. Cras ac suscipit nibh. Fusce tincidunt iaculis dapibus. Vivamus sit amet neque eu velit tincidunt semper. Donec at magna aliquam mi consectetur imperdiet. Donec pretium placerat quam, in sodales purus porta vitae. Phasellus nisl justo, luctus vel mi vel, sollicitudin euismod neque.</li>
+        <li> Nested unordered list:
           <ul>
             <li>Nested list item 1</li>
             <li>Nested list item 2</li>
           </ul>
+        </li>
+        <li> Nested ordered list:
+          <ol>
+            <li>Nested list item 1</li>
+            <li>Nested list item 2</li>
+            <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eget sem ut neque lobortis pharetra nec vel quam. Etiam sem neque, gravida sed pharetra ut, vehicula quis lectus. Donec ac rhoncus purus. Proin ultricies augue vitae purus feugiat, in ultrices lorem aliquet. Donec eleifend ac dolor a auctor. Cras ac suscipit nibh. Fusce tincidunt iaculis dapibus. Vivamus sit amet neque eu velit tincidunt semper. Donec at magna aliquam mi consectetur imperdiet. Donec pretium placerat quam, in sodales purus porta vitae. Phasellus nisl justo, luctus vel mi vel, sollicitudin euismod neque.</li>
+          </ol>
         </li>
       </ol>
       

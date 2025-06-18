@@ -11,7 +11,7 @@
     flex-shrink: 1; // Allow the user menu to shrink inside a parent flexbox
     min-inline-size: 1rem; // Allow it to shrink down to just the icon on small screens
     max-inline-size: 40ch;
-    margin-inline-start: bk.$spacing-2;
+    margin-inline: bk.$spacing-2;
     
     display: flex;
     flex-direction: row;
@@ -23,9 +23,11 @@
     }
     
     > .bk-user-menu__user-name {
-      overflow: hidden;
-      text-wrap: nowrap;
-      text-overflow: ellipsis;
+      @include bk.text-one-line;
+    }
+    
+    .bk-user-menu__caret-icon {
+      margin-inline-start: -0.2em;
     }
   }
 }

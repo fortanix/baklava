@@ -15,7 +15,7 @@ import {
 } from 'date-fns';
 
 import * as React from 'react';
-import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../util/componentUtil.ts';
+import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import { mergeRefs } from '../../../util/reactUtil.ts';
 import { useFocus } from '../../../util/hooks/useFocus.ts';
 
@@ -26,7 +26,7 @@ import { Input } from '../../forms/controls/Input/Input.tsx';
 import { CheckboxGroup } from '../../forms/controls/CheckboxGroup/CheckboxGroup.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 import { type ItemKey, ComboBox } from '../../forms/controls/ComboBox/ComboBox.tsx';
-import { DropdownMenuProvider, type DropdownRef } from '../../overlays/DropdownMenu/DropdownMenuProvider.tsx';
+import { MenuProvider } from '../../overlays/MenuProvider/MenuProvider.tsx';
 import { DateTimePicker } from '../../forms/controls/DateTimePicker/DateTimePicker.tsx';
 
 import * as FQ from './filterQuery.ts';
@@ -418,7 +418,7 @@ const FieldsDropdown = (props: FieldsDropdownProps) => {
   }
 
   const menuItems = Object.entries(fields || {}).map(([fieldName, { label }]) => (
-    <DropdownMenuProvider.Option
+    <MenuProvider.Option
       key={fieldName}
       itemKey={fieldName}
       label={label}
@@ -487,6 +487,7 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
         selected={new Set(selectedAlternatives)}
         onUpdate={set => setSelectedAlternatives(Array.from(set))}
         className={cx(cl['bk-multi-search__alternatives-group'])}
+        contentClassName={cx(cl['bk-multi-search__alternatives-group__content'])}
       >
         {Object.entries(alternatives).map(([key, { label }]) => (
           <CheckboxGroup.Checkbox
@@ -515,7 +516,7 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
 
   const renderSingleSelectAlternatives = () =>
     Object.entries(alternatives).map(([key, { label }]) => (
-      <DropdownMenuProvider.Option
+      <MenuProvider.Option
         key={key}
         itemKey={key}
         label={label}
@@ -525,7 +526,7 @@ const AlternativesDropdown = (props: AlternativesDropdownProps) => {
 
   return (
     <Suggestions
-    className={cx(cl['bk-multi-search__alternatives'])}
+      className={cx(cl['bk-multi-search__alternatives'])}
       label="Alternatives"
       active={isActive}
       elementRef={inputRef}
@@ -800,7 +801,7 @@ const SuggestedKeysDropdown = (props: SuggestedKeysDropdownProps) => {
   const items = (
     <>
       {Object.entries(suggestedKeys || {}).map(([suggestedKey, { label }]) => (
-        <DropdownMenuProvider.Option
+        <MenuProvider.Option
           key={suggestedKey}
           itemKey={suggestedKey}
           label={label}
@@ -878,7 +879,7 @@ const OperatorsDropdown = (props: OperatorsDropdownProps) => {
   const items = operators.map((op) => {
     const operatorSymbol = symbolMap[op] ?? op;
     return (
-      <DropdownMenuProvider.Option
+      <MenuProvider.Option
         className={cx(cl[' bk-multi-search__operator'])}
         key={op}
         itemKey={op}

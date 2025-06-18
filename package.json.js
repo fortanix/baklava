@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 
 const packageConfig = {
   name: '@fortanix/baklava',
-  version: '1.0.0-beta-20250522',
+  version: '1.0.0-beta-20250618',
   license: 'MPL-2.0',
   author: 'Fortanix',
   description: 'Fortanix Baklava design system',
@@ -26,6 +26,7 @@ const packageConfig = {
   type: 'module',
   exports: {
     '.': {
+      'sass': './dist/baklava.css',
       'types': './dist/baklava.d.ts',
       //'require': './dist/baklava.cjs',
       'default': './dist/baklava.js',
@@ -118,7 +119,7 @@ const packageConfig = {
     
     // Static analysis
     'typescript': '^5.7.3',
-    '@types/node': '^22.15.21',
+    '@types/node': '^24.0.0',
     'stylelint': '^16.19.1',
     'stylelint-config-standard-scss': '^15.0.1',
     'stylelint-use-logical': '^2.1.2',
@@ -176,7 +177,7 @@ const packageConfig = {
     'classnames': '^2.5.1',
     'zustand': '^5.0.5',
     
-    '@floating-ui/react': '^0.27.8',
+    '@floating-ui/react': '^0.27.12',
     'react-table': '^7.8.0',
     'react-datepicker': '^8.0.0',
     

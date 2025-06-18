@@ -105,6 +105,38 @@
 
         padding: bk.$spacing-3;
       }
+    }
+    
+    .bk-multi-search__filter-actions {
+      margin-inline-start: auto;
+      flex-shrink: 0;
+      padding-inline-start: bk.$spacing-3;
+      
+      .clear-all {
+        color: bk.$theme-text-link-default;
+
+        &:hover {
+          cursor: pointer;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  .bk-multi-search__operators {
+    .operator {
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  .bk-multi-search__alternatives {
+    .bk-multi-search__alternatives-group {
+      padding: bk.$spacing-3;
+      
+      .bk-multi-search__alternatives-group__content {
+        flex-wrap: nowrap;
+      }
 
       .bk-multi-search__date-time-action {
         padding-block-start: bk.$spacing-3;

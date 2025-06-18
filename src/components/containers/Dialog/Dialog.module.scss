@@ -16,10 +16,6 @@
     
     overflow: hidden;
     
-    // The default `auto` inherits from the parent, which we do not want. In the future if `contain: user-select`
-    // becomes supported, we could use that instead.
-    user-select: text;
-    
     margin: 0;
     padding: 0; // Do not apply padding on the outermost container (do it on the lower level elements instead)
     
@@ -73,6 +69,7 @@
     
     .bk-dialog__content__icon-aside {
       align-self: flex-start;
+      font-size: 1.4em;
       
       @include bk.flex-row($gap: bk.$spacing-3);
     }

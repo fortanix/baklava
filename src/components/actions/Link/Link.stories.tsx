@@ -32,20 +32,24 @@ export default {
 } satisfies Meta<LinkArgs>;
 
 
-export const Standard: Story = {};
+export const LinkStandard: Story = {};
 
-export const Small: Story = {
+export const LinkSmall: Story = {
   args: { size: 'small' },
+};
+
+export const LinkDisabled: Story = {
+  args: { disabled: true, href: 'https://example.com?SHOULD_NOT_NAVIGATE', onClick: undefined },
 };
 
 /**
  * Story to test the visual styling of descender characters like "p" and "y" in combination with the link underline.
  */
-export const Descenders: Story = {
+export const LinkWithDescenders: Story = {
   args: { label: 'parapsychologists' },
 };
 
-export const Scroll: Story = {
+export const LinkWithScroll: Story = {
   render: (args) => (
     <>
       <DummyLink id="anchor">Anchor</DummyLink>

@@ -10,8 +10,10 @@ import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 import { notify } from '../ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { AccountSelector } from '../../../layouts/AppLayout/Header/AccountSelector.tsx';
+import { TooltipProvider } from '../Tooltip/TooltipProvider.tsx';
 
 import { DialogModal } from './DialogModal.tsx';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
 
 
 type DialogModalArgs = React.ComponentProps<typeof DialogModal>;
@@ -93,9 +95,45 @@ export const DialogModalNested: Story = {
   },
 };
 
+export const DialogModalWithTooltip: Story = {
+  args: {
+    title: 'Modal with a tooltip',
+    children: (
+      <TooltipProvider tooltip="Test">
+        Hover over me
+      </TooltipProvider>
+    ),
+  },
+};
+
 export const DialogModalWithToast: Story = {
   args: {
     title: 'Modal with a submodal',
+    className: 'outer',
+    children: (
+      <>
+        <Button kind="primary" onPress={() => { notifyTest(); }}>
+          Trigger toast notification
+        </Button>
+        <DialogModal
+          className="inner"
+          title="Submodal"
+          trigger={({ activate }) => <Button kind="primary" label="Open submodal" onPress={activate}/>}
+        >
+          <p>Test rendering toast notifications over the modal:</p>
+          <Button kind="primary" onPress={() => { notifyTest(); }}>
+            Trigger toast notification
+          </Button>
+        </DialogModal>
+      </>
+    ),
+  },
+};
+
+export const DialogModalFullScreenNested: Story = {
+  args: {
+    title: 'Full-screen modal with a submodal',
+    display: 'full-screen',
     className: 'outer',
     children: (
       <>
@@ -194,7 +232,7 @@ export const DialogModalUncloseable: Story = {
 };
 
 const DialogModalControlledWithRef = (props: React.ComponentProps<typeof DialogModal>) => {
-  const ref = DialogModal.useModalRef(null);
+  const ref = DialogModal.useModalRef();
   
   // biome-ignore lint/correctness/useExhaustiveDependencies: want to only trigger this once
   React.useEffect(() => {
@@ -265,12 +303,20 @@ const DialogModalControlledConfirmation = (props: React.ComponentProps<typeof Di
     actionLabel: 'Delete',
     onConfirm(subject) { setDeleted(deleted => new Set([...deleted, subject.name])); },
     onCancel(subject) { console.log(`Canceled deleting ${subject.name}`); },
+    confirmActionProps: {
+      icon: 'delete',
+    },
   });
   
   return (
     <article className="bk-prose">
       {deleteConfirmer.subject &&
-        <DialogModal {...deleteConfirmer.props} {...props} title="Confirm Delete">
+        <DialogModal
+          {...deleteConfirmer.props}
+          {...props}
+          title="Confirm Delete"
+          iconAside={<Icon.Event event="warning"/>}
+        >
           Are you sure you want to delete "{deleteConfirmer.subject.name}"?
         </DialogModal>
       }

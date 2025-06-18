@@ -9,7 +9,7 @@ import * as React from 'react';
 import { Button } from '../../actions/Button/Button.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 
-import { type ItemDetails, MenuProvider, ItemKey } from './MenuProvider.tsx';
+import { type ItemKey, MenuProvider } from './MenuProvider.tsx';
 
 
 type MenuProviderArgs = React.ComponentProps<typeof MenuProvider>;
@@ -17,20 +17,20 @@ type Story = StoryObj<MenuProviderArgs>;
 
 // Sample options
 const fruits = {
-  apple: 'Apple',
-  apricot: 'Apricot',
-  blueberry: 'Blueberry',
-  cherry: 'Cherry',
-  durian: 'Durian',
-  jackfruit: 'Jackfruit',
-  melon: 'Melon',
-  mango: 'Mango',
-  mangosteen: 'Mangosteen',
-  orange: 'Orange',
-  peach: 'Peach',
-  pineapple: 'Pineapple',
-  razzberry: 'Razzberry',
-  strawberry: 'Strawberry',
+  'item-apple': 'Apple',
+  'item-apricot': 'Apricot',
+  'item-blueberry': 'Blueberry',
+  'item-cherry': 'Cherry',
+  'item-durian': 'Durian',
+  'item-jackfruit': 'Jackfruit',
+  'item-melon': 'Melon',
+  'item-mango': 'Mango',
+  'item-mangosteen': 'Mangosteen',
+  'item-orange': 'Orange',
+  'item-peach': 'Peach',
+  'item-pineapple': 'Pineapple',
+  'item-razzberry': 'Razzberry',
+  'item-strawberry': 'Strawberry',
 };
 type FruitKey = keyof typeof fruits;
 const formatFruitLabel = (itemKey: ItemKey): string => fruits[itemKey as FruitKey] ?? 'UNKNOWN';
@@ -44,7 +44,8 @@ export default {
   argTypes: {
   },
   args: {
-    label: 'Test dropdown menu provider',
+    label: 'Test menu provider',
+    formatItemLabel: formatFruitLabel,
     children: ({ props, selectedOption }) => (
       <Button kind="primary" {...props()}>
         {typeof selectedOption !== 'undefined' ? `Selected: ${selectedOption?.label ?? 'none'}` : 'Open dropdown'}
@@ -63,10 +64,11 @@ export default {
 } satisfies Meta<MenuProviderArgs>;
 
 
-export const MenuProviderStandard: Story = {
+export const MenuProviderStandard: Story = {};
+
+export const MenuProviderWithDefault: Story = {
   args: {
-    formatItemLabel: formatFruitLabel,
-    defaultSelected: 'blueberry',
+    defaultSelected: 'item-blueberry',
   },
 };
 
@@ -77,7 +79,9 @@ export const MenuProviderWithInput: Story = {
         <MenuProvider.Header unstyled itemKey="header-1" label="Input">
           <InputSearch/>
         </MenuProvider.Header>
+        <MenuProvider.Static><input type="file"/></MenuProvider.Static>
         <MenuProvider.Option itemKey="option-1" label="Option 1"/>
+        <MenuProvider.Option itemKey="option-2" label="Option 2"/>
       </>
     ),
   }
@@ -111,37 +115,43 @@ export const MenuProviderWithAction: Story = {
   },
 };
 
-export const MenuProviderWithClickAction: Story = {
+export const MenuProviderWithClickTrigger: Story = {
   args: {
-    action: 'click',
+    triggerAction: 'click',
   },
 };
 
-export const MenuProviderWithFocusAction: Story = {
+export const MenuProviderWithFocusTrigger: Story = {
   args: {
-    action: 'focus',
+    triggerAction: 'focus',
   },
 };
 
-export const MenuProviderWithHoverAction: Story = {
+export const MenuProviderWithHoverTrigger: Story = {
   args: {
-    action: 'hover',
+    triggerAction: 'hover',
   },
 };
 
 const MenuProviderControlledC = (props: React.ComponentProps<typeof MenuProvider>) => {
-  const [selectedOption, setSelectedOption] = React.useState<null | ItemDetails>(null);
+  const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>(props.defaultSelected ?? null);
+  
   return (
     <>
-      <p>Selected: {selectedOption?.label ?? 'none'}</p>
+      <p>Selected: {selectedOption === null ? '(none)' : formatFruitLabel(selectedOption)}</p>
       <MenuProvider
         {...props}
-        selected={selectedOption?.itemKey ?? null}
-        onSelect={(_key, details) => { setSelectedOption(details); }}
+        formatItemLabel={formatFruitLabel}
+        selected={selectedOption}
+        onSelect={setSelectedOption}
       />
+      <div><Button label="Update state" onPress={() => { setSelectedOption('item-strawberry'); }}/></div>
     </>
   );
 };
 export const MenuProviderControlled: Story = {
   render: args => <MenuProviderControlledC {...args}/>,
+};
+export const MenuProviderControlledWithDefault: Story = {
+  render: args => <MenuProviderControlledC {...args} defaultSelected="item-blueberry"/>,
 };

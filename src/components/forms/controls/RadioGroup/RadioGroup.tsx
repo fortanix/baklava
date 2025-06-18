@@ -35,7 +35,7 @@ export const useRadioGroupContext = () => {
 };
 
 
-export type RadioGroupButtonProps = React.ComponentProps<typeof Radio.Labeled> & {
+export type RadioGroupButtonProps = Omit<React.ComponentProps<typeof Radio.Labeled>, 'checked'> & {
   /** The unique key of this radio button within the radio group. */
   radioKey: RadioKey,
 };
@@ -60,9 +60,9 @@ export const RadioGroupButton = ({ radioKey, ...propsRest }: RadioGroupButtonPro
       form={context.formId}
       name={context.name}
       value={radioKey}
-      checked={checked}
       onChange={typeof checked === 'undefined' ? undefined : onChange}
       {...propsRest}
+      checked={checked} // Do not allow this to be overridden
     />
   );
 };
@@ -77,6 +77,9 @@ export type RadioGroupProps = ComponentProps<typeof FieldSet> & {
   /** The human-readable label for the radio group. */
   label?: undefined | React.ReactNode,
   
+  /** The orientation of the label relative to the radio group. */
+  labelOrientation?: ComponentProps<typeof FieldSet>['orientation'],
+  
   /** The default button to select. Only relevant for uncontrolled usage (`selected` is `undefined`). */
   defaultSelected?: undefined | RadioKey,
   
@@ -86,8 +89,8 @@ export type RadioGroupProps = ComponentProps<typeof FieldSet> & {
   /** Event handler which is called when the selected radio button changes. */
   onUpdate?: undefined | ((radioKey: RadioKey) => void),
   
-  /** The orientation of the radio buttons, either vertical or horizontal. Default: 'horizontal'. */
-  orientation?: undefined | 'vertical' | 'horizontal',
+  /** The orientation of the radio buttons, either horizontal or vertical. Default: `"horizontal"`. */
+  orientation?: undefined | 'horizontal' | 'vertical',
 };
 
 /**
@@ -101,6 +104,7 @@ export const RadioGroup = Object.assign(
       form,
       name,
       label,
+      labelOrientation,
       defaultSelected,
       selected,
       onUpdate,
@@ -109,6 +113,12 @@ export const RadioGroup = Object.assign(
     } = props;
     
     const [selectedButton, setSelectedButton] = React.useState<undefined | RadioKey>(selected ?? defaultSelected);
+    
+    React.useEffect(() => {
+      if (typeof selected !== 'undefined') {
+        setSelectedButton(selected);
+      }
+    }, [selected]);
     
     const selectButton = React.useCallback((radioKey: RadioKey) => {
       setSelectedButton(selectedButton => {
@@ -132,6 +142,7 @@ export const RadioGroup = Object.assign(
       <RadioGroupContext value={context}>
         <FieldSet
           legend={label}
+          orientation={labelOrientation}
           role="radiogroup"
           aria-orientation={orientation}
           {...propsRest}
@@ -140,6 +151,7 @@ export const RadioGroup = Object.assign(
             { [cl['bk-radio-group']]: !unstyled },
             { [cl['bk-radio-group--horizontal']]: orientation === 'horizontal' },
             { [cl['bk-radio-group--vertical']]: orientation === 'vertical' },
+            propsRest.className,
           )}
           contentClassName={cl['bk-radio-group__content']}
         >

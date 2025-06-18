@@ -66,6 +66,11 @@ export const ListBoxStandard: Story = {
   },
 };
 
+export const ListBoxShrink: Story = { args: { size: 'shrink' } };
+export const ListBoxSmall: Story = { args: { size: 'small' } };
+export const ListBoxMedium: Story = { args: { size: 'medium' } };
+export const ListBoxLarge: Story = { args: { size: 'large' } };
+
 export const ListBoxEmpty: Story = {
   args: {
     children: null,
@@ -144,19 +149,18 @@ export const ListBoxWithCustomIcon: Story = {
   },
 };
 
-export const ListBoxWithCustomItem: Story = {
+export const ListBoxWithCustomItems: Story = {
   args: {
     children: (
       <>
-        <ListBox.Header unstyled itemKey="item-1" label="Custom Header">
-          <InputSearch/>
-        </ListBox.Header>
-        <ListBox.Action unstyled itemKey="item-2" label="Custom option" onActivate={() => {}}>
-          Custom option
-        </ListBox.Action>
-        <ListBox.Action unstyled itemKey="item-3" label="Another custom option" onActivate={() => {}}>
-          Another custom option
-        </ListBox.Action>
+        <ListBox.Static sticky="start">
+          <InputSearch style={{ flexGrow: 1 }} placeholder="Sticky static item"/>
+        </ListBox.Static>
+        {Array.from({ length: 20 }, (_, i) => i).map(index => // A lot of items to test scroll for sticky item
+          <ListBox.Static key={index}>
+            Static item
+          </ListBox.Static>
+        )}
       </>
     ),
   },
@@ -331,26 +335,29 @@ export const ListBoxMany: Story = {
 
 type ListBoxControlledProps = Omit<React.ComponentProps<typeof ListBox>, 'selected'>;
 const ListBoxControlledC = (props: ListBoxControlledProps) => {
-  const [selectedItem, setSelectedItem] = React.useState<null | ItemKey>(null);
+  const [selectedItem, setSelectedItem] = React.useState<null | ItemKey>(props.defaultSelected ?? null);
   
   return (
     <>
       <p>Selected fruit: {selectedItem ?? <em>none</em>}</p>
-      <ListBox {...props} selected={selectedItem} onSelect={setSelectedItem}/>
+      <ListBox
+        {...props}
+        selected={selectedItem}
+        onSelect={setSelectedItem}
+      >
+        {fruits.map((fruit) =>
+          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
+        )}
+      </ListBox>
+      <Button label="Update state" onPress={() => { setSelectedItem('Strawberry'); }}/>
     </>
   );
 };
 export const ListBoxControlled: Story = {
   render: args => <ListBoxControlledC {...args}/>,
-  args: {
-    children: (
-      <>
-        {fruits.map((fruit) =>
-          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
-        )}
-      </>
-    ),
-  },
+};
+export const ListBoxControlledWithDefault: Story = {
+  render: args => <ListBoxControlledC {...args} defaultSelected="Blueberry"/>,
 };
 
 export const ListBoxInForm: Story = {

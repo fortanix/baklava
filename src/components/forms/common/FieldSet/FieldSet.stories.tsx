@@ -22,7 +22,7 @@ export default {
   },
   argTypes: {},
   args: {
-    legend: 'Field set legend',
+    legend: 'Field set legend:',
     children: (
       <>
         <Checkbox.Labeled label="Control 1"/>
@@ -35,3 +35,15 @@ export default {
 
 
 export const FieldSetStandard: Story = {};
+
+export const FieldSetHorizontal: Story = {
+  args: {
+    orientation: 'horizontal',
+    children: (
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '1.5ch' }}>
+        <Checkbox.Labeled label="Control 1"/>
+        <Checkbox.Labeled label="Control 2"/>
+      </div>
+    ),
+  },
+};

@@ -44,6 +44,8 @@
       --bk-button-color-background: transparent;
       --bk-button-color-text: #{bk.$theme-button-tertiary-text-default};
       
+      padding-inline: 0; // Remove the padding (since tertiary buttons don't have a background
+      
       &:where(.bk-button--card) {
         --bk-button-color-border: transparent;
         --bk-button-color-background: transparent;

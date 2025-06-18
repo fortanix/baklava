@@ -2,19 +2,18 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import * as React from 'react';
+import { classNames as cx } from '../../../util/componentUtil.ts';
 
-import { type LinkProps, Link } from '../Link/Link.tsx';
+import { Link as LinkDefault } from '../Link/Link.tsx';
 import { type ButtonProps, ButtonClassNames } from '../Button/Button.tsx';
 
 
-/**
- * A link, but with the visual appearance of a button.
- */
-export type LinkAsButtonProps = React.PropsWithChildren<ComponentProps<'a'> & {
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
+type LinkProps = React.ComponentProps<typeof LinkDefault>;
+
+type LinkAsButtonProps = LinkProps & {
+  /** A custom `Link` component. Optional. */
+  Link?: undefined | React.ComponentType<LinkProps>,
   
   // Link props
   //size?: LinkProps['size'], // Not relevant
@@ -24,37 +23,41 @@ export type LinkAsButtonProps = React.PropsWithChildren<ComponentProps<'a'> & {
   kind?: NonNullable<ButtonProps['kind']>,
   nonactive?: NonNullable<ButtonProps['nonactive']>,
   disabled?: NonNullable<ButtonProps['disabled']>,
-}>;
-
+  trimmed?: NonNullable<ButtonProps['trimmed']>,
+};
 
 /**
- * Link component, but with the appearance of a button.
+ * Link component, but with the visual appearance of a button.
  */
 export const LinkAsButton = (props: LinkAsButtonProps) => {
   const {
-    unstyled = false,
+    Link = LinkDefault,
     label,
-    kind,
+    kind = 'tertiary',
     nonactive,
     disabled,
+    trimmed,
     ...propsRest
   } = props;
   
   return (
     <Link
+      label={label}
+      size="medium"
       {...propsRest}
       unstyled
-      label={label}
-      className={cx({
-        bk: true,
-        [ButtonClassNames['bk-button']]: !unstyled,
-        [ButtonClassNames['bk-button--primary']]: kind === 'primary',
-        [ButtonClassNames['bk-button--secondary']]: kind === 'secondary',
-        [ButtonClassNames['bk-button--tertiary']]: kind === 'tertiary',
-        [ButtonClassNames['bk-button--nonactive']]: nonactive,
-        [ButtonClassNames['bk-button--disabled']]: disabled,
-      }, props.className)}
-      size="medium"
+      disabled={disabled}
+      className={cx(
+        'bk',
+        ButtonClassNames['bk-button'],
+        { [ButtonClassNames['bk-button--primary']]: kind === 'primary' },
+        { [ButtonClassNames['bk-button--secondary']]: kind === 'secondary' },
+        { [ButtonClassNames['bk-button--tertiary']]: kind === 'tertiary' },
+        { [ButtonClassNames['bk-button--nonactive']]: nonactive },
+        { [ButtonClassNames['bk-button--disabled']]: disabled },
+        { [ButtonClassNames['bk-button--trimmed']]: trimmed },
+        props.className,
+      )}
     />
   );
 };

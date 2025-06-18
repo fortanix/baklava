@@ -20,9 +20,8 @@
     display: flex;
     flex-direction: column;
     
+    /*
     &.bk-app-layout-sidebar--collapsible {
-      //inline-size: calc(var(--bk-sizing-6) * 1.7);
-      
       transition: all 300ms ease-in-out;
       transition-property: width, grid-template-columns;
       
@@ -32,13 +31,8 @@
         background: var(--bk-panel-color-background);
         cursor: pointer;
       }
-      
-      // Customize some components
-      .bk-logo-with-text {
-        margin: var(--bk-sizing-3);
-        block-size: calc(var(--bk-sizing-4) + 18px);
-      }
     }
+    */
     
     // Separators
     hr {

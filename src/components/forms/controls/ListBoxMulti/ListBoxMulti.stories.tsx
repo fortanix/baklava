@@ -65,6 +65,11 @@ export default {
 
 export const ListBoxMultiStandard: Story = {};
 
+export const ListBoxMultiShrink: Story = { args: { size: 'shrink' } };
+export const ListBoxMultiSmall: Story = { args: { size: 'small' } };
+export const ListBoxMultiMedium: Story = { args: { size: 'medium' } };
+export const ListBoxMultiLarge: Story = { args: { size: 'large' } };
+
 export const ListBoxMultiEmpty: Story = {
   args: {
     children: null,
@@ -147,20 +152,19 @@ export const ListBoxMultiWithCustomIcon: Story = {
   },
 };
 
-export const ListBoxMultiWithCustomItem: Story = {
+export const ListBoxWithCustomItems: Story = {
   args: {
-    defaultSelected: new Set(),
+    defaultSelected: new Set([]),
     children: (
       <>
-        <ListBoxMulti.Header unstyled itemKey="item-1" label="Custom Header">
-          <InputSearch/>
-        </ListBoxMulti.Header>
-        <ListBoxMulti.Action unstyled itemKey="item-2" label="Custom option" onActivate={() => {}}>
-          Custom option
-        </ListBoxMulti.Action>
-        <ListBoxMulti.Action unstyled itemKey="item-3" label="Another custom option" onActivate={() => {}}>
-          Another custom option
-        </ListBoxMulti.Action>
+        <ListBoxMulti.Static sticky="start">
+          <InputSearch style={{ flexGrow: 1 }} placeholder="Sticky static item"/>
+        </ListBoxMulti.Static>
+        {Array.from({ length: 20 }, (_, i) => i).map(index => // A lot of items to test scroll for sticky item
+          <ListBoxMulti.Static key={index}>
+            Static item
+          </ListBoxMulti.Static>
+        )}
       </>
     ),
   },
@@ -361,17 +365,25 @@ export const ListBoxMultiMany: Story = {
 
 type ListBoxMultiControlledProps<K extends ItemKey> = Omit<React.ComponentProps<typeof ListBoxMulti<K>>, 'selected'>;
 const ListBoxMultiControlledC = (props: ListBoxMultiControlledProps<FruitKey>) => {
-  const [selectedItems, setSelectedItems] = React.useState<Set<FruitKey>>(new Set(['blueberry', 'cherry', 'orange']));
+  const [selectedItems, setSelectedItems] = React.useState<Set<FruitKey>>(props.defaultSelected ?? new Set());
   
   return (
     <>
       <p>Selected fruits: {[...selectedItems].map(key => formatFruitLabel(key)).join(', ') || '(none)'}</p>
       <ListBoxMulti<FruitKey> {...props} selected={new Set(selectedItems.keys())} onSelect={setSelectedItems}/>
+      <Button label="Update state" onPress={() => { setSelectedItems(new Set(['razzberry', 'strawberry'])); }}/>
     </>
   );
 };
 export const ListBoxMultiControlled: Story = {
   render: ({ label, children }) => <ListBoxMultiControlledC label={label}>{children}</ListBoxMultiControlledC>,
+};
+export const ListBoxMultiControlledWithDefault: Story = {
+  render: ({ label, children }) => (
+    <ListBoxMultiControlledC label={label} defaultSelected={new Set(['blueberry', 'cherry', 'orange'])}>
+      {children}
+    </ListBoxMultiControlledC>
+  ),
 };
 
 export const ListBoxMultiInForm: Story = {

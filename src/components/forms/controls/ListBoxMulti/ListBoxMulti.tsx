@@ -7,6 +7,7 @@ import { mergeRefs, mergeCallbacks } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import { useScroller } from '../../../../layouts/util/Scroller.tsx';
 
+import { TextLine } from '../../../text/TextLine/TextLine.tsx';
 import { type IconName, Icon as BkIcon } from '../../../graphics/Icon/Icon.tsx';
 import { Spinner } from '../../../graphics/Spinner/Spinner.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
@@ -48,6 +49,35 @@ export interface ListBoxMultiRef extends HTMLDivElement {
 };
 
 type ListBoxIcon = React.ComponentType<Pick<React.ComponentProps<typeof BkIcon>, 'icon' | 'className' | 'decoration'>>;
+
+
+//
+// Static item
+//
+
+export type StaticProps = ComponentProps<'div'> & {
+  /** Whether this component should be unstyled. */
+  unstyled?: undefined | boolean,
+  
+  /** Whether the item should stick on scroll. Default: false. */
+  sticky?: undefined | false | 'start',
+};
+/**
+ * A static item, that can be customized for any content that does not need to interact with the list box store.
+ */
+export const Static = ({ unstyled, sticky = false, ...propsRest }: StaticProps) => {
+  return (
+    <div
+      {...propsRest}
+      className={cx(
+        { [cl['bk-list-box-multi__item']]: !unstyled },
+        cl['bk-list-box-multi__item--static'],
+        { [cl['bk-list-box-multi__item--sticky-start']]: sticky === 'start' },
+        propsRest.className,
+      )}
+    />
+  );
+};
 
 
 //
@@ -132,7 +162,7 @@ export const Option = (props: OptionProps) => {
           )}
         />
       }
-      <span className={cl['bk-list-box-multi__item__label']}>{propsRest.children ?? label}</span>
+      <TextLine className={cl['bk-list-box-multi__item__label']}>{propsRest.children ?? label}</TextLine>
     </Button>
   );
 };
@@ -263,12 +293,15 @@ export const FooterActions = (props: React.ComponentProps<'div'>) => {
 //
 // List box
 //
-export type ListBoxProps<K extends ItemKey = ItemKey> = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
+export type ListBoxMultiProps<K extends ItemKey = ItemKey> = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
   /** A React ref to pass to the list box element. */
   ref?: undefined | React.Ref<null | ListBoxMultiRef>,
+  
+  /** The (inline) size of the list box. Optional. Default: `medium`. */
+  size?: undefined | 'shrink' | 'small' | 'medium' | 'large',
   
   /** An accessible name for this list box. Required. */
   label: string,
@@ -307,7 +340,7 @@ export type ListBoxProps<K extends ItemKey = ItemKey> = Omit<ComponentProps<'div
   virtualItemKeys?: undefined | null | VirtualItemKeys,
 };
 
-type HiddenSelectedStateProps = Pick<ListBoxProps, 'name' | 'form' | 'inputProps'> & {
+type HiddenSelectedStateProps = Pick<ListBoxMultiProps, 'name' | 'form' | 'inputProps'> & {
   ref: React.Ref<React.ComponentRef<'input'>>,
 };
 /** Hidden input, so that this component can be connected to a <form> element. */
@@ -354,11 +387,12 @@ const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
  * identity and ordering of the full list.
  */
 export const ListBoxMulti = Object.assign(
-  <K extends ItemKey = ItemKey>(props: ListBoxProps<K>) => {
+  <K extends ItemKey = ItemKey>(props: ListBoxMultiProps<K>) => {
     const {
       ref,
       children,
       unstyled = false,
+      size = 'medium',
       label,
       defaultSelected,
       selected,
@@ -395,6 +429,21 @@ export const ListBoxMulti = Object.assign(
       focusedItem: null,
       virtualItemKeys,
     });
+    
+    // Sync `selected` prop to the store
+    const selectedSerialized = typeof selected === 'undefined' ? '' : JSON.stringify([...selected.values()]);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: Using a serialized version of `selected`.
+    React.useEffect(() => {
+      if (typeof selected !== 'undefined') {
+        const state = listBox.store.getState();
+        state.setSelectedItems(selected);
+        
+        const firstItemKey = selected.values().next().value;
+        if (typeof firstItemKey !== 'undefined') {
+          state.focusItem(firstItemKey);
+        }
+      }
+    }, [selectedSerialized, listBox.store]);
     
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
     React.useImperativeHandle<null | ListBoxMultiRef, null | ListBoxMultiRef>(ref, () => {
@@ -483,6 +532,11 @@ export const ListBoxMulti = Object.assign(
             'bk',
             { [cl['bk-list-box-multi']]: !unstyled },
             { [cl['bk-list-box-multi--empty']]: isEmpty },
+            { [cl['bk-list-box-multi--size-shrink']]: size === 'shrink' },
+            { [cl['bk-list-box-multi--size-small']]: size === 'small' },
+            { [cl['bk-list-box-multi--size-medium']]: size === 'medium' },
+            { [cl['bk-list-box-multi--size-large']]: size === 'large' },
+
             listBox.props.className,
             propsRest.className,
           )}
@@ -500,7 +554,7 @@ export const ListBoxMulti = Object.assign(
               className={cx(
                 cl['bk-list-box-multi__item'],
                 cl['bk-list-box-multi__item--static'],
-                cl['bk-list-box-multi__item--loading']
+                cl['bk-list-box-multi__item--loading'],
               )}
             >
               Loading... <Spinner inline size="small"/>
@@ -511,11 +565,12 @@ export const ListBoxMulti = Object.assign(
     );
   },
   {
-    EmptyPlaceholder,
+    Static,
     Option,
     Header,
     Action,
     FooterAction,
     FooterActions,
+    EmptyPlaceholder,
   },
 );

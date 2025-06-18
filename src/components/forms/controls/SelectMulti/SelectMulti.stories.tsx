@@ -46,7 +46,6 @@ export default {
   args: {
     label: 'Test select',
     formatItemLabel: formatFruitLabel,
-    defaultSelected: new Set(['blueberry', 'cherry', 'melon']),
     options: (
       <>
         {Object.entries(fruits).map(([fruitKey, fruitName]) =>
@@ -61,12 +60,24 @@ export default {
 
 export const SelectMultiStandard: Story = {};
 
+export const SelectMultiWithDefault: Story = {
+  args: {
+    defaultSelected: new Set(['blueberry', 'cherry', 'melon']),
+  },
+};
+
 const CustomInput: React.ComponentProps<typeof SelectMulti>['Input'] = props => (
   <Input {...props} icon="bell" iconLabel="Bell"/>
 );
 export const SelectMultiWithCustomInput: Story = {
   args: {
     Input: CustomInput,
+  },
+};
+export const SelectMultiWithCustomInputAndDefault: Story = {
+  args: {
+    Input: CustomInput,
+    defaultSelected: new Set(['blueberry', 'cherry', 'melon']),
   },
 };
 
@@ -76,7 +87,7 @@ export const SelectMultiInScrollContainer: Story = {
   ],
 };
 
-export const SelectWithAutoResize: Story = {
+export const SelectMultiWithAutoResize: Story = {
   args: {
     automaticResize: true,
     label: 'Test select',
@@ -101,15 +112,15 @@ export const SelectWithAutoResize: Story = {
   },
 };
 
-const SelectMultiControlledC = (props: React.ComponentProps<typeof SelectMulti>) => {
-  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(new Set(['blueberry', 'melon']));
+const SelectMultiControlledC = ({ defaultSelected, ...props }: React.ComponentProps<typeof SelectMulti>) => {
+  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(defaultSelected ?? new Set());
   
   return (
     <>
       <div>Selected: {[...selectedOptions].map(key => formatFruitLabel(key as FruitKey)).join(', ')}</div>
       <SelectMulti
         {...props}
-        placeholder="Choose a fruit"
+        placeholder="Choose some fruits"
         options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
           <SelectMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
@@ -121,6 +132,9 @@ const SelectMultiControlledC = (props: React.ComponentProps<typeof SelectMulti>)
 };
 export const SelectMultiControlled: Story = {
   render: args => <SelectMultiControlledC {...args}/>,
+};
+export const SelectMultiControlledWithDefault: Story = {
+  render: args => <SelectMultiControlledC {...args} defaultSelected={new Set(['blueberry', 'cherry', 'mango'])}/>,
 };
 
 export const SelectMultiInForm: Story = {
@@ -142,12 +156,5 @@ export const SelectMultiInForm: Story = {
   args: {
     form: 'story-form',
     name: 'story_component1',
-    options: (
-      <>
-        {Array.from({ length: 8 }, (_, i) => i + 1).map(index =>
-          <SelectMulti.Option key={`option-${index}`} itemKey={`option-${index}`} label={`Option ${index}`}/>
-        )}
-      </>
-    ),
   },
 };

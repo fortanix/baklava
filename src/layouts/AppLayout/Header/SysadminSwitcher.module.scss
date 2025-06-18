@@ -17,6 +17,7 @@
     // Allow to shrink to just the icon
     flex-shrink: 10;
     min-inline-size: calc(var(--icon-size) + 2 * var(--padding-inline));
+    min-block-size: 2lh;
     overflow: hidden;
     
     padding-block: bk.$spacing-1;
@@ -27,8 +28,7 @@
     
     display: grid;
     grid:
-      'icon title' 1.4fr
-      'icon subtitle' 1fr
+      'icon title' 1fr
       / var(--icon-size) 1fr;
     column-gap: 5px;
     
@@ -42,21 +42,32 @@
     }
     
     .bk-sysadmin-switcher__title {
-      align-self: end;
+      align-self: center;
       line-height: 1.4;
       @include bk.text-one-line;
       // Override the `0.3ch` padding from `text-one-line` with an absolute value for better alignment with subtitle
       padding-inline-start: 0.1rem;
       @include bk.font(bk.$font-family-display, $size: bk.$font-size-m);
     }
-    .bk-sysadmin-switcher__subtitle {
-      align-self: start;
-      line-height: 1.2;
-      @include bk.text-one-line;
-      // Override the `0.3ch` padding from `text-one-line` with an absolute value for better alignment with title
-      padding-inline-start: 0.1rem;
-      @include bk.font(bk.$font-family-body, $size: bk.$font-size-xs);
-      color: #9697ab;
+    
+    &:has(> .bk-sysadmin-switcher__subtitle) {
+      grid:
+        'icon title' 1.4fr
+        'icon subtitle' 1fr
+        / var(--icon-size) 1fr;
+      
+      .bk-sysadmin-switcher__title {
+        align-self: end;
+      }
+      .bk-sysadmin-switcher__subtitle {
+        align-self: start;
+        line-height: 1.2;
+        @include bk.text-one-line;
+        // Override the `0.3ch` padding from `text-one-line` with an absolute value for better alignment with title
+        padding-inline-start: 0.1rem;
+        @include bk.font(bk.$font-family-body, $size: bk.$font-size-xs);
+        color: #9697ab;
+      }
     }
   }
 }

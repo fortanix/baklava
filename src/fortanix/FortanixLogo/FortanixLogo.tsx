@@ -31,7 +31,6 @@ export const FortanixLogo = ({ subtitle, subtitleTrademark, ...propsRest }: Logo
         {/* Note: the logo icon should not be announced, do not give it an `alt`. */}
         <img alt="" src={logoIconImage} className="_icon"/>
         <span className="_title">Fortanix</span>
-        <span className="_title-reg">&reg;</span>
         {subtitle &&
           <span className="_subtitle">
             {subtitle}

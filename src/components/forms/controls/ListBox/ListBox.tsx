@@ -7,6 +7,7 @@ import { mergeRefs, mergeCallbacks } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import { useScroller } from '../../../../layouts/util/Scroller.tsx';
 
+import { TextLine } from '../../../text/TextLine/TextLine.tsx';
 import { type IconName, Icon as BkIcon } from '../../../graphics/Icon/Icon.tsx';
 import { Spinner } from '../../../graphics/Spinner/Spinner.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
@@ -44,6 +45,35 @@ export interface ListBoxRef extends HTMLDivElement {
 };
 
 type ListBoxIcon = React.ComponentType<Pick<React.ComponentProps<typeof BkIcon>, 'icon' | 'className' | 'decoration'>>;
+
+
+//
+// Static item
+//
+
+export type StaticProps = ComponentProps<'div'> & {
+  /** Whether this component should be unstyled. */
+  unstyled?: undefined | boolean,
+  
+  /** Whether the item should stick on scroll. Default: false. */
+  sticky?: undefined | false | 'start',
+};
+/**
+ * A static item, that can be customized for any content that does not need to interact with the list box store.
+ */
+export const Static = ({ unstyled, sticky = false, ...propsRest }: StaticProps) => {
+  return (
+    <div
+      {...propsRest}
+      className={cx(
+        { [cl['bk-list-box__item']]: !unstyled },
+        cl['bk-list-box__item--static'],
+        { [cl['bk-list-box__item--sticky-start']]: sticky === 'start' },
+        propsRest.className,
+      )}
+    />
+  );
+};
 
 
 //
@@ -116,7 +146,7 @@ export const Option = (props: OptionProps) => {
           )}
         />
       }
-      <span className={cl['bk-list-box__item__label']}>{propsRest.children ?? label}</span>
+      <TextLine className={cl['bk-list-box__item__label']}>{propsRest.children ?? label}</TextLine>
     </Button>
   );
 };
@@ -255,6 +285,9 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
   /** A React ref to pass to the list box element. */
   ref?: undefined | React.Ref<null | ListBoxRef>,
   
+  /** The (inline) size of the list box. Optional. Default: `medium`. */
+  size?: undefined | 'shrink' | 'small' | 'medium' | 'large',
+  
   /** An accessible name for this list box. Required. */
   label: string,
   
@@ -339,6 +372,7 @@ export const ListBox = Object.assign(
       ref,
       children,
       unstyled = false,
+      size = 'medium',
       label,
       defaultSelected,
       selected = null,
@@ -375,6 +409,15 @@ export const ListBox = Object.assign(
       focusedItem: selectedItemKeyDefault,
       virtualItemKeys,
     });
+    
+    // Sync `selected` prop to the store
+    React.useEffect(() => {
+      if (typeof selected !== 'undefined') {
+        const state = listBox.store.getState();
+        state.selectItem(selected);
+        state.focusItem(selected);
+      }
+    }, [selected, listBox.store]);
     
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
     React.useImperativeHandle<null | ListBoxRef, null | ListBoxRef>(ref, () => {
@@ -463,6 +506,10 @@ export const ListBox = Object.assign(
             'bk',
             { [cl['bk-list-box']]: !unstyled },
             { [cl['bk-list-box--empty']]: isEmpty },
+            { [cl['bk-list-box--size-shrink']]: size === 'shrink' },
+            { [cl['bk-list-box--size-small']]: size === 'small' },
+            { [cl['bk-list-box--size-medium']]: size === 'medium' },
+            { [cl['bk-list-box--size-large']]: size === 'large' },
             listBox.props.className,
             propsRest.className,
           )}
@@ -487,11 +534,12 @@ export const ListBox = Object.assign(
     );
   },
   {
-    EmptyPlaceholder,
+    Static,
     Option,
     Header,
     Action,
     FooterAction,
     FooterActions,
+    EmptyPlaceholder,
   },
 );

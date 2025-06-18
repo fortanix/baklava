@@ -7,7 +7,6 @@
 // Note: make sure the following do not emit anything (should only export mixins)
 @use './layers.scss' as layers;
 @use './global/reset.scss' as reset;
-@use './context/variables.scss' as variables;
 @use './global/global.scss' as global;
 @use './context/theming.scss' as theming;
 @use './global/accessibility.scss' as accessibility;
@@ -29,7 +28,6 @@
 @layer accessibility { @include accessibility.styles; }
 
 // Baklava-specific styling
-@layer baklava.base { @include variables.styles; }
 @layer baklava.base { @include global.styles; }
 @layer baklava.theming { @include theming.styles; }
 @layer baklava.prose { @include prose.styles; }

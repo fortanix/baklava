@@ -19,6 +19,7 @@ export { Button } from '../src/components/actions/Button/Button.tsx';
 export { ButtonAsLink } from '../src/components/actions/ButtonAsLink/ButtonAsLink.tsx';
 export { Link } from '../src/components/actions/Link/Link.tsx';
 export { LinkAsButton } from '../src/components/actions/LinkAsButton/LinkAsButton.tsx';
+export { IconButton } from '../src/components/actions/IconButton/IconButton.tsx';
 
 // Containers
 export { Panel } from '../src/components/containers/Panel/Panel.tsx';

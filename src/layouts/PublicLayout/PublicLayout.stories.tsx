@@ -10,7 +10,7 @@ import { H1 } from '../../typography/Heading/Heading.tsx';
 import { Icon } from '../../components/graphics/Icon/Icon.tsx';
 import { Link } from '../../components/actions/Link/Link.tsx';
 import { Button } from '../../components/actions/Button/Button.tsx';
-import { InputSensitive } from '../../components/forms/controls/Input/InputSensitive.tsx';
+import { InputPassword } from '../../components/forms/controls/Input/InputPassword.tsx';
 import { InputField } from '../../components/forms/fields/InputField/InputField.tsx';
 import { SubmitButton } from '../../components/forms/context/SubmitButton/SubmitButton.tsx';
 import { Form } from '../../components/forms/context/Form/Form.tsx';
@@ -51,7 +51,7 @@ export const PublicLayoutStandard: Story = {
       <Form>
         <FormLayout>
           <InputField label="Username" placeholder="email@example.com"/>
-          <InputField Input={InputSensitive} label="Password"/>
+          <InputField Input={InputPassword} label="Password"/>
           <Link href="" style={{ alignSelf: 'end', marginTop: '-0.8lh' }}>Forgot your password?</Link>
           
           <SubmitButton label="Log in"/>

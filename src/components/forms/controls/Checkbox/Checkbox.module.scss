@@ -25,6 +25,15 @@
 }
 
 @layer baklava.components {
+  .bk-checkbox-labeled {
+    @include bk.component-base(bk-checkbox-labeled);
+    
+    &.bk-checkbox-labeled--disabled, fieldset:disabled & {
+      cursor: not-allowed;
+      color: bk.$theme-text-label-disabled;
+    }
+  }
+  
   .bk-checkbox {
     @include bk.component-base(bk-checkbox);
     

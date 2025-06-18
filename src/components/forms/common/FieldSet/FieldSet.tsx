@@ -19,26 +19,61 @@ export type FieldSetProps = React.PropsWithChildren<ComponentProps<'fieldset'> &
   
   /** A human-readable name for this field set. */
   legend?: undefined | React.ReactNode,
+  
+  /** The orientation of the radio buttons, either vertical or horizontal. Default: `"vertical"`. */
+  orientation?: undefined | 'horizontal' | 'vertical',
 }>;
 /**
  * A group of form controls or fields.
  */
 export const FieldSet = (props: FieldSetProps) => {
-  const { unstyled = false, contentClassName, legend, children, ...propsRest } = props;
+  const {
+    children,
+    unstyled = false,
+    contentClassName,
+    legend,
+    orientation = 'vertical',
+    ...propsRest
+  } = props;
+  
+  const renderContent = () => {
+    if (orientation === 'horizontal') {
+      return (
+        <div> {/* Row */}
+          {legend && <legend>{legend}</legend>}
+          
+          <div> {/* Cell */}
+            <div className={cx(cl['bk-field-set__content'], contentClassName)}>
+              {children}
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <>
+          {legend && <legend>{legend}</legend>}
+          
+          <div className={cx(cl['bk-field-set__content'], contentClassName)}>
+            {children}
+          </div>
+        </>
+      )
+    }
+  };
+  
   return (
     <fieldset
       {...propsRest}
       className={cx(
         'bk',
         { [cl['bk-field-set']]: !unstyled },
+        { [cl['bk-field-set--vertical']]: orientation === 'vertical' },
+        { [cl['bk-field-set--horizontal']]: orientation === 'horizontal' },
         propsRest.className,
       )}
     >
-      {legend && <legend>{legend}</legend>}
-      
-      <div className={cx(cl['bk-field-set__content'], contentClassName)}>
-        {children}
-      </div>
+      {renderContent()}
     </fieldset>
   );
 };
