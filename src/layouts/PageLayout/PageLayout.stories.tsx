@@ -50,14 +50,16 @@ const selectOptions = (
   )
 );
 const title2 = (
-  <Select
-    label="Select project"
-    placeholder="Select project"
-    defaultSelected={projects.p1}
-    options={selectOptions}
-    Input={CustomInput}
-    automaticResize
-  />
+  <PageLayout.ScopeSwitcher>
+    <Select
+      label="Select project"
+      placeholder="Select project"
+      defaultSelected={projects.p1}
+      options={selectOptions}
+      Input={CustomInput}
+      automaticResize
+    />
+  </PageLayout.ScopeSwitcher>
 );
 
 const header1 = (
@@ -67,7 +69,7 @@ const header1 = (
 );
 
 const header2 = (
-  <PageLayout.Header titleSelect={title2}>
+  <PageLayout.Header scopeSwitcher={title2}>
     {actions1}
   </PageLayout.Header>
 );

@@ -3,30 +3,31 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 @use '../../styling/defs.scss' as bk;
+@use '../../styling/features/typography.scss' as typography;
 
 @layer baklava.components {
   .bk-page-layout {
     @include bk.component-base(bk-page-layout);
-    
+
     display: flex;
     flex-direction: column;
     gap: bk.$spacing-7;
-    
+
     .bk-page-layout__nav {
       margin-block-start: calc(-1 * (bk.$spacing-7 - bk.$spacing-4));
-      
+
       ul {
         margin-block-end: calc(-1 * (bk.$spacing-7 - bk.$spacing-2));
       }
     }
-    
+
     .bk-page-layout__header {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
     }
-    
+
     .bk-page-layout__header__actions {
       display: flex;
       flex-direction: row;
@@ -39,6 +40,10 @@
       > span {
         vertical-align: middle;
       }
+    }
+
+    .bk-page-layout__header__scope-switcher {
+      @include typography.h6;
     }
   }
 }
