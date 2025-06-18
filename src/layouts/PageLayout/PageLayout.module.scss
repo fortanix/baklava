@@ -12,10 +12,10 @@
     flex-direction: column;
     gap: bk.$spacing-7;
     
-    > [role='tablist'] {
+    .bk-page-layout__nav {
       margin-block-start: calc(-1 * (bk.$spacing-7 - bk.$spacing-4));
       
-      > ul {
+      ul {
         margin-block-end: calc(-1 * (bk.$spacing-7 - bk.$spacing-2));
       }
     }

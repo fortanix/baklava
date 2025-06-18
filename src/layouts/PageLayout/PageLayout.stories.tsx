@@ -97,20 +97,22 @@ const TabWithTrigger = (props: TabWithTriggerProps) => {
   const [activeTabKey, setActiveTabKey] = React.useState<undefined | string>(defaultActiveTabKey);
   
   return (
-    <Tabs onSwitch={setActiveTabKey} activeKey={activeTabKey} {...tabContext}>
-      {options.map(tab => {
-        return (
-          <Tab
-            key={tab.index}
-            data-label={`tab${tab.index}`}
-            tabKey={`tab${tab.index}`}
-            title={`Tab ${tab.index}`}
-            render={() => <PageLayout.Body>Tab {tab.index} contents</PageLayout.Body>}
-            className={tab.className}
-          />
-        )
-      })}
-    </Tabs>
+    <PageLayout.Nav>
+      <Tabs onSwitch={setActiveTabKey} activeKey={activeTabKey} {...tabContext}>
+        {options.map(tab => {
+          return (
+            <Tab
+              key={tab.index}
+              data-label={`tab${tab.index}`}
+              tabKey={`tab${tab.index}`}
+              title={`Tab ${tab.index}`}
+              render={() => <PageLayout.Body>Tab {tab.index} contents</PageLayout.Body>}
+              className={tab.className}
+            />
+          )
+        })}
+      </Tabs>
+    </PageLayout.Nav>
   );
 };
 

@@ -11,6 +11,10 @@ import { Panel } from '../../components/containers/Panel/Panel.tsx';
 import cl from './PageLayout.module.scss';
 
 
+const PageLayoutNav = (props: React.ComponentProps<'div'>) => (
+  <div {...props} className={cx(cl['bk-page-layout__nav'], props.className)}/>
+);
+
 type PageLayoutProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
@@ -35,5 +39,6 @@ export const PageLayout = Object.assign(
   {
     Body: Panel,
     Header: PageHeader,
+    Nav: PageLayoutNav,
   },
 );
