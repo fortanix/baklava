@@ -27,10 +27,6 @@ export default {
   render: (args) => (
     <PageHeader
       {...args}
-      // dummy style to easily see the gap between elements
-      style={{
-        minWidth: 800,
-      }}
     />
   ),
 } satisfies Meta<PageHeaderArgs>;

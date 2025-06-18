@@ -12,15 +12,19 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    
+
     .bk-page-header__actions {
       display: flex;
       flex-direction: row;
       gap: bk.$spacing-7;
     }
-    
-    .bk-page-header__select > div {
-      //border-block-end-width: 0;
+  }
+
+  .bk-page-header__h3 {
+    padding-inline-end: bk.$spacing-10;
+
+    > span {
+      vertical-align: middle;
     }
   }
 }

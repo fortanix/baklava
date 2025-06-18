@@ -41,7 +41,7 @@ export const PageHeader = Object.assign(
         )}
       >
         {title && (
-          <H3>
+          <H3 className={cl['bk-page-header__h3']}>
             <TextLine>{title}</TextLine>
           </H3>
         )}
