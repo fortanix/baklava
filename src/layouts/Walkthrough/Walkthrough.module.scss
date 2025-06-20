@@ -1,0 +1,139 @@
+@use '../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+	.bk-walkthrough{
+			$arrowSize: 8px;
+			$borderColor: #5F5A7C;
+			$backgroundColor: #14152E;
+
+			&-tooltip{     
+					@include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-s);
+					position: absolute;
+					border-radius: bk.$spacing-1;
+					padding: bk.$spacing-4;
+					color: #FBFBFB;
+					min-width: calc(calc(bk.$spacing-8 + bk.$spacing-1) * 10);
+					max-width: calc(calc(bk.$spacing-8 + bk.$spacing-1) * 10);
+					max-height: calc(bk.$spacing-6 * 10);
+					z-index: 1000;
+					
+					& > div:first-child{
+						display: flex;
+						flex-direction: column;
+						gap: bk.$spacing-4;
+						overflow: hidden;
+					}
+
+					&:focus-visible{
+							.bk-walkthrough-tooltip-arrow{
+									border-left: bk.$size-1 solid #ffffff;
+									border-bottom: bk.$size-1 solid #ffffff;
+							}
+					}
+
+					&-header{
+							display: flex;
+							justify-content: space-between;
+							align-items: center;
+							gap: bk.$font-size-xs;
+
+							& h5{
+									margin: 0;
+									font-size: bk.$font-size-m;
+									font-weight: 600;
+									color:#FBFBFB;
+							}
+
+							& .close-icon{
+									height: bk.$font-size-xs;
+									width: bk.$font-size-xs;
+									cursor: pointer;
+							}
+					}
+
+					&-content{
+						  flex: 1;
+							height: 100%;
+							overflow: auto;
+							font-size: bk.$font-size-m;
+							color: #FBFBFB;
+							font-weight: bk.$font-weight-regular;
+					}
+
+					&-footer{
+							display: flex;
+							justify-content: space-between;
+							align-items: center;
+
+							&-step-count{
+									color:#bdbec1;
+									font-size: bk.$font-size-m;
+							}
+
+							&-action-btns{
+									margin-left: auto;
+									display: flex;
+									gap: bk.$spacing-3;
+									align-items: center;
+							}
+					}
+
+					&-arrow{
+							position: absolute;
+							height: bk.$font-size-m;
+							width: bk.$font-size-m;
+							background-color: $backgroundColor;
+							border-left: bk.$size-1 solid $borderColor;
+							border-bottom: bk.$size-1 solid $borderColor;
+
+							&.arrow{
+									&-left-center, &-left-top, &-left-bottom {
+											right: -0.9rem;
+											top: calc(50% - 0.7rem);
+											transform: rotate(225deg);
+									}
+								
+									&-right-center, &-right-top, &-right-bottom {
+										left: -0.9rem;
+										top: calc(50% - 0.7rem);
+										transform: rotate(45deg);
+									}
+									
+									&-center-bottom{
+											top: -0.9rem;
+											left: calc(50% - 0.7rem);
+											transform: rotate(135deg);
+									}
+
+									&-center-top, &-center-center{
+											bottom: -0.9rem;
+											left: calc(50% - 0.7rem);
+											transform: rotate(-45deg);
+									}
+							}         
+						}
+					}
+			&-spotlight{
+					position: fixed;
+					border-radius: bk.$spacing-2;
+					box-shadow: 0 0 0 9999px #00000099 !important;    
+					pointer-events: none;
+					z-index: 1000;
+			}
+
+			&-overlay {
+					position: fixed;
+					top: 0;
+					left: 0;
+					width: 100vw;
+					height: 100vh;
+					background: transparent;
+					z-index: 997; 
+					pointer-events: all; 
+			}
+	}
+
+	.bk-walkthrough-open{
+			overflow: hidden;
+	}
+}
