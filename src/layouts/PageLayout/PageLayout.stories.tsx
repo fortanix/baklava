@@ -29,7 +29,7 @@ export default {
   render: args => <PageLayout {...args}/>,
 } satisfies Meta<PageLayoutArgs>;
 
-const title1 = 'Page Title';
+const title1 = <PageLayout.Heading>Page Title</PageLayout.Heading>;
 const actions1 = (
   <>
     <Button kind="tertiary">Tertiary Button</Button>
@@ -70,13 +70,13 @@ const header1 = (
 );
 
 const header1LongTitle = (
-  <PageLayout.Header title={loremIpsumSentence}>
+  <PageLayout.Header title={<PageLayout.Heading>{loremIpsumSentence}</PageLayout.Heading>}>
     {actions1}
   </PageLayout.Header>
 );
 
 const header2 = (
-  <PageLayout.Header scopeSwitcher={title2}>
+  <PageLayout.Header title={title2}>
     {actions1}
   </PageLayout.Header>
 );

@@ -163,10 +163,14 @@ const actions1 = (
   </>
 );
 
+const title1 = (
+  <PageLayout.Heading>Page Title</PageLayout.Heading>
+);
+
 const contentWithPageLayoutWithTitle = (
   <AppLayout.Content>
     <PageLayout>
-      <PageLayout.Header title="Page Title">
+      <PageLayout.Header title={title1}>
         {actions1}
       </PageLayout.Header>
       <PageLayout.Body>
@@ -204,7 +208,7 @@ const title2 = (
 const contentWithPageLayoutWithSelect = (
   <AppLayout.Content>
     <PageLayout>
-      <PageLayout.Header scopeSwitcher={title2}>
+      <PageLayout.Header title={title2}>
         {actions1}
       </PageLayout.Header>
       <PageLayout.Body>
@@ -259,7 +263,7 @@ const tabs1 = (
 const contentWithPageLayoutWithTabs = (
   <AppLayout.Content>
     <PageLayout>
-      <PageLayout.Header title="Page Title">
+      <PageLayout.Header title={title1}>
         {actions1}
       </PageLayout.Header>
       {tabs1}
