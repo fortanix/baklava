@@ -26,24 +26,21 @@
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-    }
+      gap: bk.$spacing-10;
 
-    .bk-page-layout__header__actions {
-      display: flex;
-      flex-direction: row;
-      gap: bk.$spacing-7;
-    }
-
-    .bk-page-layout__header__h3 {
-      padding-inline-end: bk.$spacing-10;
-
-      > span {
-        vertical-align: middle;
+      .bk-page-layout__header__actions {
+        display: flex;
+        flex-direction: row;
+        gap: bk.$spacing-7;
       }
-    }
 
-    .bk-page-layout__header__scope-switcher {
-      @include typography.h6;
+      .bk-page-layout__header__heading {
+        @include bk.text-one-line;
+      }
+
+      .bk-page-layout__header__scope-switcher {
+        @include typography.h6;
+      }
     }
   }
 }

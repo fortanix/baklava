@@ -7,7 +7,6 @@ import { classNames as cx, type ComponentProps } from '../../util/componentUtil.
 
 import { H3, H6 } from '../../typography/Heading/Heading.tsx';
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
-import { TextLine } from '../../components/text/TextLine/TextLine.tsx';
 
 import cl from './PageLayout.module.scss';
 
@@ -28,7 +27,7 @@ type PageHeaderProps = React.PropsWithChildren<ComponentProps<'header'> & {
   title?: undefined | string,
   
   /** A custom scope switcher to use as a title, such as a select. */
-  scopeSwitcher?: undefined | React.ReactNode;
+  scopeSwitcher?: undefined | React.ReactNode,
 }>;
 /**
  * A page header with a title and action buttons
@@ -46,15 +45,11 @@ const PageHeader = (props: PageHeaderProps) => {
       )}
     >
       {title && (
-        <H3 className={cl['bk-page-layout__header__h3']}>
-          <TextLine>{title}</TextLine>
-        </H3>
+        <H3 className={cl['bk-page-layout__header__heading']}>{title}</H3>
       )}
       {scopeSwitcher}
       {children && (
-        <div className={cl['bk-page-layout__header__actions']}>
-          {children}
-        </div>
+        <div className={cl['bk-page-layout__header__actions']}>{children}</div>
       )}
     </header>
   );

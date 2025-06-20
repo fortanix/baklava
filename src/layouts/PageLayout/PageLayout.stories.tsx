@@ -10,6 +10,7 @@ import { Button } from '../../components/actions/Button/Button.tsx';
 import { Input } from '../../components/forms/controls/Input/Input.tsx';
 import { Select } from '../../components/forms/controls/Select/Select.tsx';
 import { Tabs, Tab } from '../../components/navigations/Tabs/Tabs.tsx';
+import { loremIpsumSentence } from '../../util/storybook/LoremIpsum.tsx';
 
 import { PageLayout } from './PageLayout.tsx';
 
@@ -64,6 +65,12 @@ const title2 = (
 
 const header1 = (
   <PageLayout.Header title={title1}>
+    {actions1}
+  </PageLayout.Header>
+);
+
+const header1LongTitle = (
+  <PageLayout.Header title={loremIpsumSentence}>
     {actions1}
   </PageLayout.Header>
 );
@@ -129,6 +136,17 @@ export const PageLayoutStandard: Story = {
     children: (
       <>
         {header1}
+        {body}
+      </>
+    ),
+  },
+};
+
+export const PageLayoutStandardWithALongTitle: Story = {
+  args: {
+    children: (
+      <>
+        {header1LongTitle}
         {body}
       </>
     ),
