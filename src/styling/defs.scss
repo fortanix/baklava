@@ -25,8 +25,8 @@
 
 @mixin component-base($name) {
   container-name: $name;
-  /* Enable content containment. This enforces that the component's content is isolated from its parents. */
-  /* https://css-tricks.com/lets-take-a-deep-dive-into-the-css-contain-property */
+  // Enable content containment. This enforces that the component's content is isolated from its parents.
+  // https://css-tricks.com/lets-take-a-deep-dive-into-the-css-contain-property
   contain: layout style;
   
   // The following both disallow anything painted outside of the element boundaries, except from things like outlines

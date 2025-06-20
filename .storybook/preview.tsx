@@ -13,6 +13,7 @@ import { addons } from '@storybook/preview-api';
 import { DARK_MODE_EVENT_NAME } from 'storybook-dark-mode';
 import { DocsContainer, Title, Subtitle, Description, Primary, Controls, Stories } from '@storybook/blocks';
 
+import { NuqsAdapter } from 'nuqs/adapters/react';
 import { BaklavaProvider } from '../src/context/BaklavaProvider.tsx';
 
 
@@ -27,7 +28,13 @@ channel.on(DARK_MODE_EVENT_NAME, isDark => { isDarkInitial = isDark; });
 
 const preview = {
   decorators: [
-    Story => <BaklavaProvider><Story/></BaklavaProvider>,
+    Story => (
+      <NuqsAdapter>
+        <BaklavaProvider>
+          <Story/>
+        </BaklavaProvider>
+      </NuqsAdapter>
+    ),
   ],
   
   parameters: {

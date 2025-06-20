@@ -176,6 +176,7 @@ const packageConfig = {
     'react-error-boundary': '^6.0.0',
     'classnames': '^2.5.1',
     'zustand': '^5.0.5',
+    'nuqs': '^2.4.3',
     
     '@floating-ui/react': '^0.27.12',
     'react-table': '^7.8.0',

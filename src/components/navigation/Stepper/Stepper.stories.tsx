@@ -2,9 +2,9 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import type { Meta, StoryObj } from '@storybook/react';
-
 import * as React from 'react';
+
+import type { Meta, StoryObj } from '@storybook/react';
 
 import { Stepper } from './Stepper.tsx';
 
@@ -15,21 +15,37 @@ type Story = StoryObj<StepperArgs>;
 export default {
   component: Stepper,
   parameters: {
-    layout: 'padded',
+    layout: 'centered',
   },
   tags: ['autodocs'],
   argTypes: {
   },
-  args: {},
+  args: {
+    stepperKey: `test-stepper`,
+    label: 'Test stepper',
+    children: (
+      <>
+        {Array.from({ length: 3 }, (_, i) => i).map(index =>
+          <Stepper.Step key={`step-${index + 1}`} stepKey={`step-${index + 1}`} label={`Step ${index + 1}`}/>
+        )}
+      </>
+    ),
+  },
   render: (args) => <Stepper {...args}/>,
 } satisfies Meta<StepperArgs>;
 
 
-export const BreadcrumbsStandard: Story = {
+export const StepperStandard: Story = {};
+
+export const StepperWithCustomCounts: Story = {
   args: {
+    stepperKey: `test-stepper-with-custom-counts`,
+    start: 5, // Start at 5 (instead of 1)
     children: (
       <>
-        <Stepper.Step/>
+        <Stepper.Step stepKey="step-5" label="Step 5"/>
+        <Stepper.Step stepKey="step-10" count={10} label="Step 10"/> {/* Override count */}
+        <Stepper.Step stepKey="step-11" label="Step 11"/> {/* Subsequent steps continue from the previous count */}
       </>
     ),
   },
