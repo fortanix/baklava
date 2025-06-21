@@ -127,6 +127,8 @@ export { Nav } from '../src/layouts/AppLayout/Nav/Nav.tsx';
 export { Sidebar } from '../src/layouts/AppLayout/Sidebar/Sidebar.tsx';
 export { AppLayout } from '../src/layouts/AppLayout/AppLayout.tsx';
 
+export { PageLayout } from '../src/layouts/PageLayout/PageLayout.tsx';
+
 /**
  * Fortanix-specific.
  */

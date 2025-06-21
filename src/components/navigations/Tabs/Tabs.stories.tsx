@@ -73,6 +73,17 @@ export const Standard: StoryWithTrigger = {
   args: { ...BaseStory.args },
 };
 
+// TODO: This seems to not work atm
+// See https://github.com/fortanix/baklava/issues/261
+export const StandardDefaultActive: StoryWithTrigger = {
+  ...BaseStory,
+  name: 'Standard [default active]',
+  args: {
+    ...BaseStory.args,
+    defaultActiveTabKey: '1',
+  },
+};
+
 export const StandardHover: StoryWithTrigger = {
   ...BaseStory,
   name: 'Standard [hover]',

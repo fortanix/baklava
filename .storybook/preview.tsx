@@ -159,7 +159,7 @@ const preview = {
           [
             'FormLayout',
             'DialogLayout',
-            'PublicLayout',
+            'PageLayout',
             'AppLayout',
             [
               'Logo',
@@ -168,6 +168,7 @@ const preview = {
               'Sidebar',
               'Breadcrumbs',
             ],
+            'PublicLayout',
           ],
         ],
       },
