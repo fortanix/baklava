@@ -123,7 +123,7 @@ const packageConfig = {
     'stylelint': '^16.19.1',
     'stylelint-config-standard-scss': '^15.0.1',
     'stylelint-use-logical': '^2.1.2',
-    '@biomejs/biome': '^1.9.4',
+    '@biomejs/biome': '^2.0.5',
     
     // Testing
     'vitest': '^3.1.4',

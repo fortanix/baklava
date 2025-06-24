@@ -76,7 +76,7 @@ export const SolutionSelector = Object.assign(
             <Icon icon="solutions" className={cl['bk-solution-selector__icon']}
               decoration={{ type: 'background-circle' }}
             />
-            {typeof children === 'function' ? children(selectedOption ?? null) : <>Solutions</>}
+            {typeof children === 'function' ? children(selectedOption ?? null) : 'Solutions'}
             <Icon icon="caret-down" className={cl['bk-solution-selector__caret']}/>
           </Button>
         }
