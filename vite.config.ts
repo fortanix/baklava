@@ -11,6 +11,7 @@ import { Features as LightningCssFeatures, browserslistToTargets } from 'lightni
 // Vite plugins
 import dts from 'vite-plugin-dts';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
+import svgr from 'vite-plugin-svgr';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import react from '@vitejs/plugin-react';
 
@@ -30,6 +31,8 @@ export default defineConfig({
   
   plugins: [
     react(),
+    
+    svgr(),
     
     // Handle SVG sprite icons
     createSvgIconsPlugin({
