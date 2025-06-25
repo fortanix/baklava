@@ -28,9 +28,9 @@ export default {
   },
   args: {
     tooltip: <>This is a tooltip</>,
-    children: (props) => <Button {...props()} kind="primary" label="Hover over me" />,
+    children: (props) => <Button {...props()} kind="primary" label="Hover over me"/>,
   },
-  render: (args) => <TooltipProvider {...args} />,
+  render: (args) => <TooltipProvider {...args}/>,
 } satisfies Meta<TooltipProviderArgs>;
 
 
@@ -45,14 +45,14 @@ export const TooltipProviderWithHoverAction: Story = {
 export const TooltipProviderWithClickAction: Story = {
   args: {
     triggerAction: 'click',
-    children: (props) => <Button {...props()} kind="primary" label="Click me" />,
+    children: (props) => <Button {...props()} kind="primary" label="Click me"/>,
   },
 };
 
 export const TooltipProviderWithFocusAction: Story = {
   args: {
     triggerAction: 'focus',
-    children: (props) => <Button {...props()} kind="primary" label="Focus me" />,
+    children: (props) => <Button {...props()} kind="primary" label="Focus me"/>,
   },
 };
 
@@ -123,18 +123,13 @@ export const TooltipLarge: Story = {
 export const TooltipWithScroll: Story = {
   render: () => (
     <>
-      <OverflowTester openDefault lines={5} />
-      <Card>
-        <Card.Heading>hello <TooltipProvider tooltip="Tooltips will auto-reposition when it hits the viewport due to scroll.
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ThisIsAVeryLongStringOfTextWithoutAnySpacesToTestWhetherWeHandleWordBreaksCorrectlyWhenTheTextOverflowsTheContainingElement.
-
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ThisIsAVeryLongStringOfTe">
-          {props => <Button {...props()} kind="primary" label="Scroll me" autoFocus />}
-        </TooltipProvider></Card.Heading>
-      </Card>
-
-
-      <OverflowTester openDefault />
+     <OverflowTester openDefault lines={5}/>
+     
+      <TooltipProvider tooltip="Tooltips will auto-reposition when it hits the viewport due to scroll.">
+        {props => <Button {...props()} kind="primary" label="Scroll me" autoFocus/>}
+      </TooltipProvider>
+      
+      <OverflowTester openDefault/>
     </>
   ),
 };
@@ -162,7 +157,7 @@ export const TooltipInCardHeader: Story = {
 export const TooltipWithFocus: Story = {
   args: {
     tooltip: 'Tooltips will open when the anchor element is focused',
-    children: (props) => <Button {...props()} kind="primary" label="Focus me" autoFocus />,
+    children: (props) => <Button {...props()} kind="primary" label="Focus me" autoFocus/>,
   },
 };
 
@@ -185,7 +180,7 @@ const TooltipWithDrag = () => {
               boundary={boundaryRef.current ?? undefined}
               enablePreciseTracking
             >
-              <Button ref={targetRef} kind="secondary" label="Drag me" autoFocus />
+              <Button ref={targetRef} kind="secondary" label="Drag me" autoFocus/>
             </TooltipProvider>
           }
         </Draggable>
@@ -198,7 +193,7 @@ export const TooltipDraggable: Story = {
     layout: 'fullscreen',
   },
   name: 'Tooltip (draggable anchor)',
-  render: () => <TooltipWithDrag />,
+  render: () => <TooltipWithDrag/>,
 };
 
 export const TooltipEmpty: Story = {
