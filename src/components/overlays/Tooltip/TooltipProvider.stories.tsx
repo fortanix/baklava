@@ -136,21 +136,29 @@ export const TooltipWithScroll: Story = {
 
 
 export const TooltipInCardHeader: Story = {
-  render: () => (
-    <Card >
-      <Card.Heading>
-        TooltipInCardHeader
-        <TooltipProvider tooltip="Tooltips will auto-reposition when it hits the viewport due to scroll.
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ThisIsAVeryLongStringOfTextWithoutAnySpacesToTestWhetherWeHandleWordBreaksCorrectlyWhenTheTextOverflowsTheContainingElement.
+  render: () => {
+    const tooltipText = `
+      This tooltip appears next to the card header icon and provides additional context or guidance.
 
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ThisIsAVeryLongStringOfTe"
-        >
-          <Icon icon='info' />
-        </TooltipProvider>
-      </Card.Heading>
-    </Card>
-  )
-}
+      It auto-repositions if it reaches the edge of the viewport (e.g., when scrolling or on small screens).
+
+      This message also includes a very long string with no spaces to test overflow behavior:
+      ThisIsAVeryLongStringWithoutAnySpacesToTestWhetherWeHandleWordBreaksCorrectlyWhenTheTextOverflowsTheContainingElement.
+    `;
+
+    return (
+      <Card>
+        <Card.Heading>
+          Card Header with Tooltip
+          <TooltipProvider tooltip={tooltipText}>
+            <Icon icon="info" />
+          </TooltipProvider>
+        </Card.Heading>
+      </Card>
+    );
+  }
+};
+
 /**
  * Tooltips should activate on focus.
  */
