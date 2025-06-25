@@ -16,7 +16,7 @@ import { Select } from '../../components/forms/controls/Select/Select.tsx';
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
 import { DialogModal } from '../../components/overlays/DialogModal/DialogModal.tsx';
 import { Breadcrumbs } from '../../components/navigation/Breadcrumbs/Breadcrumbs.tsx';
-import { Tabs, Tab } from '../../components/navigation/Tabs/Tabs.tsx';
+import { Tabs } from '../../components/navigation/Tabs/Tabs.tsx';
 import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
 import { PageLayout } from '../PageLayout/PageLayout.tsx';
 
@@ -238,18 +238,16 @@ const TabWithTrigger = (props: TabWithTriggerProps) => {
   
   return (
     <Tabs onSwitch={setActiveTabKey} activeKey={activeTabKey} {...tabContext}>
-      {options.map(tab => {
-        return (
-          <Tab
-            key={tab.index}
-            data-label={`tab${tab.index}`}
-            tabKey={`tab${tab.index}`}
-            title={`Tab ${tab.index}`}
-            render={() => <PageLayout.Body>Tab {tab.index} contents</PageLayout.Body>}
-            className={tab.className}
-          />
-        )
-      })}
+      {options.map(tab =>
+        <Tabs.Tab
+          key={tab.index}
+          data-label={`tab${tab.index}`}
+          tabKey={`tab${tab.index}`}
+          title={`Tab ${tab.index}`}
+          render={() => <PageLayout.Body>Tab {tab.index} contents</PageLayout.Body>}
+          className={tab.className}
+        />
+      )}
     </Tabs>
   );
 };
