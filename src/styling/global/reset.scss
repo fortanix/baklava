@@ -52,6 +52,15 @@
       overflow-wrap: break-word; // Prevent long words causing overflow
     }
     
+    ol {
+      // Reinstate default counter
+      counter-reset: revert-layer;
+      
+      > li {
+        counter-increment: revert-layer;
+      }
+    }
+    
     button {
       cursor: pointer;
       user-select: none;

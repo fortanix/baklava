@@ -5,15 +5,15 @@
 import { Link } from '../src/components/actions/Link/Link.tsx';
 import { Icon } from '../src/components/graphics/Icon/Icon.tsx';
 import { Panel } from '../src/components/containers/Panel/Panel.tsx';
-
+import { Breadcrumbs } from '../src/components/navigation/Breadcrumbs/Breadcrumbs.tsx';
 import { FortanixLogo } from '../src/fortanix/FortanixLogo/FortanixLogo.tsx';
+
 import { UserMenu } from '../src/layouts/AppLayout/Header/UserMenu.tsx';
 import { AccountSelector } from '../src/layouts/AppLayout/Header/AccountSelector.tsx';
 import { SolutionSelector } from '../src/layouts/AppLayout/Header/SolutionSelector.tsx';
 import { Header } from '../src/layouts/AppLayout/Header/Header.tsx';
 import { Sidebar } from '../src/layouts/AppLayout/Sidebar/Sidebar.tsx';
 import { Nav } from '../src/layouts/AppLayout/Nav/Nav.tsx';
-import { Breadcrumbs } from '../src/layouts/AppLayout/Breadcrumbs/Breadcrumbs.tsx';
 import { AppLayout } from '../src/layouts/AppLayout/AppLayout.tsx';
 
 

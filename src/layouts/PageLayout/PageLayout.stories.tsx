@@ -9,7 +9,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { Input } from '../../components/forms/controls/Input/Input.tsx';
 import { Select } from '../../components/forms/controls/Select/Select.tsx';
-import { Tabs, Tab } from '../../components/navigations/Tabs/Tabs.tsx';
+import { Tabs } from '../../components/navigation/Tabs/Tabs.tsx';
 import { loremIpsumSentence } from '../../util/storybook/LoremIpsum.tsx';
 
 import { PageLayout } from './PageLayout.tsx';
@@ -108,18 +108,16 @@ const TabWithTrigger = (props: TabWithTriggerProps) => {
   return (
     <PageLayout.Nav>
       <Tabs onSwitch={setActiveTabKey} activeKey={activeTabKey} {...tabContext}>
-        {options.map(tab => {
-          return (
-            <Tab
-              key={tab.index}
-              data-label={`tab${tab.index}`}
-              tabKey={`tab${tab.index}`}
-              title={`Tab ${tab.index}`}
-              render={() => <PageLayout.Body>Tab {tab.index} contents</PageLayout.Body>}
-              className={tab.className}
-            />
-          )
-        })}
+        {options.map(tab =>
+          <Tabs.Tab
+            key={tab.index}
+            data-label={`tab${tab.index}`}
+            tabKey={`tab${tab.index}`}
+            title={`Tab ${tab.index}`}
+            render={() => <PageLayout.Body>Tab {tab.index} contents</PageLayout.Body>}
+            className={tab.className}
+          />
+        )}
       </Tabs>
     </PageLayout.Nav>
   );

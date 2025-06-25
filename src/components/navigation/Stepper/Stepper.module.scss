@@ -1,0 +1,182 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-stepper {
+    @include bk.component-base(bk-stepper);
+    
+    --bk-stepper-indicator-size: #{bk.rem-from-px(28)};
+    
+    > ol {
+      display: contents;
+    }
+    
+    display: grid;
+    
+    &.bk-stepper--vertical {
+      grid-auto-flow: row;
+      row-gap: bk.$spacing-9;
+    }
+    &.bk-stepper--horizontal {
+      grid-auto-flow: column;
+      column-gap: bk.$spacing-9;
+    }
+    
+    .bk-stepper__step {
+      cursor: pointer;
+      
+      display: list-item; // Needed for `counter(list-item)`
+      list-style: none; // Disable the default `::marker`
+      color: bk.$theme-stepper-text-disabled;
+      
+      // Note: we need this container element, since we cannot make the `li` a flex container without also losing the
+      // `list-item` counter (including things like `<li value="5">` which is hard to replicate in CSS).
+      .bk-stepper__step__action {
+        // display: grid;
+        // place-content: center;
+        
+        display: flex;
+        align-items: center;
+        gap: bk.$spacing-3;
+        
+        .bk-stepper__step__indicator {
+          // Render as circle
+          flex-shrink: 0;
+          aspect-ratio: 1;
+          inline-size: var(--bk-stepper-indicator-size);
+          border: bk.$size-2 solid #{bk.$theme-stepper-border-disabled};
+          border-radius: 50%;
+          
+          font-weight: bk.$font-weight-bold;
+          font-size: bk.$font-size-m;
+          
+          display: grid;
+          place-content: center;
+          
+          &:empty::before {
+            content: counter(list-item);
+          }
+          
+          .bk-stepper__step__indicator__icon { --keep: ; }
+        }
+        
+        .bk-stepper__step__label { --keep: ; }
+      }
+      
+      // The currently active step
+      &[aria-current="step"] {
+        .bk-stepper__step__action {
+          color: bk.$theme-stepper-text-selected;
+          
+          .bk-stepper__step__indicator {
+            border-color: bk.$theme-stepper-border-default;
+            background-color: bk.$theme-stepper-background-default;
+            color: bk.$theme-stepper-text-selected-number;
+          }
+        }
+      }
+    }
+    
+    
+    
+    
+    /*
+    --bk-stepper-indicator-size: #{bk.rem-from-px(28)};
+    display: flex;
+    
+    > ol {
+      display: contents;
+    }
+    
+    &.bk-stepper--horizontal {
+      flex-direction: row;
+      column-gap: bk.$spacing-9;
+    }
+    
+    &.bk-stepper--vertical {
+      flex-direction: column;
+      row-gap: bk.$spacing-9;
+      
+      // Draw a line between subsequent items
+      li + li .bk-stepper__step__indicator {
+        &::before {
+          content: '';
+          position: absolute;
+          inset-block-start: calc(-1 * bk.$spacing-9 - bk.$size-2);
+          inset-inline-start: calc(50% - bk.$size-2 / 2);
+          inline-size: 0;
+          block-size: bk.$spacing-9;
+          border-inline-start: bk.$size-2 solid bk.$theme-stepper-border-disabled;
+        }
+      }
+    }
+    
+    .bk-stepper__step {
+      cursor: pointer;
+      
+      display: flex;
+      align-items: center;
+      color: bk.$theme-stepper-text-disabled;
+      
+      .bk-stepper__step__indicator {
+        position: relative; // Needed for the vertical line `position: absolute`
+        flex-shrink: 0;
+        
+        margin-inline-end: bk.$spacing-3;
+        aspect-ratio: 1;
+        inline-size: var(--bk-stepper-indicator-size);
+        
+        border: bk.$size-2 solid #{bk.$theme-stepper-border-disabled};
+        border-radius: 50%;
+        font-weight: bk.$font-weight-bold;
+        font-size: bk.$font-size-m;
+        
+        display: grid;
+        place-content: center;
+        
+        .bk-stepper__step__indicator__icon {
+          font-size: bk.$font-size-xs;
+        }
+      }
+      
+      .bk-stepper__step__title {
+        font-size: bk.$font-size-m;
+      }
+      
+      .bk-stepper__step__optional {
+        margin-inline-start: bk.$spacing-2;
+        font-size: bk.$font-size-xs;
+      }
+    }
+    
+    // Any steps we've already visited
+    .bk-stepper__step--checked {
+      color: bk.$theme-stepper-text-selected;
+      
+      .bk-stepper__step__indicator {
+        border-color: bk.$theme-stepper-border-default;
+      }
+    }
+    
+    // The currently active step
+    [aria-current="true"] {
+      .bk-stepper__step {
+        color: bk.$theme-stepper-text-selected;
+        
+        .bk-stepper__step__indicator {
+          border-color: bk.$theme-stepper-border-default;
+          background-color: bk.$theme-stepper-background-default;
+          color: bk.$theme-stepper-text-selected-number;
+        }
+      }
+    }
+    
+    .bk-stepper__step--disabled {
+      cursor: not-allowed;
+    }
+    */
+  }
+}
