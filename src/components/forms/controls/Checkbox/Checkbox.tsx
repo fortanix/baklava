@@ -53,11 +53,11 @@ export const CheckboxLabeled = ({ label, labelProps = {}, ...props }: CheckboxLa
  */
 export const Checkbox = Object.assign(
   (props: CheckboxProps) => {
-    const { unstyled = false, ...propsRest } = props;
+    const { unstyled = false, onUpdate, ...propsRest } = props;
     
     const handleChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-      props.onUpdate?.(event.target.checked);
-    }, [props.onUpdate]);
+      onUpdate?.(event.target.checked);
+    }, [onUpdate]);
     
     return (
       <input
