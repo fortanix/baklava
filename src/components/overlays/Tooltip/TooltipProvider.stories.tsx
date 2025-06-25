@@ -135,6 +135,9 @@ export const TooltipWithScroll: Story = {
 };
 
 
+/**
+ * When a tooltip appears next to the card header with a long string.
+ */
 export const TooltipInCardHeader: Story = {
   render: () => {
     const tooltipText = `
@@ -156,7 +159,7 @@ export const TooltipInCardHeader: Story = {
         </Card.Heading>
       </Card>
     );
-  }
+  },
 };
 
 /**
@@ -172,7 +175,7 @@ export const TooltipWithFocus: Story = {
 const TooltipWithDrag = () => {
   const boundaryRef = React.useRef<React.ComponentRef<'div'>>(null);
   const [boundaryRendered, setBoundaryRendered] = React.useState(false);
-
+  
   React.useEffect(() => {
     if (boundaryRef.current && !boundaryRendered) { setBoundaryRendered(true); }
   }, [boundaryRendered]);
