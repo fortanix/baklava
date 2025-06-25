@@ -46,6 +46,6 @@ export class Timer {
     
     window.clearTimeout(this.#timerHandle);
     this.#timerHandle = null;
-    this.#remaining -= new Date().valueOf() - this.#startedAt.valueOf();
+    this.#remaining -= Date.now()- this.#startedAt.valueOf();
   };
 }

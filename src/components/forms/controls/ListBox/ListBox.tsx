@@ -492,6 +492,7 @@ export const ListBox = Object.assign(
     
     return (
       <listBox.Provider>
+        {/* biome-ignore lint/a11y/noStaticElementInteractions: `onKeyDown` needed as event ancestor (bubbling). */}
         <div
           {...scrollerProps}
           tabIndex={undefined} // Do not make the listbox focusable, use a roving tabindex instead

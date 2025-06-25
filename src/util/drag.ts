@@ -59,16 +59,6 @@ export const useDraggable = <T extends HTMLElement = HTMLElement, H extends HTML
   const initial = React.useRef({ x: 0, y: 0 });
   const limits = React.useRef<undefined | Limits>(undefined);
   
-  const stopDragging = React.useCallback((event: MouseEvent | TouchEvent) => {
-    event.preventDefault();
-    setDragging(false);
-    const newDelta = reposition(event);
-    setPrev(newDelta);
-    if (controlStyle && targetRef.current) {
-      targetRef.current.style.willChange = '';
-    }
-  }, [controlStyle]);
-  
   const reposition = React.useCallback((event: MouseEvent | TouchEvent) => {
     const source =
       ('changedTouches' in event && event.changedTouches[0])
@@ -84,6 +74,16 @@ export const useDraggable = <T extends HTMLElement = HTMLElement, H extends HTML
     
     return newDelta;
   }, [prev]);
+  
+  const stopDragging = React.useCallback((event: MouseEvent | TouchEvent) => {
+    event.preventDefault();
+    setDragging(false);
+    const newDelta = reposition(event);
+    setPrev(newDelta);
+    if (controlStyle && targetRef.current) {
+      targetRef.current.style.willChange = '';
+    }
+  }, [controlStyle, reposition]);
   
   React.useEffect(() => {
     const startDragging = (event: MouseEvent | TouchEvent): void => {

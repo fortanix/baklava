@@ -127,6 +127,7 @@ export const Input = Object.assign(
     }
     
     return (
+      // biome-ignore lint/a11y/noStaticElementInteractions: Visual-only convenience.
       <div
         {...containerProps}
         {...propsExtracted.containerProps}
