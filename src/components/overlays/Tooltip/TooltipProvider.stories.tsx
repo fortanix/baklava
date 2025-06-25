@@ -11,6 +11,8 @@ import { TooltipProvider } from './TooltipProvider.tsx';
 import { TooltipIcon, TooltipItem, TooltipTitle } from './Tooltip.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
+import { Card } from '../../containers/Card/Card.tsx';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
 
 
 type TooltipProviderArgs = React.ComponentProps<typeof TooltipProvider>;
@@ -130,6 +132,34 @@ export const TooltipWithScroll: Story = {
       <OverflowTester openDefault/>
     </>
   ),
+};
+
+
+/**
+ * When a tooltip appears next to the card header with a long string.
+ */
+export const TooltipInCardHeader: Story = {
+  render: () => {
+    const tooltipText = `
+      This tooltip appears next to the card header icon and provides additional context or guidance.
+
+      It auto-repositions if it reaches the edge of the viewport (e.g., when scrolling or on small screens).
+
+      This message also includes a very long string with no spaces to test overflow behavior:
+      ThisIsAVeryLongStringWithoutAnySpacesToTestWhetherWeHandleWordBreaksCorrectlyWhenTheTextOverflowsTheContainingElement.
+    `;
+
+    return (
+      <Card>
+        <Card.Heading>
+          Card Header with Tooltip
+          <TooltipProvider tooltip={tooltipText}>
+            <Icon icon="info" />
+          </TooltipProvider>
+        </Card.Heading>
+      </Card>
+    );
+  },
 };
 
 /**
