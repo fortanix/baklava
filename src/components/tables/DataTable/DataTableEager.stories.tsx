@@ -5,6 +5,9 @@
 import { differenceInDays } from 'date-fns';
 import * as React from 'react';
 
+//import type { Meta, StoryObj } from '@storybook/react';
+import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
+
 import { useEffectAsync } from '../../../util/reactUtil.ts';
 import { delay } from '../util/async_util.ts';
 import { type User, generateData } from '../util/generateData.ts';
@@ -55,6 +58,15 @@ const columns = [
     disableSortBy: false,
     sortType: sortDateTime,
     disableGlobalFilter: false,
+    className: 'user-table__column',
+  },
+  {
+    id: 'comments',
+    // Simulate a mix of small height and long height cells
+    accessor: (_user: User, index: number) => index % 2 === 0 ? <LoremIpsum short/> : null,
+    Header: 'Comments',
+    disableSortBy: true,
+    disableGlobalFilter: true,
     className: 'user-table__column',
   },
 ];

@@ -69,6 +69,9 @@ Note: these mixins are used as part of `.bk-prose`. In order to not break the wo
   &:is(#{$self}--small) {
     font-size: 0.8em;
   }
+  &:is(#{$self}--disabled) {
+    color: vars.$theme-text-link-disabled;
+  }
   
   &:hover, &.pseudo-hover {
     --bk-link-color: #{vars.$theme-text-link-hover};

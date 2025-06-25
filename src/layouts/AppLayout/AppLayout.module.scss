@@ -33,6 +33,7 @@
     display: grid;
     // Note: use `minmax(0, 1fr)` to prevent blowout: https://css-tricks.com/preventing-a-grid-blowout
     grid:
+      'breadcrumbs' max-content
       'content' 1fr
       'footer' max-content
       / minmax(0, 1fr);
@@ -40,12 +41,14 @@
     &:has(> [slot='header']) {
       grid:
         'header' var(--bk-app-layout-header-height)
+        'breadcrumbs' max-content
         'content' 1fr
         'footer' max-content
         / minmax(0, 1fr);
     }
     &:has(> [slot='sidebar']) {
       grid:
+        'sidebar breadcrumbs' max-content
         'sidebar content' 1fr
         'sidebar footer' max-content
         / var(--bk-app-layout-sidebar-width) minmax(0, 1fr);
@@ -53,6 +56,7 @@
     &:has(> [slot='sidebar'], > [slot='sidebar']) {
       grid:
         'header  header' var(--bk-app-layout-header-height)
+        'sidebar breadcrumbs' max-content
         'sidebar content' 1fr
         'sidebar footer' max-content
         / var(--bk-app-layout-sidebar-width) minmax(0, 1fr);
@@ -60,6 +64,7 @@
     
     > [slot='header'] { grid-area: header; }
     > [slot='sidebar'] { grid-area: sidebar; }
+    > [slot='breadcrumbs'] { grid-area: breadcrumbs; }
     > [slot='content'] { grid-area: content; }
     > [slot='footer'] { grid-area: footer; }
     
@@ -71,7 +76,11 @@
       
       position: sticky;
       inset-block-start: 0;
-      z-index: 1; // Higher than content
+      
+      // Necessary despite the `sticky`, because the page content is a container, which generates a stacking context:
+      // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_positioned_layout/Understanding_z-index/Stacking_context
+      // Should be higher than the sidebar (which has `z-index: 1`), so that it remains under the header during scroll.
+      z-index: 2;
       
       display: grid;
       grid:
@@ -93,7 +102,10 @@
     
     > [slot='sidebar'] {
       container: bk-app-layout__sidebar / inline-size;
-      z-index: 1; // E.g. in case the content overflows over the sidebar
+      
+      // Set a z-index higher than the content, so that overflow from the content (e.g. in case of flex row-reverse)
+      // does not overlay the sidebar. Should be lower than the header since the sidebar should scroll "underneath" it.
+      z-index: 1;
       
       padding-block-end: bk.$spacing-8; // Some padding (e.g. for if the sidebar is larger than the viewport height)
       background: bk.$theme-side-nav-background-default;
@@ -107,6 +119,12 @@
         However, the user can still scroll the fixed sidebar by just scrolling to the bottom of the content.
         */
       }
+    }
+    
+    > [slot='breadcrumbs'] {
+      container: bk-app-layout__breadcrumbs / inline-size;
+      padding: bk.$spacing-5;
+      padding-block-end: calc(bk.$spacing-7 - bk.$spacing-5);
     }
     
     > [slot='content'] {

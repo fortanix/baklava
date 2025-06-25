@@ -117,19 +117,19 @@ export const MenuProviderWithAction: Story = {
 
 export const MenuProviderWithClickTrigger: Story = {
   args: {
-    action: 'click',
+    triggerAction: 'click',
   },
 };
 
 export const MenuProviderWithFocusTrigger: Story = {
   args: {
-    action: 'focus',
+    triggerAction: 'focus',
   },
 };
 
 export const MenuProviderWithHoverTrigger: Story = {
   args: {
-    action: 'hover',
+    triggerAction: 'hover',
   },
 };
 

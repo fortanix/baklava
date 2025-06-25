@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.0.5/schema.json",
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
@@ -18,23 +18,24 @@
       "trailingCommas": "all"
     }
   },
-  "organizeImports": {
-    "enabled": true
-  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
-    "include": ["app", "src", "tests"],
-    
-    "ignore": [
-      "node_modules",
-      "dist",
-      "src/components/tables/MultiSearch/MultiSearch.tsx", // Ignore for now (need to focus on type errors first)
-      "tests/installation"
+    "includes": [
+      "**/app/**",
+      "**/src/**",
+      "**/tests/**",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/src/components/tables/MultiSearch/MultiSearch.tsx",
+      "!**/tests/installation"
     ],
     "rules": {
       "recommended": true,
       "correctness": {
-        //"useExhaustiveDependencies": "off"
+        //"useExhaustiveDependencies": "off",
+        "noUnusedVariables": "off",
+        "noUnusedFunctionParameters": "off"
       },
       "complexity": {
         "noBannedTypes": "off",
@@ -46,6 +47,9 @@
         "useImportType": "off",
         "noUnusedTemplateLiteral": "off",
         "noUselessElse": "off"
+      },
+      "nursery": {
+        "useUniqueElementIds": "off" // Not needed in `.stories.tsx` files
       }
     }
   }

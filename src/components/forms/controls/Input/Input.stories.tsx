@@ -7,7 +7,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import * as React from 'react';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
-import { Icon } from '../../../graphics/Icon/Icon.tsx';
 
 import { Input } from './Input.tsx';
 

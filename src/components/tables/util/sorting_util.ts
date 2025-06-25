@@ -6,14 +6,15 @@ const compareOrdered = (a: number, b: number): number => {
   return a === b ? 0 : a > b ? 1 : -1;
 };
 
+type Values = Record<string, unknown>;
+
 // Sort by JS `Date`
 // Note: builtin react-table `datetime` sort method does not handle dates that may be undefined/null:
 //   https://github.com/tannerlinsley/react-table/blob/master/src/sortTypes.js
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export const sortDateTime = (row1: { values: any }, row2: { values: any }, columnId: string) => {
+export const sortDateTime = (row1: { values: Values }, row2: { values: Values }, columnId: string) => {
   const cell1 = row1.values[columnId];
   const cell2 = row2.values[columnId];
-
+  
   if (!(cell1 instanceof Date) && !(cell2 instanceof Date)) {
     return 0;
   }
@@ -23,6 +24,6 @@ export const sortDateTime = (row1: { values: any }, row2: { values: any }, colum
   if (!(cell2 instanceof Date)) {
     return -1; // Consider a nonexisting date to come *after* an existing date
   }
-
+  
   return compareOrdered(cell1.getTime(), cell2.getTime());
 };

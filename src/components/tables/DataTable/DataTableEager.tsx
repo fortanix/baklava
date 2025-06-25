@@ -93,8 +93,8 @@ export const TableProviderEager = <D extends object>(props: TableProviderEagerPr
   );
   
   // Note: the `table` reference is mutated, so cannot use it as dependency for `useMemo` directly
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-    const context = React.useMemo<TableContextState<D>>(() => ({
+  // biome-ignore lint/correctness/useExhaustiveDependencies: (See above.)
+  const context = React.useMemo<TableContextState<D>>(() => ({
     status: { ready: isReady, loading: false, error: null },
     setStatus() {},
     reload() {},
