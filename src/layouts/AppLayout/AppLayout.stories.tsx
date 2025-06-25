@@ -11,20 +11,23 @@ import { OverflowTester } from '../../util/storybook/OverflowTester.tsx';
 import { notify } from '../../components/overlays/ToastProvider/ToastProvider.tsx';
 import { Tag } from '../../components/text/Tag/Tag.tsx';
 import { Button } from '../../components/actions/Button/Button.tsx';
+import { Input } from '../../components/forms/controls/Input/Input.tsx';
+import { Select } from '../../components/forms/controls/Select/Select.tsx';
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
 import { DialogModal } from '../../components/overlays/DialogModal/DialogModal.tsx';
 import { Breadcrumbs } from '../../components/navigation/Breadcrumbs/Breadcrumbs.tsx';
-
-import { Header } from './Header/Header.tsx';
-import { Sidebar } from './Sidebar/Sidebar.tsx';
+import { Tabs, Tab } from '../../components/navigation/Tabs/Tabs.tsx';
 import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
-import { Nav } from './Nav/Nav.tsx';
-import { UserMenu } from './Header/UserMenu.tsx';
-import { SolutionSelector } from './Header/SolutionSelector.tsx';
+import { PageLayout } from '../PageLayout/PageLayout.tsx';
+
 import { AccountSelector } from './Header/AccountSelector.tsx';
+import { SolutionSelector } from './Header/SolutionSelector.tsx';
+import { UserMenu } from './Header/UserMenu.tsx';
+import { Header } from './Header/Header.tsx';
 import { SysadminSwitcher } from './Header/SysadminSwitcher.tsx';
+import { Nav } from './Nav/Nav.tsx';
+import { Sidebar } from './Sidebar/Sidebar.tsx';
 import { AppLayout } from './AppLayout.tsx';
-import { Select } from '../../components/forms/controls/Select/Select.tsx';
 
 
 type AppLayoutArgs = React.ComponentProps<typeof AppLayout>;
@@ -111,12 +114,17 @@ const sidebar1 = (
   </AppLayout.Sidebar>
 );
 
-const content1 = (
-  <AppLayout.Content>
+const breadcrumbs1 = (
+  <AppLayout.Breadcrumbs>
     <Breadcrumbs>
       <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Fortanix Armor"/>
       <Breadcrumbs.Item Link={DummyBkLinkWithNotify} href="/" label="Dashboard" active/>
     </Breadcrumbs>
+  </AppLayout.Breadcrumbs>
+);
+
+const content1 = (
+  <AppLayout.Content>
     <Panel>
       <Panel.Heading>Panel</Panel.Heading>
       
@@ -147,6 +155,122 @@ const content1 = (
   </AppLayout.Content>
 );
 
+const actions1 = (
+  <>
+    <Button kind="tertiary">Tertiary Button</Button>
+    <Button kind="secondary">Secondary Button</Button>
+    <Button kind="primary">Primary Button</Button>
+  </>
+);
+
+const title1 = (
+  <PageLayout.Heading>Page Title</PageLayout.Heading>
+);
+
+const contentWithPageLayoutWithTitle = (
+  <AppLayout.Content>
+    <PageLayout>
+      <PageLayout.Header title={title1}>
+        {actions1}
+      </PageLayout.Header>
+      <PageLayout.Body>
+        <p>Content Area</p>
+      </PageLayout.Body>
+    </PageLayout>
+  </AppLayout.Content>
+);
+
+const CustomInput: React.ComponentProps<typeof Select>['Input'] = props => (
+  <Input {...props} icon="bell" iconLabel="Bell"/>
+);
+const projects = {
+  p1: 'Connection/Project name',
+  p2: 'Connection/Project name 2',
+  p3: 'Connection/Project name 3',
+};
+const selectOptions = (
+  Object.entries(projects).map(([projectKey, projectName]) =>
+    <Select.Option key={projectKey} itemKey={projectKey} label={projectName}/>
+  )
+);
+const title2 = (
+  <PageLayout.ScopeSwitcher>
+    <Select
+      label="Select project"
+      placeholder="Select project"
+      defaultSelected={projects.p1}
+      options={selectOptions}
+      Input={CustomInput}
+    />
+  </PageLayout.ScopeSwitcher>
+);
+
+const contentWithPageLayoutWithSelect = (
+  <AppLayout.Content>
+    <PageLayout>
+      <PageLayout.Header title={title2}>
+        {actions1}
+      </PageLayout.Header>
+      <PageLayout.Body>
+        <p>Content Area</p>
+      </PageLayout.Body>
+    </PageLayout>
+  </AppLayout.Content>
+);
+
+type DefaultTabOption = {
+  index: number,
+  className?: string,
+};
+const defaultTabOptions: DefaultTabOption[] = [1,2,3,4].map(index => { 
+  return { index };
+});
+
+type TabsArgs = React.ComponentProps<typeof Tabs>;
+type TabWithTriggerProps = React.PropsWithChildren<Partial<TabsArgs>> & {
+  options?: undefined | Array<DefaultTabOption>,
+  defaultActiveTabKey?: undefined | string,
+};
+const TabWithTrigger = (props: TabWithTriggerProps) => {
+  const { options = defaultTabOptions, defaultActiveTabKey, ...tabContext } = props;
+  
+  const [activeTabKey, setActiveTabKey] = React.useState<undefined | string>(defaultActiveTabKey);
+  
+  return (
+    <Tabs onSwitch={setActiveTabKey} activeKey={activeTabKey} {...tabContext}>
+      {options.map(tab => {
+        return (
+          <Tab
+            key={tab.index}
+            data-label={`tab${tab.index}`}
+            tabKey={`tab${tab.index}`}
+            title={`Tab ${tab.index}`}
+            render={() => <PageLayout.Body>Tab {tab.index} contents</PageLayout.Body>}
+            className={tab.className}
+          />
+        )
+      })}
+    </Tabs>
+  );
+};
+
+// TODO: The defaultActiveTabKey option is not working atm
+// See https://github.com/fortanix/baklava/issues/261
+const tabs1 = (
+  <TabWithTrigger defaultActiveTabKey="1" />
+);
+
+const contentWithPageLayoutWithTabs = (
+  <AppLayout.Content>
+    <PageLayout>
+      <PageLayout.Header title={title1}>
+        {actions1}
+      </PageLayout.Header>
+      {tabs1}
+    </PageLayout>
+  </AppLayout.Content>
+);
+
 const footer1 = (
   <AppLayout.Footer>
     <span className="version">Version: 1.2.2343</span>
@@ -159,7 +283,50 @@ export const AppLayoutStandard: Story = {
       <>
         {header1}
         {sidebar1}
+        {breadcrumbs1}
         {content1}
+        {footer1}
+      </>
+    ),
+  },
+};
+
+export const AppLayoutPageWithTitle: Story = {
+  args: {
+    children: (
+      <>
+        {header1}
+        {sidebar1}
+        {breadcrumbs1}
+        {contentWithPageLayoutWithTitle}
+        {footer1}
+      </>
+    ),
+  },
+};
+
+export const AppLayoutPageWithSelect: Story = {
+  args: {
+    children: (
+      <>
+        {header1}
+        {sidebar1}
+        {breadcrumbs1}
+        {contentWithPageLayoutWithSelect}
+        {footer1}
+      </>
+    ),
+  },
+};
+
+export const AppLayoutPageWithTabs: Story = {
+  args: {
+    children: (
+      <>
+        {header1}
+        {sidebar1}
+        {breadcrumbs1}
+        {contentWithPageLayoutWithTabs}
         {footer1}
       </>
     ),
@@ -171,6 +338,7 @@ export const AppLayoutWithoutSidebar: Story = {
     children: (
       <>
         {header1}
+        {breadcrumbs1}
         {content1}
         {footer1}
       </>
@@ -183,6 +351,7 @@ export const AppLayoutWithoutHeader: Story = {
     children: (
       <>
         {sidebar1}
+        {breadcrumbs1}
         {content1}
         {footer1}
       </>

@@ -5,7 +5,7 @@
 import * as React from 'react';
 
 import { TopLayerManager } from '../components/util/overlays/TopLayerManager.tsx';
-import { ToastProvider, notify } from '../components/overlays/ToastProvider/ToastProvider.tsx';
+import { ToastProvider } from '../components/overlays/ToastProvider/ToastProvider.tsx';
 
 
 /*

@@ -70,7 +70,7 @@ Note: these mixins are used as part of `.bk-prose`. In order to not break the wo
     font-size: 0.8em;
   }
   &:is(#{$self}--disabled) {
-    color: vars.$theme-text-label-disabled; // FIXME: link-specific token
+    color: vars.$theme-text-link-disabled;
   }
   
   &:hover, &.pseudo-hover {

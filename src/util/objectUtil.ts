@@ -65,7 +65,7 @@ export const hasOwnProp = <O extends object, K extends PropertyKey>(
   obj: O,
   propKey: K,
 ): obj is O & { [key in K]: unknown } =>
-  Object.prototype.hasOwnProperty.call(obj, propKey);
+  Object.hasOwn(obj, propKey);
 
 
 // Map over the values of the given object

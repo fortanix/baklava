@@ -166,7 +166,7 @@ export class ToastStore {
     if (typeof toast === 'undefined') { return; }
     
     const openedAt: Date = toast.metadata.openedAt;
-    return (new Date().valueOf() - openedAt.valueOf()) >= this.#options.entryAnimationDelay;
+    return (Date.now() - openedAt.valueOf()) >= this.#options.entryAnimationDelay;
   }
   
   pauseAutoClose(toastId: ToastId) {

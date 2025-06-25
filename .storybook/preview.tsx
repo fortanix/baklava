@@ -167,13 +167,14 @@ const preview = {
           [
             'FormLayout',
             'DialogLayout',
-            'PublicLayout',
+            'PageLayout',
             'AppLayout',
             [
               'Header',
               'Nav',
               'Sidebar',
             ],
+            'PublicLayout',
           ],
         ],
       },

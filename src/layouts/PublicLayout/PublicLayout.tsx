@@ -35,10 +35,11 @@ const FortanixArmorLogo = (props: FortanixArmorLogoProps) => {
         propsRest.className,
     )}
     >
-      {/* <FortanixLogo/> */}
-      <img alt="Fortanix" width="180" className={cl['fortanix-logo-image']}
-        src={monochrome ? fortanixLogoMono : fortanixLogo}
-      />
+      {/* <FortanixLogo/> FIXME: no way to scale this by font size currently */}
+      <svg role="img" aria-label="Fortanix" className={cl['fortanix-logo-image']} viewBox="0 0 344 67" width="180">
+        <use href={`${monochrome ? fortanixLogoMono : fortanixLogo}#logo`}/>
+      </svg>
+      
       <span className={cx(cl['product-name'])}>Armor</span>
     </figure>
   );
