@@ -38,7 +38,6 @@ const WALKTHROUGH_STEPS: Step[] = [
     title: "Step 1",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     spotlightPadding: 20,
-    disableScrolling: true,
     placement:"right",
   },
   {
@@ -46,7 +45,6 @@ const WALKTHROUGH_STEPS: Step[] = [
     title: "Step 2",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     spotlightPadding: 20,
-    disableScrolling: true,
     disableWait: true,
     placement:"right",
   },
@@ -55,7 +53,6 @@ const WALKTHROUGH_STEPS: Step[] = [
     title: "Step 3",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     spotlightPadding: 20,
-    disableScrolling: false,
     placement:"right",
   },
   {
@@ -63,7 +60,6 @@ const WALKTHROUGH_STEPS: Step[] = [
     title: "Step 4",
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     spotlightPadding: 20,
-    disableScrolling: false,
     placement:"right",
   },
 ];
@@ -253,10 +249,39 @@ export const WithoutOverlay: Story = {
 export const Scroll: Story = {
   args: {
     stepIndex: 0,
-    steps: WALKTHROUGH_STEPS,
+    steps: [{
+      "target": ".walkthrough-item-1",
+      "title": "Step 1",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "spotlightPadding": 20,
+      'offsetLeft': 50,
+      'offsetTop': 0,
+      "placement": "right"
+    }, {
+      "target": ".walkthrough-item-2",
+      "title": "Step 2",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "spotlightPadding": 20,
+      "disableWait": true,
+      "placement": "bottom"
+    }, {
+      "target": ".walkthrough-item-4",
+      "title": "Step 3",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "spotlightPadding": 20,
+      'offsetTop': 200,
+      'offsetLeft': 300,
+      "placement": "top"
+    }, {
+      "target": ".walkthrough-item-7",
+      "title": "Step 4",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "spotlightPadding": 20,
+      "placement": "right"
+    }],
     children:(
-      <div style={{ maxWidth: "70%", margin: "auto", marginTop: "20px" }}>
-        <Panel style={{ maxHeight: '24lh'}}>
+      <div style={{ maxWidth: "70%", margin: "auto", marginTop: "20px"}}>
+        <Panel style={{ maxHeight: '35lh'}}>
           <div className='walkthrough-item-1' style={{ marginBottom: '20px'}}>
             <Panel.Heading>Panel Heading 1</Panel.Heading>
             <LoremIpsum paragraphs={3}/>
@@ -271,6 +296,18 @@ export const Scroll: Story = {
           </div>
           <div className='walkthrough-item-4' style={{ marginBottom: '20px'}}>
             <Panel.Heading>Panel Heading 4</Panel.Heading>
+            <LoremIpsum paragraphs={3}/>
+          </div>
+          <div className='walkthrough-item-5' style={{ marginBottom: '20px'}}>
+            <Panel.Heading>Panel Heading 5</Panel.Heading>
+            <LoremIpsum paragraphs={3}/>
+          </div>
+          <div className='walkthrough-item-6' style={{ marginBottom: '20px'}}>
+            <Panel.Heading>Panel Heading 6</Panel.Heading>
+            <LoremIpsum paragraphs={3}/>
+          </div>
+          <div className='walkthrough-item-7' style={{ marginBottom: '20px'}}>
+            <Panel.Heading>Panel Heading 7</Panel.Heading>
             <LoremIpsum paragraphs={3}/>
           </div>
         </Panel>

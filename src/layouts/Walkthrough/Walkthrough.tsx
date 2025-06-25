@@ -20,17 +20,13 @@ interface Step {
   /** Optional title displayed in the tooltip header */
   title?: string;
   /** Optional description/content displayed in the tooltip body */
-  description?: string;
+  description?: string | React.ReactElement;
   /** Preferred placement of tooltip relative to target element */
   placement: Placement;
   /** Padding around the highlighted element in pixels (default: 10) */
   spotlightPadding?: number;
   /** Whether to disable the dark overlay backdrop */
   disableOverlay?: boolean;
-  /** Whether to disable scroll locking during this step */
-  disableScrolling?: boolean;
-  /** Custom skip button configuration */
-  customSkip?: { skip: React.ReactNode };
   /** Additional horizontal offset for fine-tuning tooltip position */
   offsetLeft?: number;
   /** Additional vertical offset for fine-tuning tooltip position */
@@ -41,6 +37,14 @@ interface Step {
   styles?: React.CSSProperties;
   /** Custom inline styles applied to the spotlight highlight */
   spotlightStyles?: React.CSSProperties;
+  /**
+   * CSS selector for a custom scrollable container that wraps the target element.
+   * If specified, scrolling will be applied to this container instead of the window.
+   * Useful for elements inside modals or scrollable panels.
+   * 
+   * Example: '.modal-body' or '#scroll-container'
+   */
+  scrollableParent?: string;
 }
 
 /**
@@ -141,7 +145,7 @@ const waitForScrollIntoView = (element: HTMLElement, scrollableParent?: HTMLElem
       }
     }, {
       root: null,
-      threshold: 0.1,
+      threshold: 0.9, // Callback triggers only when 90% or more of the entire element is visible.
     });
 
     observer.observe(element);
@@ -154,24 +158,25 @@ const waitForScrollIntoView = (element: HTMLElement, scrollableParent?: HTMLElem
  * 
  * @param rect - Target element's bounding rectangle
  * @param position - Current tooltip position styles
+ * @param offsetLeft - Optional horizontal offset to fine-tune tooltip position
  * @returns Updated position styles with vertical adjustments
  */
-const getTooltipVerticalPlacement = (rect: DOMRect, position: React.CSSProperties) => {
+const getTooltipVerticalPlacement = (rect: DOMRect, position: React.CSSProperties, offsetTop: number) => {
   let newPos: React.CSSProperties = {};
-  
+
   if (rect.top < 100) {
     // Near top of viewport - align tooltip to top
-    newPos.top = 0;
+    newPos.top = 0 + offsetTop;
   } else if (rect.top > (window.innerHeight - 100)) {
     // Near bottom of viewport - position above element
-    newPos.top = rect.top;
+    newPos.top = rect.top + offsetTop;
     newPos.transform = `translateY(-50%)`;
   } else {
     // Enough space - center tooltip vertically on element
-    newPos.top = rect.top + (rect.height / 2);
+    newPos.top = rect.top + (rect.height / 2) + offsetTop;
     newPos.transform = `translateY(-50%)`;
   }
-  
+
   return { ...position, ...newPos };
 };
 
@@ -181,23 +186,24 @@ const getTooltipVerticalPlacement = (rect: DOMRect, position: React.CSSPropertie
  * 
  * @param rect - Target element's bounding rectangle  
  * @param position - Current tooltip position styles
+ * @param offsetTop - Optional vertical offset to fine-tune tooltip position
  * @returns Updated position styles with horizontal adjustments
  */
-const getTooltipHorizontalPlacement = (rect: DOMRect, position: React.CSSProperties) => {
+const getTooltipHorizontalPlacement = (rect: DOMRect, position: React.CSSProperties, offsetLeft: number) => {
   let newPos: React.CSSProperties = {};
-  
+
   if (rect.left < 180) {
     // Near left edge - align tooltip to left
-    newPos.left = 0;
+    newPos.left = 0 + offsetLeft;
   } else if (rect.left > (window.innerWidth - 372)) {
     // Near right edge - align tooltip to right with padding
-    newPos.left = window.innerWidth - 360 - 12;
+    newPos.left = window.innerWidth - 360 - 12 + offsetLeft;
   } else {
     // Enough space - center tooltip horizontally on element
-    newPos.left = rect.left + (rect.width / 2);
+    newPos.left = rect.left + (rect.width / 2) + offsetLeft;
     newPos.transform = 'translateX(-50%)';
   }
-  
+
   return { ...position, ...newPos };
 };
 
@@ -216,14 +222,53 @@ const WalkthroughPortal: React.FC<{ children: React.ReactNode }> = ({ children }
   return createPortal(children, portal);
 };
 
+/**
+ * Clamps the bounding rectangle of an element to the visible viewport.
+ *
+ * This function adjusts the DOMRect of an element to ensure its dimensions
+ * do not extend beyond the bounds of the current browser viewport.
+ * It is useful when an element is partially off-screen, and you want to
+ * calculate tooltip placement or visibility based only on the visible portion.
+ *
+ * @param rect - The original DOMRect of the target element (from getBoundingClientRect).
+ * @returns A modified DOMRect-like object that is constrained to the visible viewport.
+ *
+ * @example
+ * const rect = element.getBoundingClientRect();
+ * const visibleRect = getCustomRectInViewport(rect);
+ * // Use visibleRect to position tooltips or overlays within view
+ */
+function getCustomRectInViewport(rect: DOMRect): DOMRect {
+  const top = Math.max(1, rect.top);
+  const left = Math.max(1, rect.left);
+  const bottom = Math.min(window.innerHeight, rect.bottom);
+  const right = Math.min(window.innerWidth, rect.right);
+  const width = right - left;
+  const height = bottom - top;
+
+  // Return as a new DOMRect-like object
+  return {
+    top,
+    left,
+    bottom,
+    right,
+    width,
+    height,
+    x: left,
+    y: top,
+    toJSON: () => ({ top, left, bottom, right, width, height }),
+  };
+}
+
 /** Interactive Walkthrough Component */
-const WalkThrough: React.FC<WalkThroughProps> = ({
-  steps,
-  run,
-  stepIndex = 0,
-  callback,
-  renderProps,
-}) => {
+const WalkThrough = (props: WalkThroughProps) => {
+  const {
+    steps,
+    run,
+    stepIndex = 0,
+    callback,
+    renderProps,
+  } = props
   // Core state management
   const [isRun, setIsRun] = React.useState<boolean>(run);
   const [activeStep, setActiveStep] = React.useState(stepIndex);
@@ -241,6 +286,7 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
   // Current step data and derived values
   const currentStep = steps[activeStep];
   const targetElement = currentStep?.target ? document.querySelector(currentStep.target) as HTMLElement : null;
+  const scrollableParentElement = currentStep?.scrollableParent ? document.querySelector(currentStep.scrollableParent) as HTMLElement : null;
   const spotlightPadding = currentStep?.spotlightPadding || 10;
 
   /**
@@ -270,7 +316,7 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
 
     // Clean up any existing observer
     observerRef.current?.disconnect();
-    
+
     // Create new observer to watch for DOM mutations
     observerRef.current = new MutationObserver(() => {
       if (allTargetsExist(steps, target)) {
@@ -298,23 +344,30 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
   React.useEffect(() => {
     if (!targetElement || !run || !targetReady) return;
 
+    enableScrollLock();
     const scrollAndMeasure = async () => {
-      const rect = await waitForScrollIntoView(targetElement as HTMLElement);
+      const rect = await waitForScrollIntoView(targetElement as HTMLElement, scrollableParentElement as HTMLElement);
       const inViewport =
         rect.top >= 0 &&
         rect.left >= 0 &&
         rect.bottom <= window.innerHeight &&
         rect.right <= window.innerWidth;
 
-      setIsInViewport(inViewport);
+      // if (!inViewport) {
+      //Walkthrough guide target bounds partially outside viewport
+      // }
+      const customRect = inViewport ? rect : getCustomRectInViewport(rect);
+      setIsInViewport(true);
 
-      if (inViewport) {
-        setRect(rect);
+      if (customRect) {
+        setRect(customRect);
+      } else {
+        disableScrollLock();
       }
     };
 
     scrollAndMeasure();
-  }, [targetElement, run, targetReady]);
+  }, [targetElement, scrollableParentElement, run, targetReady, enableScrollLock, disableScrollLock]);
 
   // Manage scroll locking and focus preservation
   React.useEffect(() => {
@@ -379,7 +432,7 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
   const handleNextStep = React.useCallback(() => {
     setRect(null);
     const isFinal = activeStep >= steps.length - 1;
-    
+
     if (callback) {
       callback({
         action: isFinal ? 'finished' : 'next',
@@ -389,7 +442,7 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
         waitForTarget,
       });
     }
-    
+
     if (isFinal) {
       setIsRun(false);
     } else {
@@ -411,73 +464,116 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
     setIsRun(false);
   }, [callback, steps, activeStep, waitForTarget]);
 
-  /** Determines optimal placement that keeps tooltip within viewport bounds */
+  /**
+   * Determines the optimal tooltip placement relative to the target element,
+   * ensuring that the tooltip remains within the visible viewport.
+   *
+   * Uses the preferred placement provided in the current step, but gracefully
+   * falls back to alternate positions (left, top, bottom) when there is insufficient
+   * space in the initially requested direction.
+   *
+   * This logic considers the dimensions of the tooltip, spotlight padding, and
+   * available space around the target element to prevent overflow.
+   *
+   * Priority order for fallbacks:
+   * - If placement is 'right' but doesn't fit → try 'left' → then 'top' → then 'bottom'
+   * - If placement is 'left' but doesn't fit → try 'right' → then 'top' → then 'bottom'
+   * - If placement is 'top' but doesn't fit → try 'bottom' → then 'right' → then 'left'
+   * - If placement is 'bottom' but doesn't fit → try 'top' → then 'right' → then 'left'
+   *
+   * @returns {Placement} - The best-fit tooltip placement: 'left', 'right', 'top', or 'bottom'
+   */
   const tooltipPlacement: Placement = React.useMemo(() => {
     if (!currentStep || !rect) return "right";
-    
-    let placement = currentStep?.placement;
-    const tooltipWidthWithPadding = tooltipWidth + arrowSize + spotlightPadding;
-    const screenWidth = window.innerWidth - tooltipWidthWithPadding;
 
-    // Adjust horizontal placements based on available space
-    if (placement === 'left' || placement === 'right') {
-      if (placement === 'right' && rect.left < tooltipWidthWithPadding) {
-        placement = "top";
-      } else if ((rect.left + rect.width) > screenWidth) {
-        placement = "top";
-      }
-    }
-    // Adjust vertical placements based on available space  
-    else if (placement === 'bottom' && rect.top < tooltipHeight) {
-      placement = 'top';
-    } else if (rect.top > (window.innerHeight - tooltipHeight)) {
-      placement = 'bottom';
+    let placement = currentStep.placement;
+    const tooltipBuffer = tooltipWidth + arrowSize + spotlightPadding;
+
+    const fitsRight = rect.right + tooltipBuffer <= window.innerWidth;
+    const fitsLeft = rect.left - tooltipBuffer >= 0;
+    const fitsTop = rect.top - tooltipHeight >= 0;
+    const fitsBottom = rect.bottom + tooltipHeight <= window.innerHeight;
+
+    if (placement === 'right' && !fitsRight) {
+      placement = fitsLeft ? 'left' : (fitsTop ? 'top' : 'bottom');
+    } else if (placement === 'left' && !fitsLeft) {
+      placement = fitsRight ? 'right' : (fitsTop ? 'top' : 'bottom');
+    } else if (placement === 'top' && !fitsTop) {
+      placement = fitsBottom ? 'bottom' : (fitsRight ? 'right' : 'left');
+    } else if (placement === 'bottom' && !fitsBottom) {
+      placement = fitsTop ? 'top' : (fitsRight ? 'right' : 'left');
     }
 
     return placement;
   }, [currentStep, rect, spotlightPadding]);
 
   /**
+   * Determines the appropriate placement for the tooltip's arrow based on the
+   * current tooltip placement relative to the target element.
+   *
+   * The arrow should point **toward** the target element, which is the **opposite**
+   * direction of where the tooltip itself is positioned.
+   *
+   * Example:
+   * - If the tooltip is placed to the 'right' of the target, the arrow should point 'left'.
+   * - If the tooltip is above the target ('top'), the arrow should point 'bottom', and so on.
+   *
+   * This value is typically used for positioning the visual arrow element
+   *
+   * @returns {Placement | undefined} - Opposite direction of tooltipPlacement
+   */
+  const tooltipArrowPlacement = React.useMemo(() => {
+    switch (tooltipPlacement) {
+      case 'right': return 'left';
+      case 'left': return 'right';
+      case 'top': return 'bottom';
+      case 'bottom': return 'top';
+    }
+  }, [tooltipPlacement]);
+
+
+  /**
    * Calculates precise tooltip positioning based on target element and optimal placement
    * 
    * @param rect - Target element's bounding rectangle
    * @param pad - Spotlight padding value
+   * @param offsetLeft - Optional horizontal offset to fine-tune tooltip position
+   * @param offsetTop - Optional vertical offset to fine-tune tooltip position
    * @returns CSS positioning styles for the tooltip
    */
-  const getTooltipPosition = React.useCallback((rect: DOMRect, pad: number): React.CSSProperties => {
+  const getTooltipPosition = React.useCallback((rect: DOMRect, pad: number, offsetLeft: number, offsetTop: number): React.CSSProperties => {
     let position: React.CSSProperties = {};
-    
     // Calculate position based on optimal placement
     switch (tooltipPlacement) {
-      case 'right':
-        position.left = rect.left - arrowSize - pad;
-        position.transform = 'translateX(-100%)';
-        position = getTooltipVerticalPlacement(rect, position);
-        break;
-        
       case 'left':
-        position.left = rect.left + rect.width + pad + arrowSize;
+        position.left = rect.left - (pad + arrowSize + tooltipWidth / 2) + offsetLeft;
+        position.transform = 'translateX(-50%)';
+        position = getTooltipVerticalPlacement(rect, position, offsetTop);
+        break;
+
+      case 'right':
+        position.left = rect.left + rect.width + pad + arrowSize + offsetLeft;
         if (position.left > window.innerWidth) position.left = window.innerWidth / 2;
-        position = getTooltipVerticalPlacement(rect, position);
+        position = getTooltipVerticalPlacement(rect, position, offsetTop);
         break;
-        
-      case 'bottom':
-        position.top = rect.top - pad - arrowSize - tooltipHeight;
-        position = getTooltipHorizontalPlacement(rect, position);
-        break;
-        
+
       case 'top':
-        position.top = rect.bottom + pad + arrowSize;
-        position = getTooltipHorizontalPlacement(rect, position);
+        position.top = rect.top - pad - arrowSize - tooltipHeight + offsetTop;
+        position = getTooltipHorizontalPlacement(rect, position, offsetLeft);
         break;
-        
+
+      case 'bottom':
+        position.top = rect.bottom + pad + arrowSize + offsetTop;
+        position = getTooltipHorizontalPlacement(rect, position, offsetLeft);
+        break;
+
       default:
-        position.left = rect.left + rect.width + pad + arrowSize;
+        position.left = rect.left + rect.width + pad + arrowSize + offsetLeft;
         if (position.left > window.innerWidth) position.left = window.innerWidth / 2;
-        position = getTooltipVerticalPlacement(rect, position);
+        position = getTooltipVerticalPlacement(rect, position, offsetTop);
         break;
     }
-    
+
     return position;
   }, [tooltipPlacement]);
 
@@ -489,69 +585,69 @@ const WalkThrough: React.FC<WalkThroughProps> = ({
       <div className="bk bk-walkthrough" aria-hidden={!isRun}>
         {/* Main overlay container */}
         {!currentStep?.disableOverlay && <div className={cl["bk-walkthrough-overlay"]}>
-            {/* Spotlight highlight around target element */}
-            <div
-              className={cl["bk-walkthrough-spotlight"]}
-              style={{
-                top: rect ? rect.top - spotlightPadding : 0,
-                left: rect ? rect.left - spotlightPadding : 0,
-                width: rect ? rect.width + 2 * spotlightPadding : 0,
-                height: rect ? rect.height + 2 * spotlightPadding : 0,
-                ...(currentStep && currentStep.spotlightStyles ? currentStep.spotlightStyles : {}),
-              }}
-            />
-          </div>}
-          {/* Tooltip content - only render when target is in viewport */}
-          {isInViewport && rect && currentStep && (
-            <Tooltip
-              className={cl["bk-walkthrough-tooltip"]}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="walkthrough-title"
-              aria-describedby="walkthrough-description"
-              arrow={tooltipPlacement}
-              style={{
-                ...getTooltipPosition(rect, spotlightPadding),
-                ...currentStep.styles,
-              }}
-            >
-              {renderProps ? renderProps(currentStep) : (
-                <>
-                  {/* Tooltip header with title and close button */}
-                  <div className={cl["bk-walkthrough-tooltip-header"]}>
-                    <h5 id="walkthrough-title">{currentStep.title}</h5>
-                    <Icon
-                      role="button"
-                      icon="cross"
-                      className={cl["close-icon"]}
-                      onClick={handleSkip}
-                      aria-label="Close Walkthrough"
-                    />
+          {/* Spotlight highlight around target element */}
+          <div
+            className={cl["bk-walkthrough-spotlight"]}
+            style={{
+              top: rect ? rect.top - spotlightPadding : 0,
+              left: rect ? rect.left - spotlightPadding : 0,
+              width: rect ? rect.width + 2 * spotlightPadding : 0,
+              height: rect ? rect.height + 2 * spotlightPadding : 0,
+              ...(currentStep && currentStep.spotlightStyles ? currentStep.spotlightStyles : {}),
+            }}
+          />
+        </div>}
+        {/* Tooltip content - only render when target is in viewport */}
+        {isInViewport && rect && currentStep && (
+          <Tooltip
+            className={cl["bk-walkthrough-tooltip"]}
+            aria-modal="true"
+            aria-labelledby="walkthrough-title"
+            aria-describedby="walkthrough-description"
+            arrow={tooltipArrowPlacement}
+            style={{
+              position: 'fixed',
+              ...getTooltipPosition(rect, spotlightPadding, currentStep?.offsetLeft ?? 0, currentStep?.offsetTop ?? 0),
+              ...currentStep.styles,
+            }}
+          >
+            {renderProps ? renderProps(currentStep) : (
+              <>
+                {/* Tooltip header with title and close button */}
+                <div className={cl["bk-walkthrough-tooltip-header"]}>
+                  <h5 id="walkthrough-title">{currentStep.title}</h5>
+                  <Icon
+                    role="button"
+                    icon="cross"
+                    className={cl["close-icon"]}
+                    onClick={handleSkip}
+                    aria-label="Close Walkthrough"
+                  />
+                </div>
+
+                {/* Tooltip content body */}
+                <div id="walkthrough-description" className={cl["bk-walkthrough-tooltip-content"]}>
+                  {currentStep.description}
+                </div>
+
+                {/* Tooltip footer with navigation controls */}
+                <div className={cl["bk-walkthrough-tooltip-footer"]}>
+                  <div className={cl["bk-walkthrough-tooltip-footer-step-count"]}>
+                    {activeStep + 1}/{steps.length}
                   </div>
-                  
-                  {/* Tooltip content body */}
-                  <div id="walkthrough-description" className={cl["bk-walkthrough-tooltip-content"]}>
-                    {currentStep.description}
+                  <div className={cl["bk-walkthrough-tooltip-footer-action-btns"]}>
+                    {activeStep > 0 && (
+                      <Button onClick={handlePrevStep}>Previous</Button>
+                    )}
+                    <Button onClick={handleNextStep} kind='primary'>
+                      {activeStep < steps.length - 1 ? "Next" : "Finish"}
+                    </Button>
                   </div>
-                  
-                  {/* Tooltip footer with navigation controls */}
-                  <div className={cl["bk-walkthrough-tooltip-footer"]}>
-                    <div className={cl["bk-walkthrough-tooltip-footer-step-count"]}>
-                      {activeStep + 1}/{steps.length}
-                    </div>
-                    <div className={cl["bk-walkthrough-tooltip-footer-action-btns"]}>
-                      {activeStep > 0 && (
-                        <Button onClick={handlePrevStep}>Previous</Button>
-                      )}
-                      <Button onClick={handleNextStep}>
-                        {activeStep < steps.length - 1 ? "Next" : "Finish"}
-                      </Button>
-                    </div>
-                  </div>
-                </>
-              )}
-            </Tooltip>
-          )}
+                </div>
+              </>
+            )}
+          </Tooltip>
+        )}
       </div>
     </WalkthroughPortal>
   );

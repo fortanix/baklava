@@ -126,7 +126,7 @@ export { UserMenu } from '../src/layouts/AppLayout/Header/UserMenu.tsx';
 export { Nav } from '../src/layouts/AppLayout/Nav/Nav.tsx';
 export { Sidebar } from '../src/layouts/AppLayout/Sidebar/Sidebar.tsx';
 export { AppLayout } from '../src/layouts/AppLayout/AppLayout.tsx';
-
+export { WalkThrough } from '../src/layouts/Walkthrough/Walkthrough.tsx';
 /**
  * Fortanix-specific.
  */
