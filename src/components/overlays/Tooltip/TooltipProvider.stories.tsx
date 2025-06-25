@@ -123,18 +123,13 @@ export const TooltipLarge: Story = {
 export const TooltipWithScroll: Story = {
   render: () => (
     <>
-      <OverflowTester openDefault lines={5} />
-      <Card>
-        <Card.Heading>hello <TooltipProvider tooltip="Tooltips will auto-reposition when it hits the viewport due to scroll.
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ThisIsAVeryLongStringOfTextWithoutAnySpacesToTestWhetherWeHandleWordBreaksCorrectlyWhenTheTextOverflowsTheContainingElement.
-
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ThisIsAVeryLongStringOfTe">
-          {props => <Button {...props()} kind="primary" label="Scroll me" autoFocus />}
-        </TooltipProvider></Card.Heading>
-      </Card>
-
-
-      <OverflowTester openDefault />
+     <OverflowTester openDefault lines={5}/>
+     
+      <TooltipProvider tooltip="Tooltips will auto-reposition when it hits the viewport due to scroll.">
+        {props => <Button {...props()} kind="primary" label="Scroll me" autoFocus/>}
+      </TooltipProvider>
+      
+      <OverflowTester openDefault/>
     </>
   ),
 };

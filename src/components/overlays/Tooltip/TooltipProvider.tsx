@@ -5,6 +5,7 @@
 import { assertUnreachable } from '../../../util/types.ts';
 
 import * as React from 'react';
+import { createPortal } from 'react-dom';
 import { classNames as cx, type ClassNameArgument } from '../../../util/componentUtil.ts';
 import { mergeRefs } from '../../../util/reactUtil.ts';
 
@@ -224,7 +225,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
   
   return (
     <>
-      {tooltipRendered}
+      {createPortal(tooltipRendered, document.body)}
       {anchorRendered}
     </>
   );
