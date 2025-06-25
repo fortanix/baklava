@@ -123,7 +123,7 @@ export const TooltipLarge: Story = {
 export const TooltipWithScroll: Story = {
   render: () => (
     <>
-     <OverflowTester openDefault lines={5}/>
+      <OverflowTester openDefault lines={5}/>
      
       <TooltipProvider tooltip="Tooltips will auto-reposition when it hits the viewport due to scroll.">
         {props => <Button {...props()} kind="primary" label="Scroll me" autoFocus/>}
@@ -179,7 +179,7 @@ const TooltipWithDrag = () => {
   React.useEffect(() => {
     if (boundaryRef.current && !boundaryRendered) { setBoundaryRendered(true); }
   }, [boundaryRendered]);
-
+  
   return (
     <div ref={boundaryRef} style={{ minHeight: 400, display: 'grid', placeContent: 'center' }}>
       {boundaryRef.current &&
