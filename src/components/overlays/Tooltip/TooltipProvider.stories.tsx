@@ -124,7 +124,7 @@ export const TooltipWithScroll: Story = {
   render: () => (
     <>
       <OverflowTester openDefault lines={5}/>
-     
+      
       <TooltipProvider tooltip="Tooltips will auto-reposition when it hits the viewport due to scroll.">
         {props => <Button {...props()} kind="primary" label="Scroll me" autoFocus/>}
       </TooltipProvider>
