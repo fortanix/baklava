@@ -115,6 +115,7 @@ const packageConfig = {
     '@vitejs/plugin-react': '^4.5.0',
     'vite-plugin-dts': '^4.5.4',
     'vite-plugin-lib-inject-css': '^2.2.1',
+    'vite-plugin-svgr': '^4.3.0',
     'vite-plugin-svg-icons': '^2.0.1',
     
     // Static analysis

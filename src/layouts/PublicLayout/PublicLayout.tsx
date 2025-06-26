@@ -10,8 +10,8 @@ import { type IconName } from '../../components/graphics/Icon/Icon.tsx';
 //import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
 import { Card } from '../../components/containers/Card/Card.tsx';
 
-import fortanixLogo from '../../assets/fortanix/fortanix-logo.svg';
-import fortanixLogoMono from '../../assets/fortanix/fortanix-logo-mono.svg';
+import FortanixLogo from '../../assets/fortanix/fortanix-logo.svg?react';
+import FortanixLogoMono from '../../assets/fortanix/fortanix-logo-mono.svg?react';
 import cl from './PublicLayout.module.scss';
 
 
@@ -26,6 +26,7 @@ type FortanixArmorLogoProps = ComponentProps<'figure'> & {
 };
 const FortanixArmorLogo = (props: FortanixArmorLogoProps) => {
   const { stacked = false, monochrome = false, ...propsRest } = props;
+  const LogoC = monochrome ? FortanixLogoMono : FortanixLogo;
   return (
     <figure
       {...propsRest}
@@ -36,9 +37,8 @@ const FortanixArmorLogo = (props: FortanixArmorLogoProps) => {
     )}
     >
       {/* <FortanixLogo/> FIXME: no way to scale this by font size currently */}
-      <svg role="img" aria-label="Fortanix" className={cl['fortanix-logo-image']} viewBox="0 0 344 67" width="180">
-        <use href={`${monochrome ? fortanixLogoMono : fortanixLogo}#logo`}/>
-      </svg>
+      
+      <LogoC role="img" aria-label="Fortanix" className={cl['fortanix-logo-image']} width="180" height="auto"/>
       
       <span className={cx(cl['product-name'])}>Armor</span>
     </figure>

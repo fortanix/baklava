@@ -49,7 +49,12 @@
   }
 }
 @mixin bk-tooltip-arrow-top {
-  border-radius: min(var(--r),var(--p) - var(--h)*tan(var(--a)/2)) min(var(--r),100% - var(--p) - var(--h)*tan(var(--a)/2)) var(--r) var(--r)/var(--r);
+  border-radius:
+    min(var(--r), var(--p) - var(--h) * tan(var(--a)/2))
+    min(var(--r), 100% - var(--p) - var(--h) * tan(var(--a)/2))
+    var(--r)
+    var(--r)
+    / var(--r);
   clip-path: polygon(0 0,0 100%,100% 100%,100% 0,
     min(100%,var(--p) + var(--h)*tan(var(--a)/2)) 0,
     var(--p) calc(-1*var(--h)),
@@ -67,7 +72,12 @@
   }
 }
 @mixin bk-tooltip-arrow-right {
-  border-radius: var(--r)/var(--r) min(var(--r),var(--p) - var(--h)*tan(var(--a)/2)) min(var(--r),100% - var(--p) - var(--h)*tan(var(--a)/2)) var(--r);
+  border-radius:
+    var(--r)
+    / var(--r)
+    min(var(--r), var(--p) - var(--h) * tan(var(--a)/2))
+    min(var(--r), 100% - var(--p) - var(--h) * tan(var(--a) / 2))
+    var(--r);
   clip-path: polygon(100% 0,0 0,0 100%,100% 100%,
     100% min(100%,var(--p) + var(--h)*tan(var(--a)/2)),
     calc(100% + var(--h)) var(--p),
@@ -85,7 +95,12 @@
   }
 }
 @mixin bk-tooltip-arrow-bottom {
-  border-radius: var(--r) var(--r) min(var(--r),100% - var(--p) - var(--h)*tan(var(--a)/2)) min(var(--r),var(--p) - var(--h)*tan(var(--a)/2))/var(--r);
+  border-radius:
+    var(--r)
+    var(--r)
+    min(var(--r), 100% - var(--p) - var(--h) * tan(var(--a)/2))
+    min(var(--r), var(--p) - var(--h) * tan(var(--a) / 2))
+    / var(--r);
   clip-path: polygon(0 100%,0 0,100% 0,100% 100%,
     min(100%,var(--p) + var(--h)*tan(var(--a)/2)) 100%,
     var(--p) calc(100% + var(--h)),
@@ -103,7 +118,12 @@
   }
 }
 @mixin bk-tooltip-arrow-left {
-  border-radius: var(--r)/min(var(--r),var(--p) - var(--h)*tan(var(--a)/2)) var(--r) var(--r) min(var(--r),100% - var(--p) - var(--h)*tan(var(--a)/2));
+  border-radius:
+    var(--r)
+    / min(var(--r), var(--p) - var(--h) * tan(var(--a) / 2))
+    var(--r)
+    var(--r)
+    min(var(--r), 100% - var(--p) - var(--h) * tan(var(--a) / 2));
   clip-path: polygon(0 0,100% 0,100% 100%,0 100%,
     0 min(100%,var(--p) + var(--h)*tan(var(--a)/2)),
     calc(-1*var(--h)) var(--p),
