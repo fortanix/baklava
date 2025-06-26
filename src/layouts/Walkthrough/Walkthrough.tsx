@@ -162,7 +162,7 @@ const waitForScrollIntoView = (element: HTMLElement, scrollableParent?: HTMLElem
  * @returns Updated position styles with vertical adjustments
  */
 const getTooltipVerticalPlacement = (rect: DOMRect, position: React.CSSProperties, offsetTop: number) => {
-  let newPos: React.CSSProperties = {};
+  const newPos: { [key: string]: React.CSSProperties } = {};
 
   if (rect.top < 100) {
     // Near top of viewport - align tooltip to top
@@ -190,7 +190,7 @@ const getTooltipVerticalPlacement = (rect: DOMRect, position: React.CSSPropertie
  * @returns Updated position styles with horizontal adjustments
  */
 const getTooltipHorizontalPlacement = (rect: DOMRect, position: React.CSSProperties, offsetLeft: number) => {
-  let newPos: React.CSSProperties = {};
+  const newPos: { [key: string]: React.CSSProperties } = {};
 
   if (rect.left < 180) {
     // Near left edge - align tooltip to left
@@ -542,7 +542,7 @@ const WalkThrough = (props: WalkThroughProps) => {
    * @returns CSS positioning styles for the tooltip
    */
   const getTooltipPosition = React.useCallback((rect: DOMRect, pad: number, offsetLeft: number, offsetTop: number): React.CSSProperties => {
-    let position: React.CSSProperties = {};
+    let position: { [key: string]: React.CSSProperties } = {};
     // Calculate position based on optimal placement
     switch (tooltipPlacement) {
       case 'left':
@@ -553,7 +553,7 @@ const WalkThrough = (props: WalkThroughProps) => {
 
       case 'right':
         position.left = rect.left + rect.width + pad + arrowSize + offsetLeft;
-        if (position.left > window.innerWidth) position.left = window.innerWidth / 2;
+        if (position.left as number > window.innerWidth) position.left = window.innerWidth / 2;
         position = getTooltipVerticalPlacement(rect, position, offsetTop);
         break;
 
@@ -569,7 +569,7 @@ const WalkThrough = (props: WalkThroughProps) => {
 
       default:
         position.left = rect.left + rect.width + pad + arrowSize + offsetLeft;
-        if (position.left > window.innerWidth) position.left = window.innerWidth / 2;
+        if (position.left as number > window.innerWidth) position.left = window.innerWidth / 2;
         position = getTooltipVerticalPlacement(rect, position, offsetTop);
         break;
     }
