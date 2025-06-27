@@ -2,9 +2,8 @@
 
 @layer baklava.components {
 	.bk-walkthrough{
-			$arrowSize: 8px;
-			$borderColor: #5F5A7C;
-			$backgroundColor: #14152E;
+			$border-color: #5F5A7C;
+			$background-color: #14152E;
 
 			&-tooltip{     
 					@include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-s);
@@ -12,9 +11,9 @@
 					border-radius: bk.$spacing-1;
 					padding: bk.$spacing-4;
 					color: #FBFBFB;
-					min-width: calc(calc(bk.$spacing-8 + bk.$spacing-1) * 10);
-					max-width: calc(calc(bk.$spacing-8 + bk.$spacing-1) * 10);
-					max-height: calc(bk.$spacing-6 * 10);
+					min-inline-size: calc(calc(bk.$spacing-8 + bk.$spacing-1) * 10);
+					max-inline-size: calc(calc(bk.$spacing-8 + bk.$spacing-1) * 10);
+					max-block-size: calc(bk.$spacing-6 * 10);
 					z-index: 1000;
 					
 					& > div:first-child{
@@ -26,8 +25,8 @@
 
 					&:focus-visible{
 							.bk-walkthrough-tooltip-arrow{
-									border-left: bk.$size-1 solid #ffffff;
-									border-bottom: bk.$size-1 solid #ffffff;
+									border-inline-start: bk.$size-1 solid #ffffff;
+									border-block-end: bk.$size-1 solid #ffffff;
 							}
 					}
 
@@ -45,15 +44,15 @@
 							}
 
 							& .close-icon{
-									height: bk.$font-size-xs;
-									width: bk.$font-size-xs;
+									block-size: bk.$font-size-xs;
+									inline-size: bk.$font-size-xs;
 									cursor: pointer;
 							}
 					}
 
 					&-content{
 						  flex: 1;
-							height: 100%;
+							block-size: 100%;
 							overflow: auto;
 							font-size: bk.$font-size-m;
 							color: #FBFBFB;
@@ -71,7 +70,7 @@
 							}
 
 							&-action-btns{
-									margin-left: auto;
+									margin-inline-start: auto;
 									display: flex;
 									gap: bk.$spacing-3;
 									align-items: center;
@@ -80,34 +79,34 @@
 
 					&-arrow{
 							position: absolute;
-							height: bk.$font-size-m;
-							width: bk.$font-size-m;
-							background-color: $backgroundColor;
-							border-left: bk.$size-1 solid $borderColor;
-							border-bottom: bk.$size-1 solid $borderColor;
+							block-size: bk.$font-size-m;
+							inline-size: bk.$font-size-m;
+							background-color: bk.$color-blackberry-900;
+							border-inline-start: bk.$size-1 solid bk.$color-blackberry-200;
+							border-block-end: bk.$size-1 solid bk.$color-blackberry-200;
 
 							&.arrow{
 									&-left-center, &-left-top, &-left-bottom {
-											right: -0.9rem;
-											top: calc(50% - 0.7rem);
+											inset-inline-end: -0.9rem;
+											inset-block-start: calc(50% - 0.7rem);
 											transform: rotate(225deg);
 									}
 								
 									&-right-center, &-right-top, &-right-bottom {
-										left: -0.9rem;
-										top: calc(50% - 0.7rem);
+										inset-inline-start: -0.9rem;
+										inset-block-start: calc(50% - 0.7rem);
 										transform: rotate(45deg);
 									}
 									
 									&-center-bottom{
-											top: -0.9rem;
-											left: calc(50% - 0.7rem);
+											inset-block-start: -0.9rem;
+											inset-inline-start: calc(50% - 0.7rem);
 											transform: rotate(135deg);
 									}
 
 									&-center-top, &-center-center{
-											bottom: -0.9rem;
-											left: calc(50% - 0.7rem);
+											inset-block-end: -0.9rem;
+											inset-inline-start: calc(50% - 0.7rem);
 											transform: rotate(-45deg);
 									}
 							}         
@@ -123,10 +122,10 @@
 
 			&-overlay {
 					position: fixed;
-					top: 0;
-					left: 0;
-					width: 100vw;
-					height: 100vh;
+					inset-block-start: 0;
+					inset-inline-start: 0;
+					inline-size: 100vw;
+					block-size: 100vh;
 					background: transparent;
 					z-index: 997; 
 					pointer-events: all; 
