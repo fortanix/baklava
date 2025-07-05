@@ -17,7 +17,7 @@ import { Button } from '../../components/actions/Button/Button.tsx';
 import { Stepper } from '../../components/navigations/Stepper/Stepper.tsx';
 import { FieldLayout } from '../../components/forms/fields/FieldLayout/FieldLayout.tsx';
 
-import { DialogLayout } from './DialogLayout';
+import { DialogLayout } from './DialogLayout.tsx';
 
 type DialogLayoutArgs = React.ComponentProps<typeof DialogLayout>;
 type Story = StoryObj<DialogLayoutArgs>;
