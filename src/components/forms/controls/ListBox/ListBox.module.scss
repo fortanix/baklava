@@ -202,9 +202,11 @@
       .bk-list-box__item--action {
         padding-inline-start: var(--bk-list-box-item-padding-inline); // Reset the item inset
         
-        font-weight: bk.$font-weight-semibold;
+        @include bk.font($family: bk.$font-family-display, $weight: bk.$font-weight-semibold);
         font-size: bk.$font-size-s;
         text-transform: uppercase;
+        
+        color: #{bk.$theme-button-tertiary-text-default};
       }
       
       // Draw a "chin" so that it covers the scrolling items behind it

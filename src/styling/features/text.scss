@@ -5,7 +5,7 @@
 @use '../variables.scss' as vars;
 
 
-@mixin font($family: vars.$font-family-display, $weight: vars.$font-weight-regular, $size: null) {
+@mixin font($family: vars.$font-family-body, $weight: vars.$font-weight-regular, $size: null) {
   font-family: $family;
   font-weight: $weight;
   @if $size {
