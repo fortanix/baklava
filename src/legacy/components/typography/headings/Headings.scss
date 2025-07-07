@@ -1,0 +1,55 @@
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+
+.bkl-heading {
+  margin: 0;
+  padding: 0;
+  @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-medium);
+}
+
+.heading-1 {
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  
+  color: bkl.$brand-color-dark-2;
+  line-height: bkl.$line-height-10;
+  @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-extra-light);
+  font-size: bkl.$font-size-xxxl;
+}
+
+.heading-2 {
+  line-height: bkl.$line-height-9;
+  color: bkl.$brand-color-dark-2;
+  @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-light);
+  font-size: bkl.$font-size-xxl;
+}
+
+.heading-3 {
+  line-height: bkl.$line-height-8;
+  color: bkl.$brand-color-dark-2;
+  @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+  font-size: bkl.$font-size-xl;
+}
+
+.heading-4 {
+  line-height: bkl.$line-height-7;
+  color: bkl.$brand-color-dark-2;
+  @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+  font-size: bkl.$font-size-l;
+}
+
+.heading-5 {
+  line-height: bkl.$line-height-6;
+  color: bkl.$brand-color-dark-2;
+  @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+  font-size: bkl.$font-size-m;
+}
+
+.heading-6 {
+  line-height: bkl.$line-height-6;
+  color: bkl.$neutral-color-3;
+  @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+  font-size: bkl.$font-size-s;
+}

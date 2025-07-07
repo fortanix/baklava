@@ -170,6 +170,16 @@ const preview = {
             ],
             'PublicLayout',
           ],
+          'Legacy',
+          [
+            'components',
+            [
+              'buttons',
+              [
+                'Button',
+              ],
+            ],
+          ],
         ],
       },
     },

@@ -1,0 +1,40 @@
+
+@use '../../style/variables.scss' as *;
+@use '../../style/util/z-index.scss' as z;
+
+
+.bkl-backdrop {
+  &:focus {
+    outline: none;
+  }
+  
+  display: none; // Will change to: `flex`
+  align-items: center;
+  
+  position: fixed;
+  z-index: z.$z-index--backdrop;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  
+  font: inherit;
+  background: var(--bkl-backdrop-color);
+  backdrop-filter: blur(1px);
+  will-change: opacity;
+  
+  &.bkl-backdrop--active {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &.bkl-backdrop--scrollable {
+    overflow-y: auto;
+  }
+
+  &.bkl-backdrop--active:not(.bkl-backdrop--scrollable) {
+    justify-content: center;
+  }
+}

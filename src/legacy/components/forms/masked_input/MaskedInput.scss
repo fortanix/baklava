@@ -1,0 +1,25 @@
+
+@use '../../../style/variables.scss' as *;
+
+.bkl-masked-input {
+  position: relative;
+  flex: 1;
+  
+  &__visibility-button {
+    position: absolute;
+    right: 0.4rem;
+    top: 0.2rem;
+    z-index: 1;
+  }
+  
+  &__visibility-icon {
+    margin: 1rem;
+    width: 1.8rem;
+    cursor: pointer;
+    color: var(--bkl-input-color);
+  }
+  
+  .bkl-input__input {
+    padding-right: 3.5rem !important;
+  }
+}

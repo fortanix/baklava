@@ -1,0 +1,31 @@
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+.bkl-property-list {
+  margin: bkl.$sizing-0;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: bkl.$sizing-xl;
+  row-gap: bkl.$sizing-l;
+
+  &__property {
+    &--full-width {
+      flex: 1;
+      min-width: bkl.$sizing-0; // Needed for truncation of children: https://css-tricks.com/flexbox-truncated-text
+    }
+
+    &__label {
+      margin-top: bkl.$sizing-4;
+      margin-bottom: bkl.$sizing-2;
+      @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-semibold);
+      font-size: bkl.$font-size-s;
+      color: bkl.$neutral-color-3;
+      line-height: bkl.$line-height-6;
+    }
+
+    &__value {
+      margin-left: bkl.$sizing-0;
+      font-size: bkl.$font-size-s;
+    }
+  }
+}

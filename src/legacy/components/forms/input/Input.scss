@@ -1,0 +1,67 @@
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+.bkl-input {
+  position: relative;
+  
+  .bkl-input__input {
+    background-color: bkl.$light-color-2;
+    border: 0.2rem solid bkl.$neutral-color-1;
+    border-radius: bkl.$sizing-2;
+    padding: 1rem;
+    outline: none;
+    width: 100%;
+    color: bkl.$dark-color-1;
+    font-family: bkl.$font-family-body;
+    @include mixins.font($family: bkl.$font-family-body, $weight: bkl.$font-weight-light);
+    font-size: bkl.$font-size-s;
+    line-height: bkl.$line-height-2;
+    
+    box-shadow: none;
+    transition: all 0.3s;
+    
+    &:hover {
+      background-color: var(--bkl-input-bg-color);
+      border-color: var(--bkl-input-border-color);
+      outline: none;
+    }
+    
+    &:focus {
+      background-color: var(--bkl-input-bg-color);
+      border-color: bkl.$accent-color-light-2;
+    }
+    
+    &::placeholder {
+      color: var(--bkl-placeholder-color);
+      font-family: bkl.$font-family-body;
+      font-size: bkl.$font-size-s;
+      font-weight: bkl.$font-weight-light;
+      line-height: bkl.$line-height-3;
+    }
+    
+    &:disabled {
+      color: var(--bkl-placeholder-color);
+    }
+    
+    &--toggle-visibility::-webkit-outer-spin-button,
+    &--toggle-visibility::-webkit-inner-spin-button {
+      margin-right: bkl.$sizing-5;
+    }
+    
+    &--toggle-visibility-button {
+      position: absolute;
+      right: 0.4rem;
+      top: 50%;
+      transform: translate(0%, -50%);
+    }
+  }
+
+  .password-toggle-icon {
+    margin: 1rem;
+    width: 1.8rem;
+    cursor: pointer;
+    font-size: bkl.$font-size-xxs;
+    fill: bkl.$neutral-color-2;
+  }
+}

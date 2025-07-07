@@ -1,0 +1,78 @@
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+@use '../../../style/accessibility.scss' as accessibility;
+
+@mixin switcher-button-reset() {
+  font-size: 100%;
+  font-family: inherit;
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.switcher-buttons {
+  overflow: hidden;
+
+  border: 0.1rem solid bkl.$neutral-color-1;
+  border-radius: bkl.$border-radius-s;
+
+  display: inline-flex;
+
+  .bkl-switcher-button {
+    @include switcher-button-reset();
+    $button-width: bkl.$sizing-4 * 10;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: bkl.$sizing-xs * 1.5;
+
+    padding: 1.2rem;
+    padding-bottom: 1.1rem;
+    background: transparent;
+    min-width: $button-width + bkl.$sizing-2 + bkl.$sizing-1;
+
+    &:not(:first-of-type) {
+      border-left: 0.1rem solid bkl.$neutral-color-1;
+    }
+
+    color: bkl.$neutral-color-3;
+    @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+    font-size: bkl.$font-size-s;
+    @include accessibility.focus-inset;
+    
+    &.pseudo-focus-visible {
+      @include accessibility.focus-inset;
+    }
+
+    &.active {
+      background: bkl.$neutral-color-4;
+    }
+
+    &.disabled {
+      background: bkl.$light-color-5;
+      cursor: not-allowed;
+    }
+
+    .count {
+      @include mixins.capsule();
+      padding: 0.1rem 0.8rem;
+      min-width: unset;
+      background: var(--bkl-switcher-bg-color);
+      color: bkl.$neutral-color-2;
+      font-size: bkl.$font-size-xs;
+    }
+
+    transition: background-color 120ms ease;
+    &:not(.active):not(.disabled):hover {
+      background: var(--bkl-switcher-bg-color-1);
+    }
+
+    &.active {
+      .count {
+        background: bkl.$light-color-1;
+        box-shadow: 0 0.1rem 0.1rem 0 bkl.$neutral-color-1; // Slight shadow to help with contrast
+      }
+    }
+  }
+}

@@ -1,0 +1,81 @@
+
+@use 'sass:math';
+@use '../../../style/variables.scss' as *;
+
+
+.bkl-sidebar {
+  $sidebar-width-expanded: 22rem;
+  $sidebar-width-collapsed: 7.2rem;
+  $collapse-duration: 300ms;
+  
+  position: sticky;
+  top: $sizing-0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  width: $sidebar-width-expanded;
+  padding: 0 2rem;
+  
+  // Set the sidebar to cover the whole viewport height.
+  height: 100vh;
+  // Note: there is an issue on iOS, where `100vh` covers more than the visible viewport
+  // https://stackoverflow.com/questions/37112218/css3-100vh-not-constant-in-mobile-browser
+  //height: -webkit-fill-available;
+  
+  transition: width $collapse-duration cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--sidebar-background);
+  color: var(--bkl-dark-color-1);
+  
+  .logo {
+    .logo-image {
+      display: block;
+      margin-top: 2 * $sizing-3;
+      margin-left: $sizing-3;
+      
+      &:focus-visible {
+        outline: 2px solid $focus-outline-color;
+        outline-offset: 0;
+      }
+    }
+    
+    img {
+      height: 4rem;
+    }
+  }
+  
+  &--collapsed {
+    width: $sidebar-width-collapsed;
+
+    .logo {
+      .logo-image {
+        margin-left: $sizing-0;
+      }
+      
+      img {
+        height: 6rem;
+        width: auto;
+      }
+    }
+  }
+  
+  &--collapsed-button {
+    padding: 0 !important;
+    position: absolute;
+    bottom: 2rem;
+
+    .bkl-icon {
+      z-index: 1;
+      width: 2rem;
+      height: 2rem;
+      cursor: pointer;
+    }
+  }
+
+  &-tooltip {
+    color: var(--bkl-dark-color-1);
+    background: var(--sidebar-tooltip-background);
+    
+    .bkl-tooltip__arrow::after {
+      background: var(--sidebar-tooltip-background);
+    }
+  }
+}

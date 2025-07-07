@@ -1,0 +1,14 @@
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+.entity {
+  line-height: bkl.$line-height-6;
+  color: bkl.$brand-color-dark-1;
+  @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-medium);
+  font-size: bkl.$font-size-m;
+  
+  &--small {
+    font-size: bkl.$font-size-s;
+  }
+}

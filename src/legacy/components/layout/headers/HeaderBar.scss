@@ -1,0 +1,68 @@
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+@use '../../../style/util/z-index.scss' as z;
+
+
+.bkl-header-bar {
+  position: sticky;
+  top: 0;
+  z-index: z.$z-index--layout;
+  
+  height: 7.2rem;
+  padding: 2rem;
+  
+  background: bkl.$light-color-1;
+  box-shadow: 0px 2px 10px 0px var(--bkl-header-shadow-color);
+  
+  display: flex;
+  align-items: center;
+  --transition-duration: 200ms;
+  transition: height var(--transition-duration);
+  
+  .logo {
+    img {
+      height: 3.2rem;
+      margin-left: 1.5rem;
+      transition: height var(--transition-duration);
+    }
+    
+    &:focus-visible {
+      outline: 2px solid bkl.$focus-outline-color;
+      outline-offset: 0;
+    }
+  }
+  
+  .user-info {
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 5rem;
+    
+    display: flex;
+    align-items: baseline;
+    
+    .user-name {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: bkl.$neutral-color-2;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    
+    .icon-dropdown {
+      margin-left: 0.6em;
+      width: 0.8em;
+      color: bkl.$brand-color;
+    }
+  }
+  
+  &.bkl-header-bar--minimize {
+    height: 5.2rem;
+    
+    .logo {
+      img {
+        height: 2.8rem;
+      }
+    }
+  }
+}

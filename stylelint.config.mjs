@@ -41,6 +41,9 @@ export default {
     'scss/operator-no-unspaced': null,
     'scss/dollar-variable-empty-line-before': null,
     
+    // Mixins
+    'scss/at-mixin-argumentless-call-parentheses': null,
+    
     // At rules
     'layer-name-pattern': null,
     'container-name-pattern': null,

@@ -1,0 +1,55 @@
+
+@use 'sass:math';
+@use '../../style/variables.scss' as *;
+
+
+.bkl-button:has(.bkl-close) {
+  display: inline-flex;
+}
+
+.bkl-close {
+  position: relative;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  overflow: hidden;
+  cursor: pointer;
+
+  &::before {
+    transform: rotate(45deg);
+  }
+  
+  &::before, &::after {
+    content: '';
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    top: 50%;
+    left: 0;
+    background: $light-color-1;
+  }
+  
+  &::after {
+    transform: rotate(-45deg);
+  }
+
+  &.bkl-close--dark,
+  &.bkl-close--neutral {
+    outline: none;
+  }
+
+  &.bkl-close--neutral {
+    &::before, &::after {
+      background: $dark-color-1;
+    }
+  }
+
+  &.bkl-close--small {
+    width: 12px;
+    height: 12px;
+
+    &::before, &::after {
+      height: math.div($sizing-xxs, 2);
+    }
+  }
+}

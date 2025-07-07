@@ -1,0 +1,27 @@
+
+import * as React from 'react';
+import { classNames as cx } from '../../../util/component_util';
+
+import { SpriteIcon as Icon } from '../../../components/icons/Icon';
+import Input from '../../../components/forms/input/Input';
+
+import './SearchInput.scss';
+
+
+export type SearchInputProps = React.ComponentPropsWithoutRef<typeof Input>;
+export const SearchInput = (props: SearchInputProps) => {
+  return (
+    <div className={cx('bkl-input--search', props.className)}>
+      <Icon name="search" icon={import(`../../../assets/icons/search.svg?sprite`)}
+        className="bkl-input--search__icon"
+      />
+      <Input
+        placeholder="Search"
+        className="bkl-input--search__input"
+        {...props}
+      />
+    </div>
+  );
+};
+
+SearchInput.displayName = 'SearchInput';

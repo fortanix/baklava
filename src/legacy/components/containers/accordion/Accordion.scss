@@ -1,0 +1,87 @@
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/accessibility.scss' as accessibility;
+
+.bkl-accordion {
+  list-style: none;
+  
+  &--normal {
+    .bkl-accordion-item {
+      &__button {
+        padding: bkl.$sizing-6 bkl.$sizing-5;
+        font-size: bkl.$font-size-l;
+      }
+      
+      &__content {
+        padding: bkl.$sizing-6 bkl.$sizing-5;
+        font-size: bkl.$font-size-m;
+        @include accessibility.focus-inset;
+      }
+      
+      &__state-indicator {
+        width: bkl.$sizing-4;
+      }
+    }
+  }
+  
+  &--small {
+    .bkl-accordion-item {
+      &__button {
+        padding: bkl.$sizing-3 bkl.$sizing-4;
+        font-size: bkl.$font-size-m;
+      }
+  
+      &__content {
+        padding: bkl.$sizing-5 bkl.$sizing-4;
+        font-size: bkl.$font-size-s;
+        @include accessibility.focus-inset;
+      }
+      
+      &__state-indicator {
+        width: bkl.$sizing-3;
+      }
+    }
+  }
+  
+  .bkl-accordion-item {
+    background-color: bkl.$light-color-1;
+    border-radius: 3px;
+
+    &__button {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      width: 100%;
+      background-color: inherit;
+      border-radius: inherit;
+      transition: padding ease 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    
+    &.pseudo-focus-visible {
+      .bkl-accordion-item__button {
+        outline: 2px solid bkl.$focus-outline-color;
+        outline-offset: 0;
+      }
+    }
+
+    &--active {
+      .bkl-accordion-item {
+        &__button {
+          box-shadow: unset;
+        }
+
+        &__state-indicator {
+          transform: rotateZ(180deg);
+        }
+      }
+    }
+
+    &__wrapper {
+      height: bkl.$sizing-0;
+      overflow: hidden;
+      transition: height ease 0.2s;
+    }
+  }
+}
+

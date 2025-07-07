@@ -1,0 +1,28 @@
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+.bkl-select-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: bkl.$sizing-3;
+
+  &.bkl-select-placeholder--skeleton {
+    min-height: 24rem;
+    align-items: stretch;
+    justify-content: space-around;
+    gap: bkl.$sizing-6;
+
+    > .skeleton-row {
+      display: block;
+      height: 1.4rem;
+      border-radius: bkl.$border-radius-ms;
+      
+      @include mixins.shimmer(
+        $baseColor: var(--bkl-shimmer-base-color),
+        $highlightColor: var(--bkl-shimmer-highlight-color)
+      );
+    }
+  }
+}

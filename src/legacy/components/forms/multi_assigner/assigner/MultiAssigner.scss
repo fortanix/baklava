@@ -1,0 +1,93 @@
+@use '../../../../style/variables.scss' as bkl;
+@use '../../../../style/accessibility.scss' as accessibility;
+
+.bkl-multi-assigner {
+  display: flex;
+
+  .col {
+    width: 50%;
+    padding: bkl.$sizing-m bkl.$sizing-s;
+    border-radius: bkl.$border-radius-ms;
+
+    .bkl-table-placeholder {
+      height: 100%;
+      min-height: auto;
+    }
+
+    .col-inner {
+      height: 300px;
+      overflow: auto;
+    }
+    
+    .item-container {
+      width: 100%;
+      @include accessibility.focus-inset;
+    }
+
+    &.col-2 {
+      background-color: bkl.$light-color-2;
+
+      .col-inner {
+        height: 353px;
+      }
+
+      .card__item:hover {
+        background-color: bkl.$light-color-1;
+      }
+    }
+
+    &.col-1 {
+      background-color: bkl.$light-color-1;
+
+      .card__item:hover {
+        background-color: bkl.$light-color-2;
+      }
+
+    }
+  }
+
+  .card__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: bkl.$sizing-s bkl.$sizing-s;
+    margin-top: bkl.$sizing-s;
+    border-radius: bkl.$border-radius-ms;
+    transition: background-color 100ms ease-in;
+    color: bkl.$brand-color-dark-1;
+    cursor: pointer;
+    
+    &__title-wrapper {
+      width: calc(100% - #{bkl.$font-size-xs} - #{bkl.$sizing-4}); // fullWidth - buttonWidth - spacing
+      overflow: hidden;
+    }
+
+    &__title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      line-height: bkl.$line-height-3;
+    }
+
+    &__subtitle {
+      display: inline-block;
+      max-width: 100%;
+      line-height: bkl.$line-height-1;
+      white-space: nowrap;
+      overflow: hidden;
+      font-size: bkl.$font-size-xxs;
+      color: bkl.$brand-color;
+      text-overflow: ellipsis;
+    }
+    
+    &__action {
+      font-size: bkl.$font-size-xs;
+      padding: bkl.$sizing-xs bkl.$sizing-0;
+      color: bkl.$dark-color-2;
+      
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+}

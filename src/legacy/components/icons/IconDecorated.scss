@@ -1,0 +1,41 @@
+
+@use '../../style/variables.scss' as bkl;
+@use '../../style/mixins.scss' as mixins;
+
+
+@mixin decorationBackgroundCircle($size: 2.5em) {
+  @include mixins.circle($size);
+  overflow: visible; // Allow icon to overlap the padding so it doesn't get truncated to a circle
+  
+  padding: 0.5em;
+  
+  background-color: currentColor;
+}
+@mixin decorationBorderCircle($size: 2.5em) {
+  @include mixins.circle($size);
+  overflow: visible; // Allow icon to overlap the padding so it doesn't get truncated to a circle
+  
+  padding: 0.5em;
+  
+  background: transparent;
+  border: 0.1rem solid currentColor;
+}
+
+.bkl-icon.icon--decorated {
+  &.icon--decorated--background-circle {
+    @include decorationBackgroundCircle();
+  }
+  &.icon--decorated--highlight {
+    @include decorationBackgroundCircle();
+    background-color: bkl.$accent-color;
+    transition: background-color 300ms ease;
+    
+    // Adapt highlight background color to context
+    @at-root :is(button, a):hover > .icon--decorated.icon--decorated--highlight {
+      background-color: var(--bkl-button-hover-color);
+    }
+  }
+  &.icon--decorated--border-circle {
+    @include decorationBorderCircle();
+  }
+}

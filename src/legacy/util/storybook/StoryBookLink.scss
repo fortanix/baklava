@@ -1,0 +1,8 @@
+@use '../../style/variables.scss' as bkl;
+
+.bkl-dummy-link {
+  &:is(:focus-visible, .pseudo-focus-visible) {
+    outline: 2px solid bkl.$focus-outline-color;
+    outline-offset: 0;
+  }
+}
