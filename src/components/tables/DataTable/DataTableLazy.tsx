@@ -12,19 +12,19 @@ import { Button } from '../../actions/Button/Button.tsx';
 
 import * as ReactTable from 'react-table';
 import { type DataTableStatus, type TableContextState, createTableContext, useTable } from './DataTableContext.tsx';
-import { Pagination } from './pagination/Pagination';
-import { DataTablePlaceholderError } from './table/DataTablePlaceholder';
-import { DataTableAsync } from './table/DataTable';
+import { Pagination } from './pagination/Pagination.tsx';
+import { DataTablePlaceholderError } from './table/DataTablePlaceholder.tsx';
+import { DataTableAsync } from './table/DataTable.tsx';
 
 import cl from './DataTableLazy.module.scss';
 
 
 export * from './DataTableContext.tsx';
 export { Pagination };
-export { DataTablePlaceholderEmpty, DataTablePlaceholderError } from './table/DataTablePlaceholder';
+export { DataTablePlaceholderEmpty, DataTablePlaceholderError } from './table/DataTablePlaceholder.tsx';
 export { PlaceholderEmptyAction } from '../../graphics/PlaceholderEmpty/PlaceholderEmpty.tsx';
 
-export { Search, MultiSearch } from './DataTableEager'; // FIXME: move to a common module
+export { Search, MultiSearch } from './DataTableEager.tsx'; // FIXME: move to a common module
 
 export interface ReactTableOptions<D extends object> extends ReactTable.TableOptions<D> {
   // Add custom properties here
