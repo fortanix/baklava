@@ -1,0 +1,44 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+@use '../../style/variables.scss' as bkl;
+
+@layer baklava.legacy {
+  .bkl-progress-bar {
+    display: flex;
+    align-items: center;
+    
+    .bkl-progress-bar__outer {
+      position: relative;
+      display: flex;
+      block-size: bkl.$sizing-m;
+      background-color: bkl.$light-color-4;
+      border-radius: bkl.$sizing-xxs;
+      inline-size: 100%;
+    }
+    
+    .bkl-progress-bar__inner {
+      position: absolute;
+      inset-inline-start: bkl.$sizing-none;
+      inset-block-start: bkl.$sizing-none;
+      block-size: bkl.$sizing-m;
+      border-radius: bkl.$sizing-xxs;
+    }
+    
+    .bkl-progress-bar__info {
+      margin-inline-start: bkl.$sizing-s;
+    }
+    
+    .bkl-progress-bar--high {
+      background-color: bkl.$status-color-critical;
+    }
+    
+    .bkl-progress-bar--medium {
+      background-color: bkl.$status-color-warning;
+    }
+    
+    .bkl-progress-bar--low {
+      background-color: bkl.$status-color-success;
+    }
+  }
+}

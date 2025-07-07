@@ -1,0 +1,33 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+@layer baklava.legacy {
+  .bkl-select-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: bkl.$sizing-3;
+    
+    &.bkl-select-placeholder--skeleton {
+      min-block-size: 24rem;
+      align-items: stretch;
+      justify-content: space-around;
+      gap: bkl.$sizing-6;
+      
+      > .skeleton-row {
+        display: block;
+        block-size: 1.4rem;
+        border-radius: bkl.$border-radius-ms;
+        
+        @include mixins.shimmer(
+          $baseColor: var(--bkl-shimmer-base-color),
+          $highlightColor: var(--bkl-shimmer-highlight-color)
+        );
+      }
+    }
+  }
+}

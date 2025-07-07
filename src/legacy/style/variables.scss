@@ -1,0 +1,114 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+// Colors
+$brand-color: var(--brand-color) !default; // #5f6089 !default;
+$brand-color-dark-1: var(--brand-color-dark-1) !default; // #13132a !default;
+$brand-color-dark-2: var(--brand-color-dark-2) !default; // #081353 !default;
+$brand-color-dark-3: var(--brand-color-dark-3) !default; // #332b50 !default;
+$brand-color-dark-4: var(--brand-color-dark-4) !default; // #393953 !default;
+$brand-color-dark-5: var(--brand-color-dark-5) !default; // #41486d !default;
+$brand-color-dark-6: var(--brand-color-dark-6) !default; // #434d72 !default;
+$brand-color-dark-7: var(--brand-color-dark-7) !default; // #241e3b !default;
+$brand-color-dark-8: var(--brand-color-dark-8) !default; // #212144 !default;
+$brand-color-light-1: var(--brand-color-light-1) !default; // #abbfdd !default;
+$brand-color-light-2: var(--brand-color-light-2) !default; // #6e7fbb !default;
+$brand-color-light-3: var(--brand-color-light-3) !default; // #6c6e9b !default;
+
+$accent-color: var(--accent-color) !default; // #178DFB; !default;
+$accent-color-dark-1: var(--accent-color-dark-1) !default; // #00838f !default;
+$accent-color-light-1: var(--accent-color-light-1) !default; // #00c6da !default;
+$accent-color-light-2: var(--accent-color-light-2) !default; // #178dfb !default;
+$accent-color-light-3: var(--accent-color-light-3) !default; // #80deea !default;
+
+
+$status-color-critical: var(--status-color-critical) !default;
+$status-color-error: var(--status-color-error) !default;
+$status-color-warning: var(--status-color-warning) !default;
+$status-color-success: var(--status-color-success) !default;
+
+$neutral-color-1: var(--neutral-color-1) !default; // #dce5f3 !default;
+$neutral-color-2: var(--neutral-color-2) !default; // #26546d !default;
+$neutral-color-3: var(--neutral-color-3) !default; // #4d758c !default;
+$neutral-color-4: var(--neutral-color-4) !default; // #eef2f9 !default;
+
+$dark-color-1: var(--dark-color-1) !default; // #000000 !default;
+$dark-color-2: var(--dark-color-2) !default; // #767676 !default;
+$dark-color-3: var(--dark-color-3) !default; // #a5a5b1 !default;
+$dark-color-4: var(--dark-color-4) !default; // #bdbdbd !default;
+
+$light-color-1: var(--light-color-1) !default; // #ffffff !default;
+$light-color-2: var(--light-color-2) !default; // #f7f9fc !default;
+$light-color-3: var(--light-color-3) !default; // #edeff2 !default;
+$light-color-4: var(--light-color-4) !default; // #e0e0e0 !default;
+$light-color-5: var(--light-color-5) !default; // #d1d1d1 !default;
+
+// Fonts
+$font-family-body: 'Open Sans', 'Arial', sans-serif !default;
+$font-family-display: 'Montserrat', 'Verdana', sans-serif !default;
+$font-family-code: 'Source Code Pro', 'Courier New', monospace !default;
+
+$font-weight-extra-light: 200 !default;
+$font-weight-light: 300 !default;
+$font-weight-regular: 400 !default; // Default font weight
+$font-weight-medium: 500 !default;
+$font-weight-semibold: 600 !default;
+$font-weight-bold: 700 !default;
+
+$font-size-xxxs: 0.8rem !default;
+$font-size-xxs: 1.0rem !default;
+$font-size-xs: 1.2rem !default;
+$font-size-s: 1.4rem !default;
+$font-size-m: 1.6rem !default;
+$font-size-l: 2.0rem !default;
+$font-size-xl: 2.4rem !default;
+$font-size-xxl: 3.0rem !default;
+$font-size-xxxl: 4.2rem !default;
+
+$line-height-1: 1.4rem !default;
+$line-height-2: 1.7rem !default;
+$line-height-3: 1.8rem !default;
+$line-height-4: 1.9rem !default;
+$line-height-5: 2.0rem !default;
+$line-height-6: 2.2rem !default;
+$line-height-7: 2.6rem !default;
+$line-height-8: 3.0rem !default;
+$line-height-9: 3.6rem !default;
+$line-height-10: 5.4rem !default;
+
+// Sizings
+$sizing-0: 0 !default;
+$sizing-1: 0.3rem !default;
+$sizing-2: 0.6rem !default;
+$sizing-3: 1.2rem !default;
+$sizing-4: 1.8rem !default;
+$sizing-5: 2.4rem !default;
+$sizing-6: 3.0rem !default;
+$sizing-7: 3.6rem !default;
+$sizing-8: 4.2rem !default;
+$sizing-9: 4.8rem !default;
+
+$sizing-none: $sizing-0 !default;
+$sizing-hairline: 1px !default;
+$sizing-xxs: $sizing-1 !default;
+$sizing-xs: $sizing-2 !default;
+$sizing-s: $sizing-3 !default;
+$sizing-m: $sizing-4 !default;
+$sizing-l: $sizing-6 !default;
+$sizing-xl: $sizing-8 !default;
+$sizing-xxl: $sizing-9 !default;
+
+
+// Border radius
+$border-radius-none: $sizing-0 !default;
+$border-radius-s: $sizing-1 !default;
+$border-radius-ms: $sizing-2 !default; // "medium small" (halfway between 6px increments)
+$border-radius-m: $sizing-3 !default;
+$border-radius-l: $sizing-4 !default;
+$border-radius-xl: $sizing-7 !default;
+$border-radius-circle: 100% !default;
+
+// Accessibility
+$focus-outline-color: #64b3fc !default;
+$focus-outline-width: 0.2rem !default;

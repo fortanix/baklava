@@ -1,0 +1,121 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+
+// NOTE: we cannot put our styling here in an `@layer`, because react-toastify renders its styling without a layer,
+// which means it will always take precedence over styling in a layer. The styling from react-toastify is
+// auto-injected, so we have no control over it.
+
+:is(.bkl-notification-container, #specificity#hack) {
+  inline-size: auto;
+  min-inline-size: 20%;
+  max-inline-size: 50%;
+  
+  // stylelint-disable selector-class-pattern
+  .Toastify__toast {
+    .Toastify__toast-icon {
+      display: none;
+    }
+  }
+  // stylelint-enable selector-class-pattern
+  
+  .bkl-notification {
+    color-scheme: only light; // Notifications are shown in light theme, even in dark mode
+    
+    inline-size: clamp(30vi, 100%, 60vi);
+    padding: bkl.$sizing-s;
+    border-radius: bkl.$border-radius-ms;
+    
+    color: bkl.$light-color-1;
+    @include mixins.font($family: bkl.$font-family-body);
+    font-size: bkl.$font-size-s;
+    
+    display: grid;
+    grid:
+      "message actions-inline" max-content
+      "actions actions" max-content
+      / 1fr max-content;
+    align-items: start;
+      
+    &.bkl-notification--success {
+      border: bkl.$sizing-hairline bkl.$status-color-success solid;
+      background-color: var(--notification-success-background);
+      
+      .bkl-notification__progress-bar {
+        background: bkl.$status-color-success;
+      }
+    }
+    
+    &.bkl-notification--info {
+      border: bkl.$sizing-hairline bkl.$brand-color-light-2 solid;
+      background-color: var(--notification-info-background);
+      
+      .bkl-notification__progress-bar {
+        background: bkl.$brand-color-light-2;
+      }
+    }
+    
+    &.bkl-notification--error {
+      border: bkl.$sizing-hairline bkl.$status-color-error solid;
+      background-color: var(--notification-error-background);
+      
+      .bkl-notification__progress-bar {
+        background: bkl.$status-color-error;
+      }
+    }
+    
+    .bkl-notification__message {
+      grid-area: message;
+      
+      display: flex;
+      align-items: center;
+      
+      p {
+        margin: 0;
+      }
+    }
+    
+    // Actions that should be shown in the same line with the message
+    .bkl-notification__actions-inline {
+      grid-area: actions-inline;
+      
+      display: flex;
+      align-items: center;
+      margin-inline-start: bkl.$sizing-s;
+    }
+    
+    .bkl-notification__actions {
+      grid-area: actions;
+      
+      display: flex; 
+      align-items: center;
+    }
+    
+    .bkl-notification__buttons {
+      display: flex;
+      
+      > a, button {
+        margin-inline-end: bkl.$sizing-s;
+      }
+    }
+    
+    .bkl-notification__copy-button {
+      margin-inline-start: auto;
+      
+      .bkl-icon {
+        inline-size: bkl.$sizing-m;
+        color: bkl.$light-color-1;
+      }
+    }
+  }
+}
+
+// Note: render this at the root, since the tooltip is portaled to the body
+.bkl-notification__tooltip {
+  // Must be above z-index of 9999 from react-toastify notification
+  z-index: 9999 + 1;
+}

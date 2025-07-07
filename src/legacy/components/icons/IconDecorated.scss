@@ -1,0 +1,46 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../style/variables.scss' as bkl;
+@use '../../style/mixins.scss' as mixins;
+
+
+@mixin decoration-background-circle($size: 2.5em) {
+  @include mixins.circle($size);
+  overflow: visible; // Allow icon to overlap the padding so it doesn't get truncated to a circle
+  
+  padding: 0.5em;
+  
+  background-color: currentColor;
+}
+@mixin decoration-border-circle($size: 2.5em) {
+  @include mixins.circle($size);
+  overflow: visible; // Allow icon to overlap the padding so it doesn't get truncated to a circle
+  
+  padding: 0.5em;
+  
+  background: transparent;
+  border: 0.1rem solid currentColor;
+}
+
+@layer baklava.legacy {
+  .bkl-icon.icon--decorated {
+    &.icon--decorated--background-circle {
+      @include decoration-background-circle();
+    }
+    &.icon--decorated--highlight {
+      @include decoration-background-circle();
+      background-color: bkl.$accent-color;
+      transition: background-color 300ms ease;
+      
+      // Adapt highlight background color to context
+      @at-root :is(button, a):hover > .icon--decorated.icon--decorated--highlight {
+        background-color: var(--bkl-button-hover-color);
+      }
+    }
+    &.icon--decorated--border-circle {
+      @include decoration-border-circle();
+    }
+  }
+}

@@ -1,0 +1,167 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+@use '../../../style/util/z-index.scss' as z;
+@use '../../../style/accessibility.scss' as accessibility;
+
+@layer baklava.legacy {
+  .bkl-select {
+    position: relative;
+    
+    .bkl-select__container {
+      inline-size: 100%;
+      @include accessibility.focus-outset;
+      
+      .bkl-select__input {
+        cursor: pointer;
+        position: relative;
+        display: block;
+        inline-size: 100%;
+        block-size: 3rem;
+        min-block-size: 4rem;
+        padding: bkl.$sizing-s bkl.$sizing-l bkl.$sizing-s bkl.$sizing-s;
+        
+        outline: none;
+        border: 0.2rem solid bkl.$neutral-color-1;
+        border-radius: bkl.$sizing-2;
+        background-color: bkl.$light-color-2;
+        
+        color: bkl.$dark-color-1;
+        @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+        font-size: bkl.$font-size-s;
+        line-height: bkl.$line-height-2;
+        
+        &:hover {
+          background-color: bkl.$light-color-1;
+          border-color: var(--bkl-border-color-1);
+          outline: none;
+        }
+        
+        &.bkl-select__input--active {
+          background-color: bkl.$light-color-1;
+          border-color: bkl.$accent-color-light-2;
+        }
+        
+        &.bkl-select__input--changed {
+          color: bkl.$brand-color-dark-1;
+        }
+        
+        &.bkl-select__input--disabled {
+          cursor: initial;
+          color: var(--bkl-placeholder-color);
+          
+          &::placeholder {
+            color: var(--bkl-placeholder-color);
+          }
+        }
+        
+        &::placeholder {
+          color: var(--bkl-placeholder-color);
+          @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+          font-size: bkl.$font-size-s;
+          line-height: bkl.$line-height-3;
+        }
+      }
+      
+      .bkl-select__caret {
+        pointer-events: none;
+        position: absolute;
+        inset-inline-end: 1rem;
+        inset-block-start: calc(50% - 0.5rem); // FIXME: use flex box to center this instead
+        margin: auto bkl.$sizing-xs;
+        z-index: 1;
+        color: bkl.$neutral-color-3;
+        
+        &.bkl-select__caret--disabled {
+          opacity: 0.34;
+        }
+      }
+    }
+  }
+  
+  
+  // Note: the dropdown is portaled into the body, so this selector cannot be nested inside `.bkl-select`
+  .bkl-select__dropdown {
+    list-style-type: none;
+    display: block;
+    margin: bkl.$sizing-0;
+    margin-block-start: bkl.$sizing-2;
+    padding: bkl.$sizing-xs;
+    inline-size: 100%;
+    max-block-size: 45rem;
+    overflow-y: auto;
+    z-index: z.$z-index--dropdown;
+    
+    border: 0.1rem solid var(--bkl-select-border-color);
+    border-radius: bkl.$sizing-2;
+    background-color: bkl.$brand-color-dark-3;
+    
+    color: bkl.$dark-color-1;
+    @include mixins.font($family: bkl.$font-family-body);
+    font-size: bkl.$font-size-s;
+    
+    transform-origin: top;
+    transform: scaleY(0);
+    will-change: width, height;
+    
+    &:focus-visible {
+      outline: 2px solid bkl.$focus-outline-color;
+      outline-offset: 0;
+    }
+
+    &:focus {
+      outline: none;
+    }
+    
+    .bkl-select__option {
+      clear: both;
+      cursor: pointer;
+      padding: bkl.$sizing-0;
+      border-radius: bkl.$sizing-2;
+      
+      text-align: start;
+      line-height: bkl.$line-height-3;
+      color: bkl.$dark-color-1;
+      @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+      font-size: bkl.$font-size-s;
+      text-transform: none;
+      inline-size: 100%;
+      
+      &:focus-visible {
+        outline: 2px solid bkl.$focus-outline-color;
+        outline-offset: 0;
+      }
+      
+      &:not(.bkl-select__option--disabled):hover {
+        background-color: bkl.$light-color-2;
+      }
+      
+      &.bkl-select__option--disabled {
+        cursor: not-allowed;
+        opacity: 0.34;
+        user-select: none;
+      }
+      
+      &.bkl-select__option--default {
+        display: block;
+        padding: bkl.$sizing-s bkl.$sizing-s;
+      }
+    }
+  }
+  
+  // TODO: To be removed when icons are added to codebase
+  .bkl-caret {
+    border: solid bkl.$neutral-color-3;
+    border-width: 0 .2rem .2rem 0;
+    display: inline-block;
+    padding: .3rem;
+    
+    &.bkl-caret--right { transform: rotate(-45deg); }
+    &.bkl-caret--left { transform: rotate(135deg); }
+    &.bkl-caret--up { transform: rotate(-135deg); }
+    &.bkl-caret--down { transform: rotate(45deg); }
+  }
+}

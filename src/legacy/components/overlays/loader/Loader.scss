@@ -1,0 +1,41 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/util/z-index.scss' as z;
+
+
+@layer baklava.legacy {
+  .bkl-loader-overlay {
+    min-block-size: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .bkl-loader {
+    z-index: z.$z-index--loading-indicator;
+    
+    inline-size: min-content;
+    padding: bkl.$sizing-m;
+    background: bkl.$light-color-2;
+    border-radius: bkl.$border-radius-l;
+    
+    .bkl-loader__spinner {
+      --spinner-thickness: 0.8rem;
+      
+      border: var(--spinner-thickness) solid bkl.$neutral-color-1;
+      border-block-start: var(--spinner-thickness) solid bkl.$brand-color;
+      border-radius: 50%;
+      inline-size: 6rem;
+      block-size: 6rem;
+      animation: spin 1s linear infinite;
+    }
+  }
+}

@@ -1,0 +1,154 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+@use '../../../style/accessibility.scss' as accessibility;
+
+@layer baklava.legacy {
+  .bkl-modal {
+    display: none; // Will change to: `flex`
+    inset-inline: 0;
+    background-color: bkl.$light-color-1;
+    padding: 0;
+    inline-size: 55%;
+    border-radius: bkl.$border-radius-s;
+    will-change: top, opacity;
+    
+    &:not(.bkl-modal--auto-height) {
+      margin: auto;
+      min-block-size: max-content;
+      overflow: hidden;
+      
+      // NOTE: due to the browser bug (chrome and edge 129), we apply max-height for content
+      .bkl-modal__content {
+        max-block-size: 65vh;
+      }
+    }
+    
+    &.bkl-modal--auto-height {
+      margin: bkl.$sizing-9 auto;
+    }
+    
+    
+    &.bkl-modal--active {
+      display: flex;
+      flex-direction: column; // Place children (header, content, footer) one after the other
+    }
+    &.bkl-modal--small {
+      max-inline-size: 490px;
+      &.bkl-modal--fixed-width {
+        inline-size: 490px;
+      }
+    }
+    &.bkl-modal--medium {
+      max-inline-size: 600px;
+      &.bkl-modal--fixed-width {
+        inline-size: 600px;
+      }
+    }
+    &.bkl-modal--large {
+      max-inline-size: 840px;
+      &.bkl-modal--fixed-width {
+        inline-size: 840px;
+      }
+    }
+    &.bkl-modal--slide {
+      max-inline-size: 70%;
+      inline-size: 70%;
+      block-size: 100%;
+      max-block-size: 100%;
+      margin: bkl.$sizing-none;
+    }
+    .bkl-modal__header {
+      position: relative;
+      margin: 0;
+      padding: 0 bkl.$sizing-5;
+      line-height: bkl.$sizing-9;
+      color: bkl.$neutral-color-2;
+      @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-medium);
+      font-size: bkl.$font-size-l;
+      min-block-size: bkl.$sizing-7;
+      display: flex;
+      align-items: center;
+      
+      &:has(.bkl-modal__title:empty) {
+        box-shadow: none;
+      }
+      
+      .bkl-modal__title {
+        text-transform: uppercase;
+      }
+      
+      .bkl-modal__close {
+        position: absolute;
+        inset-block-start: 50%;
+        transform: translate(0%, -50%);
+        inset-inline-end: 16px;
+      }
+    }
+    
+    &:has(.bkl-modal__title:empty) {
+      .bkl-modal__content {
+        padding-block-start: 0;
+      }
+    }
+    
+    .bkl-modal__content {
+      padding: bkl.$sizing-5 bkl.$sizing-5 bkl.$sizing-3;
+      @include mixins.font(
+        $family: bkl.$font-family-body,
+        $size: bkl.$font-size-m,
+      );
+      @include accessibility.focus-inset;
+    }
+    
+    .bkl-modal__footer {
+      padding: bkl.$sizing-m bkl.$sizing-5;
+      text-align: center;
+      block-size: auto;
+      background-color: bkl.$light-color-1;
+      border-radius: 0 0 bkl.$border-radius-s bkl.$border-radius-s;
+      inline-size: 100%;
+      margin: 0;
+    }
+    
+    &.bkl-modal--footer-hidden {
+      .bkl-modal__content {
+        padding-block-end: bkl.$sizing-5;
+      }
+      .bkl-modal__footer {
+        display: none;
+      }
+    }
+    
+    .bkl-modal__loader {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: bkl.$sizing-9;
+    }
+  }
+  
+  .bkl-modal--open {
+    overflow: hidden;
+  }
+  
+  .bkl-modal-backdrop {
+    &.bkl-modal-backdrop--slide-right {
+      align-items: flex-end;
+    }
+  }
+  
+  .bkl-theme-dark {
+    .bkl-modal {
+      background: bkl.$brand-color-dark-8;
+      color: bkl.$light-color-1;
+      .bkl-modal__header {
+        color: bkl.$light-color-1;
+        box-shadow: none;
+      }
+    }
+  }
+}

@@ -1,0 +1,99 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+
+@layer baklava.legacy {
+  .bkl-nav {
+    &:first-of-type {
+      margin-block-start: 2.5rem;
+    }
+    
+    &:not(:first-of-type) {
+      margin-block-start: 1rem;
+      border-block-start: 1px solid var(--sidebar-nav-border);
+    }
+    
+    padding: 1rem 0;
+    
+    header {
+      margin-block: 0.5rem 1rem;
+      
+      color: var(--sidebar-nav-header-default);
+      text-transform: uppercase;
+      
+      cursor: default;
+    }
+    
+    &__list {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    &__tooltip-btn {
+      inline-size: 100%;
+    }
+    
+    &__list-item {
+      &:not(:first-of-type) {
+        margin-block-start: 0.1rem;
+      }
+      
+      &__link {
+        display: flex;
+        align-items: center;
+        margin: bkl.$sizing-0 -1rem;
+        padding: 0.8rem 2rem;
+        @include mixins.rounded;
+        color: var(--bkl-dark-color-1);
+        @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-medium);
+        font-size: bkl.$font-size-s;
+        
+        &:focus-visible {
+          outline: 2px solid bkl.$focus-outline-color;
+          outline-offset: 0;
+        }
+        
+        .title-icon {
+          margin-inline-end: bkl.$sizing-3;
+          inline-size: bkl.$sizing-4;
+          color: var(--sidebar-nav-icon-default);
+        }
+        
+        .title {
+          // Note: in order for `text-overflow` to work, we need this additional `.title` element, because
+          // `text-overflow` doesn't work on flex containers: https://bugzilla.mozilla.org/show_bug.cgi?id=972664
+          
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+        
+        .count {
+          align-self: center;
+          @include mixins.capsule;
+          block-size: bkl.$sizing-4;
+          margin-inline: bkl.$sizing-2 -(bkl.$sizing-2);
+          background-color: var(--sidebar-nav-background);
+          font-size: bkl.$font-size-xs;
+        }
+        
+        &.active,
+        &.active:hover {
+          background-color: var(--sidebar-nav-active-background-hover);
+        }
+        
+        &.disabled {
+          pointer-events: none;
+        }
+      }
+      
+      &:hover .bkl-nav__list-item__link {
+        background-color: var(--sidebar-nav-background-hover);
+      }
+    }
+  }
+}

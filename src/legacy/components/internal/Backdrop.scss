@@ -1,0 +1,44 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../style/variables.scss' as *;
+@use '../../style/util/z-index.scss' as z;
+
+
+@layer baklava.legacy {
+  .bkl-backdrop {
+    &:focus {
+      outline: none;
+    }
+    
+    display: none; // Will change to: `flex`
+    align-items: center;
+    
+    position: fixed;
+    z-index: z.$z-index--backdrop;
+    inset: 0;
+    block-size: 100%;
+    inline-size: 100%;
+    
+    font: inherit;
+    background: var(--bkl-backdrop-color);
+    backdrop-filter: blur(1px);
+    will-change: opacity;
+    
+    &.bkl-backdrop--active {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    &.bkl-backdrop--scrollable {
+      // Explanatio: this is not an interactive element
+      // stylelint-disable-next-line declaration-property-value-disallowed-list
+      overflow-y: auto;
+    }
+    
+    &.bkl-backdrop--active:not(.bkl-backdrop--scrollable) {
+      justify-content: center;
+    }
+  }
+}

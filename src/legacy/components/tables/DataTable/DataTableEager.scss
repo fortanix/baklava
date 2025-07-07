@@ -1,0 +1,13 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use './DataTableLazy.scss' as dataTableLazy;
+
+
+@layer baklava.legacy {
+  .bkl-data-table-eager--loading {
+    @include dataTableLazy.data-table-loading();
+  }
+}

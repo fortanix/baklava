@@ -1,0 +1,108 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+
+@layer baklava.legacy {
+  .bkl-dsm-data-table-stream {
+    table.bkl-data-table__table {
+      thead {
+        tr {
+          th {
+            position: relative;
+            //overflow: visible;
+          }
+        }
+      }
+      
+      tbody {
+        tr:not(.bkl-data-table__placeholder) {
+          position: relative;
+          td {
+            .action-icons {
+              position: absolute;
+              flex-wrap: nowrap;
+              inset-block-start: 0;
+              inset-inline-end: 1rem;
+              align-items: center;
+              block-size: 100%;
+              display: none;
+            }
+          }
+          &:hover {
+            background-color: bkl.$light-color-2;
+            td:first-child::before {
+              content: '';
+              position: absolute;
+              inset-inline-start: 0;
+              inset-block-start: 0;
+              inline-size: .6rem;
+              block-size: 100%;
+              background-color: bkl.$accent-color-light-2;
+            }
+            td {
+              .action-icons {
+                display: flex;
+                .key-rotation, .download-logs, .edit-state, .remove-key, .download-key, .copy-uuid {
+                  .bkl-icon {
+                    --icon-size: 1.4rem;
+                  }
+                  color: bkl.$light-color-1;
+                  background-color: bkl.$accent-color;
+                  border-radius: 50%;
+                  border-width: 0;
+                  margin-inline-start: bkl.$sizing-m;
+                  line-height: bkl.$line-height-4;
+                  inline-size: 3rem;
+                  block-size: 3rem;
+                  position: relative;
+                  z-index: 1;
+                  float: inline-end;
+                  text-align: center;
+                  box-sizing: border-box;
+                  padding-block-start: bkl.$sizing-xs;
+                }
+              }
+            }
+          }
+          &:not(:last-of-type) {
+            border-block-end: .1rem;
+          }
+        }
+
+        tr {
+          &.bkl-data-table__placeholder {
+            &.bkl-data-table__placeholder--row {
+              td {
+                padding: bkl.$sizing-7 (bkl.$sizing-1 + bkl.$sizing-2) bkl.$sizing-7 bkl.$sizing-5;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .bkl-dropdown.bkl-table-config-icon {
+    .bkl-dropdown__menu {
+      display: flex;
+      flex-direction: column;
+      gap: bkl.$sizing-2;
+      padding: bkl.$sizing-s;
+      
+      .bkl-table-config-title {
+        text-transform: initial;
+      }
+      
+      .bkl-dropdown__menu-item {
+        padding: 0;
+        .item-name {
+          margin-inline-start: bkl.$sizing-s;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,83 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+
+@layer baklava.legacy {
+  .bkl-textarea {
+    position: relative;
+    display: flex;
+    
+    .bkl-textarea__textarea {
+      resize: none;
+      box-sizing: content-box;
+      inline-size: 100%;
+      margin-block-end: bkl.$sizing-2;
+      padding: 1rem;
+      outline: none;
+      overflow-y: hidden;
+      
+      border: 0.2rem solid bkl.$neutral-color-1;
+      border-radius: bkl.$sizing-2;
+      box-shadow: none;
+      transition: border 0.3s, box-shadow 0.3s;
+      
+      background-color: bkl.$light-color-2;
+      color: bkl.$dark-color-1;
+      @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-medium);
+      font-size: bkl.$font-size-s;
+      line-height: bkl.$line-height-2;
+      
+      &:hover {
+        background-color: bkl.$light-color-1;
+        border-color: var(--bkl-border-color-1);
+        outline: none;
+      }
+      
+      &:focus {
+        background-color: bkl.$light-color-1;
+        border-color: bkl.$accent-color-light-2;
+      }
+      
+      &::placeholder {
+        color: var(--bkl-placeholder-color);
+        @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+        font-size: bkl.$font-size-s;
+        line-height: bkl.$line-height-3;
+      }
+      
+      &:disabled {
+        color: var(--bkl-placeholder-color);
+      }
+    }
+    
+    &.bkl-textarea--fixed-height {
+      .bkl-textarea__textarea {
+        min-block-size: 10rem;
+        background-color: bkl.$light-color-2;
+        overflow-y: auto;
+        padding: bkl.$sizing-4;
+        
+        &:focus {
+          box-shadow: none;
+        }
+      }
+      
+      .bkl-textarea__label {
+        inset-block-start: 0;
+        padding: bkl.$sizing-4;
+      }
+      
+      &.bkl-textarea--primary {
+        .bkl-textarea__label {
+          &.bkl-textarea__label--active {
+            padding: bkl.$sizing-2 0 bkl.$sizing-2;
+          }
+        }
+      }
+    }
+  }
+}

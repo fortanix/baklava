@@ -1,0 +1,104 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../style/variables.scss' as bkl;
+@use '../../../../style/mixins.scss' as mixins;
+
+
+@layer baklava.legacy {
+  .bkl-table-placeholder {
+    min-height: 40rem;
+    padding: bkl.$sizing-l;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    color: bkl.$brand-color-dark-2;
+    @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+    font-size: bkl.$font-size-l;
+    
+    .bkl-table-placeholder__icon {
+      box-sizing: content-box; // Have padding increase the size rather than shrink the content
+      width: 1.8em;
+      height: 1.8em;
+      margin-bottom: bkl.$sizing-m;
+      padding: 1em;
+    }
+    
+    .bkl-table-placeholder__message {
+      margin: 0;
+    }
+    
+    .bkl-table-placeholder__actions {
+      margin: 0;
+      margin-top: bkl.$sizing-l;
+      
+      display: flex;
+      gap: bkl.$sizing-s;
+    }
+    
+    &.bkl-table-placeholder--error {
+      color: bkl.$status-color-error;
+      
+      .bkl-table-placeholder--error__error-icon {
+        position: relative;
+        
+        .icon-cross {
+          position: absolute;
+          top: 1.4rem;
+          right: 1.6rem;
+          
+          @include mixins.circle($size: 1.8rem);
+          background: bkl.$status-color-error;
+          color: bkl.$light-color-1;
+          
+          border: 0.2rem solid bkl.$light-color-1;
+        }
+      }
+    }
+  }
+
+  .bkl-table-row-placeholder {
+    background: hsla(37, 91%, 55%, 0.04);
+    border: 1px solid var(--datatable-color);
+    padding: bkl.$sizing-3 (bkl.$sizing-4 + bkl.$sizing-1);
+    height: 5.2rem;
+    display: flex;
+    align-items: center;
+
+    &__icon {
+      color: var(--datatable-color);
+      margin-right: bkl.$sizing-4 + bkl.$sizing-1;
+    }
+
+    &__message {
+      @include mixins.font(
+        $family: bkl.$font-family-body,
+        $weight: bkl.$font-weight-regular,
+        $size: bkl.$font-size-s,
+      );
+      line-height: bkl.$line-height-4;
+      color: var(--bkl-dark-color-1);
+    }
+  }
+
+  .bkl-table-placeholder.bkl-table-placeholder--skeleton {
+    align-items: stretch;
+    justify-content: space-around;
+    gap: 1rem;
+    
+    > .skeleton-row {
+      display: block;
+      height: 1.5rem;
+      border-radius: bkl.$border-radius-ms;
+      
+      @include mixins.shimmer(
+        $baseColor: var(--bkl-shimmer-base-color),
+        $highlightColor: var(--bkl-shimmer-highlight-color)
+      );
+    }
+  }
+}

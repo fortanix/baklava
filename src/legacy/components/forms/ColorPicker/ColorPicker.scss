@@ -1,0 +1,121 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+@use '../../../style/variables.scss' as bkl;
+
+$colors: (
+  accentColor: bkl.$accent-color,
+  statusColor: bkl.$status-color-warning,
+  neutralColor: #039ADC,
+  brandColor: #7B5BA5,
+);
+
+@layer baklava.legacy {
+  .bkl-color-picker-group {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    inline-size: 100%;
+    
+    .bkl-color-picker__wrapper {
+      position: relative;
+      display: flex;
+      margin: bkl.$sizing-2;
+      cursor: pointer;
+      
+      // Use `opacity: 0` instead of `display: none` for outline
+      .bkl-color-picker__item {
+        pointer-events: none;
+        position: absolute;
+        opacity: 0;
+        inline-size: 0;
+        block-size: 0;
+        
+        &:checked + label {
+          @each $name, $value in $colors {
+            .#{$name}::after, .bkl-custom-color::after {
+              content: '';
+              position: absolute;
+              inset: -5px;
+              border-radius: bkl.$border-radius-circle;
+              border: 2px solid $value;
+            }
+          }
+          
+          .bkl-custom-color::after {
+            border: 2px solid var(--selected-color-picker);
+          }
+        }
+      }
+      
+      &:has(.bkl-color-picker__item:focus-visible) {
+        label span {
+          outline: 2px solid bkl.$focus-outline-color;
+          outline-offset: 0;
+        }
+      }
+      
+      label {
+        display: inline-block;
+        inline-size: 25px;
+        block-size: 25px;
+        cursor: pointer;
+        padding-inline-start: bkl.$sizing-0;
+        
+        span {
+          display: block;
+          inline-size: 100%;
+          block-size: 100%;
+          transition: transform .2s ease-in-out;
+          border-radius: bkl.$border-radius-circle;
+          
+          @each $name, $value in $colors {
+            &.#{$name} {
+              background: $value;
+            }
+          }
+          
+          &.bkl-custom-color {
+            background: var(--selected-color-picker);
+          }
+        }
+      }
+    }
+    
+    .bkl-custom-color-picker__wrapper {
+      &:has(.bkl-custom-color-picker__icon) {
+        position: relative;
+        display: flex;
+        margin: bkl.$sizing-2;
+        cursor: pointer;
+      }
+        
+      .bkl-custom-color-picker__item {
+        position: absolute;
+        opacity: 0;
+        inline-size: 0;
+        block-size: 0;
+        pointer-events: none;
+      }
+      
+      &:has(.bkl-custom-color-picker__item:focus-visible) {
+        .bkl-custom-color-picker__icon {
+          outline: 2px solid bkl.$focus-outline-color;
+          outline-offset: 0;
+          border-radius: 50%;
+        }
+        
+        .bkl-custom-color {
+          outline: 2px solid bkl.$focus-outline-color;
+          outline-offset: 0;
+        }
+      }
+      
+      .bkl-custom-color-picker__icon {
+        inline-size: 25px;
+        block-size: 25px;
+      }
+    }
+  }
+}

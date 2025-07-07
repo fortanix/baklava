@@ -1,0 +1,28 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../IconDecorated.scss' as decorations;
+
+
+@layer baklava.legacy {
+  .bkl-icon:where(.baklava-icon--decorated) {
+    &:where(.icon--decorated--background-circle) {
+      @include decorations.decoration-background-circle();
+    }
+    &:where(.baklava-icon--decorated--highlight) {
+      @include decorations.decoration-background-circle();
+      background-color: bkl.$accent-color;
+      transition: background-color 300ms ease;
+      
+      // Adapt highlight background color to context
+      @at-root :is(button, a):hover > .baklava-icon--decorated.baklava-icon--decorated--highlight {
+        background-color: var(--bkl-button-hover-color);
+      }
+    }
+    &:where(.baklava-icon--decorated--border-circle) {
+      @include decorations.decoration-border-circle();
+    }
+  }
+}

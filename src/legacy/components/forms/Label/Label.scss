@@ -1,0 +1,88 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+
+@layer baklava.legacy {
+  .bkl-labels-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4lh 1.5ch;
+    
+    @include mixins.font($family: bkl.$font-family-body);
+    font-size: bkl.$font-size-xs;
+    color: bkl.$brand-color-dark-1;
+  }
+  
+  .bkl-label {
+    flex: none;
+    max-inline-size: 30rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: bkl.$sizing-xxs bkl.$sizing-s;
+    border-radius: bkl.$border-radius-s;
+    
+    color: bkl.$brand-color-dark-2;
+    background: bkl.$neutral-color-4;
+    line-height: bkl.$line-height-1;
+    @include mixins.font($family: bkl.$font-family-display);
+    font-size: bkl.$font-size-s;
+    
+    display: flex;
+    align-items: baseline;
+    column-gap: 0.6ch;
+    white-space: nowrap;
+    overflow-wrap: anywhere;
+    
+    &:focus-visible {
+      outline: 2px solid bkl.$focus-outline-color;
+      outline-offset: 0;
+    }
+    
+    .bkl-label__key {
+      flex: 1; // If not enough space, have key shrink first (rather than the value)
+      min-inline-size: 2rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: bkl.$font-weight-regular;
+      
+      &::after { content: ':'; }
+    }
+    .bkl-label__value {
+      flex: none; // If not enough space, have key shrink first (rather than the value)
+      min-inline-size: 2rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: bkl.$font-weight-semibold;
+    }
+    .bkl-label__empty { opacity: 0.4; }
+  }
+  
+  .bkl-label-tooltip > .bkl-tooltip__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    word-break: break-all;
+    text-align: center;
+    
+    .bkl-label__key {
+      font-weight: bkl.$font-weight-regular;
+      &::after { content: ':'; }
+    }
+    .bkl-label__value {
+      font-weight: bkl.$font-weight-bold;
+    }
+    .bkl-label__empty { opacity: 0.4; }
+  }
+  
+  .bkl-labels-list--compact .bkl-label, .bkl-label--compact {
+    max-inline-size: 18rem;
+    padding: bkl.$sizing-xxs bkl.$sizing-xs;
+    font-size: bkl.$font-size-xxs;
+  }
+}

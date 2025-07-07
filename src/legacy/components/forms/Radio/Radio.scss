@@ -1,0 +1,154 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/util/z-index.scss' as z;
+
+@layer baklava.legacy {
+  .bkl-radio-group {
+    position: relative;
+    
+    .bkl-radio {
+      cursor: pointer;
+      display: block;
+      padding: bkl.$sizing-xxs bkl.$sizing-none;
+      outline: none;
+      
+      .bkl-radio__wrapper {
+        position: relative;
+        display: flex;
+        inline-size: max-content;
+        padding-block-start: bkl.$sizing-xxs;
+        color: bkl.$brand-color-dark-1;
+        font-size: bkl.$font-size-s;
+        line-height: bkl.$line-height-3;
+        vertical-align: top;
+        cursor: pointer;
+      }
+      
+      .bkl-radio__input {
+        margin-inline-end: bkl.$sizing-xs;
+        inline-size: 1.8rem;
+        block-size: 1.8rem;
+        margin-block-start: bkl.$sizing-none;
+        
+        &:focus-visible {
+          outline: 2px solid bkl.$focus-outline-color;
+          outline-offset: 0;
+        }
+      }
+    }
+  }
+  
+  .bkl-radio-group--inline {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: bkl.$sizing-s;
+  }
+  
+  .bkl-radio-group--primary, .bkl-radio--primary {
+    .bkl-radio--disabled {
+      opacity: 0.35;
+    }
+    
+    .bkl-radio__wrapper {
+      padding-inline-start: bkl.$sizing-l;
+    }
+    
+    .bkl-radio__wrapper::after, .bkl-radio__wrapper::before {
+      content: '';
+      position: absolute;
+      inset-inline-start: 0;
+      inset-block-start: 0;
+      margin: bkl.$sizing-xxs bkl.$sizing-xs bkl.$sizing-xxs bkl.$sizing-none;
+      z-index: z.$z-index--base;
+      transition: 280ms ease;
+      inline-size: 1.8rem;
+      block-size: 1.8rem;
+      border-radius: 50%;
+      border: 0.2rem solid var(--dark-color-4);
+    }
+    
+    .bkl-radio.pseudo-focus-visible {
+      .bkl-radio__wrapper::before {
+        outline: 2px solid bkl.$focus-outline-color;
+        outline-offset: 0;
+      }
+    }
+    
+    .bkl-radio--checked .bkl-radio__wrapper::before {
+      border: 0.2rem solid var(--bkl-accent-color);
+    }
+    
+    .bkl-radio--checked .bkl-radio__wrapper::after {
+      background-color: var(--bkl-accent-color);
+      transform: scale(0.5);
+    }
+    
+    // Use `opacity: 0` instead of `display: none` for outline
+    .bkl-radio__input {
+      position: absolute;
+      opacity: 0;
+      inline-size: 0;
+      block-size: 0;
+      pointer-events: none;
+      appearance: none;
+      
+      &:focus-visible {
+        inline-size: bkl.$sizing-4;
+        block-size: bkl.$sizing-4;
+        inset-inline-start: 0;
+        border-radius: 50%;
+        opacity: 1;
+      }
+    }
+  }
+  
+  .bkl-radio.bkl-radio--with-border {
+    display: flex;
+    justify-content: center;
+    padding: bkl.$sizing-s;
+    border: bkl.$sizing-hairline solid bkl.$neutral-color-1;
+    border-radius: bkl.$border-radius-s; 
+    
+    &.bkl-radio--checked {
+      background: bkl.$light-color-2;
+      border: bkl.$sizing-hairline solid bkl.$accent-color;
+    }
+    
+    &:has(.bkl-radio__input:focus-visible), &.pseudo-focus-visible {
+      outline: 2px solid bkl.$focus-outline-color;
+      outline-offset: 0;
+    }
+  }
+  
+  .bkl-radio.bkl-radio--with-switcher {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding: bkl.$sizing-s;
+    text-transform: uppercase;
+    color: bkl.$neutral-color-2;
+    min-inline-size: 33rem;
+    line-height: 5rem;
+    background-color: bkl.$light-color-1;
+    border-radius: bkl.$border-radius-s;
+    border: bkl.$sizing-hairline solid bkl.$accent-color;
+    
+    &:has(.bkl-radio__input:focus-visible) {
+      outline: 2px solid bkl.$focus-outline-color;
+      outline-offset: 0;
+    }
+    
+    &.bkl-radio--checked {
+      background: var(--bkl-bg-color-default);
+      border: bkl.$sizing-hairline solid bkl.$accent-color;
+    }
+    
+    .bkl-radio__wrapper {
+      font-size: bkl.$font-size-m;
+    }
+  }
+}

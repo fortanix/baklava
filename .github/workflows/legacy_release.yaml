@@ -1,0 +1,39 @@
+name: Create and upload build assets for legacy releases
+on:
+  release:
+    types: [published]
+
+jobs:
+  upload-release-build:
+    runs-on: ubuntu-latest
+    if: contains(github.event.release.tag_name, 'legacy')
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js (or your runtime)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run build script
+        run: npm run build
+        
+      - name: Create build archive
+        run: |
+          # Note: npm expects a top-level folder, we cannot have the files immediately as items in the `tar.gz`
+          mkdir -p package
+          cp -r dist/ src/ app/ package.json README.md LICENSE package/
+          tar -czf package.tar.gz package/
+        
+      - name: Upload build files to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./package.tar.gz
+          asset_name: package.tar.gz
+          asset_content_type: application/gzip

@@ -1,0 +1,157 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+
+
+@layer baklava.legacy {
+  .bkl-checkbox {
+    --bkl-checkbox-size: 1.8rem;
+    --bkl-checkbox-border-size: 0.2rem;
+    
+    display: block;
+    padding: bkl.$sizing-xxs bkl.$sizing-none;
+    outline: none;
+    cursor: pointer;
+    
+    .bkl-checkbox__wrapper {
+      position: relative;
+      display: flex;
+      padding-block-start: bkl.$sizing-xxs;
+      color: bkl.$brand-color-dark-1;
+      font-size: bkl.$font-size-s;
+      line-height: bkl.$line-height-3;
+      vertical-align: top;
+    }
+    
+    .bkl-checkbox__input {
+      margin-inline-end: bkl.$sizing-xs;
+      block-size: var(--bkl-checkbox-border-size);
+      inline-size: var(--bkl-checkbox-border-size);
+      margin-block-start: bkl.$sizing-none;
+      cursor: pointer;
+      
+      &:focus-visible {
+        outline: var(--bkl-checkbox-border-size) solid bkl.$focus-outline-color;
+        outline-offset: 0;
+      }
+    }
+  }
+  
+  .bkl-checkbox-group--primary, .bkl-checkbox--primary {
+    .bkl-checkbox__wrapper {
+      padding-inline-start: bkl.$sizing-l;
+    }
+    
+    .bkl-checkbox__wrapper::after, .bkl-checkbox__wrapper::before {
+      content: '';
+      position: absolute;
+      transition: border .25s, background-color .25s, width .20s .1s, height .20s .1s, top .20s .1s, left .20s .1s;
+    }
+    
+    .bkl-checkbox__wrapper::before {
+      inline-size: 0;
+      block-size: 0;
+      inset-block-start: 1rem;
+      inset-inline-start: 0.6rem;
+      z-index: 1;
+      border: bkl.$sizing-xxs solid transparent;
+      transform: rotateZ(37deg);
+      transform-origin: 100% 100%;
+    }
+    
+    .bkl-checkbox__wrapper::after {
+      inline-size: calc(var(--bkl-checkbox-size) + var(--bkl-checkbox-border-size));
+      block-size: calc(var(--bkl-checkbox-size) + var(--bkl-checkbox-border-size));
+      // inset-block-start: 0.2rem;
+      inset-inline-start: 0;
+      z-index: 0;
+      border: var(--bkl-checkbox-border-size) solid bkl.$dark-color-4;
+      background-color: transparent;
+      border-radius: var(--bkl-checkbox-border-size);
+    }
+    
+    // Use `opacity: 0` instead of `display: none` for outline
+    .bkl-checkbox__input {
+      position: absolute;
+      opacity: 0;
+      inline-size: 0;
+      block-size: 0;
+      pointer-events: none;
+      appearance: none;
+      
+      &:focus-visible, &.pseudo-focus-visible {
+        inline-size: calc(var(--bkl-checkbox-size) + var(--bkl-checkbox-border-size));
+        block-size: calc(var(--bkl-checkbox-size) + var(--bkl-checkbox-border-size));
+        inset-block-start: 0.3rem;
+        inset-inline-start: 0;
+        border-radius: 0.2rem;
+        opacity: 1;
+      }
+    }
+  }
+  
+  .bkl-checkbox-group--primary {
+    .bkl-checkbox--disabled {
+      opacity: 0.34;
+    }
+    
+    .bkl-checkbox--checked .bkl-checkbox__wrapper::before {
+      inline-size: 0.8rem;
+      block-size: 1.6rem;
+      inset-block-start: var(--bkl-checkbox-border-size);
+      inset-inline-start: 0;
+      border-block-start: var(--bkl-checkbox-border-size) solid transparent;
+      border-inline-start: var(--bkl-checkbox-border-size) solid transparent;
+      border-inline-end: var(--bkl-checkbox-border-size) solid bkl.$dark-color-1;
+      border-block-end: var(--bkl-checkbox-border-size) solid bkl.$dark-color-1;
+    }
+    
+    .bkl-checkbox--checked .bkl-checkbox__wrapper::after {
+      border: var(--bkl-checkbox-border-size) solid bkl.$accent-color-light-2;
+      background-color: bkl.$accent-color-light-2;
+    }
+  }
+  
+  .bkl-checkbox--primary {
+    &.bkl-checkbox--disabled {
+      opacity: 0.34;
+    }
+    
+    &.bkl-checkbox--checked .bkl-checkbox__wrapper::before {
+      inline-size: 0.8rem;
+      block-size: 1.6rem;
+      inset-block-start: var(--bkl-checkbox-border-size);
+      inset-inline-start: 0;
+      border-block-start: var(--bkl-checkbox-border-size) solid transparent;
+      border-inline-start: var(--bkl-checkbox-border-size) solid transparent;
+      border-inline-end: var(--bkl-checkbox-border-size) solid bkl.$dark-color-1;
+      border-block-end: var(--bkl-checkbox-border-size) solid bkl.$dark-color-1;
+    }
+    
+    &.bkl-checkbox--checked .bkl-checkbox__wrapper::after {
+      border: var(--bkl-checkbox-border-size) solid bkl.$accent-color-light-2;
+      background-color: bkl.$accent-color-light-2;
+    }
+  }
+
+  .bkl-checkbox-group {
+    position: relative;
+    
+    &.bkl-checkbox-group--inline {
+      display: flex;
+      flex-direction: column;
+      flex-direction: row;
+      flex-wrap: wrap;
+      
+      .bkl-checkbox:not(:first-child) {
+        padding-inline-start: bkl.$sizing-5;
+      }
+      
+      .bkl-checkbox:not(:last-child) {
+        padding-inline-end: bkl.$sizing-5;
+      }
+    }
+  }
+}

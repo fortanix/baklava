@@ -1,0 +1,36 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+@layer baklava.legacy {
+  .bkl-property-list {
+    margin: bkl.$sizing-0;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: bkl.$sizing-xl;
+    row-gap: bkl.$sizing-l;
+    
+    .bkl-property-list__property {
+      &.bkl-property-list__property--full-width {
+        flex: 1;
+        min-inline-size: bkl.$sizing-0; // Needed for truncation of children: https://css-tricks.com/flexbox-truncated-text
+      }
+      
+      .bkl-property-list__property__label {
+        margin-block: bkl.$sizing-4 bkl.$sizing-2;
+        @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-semibold);
+        font-size: bkl.$font-size-s;
+        color: bkl.$neutral-color-3;
+        line-height: bkl.$line-height-6;
+      }
+      
+      .bkl-property-list__property__value {
+        margin-inline-start: bkl.$sizing-0;
+        font-size: bkl.$font-size-s;
+      }
+    }
+  }
+}

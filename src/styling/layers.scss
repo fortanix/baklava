@@ -29,7 +29,8 @@ of `preview-head.html`.
     baklava.prose, // Default semantic HTML styling for prose sections
     baklava.components, // Component styling
     baklava.overrides, // Local overrides (e.g. components that need to override other components)
-    baklava.layouts; // For layout components (specialized versions of components)
+    baklava.layouts, // For layout components (specialized versions of components)
+    baklava.legacy; // Legacy components
   
   // (*) In the future, we could maybe use caret syntax for this instead, so that consumer applications just use regular
   // unlayered styling and anything that needs higher precedence uses `@layer ^my-layer`.

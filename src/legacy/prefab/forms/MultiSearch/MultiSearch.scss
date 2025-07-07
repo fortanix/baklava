@@ -1,0 +1,160 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as *;
+@use '../../../components/overlays/dropdown/Dropdown.scss';
+
+
+@layer baklava.legacy {
+  .bkl-search-input {
+    position: relative;
+    display: flex;
+    flex: 1;
+    padding: $sizing-none;
+    
+    background-color: var(--bkl-input-bg-color);
+    border: 0.2rem solid $neutral-color-1;
+    border-radius: $sizing-2;
+    inline-size: 100%;
+    
+    &:focus-visible {
+      outline: 2px solid $focus-outline-color;
+      outline-offset: 0;
+    }
+    
+    &.bkl-search-input--active {
+      background-color: var(--bkl-input-bg-color);
+      border-color: $accent-color;
+    }
+    
+    &:hover:not(.bkl-search-input--active) {
+      background-color: var(--bkl-input-bg-color);
+      border-color: var(--bkl-button-hover-color);
+      outline: none;
+    }
+    
+    .bkl-input {
+      .bkl-input__input {
+        background-color: transparent;
+        border: none;
+      }
+    }
+    
+    .bkl-search-input__search-icon, .bkl-search-input__search-key {
+      padding: 1rem;
+      padding-inline-end: $sizing-none;
+    }
+    
+    .bkl-search-input__search-icon {
+      inline-size: $sizing-m;
+      opacity: 0.5;
+      color: var(--bkl-input-color);
+    }
+    
+    .bkl-search-input__search-key {
+      font-size: $font-size-s;
+      font-weight: $font-weight-light;
+      line-height: $line-height-2;
+      flex: 1 0 auto;
+    }
+    
+    .bkl-search-input__input {
+      inline-size: 100%;
+    }
+  }
+  
+  .bkl-multi-search__filters {
+    display: flex;
+    margin-block-start: $sizing-s;
+    
+    .bkl-multi-search__filters-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: $sizing-s;
+      
+      .bkl-multi-search__filter {
+        .filter-operand {
+          margin-inline-start: $sizing-xxs;
+        }
+        
+        .filter-value {
+          margin-inline-start: $sizing-xxs;
+          font-weight: $font-weight-semibold;
+        }
+      }
+    }
+    
+    .bkl-multi-search__filter-actions {
+      margin-inline-start: auto;
+      flex-shrink: 0;
+      padding-inline-start: $sizing-s;
+      
+      .clear-all {
+        color: $accent-color;
+        
+        &:hover {
+          cursor: pointer;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  
+  .bkl-multi-search__operators {
+    .operator {
+      display: flex;
+      justify-content: center;
+    }
+  }
+  
+  .bkl-multi-search__alternatives {
+    .bkl-multi-search__alternatives-group {
+      .bkl-checkbox {
+        padding: $sizing-s;
+      }
+    }
+    
+    .bkl-multi-search__alternatives-action {
+      padding-block-start: $sizing-s;
+      display: flex;
+      justify-content: center;
+    }
+  }
+  
+  .bkl-multi-search__date-time {
+    .bkl-multi-search__date-time-group {
+      .bkl-multi-search__date-time-label {
+        margin-block-end: $sizing-xs;
+        font-weight: $font-weight-semibold;
+      }
+      
+      padding: $sizing-s;
+    }
+    
+    .bkl-multi-search__date-time-action {
+      padding-block-start: $sizing-s;
+      display: flex;
+      justify-content: center;
+    }
+  }
+  
+  
+  .bkl-multi-search__suggested-keys {
+    .bkl-multi-search__suggested-key-input .bkl-input__input {
+      inline-size: auto;
+    }
+  }
+  
+  .bkl-multi-search__error-msg,
+  .bkl-multi-search__dropdown-error-msg {
+    padding-block-start: $sizing-s;
+    color: $status-color-error;
+    max-inline-size: $sizing-6 * 10;
+    display: block;
+  }
+  
+  .bkl-multi-search__dropdown-error-msg {
+    padding: $sizing-s;
+  }
+}

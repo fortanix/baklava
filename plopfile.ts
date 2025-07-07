@@ -221,8 +221,9 @@ export default (plop: NodePlopAPI) => {
     }
   });
   
+  // Generate all the necessary files for a new component
   plop.setGenerator('component', {
-    description: 'Generating a Baklava component',
+    description: 'Generate a Baklava component',
     prompts: [
       {
         type: 'input',
@@ -268,6 +269,40 @@ export default (plop: NodePlopAPI) => {
         path: '{{component-path}}/{{{component-name}}}.module.scss',
         template: componentTemplate['Component.module.scss'],
       },
+      {
+        type: 'add',
+        path: '{{component-path}}/{{{component-name}}}.stories.tsx',
+        template: componentTemplate['Component.stories.tsx'],
+      },
+    ],
+  });
+  
+  plop.setGenerator('stories', {
+    description: 'Generate a Storybook file for an existing component',
+    prompts: [
+      {
+        type: 'input',
+        name: 'component-path',
+        message: 'What is the path to the parent directory of the component? (E.g. `src/components/MyComponent`)',
+        default: 'src/components',
+      },
+      {
+        type: 'input',
+        name: 'component-name',
+        message: 'What is the name of the component (in CamelCase)? (E.g. `MyComponent`)',
+        default: (answers) => {
+          const directoryName = path.basename(answers['component-path']);
+          return directoryName ?? 'MyComponent';
+        },
+      },
+      {
+        type: 'input',
+        name: 'storybook-layout',
+        message: 'Which Storybook layout to use? (E.g. fullscreen, padded, centered)',
+        default: 'centered',
+      },
+    ],
+    actions: [
       {
         type: 'add',
         path: '{{component-path}}/{{{component-name}}}.stories.tsx',

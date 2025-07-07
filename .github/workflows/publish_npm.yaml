@@ -4,6 +4,7 @@ on:
     types: [published] # Run this whenever we create a new release through GitHub releases
 jobs:
   build:
+    if: false # Disable this job for now
     runs-on: ubuntu-latest
     permissions:
       contents: read

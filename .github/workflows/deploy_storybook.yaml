@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   deploy:
+    if: false # Disable this job for now
     runs-on: ubuntu-latest
     steps:
     - id: build-publish

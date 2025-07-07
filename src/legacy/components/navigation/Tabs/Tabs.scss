@@ -1,0 +1,72 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+
+@layer baklava.legacy {
+  .bkl-tabs {
+    $tab-radius: bkl.$border-radius-ms;
+    
+    margin: 2rem 0;
+    
+    .bkl-tabs__switcher {
+      list-style: none;
+      
+      display: flex;
+      
+      .bkl-tabs__switcher__tab {
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+        
+        padding: bkl.$sizing-3 bkl.$sizing-6;
+        // Add `$tab-radius` to cover the tab-content border radius (e.g. when the active tab is the first tab).
+        // We compensate for this padding below by shifting the tab-content up by `$tab-radius` (see `margin-top`).
+        padding-block-end: bkl.$sizing-4 + $tab-radius;
+        border-start-start-radius: $tab-radius;
+        border-start-end-radius: $tab-radius;
+        
+        color: bkl.$neutral-color-2;
+        @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-medium);
+        font-size: bkl.$font-size-m;
+        text-transform: uppercase;
+        
+        // TODO: do we want to add some hover styles?
+        //&:hover {
+        //  background: rgba(bkl.$light-color-1, 60%);
+        //}
+        
+        &:is(:focus-visible, .pseudo-focus-visible) {
+          outline: 2px solid bkl.$focus-outline-color;
+          outline-offset: 0;
+        }
+        
+        &.active {
+          cursor: default;
+          background: bkl.$light-color-1;
+          color: bkl.$accent-color;
+          box-shadow: 0 -4px 4px var(--bkl-tab-shadow-color);
+        }
+      }
+    }
+    
+    .bkl-tabs__tab-content {
+      margin-block-start: -1 * $tab-radius;
+      padding: bkl.$sizing-4;
+      border-radius: $tab-radius;
+      background: bkl.$light-color-1;
+      
+      &:is(:focus-visible, .pseudo-focus-visible) {
+        outline: 2px solid bkl.$focus-outline-color;
+        outline-offset: 0;
+      }
+    }
+    
+    .bkl-tabs__switcher .bkl-tabs__switcher__tab.active:first-of-type + .bkl-tabs__tab-content {
+      border-start-start-radius: 0;
+    }
+  }
+}

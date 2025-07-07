@@ -1,0 +1,75 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+@layer baklava.legacy {
+  .bkl-input {
+    position: relative;
+    
+    .bkl-input__input {
+      background-color: bkl.$light-color-2;
+      border: 0.2rem solid bkl.$neutral-color-1;
+      border-radius: bkl.$sizing-2;
+      padding: 1rem;
+      outline: none;
+      inline-size: 100%;
+      color: bkl.$dark-color-1;
+      font-family: bkl.$font-family-body;
+      @include mixins.font($family: bkl.$font-family-body, $weight: bkl.$font-weight-light);
+      font-size: bkl.$font-size-s;
+      line-height: bkl.$line-height-2;
+      
+      box-shadow: none;
+      transition: all 0.3s;
+      
+      &:hover {
+        background-color: var(--bkl-input-bg-color);
+        border-color: var(--bkl-input-border-color);
+        outline: none;
+      }
+      
+      &:focus {
+        background-color: var(--bkl-input-bg-color);
+        border-color: bkl.$accent-color-light-2;
+      }
+      
+      &::placeholder {
+        color: var(--bkl-placeholder-color);
+        font-family: bkl.$font-family-body;
+        font-size: bkl.$font-size-s;
+        font-weight: bkl.$font-weight-light;
+        line-height: bkl.$line-height-3;
+      }
+      
+      &:disabled {
+        color: var(--bkl-placeholder-color);
+      }
+      
+      &.bkl-input__input--toggle-visibility {
+        padding-inline-end: 4rem; // Make room for the visibility toggle
+      }
+      &.bkl-input__input--toggle-visibility::-webkit-outer-spin-button,
+      &.bkl-input__input--toggle-visibility::-webkit-inner-spin-button {
+        margin-inline-end: bkl.$sizing-5;
+      }
+    }
+    
+    .bkl-input__input--toggle-visibility-button {
+      position: absolute;
+      inset-inline-end: 0.4rem;
+      inset-block-start: 50%;
+      transform: translate(0%, -50%);
+      
+      .password-toggle-icon {
+        margin: 1rem;
+        inline-size: 1.8rem;
+        cursor: pointer;
+        font-size: bkl.$font-size-xxs;
+        fill: bkl.$neutral-color-2;
+      }
+    }
+  }
+}

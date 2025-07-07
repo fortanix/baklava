@@ -1,0 +1,16 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+// Note: make sure the following do not emit anything (should only export mixins)
+@use '../../styling/layers.scss' as layers;
+@use './global.scss' as global;
+
+
+//
+// Emit
+//
+
+@include layers.styles; // Cascade layer ordering: MUST be emitted before anything else
+
+@layer baklava.legacy { @include global.styles; }

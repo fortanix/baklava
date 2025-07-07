@@ -1,0 +1,54 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use 'sass:math';
+@use '../../style/variables.scss' as bkl;
+
+
+@layer baklava.legacy {
+  .bkl-close-button {
+    cursor: pointer;
+    display: inline-flex;
+    
+    .bkl-close-button__icon {
+      overflow: hidden;
+      position: relative;
+      display: inline-block;
+      
+      inline-size: 18px;
+      block-size: 18px;
+      
+      // Draw the two lines for the "X"
+      &::before, &::after {
+        content: '';
+        position: absolute;
+        block-size: 2px;
+        inline-size: 100%;
+        inset-block-start: 50%;
+        inset-inline-start: 0;
+        
+        background: light-dark(bkl.$light-color-1, bkl.$dark-color-1);
+      }
+      
+      &::before {
+        transform: rotate(45deg);
+      }
+      
+      &::after {
+        transform: rotate(-45deg);
+      }
+    }
+    
+    &.bkl-close-button--small {
+      .bkl-close-button__icon {
+        inline-size: 12px;
+        block-size: 12px;
+        
+        &::before, &::after {
+          block-size: math.div(bkl.$sizing-xxs, 2);
+        }
+      }
+    }
+  }
+}

@@ -61,5 +61,7 @@
     "**/*.test.tsx",
     "**/*.spec.ts",
     "**/*.spec.tsx",
+    //"app/legacy.ts",
+    //"src/legacy",
   ],
 }

@@ -1,0 +1,149 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@mixin runtime-variables {
+  // Set the multi color picker value to be used in color picker component.
+  --selected-color-picker: '';
+  --brand-color: #abbfdd;
+  --brand-color-dark-1: #ffffff;
+  --brand-color-dark-2: #ffffff;
+  --brand-color-dark-3: #332b50;
+  --brand-color-dark-4: oklch(64.43% 0.046 285.04deg); // #393953;
+  --brand-color-dark-5: #ffffff; // #41486d;
+  --brand-color-dark-6: #ffffff; // #434d72;
+  --brand-color-dark-7: #25203e; // #241e3b;
+  --brand-color-dark-8: oklch(73.17% 0.0636 281.65deg); // #212144;
+  --brand-color-light-1: #ffffff; // #abbfdd;
+  --brand-color-light-2: #5F6089; // #6e7fbb;
+  --brand-color-light-3: #383962; // #6c6e9b;
+  
+  --accent-color: #178DFB;
+  --accent-color-dark-1: #00838f;
+  --accent-color-light-1: oklch(25.41% 0.0442 212.19deg); // #00c6da;
+  --accent-color-light-2: #178DFB; // #47c2ce;
+  --accent-color-light-3: oklch(16.31% 0.0284 212.11deg); // #80deea;
+  
+  
+  --status-color-critical: #FF5C40;
+  --status-color-error: #FF5C40;
+  --status-color-warning: #f6a623;
+  --status-color-success: #6cac2b;
+  
+  --neutral-color-1: #383962; // #dce5f3;
+  --neutral-color-2: #FFFFFF; // #26546d;
+  --neutral-color-3: #FFFFFF; // #4d758c;
+  --neutral-color-4: #383962; // #eef2f9;
+  
+  --dark-color-1: #FFFFFF; // #000000;
+  --dark-color-2: #5F6089; // #767676;
+  --dark-color-3: #383962; // #a5a5b1;
+  --dark-color-4: #6d6d78; // #bdbdbd;
+  
+  --light-color-1: #212144; // #ffffff;
+  --light-color-2: #14142a; // #f7f9fc;
+  --light-color-3: #6d6d78; // #edeff2;
+  --light-color-4: #383962; // #e0e0e0;
+  --light-color-5: #6d6d78; // #d1d1d1;
+  
+  --bkl-accent-color: var(--accent-color);
+  --bkl-calendar-icon-color: oklch(26.49% 0.0229 291.57deg);
+  --bkl-bg-color: oklch(3.74% 0.018 17.48deg);
+  --bkl-calendar-color: var(--dark-color-1);
+  --bkl-input-color: var(--dark-color-1);
+  --bkl-datatable-color: var(--bkl-status-color-critical);
+  --bkl-pagination-color: var(--accent-color);
+  --bkl-dropdown-color: oklch(5.01% 0.0125 255.51deg);
+  --bkl-shadow: oklch(100% 0 0deg / 15%);
+  --bkl-header-shadow-color: oklch(63.53% 0.0699 282.37deg / 16%);
+  --bkl-tab-shadow-color: oklch(5.39% 0 0deg / 50%);
+  --bkl-accordion-color: oklch(49.5% 0.0649 282.74deg / 15%);
+  --bkl-datepicker-bg-color: rgb(23 141 251 / 50%);
+  --bkl-border-color-1: var(--accent-color-light-2);
+  --bkl-placeholder-color: #BDBEC1;
+  --bkl-border-color: #BDBEC1;
+  --bkl-select-border-color: rgb(56 57 98 / 70%);
+  --bkl-datatable-shadow-color: rgb(255 255 255 / 15%);
+  --bkl-pagination-bg-color: rgb(95 96 137 / 34%);
+  --bkl-header-bg-color: rgb(56 57 98 / 50%);
+  --bkl-nav-color: rgb(56 57 98 / 30%);
+  --bkl-switcher-bg-color: rgb(56 57 98 / 80%);
+  --bkl-switcher-bg-color-1: rgb(56 57 98 / 20%);
+  --bkl-pagination-bg-color-1: rgb(56 57 98 / 50%);
+  --bkl-nav-bg-color: rgb(255 255 255 / 30%);
+  --bkl-nav-color-1: rgb(33 33 68 / 50%);
+  --bkl-nav-bg-color-1: rgb(255 255 255 / 50%);
+  --bkl-backdrop-color: rgb(0 0 0 / 50%);
+  --bkl-button-hover-color: #1580E4;
+  --bkl-button-disabled-color: #363740;
+  --bkl-button-disabled-text-color: #808086;
+  --bkl-tooltip-bg-color: #4c4665;
+  --bkl-input-bg-color: #090915;
+  --bkl-bg-color-default: #0D0D0D;
+  --bkl-input-border-color: #178DFB;
+  --bkl-shimmer-base-color: #A9A7C1;
+  --bkl-shimmer-highlight-color: #202440;
+  --bkl-dropdown-divider-background: #5f5a7c;
+  
+  --datatable-body-hover: var(--light-color-2);
+  --datatable-border: var(--brand-color-light-3);
+  --datatable-color: #D68100;
+  --dropdown-background: var(--brand-color-dark-3);
+  --sidebar-background: var(--brand-color-dark-3);
+  --sidebar-tooltip-background: var(--brand-color-light-2);
+  --sidebar-nav-active-background-hover:  var(--bkl-light-color-2);
+  --bkl-button-text-default: #fbfbfb;
+  
+  
+  
+  //
+  // Note: the following are originally from the "bkl2-variables.scss" file
+  //
+  
+  --bk-color-brand-dark-3: #393953;
+  --bk-color-brand-dark-4: #081353;
+  --bk-color-brand-dark-6: #434d72;
+  --bk-color-neutral-1: #dce5f3;
+  --bk-color-neutral-2: #26546d;
+  --bk-color-neutral-3: #4d758c;
+  --bk-color-dark-1: #000000;
+  --bk-color-dark-4: #bdbdbd;
+
+  // custom colors
+  --bk-color-dark-hover: #28485c;
+  --notification-info-background: #f6fefc;
+  --notification-error-background: #fef7f8;
+  --notification-success-background: #f8fdf4;
+
+  --sidebar-nav-border: rgb(238 242 249 / 30%);
+  --sidebar-nav-background: rgb(171 191 221 / 30%);
+  --sidebar-nav-background-hover: rgb(19 19 42 / 50%);
+  --sidebar-nav-header-default: rgb(0 0 0 / 50%);
+  --sidebar-nav-icon-default: rgb(255 255 255 / 50%);
+
+  --pagination-nav-background: rgb(118 118 118 / 34%);
+  --pagination-listitem-background: rgb(238 242 249 / 50%);
+  
+  
+  
+  // The following come from roche-frontend
+  
+}
+
+@mixin styles {
+  :root {
+    @include runtime-variables();
+    
+    font-size: 10px !important; // TEMP: just for testing legacy component stories
+  }
+  
+  body {
+    font-size: 16px; // TEMP
+    
+    // FIXME: do we still need this (for legacy components)?
+    //line-height: vars.$line-height-6;
+    
+    // FIXME: previously set in `Layout.css`
+    //background: bkl.$light-color-2;
+  }
+}

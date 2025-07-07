@@ -1,0 +1,20 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+
+@layer baklava.legacy {
+  .bkl.caption {
+    color: bkl.$brand-color-dark-5;
+    line-height: bkl.$line-height-2;
+    @include mixins.font($family: bkl.$font-family-body);
+    font-size: bkl.$font-size-xs;
+    
+    &.caption--small {
+      font-size: bkl.$font-size-xxs;
+    }
+  }
+}

@@ -1,0 +1,14 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../style/variables.scss' as bkl;
+
+@layer baklava.storybook {
+  .bkl-dummy-link {
+    &:is(:focus-visible, .pseudo-focus-visible) {
+      outline: 2px solid bkl.$focus-outline-color;
+      outline-offset: 0;
+    }
+  }
+}

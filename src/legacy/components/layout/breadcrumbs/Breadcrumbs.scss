@@ -1,0 +1,53 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+
+@layer baklava.legacy {
+  .bkl-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    margin: bkl.$sizing-5 0 bkl.$sizing-8;
+    padding: 0 bkl.$sizing-4 bkl.$sizing-3;
+    border-block-end: .1rem bkl.$neutral-color-1 solid;
+    
+    color: bkl.$neutral-color-2;
+    @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+    font-size: bkl.$font-size-s;
+    
+    &.bkl-breadcrumbs--no-trailing-slash {
+      .bkl-breadcrumbs-item:last-child {
+        margin-inline-end: 0;
+        
+        ::after {
+          content: '';
+        }
+      }
+    }
+    
+    .bkl-breadcrumbs-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-inline-end: bkl.$sizing-xs;
+      
+      ::after {
+        content: '/';
+        color: bkl.$neutral-color-2;
+        margin-inline-start: bkl.$sizing-xs;
+      }
+      
+      .bkl-breadcrumbs__link {
+        color: bkl.$neutral-color-2;
+        
+        &:is(:focus-visible, .pseudo-focus-visible) {
+          outline: 2px solid bkl.$focus-outline-color;
+          outline-offset: 0;
+        }
+      }
+    }
+  }
+}

@@ -47,8 +47,8 @@ export const PaginationStreamPager = ({ pageSizeOptions }: PaginationStreamPager
         onPress={() => { table.nextPage(); }}
         nonactive={!table.canNextPage}
       >
-        Next
         <Icon icon="caret-right"/>
+        Next
       </Button>
     </div>
   );

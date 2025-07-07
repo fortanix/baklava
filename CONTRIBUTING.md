@@ -93,3 +93,37 @@ Error: Cannot find module @rollup/rollup-linux-x64-gnu. npm has a bug related to
 ```
 
 - A: This happens when your local machine uses a different OS (e.g. Mac). One workaround you can find online is to add said dependency to `optionalDependencies`. This fixes that particular problem, but you will just continue to get the same errors for other dependencies. Instead, do as the error message suggests and completely remove `node_modules` and `package-lock.json` and re-install. This should fix the errors.
+
+
+
+## Legacy
+
+[This repo](https://github.com/mkrause/baklava) contains a fork of [Baklava](https://github.com/fortanix/baklava) that
+includes additional "legacy" components under `src/legacy`. These legacy components are exported through a separate
+path `@fortanix/baklava/legacy` (see the exports under `package.json`).
+
+*NOTE:* use the branch `baklava-v1-legacy` on the fork. Keep the `master` branch in sync with upstream `master`.
+
+This repo is not published to npm. If you need to import this library, use the build packages generated as part of the
+[GitHub releases](https://github.com/mkrause/baklava/releases):
+
+```js
+// package.json
+'@fortanix/baklava': 'https://github.com/mkrause/baklava/releases/download/v1.0.0-legacy-<version>/package.tar.gz',
+```
+
+## Publishing a new release
+
+- Create a [new GitHub release](https://github.com/mkrause/baklava/releases), with the following parameters:
+  - Target branch: `baklava-v1-legacy`
+  - Tag: create new tag, name format: `v1.0.0-legacy-<date>`
+  - Pre-release branch: yes
+
+Or, use the following URL, replacing `[tag]` with the appropriate tag (format: `v1.0.0-legacy-<date>`):
+
+https://github.com/mkrause/baklava/releases/new?target=baklava-v1-legacy&prelease=1&tag=v[tag]&title=Release%20v[tag]
+
+### Syncing with upstream
+
+- In your local repo, make sure you have one remote set up for upstream (`origin`) and one for the fork (`legacy`).
+- Make sure your local `origin/master` branch is up to date, then use `git rebase -i` to rebase `legacy/master`.

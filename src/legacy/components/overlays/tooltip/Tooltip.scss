@@ -1,0 +1,66 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+@use '../../../style/util/z-index.scss' as z;
+
+
+@layer baklava.legacy {
+  .bkl-tooltip {
+    position: absolute;
+    z-index: z.$z-index--tooltip;
+    max-inline-size: 24rem;
+    padding: bkl.$sizing-s bkl.$sizing-s;
+    
+    border: 0;
+    border-radius: bkl.$border-radius-s;
+    box-shadow: 0 0.1rem 0.5rem 0 var(--bkl-shadow-color);
+    background: var(--bkl-tooltip-bg-color);
+    
+    line-height: bkl.$line-height-1;
+    word-wrap: break-word;
+    color: bkl.$brand-color;
+    @include mixins.font($family: bkl.$font-family-body);
+    font-size: bkl.$font-size-xs;
+    
+    &.bkl-tooltip--interactive {
+      padding: bkl.$sizing-s;
+    }
+    
+    .bkl-tooltip__content {
+      position: relative;
+      z-index: z.$z-index--tooltip;
+    }
+    
+    .bkl-tooltip__arrow {
+      --arrow-size: 0.96rem;
+      inline-size: var(--arrow-size);
+      block-size: var(--arrow-size);
+      
+      &::after {
+        position: absolute;
+        content: '';
+        display: block;
+        background-color: var(--bkl-tooltip-bg-color);
+        
+        inline-size: var(--arrow-size);
+        block-size: var(--arrow-size);
+        
+        transform: translateX(0) rotate(45deg);
+        transform-origin: center;
+      }
+    }
+    
+    &[data-popper-placement^="top"] { margin-block-end: bkl.$sizing-s; }
+    &[data-popper-placement^="right"] { margin-inline-start: bkl.$sizing-s; }
+    &[data-popper-placement^="bottom"] { margin-block-start: bkl.$sizing-s; }
+    &[data-popper-placement^="left"] { margin-inline-end: bkl.$sizing-s; }
+    
+    &[data-popper-placement^="top"] .bkl-tooltip__arrow { inset-block-end: -0.5rem; }
+    &[data-popper-placement^="right"] .bkl-tooltip__arrow { inset-inline-start: -0.5rem; }
+    &[data-popper-placement^="bottom"] .bkl-tooltip__arrow { inset-block-start: -0.5rem; }
+    &[data-popper-placement^="left"] .bkl-tooltip__arrow { inset-inline-end: -0.5rem; }
+  }
+}

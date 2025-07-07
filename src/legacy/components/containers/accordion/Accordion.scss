@@ -1,0 +1,85 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/accessibility.scss' as accessibility;
+
+@layer baklava.legacy {
+  .bkl-accordion {
+    list-style: none;
+    
+    &.bkl-accordion--normal {
+      .bkl-accordion-item {
+        .bkl-accordion-item__button {
+          padding: bkl.$sizing-6 bkl.$sizing-5;
+          font-size: bkl.$font-size-l;
+        }
+        
+        .bkl-accordion-item__content {
+          padding: bkl.$sizing-6 bkl.$sizing-5;
+          font-size: bkl.$font-size-m;
+          @include accessibility.focus-inset;
+        }
+        
+        .bkl-accordion-item__state-indicator {
+          inline-size: bkl.$sizing-4;
+        }
+      }
+    }
+    
+    &.bkl-accordion--small {
+      .bkl-accordion-item {
+        .bkl-accordion-item__button {
+          padding: bkl.$sizing-3 bkl.$sizing-4;
+          font-size: bkl.$font-size-m;
+        }
+    
+        .bkl-accordion-item__content {
+          padding: bkl.$sizing-5 bkl.$sizing-4;
+          font-size: bkl.$font-size-s;
+          @include accessibility.focus-inset;
+        }
+        
+        .bkl-accordion-item__state-indicator {
+          inline-size: bkl.$sizing-3;
+        }
+      }
+    }
+    
+    .bkl-accordion-item {
+      background-color: bkl.$light-color-1;
+      border-radius: 3px;
+
+      .bkl-accordion-item__button {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        inline-size: 100%;
+        background-color: inherit;
+        border-radius: inherit;
+        transition: padding ease 0.2s;
+        cursor: pointer;
+        border: none;
+      }
+      
+      &.bkl-accordion-item--active {
+        .bkl-accordion-item {
+          .bkl-accordion-item__button {
+            box-shadow: unset;
+          }
+          
+          .bkl-accordion-item__state-indicator {
+            transform: rotateZ(180deg);
+          }
+        }
+      }
+
+      .bkl-accordion-item__wrapper {
+        block-size: bkl.$sizing-0;
+        overflow: hidden;
+        transition: height ease 0.2s;
+      }
+    }
+  }
+}

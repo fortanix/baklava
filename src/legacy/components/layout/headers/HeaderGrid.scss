@@ -1,0 +1,373 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+@use '../../../style/util/z-index.scss' as z;
+@use 'sass:math';
+
+$account-switcher-width: bkl.$sizing-7 * 7;
+$header-spacing: math.div(bkl.$sizing-4, 2);
+$account-switcher-logo-container-width: bkl.$sizing-8;
+$account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
+
+@mixin account-switcher-box {
+  // Stretch to 100%, so that the trigger area covers the whole account switcher
+  inline-size: 100%;
+  block-size: 100%;
+  padding-inline-end: bkl.$sizing-4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  .account-switcher-logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-inline-end: $account-switcher-logo-container-spacing;
+    inline-size: $account-switcher-logo-container-width;
+    block-size: bkl.$sizing-8;
+    background: bkl.$light-color-1;
+    box-shadow: 1px 2px 5px var(--bkl-shadow);
+    @include mixins.rounded();
+    
+    .account-logo {
+      border-radius: bkl.$sizing-0;
+      margin-inline-end: bkl.$sizing-0;
+      block-size: bkl.$sizing-6;
+      inline-size: bkl.$sizing-6;
+      color: bkl.$neutral-color-2;
+      &__icon {
+        block-size: bkl.$sizing-6;
+        inline-size: bkl.$sizing-6;
+      }
+    }
+  }
+  
+  .account-switcher__label {
+    margin-inline-end: bkl.$sizing-3;
+    padding-block: bkl.$sizing-2;
+    .account-switcher__selected-icon {
+      position: absolute;
+      inset-block-start: 1.8rem;
+      inset-inline-end: 1rem;
+      
+      @include mixins.circle($size: 1.3rem);
+      background-color: bkl.$status-color-success;
+      
+      .icon-check {
+        color: bkl.$light-color-1;
+        font-size: 0.8rem * math.div(1.3, 1.8);
+      }
+    }
+    .account-switcher__name {
+      font-family: bkl.$font-family-display;
+      font-weight: bkl.$font-weight-regular;
+      font-style: normal;
+      font-size: bkl.$font-size-s;
+      line-height: bkl.$line-height-2;
+      letter-spacing: 0.5px;
+      color: bkl.$brand-color-dark-2;
+      max-inline-size: bkl.$sizing-8 * 3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .account-switcher__role {
+      font-family: bkl.$font-family-body;
+      font-weight: bkl.$font-weight-regular;
+      font-style: normal;
+      font-size: bkl.$font-size-xxs;
+      line-height: bkl.$line-height-1;
+      color: bkl.$brand-color-light-2;
+    }
+  }
+  
+  .icon-dropdown {
+    margin-inline-start: auto;
+    inline-size: bkl.$sizing-3;
+    color: bkl.$neutral-color-2;
+  }
+}
+
+@layer baklava.legacy {
+  .bkl-header-grid {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: z.$z-index--sticky-header;
+    padding: $header-spacing;
+    background: bkl.$light-color-2;
+    margin-block-end: bkl.$sizing-1;
+    
+    display: grid;
+    grid-template: "account-switcher user-session" auto / max-content auto;
+    align-items: center;
+    
+    .account-switcher { grid-area: account-switcher; }
+    .user-session { grid-area: user-session; }
+    .breadcrumbs { grid-area: breadcrumbs; }
+    
+    .account-switcher {
+      cursor: pointer;
+      inline-size: $account-switcher-width;
+      block-size: bkl.$sizing-8;
+      margin-inline-end: bkl.$sizing-3;
+      
+      @include mixins.rounded();
+      @include mixins.flex-center();
+      
+      background: bkl.$light-color-1;
+      
+      &.account-switcher--account-selected {
+        background: bkl.$neutral-color-1;
+        .account-switcher__box {
+          .account-switcher__label {
+            .account-switcher__name {
+              font-weight: bkl.$font-weight-medium;
+            }
+          }
+        }
+      }
+      
+      &__box {
+        @include account-switcher-box;
+        
+        .account-switcher-logo-container {
+          position: absolute;
+          inset-inline-start: $header-spacing;
+        }
+        
+        .account-switcher__label {
+          margin-inline-start: $account-switcher-logo-container-width + $account-switcher-logo-container-spacing;
+        }
+      }
+    }
+    
+    .user-session {
+      block-size: bkl.$sizing-8;
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      
+      & > * {
+        margin-inline-end: math.floor(math.div(bkl.$sizing-8, 2));
+      }
+      
+      .sysadmin-account-selector {
+        block-size: inherit;
+        border: 1px solid bkl.$neutral-color-1;
+        background: bkl.$light-color-1;
+        box-sizing: border-box;
+        @include mixins.rounded(bkl.$sizing-2);
+        padding: math.div(bkl.$sizing-9, 3) bkl.$sizing-3 math.div(bkl.$sizing-9, 3) bkl.$sizing-3;
+        &.selected {
+          background: bkl.$neutral-color-1;
+          box-shadow: unset;
+        }
+        &.sysadmin-account-selector--align-right {
+          margin-inline-end: bkl.$sizing-9;
+        }
+        display: flex;
+        align-items: center;
+        order: 1;
+        margin-inline-end: auto;
+        cursor: pointer;
+        .icon-sysadmin {
+          color: bkl.$neutral-color-2;
+          margin-inline-end: bkl.$sizing-2;
+        }
+        .details {
+          padding: 0 bkl.$sizing-3;
+          .name {
+            font-family: bkl.$font-family-display;
+            font-weight: normal;
+            font-style: normal;
+            font-size: bkl.$font-size-s;
+            line-height: bkl.$line-height-2;
+          }
+          .role {
+            font-family: bkl.$font-family-body;
+            font-weight: bkl.$font-weight-regular;
+            font-style: normal;
+            font-size: bkl.$font-size-xxs;
+            line-height: bkl.$line-height-1;
+            color: bkl.$brand-color-light-2;
+          }
+        }
+      }
+      
+      .user-info {
+        display: flex;
+        align-items: center;
+        
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        
+        .icon-user {
+          box-sizing: content-box; // Set to content-box, so that padding does not take away from the icon width
+          margin-inline-end: bkl.$sizing-3;
+          padding: bkl.$sizing-2;
+          overflow: visible; // Make sure the icon is not "cut off" by the circle-shaped padding
+          
+          border-radius: 50%;
+          background: var(--bkl-header-bg-color);
+          inline-size: 2.4rem;
+          color: bkl.$neutral-color-2;
+        }
+        
+        .user-name {
+          color: bkl.$brand-color-dark-1;
+          @include mixins.font($family: bkl.$font-family-display);
+          font-size: bkl.$font-size-s;
+        }
+        
+        .icon-dropdown {
+          margin-inline-start: 0.8em;
+          inline-size: 1.3rem;
+          color: bkl.$neutral-color-2;
+        }
+      }
+      
+      .alerts {
+        position: relative;
+        
+        .icon {
+          box-sizing: content-box; // Set to content-box, so that padding does not take away from the icon width
+          padding: bkl.$sizing-2;
+          overflow: visible; // Make sure the icon is not "cut off" by the circle-shaped padding
+          
+          border-radius: 50%;
+          background: var(--bkl-header-bg-color);
+          inline-size: bkl.$sizing-5;
+          block-size: bkl.$sizing-5;
+          color: bkl.$neutral-color-2;
+        }
+        
+        .count {
+          --size: 1.6rem;
+          
+          @include mixins.capsule();
+          position: absolute;
+          z-index: 1;
+          
+          min-inline-size: unset;
+          inline-size: var(--size);
+          block-size: var(--size);
+          inset-inline-start: calc(-0.3 * var(--size));
+          inset-block-end: calc(-0.3 * var(--size));
+          
+          background-color: var(--bkl-status-color-critical);
+          color: var(--bkl-dark-color-1);
+          font-size: bkl.$font-size-xxxs;
+        }
+      }
+    }
+  }
+
+  .account-switcher-dropdown {
+    // Regular dropdowns are of level `$z-index--dropdown`, but this dropdown is part of the layout, so must be
+    // `$z-index--layout` in order to not be hidden by layout elements
+    z-index: z.$z-index--layout;
+    inline-size: $account-switcher-width;
+    background-color: bkl.$light-color-1;
+    border-radius: bkl.$border-radius-ms;
+    
+    &.bkl-dropdown {
+      padding: bkl.$sizing-none;
+    }
+    
+    .bkl-dropdown__menu {
+      inline-size: inherit;
+      max-block-size: 60vh;
+      overflow: auto;
+      
+      // Also apply border-radius here, so that hovering an item does not "escape" the border radius
+      border-radius: bkl.$border-radius-ms;
+      
+      @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-semibold);
+      font-size: bkl.$font-size-s;
+      
+      .bkl-dropdown__menu-item {
+        &:not(.bkl-dropdown__menu-item--disabled):hover {
+          background-color: var(--bkl-dropdown-color);
+        }
+        &:not(.bkl-dropdown__menu-item--disabled):hover::after {
+          background-color: unset;
+          inline-size: 0;
+        }
+        &:not(.bkl-dropdown__menu-item--disabled):focus::after {
+          background-color: unset;
+          inline-size: 0;
+        }
+      }
+      
+      .account-switcher-dropdown__item {
+        position: relative;
+        padding: bkl.$sizing-3;
+        
+        &.account-switcher-dropdown__item--disabled {
+          pointer-events: none;
+          opacity: 0.5;
+        }
+        
+        &.account-switcher-dropdown__item--selected {
+          .account-switcher__label {
+            margin-inline-end: auto;
+            .account-switcher__name {
+              font-weight: bkl.$font-weight-medium;
+            }
+          }
+        }
+        
+        @include account-switcher-box;
+        
+        .account-switcher__label {
+          margin-inline-end: auto;
+        }
+      }
+      
+      .account-switcher-dropdown__btn-view-all {
+        color: bkl.$accent-color;
+        padding: bkl.$sizing-4 math.div(bkl.$sizing-8, 2) math.div(bkl.$sizing-8, 2) math.div(bkl.$sizing-8, 2);
+        font-family: bkl.$font-family-display;
+        font-weight: bkl.$font-weight-medium;
+        font-size: bkl.$font-size-m;
+        line-height: bkl.$line-height-5;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        text-align: center;
+      }
+      
+      .account-switcher-dropdown__btn-add-account {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .add-account-button {
+          background: transparent;
+          display: flex;
+          align-items: center;
+          padding: bkl.$sizing-none;
+          color: bkl.$accent-color;
+          font-size: bkl.$font-size-m;
+          font-weight: bkl.$font-weight-medium;
+          line-height: bkl.$line-height-2;
+          
+          &__plus-icon {
+            .bkl-icon {
+              position: relative;
+              inset-block-start: 0.5rem;
+              inline-size: bkl.$sizing-4;
+            }
+            background-color: bkl.$accent-color;
+            color: bkl.$light-color-1;
+            border-radius: bkl.$border-radius-circle;
+            inline-size: bkl.$sizing-6;
+            block-size: bkl.$sizing-6;
+            margin-inline-end: bkl.$sizing-2;
+          }
+        }
+      }
+    }
+  }
+}

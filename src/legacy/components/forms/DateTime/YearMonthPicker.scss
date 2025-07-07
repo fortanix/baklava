@@ -1,0 +1,138 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+@use '../../../style/accessibility.scss' as accessibility;
+
+@layer baklava.legacy {
+  .bkl-year-month-picker {
+    .option {
+      &.option--select {
+        padding: bkl.$sizing-0;
+        
+        .bkl-year-month-picker__select-trigger {
+          inline-size: 100%;
+          position: relative;
+          display: flex;
+          justify-content: center;
+          padding: bkl.$sizing-3 bkl.$sizing-l bkl.$sizing-3 bkl.$sizing-3;
+          @include accessibility.focus-inset;
+          
+          .bkl-select__caret {
+            inset-inline-end: bkl.$sizing-1 + bkl.$sizing-2;
+          }
+        }
+        
+        &.active {
+          .bkl-caret {
+            border-width: 0 0.2rem 0.2rem 0;
+          }
+        }
+      }
+    }
+  }
+  
+  .bkl-year-month-picker__select {
+    background-color: bkl.$light-color-1;
+    
+    &.bkl-dropdown {
+      padding: bkl.$sizing-0;
+    }
+    
+    ul {
+      background-color: inherit;
+      padding: (bkl.$sizing-4 + bkl.$sizing-1) (bkl.$sizing-1 + bkl.$sizing-2) (bkl.$sizing-3 + bkl.$sizing-2) bkl.$sizing-3;
+      
+      .bkl-year-month-picker__select-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-block-end: bkl.$sizing-5;
+        
+        .bkl-icon {
+          color: bkl.$accent-color;
+          cursor: pointer;
+          user-select: none;
+          
+          &:focus-visible {
+            outline: 2px solid bkl.$focus-outline-color;
+            outline-offset: 0;
+          }
+          
+          &.icon--decorated {
+            &.icon--decorated--border-circle {
+              inline-size: bkl.$sizing-5 + bkl.$sizing-1;
+              block-size: bkl.$sizing-5 + bkl.$sizing-1;
+            }
+          }
+          
+          &.bkl-year-month-picker__year-decrement--disabled, &.bkl-year-month-picker__year-increment--disabled {
+            color: bkl.$dark-color-4;
+            pointer-events: none;
+            cursor: not-allowed;
+          }
+        }
+        
+        .bkl-year-month-picker__year {
+          @include mixins.font($family: bkl.$font-family-body, $weight: bkl.$font-weight-semibold, $size: bkl.$font-size-m);
+          line-height: bkl.$line-height-8;
+          color: bkl.$dark-color-1;
+        }
+      }
+      
+      .bkl-year-month-picker__select-body {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: bkl.$sizing-1 + bkl.$sizing-2;
+        min-inline-size: 33.5rem;
+        
+        .bkl-year-month-picker__month {
+          @include mixins.font($family: bkl.$font-family-body, $weight: bkl.$font-weight-regular, $size: bkl.$font-size-xs);
+          line-height: bkl.$line-height-8;
+          color: bkl.$dark-color-1;
+          background-color: bkl.$light-color-2;
+          border-radius: bkl.$border-radius-ms;
+          text-align: center;
+          cursor: pointer;
+          min-block-size: bkl.$sizing-7;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          
+          &:hover {
+            background-color: bkl.$brand-color-light-3;
+            border-color: bkl.$brand-color-light-3;
+          }
+          
+          &:focus-visible {
+            outline: 2px solid bkl.$focus-outline-color;
+            outline-offset: 0;
+          }
+          
+          &.bkl-year-month-picker__month--selected {
+            background-color: bkl.$brand-color-light-3;
+            border-color: bkl.$brand-color-light-3;
+            color: bkl.$dark-color-1;
+          }
+          
+          &.bkl-year-month-picker__month--disabled {
+            pointer-events: none;
+            cursor: not-allowed;
+            background-color: bkl.$dark-color-4;
+          }
+        }
+      }
+      
+      .bkl-year-month-picker__select-action {
+        text-align: center;
+        margin-block-start: bkl.$sizing-3 + bkl.$sizing-1;
+        
+        .bkl-button {
+          font-weight: bkl.$font-weight-medium;
+          padding: (bkl.$sizing-1 + bkl.$sizing-2) bkl.$sizing-5 (bkl.$sizing-1 + bkl.$sizing-2) bkl.$sizing-5;
+        }
+      }
+    }
+  }
+}

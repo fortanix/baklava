@@ -1,0 +1,37 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../style/variables.scss' as bkl;
+
+@layer baklava.legacy {
+  .bkl-icon {
+    // Default to a size relative to current font size (`em`), so that it looks natural in inline text
+    // --icon-size: 0.8em;
+    --icon-size: 1.5em; // TEMP: keep old size for now, until components are properly migrated
+    
+    box-sizing: content-box; // Use content-box so that we can set a padding on an icon without it shrinking the width
+    
+    inline-size: var(--icon-size);
+    aspect-ratio: 1;
+    fill: currentColor; // Use the current font color by default
+    
+    // By default, use a stroke width of `0`, most icons rely on `fill` instead, because apps like IcoMoon rely on `fill`
+    // to generate fonts from SVG. If we do have an icon with stroke then we at least want to set the color to current.
+    stroke: currentColor;
+    stroke-width: 0;
+    
+    // When in inline flow
+    vertical-align: -20%; // In inline flow, position the icon on the baseline, shifted downwards by 20%
+    
+    // When in flexbox flow
+    align-self: center;
+    flex: none; // Prevent icons from shrinking or growing in flexbox
+    
+    &:where(svg:empty) {
+      // In case of an empty `<svg/>` (e.g. not loaded yet), make sure the height is calculcated according to the
+      // width, to prevent the browser default height from kicking in (160px in Chrome).
+      aspect-ratio: 1;
+    }
+  }
+}

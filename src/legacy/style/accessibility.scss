@@ -1,0 +1,48 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+@use './variables.scss' as bkl;
+
+// Configure an element with a focus outline outset from the element.
+@mixin focus-outset($override-layer: true) {
+  --bkl-focus-color-anim: transparent; // Start transparent for animation purposes
+  
+  box-shadow: none if($override-layer, !important, null); // Remove focus-inset, if any
+  
+  outline: bkl.$focus-outline-width solid var(--bkl-focus-color-anim) if($override-layer, !important, null);
+  
+  // Add `.pseudo-focus-visible` for visual testing purposes
+  &:focus-visible,
+  &.pseudo-focus-visible {
+    --bkl-focus-color-anim: #{bkl.$focus-outline-color};
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    //transition: outline 80ms ease-in-out; // FIXME: this breaks any `transition` set in a lower layer
+  }
+}
+
+// Configure an element with a focus outline inset into the element. This can be useful for elements
+// that have overflow hidden and thus can't have an exterior outline.
+@mixin focus-inset($override-layer: true) {
+  --bkl-focus-color-anim: transparent; // Start transparent for animation purposes
+  
+  outline: none if($override-layer, !important, null); // Remove focus-outset, if any
+  
+  $w: #{bkl.$focus-outline-width};
+  box-shadow: // Note: add one for each corner so that we get proper inner border radii
+    inset $w $w var(--bkl-focus-color-anim),
+    inset $w calc(-1 * #{$w}) var(--bkl-focus-color-anim),
+    inset calc(-1 * #{$w}) $w var(--bkl-focus-color-anim),
+    inset calc(-1 * #{$w}) calc(-1 * #{$w}) var(--bkl-focus-color-anim) if($override-layer, !important, null);
+  
+  // Add `.pseudo-focus-visible` for visual testing purposes
+  &:focus-visible,
+  &.pseudo-focus-visible {
+    --bkl-focus-color-anim: #{bkl.$focus-outline-color};
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    //transition: box-shadow 80ms ease-in-out; // FIXME: this breaks any `transition` set in a lower layer
+  }
+}

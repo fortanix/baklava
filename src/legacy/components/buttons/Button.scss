@@ -1,0 +1,127 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../style/variables.scss' as bkl;
+@use '../../style/mixins.scss' as mixins;
+
+
+@mixin font-button() {
+  // line-height: bkl.$line-height-9;
+  text-transform: uppercase;
+  letter-spacing: 0.57px;
+  color: bkl.$accent-color;
+  @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-semibold);
+  font-size: bkl.$font-size-xs;
+}
+
+@layer baklava.legacy {
+  .bkl-button:not(.bkl-button--plain) {
+    cursor: pointer;
+    
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    
+    block-size: fit-content;
+    line-height: 1.6rem;
+    padding: bkl.$sizing-xs bkl.$sizing-s;
+    
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.4rem;
+    opacity: 1;
+
+    @include font-button();
+    
+    transition: .3s ease;
+    
+    &:hover {
+      color: var(--bkl-button-hover-color);
+    }
+    
+    &:is(:focus-visible, .pseudo-focus-visible) {
+      outline: 2px solid bkl.$focus-outline-color;
+      outline-offset: 0;
+    }
+    
+    // Note: generally we just used `:disabled`, but sometimes it's useful to have a class to make a button look
+    // disabled without it actually being in disabled state (e.g. React disabled button mouseEnter/mouseLeave bug).
+    &:disabled, &.disabled {
+      color: var(--bkl-button-disabled-text-color);
+      cursor: not-allowed;
+
+      .bkl-icon {
+        color: var(--bkl-button-disabled-text-color);
+      }
+    }
+    
+    &.bkl-button--primary {
+      background-color: bkl.$accent-color;
+      color: var(--bkl-button-text-default);
+      
+      &:hover {
+        background-color: var(--bkl-button-hover-color);
+      }
+      
+      &:disabled, &.disabled {
+        background-color: var(--bkl-button-disabled-color);
+        color: var(--bkl-button-disabled-text-color);
+      }
+    }
+    
+    &.bkl-button--large {
+      padding: bkl.$sizing-xs bkl.$sizing-m;
+    }
+    
+    &.bkl-button--block {
+      display: block;
+      inline-size: 100%;
+    }
+    
+    &.bkl-button--light {
+      border: 1px solid bkl.$accent-color;
+      color: var(--bkl-button-text-default);
+      
+      &:hover {
+        border: 1px solid var(--bkl-button-hover-color);
+      }
+      
+      &:disabled, &.disabled {
+        color: var(--bkl-button-disabled-text-color);
+        border-color: var(--bkl-button-disabled-color);
+      }
+    }
+    
+    &.bkl-button--with-icon {
+      gap: bkl.$sizing-xs;
+      
+      .bkl-icon {
+        inline-size: 1em;
+      }
+    }
+  }
+
+  .bkl-button--plain {
+    cursor: pointer;  
+    display: inline-block;
+    block-size: fit-content;
+    //line-height: 1.6rem;
+    padding: 0;
+    border: 0;
+    background: unset;
+    
+    text-align: start;
+    color: currentColor;
+    font: inherit;
+    
+    &:focus-visible {
+      outline: 2px solid bkl.$focus-outline-color;
+      outline-offset: 0;
+    }
+    
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+}

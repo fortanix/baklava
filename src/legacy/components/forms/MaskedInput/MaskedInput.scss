@@ -1,0 +1,30 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as *;
+
+@layer baklava.legacy {
+  .bkl-masked-input {
+    position: relative;
+    flex: 1;
+    
+    .bkl-masked-input__visibility-button {
+      position: absolute;
+      inset-inline-end: 0.4rem;
+      inset-block-start: 0.2rem;
+      z-index: 1;
+    }
+    
+    .bkl-masked-input__visibility-icon {
+      margin: 1rem;
+      inline-size: 1.8rem;
+      cursor: pointer;
+      color: var(--bkl-input-color);
+    }
+    
+    .bkl-input__input {
+      padding-inline-end: 3.5rem;
+    }
+  }
+}

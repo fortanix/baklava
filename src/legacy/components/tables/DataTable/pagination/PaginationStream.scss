@@ -1,0 +1,61 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../style/variables.scss' as bkl;
+@use '../../../../style/mixins.scss' as mixins;
+
+@use './Pagination.scss';
+
+
+@layer baklava.legacy {
+  .icon-double-chevron-left {
+    display: flex;
+    align-items: center;
+    
+    // Add some slight kerning
+    .icon:last-of-type {
+      margin-left: -0.1em;
+    }
+  }
+
+  .pagination--stream {
+    .pagination__load-more-action {
+      display: flex;
+      align-items: center;
+      margin-right: auto;
+    }
+
+    .pagination__pager {
+      display: flex;
+      align-items: center;
+      gap: bkl.$sizing-s;
+      
+      .pager__nav {
+        &.pager__nav--first {
+          @include mixins.circle($size: 3.5rem);
+          background: bkl.$light-color-1;
+          padding: bkl.$sizing-s;
+          
+          .icon {
+            // width: calc(var(--icon-size) * 0.8);
+            width: 0.6em;
+          }
+        }
+        
+        &.pager__nav--prev, &.pager__nav--next {
+          min-width: 12rem;
+          
+          display: flex;
+          align-items: center;
+          gap: bkl.$sizing-xs;
+          
+          .icon {
+            // width: calc(var(--icon-size) * 0.8);
+            width: 0.6em;
+          }
+        }
+      }
+    }
+  }
+}

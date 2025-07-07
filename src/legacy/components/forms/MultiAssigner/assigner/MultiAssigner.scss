@@ -1,0 +1,97 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+@use '../../../../style/variables.scss' as bkl;
+@use '../../../../style/accessibility.scss' as accessibility;
+
+@layer baklava.legacy {
+  .bkl-multi-assigner {
+    display: flex;
+    
+    .col {
+      inline-size: 50%;
+      padding: bkl.$sizing-m bkl.$sizing-s;
+      border-radius: bkl.$border-radius-ms;
+      
+      .bkl-table-placeholder {
+        block-size: 100%;
+        min-block-size: auto;
+      }
+      
+      .col-inner {
+        block-size: 300px;
+        overflow: auto;
+      }
+      
+      .item-container {
+        inline-size: 100%;
+        @include accessibility.focus-inset;
+      }
+      
+      &.col-2 {
+        background-color: bkl.$light-color-2;
+        
+        .col-inner {
+          block-size: 353px;
+        }
+        
+        .card__item:hover {
+          background-color: bkl.$light-color-1;
+        }
+      }
+      
+      &.col-1 {
+        background-color: bkl.$light-color-1;
+        
+        .card__item:hover {
+          background-color: bkl.$light-color-2;
+        }
+      }
+    }
+    
+    .card__item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: bkl.$sizing-s bkl.$sizing-s;
+      margin-block-start: bkl.$sizing-s;
+      border-radius: bkl.$border-radius-ms;
+      transition: background-color 100ms ease-in;
+      color: bkl.$brand-color-dark-1;
+      cursor: pointer;
+      
+      .card__item__title-wrapper {
+        inline-size: calc(100% - #{bkl.$font-size-xs} - #{bkl.$sizing-4}); // fullWidth - buttonWidth - spacing
+        overflow: hidden;
+      }
+      
+      .card__item__title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        line-height: bkl.$line-height-3;
+      }
+      
+      .card__item__subtitle {
+        display: inline-block;
+        max-inline-size: 100%;
+        line-height: bkl.$line-height-1;
+        white-space: nowrap;
+        overflow: hidden;
+        font-size: bkl.$font-size-xxs;
+        color: bkl.$brand-color;
+        text-overflow: ellipsis;
+      }
+      
+      .card__item__action {
+        font-size: bkl.$font-size-xs;
+        padding: bkl.$sizing-xs bkl.$sizing-0;
+        color: bkl.$dark-color-2;
+        
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}

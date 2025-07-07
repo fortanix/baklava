@@ -1,0 +1,150 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+@use '../../../style/util/z-index.scss' as z;
+
+
+@mixin highlight-primary {
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0;
+    block-size: 100%;
+    inline-size: 4px;
+    background-color: bkl.$accent-color-light-2;
+  }
+}
+
+@layer baklava.legacy {
+  .bkl-dropdown {
+    inline-size: max-content;
+    margin: bkl.$sizing-none;
+    padding: bkl.$sizing-s bkl.$sizing-none;
+    
+    border-radius: bkl.$border-radius-s;
+    z-index: z.$z-index--dropdown;
+    
+    @include mixins.font($family: bkl.$font-family-body);
+    font-size: bkl.$font-size-s;
+    
+    .bkl-dropdown__arrow {
+      --arrow-size: #{bkl.$sizing-s};
+      inline-size: var(--arrow-size);
+      block-size: var(--arrow-size);
+      
+      &::after {
+        position: absolute;
+        content: '';
+        display: block;
+        
+        inline-size: var(--arrow-size);
+        block-size: var(--arrow-size);
+        
+        transform: translateX(0) rotate(45deg);
+        transform-origin: center;
+      }
+    }
+    
+    &.bkl-dropdown--with-arrow[data-popper-placement^="top"] { margin-block-end: bkl.$sizing-s; }
+    &.bkl-dropdown--with-arrow[data-popper-placement^="right"] { margin-inline-start: bkl.$sizing-s; }
+    &.bkl-dropdown--with-arrow[data-popper-placement^="bottom"] { margin-block-start: bkl.$sizing-s; }
+    &.bkl-dropdown--with-arrow[data-popper-placement^="left"] { margin-inline-end: bkl.$sizing-s; }
+    
+    &[data-popper-placement^="top"] .bkl-dropdown__arrow { inset-block-end: -1 * bkl.$sizing-xs; }
+    &[data-popper-placement^="right"] .bkl-dropdown__arrow { inset-inline-start: -1 * bkl.$sizing-xs; }
+    &[data-popper-placement^="bottom"] .bkl-dropdown__arrow { inset-block-start: -1 * bkl.$sizing-xs; }
+    &[data-popper-placement^="left"] .bkl-dropdown__arrow { inset-inline-end: -1 * bkl.$sizing-xs; }
+    
+    .bkl-dropdown__menu {
+      list-style-type: none;
+      
+      .bkl-dropdown__menu-item {
+        position: relative;
+        padding: bkl.$sizing-s bkl.$sizing-m;
+        inline-size: 100%;
+        
+        &:focus-visible {
+          outline: 2px solid bkl.$focus-outline-color;
+          outline-offset: 0;
+        }
+                      
+        &:hover {
+          cursor: pointer;
+        }
+      }
+      
+      .bkl-dropdown__menu-item--disabled {
+        pointer-events: none;
+        opacity: 0.35;
+      }
+      
+      .bkl-dropdown__menu-divider {
+        inline-size: 100%;
+        block-size: 2px;
+      }
+    }
+    
+    &:not(.bkl-dropdown--secondary) {
+      background-color: bkl.$brand-color-dark-3;
+      
+      .bkl-dropdown__menu {
+        color: bkl.$dark-color-1;
+        
+        .bkl-dropdown__menu-divider {
+          background-color: bkl.$light-color-3;
+        }
+      }
+      
+      .bkl-dropdown__arrow::after {
+        background-color: bkl.$light-color-1;
+      }
+    }
+    
+    .bkl-dropdown__menu-item--disabled {
+      pointer-events: none;
+    }
+    
+    &.bkl-dropdown--primary {
+      .bkl-dropdown__menu-item:hover,
+      .bkl-dropdown__menu-item:focus-visible {
+        background-color: bkl.$light-color-2;
+        
+        @include highlight-primary;
+      }
+    }
+    
+    &.bkl-dropdown--basic {
+      .bkl-dropdown__menu-item:hover,
+      .bkl-dropdown__menu-item:focus-visible {
+        background-color: bkl.$light-color-2;
+      }
+    }
+    
+    &.bkl-dropdown--secondary {
+      background-color: var(--dropdown-background);
+      
+      .bkl-dropdown__menu {
+        color: var(--bkl-dark-color-1);
+        
+        &-divider {
+          background-color: var(--bkl-dropdown-divider-background);
+        }
+      }
+      
+      .bkl-dropdown__arrow::after {
+        background-color: bkl.$brand-color-dark-3;
+      }
+      
+      .bkl-dropdown__menu-item:hover,
+      .bkl-dropdown__menu-item:focus-visible {
+        background-color: var(--bkl-brand-color-dark-7);
+        
+        @include highlight-primary;
+      }
+    }
+  }
+}

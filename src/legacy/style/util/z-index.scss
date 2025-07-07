@@ -1,0 +1,48 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+// stylelint-disable scss/dollar-variable-pattern
+
+// z-index scale
+// 
+// This module contains the scale for z-index values. It allows us to define the z-index values for different
+// kinds of components/overlays in one central place, rather than having arbitrary constants defined throughout
+// the code (e.g. `z-index: 9999`).
+// 
+// Notes:
+// - If possible, rely on the stacking context mechanism to solve z-index issues locally, rather than globally. See:
+//   - https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context
+//   - https://www.codegram.com/blog/stop-ab-using-z-index
+//   - https://triangle717.wordpress.com/2015/06/14/overusing-z-index
+// - It is allowed to use the "bare" constant (i.e. without one of these variables) `z-index: 1`.
+//   > That is because this can be used to create a new stacking context, in combination with e.g. position relative.
+//   > If using `z-index: 1`, may be good to include a comment like `// Create stacking context`, to avoid confusion
+// - Additionally, can use constants like `2` or `3` to prioritize within a local stacking constext.
+// - When adding new variables, do so in a way that refers to a (class of) components (e.g. "tooltip"), do not refer to
+//   details like the "level". Should be able to change any of these constants without needing to rename any variables.
+
+
+// Level 0
+$z-index--base: 0;
+
+// Level 1: local, in-page overlays (like date pickers). Intended to "go behind" layout elements.
+$z-index--date-picker: 100;
+$z-index--tooltip: 100;
+
+// Level 2: layout components, e.g. a floating header bar.
+$z-index--layout: 200;
+
+// Level 3: local in-page components that should be visible above layout elements (e.g. certain tooltips).
+$z-index--global-tooltip: 300;
+
+// Level 7: Sticky header bar.
+$z-index--sticky-header: 700;
+
+// Level 8: global overlays that should cover the whole screen (including the layout).
+$z-index--backdrop: 800;
+$z-index--modal: 800;
+$z-index--dropdown: 800; // in order to render dropdown above modal
+
+// Level 9: loading indicator (should block everything on the screen, including overlays like modals)
+$z-index--loading-indicator: 900;

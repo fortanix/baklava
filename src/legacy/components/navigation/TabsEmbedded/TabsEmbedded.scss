@@ -1,0 +1,76 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+
+@layer baklava.legacy {
+  .bkl-tabs-embedded {
+    .bkl-tabs-embedded__switcher {
+      list-style: none;
+      justify-content: flex-start;
+      border-block-end: 1px bkl.$neutral-color-1 solid;
+      background-color: bkl.$light-color-1;
+      
+      display: flex;
+      
+      .bkl-tabs-embedded__switcher__tab {
+        position: relative;
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+        
+        padding: bkl.$sizing-0 bkl.$sizing-6 bkl.$sizing-3;
+        
+        color: bkl.$neutral-color-2;
+        @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-medium);
+        font-size: bkl.$font-size-m;
+        text-transform: uppercase;
+        
+        
+        // The active tab underline (zero height by default)
+        &::after {
+          content: "";
+          position: absolute;
+          inline-size: 100%;
+          block-size: 0;
+          inset-inline-start: 0;
+          inset-block-end: 0;
+          background-color: var(--accent-color);
+          transition: 0.3s;
+        }
+        
+        // Show the active underline for active tabs
+        &.active {
+          cursor: default;
+          &::after {
+            block-size: 6px;
+          }
+        }
+        // Show the active underline for tabs when hovering
+        &:hover{
+          &::after{
+            block-size: 6px;
+          }
+        }
+        
+        &:is(:focus-visible, .pseudo-focus-visible) {
+          outline: 2px solid bkl.$focus-outline-color;
+          outline-offset: 0;
+        }
+      }
+    }
+    
+    .bkl-tabs-embedded__tab-content {
+      padding: bkl.$sizing-4 0 bkl.$sizing-0;
+      background: bkl.$light-color-1;
+      
+      &:is(:focus-visible, .pseudo-focus-visible) {
+        outline: 2px solid bkl.$focus-outline-color;
+        outline-offset: 0;
+      }
+    }
+  }
+}

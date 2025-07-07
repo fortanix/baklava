@@ -1,0 +1,156 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+@use '../../../style/util/z-index.scss' as z;
+@use 'sass:math';
+
+@mixin user-actions-text() {
+  @include mixins.font(
+    $family: bkl.$font-family-display,
+    $weight: bkl.$font-weight-regular,
+    $size: bkl.$font-size-s,
+  );
+  line-height: bkl.$line-height-5;
+}
+
+@layer baklava.legacy {
+  .bkl-layout {
+    position: relative; // Relatively positioned, e.g. for sticky elements in the layout
+    
+    display: grid;
+    
+    // Default grid template, can be freely overridden to achieve different layouts
+    grid-template:
+      'sidebar header' max-content
+      'sidebar content' 1fr
+      / max-content 1fr;
+    
+    // Default area assignments (can be overridden with custom components)
+    > .bkl-header { grid-area: header; }
+    > .bkl-sidebar { grid-area: sidebar; }
+    > .bkl-content { grid-area: content; }
+    
+    .bkl-content {
+      overflow: auto;
+      padding: 2rem;
+      
+      > h1 {
+        margin-block-start: 0;
+      }
+      
+      > .bkl-panel {
+        margin-inline: 0;
+      }
+      
+      .breadcrumbs {
+        all: initial;
+        @include mixins.font($family: bkl.$font-family-body);
+        padding-block-start: bkl.$sizing-3;
+        
+        ol {
+          position: relative;
+          inset-block-end: bkl.$sizing-2;
+          list-style: none;
+          display: flex;
+          
+          li {
+            font-size: bkl.$font-size-xxs;
+            color: bkl.$brand-color;
+            line-height: bkl.$line-height-1;
+            a {
+              color: inherit;
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+            &:not(:first-child)::before {
+              display: 'block';
+              content: '/';
+              margin: 0 0.5rem;
+            }
+          }
+        }
+      }
+      
+      &.bkl-content--no-sidebar {
+        max-inline-size: 100%;
+        .bkl-content-wrapper {
+          max-inline-size: 128rem;
+          margin: 0 auto;
+        }
+      }
+    }
+    &.sysadmin {
+      .bkl-header-grid {
+        .account-switcher {
+          border: 1px solid bkl.$neutral-color-1;
+        }
+      }
+    }
+  }
+  
+  .bkl-layout--unauthenticated, .bkl-layout--basic {
+    .public-header {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: z.$z-index--sticky-header;
+      block-size: bkl.$sizing-7 * 2;
+      padding: bkl.$sizing-0 bkl.$sizing-5 bkl.$sizing-0 math.div(bkl.$sizing-8, 2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: bkl.$brand-color-dark-3;
+      &__logo {
+        display: flex;
+        align-items: center;
+        
+        &__image {
+          block-size: bkl.$sizing-7;
+        }
+        
+        &__text {
+          @include mixins.font(
+            $family: bkl.$font-family-display,
+            $weight: bkl.$font-weight-semibold,
+            $size: bkl.$font-size-s,
+          );
+          color: bkl.$dark-color-1;
+          line-height: bkl.$line-height-2;
+          margin-inline-start: bkl.$sizing-3;
+          text-transform: uppercase;
+        }
+      }
+      
+      &__user-actions {
+        .info-text {
+          color: bkl.$light-color-1;
+          margin-inline-end: bkl.$sizing-4;
+          @include user-actions-text();
+        }
+        
+        .bkl-button {
+          @include user-actions-text();
+          font-weight: bkl.$font-weight-semibold;
+          margin-inline-end: bkl.$sizing-5;
+        }
+        
+        .link-support {
+          @include user-actions-text();
+          font-weight: bkl.$font-weight-semibold;
+          text-transform: uppercase;
+        }
+      }
+    }
+  }
+  
+  // Note: used in CCM
+  .bkl-layout--basic {
+    .public-header {
+      padding: bkl.$sizing-none;
+      justify-content: center;
+    }
+  }
+}
