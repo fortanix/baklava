@@ -41,3 +41,7 @@ $border-radius-xl: 3.6rem !default; // ~50.4px
 $radius-s: math.div(4, 14) * 1rem !default;
 $radius-m: math.div(6, 14) * 1rem !default;
 $radius-l: math.div(9, 14) * 1rem !default;
+
+// Deprecated: use the new font-size-2xl, font-size-3xl, etc. variables
+$font-size-xxl: math.div(28, 14) * 1rem !default; // ~28px
+$font-size-xxxl: math.div(42, 14) * 1rem !default; // ~42px

@@ -68,26 +68,13 @@ $font-weight-bold: 700 !default;
 $font-size-xs: math.div(10, 14) * 1rem !default; // ~10px
 $font-size-s: math.div(12, 14) * 1rem !default; // ~12px
 $font-size-m: math.div(14, 14) * 1rem !default; // ~14px
-$font-size-l: math.div(17, 14) * 1rem !default; // ~16px
-
-// NOTE: the following are old tokens, we should migrate these to the semantic ones
-$font-size-xl: math.div(22, 14) * 1rem !default; // ~22px
-$font-size-xxl: math.div(28, 14) * 1rem !default; // ~28px
-$font-size-xxxl: math.div(42, 14) * 1rem !default; // ~42px
-
-// Semantic font sizes
-$font-size-h6: math.div(16, 14) * 1rem !default; // ~16px
-$font-size-h5: math.div(16, 14) * 1rem !default; // ~16px
-$font-size-h4: math.div(20, 14) * 1rem !default; // ~20px
-$font-size-h3: math.div(24, 14) * 1rem !default; // ~24px
-$font-size-h2: math.div(30, 14) * 1rem !default; // ~30px
-$font-size-h1: math.div(42, 14) * 1rem !default; // ~42px
-$font-size-hero: math.div(50, 14) * 1rem !default; // ~50px
-
+$font-size-l: math.div(16, 14) * 1rem !default; // ~16px
 $font-size-xl: math.div(20, 14) * 1rem !default; // ~20px
-$font-size-xxl: math.div(24, 14) * 1rem !default; // ~24px
-$font-size-xxxl: math.div(30, 14) * 1rem !default; // ~30px
-$font-size-xxxxl: math.div(42, 14) * 1rem !default; // ~42px
+$font-size-2xl: math.div(24, 14) * 1rem !default; // ~24px
+$font-size-3xl: math.div(30, 14) * 1rem !default; // ~30px
+$font-size-4xl: math.div(36, 14) * 1rem !default; // ~36px
+$font-size-5xl: math.div(42, 14) * 1rem !default; // ~42px
+$font-size-6xl: math.div(50, 14) * 1rem !default; // ~50px
 
 
 //
