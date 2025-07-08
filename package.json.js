@@ -31,17 +31,13 @@ const packageConfig = {
       //'require': './dist/baklava.cjs',
       'default': './dist/baklava.js',
     },
-    // Expose variables for use in consumer components
-    './styling/variables.scss': {
-      'default': './src/styling/variables.scss',
-    },
     // Expose mixins for use in consumer components
     './styling/defs.scss': {
-      'default': './src/styling/defs.scss',
+      'default': './src/styling/public/defs.scss',
     },
     // Expose layer ordering, since consumers may want to explicitly emit these first (see note in README.md)
     './styling/layers.scss': {
-      'default': './src/styling/layers.scss',
+      'default': './src/styling/public/layers.scss',
     },
   },
   

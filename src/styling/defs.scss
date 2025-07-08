@@ -37,7 +37,7 @@
   //contain: paint;
 }
 
-@mixin rounded($rounding: bkl.$sizing-xs) {
-  border-radius: $rounding;
+@mixin rounded($radius: bkl.$radius-3) {
+  border-radius: $radius;
   overflow: hidden; // Prevent child items from "bleeding through" the rounded borders
 }

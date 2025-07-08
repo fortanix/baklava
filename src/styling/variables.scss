@@ -108,9 +108,6 @@ $border-radius-cap: 999px !default; // Cap the edges (i.e. as large of a radius 
 $radius-1: math.div(2, 14) * 1rem !default; // ~2px
 $radius-2: math.div(4, 14) * 1rem !default; // ~4px
 $radius-3: math.div(6, 14) * 1rem !default; // ~6px
-$radius-s: math.div(4, 14) * 1rem !default; // FIXME
-$radius-m: math.div(6, 14) * 1rem !default; // FIXME
-$radius-l: math.div(9, 14) * 1rem !default; // FIXME
 
 
 //
@@ -119,34 +116,3 @@ $radius-l: math.div(9, 14) * 1rem !default; // FIXME
 
 // FIXME: remove once date picker uses native HTML/CSS popover
 $z-index-date-picker: 100;
-
-
-
-//
-// LEGACY (need to be replaced)
-//
-
-//$sizing-0: 0 !default;
-$sizing-1: 0.3rem !default;
-$sizing-2: 0.6rem !default;
-$sizing-3: 1.2rem !default;
-$sizing-4: 1.8rem !default;
-$sizing-5: 2.4rem !default;
-$sizing-6: 3.0rem !default;
-$sizing-7: 3.6rem !default;
-$sizing-8: 4.2rem !default;
-$sizing-9: 4.8rem !default;
-//$sizing-none: $sizing-0 !default;
-$sizing-xxs: $sizing-1 !default;
-$sizing-xs: $sizing-2 !default;
-$sizing-s: $sizing-3 !default;
-$sizing-m: $sizing-4 !default;
-$sizing-l: $sizing-6 !default;
-$sizing-xl: $sizing-8 !default;
-$sizing-xxl: $sizing-9 !default;
-
-// $border-radius-s: 0.3rem !default; // ~4.2px
-// $border-radius-ms: 0.6rem !default; // ~8.4px
-// $border-radius-m: 1.2rem !default; // ~16.8px
-// $border-radius-l: 1.8rem !default; // ~25.2px
-// $border-radius-xl: 3.6rem !default; // ~50.4px

@@ -175,7 +175,7 @@
         $scale: var(--bk-dialog-modal-fade-scale),
       );
       
-      --bk-dialog-modal-min-inset: #{bk.$sizing-2}; // Minimum amount to inset the modal by (on small screens)
+      --bk-dialog-modal-min-inset: #{bk.$spacing-2}; // Minimum amount to inset the modal by (on small screens)
       --bk-dialog-modal-size: 100ch;
       // Use margin for the width, so that the modal stretches up to the ideal size but also can shrink down
       margin-inline: clamp(var(--bk-dialog-modal-min-inset), 50% - (var(--bk-dialog-modal-size) / 2), 100svi);

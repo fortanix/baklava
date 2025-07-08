@@ -131,9 +131,9 @@ const componentTemplate = {
         max-width: 30rem;
         max-height: 8lh;
         
-        margin: bk.$sizing-s;
-        padding: bk.$sizing-s;
-        border-radius: bk.$sizing-s;
+        margin: bk.$spacing-3;
+        padding: bk.$spacing-3;
+        border-radius: bk.$spacing-3;
         background: var(--bk-{{{kebabCase component-name}}}-background-color);
         
         @include bk.text-layout;

@@ -2,14 +2,5 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@use '../../styling/defs.scss' as bk;
-
-@layer baklava.components {
-  .bk-form-layout {
-    @include bk.component-base(bk-form-layout);
-    
-    display: flex;
-    flex-direction: column;
-    gap: 1lh;
-  }
-}
+// Exports for public usage (library consumers)
+@forward '../layers.scss';
