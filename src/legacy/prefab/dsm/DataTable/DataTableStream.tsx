@@ -2,13 +2,13 @@
 import { classNames as cx } from '../../../util/component_util';
 import * as React from 'react';
 
-import { PaginationStream } from '../../../components/table/DataTable/pagination/PaginationStream';
+import { PaginationStream } from '../../../../components/tables/DataTable/pagination/PaginationStream';
 
 export { PaginationStream };
 
-import * as DataTable from '../../../components/table/DataTable/DataTableStream';
-export * from '../../../components/table/DataTable/DataTableStream';
-export * from '../../../components/table/DataTable/DataTableContext';
+import * as DataTable from '../../../../components/tables/DataTable/DataTableStream';
+export * from '../../../../components/tables/DataTable/DataTableStream';
+export * from '../../../../components/tables/DataTable/DataTableContext';
 import './DataTableStream.scss';
 
 

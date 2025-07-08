@@ -1,0 +1,6 @@
+`$_.defaultProps = $_` as $expr where {
+  register_diagnostic(
+    span = $expr,
+    message = "React `defaultProps` are no longer supported in React v19"
+  )
+}

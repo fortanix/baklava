@@ -25,17 +25,17 @@ type ButtonProps = Omit<ComponentProps<'button'>, 'onClick'> & {
  */
 export const Button = (props: ButtonProps) => {
   const {
-    renderAs = 'button', // Duplicated with `defaultProps`, because TS doesn't read `defaultProps`
+    unstyled = false,
     children,
-    className,
-    disabled,
-    block,
-    unstyled,
-    plain,
-    primary,
-    large,
-    light,
+    renderAs = 'button',
     label,
+    className,
+    disabled = false,
+    block = false,
+    plain = false,
+    primary = false,
+    large = false,
+    light = false,
     onClick,
     ...propsRest
   } = props;
@@ -100,13 +100,4 @@ export const Button = (props: ButtonProps) => {
       {children}
     </CustomTag>
   );
-};
-Button.defaultProps = {
-  renderAs: 'button',
-  plain: false,
-  primary: false,
-  light: false,
-  large: false,
-  block: false,
-  disabled: false,
 };

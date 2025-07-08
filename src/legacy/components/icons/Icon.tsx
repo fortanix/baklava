@@ -143,6 +143,8 @@ export const SpriteIcon = React.memo(React.forwardRef<SVGSVGElement, SpriteIconP
     ...propsRest
   } = props;
   
+  return null; // TEMP
+  
   const iconModule = useIconModule(name, icon, { moduleFormat: 'sprite' });
   
   if (iconModule === null) {

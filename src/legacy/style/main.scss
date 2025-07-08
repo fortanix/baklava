@@ -1,7 +1,13 @@
 
-// Definitions to be imported
-@forward './variables.scss';
-@forward './mixins.scss';
+// Note: make sure the following do not emit anything (should only export mixins)
+@use '../../styling/layers.scss' as layers;
+@use './global.scss' as global;
 
-// Styles to be emitted from main
-@forward './global.scss';
+
+//
+// Emit
+//
+
+@include layers.styles; // Cascade layer ordering: MUST be emitted before anything else
+
+@layer baklava.legacy { @include global.styles; }

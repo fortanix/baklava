@@ -5,4 +5,4 @@ export { MultiSearch } from './prefab/forms/MultiSearch/MultiSearch';
 
 // DSM prefab
 export * as DsmDataTableStream from './prefab/dsm/DataTable/DataTableStream';
-export * as DataTablePlugins from './components/table/DataTable/plugins/useRowSelectColumn';
+export * as DataTablePlugins from '../components/tables/DataTable/plugins/useRowSelectColumn';

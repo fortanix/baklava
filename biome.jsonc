@@ -25,6 +25,9 @@
       }
     }
   },
+  "plugins": [
+    "./linter/react-default-props.grit"
+  ],
   "linter": {
     "enabled": true,
     "includes": [

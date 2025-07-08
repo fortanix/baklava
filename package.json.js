@@ -31,6 +31,10 @@ const packageConfig = {
       //'require': './dist/baklava.cjs',
       'default': './dist/baklava.js',
     },
+    './legacy': {
+      'types': './dist/legacy.d.ts',
+      'default': './dist/legacy.js',
+    },
     // Expose mixins for use in consumer components
     './styling/defs.scss': {
       'default': './src/styling/public/defs.scss',
@@ -183,6 +187,16 @@ const packageConfig = {
     '@tanstack/react-virtual': '^3.13.9',
     
     'optics-ts': '^2.4.1',
+    
+    
+    // Legacy packages (for `src/legacy`)
+    'react-is': '^17.0.2',
+    'focus-trap-react': '^10.0.0',
+    'react-textarea-autosize': '^8.3.2',
+    'react-toastify': '^7.0.4',
+    'react-router-dom': '^5.3.0',
+    '@popperjs/core': '^2.9.2',
+    'react-popper': '^2.2.5',
   },
   peerDependencies: {
     'react': '>= 19.0.0',
@@ -197,6 +211,10 @@ const packageConfig = {
   overrides: {
     // TODO: Revisit after updating react-table to v8
     'react-table': {
+      'react': '$react',
+      'react-dom': '$react-dom',
+    },
+    'react-popper': {
       'react': '$react',
       'react-dom': '$react-dom',
     },

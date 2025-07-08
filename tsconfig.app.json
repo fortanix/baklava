@@ -58,5 +58,7 @@
   "exclude": [
     "node_modules",
     "**/*.spec.ts",
+    "app/legacy.ts",
+    "src/legacy",
   ],
 }

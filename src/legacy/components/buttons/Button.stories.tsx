@@ -33,6 +33,7 @@ export default {
   ],
   args: {
     children: 'Button',
+    onClick: () => { notify.info('You clicked the button'); },
   },
 } satisfies Meta<ButtonArgs>;
 

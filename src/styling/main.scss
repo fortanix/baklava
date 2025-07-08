@@ -13,9 +13,6 @@
 @use './global/fonts.scss' as fonts;
 @use '../typography/Prose/Prose.mixins.scss' as prose;
 
-// Legacy
-@use '../legacy/style/global.scss' as legacyGlobal;
-
 
 //
 // Emit
@@ -34,14 +31,6 @@
 @layer baklava.base { @include global.styles; }
 @layer baklava.theming { @include theming.styles; }
 @layer baklava.prose { @include prose.styles; }
-
-
-// --- Legacy ---
-
-@layer baklava.legacy { @include legacyGlobal.styles; }
-
-// --- End legacy ---
-
 
 // Emit fonts last, because vite will inline the font files, and we don't want to block the rest of the styling
 @layer baklava.base { @include fonts.styles; }
