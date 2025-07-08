@@ -14,13 +14,13 @@ export type ProgressBarProps = React.PropsWithChildren<ComponentProps<'progress'
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
-  /** The progress it should be displaying as in percent, ranging from 0 to 100. */
+  /** The progress, as a percentage ranging from 0 to 100. */
   progress: number,
-
+  
   /** An optional label, displayed as the progress bar title. */
   label?: undefined | string,
-
-  /** An optional hint text, displayed after the progress bar. */
+  
+  /** An optional hint text, displayed below the progress bar. */
   hintText?: undefined | string,
 }>;
 /**
@@ -41,11 +41,12 @@ export const ProgressBar = (props: ProgressBarProps) => {
       )}
       <progress
         {...propsRest}
-        className={cx({
-          bk: true,
-          [cl['bk-progress-bar']]: !unstyled,
-        }, propsRest.className)}
-        max="100"
+        className={cx(
+          'bk',
+          { [cl['bk-progress-bar']]: !unstyled },
+          propsRest.className,
+        )}
+        max={100}
         value={progress}
       >
         {progress}%

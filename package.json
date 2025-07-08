@@ -27,14 +27,11 @@
       "types": "./dist/baklava.d.ts",
       "default": "./dist/baklava.js"
     },
-    "./styling/variables.scss": {
-      "default": "./src/styling/variables.scss"
-    },
     "./styling/defs.scss": {
-      "default": "./src/styling/defs.scss"
+      "default": "./src/styling/public/defs.scss"
     },
     "./styling/layers.scss": {
-      "default": "./src/styling/layers.scss"
+      "default": "./src/styling/public/layers.scss"
     }
   },
   "scripts": {

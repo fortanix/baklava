@@ -15,7 +15,7 @@
     // it seems to not work with the `clear: both` that is applied on the `<legend>` (in the CSS reset).
     //display: flex;
     
-    $legend-gap: bk.$sizing-2;
+    $legend-gap: bk.$spacing-2;
     
     legend {
       @include bk.text-one-line($include-padding: false); // Padding fix not needed thanks to `overflow: visible`
@@ -40,7 +40,7 @@
       display: table;
       
       legend {
-        margin-inline-end: $legend-gap * 2;
+        margin-inline-end: calc($legend-gap * 2);
       }
       
       > * {

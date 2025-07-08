@@ -9,10 +9,6 @@ import { useDelayedUnmount } from '../../../../util/hooks/useDelayedUnmount.ts';
 import { useModalDialogTracker } from '../TopLayerManager.tsx';
 import { type ModalDialogProps, useModalDialog } from './useModalDialog.ts';
 
-import cl from './ModalProvider.module.scss';
-
-
-export { cl as ModalProviderClassNames };
 
 export type ModalRef = {
   active: boolean,

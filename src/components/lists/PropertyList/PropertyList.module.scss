@@ -8,24 +8,18 @@
   .bk-property-list {
     @include bk.component-base(bk-property-list);
     
-    margin: bk.$sizing-0;
+    margin: 0;
     display: flex;
     flex-flow: row wrap;
-    gap: bk.$sizing-xl bk.$sizing-l;
+    gap: bk.$spacing-4 bk.$spacing-8;
     
     .bk-property-list__property {
-      > :is(dt, dd) {
-        font-size: bk.$font-size-m;
+      &.bk-property-list__property--full-width {
+        inline-size: -webkit-fill-available;
       }
+      
       dt {
-        margin-block: bk.$sizing-4 bk.$sizing-2;
-        @include bk.font($family: bk.$font-family-display, $weight: bk.$font-weight-semibold);
-        
-        //color: bk.$color-neutral-3;
-        //line-height: bk.$line-height-6;
-      }
-      dd {
-        margin-inline-start: bk.$sizing-0;
+        font-weight: bk.$font-weight-semibold;
       }
     }
   }

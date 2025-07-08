@@ -26,8 +26,8 @@
       transition-property: width, grid-template-columns;
       
       .bk-app-layout-sidebar__action-collapse {
-        margin: var(--bk-sizing-2);
-        padding: var(--bk-sizing-1) var(--bk-sizing-2);
+        margin: bk.$spacing-2;
+        padding: bk.$spacing-1 bk.$spacing-2;
         background: var(--bk-panel-color-background);
         cursor: pointer;
       }

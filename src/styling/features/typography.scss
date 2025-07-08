@@ -23,32 +23,32 @@ Note: these mixins are used as part of `.bk-prose`. In order to not break the wo
 
 @mixin h1 {
   @include heading;
-  font-size: vars.$font-size-xxxl;
+  font-size: vars.$font-size-5xl;
   font-weight: 300;
 }
 @mixin h2 {
   @include heading;
-  font-size: util.rem-from-px(30); // FIXME: token
+  font-size: vars.$font-size-3xl;
   font-weight: 400;
 }
 @mixin h3 {
   @include heading;
-  font-size: util.rem-from-px(24); // FIXME: token
+  font-size: vars.$font-size-2xl;
   font-weight: 400;
 }
 @mixin h4 {
   @include heading;
-  font-size: util.rem-from-px(20); // FIXME: token
+  font-size: vars.$font-size-xl;
   font-weight: 400;
 }
 @mixin h5 {
   @include heading;
-  font-size: util.rem-from-px(16); // FIXME: token
+  font-size: vars.$font-size-l;
   font-weight: 600;
 }
 @mixin h6 {
   @include heading;
-  font-size: util.rem-from-px(16); // FIXME: token
+  font-size: vars.$font-size-l;
   font-weight: 500;
 }
 

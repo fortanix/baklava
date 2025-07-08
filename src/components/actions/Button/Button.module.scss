@@ -19,7 +19,7 @@
     padding: calc(bk.$spacing-2 - 0.2lh) bk.$spacing-3; /* Note: compensate for line-height difference with Figma */
     
     border: bk.$size-1 solid var(--bk-button-color-border);
-    border-radius: bk.$radius-s;
+    border-radius: bk.$radius-2;
     background: var(--bk-button-color-background);
     color: var(--bk-button-color-text);
     

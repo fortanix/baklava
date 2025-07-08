@@ -18,7 +18,7 @@
     
     background: var(--bk-card-background-color);
     border: bk.$size-1 solid var(--bk-card-border-color);
-    border-radius: bk.$radius-m;
+    border-radius: bk.$radius-3;
   }
   
   @include bk.flex-column;

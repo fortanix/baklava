@@ -32,7 +32,7 @@
             $shimmer-highlight-color: light-dark(#CBCEDB, #767699); // FIXME: design token
             @include bk.skeleton-shimmer($base-color: $shimmer-base-color, $highlight-color: $shimmer-highlight-color);
             block-size: bk.$spacing-2;
-            border-radius: bk.$border-radius-xl;
+            border-radius: bk.$border-radius-cap;
             display: block;
             inline-size: 60%;
           }

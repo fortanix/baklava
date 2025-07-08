@@ -83,7 +83,7 @@
   }
   
   &:is(hr) {
-    margin-block: bk.$sizing-3;
+    margin-block: bk.$spacing-4;
     border: none;
     border-block-start: bk.rem-from-px(1) solid currentColor;
   }

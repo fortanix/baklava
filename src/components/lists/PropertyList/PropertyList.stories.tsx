@@ -21,14 +21,6 @@ export default {
   tags: ['autodocs'],
   argTypes: {},
   args: {
-    unstyled: false,
-  },
-  render: (args) => <PropertyList {...args}/>,
-} satisfies Meta<PropertyListArgs>;
-
-
-export const Standard: Story = {
-  args: {
     children: (
       <>
         <PropertyList.Property
@@ -39,7 +31,16 @@ export const Standard: Story = {
           label="Key 2"
           value="Value 2"
         />
+        <PropertyList.Property
+          fullWidth
+          label="Key 3"
+          value="Value 3"
+        />
       </>
     ),
   },
-};
+  render: (args) => <PropertyList {...args}/>,
+} satisfies Meta<PropertyListArgs>;
+
+
+export const PropertyListStandard: Story = {};
