@@ -170,10 +170,21 @@ const preview = {
             ],
             'PublicLayout',
           ],
-          'Legacy',
+          'fortanix',
+          [
+            'FortanixLogo',
+          ],
+          'legacy',
           [
             'components',
             [
+              'typography',
+              [
+                'Caption',
+                'Code',
+                'Entity',
+                'Headings',
+              ],
               'buttons',
               [
                 'Button',

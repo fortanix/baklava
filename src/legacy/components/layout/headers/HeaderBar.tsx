@@ -44,7 +44,7 @@ const useScrollBreakpoint = ({ breakpoint, margin }: UseScrollBreakpointParams) 
 export type HeaderBarProps = ComponentPropsWithoutRef<'header'> & {
   minimizeOnScroll?: boolean,
 };
-export const HeaderBar = ({ children, minimizeOnScroll, className, ...props }: HeaderBarProps) => {
+export const HeaderBar = ({ children, minimizeOnScroll = false, className, ...props }: HeaderBarProps) => {
   const hasScrolledDown = useScrollBreakpoint({ breakpoint: 80, margin: 20 });
   
   return (
@@ -58,9 +58,6 @@ export const HeaderBar = ({ children, minimizeOnScroll, className, ...props }: H
       {children}
     </header>
   );
-};
-HeaderBar.defaultProps = {
-  minimizeOnScroll: false,
 };
 
 export default HeaderBar;

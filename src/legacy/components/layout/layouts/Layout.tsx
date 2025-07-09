@@ -22,27 +22,23 @@ export type LayoutProps = ComponentPropsWithoutRef<'main'> & {
   updateState: (stateUpdated: LayoutContextT) => void,
 };
 export const Layout = Object.assign(
-  ({ className, children, state, updateState, ...props }: LayoutProps) => {
+  (props: LayoutProps) => {
+    const { className, children, state = initLayoutState(), updateState, ...propsRest } = props;
+    
     const layoutState = React.useMemo(() => ({
       ...state,
-      update: (stateUpdated: Partial<LayoutContextT>) => { updateState({ ...state, ...stateUpdated }); },
+      update: (stateUpdated: Partial<LayoutContextT>) => { updateState?.({ ...state, ...stateUpdated }); },
     }), [state, updateState]);
     
     return (
       <LayoutContext.Provider value={layoutState}>
-        <main {...props} className={cx('bkl-layout', className)}>
+        <main {...propsRest} className={cx('bkl-layout', className)}>
           {children}
         </main>
       </LayoutContext.Provider>
     );
   },
   {
-    defaultProps: {
-      className: undefined,
-      state: initLayoutState(),
-      updateState: () => {},
-    },
-    
     // Convenience shorthands
     Context: LayoutContext,
     initLayoutState,

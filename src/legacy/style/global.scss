@@ -124,6 +124,8 @@
 @mixin styles {
   :root {
     @include runtime-variables();
+    
+    font-size: 10px !important; // TEMP: just for testing legacy component stories
   }
   
   body {
