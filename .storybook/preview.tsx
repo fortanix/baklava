@@ -189,6 +189,14 @@ const preview = {
               [
                 'Button',
               ],
+              'Progress',
+              'containers',
+              [
+                'Tag',
+                'Panel',
+                'Accordion',
+                'PropertyList',
+              ],
             ],
           ],
         ],

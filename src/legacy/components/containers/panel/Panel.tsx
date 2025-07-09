@@ -2,35 +2,28 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import cx from 'classnames';
-import * as React from 'react';
-
-import { useScroller } from '../../layout/util/Scroller';
+import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
 
 import './Panel.scss';
 
 
-export type PanelProps = Omit<JSX.IntrinsicElements['div'], 'className'> & {
-  children: React.ReactNode,
-  className?: string,
-  secondary?: boolean,
-  flat?: boolean,
+export type PanelProps = ComponentProps<'div'> & {
+  secondary?: undefined | boolean,
+  flat?: undefined | boolean,
 };
-export const Panel = ({ children, className = '', secondary = false, flat = false, ...props }: PanelProps) => {
-  const scrollerProps = useScroller();
+export const Panel = (props: PanelProps) => {
+  const { secondary = false, flat = false, ...propsRest } = props;
+  
   return (
     <div
-      {...props}
+      {...propsRest}
       className={cx(
+        'bkl',
         'bkl-panel',
         { 'bkl-panel--secondary': secondary },
         { 'bkl-panel--with-depth': !flat },
-        scrollerProps.className,
-        className,
+        propsRest.className,
       )}
-    >
-      {children}
-    </div>
+    />
   );
 };
-Panel.displayName = 'Panel';

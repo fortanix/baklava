@@ -4,38 +4,19 @@
 
 @use '../../../style/variables.scss' as bkl;
 
-.bkl-panel {
-  --panel-inset: 2rem;
-  
-  position: relative; // For positioned child elements
-  
-  min-height: 2rem;
-  margin-bottom: 2rem;
-  padding: var(--panel-inset);
-  
-  border-radius: bkl.$sizing-2;
-  background: bkl.$light-color-1;
-  color: bkl.$dark-color-1;
-  
-  &:is(:focus-visible, .pseudo-focus-visible) {
-    outline: 2px solid bkl.$focus-outline-color;
-    outline-offset: 0;
-  }
-      
-  .bkl-panel__subheading { // Will typically be an <H6>
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-    font-weight: bkl.$font-weight-medium;
-  }
-  
-  &.bkl-panel--secondary {
-    background: bkl.$light-color-1;
-    margin: 0;
-    box-shadow: none;
+@layer baklava.legacy {
+  .bkl-panel {
+    --panel-inset: 2rem;
     
-    .bkl-panel__heading { // Will typically be an <H5>
-      margin-bottom: 0.5rem;
-    }
+    position: relative; // For positioned child elements
+    
+    min-height: 2rem;
+    margin-bottom: 2rem;
+    padding: var(--panel-inset);
+    
+    border-radius: bkl.$sizing-2;
+    background: bkl.$light-color-1;
+    color: bkl.$dark-color-1;
     
     .bkl-panel__subheading { // Will typically be an <H6>
       margin-top: 1rem;
@@ -43,28 +24,44 @@
       font-weight: bkl.$font-weight-medium;
     }
     
-    p {
+    &.bkl-panel--secondary {
+      background: bkl.$light-color-1;
       margin: 0;
-      padding: 0;
-      font-size: 1.4rem;
-    }
-    
-    .columns {
-      display: flex;
-      flex-direction: columns;
-      justify-content: space-between;
+      box-shadow: none;
       
-      > * {
-        flex-grow: 1;
+      .bkl-panel__heading { // Will typically be an <H5>
+        margin-bottom: 0.5rem;
+      }
+      
+      .bkl-panel__subheading { // Will typically be an <H6>
+        margin-top: 1rem;
+        margin-bottom: 0.5rem;
+        font-weight: bkl.$font-weight-medium;
+      }
+      
+      p {
+        margin: 0;
+        padding: 0;
+        font-size: 1.4rem;
+      }
+      
+      .columns {
+        display: flex;
+        flex-direction: columns;
+        justify-content: space-between;
         
-        &:not(:first-child) {
-          margin-left: 2rem;
+        > * {
+          flex-grow: 1;
+          
+          &:not(:first-child) {
+            margin-left: 2rem;
+          }
         }
       }
     }
   }
-}
-
-.bkl-panel + .bkl-panel {
-  margin-top: 2rem;
+  
+  .bkl-panel + .bkl-panel {
+    margin-top: 2rem;
+  }
 }

@@ -2,21 +2,17 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import * as React from 'react';
-import {
-  classNames as cx,
-  ComponentPropsWithoutRef,
-} from '../../../util/component_util';
-import CloseButton from '../../internal/CloseButton';
+import { classNames as cx, ComponentPropsWithoutRef } from '../../../util/component_util.tsx';
+import CloseButton from '../../internal/CloseButton.tsx';
 
 import './Tag.scss';
 
 
 type TagProps = ComponentPropsWithoutRef<'div'> & {
-  primary?: boolean,
-  dashedBorder?: boolean,
-  small?: boolean,
-  onClose?: () => void,
+  primary?: undefined | boolean,
+  dashedBorder?: undefined | boolean,
+  small?: undefined | boolean,
+  onClose?: undefined | (() => void),
 };
 export const Tag = (props: TagProps) => {
   const {
@@ -31,12 +27,17 @@ export const Tag = (props: TagProps) => {
   
   return (
     <div
-      className={cx('bkl-tag', className, {
-        'bkl-tag--primary': primary,
-        'bkl-tag--dashed-border': dashedBorder,
-        'bkl-tag--closable': onClose,
-        'bkl-tag--small': small,
-      })}
+      className={cx(
+        'bkl',
+        'bkl-tag',
+        className,
+        {
+          'bkl-tag--primary': primary,
+          'bkl-tag--dashed-border': dashedBorder,
+          'bkl-tag--closable': onClose,
+          'bkl-tag--small': small,
+        },
+      )}
       {...rest}
     >
       {children}
@@ -44,5 +45,3 @@ export const Tag = (props: TagProps) => {
     </div>
   );
 };
-
-Tag.displayName = 'Tag';

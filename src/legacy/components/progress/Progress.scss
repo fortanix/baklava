@@ -3,40 +3,42 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 @use '../../style/variables.scss' as bkl;
 
-.bkl-progress-bar {
-  display: flex;
-  align-items: center;
-  
-  &__outer {
-    position: relative;
+@layer baklava.legacy {
+  .bkl-progress-bar {
     display: flex;
-    height: bkl.$sizing-m;
-    background-color: bkl.$light-color-4;
-    border-radius: bkl.$sizing-xxs;
-    width: 100%;
-  }
-  
-  &__inner {
-    position: absolute;
-    left: bkl.$sizing-none;
-    top: bkl.$sizing-none;
-    height: bkl.$sizing-m;
-    border-radius: bkl.$sizing-xxs;
-  }
-  
-  &__info {
-    margin-left: bkl.$sizing-s;
-  }
-              
-  &--high {
-    background-color: bkl.$status-color-critical;
-  }
-  
-  &--medium {
-    background-color: bkl.$status-color-warning;
-  }
-  
-  &--low {
-    background-color: bkl.$status-color-success;
+    align-items: center;
+    
+    .bkl-progress-bar__outer {
+      position: relative;
+      display: flex;
+      height: bkl.$sizing-m;
+      background-color: bkl.$light-color-4;
+      border-radius: bkl.$sizing-xxs;
+      width: 100%;
+    }
+    
+    .bkl-progress-bar__inner {
+      position: absolute;
+      left: bkl.$sizing-none;
+      top: bkl.$sizing-none;
+      height: bkl.$sizing-m;
+      border-radius: bkl.$sizing-xxs;
+    }
+    
+    .bkl-progress-bar__info {
+      margin-left: bkl.$sizing-s;
+    }
+    
+    .bkl-progress-bar--high {
+      background-color: bkl.$status-color-critical;
+    }
+    
+    .bkl-progress-bar--medium {
+      background-color: bkl.$status-color-warning;
+    }
+    
+    .bkl-progress-bar--low {
+      background-color: bkl.$status-color-success;
+    }
   }
 }

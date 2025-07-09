@@ -5,28 +5,30 @@
 @use '../../../style/variables.scss' as bkl;
 
 
-.bkl-tag {
-  position: relative;
-  padding: bkl.$sizing-none bkl.$sizing-xs;
-  border-radius: bkl.$border-radius-s;
-  display: flex;
-  align-items: baseline;
-  width: max-content;
-  
-  &.bkl-tag--primary {
-    background-color: bkl.$neutral-color-1;
-  }
-  
-  &.bkl-tag--dashed-border {
-    border: 0.1rem dashed bkl.$status-color-critical;
-  }
-  
-  &.bkl-tag--small {
-    font-size: bkl.$font-size-s;
-  }
-  
-  .bkl-button:has(.bkl-close) {
-    align-self: center;
-    margin-left: bkl.$sizing-xxs;
+@layer baklava.legacy {
+  .bkl-tag {
+    position: relative;
+    padding: bkl.$sizing-none bkl.$sizing-xs;
+    border-radius: bkl.$border-radius-s;
+    display: flex;
+    align-items: baseline;
+    width: max-content;
+    
+    &.bkl-tag--primary {
+      background-color: bkl.$neutral-color-1;
+    }
+    
+    &.bkl-tag--dashed-border {
+      border: 0.1rem dashed bkl.$status-color-critical;
+    }
+    
+    &.bkl-tag--small {
+      font-size: bkl.$font-size-s;
+    }
+    
+    .bkl-button:has(.bkl-close) {
+      align-self: center;
+      margin-left: bkl.$sizing-xxs;
+    }
   }
 }
