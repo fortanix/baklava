@@ -9,20 +9,20 @@
   --brand-color-dark-1: #ffffff;
   --brand-color-dark-2: #ffffff;
   --brand-color-dark-3: #332b50;
-  --brand-color-dark-4: oklch(64.43% 0.046 285.04); // #393953;
+  --brand-color-dark-4: oklch(64.43% 0.046 285.04deg); // #393953;
   --brand-color-dark-5: #ffffff; // #41486d;
   --brand-color-dark-6: #ffffff; // #434d72;
   --brand-color-dark-7: #25203e; // #241e3b;
-  --brand-color-dark-8: oklch(73.17% 0.0636 281.65); // #212144;
+  --brand-color-dark-8: oklch(73.17% 0.0636 281.65deg); // #212144;
   --brand-color-light-1: #ffffff; // #abbfdd;
   --brand-color-light-2: #5F6089; // #6e7fbb;
   --brand-color-light-3: #383962; // #6c6e9b;
   
   --accent-color: #178DFB;
   --accent-color-dark-1: #00838f;
-  --accent-color-light-1: oklch(25.41% 0.0442 212.19); // #00c6da;
+  --accent-color-light-1: oklch(25.41% 0.0442 212.19deg); // #00c6da;
   --accent-color-light-2: #178DFB; // #47c2ce;
-  --accent-color-light-3: oklch(16.31% 0.0284 212.11); // #80deea;
+  --accent-color-light-3: oklch(16.31% 0.0284 212.11deg); // #80deea;
   
   
   --status-color-critical: #FF5C40;
@@ -46,33 +46,33 @@
   --light-color-4: #383962; // #e0e0e0;
   --light-color-5: #6d6d78; // #d1d1d1;
   
-  --bkl-calendar-icon-color: oklch(26.49% 0.0229 291.57);
-  --bkl-bg-color: oklch(3.74% 0.018 17.48);
+  --bkl-calendar-icon-color: oklch(26.49% 0.0229 291.57deg);
+  --bkl-bg-color: oklch(3.74% 0.018 17.48deg);
   --bkl-calendar-color: var(--dark-color-1);
   --bkl-input-color: var(--dark-color-1);
   --bkl-datatable-color: var(--bkl-status-color-critical);
   --bkl-pagination-color: var(--accent-color);
-  --bkl-dropdown-color: oklch(5.01% 0.0125 255.51);
-  --bkl-shadow: oklch(100% 0 0 / 15%);
-  --bkl-header-shadow-color: oklch(63.53% 0.0699 282.37 / 16%);
-  --bkl-tab-shadow-color: oklch(5.39% 0 0 / 50%);
-  --bkl-accordion-color: oklch(49.5% 0.0649 282.74 / 15%);
-  --bkl-datepicker-bg-color: rgba(23, 141, 251, 0.5);
+  --bkl-dropdown-color: oklch(5.01% 0.0125 255.51deg);
+  --bkl-shadow: oklch(100% 0 0deg / 15%);
+  --bkl-header-shadow-color: oklch(63.53% 0.0699 282.37deg / 16%);
+  --bkl-tab-shadow-color: oklch(5.39% 0 0deg / 50%);
+  --bkl-accordion-color: oklch(49.5% 0.0649 282.74deg / 15%);
+  --bkl-datepicker-bg-color: rgb(23 141 251 / 50%);
   --bkl-border-color-1: var(--accent-color-light-2);
   --bkl-placeholder-color: #BDBEC1;
   --bkl-border-color: #BDBEC1;
-  --bkl-select-border-color: rgba(56, 57, 98, 0.7);
-  --bkl-datatable-shadow-color: rgba(255, 255, 255, 0.15);
-  --bkl-pagination-bg-color: rgba(95, 96, 137, 0.34);
-  --bkl-header-bg-color: rgba(56, 57, 98, 0.5);
-  --bkl-nav-color: rgba(56, 57, 98, 0.3);
-  --bkl-switcher-bg-color: rgba(56, 57, 98, 0.8);
-  --bkl-switcher-bg-color-1: rgba(56, 57, 98, 0.2);
-  --bkl-pagination-bg-color-1: rgba(56, 57, 98, 0.5);
-  --bkl-nav-bg-color: rgba(255, 255, 255, 0.3);
-  --bkl-nav-color-1: rgba(33, 33, 68, 0.5);
-  --bkl-nav-bg-color-1: rgba(255, 255, 255, 0.5);
-  --bkl-backdrop-color: rgba(0, 0, 0, 0.5);
+  --bkl-select-border-color: rgb(56 57 98 / 70%);
+  --bkl-datatable-shadow-color: rgb(255 255 255 / 15%);
+  --bkl-pagination-bg-color: rgb(95 96 137 / 34%);
+  --bkl-header-bg-color: rgb(56 57 98 / 50%);
+  --bkl-nav-color: rgb(56 57 98 / 30%);
+  --bkl-switcher-bg-color: rgb(56 57 98 / 80%);
+  --bkl-switcher-bg-color-1: rgb(56 57 98 / 20%);
+  --bkl-pagination-bg-color-1: rgb(56 57 98 / 50%);
+  --bkl-nav-bg-color: rgb(255 255 255 / 30%);
+  --bkl-nav-color-1: rgb(33 33 68 / 50%);
+  --bkl-nav-bg-color-1: rgb(255 255 255 / 50%);
+  --bkl-backdrop-color: rgb(0 0 0 / 50%);
   --bkl-button-hover-color: #1580E4;
   --bkl-button-disabled-color: #363740;
   --bkl-button-disabled-text-color: #808086;
@@ -113,15 +113,15 @@
   --notification-error-background: #fef7f8;
   --notification-success-background: #f8fdf4;
 
-  --sidebar-nav-border: rgba(238, 242, 249, 0.3);
-  --sidebar-nav-background: rgba(171, 191, 221, 0.3);
-  --sidebar-nav-background-hover: rgba(19, 19, 42, 0.5);
-  --sidebar-nav-header-default: rgba(0,0,0, 0.5);
-  --sidebar-nav-header-default: rgba(0,0,0, 0.5);
-  --sidebar-nav-icon-default: rgba(255, 255, 255, 0.5);
+  --sidebar-nav-border: rgb(238 242 249 / 30%);
+  --sidebar-nav-background: rgb(171 191 221 / 30%);
+  --sidebar-nav-background-hover: rgb(19 19 42 / 50%);
+  --sidebar-nav-header-default: rgb(0 0 0 / 50%);
+  --sidebar-nav-header-default: rgb(0 0 0 / 50%);
+  --sidebar-nav-icon-default: rgb(255 255 255 / 50%);
 
-  --pagination-nav-background: rgba(118, 118, 118, 0.34);
-  --pagination-listitem-background: rgba(238, 242, 249, 0.5);
+  --pagination-nav-background: rgb(118 118 118 / 34%);
+  --pagination-listitem-background: rgb(238 242 249 / 50%);
 }
 
 @mixin styles {

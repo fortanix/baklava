@@ -11,16 +11,16 @@
   &::after {
     content: '';
     position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 4px;
+    inset-inline-start: 0;
+    inset-block-start: 0;
+    block-size: 100%;
+    inline-size: 4px;
     background-color: bkl.$accent-color-light-2;
   }
 }
 
 .bkl-dropdown {
-  width: max-content;
+  inline-size: max-content;
   margin: bkl.$sizing-none;
   padding: bkl.$sizing-s bkl.$sizing-none;
   
@@ -32,31 +32,31 @@
   
   &__arrow {
     --arrow-size: #{bkl.$sizing-s};
-    width: var(--arrow-size);
-    height: var(--arrow-size);
+    inline-size: var(--arrow-size);
+    block-size: var(--arrow-size);
     
     &::after {
       position: absolute;
       content: '';
       display: block;
       
-      width: var(--arrow-size);
-      height: var(--arrow-size);
+      inline-size: var(--arrow-size);
+      block-size: var(--arrow-size);
       
-      transform: translateX(0px) rotate(45deg);
+      transform: translateX(0) rotate(45deg);
       transform-origin: center;
     }
   }
   
-  &.bkl-dropdown--with-arrow[data-popper-placement^=top] { margin-bottom: bkl.$sizing-s; }
-  &.bkl-dropdown--with-arrow[data-popper-placement^=right] { margin-left: bkl.$sizing-s; }
-  &.bkl-dropdown--with-arrow[data-popper-placement^=bottom] { margin-top: bkl.$sizing-s; }
-  &.bkl-dropdown--with-arrow[data-popper-placement^=left] { margin-right: bkl.$sizing-s; }
+  &.bkl-dropdown--with-arrow[data-popper-placement^="top"] { margin-block-end: bkl.$sizing-s; }
+  &.bkl-dropdown--with-arrow[data-popper-placement^="right"] { margin-inline-start: bkl.$sizing-s; }
+  &.bkl-dropdown--with-arrow[data-popper-placement^="bottom"] { margin-block-start: bkl.$sizing-s; }
+  &.bkl-dropdown--with-arrow[data-popper-placement^="left"] { margin-inline-end: bkl.$sizing-s; }
   
-  &[data-popper-placement^=top] .bkl-dropdown__arrow { bottom: -1 * bkl.$sizing-xs; }
-  &[data-popper-placement^=right] .bkl-dropdown__arrow { left: -1 * bkl.$sizing-xs; }
-  &[data-popper-placement^=bottom] .bkl-dropdown__arrow { top: -1 * bkl.$sizing-xs; }
-  &[data-popper-placement^=left] .bkl-dropdown__arrow { right: -1 * bkl.$sizing-xs; }
+  &[data-popper-placement^="top"] .bkl-dropdown__arrow { inset-block-end: -1 * bkl.$sizing-xs; }
+  &[data-popper-placement^="right"] .bkl-dropdown__arrow { inset-inline-start: -1 * bkl.$sizing-xs; }
+  &[data-popper-placement^="bottom"] .bkl-dropdown__arrow { inset-block-start: -1 * bkl.$sizing-xs; }
+  &[data-popper-placement^="left"] .bkl-dropdown__arrow { inset-inline-end: -1 * bkl.$sizing-xs; }
   
   &__menu {
     list-style-type: none;
@@ -64,7 +64,7 @@
     &-item {
       position: relative;
       padding: bkl.$sizing-s bkl.$sizing-m;
-      width: 100%;
+      inline-size: 100%;
       
       &:focus-visible {
         outline: 2px solid bkl.$focus-outline-color;
@@ -82,8 +82,8 @@
     }
     
     &-divider {
-      width: 100%;
-      height: 2px;
+      inline-size: 100%;
+      block-size: 2px;
     }
   }
   

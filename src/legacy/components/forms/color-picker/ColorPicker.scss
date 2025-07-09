@@ -14,7 +14,7 @@ $colors: (
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  width: 100%;
+  inline-size: 100%;
 
   .bkl-color-picker__wrapper {
     position: relative;
@@ -26,8 +26,8 @@ $colors: (
     .bkl-color-picker__item {
       position: absolute;
       opacity: 0;
-      width: 0;
-      height: 0;
+      inline-size: 0;
+      block-size: 0;
       pointer-events: none;
             
       &:checked + label {
@@ -35,10 +35,7 @@ $colors: (
           .#{$name}::after, .bkl-custom-color::after {
             content: '';
             position: absolute;
-            top: -5px;
-            left: -5px;
-            right: -5px;
-            bottom: -5px;
+            inset: -5px;
             border-radius: bkl.$border-radius-circle;
             border: 2px solid $value;
           }
@@ -59,15 +56,15 @@ $colors: (
 
     label {
       display: inline-block;
-      width: 25px;
-      height: 25px;
+      inline-size: 25px;
+      block-size: 25px;
       cursor: pointer;
-      padding-left: bkl.$sizing-0;
+      padding-inline-start: bkl.$sizing-0;
       
       span {
         display: block;
-        width: 100%;
-        height: 100%;
+        inline-size: 100%;
+        block-size: 100%;
         transition: transform .2s ease-in-out;
         border-radius: bkl.$border-radius-circle;
         
@@ -95,8 +92,8 @@ $colors: (
     .bkl-custom-color-picker__item {
       position: absolute;
       opacity: 0;
-      width: 0;
-      height: 0;
+      inline-size: 0;
+      block-size: 0;
       pointer-events: none;
     }
     
@@ -114,8 +111,8 @@ $colors: (
     }
     
     .bkl-custom-color-picker___icon {
-      width: 25px;
-      height: 25px;
+      inline-size: 25px;
+      block-size: 25px;
     }
   }
 }

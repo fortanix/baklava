@@ -31,12 +31,12 @@
     gap: bkl.$sizing-xs * 1.5;
 
     padding: 1.2rem;
-    padding-bottom: 1.1rem;
+    padding-block-end: 1.1rem;
     background: transparent;
-    min-width: $button-width + bkl.$sizing-2 + bkl.$sizing-1;
+    min-inline-size: $button-width + bkl.$sizing-2 + bkl.$sizing-1;
 
     &:not(:first-of-type) {
-      border-left: 0.1rem solid bkl.$neutral-color-1;
+      border-inline-start: 0.1rem solid bkl.$neutral-color-1;
     }
 
     color: bkl.$neutral-color-3;
@@ -60,14 +60,14 @@
     .count {
       @include mixins.capsule();
       padding: 0.1rem 0.8rem;
-      min-width: unset;
+      min-inline-size: unset;
       background: var(--bkl-switcher-bg-color);
       color: bkl.$neutral-color-2;
       font-size: bkl.$font-size-xs;
     }
 
     transition: background-color 120ms ease;
-    &:not(.active):not(.disabled):hover {
+    &:not(.active, .disabled):hover {
       background: var(--bkl-switcher-bg-color-1);
     }
 

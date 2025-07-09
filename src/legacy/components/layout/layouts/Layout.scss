@@ -41,22 +41,21 @@ body {
     padding: 2rem;
     
     > h1 {
-      margin-top: 0;
+      margin-block-start: 0;
     }
     
     > .bkl-panel {
-      margin-left: 0;
-      margin-right: 0;
+      margin-inline: 0;
     }
     
     .breadcrumbs {
       all: initial;
       @include mixins.font($family: bkl.$font-family-body);
-      padding-top: bkl.$sizing-3;
+      padding-block-start: bkl.$sizing-3;
       
       ol {
         position: relative;
-        bottom: bkl.$sizing-2;
+        inset-block-end: bkl.$sizing-2;
         list-style: none;
         display: flex;
         
@@ -80,9 +79,9 @@ body {
     }
     
     &.bkl-content--no-sidebar {
-      max-width: 100%;
+      max-inline-size: 100%;
       .bkl-content-wrapper {
-        max-width: 128rem;
+        max-inline-size: 128rem;
         margin: 0 auto;
       }
     }
@@ -99,9 +98,9 @@ body {
 .bkl-layout--unauthenticated, .bkl-layout--basic {
   .public-header {
     position: sticky;
-    top: 0;
+    inset-block-start: 0;
     z-index: z.$z-index--sticky-header;
-    height: bkl.$sizing-7 * 2;
+    block-size: bkl.$sizing-7 * 2;
     padding: bkl.$sizing-0 bkl.$sizing-5 bkl.$sizing-0 math.div(bkl.$sizing-8, 2);
     display: flex;
     align-items: center;
@@ -112,7 +111,7 @@ body {
       align-items: center;
       
       &__image {
-        height: bkl.$sizing-7;
+        block-size: bkl.$sizing-7;
       }
       
       &__text {
@@ -123,7 +122,7 @@ body {
         );
         color: bkl.$dark-color-1;
         line-height: bkl.$line-height-2;
-        margin-left: bkl.$sizing-3;
+        margin-inline-start: bkl.$sizing-3;
         text-transform: uppercase;
       }
     }
@@ -131,14 +130,14 @@ body {
     &__user-actions {
       .info-text {
         color: bkl.$light-color-1;
-        margin-right: bkl.$sizing-4;
+        margin-inline-end: bkl.$sizing-4;
         @include user-actions-text();
       }
       
       .bkl-button {
         @include user-actions-text();
         font-weight: bkl.$font-weight-semibold;
-        margin-right: bkl.$sizing-5;
+        margin-inline-end: bkl.$sizing-5;
       }
       
       .link-support {

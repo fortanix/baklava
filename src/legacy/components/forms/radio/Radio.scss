@@ -17,8 +17,8 @@
     &__wrapper {
       position: relative;
       display: flex;
-      width: max-content;
-      padding-top: $sizing-xxs;
+      inline-size: max-content;
+      padding-block-start: $sizing-xxs;
       color: $brand-color-dark-1;
       font-size: $font-size-s;
       line-height: $line-height-3;
@@ -27,10 +27,10 @@
     }
     
     &__input {
-      margin-right: $sizing-xs;
-      width: 1.8rem;
-      height: 1.8rem;
-      margin-top: $sizing-none;
+      margin-inline-end: $sizing-xs;
+      inline-size: 1.8rem;
+      block-size: 1.8rem;
+      margin-block-start: $sizing-none;
       
       &:focus-visible {
         outline: 2px solid $focus-outline-color;
@@ -53,25 +53,25 @@
   }
   
   .bkl-radio__wrapper {
-    padding-left: $sizing-l;
+    padding-inline-start: $sizing-l;
   }
   
   .bkl-radio__wrapper::after, .bkl-radio__wrapper::before {
     content: '';
     position: absolute;
-    left: 0;
-    top: 0;
+    inset-inline-start: 0;
+    inset-block-start: 0;
     margin: $sizing-xxs $sizing-xs $sizing-xxs $sizing-none;
     z-index: z.$z-index--base;
     transition: .28s ease;
-    width: 1.8rem;
-    height: 1.8rem;
+    inline-size: 1.8rem;
+    block-size: 1.8rem;
     border-radius: 50%;
     border: .2rem solid var(--dark-color-4);
   }
   
   .bkl-radio.pseudo-focus-visible {
-    .bkl-radio__wrapper:before {
+    .bkl-radio__wrapper::before {
       outline: 2px solid $focus-outline-color;
       outline-offset: 0;
     }
@@ -90,15 +90,15 @@
   .bkl-radio__input {
     position: absolute;
     opacity: 0;
-    width: 0;
-    height: 0;
+    inline-size: 0;
+    block-size: 0;
     pointer-events: none;
     appearance: none;
         
     &:focus-visible {
-      width: $sizing-4;
-      height: $sizing-4;
-      left: -0.5rem;
+      inline-size: $sizing-4;
+      block-size: $sizing-4;
+      inset-inline-start: -0.5rem;
       border-radius: 50%;
       opacity: 1;
     }
@@ -130,7 +130,7 @@
   padding: $sizing-s;
   text-transform: uppercase;
   color: $neutral-color-2;
-  min-width: 33rem;
+  min-inline-size: 33rem;
   line-height: 5rem;
   background-color: $light-color-1;
   border-radius: $border-radius-s;

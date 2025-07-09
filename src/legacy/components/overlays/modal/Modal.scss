@@ -8,22 +8,21 @@
 
 .bkl-modal {
   display: none; // Will change to: `flex`
-  left: 0;
-  right: 0;
+  inset-inline: 0;
   background-color: bkl.$light-color-1;
   padding: 0;
-  width: 55%;
+  inline-size: 55%;
   border-radius: bkl.$border-radius-s;
   will-change: top, opacity;
 
   &:not(.bkl-modal--auto-height) {
     margin: auto;
-    min-height: max-content;
+    min-block-size: max-content;
     overflow: hidden;
     
     // NOTE: due to the browser bug (chrome and edge 129), we apply max-height for content
     .bkl-modal__content {
-      max-height: 65vh;
+      max-block-size: 65vh;
     }
   }
 
@@ -37,28 +36,28 @@
     flex-direction: column; // Place children (header, content, footer) one after the other
   }
   &.bkl-modal--small {
-    max-width: 490px;
+    max-inline-size: 490px;
     &.bkl-modal--fixed-width {
-      width: 490px;
+      inline-size: 490px;
     }
   }
   &.bkl-modal--medium {
-    max-width: 600px;
+    max-inline-size: 600px;
     &.bkl-modal--fixed-width {
-      width: 600px;
+      inline-size: 600px;
     }
   }
   &.bkl-modal--large {
-    max-width: 840px;
+    max-inline-size: 840px;
     &.bkl-modal--fixed-width {
-      width: 840px;
+      inline-size: 840px;
     }
   }
   &.bkl-modal--slide {
-    max-width: 70%;
-    width: 70%;
-    height: 100%;
-    max-height: 100%;
+    max-inline-size: 70%;
+    inline-size: 70%;
+    block-size: 100%;
+    max-block-size: 100%;
     margin: bkl.$sizing-none;
   }
   .bkl-modal__header {
@@ -69,7 +68,7 @@
     color: bkl.$neutral-color-2;
     @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-medium);
     font-size: bkl.$font-size-l;
-    min-height: bkl.$sizing-7;
+    min-block-size: bkl.$sizing-7;
     display: flex;
     align-items: center;
     
@@ -83,9 +82,9 @@
     
     .bkl-modal__close {
       position: absolute;
-      top: 50%;
+      inset-block-start: 50%;
       transform: translate(0%, -50%);
-      right: 16px;
+      inset-inline-end: 16px;
       
       .bkl-close {
         &::before,
@@ -98,7 +97,7 @@
   
   &:has(.bkl-modal__title:empty) {
     .bkl-modal__content {
-      padding-top: 0;
+      padding-block-start: 0;
     }
   }
   
@@ -114,16 +113,16 @@
   .bkl-modal__footer {
     padding: bkl.$sizing-m bkl.$sizing-5;
     text-align: center;
-    height: auto;
+    block-size: auto;
     background-color: bkl.$light-color-1;
     border-radius: 0 0 bkl.$border-radius-s bkl.$border-radius-s;
-    width: 100%;
+    inline-size: 100%;
     margin: 0;
   }
   
   &.bkl-modal--footer-hidden {
     .bkl-modal__content {
-      padding-bottom: bkl.$sizing-5;
+      padding-block-end: bkl.$sizing-5;
     }
     .bkl-modal__footer {
       display: none;

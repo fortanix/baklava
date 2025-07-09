@@ -14,9 +14,9 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
 
 @mixin account-switcher-box {
   // Stretch to 100%, so that the trigger area covers the whole account switcher
-  width: 100%;
-  height: 100%;
-  padding-right: bkl.$sizing-4;
+  inline-size: 100%;
+  block-size: 100%;
+  padding-inline-end: bkl.$sizing-4;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -25,34 +25,33 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: $account-switcher-logo-container-spacing;
-    width: $account-switcher-logo-container-width;
-    height: bkl.$sizing-8;
+    margin-inline-end: $account-switcher-logo-container-spacing;
+    inline-size: $account-switcher-logo-container-width;
+    block-size: bkl.$sizing-8;
     background: bkl.$light-color-1;
     box-shadow: 1px 2px 5px var(--bkl-shadow);
     @include mixins.rounded();
     
     .account-logo {
       border-radius: bkl.$sizing-0;
-      margin-right: bkl.$sizing-0;
-      height: bkl.$sizing-6;
-      width: bkl.$sizing-6;
+      margin-inline-end: bkl.$sizing-0;
+      block-size: bkl.$sizing-6;
+      inline-size: bkl.$sizing-6;
       color: bkl.$neutral-color-2;
       &__icon {
-        height: bkl.$sizing-6;
-        width: bkl.$sizing-6;
+        block-size: bkl.$sizing-6;
+        inline-size: bkl.$sizing-6;
       }
     }
   }
   
   .account-switcher__label {
-    margin-right: bkl.$sizing-3;
-    padding-top: bkl.$sizing-2;
-    padding-bottom: bkl.$sizing-2;
+    margin-inline-end: bkl.$sizing-3;
+    padding-block: bkl.$sizing-2;
     .account-switcher__selected-icon {
       position: absolute;
-      top: 1.8rem;
-      right: 1rem;
+      inset-block-start: 1.8rem;
+      inset-inline-end: 1rem;
       
       @include mixins.circle($size: 1.3rem);
       background-color: bkl.$status-color-success;
@@ -70,7 +69,7 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
       line-height: bkl.$line-height-2;
       letter-spacing: 0.5px;
       color: bkl.$brand-color-dark-2;
-      max-width: bkl.$sizing-8 * 3;
+      max-inline-size: bkl.$sizing-8 * 3;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -86,19 +85,19 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
   }
   
   .icon-dropdown {
-    margin-left: auto;
-    width: bkl.$sizing-3;
+    margin-inline-start: auto;
+    inline-size: bkl.$sizing-3;
     color: bkl.$neutral-color-2;
   }
 }
 
 .bkl-header-grid {
   position: sticky;
-  top: 0;
+  inset-block-start: 0;
   z-index: z.$z-index--sticky-header;
   padding: $header-spacing;
   background: bkl.$light-color-2;
-  margin-bottom: bkl.$sizing-1;
+  margin-block-end: bkl.$sizing-1;
   
   display: grid;
   grid-template: "account-switcher user-session" auto / max-content auto;
@@ -110,9 +109,9 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
   
   .account-switcher {
     cursor: pointer;
-    width: $account-switcher-width;
-    height: bkl.$sizing-8;
-    margin-right: bkl.$sizing-3;
+    inline-size: $account-switcher-width;
+    block-size: bkl.$sizing-8;
+    margin-inline-end: bkl.$sizing-3;
     
     @include mixins.rounded();
     @include mixins.flex-center();
@@ -135,27 +134,27 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
       
       .account-switcher-logo-container {
         position: absolute;
-        left: $header-spacing;
+        inset-inline-start: $header-spacing;
       }
       
       .account-switcher__label {
-        margin-left: $account-switcher-logo-container-width + $account-switcher-logo-container-spacing;
+        margin-inline-start: $account-switcher-logo-container-width + $account-switcher-logo-container-spacing;
       }
     }
   }
   
   .user-session {
-    height: bkl.$sizing-8;
+    block-size: bkl.$sizing-8;
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
     
     & > * {
-      margin-right: math.floor(math.div(bkl.$sizing-8, 2));
+      margin-inline-end: math.floor(math.div(bkl.$sizing-8, 2));
     }
     
     .sysadmin-account-selector {
-      height: inherit;
+      block-size: inherit;
       border: 1px solid bkl.$neutral-color-1;
       background: bkl.$light-color-1;
       box-sizing: border-box;
@@ -166,16 +165,16 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
         box-shadow: unset;
       }
       &.sysadmin-account-selector--align-right {
-        margin-right: bkl.$sizing-9;
+        margin-inline-end: bkl.$sizing-9;
       }
       display: flex;
       align-items: center;
       order: 1;
-      margin-right: auto;
+      margin-inline-end: auto;
       cursor: pointer;
       .icon-sysadmin {
         color: bkl.$neutral-color-2;
-        margin-right: bkl.$sizing-2;
+        margin-inline-end: bkl.$sizing-2;
       }
       .details {
         padding: 0 bkl.$sizing-3;
@@ -206,13 +205,13 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
       
       .icon-user {
         box-sizing: content-box; // Set to content-box, so that padding does not take away from the icon width
-        margin-right: bkl.$sizing-3;
+        margin-inline-end: bkl.$sizing-3;
         padding: bkl.$sizing-2;
         overflow: visible; // Make sure the icon is not "cut off" by the circle-shaped padding
         
         border-radius: 50%;
         background: var(--bkl-header-bg-color);
-        width: 2.4rem;
+        inline-size: 2.4rem;
         color: bkl.$neutral-color-2;
       }
       
@@ -223,8 +222,8 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
       }
       
       .icon-dropdown {
-        margin-left: 0.8em;
-        width: 1.3rem;
+        margin-inline-start: 0.8em;
+        inline-size: 1.3rem;
         color: bkl.$neutral-color-2;
       }
     }
@@ -239,8 +238,8 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
         
         border-radius: 50%;
         background: var(--bkl-header-bg-color);
-        width: bkl.$sizing-5;
-        height: bkl.$sizing-5;
+        inline-size: bkl.$sizing-5;
+        block-size: bkl.$sizing-5;
         color: bkl.$neutral-color-2;
       }
       
@@ -251,11 +250,11 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
         position: absolute;
         z-index: 1;
         
-        min-width: unset;
-        width: var(--size);
-        height: var(--size);
-        left: calc(-0.3 * var(--size));
-        bottom: calc(-0.3 * var(--size));
+        min-inline-size: unset;
+        inline-size: var(--size);
+        block-size: var(--size);
+        inset-inline-start: calc(-0.3 * var(--size));
+        inset-block-end: calc(-0.3 * var(--size));
         
         background-color: var(--bkl-status-color-critical);
         color: var(--bkl-dark-color-1);
@@ -269,7 +268,7 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
   // Regular dropdowns are of level `$z-index--dropdown`, but this dropdown is part of the layout, so must be
   // `$z-index--layout` in order to not be hidden by layout elements
   z-index: z.$z-index--layout;
-  width: $account-switcher-width;
+  inline-size: $account-switcher-width;
   background-color: bkl.$light-color-1;
   border-radius: bkl.$border-radius-ms;
   
@@ -278,8 +277,8 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
   }
   
   .bkl-dropdown__menu {
-    width: inherit;
-    max-height: 60vh;
+    inline-size: inherit;
+    max-block-size: 60vh;
     overflow: auto;
     
     // Also apply border-radius here, so that hovering an item does not "escape" the border radius
@@ -294,11 +293,11 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
       }
       &:not(.bkl-dropdown__menu-item--disabled):hover::after {
         background-color: unset;
-        width: 0px;
+        inline-size: 0;
       }
       &:not(.bkl-dropdown__menu-item--disabled):focus::after {
         background-color: unset;
-        width: 0px;
+        inline-size: 0;
       }
     }
     
@@ -313,7 +312,7 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
       
       &.account-switcher-dropdown__item--selected {
         .account-switcher__label {
-          margin-right: auto;
+          margin-inline-end: auto;
           .account-switcher__name {
             font-weight: bkl.$font-weight-medium;
           }
@@ -323,7 +322,7 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
       @include account-switcher-box;
       
       .account-switcher__label {
-        margin-right: auto;
+        margin-inline-end: auto;
       }
     }
     
@@ -356,15 +355,15 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
         &__plus-icon {
           .bkl-icon {
             position: relative;
-            top: 0.5rem;
-            width: bkl.$sizing-4;
+            inset-block-start: 0.5rem;
+            inline-size: bkl.$sizing-4;
           }
           background-color: bkl.$accent-color;
           color: bkl.$light-color-1;
           border-radius: bkl.$border-radius-circle;
-          width: bkl.$sizing-6;
-          height: bkl.$sizing-6;
-          margin-right: bkl.$sizing-2;
+          inline-size: bkl.$sizing-6;
+          block-size: bkl.$sizing-6;
+          margin-inline-end: bkl.$sizing-2;
         }
       }
     }

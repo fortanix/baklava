@@ -12,14 +12,14 @@
   $collapse-duration: 300ms;
   
   position: sticky;
-  top: $sizing-0;
+  inset-block-start: $sizing-0;
   overflow-x: hidden;
   overflow-y: auto;
-  width: $sidebar-width-expanded;
+  inline-size: $sidebar-width-expanded;
   padding: 0 2rem;
   
   // Set the sidebar to cover the whole viewport height.
-  height: 100vh;
+  block-size: 100vh;
   // Note: there is an issue on iOS, where `100vh` covers more than the visible viewport
   // https://stackoverflow.com/questions/37112218/css3-100vh-not-constant-in-mobile-browser
   //height: -webkit-fill-available;
@@ -31,8 +31,8 @@
   .logo {
     .logo-image {
       display: block;
-      margin-top: 2 * $sizing-3;
-      margin-left: $sizing-3;
+      margin-block-start: 2 * $sizing-3;
+      margin-inline-start: $sizing-3;
       
       &:focus-visible {
         outline: 2px solid $focus-outline-color;
@@ -41,21 +41,21 @@
     }
     
     img {
-      height: 4rem;
+      block-size: 4rem;
     }
   }
   
   &--collapsed {
-    width: $sidebar-width-collapsed;
+    inline-size: $sidebar-width-collapsed;
 
     .logo {
       .logo-image {
-        margin-left: $sizing-0;
+        margin-inline-start: $sizing-0;
       }
       
       img {
-        height: 6rem;
-        width: auto;
+        block-size: 6rem;
+        inline-size: auto;
       }
     }
   }
@@ -63,12 +63,12 @@
   &--collapsed-button {
     padding: 0 !important;
     position: absolute;
-    bottom: 2rem;
+    inset-block-end: 2rem;
 
     .bkl-icon {
       z-index: 1;
-      width: 2rem;
-      height: 2rem;
+      inline-size: 2rem;
+      block-size: 2rem;
       cursor: pointer;
     }
   }

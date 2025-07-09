@@ -13,8 +13,8 @@
   .bkl-textarea__textarea {
     resize: none;
     box-sizing: content-box;
-    width: 100%;
-    margin-bottom: bkl.$sizing-2;
+    inline-size: 100%;
+    margin-block-end: bkl.$sizing-2;
     padding: 1rem;
     outline: none;
     overflow-y: hidden;
@@ -55,7 +55,7 @@
   
   &.bkl-textarea--fixed-height {
     .bkl-textarea__textarea {
-      min-height: 10rem;
+      min-block-size: 10rem;
       background-color: bkl.$light-color-2;
       overflow-y: auto;
       padding: bkl.$sizing-4;
@@ -66,7 +66,7 @@
     }
     
     .bkl-textarea__label {
-      top: 0;
+      inset-block-start: 0;
       padding: bkl.$sizing-4;
     }
     

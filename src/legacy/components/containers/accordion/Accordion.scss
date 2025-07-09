@@ -21,7 +21,7 @@
       }
       
       &__state-indicator {
-        width: bkl.$sizing-4;
+        inline-size: bkl.$sizing-4;
       }
     }
   }
@@ -40,7 +40,7 @@
       }
       
       &__state-indicator {
-        width: bkl.$sizing-3;
+        inline-size: bkl.$sizing-3;
       }
     }
   }
@@ -53,7 +53,7 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      width: 100%;
+      inline-size: 100%;
       background-color: inherit;
       border-radius: inherit;
       transition: padding ease 0.2s;
@@ -81,7 +81,7 @@
     }
 
     &__wrapper {
-      height: bkl.$sizing-0;
+      block-size: bkl.$sizing-0;
       overflow: hidden;
       transition: height ease 0.2s;
     }

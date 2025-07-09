@@ -12,7 +12,7 @@
     border-radius: bkl.$border-radius-s;
     display: flex;
     align-items: baseline;
-    width: max-content;
+    inline-size: max-content;
     
     &.bkl-tag--primary {
       background-color: bkl.$neutral-color-1;
@@ -28,7 +28,7 @@
     
     .bkl-button:has(.bkl-close) {
       align-self: center;
-      margin-left: bkl.$sizing-xxs;
+      margin-inline-start: bkl.$sizing-xxs;
     }
   }
 }

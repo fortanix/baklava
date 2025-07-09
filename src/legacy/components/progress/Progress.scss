@@ -11,22 +11,22 @@
     .bkl-progress-bar__outer {
       position: relative;
       display: flex;
-      height: bkl.$sizing-m;
+      block-size: bkl.$sizing-m;
       background-color: bkl.$light-color-4;
       border-radius: bkl.$sizing-xxs;
-      width: 100%;
+      inline-size: 100%;
     }
     
     .bkl-progress-bar__inner {
       position: absolute;
-      left: bkl.$sizing-none;
-      top: bkl.$sizing-none;
-      height: bkl.$sizing-m;
+      inset-inline-start: bkl.$sizing-none;
+      inset-block-start: bkl.$sizing-none;
+      block-size: bkl.$sizing-m;
       border-radius: bkl.$sizing-xxs;
     }
     
     .bkl-progress-bar__info {
-      margin-left: bkl.$sizing-s;
+      margin-inline-start: bkl.$sizing-s;
     }
     
     .bkl-progress-bar--high {

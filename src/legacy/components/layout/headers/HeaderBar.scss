@@ -9,14 +9,14 @@
 
 .bkl-header-bar {
   position: sticky;
-  top: 0;
+  inset-block-start: 0;
   z-index: z.$z-index--layout;
   
-  height: 7.2rem;
+  block-size: 7.2rem;
   padding: 2rem;
   
   background: bkl.$light-color-1;
-  box-shadow: 0px 2px 10px 0px var(--bkl-header-shadow-color);
+  box-shadow: 0 2px 10px 0 var(--bkl-header-shadow-color);
   
   display: flex;
   align-items: center;
@@ -25,8 +25,8 @@
   
   .logo {
     img {
-      height: 3.2rem;
-      margin-left: 1.5rem;
+      block-size: 3.2rem;
+      margin-inline-start: 1.5rem;
       transition: height var(--transition-duration);
     }
     
@@ -38,8 +38,7 @@
   
   .user-info {
     cursor: pointer;
-    margin-left: auto;
-    margin-right: 5rem;
+    margin-inline: auto 5rem;
     
     display: flex;
     align-items: baseline;
@@ -53,18 +52,18 @@
     }
     
     .icon-dropdown {
-      margin-left: 0.6em;
-      width: 0.8em;
+      margin-inline-start: 0.6em;
+      inline-size: 0.8em;
       color: bkl.$brand-color;
     }
   }
   
   &.bkl-header-bar--minimize {
-    height: 5.2rem;
+    block-size: 5.2rem;
     
     .logo {
       img {
-        height: 2.8rem;
+        block-size: 2.8rem;
       }
     }
   }

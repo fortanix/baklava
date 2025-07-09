@@ -8,19 +8,18 @@
 
 .bkl-nav {
   &:first-of-type {
-    margin-top: 2.5rem;
+    margin-block-start: 2.5rem;
   }
   
   &:not(:first-of-type) {
-    margin-top: 1rem;
-    border-top: 1px solid var(--sidebar-nav-border);
+    margin-block-start: 1rem;
+    border-block-start: 1px solid var(--sidebar-nav-border);
   }
   
   padding: 1rem 0;
   
   header {
-    margin-top: 0.5rem;
-    margin-bottom: 1rem;
+    margin-block: 0.5rem 1rem;
     
     color: var(--sidebar-nav-header-default);
     text-transform: uppercase;
@@ -34,12 +33,12 @@
   }
   
   &__tooltip-btn {
-    width: 100%;
+    inline-size: 100%;
   }
   
   &__list-item {
     &:not(:first-of-type) {
-      margin-top: 0.1rem;
+      margin-block-start: 0.1rem;
     }
     
     &__link {
@@ -58,8 +57,8 @@
       }
       
       .title-icon {
-        margin-right: bkl.$sizing-3;
-        width: bkl.$sizing-4;
+        margin-inline-end: bkl.$sizing-3;
+        inline-size: bkl.$sizing-4;
         color: var(--sidebar-nav-icon-default);
       }
       
@@ -75,9 +74,8 @@
       .count {
         align-self: center;
         @include mixins.capsule;
-        height: bkl.$sizing-4;
-        margin-left: bkl.$sizing-2;
-        margin-right: -(bkl.$sizing-2);
+        block-size: bkl.$sizing-4;
+        margin-inline: bkl.$sizing-2 -(bkl.$sizing-2);
         background-color: var(--sidebar-nav-background);
         font-size: bkl.$font-size-xs;
       }

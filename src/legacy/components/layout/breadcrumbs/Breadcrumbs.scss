@@ -11,7 +11,7 @@
   flex-wrap: wrap;
   margin: bkl.$sizing-5 0 bkl.$sizing-8;
   padding: 0 bkl.$sizing-4 bkl.$sizing-3;
-  border-bottom: .1rem bkl.$neutral-color-1 solid;
+  border-block-end: .1rem bkl.$neutral-color-1 solid;
   
   color: bkl.$neutral-color-2;
   @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
@@ -19,9 +19,9 @@
   
   &.bkl-breadcrumbs--no-trailing-slash {
     .bkl-breadcrumbs-item:last-child {
-      margin-right: 0;
+      margin-inline-end: 0;
       
-      :after {
+      ::after {
         content: '';
       }
     }
@@ -31,12 +31,12 @@
     position: relative;
     display: flex;
     align-items: center;
-    margin-right: bkl.$sizing-xs;
+    margin-inline-end: bkl.$sizing-xs;
     
-    :after {
+    ::after {
       content: '/';
       color: bkl.$neutral-color-2;
-      margin-left: bkl.$sizing-xs;
+      margin-inline-start: bkl.$sizing-xs;
     }
     
     .bkl-breadcrumbs__link {

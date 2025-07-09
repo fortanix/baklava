@@ -24,9 +24,9 @@
       padding: bkl.$sizing-3 bkl.$sizing-6;
       // Add `$tab-radius` to cover the tab-content border radius (e.g. when the active tab is the first tab).
       // We compensate for this padding below by shifting the tab-content up by `$tab-radius` (see `margin-top`).
-      padding-bottom: bkl.$sizing-4 + $tab-radius;
-      border-top-left-radius: $tab-radius;
-      border-top-right-radius: $tab-radius;
+      padding-block-end: bkl.$sizing-4 + $tab-radius;
+      border-start-start-radius: $tab-radius;
+      border-start-end-radius: $tab-radius;
       
       color: bkl.$neutral-color-2;
       @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-medium);
@@ -47,13 +47,13 @@
         cursor: default;
         background: bkl.$light-color-1;
         color: bkl.$accent-color;
-        box-shadow: 0px -4px 4pxvar(--bkl-tab-shadow-color);
+        box-shadow: 0 -4px 4pxvar(--bkl-tab-shadow-color);
       }
     }
   }
   
   .bkl-tabs__tab-content {
-    margin-top: -1 * $tab-radius;
+    margin-block-start: -1 * $tab-radius;
     padding: bkl.$sizing-4;
     border-radius: $tab-radius;
     background: bkl.$light-color-1;
@@ -65,6 +65,6 @@
   }
   
   .bkl-tabs__switcher .bkl-tabs__switcher__tab.active:first-of-type + .bkl-tabs__tab-content {
-    border-top-left-radius: 0;
+    border-start-start-radius: 0;
   }
 }

@@ -10,7 +10,7 @@
   
   box-sizing: content-box; // Use content-box so that we can set a padding on an icon without it shrinking the width
   
-  width: var(--icon-size);
+  inline-size: var(--icon-size);
   fill: currentColor; // Use the current font color by default
   
   // By default, use a stroke width of `0`, most icons rely on `fill` instead, because apps like IcoMoon rely on `fill`

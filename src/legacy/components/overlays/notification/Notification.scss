@@ -7,8 +7,8 @@
 
 
 .bkl-notification {
-  width: auto;
-  max-width: 50%;
+  inline-size: auto;
+  max-inline-size: 50%;
   
   .bkl-notification--success {
     border: 0.1rem bkl.$status-color-success solid;
@@ -52,7 +52,7 @@
   &__actions-inline {
     display: flex;
     align-items: center;
-    margin-left: bkl.$sizing-s;
+    margin-inline-start: bkl.$sizing-s;
   }
   
   &__actions {
@@ -64,15 +64,15 @@
     display: flex;
     
     > a, button {
-      margin-right: bkl.$sizing-s;
+      margin-inline-end: bkl.$sizing-s;
     }
   }
   
   &__copy-button {
-    margin-left: auto;
+    margin-inline-start: auto;
     
     .bkl-icon {
-      width: bkl.$sizing-m;
+      inline-size: bkl.$sizing-m;
       color: bkl.$light-color-1;
     }
   }

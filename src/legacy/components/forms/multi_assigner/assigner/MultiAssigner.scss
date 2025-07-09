@@ -8,22 +8,22 @@
   display: flex;
 
   .col {
-    width: 50%;
+    inline-size: 50%;
     padding: bkl.$sizing-m bkl.$sizing-s;
     border-radius: bkl.$border-radius-ms;
 
     .bkl-table-placeholder {
-      height: 100%;
-      min-height: auto;
+      block-size: 100%;
+      min-block-size: auto;
     }
 
     .col-inner {
-      height: 300px;
+      block-size: 300px;
       overflow: auto;
     }
     
     .item-container {
-      width: 100%;
+      inline-size: 100%;
       @include accessibility.focus-inset;
     }
 
@@ -31,7 +31,7 @@
       background-color: bkl.$light-color-2;
 
       .col-inner {
-        height: 353px;
+        block-size: 353px;
       }
 
       .card__item:hover {
@@ -54,14 +54,14 @@
     justify-content: space-between;
     align-items: center;
     padding: bkl.$sizing-s bkl.$sizing-s;
-    margin-top: bkl.$sizing-s;
+    margin-block-start: bkl.$sizing-s;
     border-radius: bkl.$border-radius-ms;
     transition: background-color 100ms ease-in;
     color: bkl.$brand-color-dark-1;
     cursor: pointer;
     
     &__title-wrapper {
-      width: calc(100% - #{bkl.$font-size-xs} - #{bkl.$sizing-4}); // fullWidth - buttonWidth - spacing
+      inline-size: calc(100% - #{bkl.$font-size-xs} - #{bkl.$sizing-4}); // fullWidth - buttonWidth - spacing
       overflow: hidden;
     }
 
@@ -74,7 +74,7 @@
 
     &__subtitle {
       display: inline-block;
-      max-width: 100%;
+      max-inline-size: 100%;
       line-height: bkl.$line-height-1;
       white-space: nowrap;
       overflow: hidden;

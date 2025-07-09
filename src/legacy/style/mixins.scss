@@ -40,8 +40,8 @@
 @mixin circle($size: 2.5rem) {
   box-sizing: border-box; // Allow padding to shrink the contents, rather than expanding the circle itself
   flex: none; // Do not allow this item to shrink/grow
-  width: $size;
-  height: $size;
+  inline-size: $size;
+  block-size: $size;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   background-color: currentColor;
@@ -50,7 +50,7 @@
 }
 
 @mixin capsule() {
-  min-width: 2.8em;
+  min-inline-size: 2.8em;
   padding: 0 0.5em; // Ensure that text does not hit the edge if it overflows
   
   // Setting a large enough radius will create the "capsule" rounding effect, see:

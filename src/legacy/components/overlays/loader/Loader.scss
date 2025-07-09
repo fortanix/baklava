@@ -7,7 +7,7 @@
 
 
 .bkl-loader-overlay {
-  min-height: 120px;
+  min-block-size: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,7 +21,7 @@
 .bkl-loader {
   z-index: z.$z-index--loading-indicator;
   
-  width: min-content;
+  inline-size: min-content;
   padding: bkl.$sizing-m;
   background: bkl.$light-color-2;
   border-radius: bkl.$border-radius-l;
@@ -30,10 +30,10 @@
     --spinner-thickness: 0.8rem;
     
     border: var(--spinner-thickness) solid bkl.$neutral-color-1;
-    border-top: var(--spinner-thickness) solid bkl.$brand-color;
+    border-block-start: var(--spinner-thickness) solid bkl.$brand-color;
     border-radius: 50%;
-    width: 6rem;
-    height: 6rem;
+    inline-size: 6rem;
+    block-size: 6rem;
     animation: spin 1s linear infinite;
   }
 }

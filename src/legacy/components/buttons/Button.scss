@@ -23,7 +23,7 @@
     justify-content: center;
     align-items: center;
     
-    height: fit-content;
+    block-size: fit-content;
     padding: bkl.$sizing-xs bkl.$sizing-m;
     
     background-color: transparent;
@@ -75,7 +75,7 @@
     
     &.bkl-button--block {
       display: block;
-      width: 100%;
+      inline-size: 100%;
     }
     
     &.bkl-button--light {
@@ -97,7 +97,7 @@
       gap: bkl.$sizing-xs;
       
       .bkl-icon {
-        width: 1em;
+        inline-size: 1em;
       }
     }
   }
@@ -105,12 +105,12 @@
   .bkl-button--plain {
     cursor: pointer;  
     display: inline-block;
-    height: fit-content;
+    block-size: fit-content;
     padding: 0;
     border: 0;
     background: unset;
     
-    text-align: left;
+    text-align: start;
     color: currentColor;
     font: inherit;
     

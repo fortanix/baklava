@@ -24,11 +24,10 @@
           .action-icons {
             position: absolute;
             flex-wrap: nowrap;
+            inset-block-start: 0;
+            inset-inline-end: 1rem;
             align-items: center;
-            top: 0;
-            right: 1rem;
-            align-items: center;
-            height: 100%;
+            block-size: 100%;
             display: none;
           }
         }
@@ -37,10 +36,10 @@
           td:first-child::before {
             content: '';
             position: absolute;
-            left: 0;
-            top: 0;
-            width: .6rem;
-            height: 100%;
+            inset-inline-start: 0;
+            inset-block-start: 0;
+            inline-size: .6rem;
+            block-size: 100%;
             background-color: bkl.$accent-color-light-2;
           }
           td {
@@ -54,22 +53,22 @@
                 background-color: bkl.$accent-color;
                 border-radius: 50%;
                 border-width: 0;
-                margin-left: bkl.$sizing-m;
+                margin-inline-start: bkl.$sizing-m;
                 line-height: bkl.$line-height-4;
-                width: 3rem;
-                height: 3rem;
+                inline-size: 3rem;
+                block-size: 3rem;
                 position: relative;
                 z-index: 1;
-                float: right;
+                float: inline-end;
                 text-align: center;
                 box-sizing: border-box;
-                padding-top: bkl.$sizing-xs;
+                padding-block-start: bkl.$sizing-xs;
               }
             }
           }
         }
         &:not(:last-of-type) {
-          border-bottom: .1rem;
+          border-block-end: .1rem;
         }
       }
 
@@ -100,7 +99,7 @@
     .bkl-dropdown__menu-item {
       padding: 0;
       .item-name {
-        margin-left: bkl.$sizing-s;
+        margin-inline-start: bkl.$sizing-s;
       }
     }
   }

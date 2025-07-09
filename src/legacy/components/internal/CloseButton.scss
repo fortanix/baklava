@@ -13,8 +13,8 @@
 .bkl-close {
   position: relative;
   display: inline-block;
-  width: 18px;
-  height: 18px;
+  inline-size: 18px;
+  block-size: 18px;
   overflow: hidden;
   cursor: pointer;
 
@@ -25,10 +25,10 @@
   &::before, &::after {
     content: '';
     position: absolute;
-    height: 2px;
-    width: 100%;
-    top: 50%;
-    left: 0;
+    block-size: 2px;
+    inline-size: 100%;
+    inset-block-start: 50%;
+    inset-inline-start: 0;
     background: $light-color-1;
   }
   
@@ -48,11 +48,11 @@
   }
 
   &.bkl-close--small {
-    width: 12px;
-    height: 12px;
+    inline-size: 12px;
+    block-size: 12px;
 
     &::before, &::after {
-      height: math.div($sizing-xxs, 2);
+      block-size: math.div($sizing-xxs, 2);
     }
   }
 }
