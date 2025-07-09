@@ -8,10 +8,10 @@ import './Caption.scss';
 
 
 type CaptionProps = ComponentProps<'span'> & {
-  size?: 'normal' | 'small',
+  size?: undefined | 'normal' | 'small',
 };
 export const Caption = ({ children, className, size = 'normal', ...props }: CaptionProps) => (
-  <span className={cx('caption', { 'caption--small': size === 'small' }, className)} {...props}>
+  <span className={cx('bkl', 'caption', { 'caption--small': size === 'small' }, className)} {...props}>
     {children}
   </span>
 );

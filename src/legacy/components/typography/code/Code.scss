@@ -6,9 +6,11 @@
 @use '../../../style/mixins.scss' as mixins;
 
 
-.code {
-  line-height: bkl.$line-height-6;
-  color: bkl.$dark-color-1;
-  @include mixins.font($family: bkl.$font-family-code);
-  font-size: bkl.$font-size-m;
+@layer baklava.legacy {
+  .bkl.code {
+    line-height: bkl.$line-height-6;
+    color: bkl.$dark-color-1;
+    @include mixins.font($family: bkl.$font-family-code);
+    font-size: bkl.$font-size-m;
+  }
 }

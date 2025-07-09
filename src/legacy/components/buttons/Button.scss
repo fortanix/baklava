@@ -15,110 +15,112 @@
   font-size: bkl.$font-size-m;
 }
 
-.bkl-button:not(.bkl-button--plain) {
-  cursor: pointer;
-  
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  
-  height: fit-content;
-  padding: bkl.$sizing-xs bkl.$sizing-m;
-  
-  background-color: transparent;
-  border: 1px solid transparent;
-  border-radius: bkl.$border-radius-xl;
-  opacity: 1;
+@layer baklava.legacy {
+  .bkl-button:not(.bkl-button--plain) {
+    cursor: pointer;
+    
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    
+    height: fit-content;
+    padding: bkl.$sizing-xs bkl.$sizing-m;
+    
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: bkl.$border-radius-xl;
+    opacity: 1;
 
-  @include font-button();
-  
-  transition: .3s ease;
-  
-  &:hover {
-    color: var(--bkl-button-hover-color);
-  }
-  
-  &:is(:focus-visible, .pseudo-focus-visible) {
-    outline: 2px solid bkl.$focus-outline-color;
-    outline-offset: 0;
-  }
-  
-  // Note: generally we just used `:disabled`, but sometimes it's useful to have a class to make a button look
-  // disabled without it actually being in disabled state (e.g. React disabled button mouseEnter/mouseLeave bug).
-  &:disabled, &.disabled {
-    color: var(--bkl-button-disabled-text-color);
-    cursor: not-allowed;
-
-    .bkl-icon {
-      color: var(--bkl-button-disabled-text-color);
-    }
-  }
-  
-  &.bkl-button--primary {
-    background-color: bkl.$accent-color;
-    color: bkl.$dark-color-1;
+    @include font-button();
+    
+    transition: .3s ease;
     
     &:hover {
-      background-color: var(--bkl-button-hover-color);
+      color: var(--bkl-button-hover-color);
     }
     
-    &:disabled, &.disabled {
-      background-color: var(--bkl-button-disabled-color);
-      color: var(--bkl-button-disabled-text-color);
-    }
-  }
-  
-  &.bkl-button--large {
-    padding: (bkl.$sizing-xs * 1.5) bkl.$sizing-m;
-  }
-  
-  &.bkl-button--block {
-    display: block;
-    width: 100%;
-  }
-  
-  &.bkl-button--light {
-    border: 1px solid bkl.$accent-color;
-    color: bkl.$accent-color;
-    
-    &:hover {
-      border: 1px solid var(--bkl-button-hover-color);
-      color: bkl.$brand-color-dark-1;
+    &:is(:focus-visible, .pseudo-focus-visible) {
+      outline: 2px solid bkl.$focus-outline-color;
+      outline-offset: 0;
     }
     
+    // Note: generally we just used `:disabled`, but sometimes it's useful to have a class to make a button look
+    // disabled without it actually being in disabled state (e.g. React disabled button mouseEnter/mouseLeave bug).
     &:disabled, &.disabled {
       color: var(--bkl-button-disabled-text-color);
-      border-color: var(--bkl-button-disabled-color);
-    }
-  }
-  
-  &.bkl-button--with-icon {
-    gap: bkl.$sizing-xs;
-    
-    .bkl-icon {
-      width: 1em;
-    }
-  }
-}
+      cursor: not-allowed;
 
-.bkl-button--plain {
-  cursor: pointer;  
-  display: inline-block;
-  height: fit-content;
-  padding: 0;
-  border: 0;
-  background: unset;
-  
-  text-align: left;
-  color: currentColor;
-  font: inherit;
-  
-  &:focus-visible {
-    outline: 2px solid bkl.$focus-outline-color;
-    outline-offset: 0;
+      .bkl-icon {
+        color: var(--bkl-button-disabled-text-color);
+      }
+    }
+    
+    &.bkl-button--primary {
+      background-color: bkl.$accent-color;
+      color: bkl.$dark-color-1;
+      
+      &:hover {
+        background-color: var(--bkl-button-hover-color);
+      }
+      
+      &:disabled, &.disabled {
+        background-color: var(--bkl-button-disabled-color);
+        color: var(--bkl-button-disabled-text-color);
+      }
+    }
+    
+    &.bkl-button--large {
+      padding: (bkl.$sizing-xs * 1.5) bkl.$sizing-m;
+    }
+    
+    &.bkl-button--block {
+      display: block;
+      width: 100%;
+    }
+    
+    &.bkl-button--light {
+      border: 1px solid bkl.$accent-color;
+      color: bkl.$accent-color;
+      
+      &:hover {
+        border: 1px solid var(--bkl-button-hover-color);
+        color: bkl.$brand-color-dark-1;
+      }
+      
+      &:disabled, &.disabled {
+        color: var(--bkl-button-disabled-text-color);
+        border-color: var(--bkl-button-disabled-color);
+      }
+    }
+    
+    &.bkl-button--with-icon {
+      gap: bkl.$sizing-xs;
+      
+      .bkl-icon {
+        width: 1em;
+      }
+    }
   }
-  
-  &:disabled {
-    cursor: not-allowed;
+
+  .bkl-button--plain {
+    cursor: pointer;  
+    display: inline-block;
+    height: fit-content;
+    padding: 0;
+    border: 0;
+    background: unset;
+    
+    text-align: left;
+    color: currentColor;
+    font: inherit;
+    
+    &:focus-visible {
+      outline: 2px solid bkl.$focus-outline-color;
+      outline-offset: 0;
+    }
+    
+    &:disabled {
+      cursor: not-allowed;
+    }
   }
 }
