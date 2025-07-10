@@ -24,7 +24,7 @@ export type PopoverProps<E extends HTMLElement> = {
 };
 
 /*
- * A utility hook to control the state of a <popover> element used as a modal (with `.showModal()`).
+ * A utility hook to control the state of a popover element (e.g. `<div popover>`).
  */
 export const usePopover = <E extends HTMLElement>(
   controller: PopoverController,
