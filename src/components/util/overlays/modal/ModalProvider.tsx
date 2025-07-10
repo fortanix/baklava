@@ -44,6 +44,9 @@ export type ModalProviderProps = {
   
   /** How long to keep the dialog in the DOM for exit animation purposes. Default: 3 seconds. */
   unmountDelay?: undefined | number,
+  
+  /** How the model dialog should be rendered inline or in portal. Default: portal */
+  renderMethod?: 'portal' | 'inline' 
 };
 /**
  * Provider around a trigger (e.g. button) to display a modal overlay on trigger activation.
@@ -58,6 +61,7 @@ export const ModalProvider = Object.assign(
       allowUserClose = true,
       shouldCloseOnBackdropClick = true,
       unmountDelay = 3000, // ms
+      renderMethod,
     } = props;
     
     const [activeUncontrolled, setActiveUncontrolled] = React.useState(activeDefault);
@@ -81,7 +85,7 @@ export const ModalProvider = Object.assign(
     
     return (
       <>
-        {shouldMount && createPortal(dialog(dialogProps), document.body)}
+        {shouldMount && renderMethod === 'portal' ? createPortal(dialog(dialogProps), document.body) : dialog(dialogProps)}
         {typeof children === 'function' ? children(modalRef) : children}
       </>
     );
