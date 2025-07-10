@@ -3,31 +3,30 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
+import { useEffectOnce } from '../../../../util/reactUtil.ts';
+import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../util/component_util.tsx';
 
-import { ClassNameArgument, classNames as cx, ComponentPropsWithoutRef } from '../../../util/component_util';
-import { Button } from '../../buttons/Button';
-
-import { SpriteIcon as Icon } from '../../icons/Icon';
-import { useScroller } from '../../layout/util/Scroller';
+import { Button } from '../../buttons/Button.tsx';
+import { SpriteIcon as Icon } from '../../icons/Icon.tsx';
+import { useScroller } from '../../layout/util/Scroller.tsx';
 
 import './Accordion.scss';
 
+
 type AccordionItem = {
-  title?: React.ReactNode,
-  content?: React.ReactNode,
-  openByDefault?: boolean,
-  className?: ClassNameArgument,
+  title?: undefined | React.ReactNode,
+  content?: undefined | React.ReactNode,
+  openByDefault?: undefined | boolean,
+  className?: undefined | ClassNameArgument,
 };
 
-export type AccordionProps = ComponentPropsWithoutRef<'ul'> & {
+export type AccordionProps = ComponentProps<'ul'> & {
   items: Array<AccordionItem>,
-  size?: 'normal' | 'small',
-  className?: ClassNameArgument,
+  size?: undefined | 'normal' | 'small',
 };
-
 export const Accordion = ({ items, size = 'normal', className, ...propsRest }: AccordionProps) => {
   const [activeIndex, setActiveIndex] = React.useState<number | null>(null);
-
+  
   const handleToggle = (index: number): void => {
     if (activeIndex === index) {
       setActiveIndex(null);
@@ -36,13 +35,13 @@ export const Accordion = ({ items, size = 'normal', className, ...propsRest }: A
     }
   };
   
-  React.useEffect(() => {
+  useEffectOnce(() => {
     const openByDefaultIndex = items.findIndex(item => item.openByDefault);
     if (openByDefaultIndex !== undefined) {
       setActiveIndex(openByDefaultIndex);
     }
-  }, []);
-
+  });
+  
   return (
     <ul
       data-label="bkl-accordion"
@@ -56,6 +55,7 @@ export const Accordion = ({ items, size = 'normal', className, ...propsRest }: A
         <AccordionItem
           onToggle={() => handleToggle(index)}
           active={activeIndex === index}
+          // biome-ignore lint/suspicious/noArrayIndexKey: No other key available.
           key={index}
           index={index}
           item={item}
@@ -71,32 +71,34 @@ type AccordionItemProps = {
   index: number,
   onToggle: () => void,
 };
-
 const AccordionItem = ({ item, active, index, onToggle }: AccordionItemProps) => {
   const { title = '', content = '', className = '' } = item;
-
+  
   const scrollerProps = useScroller();
   const contentEl = React.useRef<HTMLDivElement>(null);
   const [height, setHeight] = React.useState(0);
-
+  
   React.useEffect(() => {
-    if (!contentEl.current) return undefined;
-
+    if (!contentEl.current) { return undefined; }
+    
     const resizeObserver = new ResizeObserver(() => {
       setHeight(active ? contentEl.current?.offsetHeight ?? 0 : 0);
     });
-
+    
     resizeObserver.observe(contentEl.current);
-
+    
     return () => resizeObserver.disconnect();
   }, [active]);
-
+  
   return (
     <li
-      className={cx('bkl-accordion-item', className, {
-        'bkl-accordion-item--active': active,
-      })}
-      key={title}
+      key={index}
+      className={cx(
+        'bkl',
+        'bkl-accordion-item',
+        className,
+        { 'bkl-accordion-item--active': active },
+      )}
       data-accordion-item={`accordion-item-${index}`}
     >
       <Button plain className="bkl-accordion-item__button" onClick={onToggle}>
@@ -123,4 +125,3 @@ const AccordionItem = ({ item, active, index, onToggle }: AccordionItemProps) =>
     </li>
   );
 };
-Accordion.displayName = 'Accordion';

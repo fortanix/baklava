@@ -21,15 +21,15 @@ export const classNames = (...args: Array<ClassNameArgument>) => {
 // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/84d000f858caf/types/react/index.d.ts#L836
 export type ComponentProps<T extends React.ElementType> =
   Omit<React.ComponentProps<T>, 'className'> & {
-    className?: ClassNameArgument,
+    className?: undefined | ClassNameArgument,
   };
 export type ComponentPropsWithRef<T extends React.ElementType> =
   Omit<React.ComponentPropsWithRef<T>, 'className'> & {
-    className?: ClassNameArgument,
+    className?: undefined | ClassNameArgument,
   };
 export type ComponentPropsWithoutRef<T extends React.ElementType> =
   Omit<React.ComponentPropsWithoutRef<T>, 'className'> & {
-    className?: ClassNameArgument,
+    className?: undefined | ClassNameArgument,
   };
 
 

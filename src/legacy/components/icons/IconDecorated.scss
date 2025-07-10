@@ -6,7 +6,7 @@
 @use '../../style/mixins.scss' as mixins;
 
 
-@mixin decorationBackgroundCircle($size: 2.5em) {
+@mixin decoration-background-circle($size: 2.5em) {
   @include mixins.circle($size);
   overflow: visible; // Allow icon to overlap the padding so it doesn't get truncated to a circle
   
@@ -14,7 +14,7 @@
   
   background-color: currentColor;
 }
-@mixin decorationBorderCircle($size: 2.5em) {
+@mixin decoration-border-circle($size: 2.5em) {
   @include mixins.circle($size);
   overflow: visible; // Allow icon to overlap the padding so it doesn't get truncated to a circle
   
@@ -26,10 +26,10 @@
 
 .bkl-icon.icon--decorated {
   &.icon--decorated--background-circle {
-    @include decorationBackgroundCircle();
+    @include decoration-background-circle();
   }
   &.icon--decorated--highlight {
-    @include decorationBackgroundCircle();
+    @include decoration-background-circle();
     background-color: bkl.$accent-color;
     transition: background-color 300ms ease;
     
@@ -39,6 +39,6 @@
     }
   }
   &.icon--decorated--border-circle {
-    @include decorationBorderCircle();
+    @include decoration-border-circle();
   }
 }

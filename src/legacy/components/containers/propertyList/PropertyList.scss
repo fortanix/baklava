@@ -13,13 +13,13 @@
     column-gap: bkl.$sizing-xl;
     row-gap: bkl.$sizing-l;
     
-    &__property {
-      &--full-width {
+    .bkl-property-list__property {
+      &.bkl-property-list__property--full-width {
         flex: 1;
         min-inline-size: bkl.$sizing-0; // Needed for truncation of children: https://css-tricks.com/flexbox-truncated-text
       }
       
-      &__label {
+      .bkl-property-list__property__label {
         margin-block: bkl.$sizing-4 bkl.$sizing-2;
         @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-semibold);
         font-size: bkl.$font-size-s;
@@ -27,7 +27,7 @@
         line-height: bkl.$line-height-6;
       }
       
-      &__value {
+      .bkl-property-list__property__value {
         margin-inline-start: bkl.$sizing-0;
         font-size: bkl.$font-size-s;
       }

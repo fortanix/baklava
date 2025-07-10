@@ -194,8 +194,8 @@ const preview = {
               [
                 'Tag',
                 'Panel',
-                'Accordion',
                 'PropertyList',
+                'Accordion',
               ],
             ],
           ],

@@ -3,23 +3,25 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { classNames as cx, ComponentPropsWithoutRef } from '../../../util/component_util';
+import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
 
 import './PropertyList.scss';
 
-type PropertyProps = ComponentPropsWithoutRef<'div'> & {
+
+type PropertyProps = ComponentProps<'div'> & {
   label: React.ReactNode,
   value: React.ReactNode,
-  fullWidth?: boolean,
+  fullWidth?: undefined | boolean,
 };
-export const Property = ({ label, value, fullWidth = false, ...props }: PropertyProps) => {
+export const Property = (props: PropertyProps) => {
+  const { label, value, fullWidth = false, ...propsRest } = props;
   return (
     <div
-      {...props}
+      {...propsRest}
       className={cx(
         'bkl-property-list__property',
         { 'bkl-property-list__property--full-width': fullWidth },
-        props.className,
+        propsRest.className,
       )}
     >
       <dt className="bkl-property-list__property__label">{label}</dt>
@@ -29,10 +31,15 @@ export const Property = ({ label, value, fullWidth = false, ...props }: Property
 };
 
 type PropertyListProps = React.PropsWithChildren<{}>;
-export const PropertyList = Object.assign(({ children }: PropertyListProps) => {
-  return (
-    <dl className="bkl-property-list" data-label="bkl-property-list">
-      {children}
-    </dl>
-  );
-}, { Property, displayName: 'PropertyList' });
+export const PropertyList = Object.assign(
+  ({ children }: PropertyListProps) => {
+    return (
+      <dl className="bkl-property-list" data-label="bkl-property-list">
+        {children}
+      </dl>
+    );
+  },
+  {
+    Property,
+  },
+);

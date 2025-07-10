@@ -26,10 +26,21 @@ export default {
 } satisfies Meta<AccordionArgs>;
 
 
-export const AccordionStandard: Story = {};
+const items1 = [
+  { title: 'Item 1', content: 'Item content' },
+  { title: 'Item 2', content: 'Item content' },
+  { title: 'Item 3', content: 'Item content' },
+];
 
-export const AccordionWithVariant: Story = {
+export const AccordionStandard: Story = {
   args: {
-    variant: 'x',
+    items: items1,
+  },
+};
+
+export const AccordionSmall: Story = {
+  args: {
+    items: items1,
+    size: 'small',
   },
 };
