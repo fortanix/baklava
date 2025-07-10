@@ -37,6 +37,8 @@ export type PopoverProviderProps<E extends HTMLElement> = {
   
   /** How long to keep the popover in the DOM for exit animation purposes. Default: 3 seconds. */
   unmountDelay?: undefined | number,
+  
+  popoverBehavior?: React.HTMLAttributes<unknown>['popover'], // Default: 'auto'
 };
 /**
  * Provider around a trigger (e.g. button) to display a popover overlay on trigger activation.
@@ -49,6 +51,7 @@ export const PopoverProvider = Object.assign(
       popover,
       activeDefault = false,
       unmountDelay = 3000, // ms
+      popoverBehavior,
     } = props;
     
     const [activeUncontrolled, setActiveUncontrolled] = React.useState(activeDefault);
@@ -64,7 +67,7 @@ export const PopoverProvider = Object.assign(
     
     React.useImperativeHandle(ref, () => popoverRef, [popoverRef]);
     
-    const popoverProps = usePopover<E>(popoverRef);
+    const popoverProps = usePopover<E>(popoverRef,{ popoverBehavior });
     usePopoverTracker(active);
     
     return (

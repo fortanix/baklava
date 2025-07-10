@@ -81,6 +81,7 @@ export const DialogModalWithSubject: Story = {
 export const DialogOverlayWithNestedModal: Story = {
   args: {
     display: 'slide-over',
+    popoverBehavior:'manual',
     children: (
       <DialogModal
         title="Modal"

@@ -50,6 +50,8 @@ export type DialogOverlayProps = Omit<React.ComponentProps<typeof Dialog>, 'chil
   
   /** Any additional props to pass to the popover provider. */
   providerProps?: undefined | Omit<PopoverProviderPropsDialog, 'children'>,
+  
+  popoverBehavior?: React.HTMLAttributes<unknown>['popover'], // Default: 'auto'
 };
 
 export type OverlayWithSubject<S> = {
@@ -100,12 +102,14 @@ export const DialogOverlay = Object.assign(
       allowUserClose = true,
       popoverRef,
       providerProps,
+      popoverBehavior,
       ...propsRest
     } = props;
     
     return (
       <PopoverProvider<HTMLDialogElement>
         activeDefault={activeDefault}
+        popoverBehavior={popoverBehavior}
         popover={popoverController =>
           <Dialog
             open={false} // Make sure `open` is not set to avoid https://issues.chromium.org/issues/388538944

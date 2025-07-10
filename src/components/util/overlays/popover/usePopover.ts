@@ -30,7 +30,7 @@ export const usePopover = <E extends HTMLElement>(
   controller: PopoverController,
   options: undefined | UsePopoverOptions = {},
 ): PopoverProps<E> => {
-  const { popoverBehavior = 'manual' } = options ?? {};
+  const { popoverBehavior = 'auto' } = options ?? {};
   
   const popoverRef = React.useRef<E>(null);
   
@@ -81,7 +81,7 @@ export const usePopover = <E extends HTMLElement>(
   
   // Added for outside click detection
   React.useEffect(() => {
-    if (!controller.active) {
+    if (popoverBehavior === 'auto' || !controller.active) {
       return;
     }
 
