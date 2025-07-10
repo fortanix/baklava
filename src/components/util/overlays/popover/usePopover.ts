@@ -81,31 +81,43 @@ export const usePopover = <E extends HTMLElement>(
   
   // Added for outside click detection
   React.useEffect(() => {
-  if (!controller.active) return;
+    if (!controller.active) {
+      return;
+    }
 
-  const handleClickOutside = (event: MouseEvent) => {
-    const target = event.target as Node;
-    const popover = popoverRef.current;
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target;
+
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
+
+      const popover = popoverRef.current;
+      
+      // Prevent popover from closing if click was inside the popover
+      if (!popover || popover.contains(target)) {
+        return;
+      }
+
+      // Prevent popover from closing if click was inside portal
+      const isInPortal = target.closest('[data-portal]');
+      if (isInPortal) {
+        return;
+      }
+
+      // Otherwise, clicked outside both → close the popover
+      controller.deactivate();
+    };
     
-    // Prevent popover from closing if click was inside the popover
-    if (!popover || popover.contains(target)) return;
+    // Listen for outside clicks
+    document.addEventListener('mousedown', handleClickOutside, true);
+    
+    // Clean up when component unmounts or controller becomes inactive
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside, true);
+    };
+  }, [controller.active, controller.deactivate]);
 
-    // Prevent popover from closing if click was inside portal
-    const isInPortal = (target as HTMLElement).closest('[data-portal]');
-    if (isInPortal) return;
-
-    // Otherwise, clicked outside both → close the popover
-    controller.deactivate();
-  };
-  
-  // Listen for outside clicks
-  document.addEventListener('mousedown', handleClickOutside, true);
-  
-  // Clean up when component unmounts or controller becomes inactive
-  return () => {
-    document.removeEventListener('mousedown', handleClickOutside, true);
-  };
-}, [controller.active, controller.deactivate]);
 
   
   // Sync when the ref changes. This helps prevent time issues where `active` is set to `true`, but the popover is not
