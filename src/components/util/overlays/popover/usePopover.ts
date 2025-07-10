@@ -30,7 +30,7 @@ export const usePopover = <E extends HTMLElement>(
   controller: PopoverController,
   options: undefined | UsePopoverOptions = {},
 ): PopoverProps<E> => {
-  const { popoverBehavior = 'auto' } = options ?? {};
+  const { popoverBehavior = 'manual' } = options ?? {};
   
   const popoverRef = React.useRef<E>(null);
   
@@ -78,6 +78,35 @@ export const usePopover = <E extends HTMLElement>(
       controller.deactivate();
     }
   }, [controller.activate, controller.deactivate]);
+  
+  // Added for outside click detection
+  React.useEffect(() => {
+  if (!controller.active) return;
+
+  const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as Node;
+    const popover = popoverRef.current;
+    
+    // Prevent popover from closing if click was inside the popover
+    if (!popover || popover.contains(target)) return;
+
+    // Prevent popover from closing if click was inside portal
+    const isInPortal = (target as HTMLElement).closest('[data-portal]');
+    if (isInPortal) return;
+
+    // Otherwise, clicked outside both → close the popover
+    controller.deactivate();
+  };
+  
+  // Listen for outside clicks
+  document.addEventListener('mousedown', handleClickOutside, true);
+  
+  // Clean up when component unmounts or controller becomes inactive
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside, true);
+  };
+}, [controller.active, controller.deactivate]);
+
   
   // Sync when the ref changes. This helps prevent time issues where `active` is set to `true`, but the popover is not
   // yet mounted (and thus the ref is `null`). In that case our sync `useEffect` will be too early.
