@@ -50,6 +50,9 @@ export type DialogModalProps = Omit<React.ComponentProps<typeof Dialog>, 'childr
   
   /** Any additional props to pass to the modal provider. */
   providerProps?: undefined | Omit<ModalProviderProps, 'children'>,
+  
+  /** Whether to render the model inline or with in a portal */
+  renderMethod?: undefined | ModalProviderProps['renderMethod'],
 };
 
 export type ModalWithSubject<S> = {
@@ -180,6 +183,7 @@ export const DialogModal = Object.assign(
       allowUserClose = true,
       modalRef,
       providerProps,
+      renderMethod = 'portal',
       ...propsRest
     } = props;
     
@@ -188,6 +192,7 @@ export const DialogModal = Object.assign(
         activeDefault={activeDefault}
         allowUserClose={allowUserClose}
         shouldCloseOnBackdropClick={display !== 'full-screen'}
+        renderMethod={renderMethod}
         dialog={dialogController =>
           <Dialog
             aria-modal="true"
