@@ -46,7 +46,7 @@ export type ModalProviderProps = {
   unmountDelay?: undefined | number,
   
   /** How the model dialog should be rendered inline or in portal. Default: portal */
-  renderMethod?: 'portal' | 'inline' 
+  renderMethod?: undefined | 'portal' | 'inline', 
 };
 /**
  * Provider around a trigger (e.g. button) to display a modal overlay on trigger activation.
@@ -61,7 +61,7 @@ export const ModalProvider = Object.assign(
       allowUserClose = true,
       shouldCloseOnBackdropClick = true,
       unmountDelay = 3000, // ms
-      renderMethod,
+      renderMethod = 'portal',
     } = props;
     
     const [activeUncontrolled, setActiveUncontrolled] = React.useState(activeDefault);

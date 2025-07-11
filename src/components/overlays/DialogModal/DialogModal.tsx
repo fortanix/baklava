@@ -52,7 +52,7 @@ export type DialogModalProps = Omit<React.ComponentProps<typeof Dialog>, 'childr
   providerProps?: undefined | Omit<ModalProviderProps, 'children'>,
   
   /** Whether to render the model inline or with in a portal */
-  renderMethod?: ModalProviderProps['renderMethod'],
+  renderMethod?: undefined | ModalProviderProps['renderMethod'],
 };
 
 export type ModalWithSubject<S> = {
