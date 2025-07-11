@@ -3,6 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import type * as React from 'react';
+import { Children, isValidElement, cloneElement } from 'react';
 import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../../util/componentUtil.ts';
 import type * as ReactTable from 'react-table';
 
@@ -18,6 +19,93 @@ import type { DataTableStatus } from '../DataTableContext.tsx';
 
 import cl from './DataTable.module.scss';
 
+type ColElement = React.ReactElement<{ style?: React.CSSProperties }>;
+
+function safeCloneCol(
+  child: React.ReactNode,
+  style: React.CSSProperties = {},
+): React.ReactNode {
+  if (!isValidElement(child)) return child;
+
+  // Assert child as a ReactElement with style prop
+  const col = child as ColElement;
+
+  const mergedStyle = {
+    ...(col.props.style || {}),
+    ...style,
+  };
+
+  return cloneElement(col, { style: mergedStyle });
+}
+
+export function useCustomColGroup<D extends object>(
+  allColumns: ReactTable.ColumnInstance<D>[],
+  columnGroups?: React.ReactNode,
+): React.ReactNode | null {
+  const hasMaxStretch = allColumns.some((col) => !!col.maxStretchWidthPercentage);
+
+  if (columnGroups && isValidElement(columnGroups) && columnGroups.type === 'colgroup') {
+    const colGroup = columnGroups as React.ReactElement<{ children?: React.ReactNode }, 'colgroup'>;
+
+    if (!hasMaxStretch) {
+      return colGroup;
+    }
+    
+    // Condition to handle colgroup passes as a prop from consumer
+
+    // For each original <col>, render original + new <col> with maxStretchWidthPercentage
+    const newCols: React.ReactNode[] = [];
+
+    Children.forEach(colGroup.props.children, (child, i) => {
+      // Add original col
+      newCols.push(safeCloneCol(child));
+
+      // Add new col with maxStretchWidthPercentage if present
+      const col = allColumns[i];
+      if (col?.maxStretchWidthPercentage) {
+        newCols.push(
+          <col
+            key={`${col.id}-stretch`}
+            style={{ width: col.maxStretchWidthPercentage }}
+          />
+        );
+      }
+    });
+
+    return cloneElement(colGroup, {}, newCols);
+  }
+
+  if (hasMaxStretch) {
+    // Generate a new <colgroup>
+    const cols: React.ReactNode[] = [];
+
+    allColumns.forEach((col) => {
+      cols.push(
+        <col
+          key={`${col.id}-base`}
+          style={{ width: col.maxStretchWidthPercentage ? '25ch' : col.minWidth || '10ch' }}
+        />
+      );
+      if (col.maxStretchWidthPercentage) {
+        //Add extra dummy cols for using colspan
+        cols.push(
+          <col
+            key={`${col.id}-stretch`}
+            style={{ width: col.maxStretchWidthPercentage }}
+          />
+        );
+      }
+    });
+
+    return <colgroup>{cols}</colgroup>;
+  }
+
+  return null;
+};
+
+const getTotalColSpan = <D extends object>(columns: ReactTable.ColumnInstance<D>[]) => {
+  return columns.reduce((total, col) => total + (col.maxStretchWidthPercentage ? 2 : 1), 0);
+};
 
 // Note: `placeholder` is included in `table` props as part of "Standard HTML Attributes", but it's not actually a
 // valid `<table>` attribute, so we can safely override it.
@@ -45,13 +133,15 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
   if (!headerGroup) { return null; }
   
   const { key, ...HeaderGroupPropsRest } = headerGroup.getHeaderGroupProps();
-
+  
+  const customColGroup = useCustomColGroup(table.visibleColumns, columnGroups);
+  
   return (
     <table
       {...table.getTableProps()}
       className={cx(cl['bk-data-table__table'], props.className)}
     >
-      {columnGroups}
+      {customColGroup}
       
       <thead>
         <tr key={key} {...HeaderGroupPropsRest}>
@@ -67,11 +157,14 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
               column.getSortByToggleProps(),
             ]);
             
+            const hasStretch = !!column.maxStretchWidthPercentage;
+            
             return (
               <th
                 {...headerProps}
                 key={headerKey}
                 title={undefined} // Unset the default `title` from `getHeaderProps()`
+                {...hasStretch ? { colSpan: 2 } : {}}
               >
                 <div className={cx(cl['column-header'])}> {/* Wrapper element needed to serve as flex container */}
                   <span className={cx(cl['column-name'])}>
@@ -96,7 +189,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
       <tbody {...table.getTableBodyProps()}>
         {typeof placeholder !== 'undefined' &&
           <tr className={cx(cl['bk-data-table__placeholder'])}>
-            <td colSpan={table.visibleColumns.length}>
+            <td colSpan={getTotalColSpan(table.visibleColumns)}>
               {placeholder}
             </td>
           </tr>
@@ -114,8 +207,10 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
               </td>*/}
               {row.cells.map(cell => {
                 const { key: cellKey, ...cellProps } = cell.getCellProps();
+                const hasStretch = !!cell.column.maxStretchWidthPercentage;
+
                 return (
-                  <td {...cellProps} key={cellKey}>
+                  <td {...cellProps} key={cellKey} {...hasStretch ? { colSpan: 2 } : {}}>
                     <div className={cx(cl['bk-data-table__text-cell'])}>
                       {cell.render('Cell')}
                     </div>
@@ -127,7 +222,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
         })}
         {typeof endOfTablePlaceholder !== 'undefined' &&
           <tr className={cx(cl['bk-data-table__placeholder'], cl['bk-data-table__placeholder--row'])}>
-            <td colSpan={table.visibleColumns.length}>
+            <td colSpan={getTotalColSpan(table.visibleColumns)}>
               {endOfTablePlaceholder}
             </td>
           </tr>
@@ -137,7 +232,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
       {footer &&
         <tfoot>
           <tr>
-            <td colSpan={table.visibleColumns.length}>
+            <td colSpan={getTotalColSpan(table.visibleColumns)}>
               {footer}
             </td>
           </tr>

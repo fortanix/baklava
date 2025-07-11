@@ -8,9 +8,11 @@
 @layer baklava.components {
   .bk-data-table {
     @include bk.component-base(bk-data-table);
+    overflow-x: auto;
     inline-size: 100%;
     
     table.bk-data-table__table {
+      width: 100%;
       inline-size: 100%;
       table-layout: fixed;
       border-collapse: collapse;

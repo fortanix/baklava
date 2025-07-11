@@ -60,6 +60,7 @@ interface CustomColumnProps {
   configurable?: boolean,
   primary?: boolean,
   label?: string,
+  maxStretchWidthPercentage?: `${number}%`,
 }
 
 interface UseCustomFiltersState {
