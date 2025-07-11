@@ -6,7 +6,9 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { Dropdown } from './Dropdown.tsx';
+import { Button } from '../../buttons/Button.tsx';
+
+import { type DropdownItemProps, Dropdown } from './Dropdown.tsx';
 
 
 type DropdownArgs = React.ComponentProps<typeof Dropdown>;
@@ -26,10 +28,33 @@ export default {
 } satisfies Meta<DropdownArgs>;
 
 
-export const DropdownStandard: Story = {};
+const options1: Record<string, DropdownItemProps<string>> = {
+  rest: { label: 'Rest API' },
+  pkcs11: { label: 'PKCS#11' },
+  jce: { label: 'JCE' },
+  cng: { label: 'CNG' },
+  kmip: { label: 'KMIP' },
+};
 
-export const DropdownWithVariant: Story = {
+export const DropdownStandard: Story = {
   args: {
-    variant: 'x',
+    toggle: <Button primary>Open dropdown</Button>,
+    children: Object.entries(options1).map(([key, { label }]) => (
+      <Dropdown.Item key={key} value={key} onActivate={() => {}} isSelected={key === 'pkcs11'}>
+        {label}
+      </Dropdown.Item>
+    )) 
+  },
+};
+
+export const DropdownSecondary: Story = {
+  args: {
+    secondary: true,
+    toggle: <Button primary>Open dropdown</Button>,
+    children: Object.entries(options1).map(([key, { label }]) => (
+      <Dropdown.Item key={key} value={key} onActivate={() => {}} isSelected={key === 'pkcs11'}>
+        {label}
+      </Dropdown.Item>
+    )) 
   },
 };

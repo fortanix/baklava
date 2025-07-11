@@ -31,7 +31,7 @@
     @include mixins.font($family: bkl.$font-family-body);
     font-size: bkl.$font-size-s;
     
-    &__arrow {
+    .bkl-dropdown__arrow {
       --arrow-size: #{bkl.$sizing-s};
       inline-size: var(--arrow-size);
       block-size: var(--arrow-size);
@@ -59,10 +59,10 @@
     &[data-popper-placement^="bottom"] .bkl-dropdown__arrow { inset-block-start: -1 * bkl.$sizing-xs; }
     &[data-popper-placement^="left"] .bkl-dropdown__arrow { inset-inline-end: -1 * bkl.$sizing-xs; }
     
-    &__menu {
+    .bkl-dropdown__menu {
       list-style-type: none;
       
-      &-item {
+      .bkl-dropdown__menu-item {
         position: relative;
         padding: bkl.$sizing-s bkl.$sizing-m;
         inline-size: 100%;
@@ -77,12 +77,12 @@
         }
       }
       
-      &-item--disabled {
+      .bkl-dropdown__menu-item--disabled {
         pointer-events: none;
         opacity: 0.35;
       }
       
-      &-divider {
+      .bkl-dropdown__menu-divider {
         inline-size: 100%;
         block-size: 2px;
       }
@@ -94,7 +94,7 @@
       .bkl-dropdown__menu {
         color: bkl.$dark-color-1;
         
-        &-divider {
+        .bkl-dropdown__menu-divider {
           background-color: bkl.$light-color-3;
         }
       }

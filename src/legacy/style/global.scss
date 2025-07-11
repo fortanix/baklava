@@ -87,8 +87,8 @@
   --datatable-body-hover: var(--light-color-2);
   --datatable-border: var(--brand-color-light-3);
   --datatable-color: #D68100;
-  --dropdown-background: var(--bkl-brand-color-dark-3);
-  --sidebar-background: var(--bkl-brand-color-dark-3);
+  --dropdown-background: var(--brand-color-dark-3);
+  --sidebar-background: var(--brand-color-dark-3);
   --sidebar-tooltip-background: var(--brand-color-light-2);
   --sidebar-nav-active-background-hover:  var(--bkl-light-color-2);
   
@@ -121,6 +121,11 @@
 
   --pagination-nav-background: rgb(118 118 118 / 34%);
   --pagination-listitem-background: rgb(238 242 249 / 50%);
+  
+  
+  
+  // The following come from roche-frontend
+  
 }
 
 @mixin styles {

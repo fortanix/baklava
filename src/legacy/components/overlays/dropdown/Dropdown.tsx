@@ -8,7 +8,7 @@ import * as Popper from 'react-popper';
 import * as PopperJS from '@popperjs/core';
 import FocusTrap from 'focus-trap-react';
 
-import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandler.tsx';
+import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandler.ts';
 import { classNames as cx, ClassNameArgument, type ComponentProps } from '../../../util/component_util.tsx';
 import { handleOptionKeyDown, handleTriggerKeyDown } from '../../../util/keyboardHandlers.tsx';
 
@@ -65,14 +65,14 @@ const hasItemComponent = (children: React.ReactNode): boolean => {
 type DropdownItemType = 'button' | 'checkbox' | 'text';
 export type DropdownItemProps<T> = Omit<ComponentProps<'input' | 'button' | 'li' >, 'value'> & {
   type: DropdownItemType,
-  disabled?: boolean,
-  onActivate?: (value?: T) => void,
-  onClose?: () => void,
-  onClick?: () => void,
-  onChange?: () => void,
-  value?: T,
-  isSelected?: boolean,
-  checked?: boolean,
+  disabled?: undefined | boolean,
+  onActivate?: undefined | ((value?: undefined | T) => void),
+  onClose?: undefined | (() => void),
+  onClick?: undefined | (() => void),
+  onChange?: undefined | (() => void),
+  value?: undefined | T,
+  isSelected?: undefined | boolean,
+  checked?: undefined | boolean,
   optionIndex: number,
 };
 type ItemRefs = {
@@ -240,134 +240,137 @@ export type DropdownProps = Omit<ComponentProps<'div'>, 'className'|'children'> 
   isFocusTrapActive?: boolean,
 };
 
-export const Dropdown = (props: DropdownProps) => {
-  const {
-    active = false,
-    className = '',
-    withArrow = false,
-    primary = false,
-    secondary = false,
-    basic = false,
-    children = '',
-    toggle: Toggle,
-    placement = 'bottom',
-    offset = [],
-    popperOptions = {},
-    onClose: onDropdownClose,
-    label,
-    isFocusTrapActive,
-  } = props;
-  
-  const optionsRef = React.useRef<HTMLButtonElement[]>([]);
-  const [isActive, setIsActive] = React.useState(false);
-  const [referenceElement, setReferenceElement] = React.useState<HTMLElement | null>(null);
-  const [popperElement, setPopperElement] = React.useState<HTMLElement | null>(null);
-  const [arrowElement, setArrowElement] = React.useState<HTMLElement | null>(null);
-  const popper = Popper.usePopper(referenceElement, popperElement, {
-    modifiers: [
-      { name: 'arrow', options: { element: arrowElement } },
-      { name: 'preventOverflow', enabled: true },
-      { name: 'offset', options: { offset } },
-      ...(popperOptions.modifiers || []),
-    ],
-    placement,
-  });
-  
-  const onReferenceClick = () => {
-    setIsActive(isActive => !isActive);
-    typeof Toggle?.props?.onClick === 'function' && Toggle?.props?.onClick();
-  };
-  
-  const onClose = () => {
-    setIsActive(false);
-    typeof onDropdownClose === 'function' && onDropdownClose();
-  };
-  
-  const dropdownRef = { current: popperElement };
-  const triggerRef = { current: referenceElement };
-  useOutsideClickHandler([dropdownRef, triggerRef], onClose);
-  
-  const isDropdownActive = isActive || active;
-  
-  const renderDropdownItems = () => {
-    const renderChildren = typeof children === 'function' ? children({ close: onClose }) : children;
-    const dropdownChildren = renderChildren.type === React.Fragment
-      ? renderChildren.props.children
-      : renderChildren;
+export const Dropdown = Object.assign(
+    (props: DropdownProps) => {
+    const {
+      active = false,
+      className = '',
+      withArrow = false,
+      primary = false,
+      secondary = false,
+      basic = false,
+      children = '',
+      toggle: Toggle,
+      placement = 'bottom',
+      offset = [],
+      popperOptions = {},
+      onClose: onDropdownClose,
+      label,
+      isFocusTrapActive,
+    } = props;
     
-    return React.Children.map(dropdownChildren, (child: React.ReactElement, index: number) => {
-      const { onActivate: childOnActivate, onClose: childOnClose } = child?.props || {};
-      
-      return child?.type !== Item
-        ? child
-        : React.cloneElement(child, {
-          ...childOnActivate
-            ? { onActivate: (value: string | number) => childOnActivate(value) }
-            : {},
-          onClose: childOnClose ?? onClose,
-          ref: { optionsRef, triggerRef },
-          optionIndex: index,
-        });
+    const optionsRef = React.useRef<HTMLButtonElement[]>([]);
+    const [isActive, setIsActive] = React.useState(false);
+    const [referenceElement, setReferenceElement] = React.useState<HTMLElement | null>(null);
+    const [popperElement, setPopperElement] = React.useState<HTMLElement | null>(null);
+    const [arrowElement, setArrowElement] = React.useState<HTMLElement | null>(null);
+    const popper = Popper.usePopper(referenceElement, popperElement, {
+      modifiers: [
+        { name: 'arrow', options: { element: arrowElement } },
+        { name: 'preventOverflow', enabled: true },
+        { name: 'offset', options: { offset } },
+        ...(popperOptions.modifiers || []),
+      ],
+      placement,
     });
-  };
-  
-  const renderDropdown = () => {
-    return (
-      <FocusTrap
-        // NOTE: due to test failure, add 'displayCheck' option
-        // https://github.com/focus-trap/focus-trap-react?tab=readme-ov-file#testing-in-jsdom
-        focusTrapOptions={{
-          tabbableOptions: {
-            displayCheck: 'none',
-          },
-          // Receives focus if no other tabbable element found
-          fallbackFocus: <div tabIndex={-1} />,
-        }}
-        // Use FocusTrap when dropdown does not have Item component like YearMonthPicker for keyboard accessibility
-        active={isFocusTrapActive ?? !hasItemComponent(children)}
-      >
-        <div
-          id="bkl-dropdown"
-          className={cx('bkl-dropdown', className, {
-            'bkl-dropdown--primary': primary,
-            'bkl-dropdown--secondary': secondary,
-            'bkl-dropdown--basic': basic,
-            'bkl-dropdown--with-arrow': withArrow,
-          })}
-          role="listbox"
-          ref={setPopperElement}
-          style={popper.styles.popper}
-          {...popper.attributes.popper}
+    
+    const onReferenceClick = () => {
+      setIsActive(isActive => !isActive);
+      typeof Toggle?.props?.onClick === 'function' && Toggle?.props?.onClick();
+    };
+    
+    const onClose = () => {
+      setIsActive(false);
+      typeof onDropdownClose === 'function' && onDropdownClose();
+    };
+    
+    const dropdownRef = { current: popperElement };
+    const triggerRef = { current: referenceElement };
+    useOutsideClickHandler([dropdownRef, triggerRef], onClose);
+    
+    const isDropdownActive = isActive || active;
+    
+    const renderDropdownItems = () => {
+      const renderChildren = typeof children === 'function' ? children({ close: onClose }) : children;
+      const dropdownChildren = renderChildren.type === React.Fragment
+        ? renderChildren.props.children
+        : renderChildren;
+      
+      return React.Children.map(dropdownChildren, (child: React.ReactElement, index: number) => {
+        const { onActivate: childOnActivate, onClose: childOnClose } = child?.props || {};
+        
+        return child?.type !== Item
+          ? child
+          : React.cloneElement(child, {
+            ...childOnActivate
+              ? { onActivate: (value: string | number) => childOnActivate(value) }
+              : {},
+            onClose: childOnClose ?? onClose,
+            ref: { optionsRef, triggerRef },
+            optionIndex: index,
+          });
+      });
+    };
+    
+    const renderDropdown = () => {
+      return (
+        <FocusTrap
+          // NOTE: due to test failure, add 'displayCheck' option
+          // https://github.com/focus-trap/focus-trap-react?tab=readme-ov-file#testing-in-jsdom
+          focusTrapOptions={{
+            tabbableOptions: {
+              displayCheck: 'none',
+            },
+            // Receives focus if no other tabbable element found
+            fallbackFocus: <div tabIndex={-1} />,
+          }}
+          // Use FocusTrap when dropdown does not have Item component like YearMonthPicker for keyboard accessibility
+          active={isFocusTrapActive ?? !hasItemComponent(children)}
         >
-          <ul className="bkl-dropdown__menu" aria-label={label}>
-            {renderDropdownItems()}
-          </ul>
-          {withArrow && <div className="bkl-dropdown__arrow" ref={setArrowElement} style={popper.styles.arrow}/>}
-        </div>
-      </FocusTrap>
+          <div
+            id="bkl-dropdown" // FIXME: this is a non-unique ID (but one of the downstream tests relies on it)
+            className={cx('bkl-dropdown', className, {
+              'bkl-dropdown--primary': primary,
+              'bkl-dropdown--secondary': secondary,
+              'bkl-dropdown--basic': basic,
+              'bkl-dropdown--with-arrow': withArrow,
+            })}
+            role="listbox"
+            ref={setPopperElement}
+            style={popper.styles.popper}
+            {...popper.attributes.popper}
+          >
+            <ul className="bkl-dropdown__menu" aria-label={label}>
+              {renderDropdownItems()}
+            </ul>
+            {withArrow && <div className="bkl-dropdown__arrow" ref={setArrowElement} style={popper.styles.arrow}/>}
+          </div>
+        </FocusTrap>
+      );
+    };
+    
+    return (
+      <>
+        {React.cloneElement(Toggle, {
+          ref: setReferenceElement,
+          onClick: onReferenceClick,
+          onKeyDown: (evt) => handleTriggerKeyDown({
+            evt,
+            options: optionsRef?.current,
+            onOpen: onReferenceClick,
+            onClose,
+          }),
+          role: 'combobox',
+          'aria-haspopup': 'listbox',
+          'aria-expanded': isDropdownActive,
+          'aria-controls': 'bkl-dropdown',
+        })}
+        {isDropdownActive && ReactDOM.createPortal(renderDropdown(), document.body)}
+      </>
     );
-  };
-  
-  return (
-    <>
-      {React.cloneElement(Toggle, {
-        ref: setReferenceElement,
-        onClick: onReferenceClick,
-        onKeyDown: (evt) => handleTriggerKeyDown({
-          evt,
-          options: optionsRef?.current,
-          onOpen: onReferenceClick,
-          onClose,
-        }),
-        role: 'combobox',
-        'aria-haspopup': 'listbox',
-        'aria-expanded': isDropdownActive,
-        'aria-controls': 'bkl-dropdown',
-      })}
-      {isDropdownActive && ReactDOM.createPortal(renderDropdown(), document.body)}
-    </>
-  );
-};
-
-Dropdown.Item = Item;
-Dropdown.Divider = Divider;
+  },
+  {
+    Item,
+    Divider,
+  },
+);
