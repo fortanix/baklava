@@ -85,7 +85,10 @@ export const ModalProvider = Object.assign(
     
     return (
       <>
-        {shouldMount && renderMethod === 'portal' ? createPortal(dialog(dialogProps), document.body) : dialog(dialogProps)}
+        {shouldMount && renderMethod === 'portal' 
+          ? createPortal(dialog(dialogProps), document.body) 
+          : dialog(dialogProps)
+        }
         {typeof children === 'function' ? children(modalRef) : children}
       </>
     );
