@@ -201,6 +201,10 @@ const preview = {
                 'PropertyList',
                 'Accordion',
               ],
+              'overlays',
+              [
+                'Loader',
+              ],
             ],
           ],
         ],

@@ -6,34 +6,36 @@
 @use '../../../style/util/z-index.scss' as z;
 
 
-.bkl-loader-overlay {
-  min-block-size: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.bkl-loader {
-  z-index: z.$z-index--loading-indicator;
+@layer baklava.legacy {
+  .bkl-loader-overlay {
+    min-block-size: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   
-  inline-size: min-content;
-  padding: bkl.$sizing-m;
-  background: bkl.$light-color-2;
-  border-radius: bkl.$border-radius-l;
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
   
-  .bkl-loader__spinner {
-    --spinner-thickness: 0.8rem;
+  .bkl-loader {
+    z-index: z.$z-index--loading-indicator;
     
-    border: var(--spinner-thickness) solid bkl.$neutral-color-1;
-    border-block-start: var(--spinner-thickness) solid bkl.$brand-color;
-    border-radius: 50%;
-    inline-size: 6rem;
-    block-size: 6rem;
-    animation: spin 1s linear infinite;
+    inline-size: min-content;
+    padding: bkl.$sizing-m;
+    background: bkl.$light-color-2;
+    border-radius: bkl.$border-radius-l;
+    
+    .bkl-loader__spinner {
+      --spinner-thickness: 0.8rem;
+      
+      border: var(--spinner-thickness) solid bkl.$neutral-color-1;
+      border-block-start: var(--spinner-thickness) solid bkl.$brand-color;
+      border-radius: 50%;
+      inline-size: 6rem;
+      block-size: 6rem;
+      animation: spin 1s linear infinite;
+    }
   }
 }

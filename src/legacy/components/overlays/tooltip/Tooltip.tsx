@@ -7,10 +7,7 @@ import * as ReactDOM from 'react-dom';
 import * as Popper from 'react-popper';
 import * as PopperJS from '@popperjs/core';
 
-import {
-  classNames as cx,
-  ComponentPropsWithoutRef,
-} from '../../../util/component_util';
+import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
 
 import './Tooltip.scss';
 
@@ -24,7 +21,7 @@ export type PopperOptions = Partial<PopperJS.Options> & {
   createPopper?: typeof PopperJS.createPopper;
 };
 
-export type TooltipProps = ComponentPropsWithoutRef<'div'> & {
+export type TooltipProps = ComponentProps<'div'> & {
   content: React.ReactNode,
   placement?: PopperOptions['placement'],
   interactive?: boolean,

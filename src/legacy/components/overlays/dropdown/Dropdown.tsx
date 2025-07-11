@@ -21,6 +21,7 @@ import { Checkbox } from '../../../components/forms/checkbox/Checkbox';
 
 import './Dropdown.scss';
 
+
 export type DropdownDividerProps = ComponentPropsWithoutRef<'div'>;
 
 export const Divider = (props: DropdownDividerProps) => {

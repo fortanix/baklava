@@ -4,31 +4,28 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { classNames as cx, ClassNameArgument } from '../../../util/component_util';
+import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
 
 import { Backdrop } from '../../internal/Backdrop.tsx';
 
 import './Loader.scss';
 
 
-export const LoaderIcon = () => {
-  return (
-    <div className="bkl-loader">
-      <div className="bkl-loader__spinner"/>
-    </div>
-  );
-};
+export const LoaderIcon = () => (
+  <div className="bkl bkl-loader">
+    <div className="bkl-loader__spinner"/>
+  </div>
+);
 
-type LoaderProps = Omit<JSX.IntrinsicElements['div'], 'className'> & {
-  className?: ClassNameArgument,
-  withBackdrop?: boolean,
-  delay?: number,
+type LoaderProps = ComponentProps<'div'> & {
+  withBackdrop?: undefined | boolean,
+  delay?: undefined | number,
 };
 export const Loader = (props: LoaderProps) => {
   const {
-    className = '',
     withBackdrop = false,
     delay = 1000,
+    ...propsRest
   } = props;
   
   const [isTimeoutActive, setIsTimeoutActive] = React.useState(true);
@@ -47,12 +44,12 @@ export const Loader = (props: LoaderProps) => {
         window.clearTimeout(timeout);
       }
     };
-  }, []);
+  }, [delay]);
   
   const renderLoaderWithBackdrop = () => (
     <Backdrop
       active
-      className={cx('bkl-loader-overlay', className)}
+      className={cx('bkl-loader-overlay', propsRest.className)}
     >
       <LoaderIcon/>
     </Backdrop>
