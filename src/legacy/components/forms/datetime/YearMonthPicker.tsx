@@ -8,7 +8,7 @@ import * as React from 'react';
 
 import { IconDecorated as Icon } from '../../icons/IconDecorated';
 import { SwitcherButtons } from '../../navigation/switcher/Switcher';
-import Dropdown from '../../overlays/dropdown/Dropdown';
+import { Dropdown } from '../../overlays/dropdown/Dropdown';
 import { Button } from '../../buttons/Button';
 
 import './YearMonthPicker.scss';

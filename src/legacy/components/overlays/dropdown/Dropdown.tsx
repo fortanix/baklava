@@ -8,21 +8,17 @@ import * as Popper from 'react-popper';
 import * as PopperJS from '@popperjs/core';
 import FocusTrap from 'focus-trap-react';
 
-import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandler';
-import {
-  classNames as cx,
-  ClassNameArgument,
-  ComponentPropsWithoutRef,
-} from '../../../util/component_util';
-import { handleOptionKeyDown, handleTriggerKeyDown } from '../../../util/keyboardHandlers';
+import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandler.tsx';
+import { classNames as cx, ClassNameArgument, type ComponentProps } from '../../../util/component_util.tsx';
+import { handleOptionKeyDown, handleTriggerKeyDown } from '../../../util/keyboardHandlers.tsx';
 
-import { Button } from '../../buttons/Button';
-import { Checkbox } from '../../../components/forms/checkbox/Checkbox';
+import { Button } from '../../buttons/Button.tsx';
+import { Checkbox } from '../../../components/forms/checkbox/Checkbox.tsx';
 
 import './Dropdown.scss';
 
 
-export type DropdownDividerProps = ComponentPropsWithoutRef<'div'>;
+export type DropdownDividerProps = ComponentProps<'div'>;
 
 export const Divider = (props: DropdownDividerProps) => {
   const { className = '' } = props;
@@ -44,30 +40,30 @@ const hasItemComponent = (children: React.ReactNode): boolean => {
       checkComponent(result);
       return;
     }
-
+    
     if (Array.isArray(node)) {
       node.forEach(checkComponent);
       return;
     }
-
+    
     if (!React.isValidElement(node)) return;
-
+    
     if (node.type === Dropdown.Item) {
       found = true;
       return;
     }
-
+    
     if (node.props?.children) {
       checkComponent(node.props.children);
     }
   };
-
+  
   checkComponent(children);
   return found;
 };
 
 type DropdownItemType = 'button' | 'checkbox' | 'text';
-export type DropdownItemProps<T> = Omit<ComponentPropsWithoutRef<'input' | 'button' | 'li' >, 'value'> & {
+export type DropdownItemProps<T> = Omit<ComponentProps<'input' | 'button' | 'li' >, 'value'> & {
   type: DropdownItemType,
   disabled?: boolean,
   onActivate?: (value?: T) => void,
@@ -104,13 +100,13 @@ export const Item: ItemWithForwardRef = React.forwardRef((props, ref) => {
     ...propsRest
   } = props;
   const { optionsRef, triggerRef } = ref || {};
-
+  
   const handleClose = () => {
     if (onClose && !disabled) {
       onClose();
     }
   };
-    
+  
   if (type === 'checkbox') {
     return (
       <li role="presentation">
@@ -227,7 +223,7 @@ export type PopperOptions = Partial<PopperJS.Options> & {
   createPopper?: typeof PopperJS.createPopper;
 };
 
-export type DropdownProps = Omit<ComponentPropsWithoutRef<'div'>, 'className'|'children'> & {
+export type DropdownProps = Omit<ComponentProps<'div'>, 'className'|'children'> & {
   children: React.ReactNode | ((props: { close: () => void }) => React.ReactNode),
   toggle: React.ReactElement,
   active?: boolean,
@@ -298,7 +294,7 @@ export const Dropdown = (props: DropdownProps) => {
     const dropdownChildren = renderChildren.type === React.Fragment
       ? renderChildren.props.children
       : renderChildren;
-
+    
     return React.Children.map(dropdownChildren, (child: React.ReactElement, index: number) => {
       const { onActivate: childOnActivate, onClose: childOnClose } = child?.props || {};
       
@@ -375,5 +371,3 @@ export const Dropdown = (props: DropdownProps) => {
 
 Dropdown.Item = Item;
 Dropdown.Divider = Divider;
-
-export default Dropdown;

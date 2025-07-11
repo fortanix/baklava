@@ -103,11 +103,7 @@ const AccordionItem = ({ item, active, index, onToggle }: AccordionItemProps) =>
     >
       <Button plain className="bkl-accordion-item__button" onClick={onToggle}>
         {title}
-        <Icon
-          className="bkl-accordion-item__state-indicator"
-          name="arrow-expand"
-          icon={import('../../../assets/icons/arrow-expand.svg?sprite')}
-        />
+        <Icon name="arrow-expand" className="bkl-accordion-item__state-indicator"/>
       </Button>
       {contentEl &&
         <div

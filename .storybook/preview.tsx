@@ -204,6 +204,8 @@ const preview = {
               'overlays',
               [
                 'Loader',
+                'Tooltip',
+                'Dropdown',
               ],
             ],
           ],

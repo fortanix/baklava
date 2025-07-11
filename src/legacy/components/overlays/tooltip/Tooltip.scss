@@ -29,12 +29,12 @@
       padding: bkl.$sizing-s;
     }
     
-    &__content {
+    .bkl-tooltip__content {
       position: relative;
       z-index: z.$z-index--tooltip;
     }
     
-    &__arrow {
+    .bkl-tooltip__arrow {
       --arrow-size: 0.96rem;
       inline-size: var(--arrow-size);
       block-size: var(--arrow-size);

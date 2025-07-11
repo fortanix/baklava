@@ -16,7 +16,7 @@ export default {
   component: Accordion,
   tags: ['autodocs'],
   parameters: {
-    layout: 'centered',
+    layout: 'padded',
   },
   argTypes: {},
   args: {
@@ -35,6 +35,26 @@ const items1 = [
 export const AccordionStandard: Story = {
   args: {
     items: items1,
+  },
+};
+
+export const AccordionWithDefaultOpen: Story = {
+  args: {
+    items: [
+      { title: 'Item 1', content: 'Item content' },
+      { title: 'Item 2', content: 'This should be open by default', openByDefault: true },
+      { title: 'Item 3', content: 'Item content' },
+    ],
+  },
+};
+
+export const AccordionWithFocus: Story = {
+  args: {
+    items: [
+      { title: 'Item 1', content: 'Item content' },
+      { title: 'Item 2', content: 'This should be focused', openByDefault: true, className: 'pseudo-focus-visible' },
+      { title: 'Item 3', content: 'Item content' },
+    ],
   },
 };
 
