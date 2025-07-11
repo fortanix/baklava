@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>help-icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linejoin="round">
+        <g id="icons/help-icon" transform="translate(1.000000, 1.000000)" stroke="#DDE6F4">
+            <g id="help-icon">
+                <path d="M17.6086957,9 C17.6086957,13.7543478 13.7543478,17.6086957 9,17.6086957 C4.24565217,17.6086957 0.391304348,13.7543478 0.391304348,9 C0.391304348,4.24565217 4.24565217,0.391304348 9,0.391304348 C13.7543478,0.391304348 17.6086957,4.24565217 17.6086957,9 Z" id="Stroke-1" stroke-linecap="round"></path>
+                <path d="M6.65217391,7.04347826 C6.65217391,5.74747826 7.70321739,4.69565217 9,4.69565217 C10.296,4.69565217 11.3478261,5.74747826 11.3478261,7.04347826 C11.3478261,8.34104348 10.296,9.39130435 9,9.39130435 L9,11.7391304" id="Stroke-3" stroke-linecap="round"></path>
+                <path d="M9.39130435,13.6956522 C9.39130435,13.9116522 9.216,14.0869565 9,14.0869565 C8.784,14.0869565 8.60869565,13.9116522 8.60869565,13.6956522 C8.60869565,13.4796522 8.784,13.3043478 9,13.3043478 C9.216,13.3043478 9.39130435,13.4796522 9.39130435,13.6956522 Z" id="Stroke-5"></path>
+            </g>
+        </g>
+    </g>
+</svg>

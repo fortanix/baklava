@@ -8,10 +8,10 @@
 
 .bkl-icon:where(.baklava-icon--decorated) {
   &:where(.icon--decorated--background-circle) {
-    @include decorations.decorationBackgroundCircle();
+    @include decorations.decoration-background-circle();
   }
   &:where(.baklava-icon--decorated--highlight) {
-    @include decorations.decorationBackgroundCircle();
+    @include decorations.decoration-background-circle();
     background-color: bkl.$accent-color;
     transition: background-color 300ms ease;
     
@@ -21,6 +21,6 @@
     }
   }
   &:where(.baklava-icon--decorated--border-circle) {
-    @include decorations.decorationBorderCircle();
+    @include decorations.decoration-border-circle();
   }
 }

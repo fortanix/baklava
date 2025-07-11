@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 43.1 (39012) - http://www.bohemiancoding.com/sketch -->
+    <title>Page 1</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="7 13.6956522 0.304347826 7 7 0.304347826 13.6956522 7"></polygon>
+        <circle id="path-2" cx="7" cy="11" r="1"></circle>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="main-icons/critical-issue" transform="translate(1.000000, 1.000000)">
+            <g id="Page-1">
+                <g id="Group-6">
+                    <g id="Stroke-2" stroke-linecap="round" stroke-linejoin="round">
+                        <use fill="#D0011B" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        <path stroke="#D0011B" stroke-width="1" d="M6.64644661,14.0492056 L7,14.402759 L7.35355339,14.0492056 L14.0492056,7.35355339 L14.402759,7 L14.0492056,6.64644661 L7.35355339,-0.0492055645 L7,-0.402758955 L6.64644661,-0.0492055645 L-0.0492055645,6.64644661 L-0.402758955,7 L-0.0492055645,7.35355339 L6.64644661,14.0492056 Z"></path>
+                    </g>
+                    <g id="Oval">
+                        <use fill="#F7F9FC" fill-rule="evenodd" xlink:href="#path-2"></use>
+                        <circle stroke="#F7F9FC" stroke-width="1" cx="7" cy="11" r="1"></circle>
+                    </g>
+                    <path d="M7,7.86956522 L7,3" id="Path" stroke="#F7F9FC" stroke-width="2" fill="#F7F9FC" stroke-linecap="round" stroke-linejoin="round"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

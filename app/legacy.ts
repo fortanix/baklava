@@ -19,7 +19,7 @@ export { Entity } from '../src/legacy/components/typography/entity/Entity.tsx';
 export { Code } from '../src/legacy/components/typography/code/Code.tsx';
 
 // Icons
-export { ImgIcon, SpriteIcon } from '../src/legacy/components/icons/Icon.tsx';
+export { SpriteIcon } from '../src/legacy/components/icons/Icon.tsx';
 export { IconDecorated } from '../src/legacy/components/icons/IconDecorated.tsx';
 export { BaklavaIcon } from '../src/legacy/components/icons/icon-pack-baklava/BaklavaIcon.tsx';
 export { BaklavaIconDecorated } from '../src/legacy/components/icons/icon-pack-baklava/BaklavaIconDecorated.tsx';

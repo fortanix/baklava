@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="16px" height="15px" viewBox="0 0 16 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 2</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="main-icons/warning-alert" transform="translate(1.000000, 0.000000)">
+            <g id="Group-2">
+                <polygon id="Triangle-2" fill="#F6A623" points="7 0 14 14 0 14"></polygon>
+                <path d="M7,9.62055652 L7,4.96281739" id="Stroke-1" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round"></path>
+                <polygon id="Stroke-2" stroke="#F6A623" stroke-linecap="round" stroke-linejoin="round" points="13.6956522 13.6956522 0.304347826 13.6956522 7 0.304347826"></polygon>
+                <path d="M7.30434783,11.5652174 C7.30434783,11.7332174 7.168,11.8695652 7,11.8695652 C6.832,11.8695652 6.69565217,11.7332174 6.69565217,11.5652174 C6.69565217,11.3972174 6.832,11.2608696 7,11.2608696 C7.168,11.2608696 7.30434783,11.3972174 7.30434783,11.5652174 Z" id="Stroke-4" stroke="#FFFFFF" stroke-linejoin="round"></path>
+            </g>
+        </g>
+    </g>
+</svg>

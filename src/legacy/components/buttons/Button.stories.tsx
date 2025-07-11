@@ -9,7 +9,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 
 import { notify } from '../../../components/overlays/ToastProvider/ToastProvider.tsx';
 import { Button } from './Button.tsx';
-import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
+import { loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
 
 
 type ButtonArgs = React.ComponentProps<typeof Button>;
@@ -25,9 +25,7 @@ export default {
     // Some surrounding text to show block/inline behavior
     Story => (
       <div>
-        <LoremIpsum short/>
-        <Story/>
-        <LoremIpsum short/>
+        {loremIpsumSentence} {loremIpsumSentence.slice(0, 50)} <Story/> {loremIpsumSentence}
       </div>
     ),
   ],

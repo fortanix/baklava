@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 43.1 (39012) - http://www.bohemiancoding.com/sketch -->
+    <title>calendar</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="calendar" fill-rule="nonzero" fill="#FFFFFF">
+            <path d="M1.79166667,2.95833333 L1.79166667,14.2083333 L14.2083333,14.2083333 L14.2083333,2.95833333 L1.79166667,2.95833333 Z M15.2083333,1.95833333 L15.2083333,15.2083333 L0.791666667,15.2083333 L0.791666667,1.95833333 L15.2083333,1.95833333 Z" id="Stroke-1"></path>
+            <path d="M3.125,4.125 L3.125,0.791666667 L5.875,0.791666667 L5.875,4.125 L3.125,4.125 Z M4.875,3.125 L4.875,1.79166667 L4.125,1.79166667 L4.125,3.125 L4.875,3.125 Z" id="Stroke-3"></path>
+            <path d="M10.125,4.125 L10.125,0.791666667 L12.875,0.791666667 L12.875,4.125 L10.125,4.125 Z M11.875,3.125 L11.875,1.79166667 L11.125,1.79166667 L11.125,3.125 L11.875,3.125 Z" id="Stroke-5"></path>
+            <polygon id="Stroke-7" points="5.375 2.95833333 10.625 2.95833333 10.625 1.95833333 5.375 1.95833333"></polygon>
+            <polygon id="Stroke-8" points="1.29166667 5.875 14.7083333 5.875 14.7083333 4.875 1.29166667 4.875"></polygon>
+        </g>
+    </g>
+</svg>

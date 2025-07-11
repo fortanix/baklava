@@ -37,10 +37,11 @@ export default defineConfig({
     // Handle SVG sprite icons
     createSvgIconsPlugin({
       iconDirs: [path.resolve(__dirname, 'src/assets/icons')],
-      symbolId: 'baklava-icon-[name]',
+      symbolId: 'baklava-icon-[dir]-[name]',
       inject: 'body-last',
       customDomId: 'baklava-icon-sprite',
     }),
+    
     //libInjectCss(), // Disabled for now (`.css` import causes issues in vitest)
     
     // Generate `.d.ts` files

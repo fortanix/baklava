@@ -185,6 +185,10 @@ const preview = {
                 'Entity',
                 'Headings',
               ],
+              'icons',
+              [
+                'Icon',
+              ],
               'buttons',
               [
                 'Button',
