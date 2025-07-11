@@ -6,7 +6,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { classNames as cx, ClassNameArgument } from '../../../util/component_util';
 
-import Backdrop from '../../internal/Backdrop';
+import { Backdrop } from '../../internal/Backdrop.tsx';
 
 import './Loader.scss';
 

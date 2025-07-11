@@ -8,7 +8,7 @@ import FocusTrap from 'focus-trap-react';
 import { classNames as cx, ComponentPropsWithoutRef } from '../../../util/component_util';
 
 import Backdrop from '../../internal/Backdrop';
-import CloseButton from '../../internal/CloseButton';
+import { CloseButton } from '../../internal/CloseButton';
 import { Loader } from '../loader/Loader';
 import { useScroller } from '../../layout/util/Scroller';
 

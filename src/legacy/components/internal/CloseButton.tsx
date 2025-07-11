@@ -2,37 +2,36 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import cx from 'classnames';
-import * as React from 'react';
+import { classNames as cx, type ComponentProps } from '../../util/component_util.tsx';
 
-import { Button } from '../buttons/Button';
+import { Button } from '../buttons/Button.tsx';
 
 import './CloseButton.scss';
 
-export type CloseButtonProps = Omit<JSX.IntrinsicElements['div'], 'className'> & {
-  className?: string,
-  onClose?: (() => void),
-  small?: boolean,
-  dark?: boolean,
-  neutral?: boolean,
-};
 
-const CloseButton = (props: CloseButtonProps): React.ReactElement => {
+export type CloseButtonProps = ComponentProps<'div'> & {
+  onClose?: undefined | (() => void),
+  small?: undefined | boolean,
+  dark?: undefined | boolean,
+  neutral?: undefined | boolean,
+};
+export const CloseButton = (props: CloseButtonProps) => {
   const { onClose = () => {}, className = '', small = false, dark = false, neutral = false } = props;
+  
   return (
     <Button plain className={className} onClick={onClose} aria-label="Close">
       <span
-        className={cx('bkl-close',
-          { 
+        aria-hidden="true"
+        className={cx(
+          'bkl',
+          'bkl-close',
+          {
             'bkl-close--small': small,
             'bkl-close--dark': dark,
             'bkl-close--neutral': neutral,       
-          })
-        }
-        aria-hidden="true"
+          }
+        )}
       />
     </Button>
   );
 };
-
-export default CloseButton;

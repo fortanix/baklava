@@ -2,17 +2,15 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import cx from 'classnames';
-import * as React from 'react';
+import { classNames as cx, type ComponentProps } from '../../util/component_util.tsx';
 
 import './Backdrop.scss';
 
-export type BackdropProps = JSX.IntrinsicElements['div'] & {
+export type BackdropProps = ComponentProps<'div'> & {
   active: boolean,
-  scrollable?: boolean,
+  scrollable?: undefined | boolean,
 };
-
-const Backdrop = React.forwardRef<HTMLDivElement, BackdropProps>((props, ref) => {
+export const Backdrop = (props: BackdropProps) => {
   const {
     children,
     className,
@@ -22,15 +20,19 @@ const Backdrop = React.forwardRef<HTMLDivElement, BackdropProps>((props, ref) =>
     scrollable,
     onKeyDown,
   } = props;
-
+  
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: Backdrop click is a visual-only affordance
     <div
-      role="button"
-      ref={ref}
-      className={cx('bkl-backdrop', className, {
-        'bkl-backdrop--active': active,
-        'bkl-backdrop--scrollable': scrollable,
-      })}
+      className={cx(
+        'bkl',
+        'bkl-backdrop',
+        className,
+        {
+          'bkl-backdrop--active': active,
+          'bkl-backdrop--scrollable': scrollable,
+        },
+      )}
       onClick={onClick}
       onMouseDown={onMouseDown}
       onKeyDown={onKeyDown}
@@ -38,8 +40,4 @@ const Backdrop = React.forwardRef<HTMLDivElement, BackdropProps>((props, ref) =>
       {children}
     </div>
   );
-});
-
-Backdrop.displayName = 'Backdrop';
-
-export default Backdrop;
+};

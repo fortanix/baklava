@@ -6,53 +6,55 @@
 @use '../../style/variables.scss' as *;
 
 
-.bkl-button:has(.bkl-close) {
-  display: inline-flex;
-}
-
-.bkl-close {
-  position: relative;
-  display: inline-block;
-  inline-size: 18px;
-  block-size: 18px;
-  overflow: hidden;
-  cursor: pointer;
-
-  &::before {
-    transform: rotate(45deg);
+@layer baklava.legacy {
+  .bkl-button:has(.bkl-close) {
+    display: inline-flex;
   }
   
-  &::before, &::after {
-    content: '';
-    position: absolute;
-    block-size: 2px;
-    inline-size: 100%;
-    inset-block-start: 50%;
-    inset-inline-start: 0;
-    background: $light-color-1;
-  }
-  
-  &::after {
-    transform: rotate(-45deg);
-  }
-
-  &.bkl-close--dark,
-  &.bkl-close--neutral {
-    outline: none;
-  }
-
-  &.bkl-close--neutral {
-    &::before, &::after {
-      background: $dark-color-1;
+  .bkl-close {
+    position: relative;
+    display: inline-block;
+    inline-size: 18px;
+    block-size: 18px;
+    overflow: hidden;
+    cursor: pointer;
+    
+    &::before {
+      transform: rotate(45deg);
     }
-  }
-
-  &.bkl-close--small {
-    inline-size: 12px;
-    block-size: 12px;
-
+    
     &::before, &::after {
-      block-size: math.div($sizing-xxs, 2);
+      content: '';
+      position: absolute;
+      block-size: 2px;
+      inline-size: 100%;
+      inset-block-start: 50%;
+      inset-inline-start: 0;
+      background: $light-color-1;
+    }
+    
+    &::after {
+      transform: rotate(-45deg);
+    }
+    
+    &.bkl-close--dark,
+    &.bkl-close--neutral {
+      outline: none;
+    }
+    
+    &.bkl-close--neutral {
+      &::before, &::after {
+        background: $dark-color-1;
+      }
+    }
+    
+    &.bkl-close--small {
+      inline-size: 12px;
+      block-size: 12px;
+      
+      &::before, &::after {
+        block-size: math.div($sizing-xxs, 2);
+      }
     }
   }
 }
