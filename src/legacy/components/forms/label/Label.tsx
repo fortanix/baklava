@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { classNames as cx, ComponentPropsWithoutRef } from '../../../util/component_util';
-import Tooltip from '../../overlays/tooltip/Tooltip';
+import { Tooltip } from '../../overlays/tooltip/Tooltip';
 
 import './Label.scss';
 

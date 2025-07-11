@@ -18,15 +18,15 @@ const isStateless = (Element: React.ReactElement) => {
 };
 
 export type PopperOptions = Partial<PopperJS.Options> & {
-  createPopper?: typeof PopperJS.createPopper;
+  createPopper?: undefined | typeof PopperJS.createPopper;
 };
 
-export type TooltipProps = ComponentProps<'div'> & {
+export type TooltipProps = Omit<ComponentProps<'div'>, 'children' | 'content'> & {
+  children: React.ReactNode | ((props: Record<string, unknown>) => React.ReactNode),
   content: React.ReactNode,
-  placement?: PopperOptions['placement'],
-  interactive?: boolean,
+  placement?: undefined | PopperOptions['placement'],
+  interactive?: undefined | boolean,
 };
-
 export const Tooltip = (props: TooltipProps) => {
   const {
     children,
@@ -49,10 +49,10 @@ export const Tooltip = (props: TooltipProps) => {
     ],
     placement,
   });
-
-  const close = () => {
+  
+  const close = React.useCallback(() => {
     setIsActive(false);
-  };
+  }, []);
   
   React.useEffect(() => {
     if (interactive && isActive) {
@@ -63,7 +63,7 @@ export const Tooltip = (props: TooltipProps) => {
         window.document.body.removeEventListener('click', close);
       }
     };
-  }, [isActive]);
+  }, [isActive, close, interactive]);
   
   const onActive = () => {
     setIsActive(true);
@@ -75,8 +75,8 @@ export const Tooltip = (props: TooltipProps) => {
     }
   };
   
-  const onKeyDown = (evt: React.KeyboardEvent) => {
-    if (evt.key === 'Escape') {
+  const onKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Escape') {
       setIsActive(false);
     }
   };
@@ -91,7 +91,7 @@ export const Tooltip = (props: TooltipProps) => {
       onKeyDown,
     };
     
-    let updatedChildren;
+    let updatedChildren: React.ReactNode;
     
     if (typeof children === 'function') {
       updatedChildren = children(decoratedProps);
@@ -119,7 +119,7 @@ export const Tooltip = (props: TooltipProps) => {
     return (
       <div
         role="tooltip" // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/tooltip_role
-        className={cx('bkl-tooltip', className, { 'bkl-tooltip--interactive': interactive })}
+        className={cx('bkl bkl-tooltip', className, { 'bkl-tooltip--interactive': interactive })}
         ref={setPopperElement}
         style={popper.styles.popper}
         {...popper.attributes.popper}
@@ -137,5 +137,3 @@ export const Tooltip = (props: TooltipProps) => {
     </>
   );
 };
-
-export default Tooltip;
