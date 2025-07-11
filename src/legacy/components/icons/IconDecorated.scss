@@ -24,21 +24,23 @@
   border: 0.1rem solid currentColor;
 }
 
-.bkl-icon.icon--decorated {
-  &.icon--decorated--background-circle {
-    @include decoration-background-circle();
-  }
-  &.icon--decorated--highlight {
-    @include decoration-background-circle();
-    background-color: bkl.$accent-color;
-    transition: background-color 300ms ease;
-    
-    // Adapt highlight background color to context
-    @at-root :is(button, a):hover > .icon--decorated.icon--decorated--highlight {
-      background-color: var(--bkl-button-hover-color);
+@layer baklava.legacy {
+  .bkl-icon.icon--decorated {
+    &.icon--decorated--background-circle {
+      @include decoration-background-circle();
     }
-  }
-  &.icon--decorated--border-circle {
-    @include decoration-border-circle();
+    &.icon--decorated--highlight {
+      @include decoration-background-circle();
+      background-color: bkl.$accent-color;
+      transition: background-color 300ms ease;
+      
+      // Adapt highlight background color to context
+      @at-root :is(button, a):hover > .icon--decorated.icon--decorated--highlight {
+        background-color: var(--bkl-button-hover-color);
+      }
+    }
+    &.icon--decorated--border-circle {
+      @include decoration-border-circle();
+    }
   }
 }

@@ -2,11 +2,10 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { classNames as cx, ComponentPropsWithRef } from '../../../util/component_util';
-
 import * as React from 'react';
+import { classNames as cx, ComponentProps } from '../../../util/component_util.tsx';
 
-import { BaklavaIcon as Icon } from './BaklavaIcon';
+import { BaklavaIcon as Icon } from './BaklavaIcon.tsx';
 
 import './BaklavaIconDecorated.scss';
 
@@ -18,16 +17,16 @@ export type Decoration =
 
 /**
  * Extension of `Icon`, but with a visual decoration applied.
-*/
-type BaklavaIconDecoratedProps = ComponentPropsWithRef<typeof Icon> & {
-  decorations?: Array<Decoration>,
+ */
+type BaklavaIconDecoratedProps = ComponentProps<typeof Icon> & {
+  decorations?: undefined | Array<Decoration>,
   
   // Shorthands
-  highlight?: boolean,
-  border?: boolean,
+  highlight?: undefined | boolean,
+  border?: undefined | boolean,
 };
-export const BaklavaIconDecorated = React.forwardRef<HTMLUListElement, BaklavaIconDecoratedProps>((props, ref) => {
-  const { className, decorations = [], highlight = false, border = false, ...propsIcon } = props;
+export const BaklavaIconDecorated = (props: BaklavaIconDecoratedProps) => {
+  const { decorations = [], highlight = false, border = false, ...propsRest } = props;
   
   const decorationsParsed = [
     ...decorations,
@@ -36,13 +35,13 @@ export const BaklavaIconDecorated = React.forwardRef<HTMLUListElement, BaklavaIc
   ];
   
   return (
-    <Icon {...propsIcon}
+    <Icon
+      {...propsRest}
       className={cx(
         'baklava-icon--decorated',
         ...decorationsParsed.map(decoration => `baklava-icon--decorated--${decoration}`),
-        props.className,
+        propsRest.className,
       )}
     />
   );
-});
-BaklavaIconDecorated.displayName = 'IconDecorated';
+};

@@ -2,6 +2,9 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+// @ts-ignore
+import iconIds from 'virtual:svg-icons-names';
+
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
@@ -9,6 +12,10 @@ import { loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { SpriteIcon } from './Icon.tsx';
 
+
+const legacyIconIds = iconIds
+  .filter(iconId => iconId.startsWith('baklava-icon-legacy-'))
+  .map(iconId => iconId.replace('baklava-icon-legacy-', ''));
 
 type IconArgs = React.ComponentProps<typeof SpriteIcon>;
 type Story = StoryObj<IconArgs>;
@@ -45,4 +52,12 @@ export const IconInText: Story = {
       </div>
     ),
   ],
+};
+
+export const IconPackList: Story = {
+  render: () => (
+    <ul style={{ display: 'grid', gap: '0.8em', gridTemplateColumns: 'repeat(20, max-content)' }}>
+      {legacyIconIds.map(legacyIconId => <li key={legacyIconId}><SpriteIcon name={legacyIconId}/></li>)}
+    </ul>
+  ),
 };

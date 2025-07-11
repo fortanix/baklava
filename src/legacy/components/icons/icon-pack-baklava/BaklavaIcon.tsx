@@ -2,55 +2,9 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import * as ObjectUtil from '../../../util/object_util';
-
-import * as React from 'react';
-import { SpriteIcon } from '../Icon';
-
-import icons from '../../../icons';
+import { SpriteIcon } from '../Icon.tsx';
 
 
-export type IconKey = keyof typeof icons;
-
-export const iconKeys: Array<IconKey> = ObjectUtil.keys(icons);
-export const isIconKey = (icon: unknown): icon is IconKey => {
-  return typeof icon === 'string' && (iconKeys as Array<string>).includes(icon);
-};
-
-
-const iconsCache = new Map();
-
-type SpriteIconRef = React.ElementRef<typeof SpriteIcon>;
-type IconProps = React.ComponentPropsWithoutRef<'svg'> & {
-  icon: IconKey,
-};
-export const BaklavaIcon = React.memo(React.forwardRef<SpriteIconRef, IconProps>(({ icon, ...props }, ref) => {
-  const iconExists = Object.prototype.hasOwnProperty.call(icons, icon);
-  
-  const iconPromise = React.useMemo(() => {
-    if (!iconExists) { return null; }
-    
-    const loadIcon = icons[icon].loadSprite;
-    
-    if (!iconsCache.has(icon)) {
-      iconsCache.set(icon, loadIcon());
-    }
-    
-    return iconsCache.get(icon);
-  }, [icon]);
-  
-  if (!iconExists) {
-    console.error(`Missing icon ${icon}`);
-    return null;
-  }
-  
-  return (
-    <SpriteIcon
-      key={icon} // Force remount when `icon` changes
-      ref={ref}
-      name={icon}
-      icon={iconPromise}
-      {...props}
-    />
-  );
-}));
+// Previously, `BaklavaIcon` was a wrapper around `SpriteIcon` that came preconfigured with Baklava icons.
+// Currently, `SpriteIcon` can do this on its own, so this has become a simple alias.
+export { SpriteIcon as BaklavaIcon };

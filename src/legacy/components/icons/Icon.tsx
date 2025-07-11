@@ -11,7 +11,7 @@ import './Icon.scss';
 export type SpriteIconProps = ComponentProps<'svg'> & {
   name: string,
   /** @deprecated */
-  icon: Promise<unknown>,
+  icon?: undefined | Promise<unknown>,
 };
 // Note: keep the `React.memo()` so that we don't rerender when the `icon` promise is updated
 export const SpriteIcon = React.memo((props: SpriteIconProps) => {
