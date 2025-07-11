@@ -14,15 +14,15 @@
 
 // Deprecated: use `$spacing-` variables instead
 $sizing-0: 0 !default;
-$sizing-1: 0.3rem !default;
-$sizing-2: 0.6rem !default;
-$sizing-3: 1.2rem !default;
-$sizing-4: 1.8rem !default;
-$sizing-5: 2.4rem !default;
-$sizing-6: 3.0rem !default;
-$sizing-7: 3.6rem !default;
-$sizing-8: 4.2rem !default;
-$sizing-9: 4.8rem !default;
+$sizing-1: 0.3rem !default; // ~4.2px ~ $spacing-1 (delta = 0.2px)
+$sizing-2: 0.6rem !default; // ~8.4px ~ $spacing-2 (delta = 0.4px)
+$sizing-3: 1.2rem !default; // ~16.8px ~ $spacing-4 (delta = 0.8px)
+$sizing-4: 1.8rem !default; // ~25.2px ~ $spacing-7 (delta = 1.2px)
+$sizing-5: 2.4rem !default; // ~33.6px ~ $spacing-8 (delta = 1.6px)
+$sizing-6: 3.0rem !default; // ~42px ~ $spacing-9 (delta = 2px)
+$sizing-7: 3.6rem !default; // ~50.4px ~ $spacing-10 (delta = 2.4px)
+$sizing-8: 4.2rem !default; // ~58.8px ~ $spacing-10 + $spacing-2 (delta = 2.8px)
+$sizing-9: 4.8rem !default; // ~67.2px ~ $spacing-11 (delta = 3.2px)
 $sizing-none: $sizing-0 !default;
 $sizing-xxs: $sizing-1 !default;
 $sizing-xs: $sizing-2 !default;
