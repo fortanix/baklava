@@ -60,6 +60,15 @@ interface CustomColumnProps {
   configurable?: boolean,
   primary?: boolean,
   label?: string,
+  bkColumnWidth?: {
+    flex: number,
+    width: string,
+  },
+}
+
+interface CustomTableConfig {
+  identifierColumnConfig?: { columnId: string, sticky?: boolean },
+  actionColumnConfig?: { columnId: string, sticky?: boolean },
 }
 
 interface UseCustomFiltersState {
@@ -85,7 +94,7 @@ declare module 'react-table' {
       UseResizeColumnsOptions<D>,
       UseRowSelectOptions<D>,
       UseRowStateOptions<D>,
-      UseSortByOptions<D>
+      UseSortByOptions<D>,
       // Note that having Record here allows you to add anything to the options, this matches the spirit of the
       // underlying js library, but might be cleaner if it's replaced by a more specific type that matches your
       // feature set, this is a safe default.
@@ -108,6 +117,7 @@ declare module 'react-table' {
       UseRowSelectInstanceProps<D>,
       UseRowStateInstanceProps<D>,
       UseSortByInstanceProps<D>,
+      CustomTableConfig,
       UseCustomFiltersInstanceProps {}
   
   export interface TableState<D extends object = {}>
@@ -129,6 +139,7 @@ declare module 'react-table' {
     className?: string,
     style?: CSSProperties | undefined,
   }
+
   export interface ColumnInterface<D>
     extends UseFiltersColumnOptions<D>,
       UseGlobalFiltersColumnOptions<D>,

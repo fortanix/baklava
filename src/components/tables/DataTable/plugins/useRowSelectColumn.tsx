@@ -5,7 +5,7 @@
 import type * as ReactTable from 'react-table';
 
 import { Checkbox } from '../../../forms/controls/Checkbox/Checkbox.tsx';
-
+import { classNames as cx } from '../../../../util/componentUtil.ts';
 import cl from './useRowSelectColumn.module.scss';
 
 
@@ -31,4 +31,63 @@ export const useRowSelectColumn = <D extends object>(hooks: ReactTable.Hooks<D>)
     },
     ...columns,
   ]);
+};
+
+export const useRowSelectColumnMerged = <D extends object>(
+  targetColumnId: string,
+) => (hooks: ReactTable.Hooks<D>): void => {
+  hooks.visibleColumns.push(columns =>
+    columns.map((col: ReactTable.ColumnInstance<D>) => {
+      if (col.id === targetColumnId) {
+        return {
+          ...col,
+          Header: (headerProps: ReactTable.HeaderProps<D>) => {
+            const { getToggleAllPageRowsSelectedProps } = headerProps;
+            const toggleAllProps = getToggleAllPageRowsSelectedProps?.() ?? {};
+            const { checked, onChange } = toggleAllProps;
+
+            const headerContent =
+              typeof col.Header === 'function'
+                ? (col.Header as (props: ReactTable.HeaderProps<D>) => React.ReactNode)(headerProps)
+                : col.Header;
+
+            return (
+              <>
+                {toggleAllProps && (
+                  <Checkbox
+                    aria-label="Select all rows"
+                    checked={checked}
+                    onChange={onChange}
+                    className={cl['bk-data-table-row-select__checkbox']}
+                  />
+                )}
+                {headerContent}
+              </>
+            );
+          },
+          Cell: (cellProps: ReactTable.CellProps<D, any>) => {
+            const { checked, onChange } = cellProps.row.getToggleRowSelectedProps();
+
+            const cellContent = col.Cell
+              ? (col.Cell as (props: ReactTable.CellProps<D, any>) => React.ReactNode)(cellProps)
+              : cellProps.value;
+
+            return (
+              <>
+                <Checkbox
+                  aria-label="Select row"
+                  checked={checked}
+                  onChange={onChange}
+                  className={cl['bk-data-table-row-select__checkbox']}
+                />
+                {cellContent}
+              </>
+            );
+          },
+        };
+      }
+
+      return col;
+    })
+  );
 };

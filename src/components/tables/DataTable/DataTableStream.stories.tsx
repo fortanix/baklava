@@ -167,6 +167,175 @@ const columnDefinitions = [
   },
 ];
 
+const columnDefinitionsMultiple = [
+  {
+    id: 'name',
+    accessor: (user: User) => user.name,
+    Header: 'Name',
+    Cell: ({ value }: { value: string }) => value,
+    disableSortBy: false,
+    disableGlobalFilter: false,
+    bkColumnWidth: {
+      flex: 2,
+      width: '30ch',
+    },
+  },
+  {
+    id: 'email',
+    accessor: (user: User) => user.email,
+    Header: 'Email',
+    disableSortBy: false,
+    disableGlobalFilter: false,
+  },
+  {
+    id: 'company',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: false,
+    bkColumnWidth: {
+      flex: 2,
+      width: '15ch',
+    },
+  },
+  {
+    id: 'joinDate',
+    accessor: (user: User) => user.joinDate,
+    Header: 'Joined',
+    Cell: ({ value }: { value: Date }) =>
+      value.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+    sortType: sortDateTime,
+    disableSortBy: false,
+    disableGlobalFilter: true,
+  },
+
+  {
+    id: 'dummy_1',
+    accessor: (user: User) => user.name,
+    Header: 'Name',
+    Cell: ({ value }: { value: string }) => value,
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'dummy_2',
+    accessor: (user: User) => user.email,
+    Header: 'Email',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'dummy_3',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+    bkColumnWidth: {
+      flex: 2,
+      width: '15ch',
+    },
+  },
+  {
+    id: 'dummy_4',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+    bkColumnWidth: {
+      flex: 2,
+      width: '15ch',
+    },
+  },
+  {
+    id: 'dummy_5',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'dummy_6',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'dummy_7',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'dummy_8',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'dummy_9',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'dummy_10',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'dummy_11',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'dummy_12',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'dummy_13',
+    accessor: (user: User) => user.company,
+    Header: 'Company',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+  },
+  {
+    id: 'actions',
+    accessor: '',
+    Header: 'Actions',
+    disableSortBy: false,
+    disableGlobalFilter: true,
+    className: 'user-table__column',
+    bkColumnWidth: {
+      flex: 0,
+      width: '8ch',
+    }
+  },  
+];
+
 // Stories
 export const Empty = {
   args: {
@@ -174,6 +343,33 @@ export const Empty = {
     items: generateData({ numItems: 0 }),
   },
   render: (args: dataTeableLazyTemplateProps) => <DataTableStreamTemplate {...args} />,
+};
+
+export const WithScroll = {
+  args: {
+    columns: columnDefinitionsMultiple,
+    items: generateData({ numItems: 6 }),
+  },
+  render: (args: dataTeableLazyTemplateProps) => <div style={{ width: '90vw' }}><DataTableStreamTemplate {...args} /></div>,
+};
+
+export const WithScrollAndStickyColumn = {
+  args: {
+    columns: columnDefinitionsMultiple,
+    items: generateData({ numItems: 6 }),
+    identifierColumnConfig: { columnId: 'name', sticky: true }
+  },
+  render: (args: dataTeableLazyTemplateProps) => <div style={{ width: '90vw' }}><DataTableStreamTemplate {...args} /></div>,
+};
+
+export const WithScrollAndStickyNameAndActions = {
+  args: {
+    columns: columnDefinitionsMultiple,
+    items: generateData({ numItems: 6 }),
+    identifierColumnConfig: { columnId: 'name', sticky: true },
+    actionColumnConfig: { columnId: 'actions', sticky: true }
+  },
+  render: (args: dataTeableLazyTemplateProps) => <div style={{ width: '90vw' }}><DataTableStreamTemplate {...args} /></div>,
 };
 
 export const SinglePage = {

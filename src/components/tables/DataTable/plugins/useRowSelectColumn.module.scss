@@ -10,4 +10,10 @@
     
     inline-size: 8ch;
   }
+  
+  th, td {
+    .bk-data-table-row-select__checkbox {
+      margin-right: bk.$spacing-3;
+    }
+  }
 }
