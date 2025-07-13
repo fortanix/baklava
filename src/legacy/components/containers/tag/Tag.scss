@@ -19,16 +19,16 @@
     }
     
     &.bkl-tag--dashed-border {
-      border: 0.1rem dashed bkl.$status-color-critical;
+      border: bkl.$sizing-hairline dashed bkl.$status-color-critical;
     }
     
     &.bkl-tag--small {
       font-size: bkl.$font-size-s;
     }
     
-    .bkl-button:has(.bkl-close) {
+    .bkl-close-button {
       align-self: center;
-      margin-inline-start: bkl.$sizing-xxs;
+      margin-inline-start: bkl.$sizing-xs;
     }
   }
 }

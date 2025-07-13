@@ -193,7 +193,7 @@ const packageConfig = {
     'react-is': '^17.0.2',
     'focus-trap-react': '^10.0.0',
     'react-textarea-autosize': '^8.3.2',
-    'react-toastify': '^7.0.4',
+    'react-toastify': '^11.0.5',
     'react-router-dom': '^5.3.0',
     '@popperjs/core': '^2.9.2',
     'react-popper': '^2.2.5',

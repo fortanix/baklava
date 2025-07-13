@@ -41,7 +41,7 @@ export const Tag = (props: TagProps) => {
       {...rest}
     >
       {children}
-      {onClose && <CloseButton neutral onClose={onClose} small={small}/>}
+      {onClose && <CloseButton onClose={onClose} small/>}
     </div>
   );
 };

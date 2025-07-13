@@ -207,6 +207,10 @@ const preview = {
                 'Tooltip',
                 'Dropdown',
               ],
+              'internal',
+              [
+                'CloseButton',
+              ],
             ],
           ],
         ],

@@ -9,28 +9,31 @@ import { Button } from '../buttons/Button.tsx';
 import './CloseButton.scss';
 
 
-export type CloseButtonProps = ComponentProps<'div'> & {
-  onClose?: undefined | (() => void),
+export type CloseButtonProps = Omit<ComponentProps<typeof Button>, 'children'> & {
   small?: undefined | boolean,
-  dark?: undefined | boolean,
   neutral?: undefined | boolean,
+  onClose?: undefined | (() => void),
 };
 export const CloseButton = (props: CloseButtonProps) => {
-  const { onClose = () => {}, className = '', small = false, dark = false, neutral = false } = props;
+  const { small = false, neutral = false, onClose, ...propsRest } = props;
   
   return (
-    <Button plain className={className} onClick={onClose} aria-label="Close">
+    <Button
+      plain
+      aria-label="Close"
+      className={cx(
+        'bkl-close-button',
+        {
+          'bkl-close-button--small': small,
+          'bkl-close-button--neutral': neutral,
+        },
+        propsRest.className,
+      )}
+      onClick={onClose}
+    >
       <span
         aria-hidden="true"
-        className={cx(
-          'bkl',
-          'bkl-close',
-          {
-            'bkl-close--small': small,
-            'bkl-close--dark': dark,
-            'bkl-close--neutral': neutral,       
-          }
-        )}
+        className="bkl-close-button__icon"
       />
     </Button>
   );

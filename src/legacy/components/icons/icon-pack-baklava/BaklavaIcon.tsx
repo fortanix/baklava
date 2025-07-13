@@ -6,5 +6,8 @@ import { SpriteIcon } from '../Icon.tsx';
 
 
 // Previously, `BaklavaIcon` was a wrapper around `SpriteIcon` that came preconfigured with Baklava icons.
-// Currently, `SpriteIcon` can do this on its own, so this has become a simple alias.
-export { SpriteIcon as BaklavaIcon };
+// Currently, `SpriteIcon` can do this on its own, so this has become a simple wrapper.
+type BaklavaIconProps = Omit<React.ComponentProps<typeof SpriteIcon>, 'name' | 'icon'> & { icon: string };
+export const BaklavaIcon = ({ icon, ...propsRest }: BaklavaIconProps) => {
+  return <SpriteIcon name={icon} {...propsRest}/>;
+};

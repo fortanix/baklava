@@ -3,35 +3,37 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
+import { classNames as cx, type ClassNameArgument } from '../../../util/component_util.tsx';
 
-import { classNames as cx, ClassNameArgument } from '../../../util/component_util';
+import { 
+  type ToastContainerProps,
+  type ToastContent,
+  type ToastOptions,
+  ToastContainer,
+  toast,
+} from 'react-toastify';
 
-import { toast, ToastContainer, ToastContainerProps, ToastContent, ToastOptions } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-import CloseButton from '../../internal/CloseButton';
-import { BaklavaIcon } from '../../../components/icons/icon-pack-baklava/BaklavaIcon';
-import { Tooltip } from '../tooltip/Tooltip';
-import { Button } from '../../buttons/Button';
+import { BaklavaIcon } from '../../../components/icons/icon-pack-baklava/BaklavaIcon.tsx';
+import { Tooltip } from '../tooltip/Tooltip.tsx';
+import { Button } from '../../buttons/Button.tsx';
 
 import './Notification.scss';
 
+
 type NotificationContent = ToastContent;
 
-type NotificationOptions = Omit<ToastOptions, 'bodyClassName'> & {
-  className?: ClassNameArgument,
-  bodyClassName?: ClassNameArgument,
-  actions?: React.ReactElement,
-  actionsInline?: React.ReactElement,
+type NotificationOptions = ToastOptions & {
+  className?: undefined | ClassNameArgument,
+  actions?: undefined | React.ReactElement,
+  actionsInline?: undefined | React.ReactElement,
 };
 
-export { NotificationContent, NotificationOptions };
+export type { NotificationContent, NotificationOptions };
 
 type CopyActionButton = {
   message: NotificationContent,
-  className?: string,
+  className?: undefined | ClassNameArgument,
 };
-
 export const CopyActionButton = ({ message, className }: CopyActionButton): React.ReactElement => {
   const defaultTooltipMessage = 'Copy message';
   const [tooltipMessage, setTooltipMessage] = React.useState(defaultTooltipMessage);
@@ -59,7 +61,7 @@ export const CopyActionButton = ({ message, className }: CopyActionButton): Reac
       {isStringMessage &&
         <Tooltip placement="top" content={tooltipMessage} className="bkl-notification__tooltip">
           <Button plain className={cx('bkl-notification__copy-button', className)} onClick={handleCopy}>
-            <BaklavaIcon icon="copy" />
+            <BaklavaIcon icon="copy"/>
           </Button>
         </Tooltip>
       }
@@ -69,10 +71,9 @@ export const CopyActionButton = ({ message, className }: CopyActionButton): Reac
 
 type NotificationMessageProps = {
   message: NotificationContent,
-  actions?: React.ReactElement,
-  actionsInline?: React.ReactElement,
+  actions?: undefined | React.ReactElement,
+  actionsInline?: undefined | React.ReactElement,
 };
-
 export const NotificationMessage = ({
   message,
   actions,
@@ -85,13 +86,14 @@ export const NotificationMessage = ({
   return (
     <>
       <div className="bkl-notification__message">
-        <p>{message}</p>
-        {actionsInline &&
-          <div className="bkl-notification__actions-inline">
-            {actionsInline}
-          </div>
-        }
+        {/* FIXME: according to the type, `message` can be a function, how should we handle this? */}
+        <p>{typeof message === 'function' ? '' : message}</p>
       </div>
+      {actionsInline &&
+        <div className="bkl-notification__actions-inline">
+          {actionsInline}
+        </div>
+      }
       {actions &&
         <div className="bkl-notification__actions">
           {actions}
@@ -102,29 +104,27 @@ export const NotificationMessage = ({
 };
 
 const success = (message: NotificationContent, options: NotificationOptions = {}) => {
-  const { className, bodyClassName, ...restOptions } = options;
+  const { className, ...restOptions } = options;
   return toast.success(message, {
     autoClose: 5000,
-    className: cx('bkl-notification--success', className),
-    bodyClassName: cx('bkl-notification__body', bodyClassName),
-    progressClassName: 'bkl-notification__progress-bar--success',
+    className: cx('bkl bkl-notification bkl-notification--success', className),
+    progressClassName: 'bkl-notification__progress-bar',
     ...restOptions,
   });
 };
 
 const info = (message: NotificationContent, options: NotificationOptions = {}) => {
-  const { className, bodyClassName, actions, actionsInline, ...restOptions } = options;
-  return toast.info(<NotificationMessage message={message} actions={actions} actionsInline={actionsInline} />, {
+  const { className, actions, actionsInline, ...restOptions } = options;
+  return toast.info(<NotificationMessage message={message} actions={actions} actionsInline={actionsInline}/>, {
     autoClose: 5000,
-    className: cx('bkl-notification--info', className),
-    bodyClassName: cx('bkl-notification__body', bodyClassName),
-    progressClassName: 'bkl-notification__progress-bar--info',
+    className: cx('bkl bkl-notification bkl-notification--info', className),
+    progressClassName: 'bkl-notification__progress-bar',
     ...restOptions,
   });
 };
 
 const error = (message: NotificationContent, options: NotificationOptions = {}) => {
-  const { className, bodyClassName, actions, actionsInline, ...restOptions } = options;
+  const { className, actions, actionsInline, ...restOptions } = options;
   return toast.error(
     <NotificationMessage
       message={message}
@@ -132,14 +132,13 @@ const error = (message: NotificationContent, options: NotificationOptions = {}) 
       actionsInline={actionsInline}
     />, {
       autoClose: 5000,
-      className: cx('bkl-notification--error', className),
-      bodyClassName: cx('bkl-notification__body', bodyClassName),
+      className: cx('bkl bkl-notification bkl-notification--error', className),
       progressClassName: 'bkl-notification__progress-bar--error',
       ...restOptions,
     });
 };
 
-const dismiss = (id?: string | number): boolean | void => toast.dismiss(id);
+const dismiss = (id?: string | number): void => toast.dismiss(id);
 
 export const notify = {
   success,
@@ -148,33 +147,22 @@ export const notify = {
   dismiss,
 };
 
-export type CloseToastButtonProps = {
-  closeToast?: (() => void)
-};
-
-const CloseToastButton = ({ closeToast }: CloseToastButtonProps) => (
-  <CloseButton dark onClose={closeToast} />
-);
-
 export type NotificationContainerProps = Omit<ToastContainerProps, 'className'> & {
-  className?: ClassNameArgument,
-  showProgressBar?: boolean,
+  className?: undefined | ClassNameArgument,
+  showProgressBar?: undefined | boolean,
 };
 export const NotificationContainer = (props: NotificationContainerProps) => {
   const {
-    className = '',
-    showProgressBar = false,
+    className,
+    showProgressBar = true,
     ...rest
   } = props;
   
   return (
     <ToastContainer
-      className={cx('bkl-notification', className)}
+      className={cx('bkl bkl-notification-container', className)}
       hideProgressBar={!showProgressBar}
-      closeButton={<CloseToastButton/>}
       {...rest}
     />
   );
 };
-
-export default NotificationContainer;

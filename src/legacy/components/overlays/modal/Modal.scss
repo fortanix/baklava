@@ -85,13 +85,6 @@
       inset-block-start: 50%;
       transform: translate(0%, -50%);
       inset-inline-end: 16px;
-      
-      .bkl-close {
-        &::before,
-        &::after {
-          background-color: bkl.$dark-color-1;
-        }
-      }
     }
   }
   
@@ -154,14 +147,6 @@
     .bkl-modal__header {
       color: bkl.$light-color-1;
       box-shadow: none;
-      .bkl-modal__close {
-        .bkl-close {
-          &::before,
-          &::after {
-            background-color: bkl.$light-color-1;
-          }
-        }
-      }
     }
   }
 }
