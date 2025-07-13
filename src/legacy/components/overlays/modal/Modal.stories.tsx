@@ -7,8 +7,9 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { LoremIpsum } from '../../../../util/storybook/LoremIpsum.tsx';
 
-import { Modal } from './Modal.tsx';
 import { Button } from '../../buttons/Button.tsx';
+
+import { Modal } from './Modal.tsx';
 
 
 type ModalArgs = React.ComponentProps<typeof Modal>;
@@ -18,7 +19,7 @@ const ModalWithTrigger = (props: Omit<React.ComponentProps<typeof Modal>, 'activ
   const [active, setActive] = React.useState(false);
   return (
     <>
-      <Button onClick={() => { setActive(true); }}>Open modal</Button>
+      <Button primary onClick={() => { setActive(true); }}>Open modal</Button>
       <Modal active={active} {...props} onClose={() => { setActive(false); props.onClose?.(); }}/>
     </>
   );
