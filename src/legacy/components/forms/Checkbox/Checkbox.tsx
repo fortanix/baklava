@@ -8,7 +8,8 @@ import { classNames as cx, ComponentProps } from '../../../util/component_util.t
 import './Checkbox.scss';
 
 
-export type CheckboxItemProps = Omit<ComponentProps<'label'>, 'onChange'> & {
+export type CheckboxItemProps = Omit<ComponentProps<'label'>, 'ref' | 'onChange'> & {
+  ref?: undefined | React.Ref<HTMLInputElement>,
   label?: undefined | React.ReactNode,
   value?: undefined | string,
   checked?: undefined | boolean,
@@ -16,20 +17,21 @@ export type CheckboxItemProps = Omit<ComponentProps<'label'>, 'onChange'> & {
   primary?: undefined | boolean,
   tabIndex?: undefined | number,
   onChange?: undefined | ((event: React.ChangeEvent<HTMLInputElement>) => void),
-  onkeyDown?: undefined | ((event: React.ChangeEvent<HTMLInputElement>) => void),
+  onKeyDown?: undefined | ((event: React.KeyboardEvent<HTMLInputElement>) => void),
 };
-const CheckboxItem = React.forwardRef<HTMLInputElement, CheckboxItemProps>((props, ref) => {
+const CheckboxItem = (props: CheckboxItemProps) => {
   const {
+    ref,
     label,
     value,
     checked = false,
-    className = '',
+    className,
     disabled = false,
     primary = false,
     onChange = () => {},
     id,
     children,
-    onkeyDown,
+    onKeyDown,
     tabIndex,
     ...propsRest
   } = props;
@@ -37,11 +39,16 @@ const CheckboxItem = React.forwardRef<HTMLInputElement, CheckboxItemProps>((prop
   return (
     <label
       htmlFor={id}
-      className={cx('bkl-checkbox', className, {
-        'bkl-checkbox--primary': primary,
-        'bkl-checkbox--disabled': disabled,
-        'bkl-checkbox--checked': checked,
-      })}
+      className={cx(
+        'bkl',
+        'bkl-checkbox',
+        className,
+        {
+          'bkl-checkbox--primary': primary,
+          'bkl-checkbox--disabled': disabled,
+          'bkl-checkbox--checked': checked,
+        },
+      )}
       {...propsRest}
     >
       <div className="bkl-checkbox__wrapper">
@@ -58,14 +65,13 @@ const CheckboxItem = React.forwardRef<HTMLInputElement, CheckboxItemProps>((prop
             // onChange(event.target.checked);
             onChange(event); // FIXME
           }}
-          onKeyDown={onkeyDown}
+          onKeyDown={onKeyDown}
         />
         {children ?? label ?? value}
       </div>
     </label>
   );
-});
-CheckboxItem.displayName = 'Checkbox';
+};
 
 export type CheckboxOption = {
   label: React.ReactNode,
@@ -76,11 +82,10 @@ export type CheckboxGroupProps = ComponentProps<'div'> & {
   selectedValues?: undefined | string[],
   onChange?: undefined | ((event: React.ChangeEvent<HTMLInputElement>) => void),
   options?: undefined | { [key: string]: CheckboxOption },
-  children?: undefined | React.ReactElement[],
+  children?: undefined | Array<React.ReactElement>,
   primary?: undefined | boolean,
   inline?: undefined | boolean,
 };
-
 const CheckboxGroup = (props: CheckboxGroupProps): React.ReactElement => {
   const {
     options = {},
@@ -93,8 +98,8 @@ const CheckboxGroup = (props: CheckboxGroupProps): React.ReactElement => {
     ...propsRest
   } = props;
   
-  const renderChildren = (checkboxGroupChildren: React.ReactElement[]): React.ReactNode => {
-    return React.Children.map(checkboxGroupChildren, (child: React.ReactElement) => {
+  const renderChildren = (checkboxGroupChildren: Array<React.ReactElement<CheckboxItemProps>>): React.ReactNode => {
+    return React.Children.map(checkboxGroupChildren, (child: React.ReactElement<CheckboxItemProps>) => {
       const {
         onChange: childOnChange,
         checked: childChecked,
@@ -105,7 +110,7 @@ const CheckboxGroup = (props: CheckboxGroupProps): React.ReactElement => {
         ? child
         : React.cloneElement(child, {
           onChange: childOnChange || onChange,
-          checked: childChecked || selectedValues.includes(childValue),
+          checked: childChecked || (typeof childValue === 'string' && selectedValues.includes(childValue)),
         });
     });
   };
@@ -113,13 +118,18 @@ const CheckboxGroup = (props: CheckboxGroupProps): React.ReactElement => {
   return (
     <div
       {...propsRest}
-      className={cx('bkl-checkbox-group', className, {
-        'bkl-checkbox-group--primary': primary,
-        'bkl-checkbox-group--inline': inline,
-      })}
+      className={cx(
+        'bkl',
+        'bkl-checkbox-group',
+        className,
+        {
+          'bkl-checkbox-group--primary': primary,
+          'bkl-checkbox-group--inline': inline,
+        },
+      )}
     >
       {children
-        ? renderChildren(children)
+        ? renderChildren(children as Array<React.ReactElement<CheckboxItemProps>>)
         :
           Object.entries(options).map(([key, { label, disabled }]) =>
             <CheckboxItem
@@ -135,7 +145,6 @@ const CheckboxGroup = (props: CheckboxGroupProps): React.ReactElement => {
     </div>
   );
 };
-CheckboxGroup.displayName = 'CheckboxGroup';
 
 export const Checkbox = {
   Item: CheckboxItem,

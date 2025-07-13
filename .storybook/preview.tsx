@@ -212,7 +212,7 @@ const preview = {
               'forms',
               [
                 'Label',
-                'CheckBox',
+                'Checkbox',
                 'Radio',
                 'Input',
                 'MaskedInput',

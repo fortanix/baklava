@@ -3,27 +3,23 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { classNames as cx, ComponentPropsWithoutRef } from '../../../util/component_util';
-import { Tooltip } from '../../overlays/tooltip/Tooltip';
+import { classNames as cx, ComponentProps } from '../../../util/component_util.tsx';
+import { Tooltip } from '../../overlays/tooltip/Tooltip.tsx';
 
 import './Label.scss';
 
 
-export type LabelProps = ComponentPropsWithoutRef<'span'> & {
+export type LabelProps = ComponentProps<'span'> & {
   labelValue: string,
-  labelKey?: string,
-  className?: string,
-  compact?: boolean,
-  dark?: boolean,
-  showTooltip?: boolean,
+  labelKey?: undefined | string,
+  compact?: undefined | boolean,
+  showTooltip?: undefined | boolean,
 };
 const LabelItem = (props: LabelProps): React.ReactElement => {
   const {
     labelValue,
     labelKey = undefined,
-    className = '',
     compact = false,
-    dark = false,
     showTooltip = false,
     ...propsRest
   } = props;
@@ -47,60 +43,51 @@ const LabelItem = (props: LabelProps): React.ReactElement => {
     <Tooltip className="bkl-label-tooltip" placement="top" content={showTooltip ? renderLabel() : ''}>
       <span
         tabIndex={showTooltip ? 0 : -1}
+        {...propsRest}
         className={cx(
           'bkl-label',
           { 'bkl-label--compact': compact },
-          { 'bkl-label--dark': dark },
-          className)
-        }
-        {...propsRest}
+          propsRest.className,
+        )}
       >
         {renderLabel()}
       </span>
     </Tooltip>
   );
 };
-LabelItem.displayName = 'LabelItem';
 
-export type LabelListProps = ComponentPropsWithoutRef<'div'> & {
+export type LabelListProps = ComponentProps<'div'> & {
   labels: Record<string, string>,
-  className?: string,
-  compact?: boolean,
-  dark?: boolean,
-  showTooltip?: boolean,
+  className?: undefined | string,
+  compact?: undefined | boolean,
+  showTooltip?: undefined | boolean,
 };
 const LabelList = (props: LabelListProps): React.ReactElement => {
   const {
     labels,
     className = '',
     compact = false,
-    dark = false,
     showTooltip = false,
-    ...restProps
+    ...propsRest
   } = props;
-
+  
   return (
     <div
       className={cx(
         'bkl-labels-list',
         { 'bkl-labels-list--compact': compact },
-        { 'bkl-labels-list--dark': dark },
         className)
       }
-      {...restProps}
+      {...propsRest}
     >
       {Object.entries(labels).map(([key, value]) =>
-        <LabelItem key={key} labelKey={key} labelValue={value} showTooltip={showTooltip} />,
+        <LabelItem key={key} labelKey={key} labelValue={value} showTooltip={showTooltip}/>,
       )}
     </div>
   );
 };
-LabelList.displayName = 'LabelList';
-
 
 export const Label = {
   Item: LabelItem,
   List: LabelList,
 };
-  
-export default Label;
