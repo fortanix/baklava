@@ -29,7 +29,7 @@ import * as Dropdown from '../../../components/overlays/dropdown/Dropdown';
 import { Tag } from '../../../components/containers/tag/Tag';
 import { useCombinedRefs } from '../../../util/hooks/useCombinedRefs';
 import { useFocus } from '../../../util/hooks/useFocus';
-import Checkbox from '../../../components/forms/Checkbox/Checkbox';
+import { Checkbox } from '../../../components/forms/Checkbox/Checkbox';
 import { Button } from '../../../components/buttons/Button';
 import { DateTimePicker } from '../../../components/forms/DateTime/DateTimePicker';
 import { Caption } from '../../../components/typography/caption/Caption';

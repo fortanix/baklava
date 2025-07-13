@@ -2,159 +2,160 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@use '../../../style/variables.scss' as *;
-@use '../../../style/util/z-index.scss' as z;
+@use '../../../style/variables.scss' as bkl;
 
 
-.bkl-checkbox {
-  display: block;
-  padding: $sizing-xxs $sizing-none;
-  outline: none;
-  cursor: pointer;
-  
-  &__wrapper {
-    position: relative;
-    display: flex;
-    padding-block-start: $sizing-xxs;
-    color: $brand-color-dark-1;
-    font-size: $font-size-s;
-    line-height: $line-height-3;
-    vertical-align: top;
-  }
-  
-  &__input {
-    margin-inline-end: $sizing-xs;
-    block-size: 1.8rem;
-    inline-size: 1.8rem;
-    margin-block-start: $sizing-none;
+@layer baklava.legacy {
+  .bkl-checkbox {
+    display: block;
+    padding: bkl.$sizing-xxs bkl.$sizing-none;
+    outline: none;
     cursor: pointer;
     
-    &:focus-visible {
-      outline: 2px solid $focus-outline-color;
-      outline-offset: 0;
+    .bkl-checkbox__wrapper {
+      position: relative;
+      display: flex;
+      padding-block-start: bkl.$sizing-xxs;
+      color: bkl.$brand-color-dark-1;
+      font-size: bkl.$font-size-s;
+      line-height: bkl.$line-height-3;
+      vertical-align: top;
     }
-  }
-  
-  &.pseudo-focused {
-    .bkl-checkbox__input {
-      outline: 2px solid $focus-outline-color;
-      outline-offset: 0;
-    }
-  }
-}
-
-.bkl-checkbox-group--primary, .bkl-checkbox--primary {
-  .bkl-checkbox__wrapper {
-    padding-inline-start: $sizing-l;
-  }
-  
-  .bkl-checkbox__wrapper::after, .bkl-checkbox__wrapper::before {
-    content: '';
-    position: absolute;
-    transition: border .25s, background-color .25s, width .20s .1s, height .20s .1s, top .20s .1s, left .20s .1s;
-  }
-  
-  .bkl-checkbox__wrapper::before {
-    inline-size: 0;
-    block-size: 0;
-    inset-block-start: 1rem;
-    inset-inline-start: 0.6rem;
-    z-index: 1;
-    border: $sizing-xxs solid transparent;
-    transform: rotateZ(37deg);
-    transform-origin: 100% 100%;
-  }
-  
-  .bkl-checkbox__wrapper::after {
-    inline-size: 2rem;
-    block-size: 2rem;
-    inset-block-start: 0.2rem;
-    inset-inline-start: 0;
-    z-index: 0;
-    border: 0.2rem solid $dark-color-4;
-    background-color: transparent;
-    border-radius: 0.2rem;
-  }
-  
-  // make opacity 0 instead of display: none for outline
-  .bkl-checkbox__input {
-    position: absolute;
-    opacity: 0;
-    inline-size: 0;
-    block-size: 0;
-    pointer-events: none;
-    appearance: none;
     
-    &:focus-visible {
+    .bkl-checkbox__input {
+      margin-inline-end: bkl.$sizing-xs;
+      block-size: 1.8rem;
+      inline-size: 1.8rem;
+      margin-block-start: bkl.$sizing-none;
+      cursor: pointer;
+      
+      &:focus-visible {
+        outline: 2px solid bkl.$focus-outline-color;
+        outline-offset: 0;
+      }
+    }
+    
+    &.pseudo-focused {
+      .bkl-checkbox__input {
+        outline: 2px solid bkl.$focus-outline-color;
+        outline-offset: 0;
+      }
+    }
+  }
+  
+  .bkl-checkbox-group--primary, .bkl-checkbox--primary {
+    .bkl-checkbox__wrapper {
+      padding-inline-start: bkl.$sizing-l;
+    }
+    
+    .bkl-checkbox__wrapper::after, .bkl-checkbox__wrapper::before {
+      content: '';
+      position: absolute;
+      transition: border .25s, background-color .25s, width .20s .1s, height .20s .1s, top .20s .1s, left .20s .1s;
+    }
+    
+    .bkl-checkbox__wrapper::before {
+      inline-size: 0;
+      block-size: 0;
+      inset-block-start: 1rem;
+      inset-inline-start: 0.6rem;
+      z-index: 1;
+      border: bkl.$sizing-xxs solid transparent;
+      transform: rotateZ(37deg);
+      transform-origin: 100% 100%;
+    }
+    
+    .bkl-checkbox__wrapper::after {
       inline-size: 2rem;
       block-size: 2rem;
       inset-block-start: 0.2rem;
-      inset-inline-start: -0.4rem;
+      inset-inline-start: 0;
+      z-index: 0;
+      border: 0.2rem solid bkl.$dark-color-4;
+      background-color: transparent;
       border-radius: 0.2rem;
-      opacity: 1;
+    }
+    
+    // make opacity 0 instead of display: none for outline
+    .bkl-checkbox__input {
+      position: absolute;
+      opacity: 0;
+      inline-size: 0;
+      block-size: 0;
+      pointer-events: none;
+      appearance: none;
+      
+      &:focus-visible {
+        inline-size: 2rem;
+        block-size: 2rem;
+        inset-block-start: 0.2rem;
+        inset-inline-start: -0.4rem;
+        border-radius: 0.2rem;
+        opacity: 1;
+      }
     }
   }
-}
-
-.bkl-checkbox-group--primary {
-  .bkl-checkbox--disabled {
-    opacity: 0.34;
-  }
   
-  .bkl-checkbox--checked .bkl-checkbox__wrapper::before {
-    inline-size: 0.8rem;
-    block-size: 1.6rem;
-    inset-block-start: 0.2rem;
-    inset-inline-start: 0;
-    border-block-start: 0.2rem solid transparent;
-    border-inline-start: 0.2rem solid transparent;
-    border-inline-end: 0.2rem solid $dark-color-1;
-    border-block-end: 0.2rem solid $dark-color-1;
-  }
-  
-  .bkl-checkbox--checked .bkl-checkbox__wrapper::after {
-    border: 0.2rem solid $accent-color-light-2;
-    background-color: $accent-color-light-2;
-  }
-}
-
-.bkl-checkbox--primary {
-  &.bkl-checkbox--disabled {
-    opacity: 0.34;
-  }
-  
-  &.bkl-checkbox--checked .bkl-checkbox__wrapper::before {
-    inline-size: 0.8rem;
-    block-size: 1.6rem;
-    inset-block-start: 0.2rem;
-    inset-inline-start: 0;
-    border-block-start: 0.2rem solid transparent;
-    border-inline-start: 0.2rem solid transparent;
-    border-inline-end: 0.2rem solid $dark-color-1;
-    border-block-end: 0.2rem solid $dark-color-1;
-  }
-  
-  &.bkl-checkbox--checked .bkl-checkbox__wrapper::after {
-    border: 0.2rem solid $accent-color-light-2;
-    background-color: $accent-color-light-2;
-  }
-}
-
-.bkl-checkbox-group {
-  position: relative;
-  
-  &.bkl-checkbox-group--inline {
-    display: flex;
-    flex-direction: column;
-    flex-direction: row;
-    flex-wrap: wrap;
-
-    .bkl-checkbox:not(:first-child) {
-      padding-inline-start: $sizing-5;
+  .bkl-checkbox-group--primary {
+    .bkl-checkbox--disabled {
+      opacity: 0.34;
     }
+    
+    .bkl-checkbox--checked .bkl-checkbox__wrapper::before {
+      inline-size: 0.8rem;
+      block-size: 1.6rem;
+      inset-block-start: 0.2rem;
+      inset-inline-start: 0;
+      border-block-start: 0.2rem solid transparent;
+      border-inline-start: 0.2rem solid transparent;
+      border-inline-end: 0.2rem solid bkl.$dark-color-1;
+      border-block-end: 0.2rem solid bkl.$dark-color-1;
+    }
+    
+    .bkl-checkbox--checked .bkl-checkbox__wrapper::after {
+      border: 0.2rem solid bkl.$accent-color-light-2;
+      background-color: bkl.$accent-color-light-2;
+    }
+  }
+  
+  .bkl-checkbox--primary {
+    &.bkl-checkbox--disabled {
+      opacity: 0.34;
+    }
+    
+    &.bkl-checkbox--checked .bkl-checkbox__wrapper::before {
+      inline-size: 0.8rem;
+      block-size: 1.6rem;
+      inset-block-start: 0.2rem;
+      inset-inline-start: 0;
+      border-block-start: 0.2rem solid transparent;
+      border-inline-start: 0.2rem solid transparent;
+      border-inline-end: 0.2rem solid bkl.$dark-color-1;
+      border-block-end: 0.2rem solid bkl.$dark-color-1;
+    }
+    
+    &.bkl-checkbox--checked .bkl-checkbox__wrapper::after {
+      border: 0.2rem solid bkl.$accent-color-light-2;
+      background-color: bkl.$accent-color-light-2;
+    }
+  }
 
-    .bkl-checkbox:not(:last-child) {
-      padding-inline-end: $sizing-5;
+  .bkl-checkbox-group {
+    position: relative;
+    
+    &.bkl-checkbox-group--inline {
+      display: flex;
+      flex-direction: column;
+      flex-direction: row;
+      flex-wrap: wrap;
+      
+      .bkl-checkbox:not(:first-child) {
+        padding-inline-start: bkl.$sizing-5;
+      }
+      
+      .bkl-checkbox:not(:last-child) {
+        padding-inline-end: bkl.$sizing-5;
+      }
     }
   }
 }

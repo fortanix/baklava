@@ -21,7 +21,7 @@ import type { FieldQuery, FilterQuery } from '../../../prefab/forms/MultiSearch/
 
 import { Tag } from '../../containers/tag/Tag';
 import { Caption } from '../../typography/caption/Caption';
-import Checkbox from '../checkbox/Checkbox';
+import { Checkbox } from '../Checkbox/Checkbox';
 import { SelectPlaceholderSkeleton } from './SelectPlaceholderSkeleton';
 import { Button } from '../../buttons/Button';
 import { useScroller } from '../../layout/util/Scroller';

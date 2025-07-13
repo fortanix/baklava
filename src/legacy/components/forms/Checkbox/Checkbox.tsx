@@ -2,21 +2,21 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { classNames as cx, ComponentPropsWithoutRef, ClassNameArgument } from '../../../util/component_util';
 import * as React from 'react';
+import { classNames as cx, ComponentProps } from '../../../util/component_util.tsx';
 
 import './Checkbox.scss';
 
 
-export type CheckboxItemProps = Omit<ComponentPropsWithoutRef<'label'>, 'onChange'> & {
-  label?: React.ReactNode,
-  value?: string,
-  checked?: boolean,
-  disabled?: boolean,
-  primary?: boolean,
-  tabIndex?: number,
-  onChange?: (evt: React.ChangeEvent<HTMLInputElement>) => void,
-  onkeyDown?: (evt: React.ChangeEvent<HTMLInputElement>) => void,
+export type CheckboxItemProps = Omit<ComponentProps<'label'>, 'onChange'> & {
+  label?: undefined | React.ReactNode,
+  value?: undefined | string,
+  checked?: undefined | boolean,
+  disabled?: undefined | boolean,
+  primary?: undefined | boolean,
+  tabIndex?: undefined | number,
+  onChange?: undefined | ((event: React.ChangeEvent<HTMLInputElement>) => void),
+  onkeyDown?: undefined | ((event: React.ChangeEvent<HTMLInputElement>) => void),
 };
 const CheckboxItem = React.forwardRef<HTMLInputElement, CheckboxItemProps>((props, ref) => {
   const {
@@ -54,9 +54,9 @@ const CheckboxItem = React.forwardRef<HTMLInputElement, CheckboxItemProps>((prop
           value={value}
           checked={checked}
           disabled={disabled}
-          onChange={evt => {
-            // onChange(evt.target.checked);
-            onChange(evt); // FIXME
+          onChange={event => {
+            // onChange(event.target.checked);
+            onChange(event); // FIXME
           }}
           onKeyDown={onkeyDown}
         />
@@ -69,16 +69,16 @@ CheckboxItem.displayName = 'Checkbox';
 
 export type CheckboxOption = {
   label: React.ReactNode,
-  disabled?: boolean,
+  disabled?: undefined | boolean,
 };
 
-export type CheckboxGroupProps = ComponentPropsWithoutRef<'div'> & {
-  selectedValues?: string[],
-  onChange?: (evt: React.ChangeEvent<HTMLInputElement>) => void,
-  options?: { [key: string]: CheckboxOption },
-  children?: React.ReactElement[],
-  primary?: boolean,
-  inline?: boolean,
+export type CheckboxGroupProps = ComponentProps<'div'> & {
+  selectedValues?: undefined | string[],
+  onChange?: undefined | ((event: React.ChangeEvent<HTMLInputElement>) => void),
+  options?: undefined | { [key: string]: CheckboxOption },
+  children?: undefined | React.ReactElement[],
+  primary?: undefined | boolean,
+  inline?: undefined | boolean,
 };
 
 const CheckboxGroup = (props: CheckboxGroupProps): React.ReactElement => {
@@ -100,7 +100,7 @@ const CheckboxGroup = (props: CheckboxGroupProps): React.ReactElement => {
         checked: childChecked,
         value: childValue,
       } = child.props;
-
+      
       return child.type !== CheckboxItem
         ? child
         : React.cloneElement(child, {
@@ -141,5 +141,3 @@ export const Checkbox = {
   Item: CheckboxItem,
   Group: CheckboxGroup,
 };
-
-export default Checkbox;
