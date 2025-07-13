@@ -205,6 +205,8 @@ const preview = {
               [
                 'Loader',
                 'Tooltip',
+                'Notification',
+                'Modal',
                 'Dropdown',
               ],
               'internal',

@@ -5,32 +5,32 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import FocusTrap from 'focus-trap-react';
-import { classNames as cx, ComponentPropsWithoutRef } from '../../../util/component_util';
+import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
 
-import { Backdrop } from '../../internal/Backdrop';
-import { CloseButton } from '../../internal/CloseButton';
-import { Loader } from '../loader/Loader';
-import { useScroller } from '../../layout/util/Scroller';
+import { Backdrop } from '../../internal/Backdrop.tsx';
+import { CloseButton } from '../../internal/CloseButton.tsx';
+import { Loader } from '../loader/Loader.tsx';
+import { useScroller } from '../../layout/util/Scroller.tsx';
 
 import './Modal.scss';
 
 
-export type ModalProps = Omit<ComponentPropsWithoutRef<'div'>, 'children'> & {
+export type ModalProps = Omit<ComponentProps<'div'>, 'children'> & {
   active: boolean,
   onClose: () => void,
-  title?: string,
+  title?: undefined | string,
   children: React.ReactNode,
-  actions?: React.ReactNode,
-  small?: boolean,
-  medium?: boolean,
-  large?: boolean,
-  slide?: boolean,
-  themeDark?: boolean,
-  hideFooter?: boolean,
-  fixedWidth?: boolean,
-  allowBackdropClose?: boolean,
-  autoHeight?: boolean,
-  isLoading?: boolean,
+  actions?: undefined | React.ReactNode,
+  small?: undefined | boolean,
+  medium?: undefined | boolean,
+  large?: undefined | boolean,
+  slide?: undefined | boolean,
+  themeDark?: undefined | boolean,
+  hideFooter?: undefined | boolean,
+  fixedWidth?: undefined | boolean,
+  allowBackdropClose?: undefined | boolean,
+  autoHeight?: undefined | boolean,
+  isLoading?: undefined | boolean,
 };
 export const Modal = (props: ModalProps) => {
   const scrollerProps = useScroller();
@@ -68,8 +68,8 @@ export const Modal = (props: ModalProps) => {
     };
   }, [active]);
   
-  const onBackdropClick = (evt: React.MouseEvent) => {
-    if (allowBackdropClose && backdropRef.current && evt.target === backdropRef.current) {
+  const onBackdropClick = (event: React.MouseEvent) => {
+    if (allowBackdropClose && backdropRef.current && event.target === backdropRef.current) {
       onClose();
     }
   };
@@ -105,6 +105,7 @@ export const Modal = (props: ModalProps) => {
           fallbackFocus: <div tabIndex={-1} />,
         }}
       >
+        {/** biome-ignore lint/a11y/noStaticElementInteractions: Key handler is an optional affordance. */}
         <div
           className={cx('bkl-modal', className, {
             'bkl-modal--active': active,
@@ -124,7 +125,7 @@ export const Modal = (props: ModalProps) => {
           </h4>
           {isLoading ?
             <div className="bkl-modal__loader">
-              <Loader />
+              <Loader delay={0}/>
             </div>
           :
             <>
@@ -143,5 +144,3 @@ export const Modal = (props: ModalProps) => {
   
   return ReactDOM.createPortal(renderModal(), document.body);
 };
-
-export default Modal;

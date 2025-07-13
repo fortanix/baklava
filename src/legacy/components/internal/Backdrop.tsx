@@ -12,32 +12,23 @@ export type BackdropProps = ComponentProps<'div'> & {
 };
 export const Backdrop = (props: BackdropProps) => {
   const {
-    children,
-    className,
     active,
-    onClick,
-    onMouseDown,
     scrollable,
-    onKeyDown,
+    ...propsRest
   } = props;
   
   return (
-    // biome-ignore lint/a11y/noStaticElementInteractions: Backdrop click is a visual-only affordance
     <div
+      {...propsRest}
       className={cx(
         'bkl',
         'bkl-backdrop',
-        className,
+        propsRest.className,
         {
           'bkl-backdrop--active': active,
           'bkl-backdrop--scrollable': scrollable,
         },
       )}
-      onClick={onClick}
-      onMouseDown={onMouseDown}
-      onKeyDown={onKeyDown}
-    >
-      {children}
-    </div>
+    />
   );
 };
