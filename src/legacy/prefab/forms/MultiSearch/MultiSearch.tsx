@@ -24,14 +24,14 @@ import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandl
 import { handleOptionKeyDown } from '../../../util/keyboardHandlers';
 
 import { BaklavaIcon } from '../../../components/icons/icon-pack-baklava/BaklavaIcon';
-import Input from '../../../components/forms/input/Input';
+import Input from '../../../components/forms/Input/Input';
 import * as Dropdown from '../../../components/overlays/dropdown/Dropdown';
 import { Tag } from '../../../components/containers/tag/Tag';
 import { useCombinedRefs } from '../../../util/hooks/useCombinedRefs';
 import { useFocus } from '../../../util/hooks/useFocus';
-import Checkbox from '../../../components/forms/checkbox/Checkbox';
+import Checkbox from '../../../components/forms/Checkbox/Checkbox';
 import { Button } from '../../../components/buttons/Button';
-import { DateTimePicker } from '../../../components/forms/datetime/DateTimePicker';
+import { DateTimePicker } from '../../../components/forms/DateTime/DateTimePicker';
 import { Caption } from '../../../components/typography/caption/Caption';
 
 import './MultiSearch.scss';

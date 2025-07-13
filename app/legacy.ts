@@ -41,19 +41,19 @@ export { Dropdown } from '../src/legacy/components/overlays/dropdown/Dropdown.ts
 export * from '../src/legacy/components/overlays/notification/Notification.tsx';
 
 // Forms
-export { Input } from '../src/legacy/components/forms/input/Input.tsx';
-export { MaskedInput } from '../src/legacy/components/forms/masked_input/MaskedInput.tsx';
-export { Checkbox } from '../src/legacy/components/forms/checkbox/Checkbox.tsx';
-export { Select, MultiSelect, LazySelect } from '../src/legacy/components/forms/select/Select.tsx';
-export { TextArea } from '../src/legacy/components/forms/textarea/TextArea.tsx';
-export { Radio } from '../src/legacy/components/forms/radio/Radio.tsx';
-export { DatePicker } from '../src/legacy/components/forms/datetime/DatePicker.tsx';
-export { DateTimePicker } from '../src/legacy/components/forms/datetime/DateTimePicker.tsx';
+export { Input } from '../src/legacy/components/forms/Input/Input.tsx';
+export { MaskedInput } from '../src/legacy/components/forms/MaskedInput/MaskedInput.tsx';
+export { Checkbox } from '../src/legacy/components/forms/Checkbox/Checkbox.tsx';
+export { Select, MultiSelect, LazySelect } from '../src/legacy/components/forms/Select/Select.tsx';
+export { TextArea } from '../src/legacy/components/forms/TextArea/TextArea.tsx';
+export { Radio } from '../src/legacy/components/forms/Radio/Radio.tsx';
+export { DatePicker } from '../src/legacy/components/forms/DateTime/DatePicker.tsx';
+export { DateTimePicker } from '../src/legacy/components/forms/DateTime/DateTimePicker.tsx';
 export { DateTimeRangePicker } from '../src/legacy/components/forms/datetime/DateTimeRangePicker.tsx';
 export * as YearMonthPicker from '../src/legacy/components/forms/datetime/YearMonthPicker.tsx';
-export * as MultiAssigner from '../src/legacy/components/forms/multi_assigner/assigner/MultiAssigner.tsx';
-export * as MultiAssignerEager from '../src/legacy/components/forms/multi_assigner/MultiAssignerEager.tsx';
-export { ColorPicker } from '../src/legacy/components/forms/color-picker/ColorPicker.tsx';
+export * as MultiAssigner from '../src/legacy/components/forms/MultiAssigner/assigner/MultiAssigner.tsx';
+export * as MultiAssignerEager from '../src/legacy/components/forms/MultiAssigner/MultiAssignerEager.tsx';
+export { ColorPicker } from '../src/legacy/components/forms/ColorPicker/ColorPicker.tsx';
 export { Label } from '../src/legacy/components/forms/label/Label.tsx';
 
 // Collection components

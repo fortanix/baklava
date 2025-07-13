@@ -13,7 +13,7 @@ import { classNames as cx, ClassNameArgument, type ComponentProps } from '../../
 import { handleOptionKeyDown, handleTriggerKeyDown } from '../../../util/keyboardHandlers.tsx';
 
 import { Button } from '../../buttons/Button.tsx';
-import { Checkbox } from '../../../components/forms/checkbox/Checkbox.tsx';
+import { Checkbox } from '../../../components/forms/Checkbox/Checkbox.tsx';
 
 import './Dropdown.scss';
 

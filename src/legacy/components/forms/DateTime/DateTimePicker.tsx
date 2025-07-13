@@ -6,8 +6,8 @@ import { classNames as cx, ComponentPropsWithoutRef } from '../../../util/compon
 import { format, getYear, getMonth, getDate, set, addHours, subHours } from 'date-fns';
 import * as React from 'react';
 
-import { Input } from '../input/Input';
-import { Select } from '../select/Select';
+import { Input } from '../Input/Input';
+import { Select } from '../Select/Select';
 import { DatePicker } from './DatePicker';
 import ReactDatePicker from 'react-datepicker';
 

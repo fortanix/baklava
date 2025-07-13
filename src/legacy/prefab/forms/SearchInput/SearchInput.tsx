@@ -6,7 +6,7 @@ import * as React from 'react';
 import { classNames as cx } from '../../../util/component_util';
 
 import { SpriteIcon as Icon } from '../../../components/icons/Icon';
-import Input from '../../../components/forms/input/Input';
+import Input from '../../../components/forms/Input/Input';
 
 import './SearchInput.scss';
 
