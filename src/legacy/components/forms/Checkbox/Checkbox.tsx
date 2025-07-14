@@ -3,7 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { classNames as cx, ComponentProps } from '../../../util/component_util.tsx';
+import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../util/component_util.tsx';
 
 import './Checkbox.scss';
 
@@ -14,7 +14,7 @@ export type CheckboxItemProps = Omit<ComponentProps<'label'>, 'ref' | 'onChange'
   value?: undefined | string,
   checked?: undefined | boolean,
   disabled?: undefined | boolean,
-  primary?: undefined | boolean,
+  inputClassName?: undefined | ClassNameArgument,
   tabIndex?: undefined | number,
   onChange?: undefined | ((event: React.ChangeEvent<HTMLInputElement>) => void),
   onKeyDown?: undefined | ((event: React.KeyboardEvent<HTMLInputElement>) => void),
@@ -27,7 +27,7 @@ const CheckboxItem = (props: CheckboxItemProps) => {
     checked = false,
     className,
     disabled = false,
-    primary = false,
+    inputClassName,
     onChange = () => {},
     id,
     children,
@@ -44,7 +44,7 @@ const CheckboxItem = (props: CheckboxItemProps) => {
         'bkl-checkbox',
         className,
         {
-          'bkl-checkbox--primary': primary,
+          'bkl-checkbox--primary': true,
           'bkl-checkbox--disabled': disabled,
           'bkl-checkbox--checked': checked,
         },
@@ -57,7 +57,7 @@ const CheckboxItem = (props: CheckboxItemProps) => {
           id={id}
           tabIndex={tabIndex}
           type="checkbox"
-          className="bkl-checkbox__input"
+          className={cx('bkl-checkbox__input', inputClassName)}
           value={value}
           checked={checked}
           disabled={disabled}
@@ -83,7 +83,6 @@ export type CheckboxGroupProps = ComponentProps<'div'> & {
   onChange?: undefined | ((event: React.ChangeEvent<HTMLInputElement>) => void),
   options?: undefined | { [key: string]: CheckboxOption },
   children?: undefined | Array<React.ReactElement>,
-  primary?: undefined | boolean,
   inline?: undefined | boolean,
 };
 const CheckboxGroup = (props: CheckboxGroupProps): React.ReactElement => {
@@ -92,7 +91,6 @@ const CheckboxGroup = (props: CheckboxGroupProps): React.ReactElement => {
     selectedValues = [],
     className = '',
     onChange = () => {},
-    primary = false,
     inline = false,
     children,
     ...propsRest
@@ -123,7 +121,7 @@ const CheckboxGroup = (props: CheckboxGroupProps): React.ReactElement => {
         'bkl-checkbox-group',
         className,
         {
-          'bkl-checkbox-group--primary': primary,
+          'bkl-checkbox-group--primary': true,
           'bkl-checkbox-group--inline': inline,
         },
       )}

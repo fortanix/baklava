@@ -7,6 +7,9 @@
 
 @layer baklava.legacy {
   .bkl-checkbox {
+    --bkl-checkbox-size: 1.8rem;
+    --bkl-checkbox-border-size: 0.2rem;
+    
     display: block;
     padding: bkl.$sizing-xxs bkl.$sizing-none;
     outline: none;
@@ -24,20 +27,13 @@
     
     .bkl-checkbox__input {
       margin-inline-end: bkl.$sizing-xs;
-      block-size: 1.8rem;
-      inline-size: 1.8rem;
+      block-size: var(--bkl-checkbox-border-size);
+      inline-size: var(--bkl-checkbox-border-size);
       margin-block-start: bkl.$sizing-none;
       cursor: pointer;
       
       &:focus-visible {
-        outline: 2px solid bkl.$focus-outline-color;
-        outline-offset: 0;
-      }
-    }
-    
-    &.pseudo-focused {
-      .bkl-checkbox__input {
-        outline: 2px solid bkl.$focus-outline-color;
+        outline: var(--bkl-checkbox-border-size) solid bkl.$focus-outline-color;
         outline-offset: 0;
       }
     }
@@ -66,17 +62,17 @@
     }
     
     .bkl-checkbox__wrapper::after {
-      inline-size: 2rem;
-      block-size: 2rem;
-      inset-block-start: 0.2rem;
+      inline-size: calc(var(--bkl-checkbox-size) + var(--bkl-checkbox-border-size));
+      block-size: calc(var(--bkl-checkbox-size) + var(--bkl-checkbox-border-size));
+      // inset-block-start: 0.2rem;
       inset-inline-start: 0;
       z-index: 0;
-      border: 0.2rem solid bkl.$dark-color-4;
+      border: var(--bkl-checkbox-border-size) solid bkl.$dark-color-4;
       background-color: transparent;
-      border-radius: 0.2rem;
+      border-radius: var(--bkl-checkbox-border-size);
     }
     
-    // make opacity 0 instead of display: none for outline
+    // Use `opacity: 0` instead of `display: none` for outline
     .bkl-checkbox__input {
       position: absolute;
       opacity: 0;
@@ -85,11 +81,11 @@
       pointer-events: none;
       appearance: none;
       
-      &:focus-visible {
-        inline-size: 2rem;
-        block-size: 2rem;
-        inset-block-start: 0.2rem;
-        inset-inline-start: -0.4rem;
+      &:focus-visible, &.pseudo-focus-visible {
+        inline-size: calc(var(--bkl-checkbox-size) + var(--bkl-checkbox-border-size));
+        block-size: calc(var(--bkl-checkbox-size) + var(--bkl-checkbox-border-size));
+        inset-block-start: 0.3rem;
+        inset-inline-start: 0;
         border-radius: 0.2rem;
         opacity: 1;
       }
@@ -104,16 +100,16 @@
     .bkl-checkbox--checked .bkl-checkbox__wrapper::before {
       inline-size: 0.8rem;
       block-size: 1.6rem;
-      inset-block-start: 0.2rem;
+      inset-block-start: var(--bkl-checkbox-border-size);
       inset-inline-start: 0;
-      border-block-start: 0.2rem solid transparent;
-      border-inline-start: 0.2rem solid transparent;
-      border-inline-end: 0.2rem solid bkl.$dark-color-1;
-      border-block-end: 0.2rem solid bkl.$dark-color-1;
+      border-block-start: var(--bkl-checkbox-border-size) solid transparent;
+      border-inline-start: var(--bkl-checkbox-border-size) solid transparent;
+      border-inline-end: var(--bkl-checkbox-border-size) solid bkl.$dark-color-1;
+      border-block-end: var(--bkl-checkbox-border-size) solid bkl.$dark-color-1;
     }
     
     .bkl-checkbox--checked .bkl-checkbox__wrapper::after {
-      border: 0.2rem solid bkl.$accent-color-light-2;
+      border: var(--bkl-checkbox-border-size) solid bkl.$accent-color-light-2;
       background-color: bkl.$accent-color-light-2;
     }
   }
@@ -126,16 +122,16 @@
     &.bkl-checkbox--checked .bkl-checkbox__wrapper::before {
       inline-size: 0.8rem;
       block-size: 1.6rem;
-      inset-block-start: 0.2rem;
+      inset-block-start: var(--bkl-checkbox-border-size);
       inset-inline-start: 0;
-      border-block-start: 0.2rem solid transparent;
-      border-inline-start: 0.2rem solid transparent;
-      border-inline-end: 0.2rem solid bkl.$dark-color-1;
-      border-block-end: 0.2rem solid bkl.$dark-color-1;
+      border-block-start: var(--bkl-checkbox-border-size) solid transparent;
+      border-inline-start: var(--bkl-checkbox-border-size) solid transparent;
+      border-inline-end: var(--bkl-checkbox-border-size) solid bkl.$dark-color-1;
+      border-block-end: var(--bkl-checkbox-border-size) solid bkl.$dark-color-1;
     }
     
     &.bkl-checkbox--checked .bkl-checkbox__wrapper::after {
-      border: 0.2rem solid bkl.$accent-color-light-2;
+      border: var(--bkl-checkbox-border-size) solid bkl.$accent-color-light-2;
       background-color: bkl.$accent-color-light-2;
     }
   }

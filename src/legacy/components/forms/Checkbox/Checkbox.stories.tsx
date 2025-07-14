@@ -40,7 +40,6 @@ export default {
   },
   argTypes: {},
   args: {
-    primary: true,
     children: Array.from({ length: 3 }, (_, i) => i).map(index =>
       <Checkbox.Item key={index} label={`Checkbox ${index + 1}`} value={`checkbox-${index}`}/>
     ),
@@ -50,3 +49,13 @@ export default {
 
 
 export const CheckboxStandard: Story = {};
+
+export const CheckboxWithFocus: Story = {
+  args: {
+    children: Array.from({ length: 3 }, (_, i) => i).map(index =>
+      <Checkbox.Item key={index} label={`Checkbox ${index + 1}`} value={`checkbox-${index}`}
+        inputClassName={index === 1 ? 'pseudo-focus-visible' : ''}
+      />
+    ),
+  },
+};
