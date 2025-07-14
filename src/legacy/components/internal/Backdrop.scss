@@ -30,11 +30,13 @@
       display: flex;
       flex-direction: column;
     }
-
+    
     &.bkl-backdrop--scrollable {
+      // Explanatio: this is not an interactive element
+      // stylelint-disable-next-line declaration-property-value-disallowed-list
       overflow-y: auto;
     }
-
+    
     &.bkl-backdrop--active:not(.bkl-backdrop--scrollable) {
       justify-content: center;
     }

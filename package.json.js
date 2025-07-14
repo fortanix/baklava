@@ -201,6 +201,10 @@ const packageConfig = {
   peerDependencies: {
     'react': '>= 19.0.0',
     'react-dom': '>= 19.0.0',
+    
+    // Legacy peer dependencies
+    'react-router-dom': '>= 5.0.0',
+    'react-toastify': '>= 11.0.0',
   },
   peerDependenciesMeta: {},
   optionalDependencies: {

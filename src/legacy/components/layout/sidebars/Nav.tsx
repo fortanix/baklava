@@ -4,7 +4,7 @@
 import $msg from 'message-tag';
 import cx from 'classnames/dedupe';
 import * as React from 'react';
-//import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { handleNavKeyDown } from '../../../util/keyboardHandlers';
 import { ComponentPropsWithoutRef } from '../../../util/component_util';
@@ -15,7 +15,6 @@ import { SidebarTooltip } from './SidebarTooltip';
 
 import './Nav.scss';
 
-const Link = props => <a {...props}/>; // TEMP
 
 type NavItemProps = ComponentPropsWithoutRef<'a'> & {
   key: string,

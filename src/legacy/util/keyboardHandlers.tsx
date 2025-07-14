@@ -5,21 +5,21 @@ import * as React from 'react';
 
 
 type TabDirection = 'vertical' | 'horizontal';
-type handleTabKeyDownArgs = {
+type HandleTabKeyDownArgs = {
   evt: React.KeyboardEvent<HTMLButtonElement>,
   index: number, // current index inside of tabs
-  tabs: HTMLButtonElement[],
+  tabs: Array<HTMLButtonElement>,
   direction?: TabDirection,
   handleExtraKeyDown?: (evt: React.KeyboardEvent<HTMLButtonElement>) => void,
 };
-export const handleTabKeyDown = (args : handleTabKeyDownArgs) => {
+export const handleTabKeyDown = (args: HandleTabKeyDownArgs) => {
   const { evt, index, tabs = [], direction = 'horizontal', handleExtraKeyDown } = args;
-
+  
   const horizontal = direction === 'horizontal';
   const vertical = direction === 'vertical';
-
+  
   let newIndex = index;
-
+  
   switch (evt.key) {
     case 'ArrowRight':
     case 'ArrowDown':
@@ -52,14 +52,14 @@ export const handleTabKeyDown = (args : handleTabKeyDownArgs) => {
 };
 
 type RadioDirection = 'vertical' | 'horizontal';
-type handleRadioKeyDownArgs = {
+type HandleRadioKeyDownArgs = {
   evt: React.KeyboardEvent<HTMLInputElement>,
-  index: number, // current index inside of radio items
-  radioItems: HTMLInputElement[],
+  index: number, // Current index inside of radio items
+  radioItems: Array<HTMLInputElement>,
   direction?: RadioDirection,
   handleExtraKeyDown?: (evt: React.KeyboardEvent<HTMLInputElement>) => void,
 };
-export const handleRadioKeyDown = (args: handleRadioKeyDownArgs) => {
+export const handleRadioKeyDown = (args: HandleRadioKeyDownArgs) => {
   const { evt, index, radioItems = [], direction = 'horizontal', handleExtraKeyDown } = args;
 
   const horizontal = direction === 'horizontal';
@@ -102,7 +102,7 @@ export const handleRadioKeyDown = (args: handleRadioKeyDownArgs) => {
   }
 };
 
-type handleNavKeyDownArgs = {
+type HandleNavKeyDownArgs = {
   evt: React.KeyboardEvent<HTMLAnchorElement>,
   index: number, // current index inside of navs
   navItems: HTMLAnchorElement[],
@@ -110,28 +110,28 @@ type handleNavKeyDownArgs = {
   toggleSidebar: () => void,
   handleExtraKeyDown?: (evt: React.KeyboardEvent<HTMLAnchorElement>) => void,
 };
-export const handleNavKeyDown = (args: handleNavKeyDownArgs) => {
+export const handleNavKeyDown = (args: HandleNavKeyDownArgs) => {
   const { evt, index, navItems = [], direction = 'vertical', toggleSidebar, handleExtraKeyDown } = args;
-
+  
   const horizontal = direction === 'horizontal';
   const vertical = direction === 'vertical';
-
+  
   let newIndex = index;
-
+  
   const findNextFocus = (direction: 1 | -1) => {
-    // check whether next item is disabled or not. Keep searching next item until finding not disabled item.
+    // Check whether next item is disabled or not. Keep searching next item until finding not disabled item.
     for (let i = 1; i <= navItems.length; i++) {
       const nextIndex = (index + direction * i + navItems.length) % navItems.length;
-
+      
       if (navItems[nextIndex]?.getAttribute('aria-disabled') === 'false') {
         return nextIndex;
       }
     }
-
-    // fallback
+    
+    // Fallback
     return (index + direction + navItems.length) % navItems.length;
   };
-
+  
   switch (evt.key) {
     case 'ArrowRight':
     case 'ArrowDown':
@@ -150,47 +150,47 @@ export const handleNavKeyDown = (args: handleNavKeyDownArgs) => {
       }
       break;
   }
-
+  
   navItems[newIndex]?.focus();
-
+  
   if (handleExtraKeyDown) {
     handleExtraKeyDown(evt);
   }
 };
 
 export const findFirstFocusableIndex = (options: HTMLButtonElement[] | HTMLInputElement[]) => {
-  // check whether next item is disabled or not. Keep searching next item until finding not disabled item.
+  // Check whether next item is disabled or not. Keep searching next item until finding not disabled item.
   for (let i = 0; i <= options.length; i++) {
     if (!options[i]?.disabled && options[i].role !== 'presentation') {
       return i;
     }
   }
   
-  // fallback
+  // Fallback
   return 0;
 };
 
 const findLastFocusableIndex = (options: HTMLButtonElement[] | HTMLInputElement[]) => {
-  // check whether next item is disabled or not. Keep searching next item until finding not disabled item.
+  // Check whether next item is disabled or not. Keep searching next item until finding not disabled item.
   for (let i = options.length - 1; i >= 0; i--) {
     if (!options[i]?.disabled && options[i].role !== 'presentation') {
       return i;
     }
   }
   
-  // fallback
+  // Fallback
   return options.length - 1;
 };
 
 // Ref: https://www.w3.org/WAI/ARIA/apg/patterns/combobox/examples/combobox-select-only/
-type handleTriggerKeyDownArgs = {
+type HandleTriggerKeyDownArgs = {
   evt: React.KeyboardEvent<HTMLButtonElement | HTMLInputElement>,
   options: HTMLButtonElement[] | HTMLInputElement[],
   onOpen: () => void,
   onClose: () => void,
   handleExtraKeyDown?: (evt: React.KeyboardEvent<HTMLButtonElement | HTMLInputElement>) => void,
 };
-export const handleTriggerKeyDown = (args: handleTriggerKeyDownArgs) => {
+export const handleTriggerKeyDown = (args: HandleTriggerKeyDownArgs) => {
   const {
     evt,
     options = [],
@@ -199,7 +199,7 @@ export const handleTriggerKeyDown = (args: handleTriggerKeyDownArgs) => {
     handleExtraKeyDown
   } = args;
   const pressedKey = evt.key; // NOTE: store key in variable before overwritten
-
+  
   const findFocusedIndex = () => {
     const selectedIndex = options.findIndex(item => {
       if (item instanceof HTMLButtonElement) {
@@ -211,18 +211,18 @@ export const handleTriggerKeyDown = (args: handleTriggerKeyDownArgs) => {
       return selectedIndex;
     }
     
-    // if item is not selected, find the first focusable item
+    // If item is not selected, find the first focusable item
     return findFirstFocusableIndex(options);
   };
   
   if (pressedKey === 'Escape') {
     onClose();
   }
-
+  
   if (['ArrowDown', 'ArrowUp', 'Enter', ' ', 'Home', 'End'].includes(pressedKey)) {
     evt.preventDefault();
     onOpen();
-     
+    
     // Use setTimeout as it takes time to read ref on select option
     setTimeout(() => {
       let focusedIndex = 0;
@@ -244,13 +244,13 @@ export const handleTriggerKeyDown = (args: handleTriggerKeyDownArgs) => {
       options[focusedIndex]?.focus();
     }, 0);
   }
-
+  
   if (handleExtraKeyDown) {
     handleExtraKeyDown(evt);
   }
 };
 
-type handleOptionKeyDownArgs = {
+type HandleOptionKeyDownArgs = {
   evt: React.KeyboardEvent<HTMLElement>,
   index: number, // current index inside of options
   options: HTMLElement[],
@@ -259,20 +259,20 @@ type handleOptionKeyDownArgs = {
   onSelect?: () => void,
   handleExtraKeyDown?: (evt: React.KeyboardEvent<HTMLElement>) => void,
 };
-export const handleOptionKeyDown = (args: handleOptionKeyDownArgs) => {
+export const handleOptionKeyDown = (args: HandleOptionKeyDownArgs) => {
   const { evt, index, options = [], triggerElement, onClose, onSelect, handleExtraKeyDown } = args;
   
   const findNextFocus = (direction: 1 | -1) => {
     // check whether next item is disabled or not. Keep searching next item until finding not disabled item.
     let nextIndex = index + direction;
-
+    
     while (nextIndex >= 0 && nextIndex < options.length) {
       if (options[nextIndex] && !options[nextIndex]?.disabled && options[nextIndex]?.role !== 'presentation') {
         return nextIndex;
       }
       nextIndex += direction;
     }
-
+    
     // fallback
     return index;
   };
@@ -287,7 +287,7 @@ export const handleOptionKeyDown = (args: handleOptionKeyDownArgs) => {
     onClose();
     triggerElement?.focus();
   }
-
+  
   if (['ArrowDown', 'ArrowUp', 'Home', 'End', 'PageDown', 'PageUp'].includes(evt.key)) {
     evt.preventDefault();
     const VISIBLE_STEP = 10;
@@ -314,7 +314,7 @@ export const handleOptionKeyDown = (args: handleOptionKeyDownArgs) => {
         focusedIndex = Math.max(index - VISIBLE_STEP, firstFocusableIndex);
         break;
     }
-
+    
     options[focusedIndex]?.focus();
   }
   

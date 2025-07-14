@@ -85,14 +85,6 @@ export default defineConfig({
   // https://victorlillo.dev/blog/react-typescript-vite-component-library
   build: {
     emptyOutDir: true,
-    /*
-    rollupOptions: {
-      input: {
-        baklava: path.resolve(__dirname, 'app/main.tsx'),
-      },
-    },
-    */
-    
     copyPublicDir: false, // Do not copy `./public` into the output dir
     outDir: path.resolve(__dirname, 'dist'),
     lib: {
@@ -106,7 +98,12 @@ export default defineConfig({
     },
     rollupOptions: {
       // Do not include React in the output (rely on the consumer to bring their own version)
-      external: ['react', 'react/jsx-runtime'],
+      external: ['react', 'react/jsx-runtime', 'react-router-dom'],
+      
+      // input: {
+      //   baklava: path.resolve(__dirname, 'app/main.tsx'),
+      // },
+      
       // input: Object.fromEntries(
       //   glob.sync('src/**/*.{ts,tsx}', {
       //     ignore: ['src/**/*.d.ts'],
