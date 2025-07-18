@@ -4,7 +4,8 @@
 
 @layer baklava.overrides {
   .bk-util-scroller {
-    overscroll-behavior: none;
+    // Prevents cursor from scrolling vertical, once entered a scroll container with horizontal scroll
+    // overscroll-behavior: none;
     
     &.bk-util-scroller--vertical {
       @supports not (overflow-block: auto) {
