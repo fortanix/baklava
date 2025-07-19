@@ -16,9 +16,23 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import react from '@vitejs/plugin-react';
 
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   root: './app', // Run with `app` as root, so that files like `index.html` are by default referenced from there
   base: './', // Assets base URL
+  
+  test: {
+    root: '.', // Override the default `root` of `./app`
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./tests/setup-rtl.ts'],
+    deps: {
+      optimizer: {
+        web: {
+          exclude: [], // Don't exclude React from bundling in tests
+        },
+      },
+    },
+  },
   
   assetsInclude: ['**/*.md'], // Add `.md` as static asset type
   
@@ -98,7 +112,7 @@ export default defineConfig({
     },
     rollupOptions: {
       // Do not include React in the output (rely on the consumer to bring their own version)
-      external: ['react', 'react/jsx-runtime', 'react-router-dom'],
+      external: mode === 'build' ? ['react', 'react/jsx-runtime', 'react-router-dom'] : [],
       
       // input: {
       //   baklava: path.resolve(__dirname, 'app/main.tsx'),
@@ -121,4 +135,4 @@ export default defineConfig({
       // ),
     },
   },
-});
+}));

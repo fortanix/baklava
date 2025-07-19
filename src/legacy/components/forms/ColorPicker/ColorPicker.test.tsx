@@ -2,20 +2,22 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import React, { useState as useStateMock } from 'react';
+import { vi, describe, test, expect } from 'vitest';
+
+import { useState as useStateMock } from 'react';
 import * as TL from '@testing-library/react';
 
-import ColorPicker from './ColorPicker';
+import ColorPicker from './ColorPicker.tsx';
 
 // Mock state.
-jest.mock('react', () => ({
+vi.mock('react', async () => ({
   // Returns the actual module instead of a mock,
   // bypassing all checks on whether the module should receive 
   // a mock implementation or not.
-  ...jest.requireActual('react'),
-  useState: jest.fn(),
+  ...await vi.importActual('react'),
+  useState: vi.fn(),
 }));
-const setState = jest.fn();
+const setState = vi.fn();
 
 const defaultPreset = {
   'accentColor': '#007A8D',
@@ -34,7 +36,7 @@ describe('ColorPicker component', () => {
   });
   
   test('should render multiple colors', () => {
-    const handleOnChange = jest.fn();
+    const handleOnChange = vi.fn();
     const { container, ...queries } = TL.render(
       <ColorPicker.Group
         colorPreset={defaultPreset}
@@ -53,7 +55,7 @@ describe('ColorPicker component', () => {
   });
 
   test('should be able to select other colors', () => {
-    const handleOnChange = jest.fn();
+    const handleOnChange = vi.fn();
     const { container, ...queries } = TL.render(
       <ColorPicker.Group
         colorPreset={defaultPreset}
@@ -77,7 +79,7 @@ describe('ColorPicker component', () => {
   });
 
   test('should render multi color picker', () => {
-    const handleOnChange = jest.fn();
+    const handleOnChange = vi.fn();
     const { container, ...queries } = TL.render(
       <ColorPicker.Group
         colorPreset={defaultPreset}
@@ -105,7 +107,7 @@ describe('ColorPicker component', () => {
   });
 
   test('should select multi color picker by default', async () => {
-    const handleOnChange = jest.fn();
+    const handleOnChange = vi.fn();
     useStateMock.mockImplementation(() => ['#000', setState]);
 
     const { container, ...queries } = TL.render(

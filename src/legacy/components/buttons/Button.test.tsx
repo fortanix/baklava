@@ -2,23 +2,23 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import * as React from 'react';
+import { vi, describe, test, beforeEach, expect } from 'vitest';
 import * as TL from '@testing-library/react';
 
-import { Button } from './Button';
+import { Button } from './Button.tsx';
 
 
 describe('Button', () => {
   beforeEach(TL.cleanup);
   
-  test('should render a button', () => {
+  test('should render a button', async () => {
     const { container, ...queries } = TL.render(
       <Button data-label="button">hello</Button>
     );
     const element = queries.getByTestId('button');
     
-    expect(element).toBeInstanceOf(HTMLButtonElement);
-    expect(element).toHaveTextContent('hello');
+    await expect(element).toBeInstanceOf(HTMLButtonElement);
+    await expect(element).toHaveTextContent('hello');
   });
   
   test('should accept a custom class name', () => {
@@ -27,7 +27,7 @@ describe('Button', () => {
         <Button data-label="button1" className="foo">hello</Button>
         
         {/* Delete the `bkl-button` class */}
-        <Button data-label="button2" className={[{ 'bkl-button': false }, 'foo']}>hello</Button>
+        <Button data-label="button2" className={[{ 'bkl': false, 'bkl-button': false }, 'foo']}>hello</Button>
       </>
     );
     
@@ -39,7 +39,7 @@ describe('Button', () => {
   });
   
   test('should trigger `onClick` on click event', () => {
-    const handleClick = jest.fn();
+    const handleClick = vi.fn();
     
     const { container, ...queries } = TL.render(
       <Button data-label="button" onClick={handleClick}>hello</Button>
@@ -52,7 +52,7 @@ describe('Button', () => {
   });
   
   test('should trigger `onClick` on Enter key', () => {
-    const handleClick = jest.fn();
+    const handleClick = vi.fn();
     
     const { container, ...queries } = TL.render(
       <Button data-label="button" onClick={handleClick}>hello</Button>
@@ -68,7 +68,7 @@ describe('Button', () => {
     TL.fireEvent.focus(element);
     element.focus(); // Just fireEvent.focus is not enough, see: https://github.com/testing-library/jest-dom/issues/53
     expect(element).toHaveFocus();
-    TL.fireEvent.keyDown(container.firstChild, { key: 'Enter', keyCode: 13 });
+    TL.fireEvent.keyDown(container.firstChild!, { key: 'Enter', keyCode: 13 });
     expect(handleClick.mock.calls.length).toBe(1);
   });
   
@@ -82,7 +82,7 @@ describe('Button', () => {
       TL.cleanup();
       const promise = makePromise();
       
-      const handleClick = jest.fn()
+      const handleClick = vi.fn()
         .mockImplementation(() => promise);
       
       const { container, rerender, ...queries } = TL.render(

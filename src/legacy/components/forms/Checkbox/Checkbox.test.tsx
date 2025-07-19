@@ -2,17 +2,18 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import * as React from 'react';
+import { vi, describe, test, expect } from 'vitest';
+
 import * as TL from '@testing-library/react';
 
-import Checkbox from './Checkbox';
+import { Checkbox } from './Checkbox.tsx';
 
 
 describe('Checkbox', () => {
   beforeEach(TL.cleanup);
   
   test('should render a checkbox', () => {
-    const handleOnChange = jest.fn();
+    const handleOnChange = vi.fn();
     const { container, ...queries } = TL.render(
       <Checkbox.Item
         data-label="checkbox"
@@ -32,7 +33,7 @@ describe('Checkbox', () => {
   });
 
   test('should render a checkbox group', () => {
-    const handleOnChange = jest.fn();
+    const handleOnChange = vi.fn();
     const { container, ...queries } = TL.render(
       <Checkbox.Group data-label="checkbox-group" onChange={handleOnChange}>
         <Checkbox.Item data-label="checkbox-item-1" value="value1" label="Option 1"/>

@@ -11,13 +11,17 @@ import './Layout.scss';
 export type LayoutContextT = {
   sidebarCollapsed: boolean,
 };
+export type LayoutContextApi = LayoutContextT & {
+  update: (stateUpdated: Partial<LayoutContextT>) => void,
+};
 
 export const initLayoutState = (state = {}) => ({
   sidebarCollapsed: false,
+  update: () => {},
   ...state,
 });
 
-export const LayoutContext = React.createContext<LayoutContextT>(initLayoutState());
+export const LayoutContext = React.createContext<LayoutContextApi>(initLayoutState());
 
 export type LayoutProps = ComponentPropsWithoutRef<'main'> & {
   children: React.ReactNode,
@@ -28,7 +32,7 @@ export const Layout = Object.assign(
   (props: LayoutProps) => {
     const { className, children, state = initLayoutState(), updateState, ...propsRest } = props;
     
-    const layoutState = React.useMemo(() => ({
+    const layoutState = React.useMemo<LayoutContextApi>(() => ({
       ...state,
       update: (stateUpdated: Partial<LayoutContextT>) => { updateState?.({ ...state, ...stateUpdated }); },
     }), [state, updateState]);

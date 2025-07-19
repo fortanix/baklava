@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.node.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.test.tsbuildinfo",
+    // "types": [
+    //   "vitest/globals",
+    //   "@testing-library/jest-dom",
+    // ],
+    "jsx": "react-jsx",
+  },
+  "include": [
+    "tests/**/*",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx",
+  ],
+  "exclude": [
+    "tests/installation/**/*",
+  ]
+}

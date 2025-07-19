@@ -56,6 +56,7 @@
     "lint:style": "stylelint 'src/**/*.scss'",
     "lint:script": "biome lint",
     "lint": "npm run lint:style; npm run lint:script",
+    "test:unit": "vitest",
     "test": "npm run check:types && npm run lint:style && npm run verify verify:source",
     "test-ui": "vitest --ui",
     "coverage": "vitest run --coverage",
@@ -83,6 +84,9 @@
     "@biomejs/biome": "^2.0.5",
     "vitest": "^3.1.4",
     "@vitest/ui": "^3.1.4",
+    "jsdom": "^26.1.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/jest-dom": "^6.6.3",
     "axe-playwright": "^2.0.3",
     "@ngneat/falso": "^7.3.0",
     "storybook": "^8.6.14",
@@ -134,7 +138,9 @@
   },
   "peerDependencies": {
     "react": ">= 19.0.0",
-    "react-dom": ">= 19.0.0"
+    "react-dom": ">= 19.0.0",
+    "react-router-dom": ">= 5.0.0",
+    "react-toastify": ">= 11.0.0"
   },
   "peerDependenciesMeta": {},
   "optionalDependencies": {},

@@ -24,7 +24,10 @@
     
     // Type checking
     //"typeRoots": [],
-    //"types": [],
+    "types": [
+      "vitest/globals",
+      "@testing-library/jest-dom",
+    ],
     "lib": ["ESNext"], // Library declaration files to include (globally)
     "skipLibCheck": true, // Do not type check declaration files (for performance)
     "noErrorTruncation": true,
@@ -44,9 +47,6 @@
   "include": [
     "vite.config.ts",
     "scripts/**/*",
-    "tests/**/*",
   ],
-  "exclude": [
-    "tests/installation/**/*",
-  ]
+  "exclude": []
 }

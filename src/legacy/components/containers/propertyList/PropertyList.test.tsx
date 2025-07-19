@@ -1,10 +1,12 @@
 /* Copyright (c) Fortanix, Inc.
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-import * as React from 'react';
+
+import { describe, test, expect } from 'vitest';
 import * as TL from '@testing-library/react';
 
-import { PropertyList } from './PropertyList';
+import { PropertyList } from './PropertyList.tsx';
+
 
 describe('PropertyList', () => {
   beforeEach(TL.cleanup);

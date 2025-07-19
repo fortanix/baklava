@@ -78,8 +78,8 @@ const packageConfig = {
     'lint': 'npm run lint:style; npm run lint:script',
     
     // Test
-    // Note: use `vitest run --root=. src/...` to run a single test file
-    //'test:unit': 'vitest run --root=.', // Need to specify `--root=.` since the vite root is set to `./app`
+    // Note: use `vitest src/...` to run a single test file
+    'test:unit': 'vitest',
     'test': 'npm run check:types && npm run lint:style && npm run verify verify:source', // TODO: add `lint:script`, `test:unit`
     'test-ui': 'vitest --ui',
     'coverage': 'vitest run --coverage',
@@ -129,6 +129,9 @@ const packageConfig = {
     // Testing
     'vitest': '^3.1.4',
     '@vitest/ui': '^3.1.4',
+    'jsdom': '^26.1.0', // Needed for `@testing-library/react`
+    '@testing-library/react': '^16.3.0',
+    '@testing-library/jest-dom': '^6.6.3',
     'axe-playwright': '^2.0.3',
     '@ngneat/falso': '^7.3.0',
     

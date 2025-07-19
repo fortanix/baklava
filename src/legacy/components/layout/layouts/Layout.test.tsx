@@ -2,10 +2,10 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import * as React from 'react';
+import { describe, test, expect } from 'vitest';
 import * as TL from '@testing-library/react';
 
-import Layout from './Layout';
+import { Layout } from './Layout.tsx';
 
 
 describe('Layout', () => {
@@ -13,7 +13,7 @@ describe('Layout', () => {
   
   test('should render a layout', () => {
     const { container, ...queries } = TL.render(
-      <Layout data-label="layout">hello</Layout>
+      <Layout data-label="layout" state={{ sidebarCollapsed: false }} updateState={() => {}}>hello</Layout>
     );
     const element = queries.getByTestId('layout');
     
@@ -24,7 +24,7 @@ describe('Layout', () => {
   
   test('should provide a context', () => {
     const layoutState = Layout.initLayoutState({ sidebarCollapsed: true });
-    const updateLayoutState = jest.fn();
+    const updateLayoutState = vi.fn();
     
     const { container, ...queries } = TL.render(
       <Layout data-label="layout"
@@ -33,7 +33,8 @@ describe('Layout', () => {
       >
         <Layout.Context.Consumer>
           {({ update: updateLayoutState, ...layoutState }) =>
-            <div
+            <button
+              type="button"
               data-label="layout-consumer"
               data-sidebar-collapsed={layoutState.sidebarCollapsed}
               onClick={() => {
