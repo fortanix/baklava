@@ -12,7 +12,7 @@
   letter-spacing: 0.57px;
   color: bkl.$accent-color;
   @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-semibold);
-  font-size: bkl.$font-size-m;
+  font-size: bkl.$font-size-xs;
 }
 
 @layer baklava.legacy {
@@ -24,11 +24,12 @@
     align-items: center;
     
     block-size: fit-content;
-    padding: bkl.$sizing-xs bkl.$sizing-m;
+    line-height: 1.6rem;
+    padding: bkl.$sizing-xs bkl.$sizing-s;
     
     background-color: transparent;
     border: 1px solid transparent;
-    border-radius: bkl.$border-radius-xl;
+    border-radius: 0.4rem;
     opacity: 1;
 
     @include font-button();
@@ -57,7 +58,7 @@
     
     &.bkl-button--primary {
       background-color: bkl.$accent-color;
-      color: bkl.$dark-color-1;
+      color: var(--bkl-button-text-default);
       
       &:hover {
         background-color: var(--bkl-button-hover-color);
@@ -70,7 +71,7 @@
     }
     
     &.bkl-button--large {
-      padding: (bkl.$sizing-xs * 1.5) bkl.$sizing-m;
+      padding: bkl.$sizing-xs bkl.$sizing-m;
     }
     
     &.bkl-button--block {
@@ -80,11 +81,10 @@
     
     &.bkl-button--light {
       border: 1px solid bkl.$accent-color;
-      color: bkl.$accent-color;
+      color: var(--bkl-button-text-default);
       
       &:hover {
         border: 1px solid var(--bkl-button-hover-color);
-        color: bkl.$brand-color-dark-1;
       }
       
       &:disabled, &.disabled {
@@ -106,6 +106,7 @@
     cursor: pointer;  
     display: inline-block;
     block-size: fit-content;
+    //line-height: 1.6rem;
     padding: 0;
     border: 0;
     background: unset;

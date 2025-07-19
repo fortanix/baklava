@@ -1095,12 +1095,14 @@ export const LazySelect = <D extends object, P extends unknown = undefined>(prop
         onClick={onContainerClick}
         ref={setReferenceElement}
         onKeyDown={evt => {
-          handleTriggerKeyDown({
-            evt,
-            options: optionsRef?.current,
-            onOpen: () => setIsActive(true),
-            onClose: () => setIsActive(false),
-          });
+          if (searchQuery !== '' && evt.key !== ' ') {
+            handleTriggerKeyDown({
+              evt,
+              options: optionsRef?.current,
+              onOpen: () => setIsActive(true),
+              onClose: () => setIsActive(false),
+            });
+          }
         }}
       >
         {renderTags()}

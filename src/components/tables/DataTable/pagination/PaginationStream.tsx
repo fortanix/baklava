@@ -37,7 +37,6 @@ export const PaginationStreamPager = ({ pageSizeOptions }: PaginationStreamPager
         onPress={() => { table.previousPage(); }}
         nonactive={!table.canPreviousPage}
       >
-        <Icon icon="caret-left"/>
         Previous
       </Button>
       
@@ -48,7 +47,6 @@ export const PaginationStreamPager = ({ pageSizeOptions }: PaginationStreamPager
         nonactive={!table.canNextPage}
       >
         Next
-        <Icon icon="caret-right"/>
       </Button>
     </div>
   );
