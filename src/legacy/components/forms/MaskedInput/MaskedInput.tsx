@@ -3,27 +3,28 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { classNames as cx, ComponentPropsWithoutRef } from '../../../util/component_util';
+import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
 
-import { SpriteIcon as Icon } from '../../icons/Icon';
-
-import { Tooltip } from '../../overlays/tooltip/Tooltip';
-import { Button } from '../../buttons/Button';
-import { Input } from '../input/Input';
+import { BaklavaIcon } from '../../icons/icon-pack-baklava/BaklavaIcon.tsx';
+import { Tooltip } from '../../overlays/tooltip/Tooltip.tsx';
+import { Button } from '../../buttons/Button.tsx';
+import { Input } from '../Input/Input.tsx';
 
 import './MaskedInput.scss';
 
 
-const EyeIcon = import('../../../assets/icons/eye.svg?sprite');
-const EyeClosedIcon = import('../../../assets/icons/eye-closed.svg?sprite');
-
-
-type MaskedInputPropsType = ComponentPropsWithoutRef<typeof Input>;
+type MaskedInputPropsType = ComponentProps<typeof Input>;
 export const MaskedInput = (props: MaskedInputPropsType) => {
   const [secretVisible, setSecretVisible] = React.useState(false);
   
   return (
     <div className="bkl-masked-input">
+      <Input
+        autoComplete="new-password"
+        {...props}
+        type={secretVisible ? 'text' : 'password'}
+        className={cx('bkl-masked-input__input', props.className)}
+      />
       <Tooltip content={secretVisible ? 'Hide input' : 'Show input'}>
         <Button
           plain
@@ -31,19 +32,12 @@ export const MaskedInput = (props: MaskedInputPropsType) => {
           onClick={() => { setSecretVisible(!secretVisible); }}
           aria-label="Toggle input visibility"
         >
-          <Icon
-            name={secretVisible ? 'eye' : 'eye-closed'}
-            icon={secretVisible ? EyeIcon : EyeClosedIcon}
+          <BaklavaIcon
             className="bkl-masked-input__visibility-icon"
+            icon={secretVisible ? 'eye' : 'eye-closed'}
           />
         </Button>
       </Tooltip>
-      <Input
-        autoComplete="new-password"
-        {...props}
-        type={secretVisible ? 'text' : 'password'}
-        className={cx('bkl-masked-input__input', props.className)}
-      />
     </div>
   );
 };
