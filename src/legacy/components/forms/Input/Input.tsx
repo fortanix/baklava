@@ -3,24 +3,25 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { BaklavaIcon } from '../../icons/icon-pack-baklava/BaklavaIcon';
+import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
 
-import { classNames as cx, ComponentPropsWithoutRef } from '../../../util/component_util';
-
-import { Button } from '../../buttons/Button';
+import { BaklavaIcon } from '../../icons/icon-pack-baklava/BaklavaIcon.tsx';
+import { Button } from '../../buttons/Button.tsx';
 
 import './Input.scss';
 
 
-export type InputProps = ComponentPropsWithoutRef<'input'> & {
-  toggleVisibility?: boolean, // Whether to display a toggle to show/hide the content (e.g. for password fields)
+export type InputProps = ComponentProps<'input'> & {
+  /** Whether to display a toggle to show/hide the content (e.g. for password fields). */
+  toggleVisibility?: undefined | boolean,
 };
-export const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
+export const Input = (props: InputProps) => {
   const {
-    className = '',
+    ref,
+    className,
     toggleVisibility = false,
     type = 'text',
-    ...restProps
+    ...propsRest
   } = props;
   
   const [isTextVisible, setIsTextVisible] = React.useState(!toggleVisibility);
@@ -28,13 +29,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref)
   const toggleSecretVisible = () => {
     setIsTextVisible(!isTextVisible);
   };
-
+  
   return (
-    <div className={cx('bkl-input', className)}>
+    <div className={cx('bkl bkl-input', className)}>
       <input
         ref={ref}
         type={isTextVisible ? type : 'password'}
-        {...restProps}
+        {...propsRest}
         className={cx('bkl-input__input', {
           'bkl-input__input--toggle-visibility': toggleVisibility,
         })}
@@ -54,8 +55,4 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref)
       }
     </div>
   );
-});
-
-Input.displayName = 'Input';
-
-export default Input;
+};

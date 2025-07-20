@@ -19,11 +19,62 @@ export default {
     layout: 'centered',
   },
   argTypes: {},
-  args: {
-    defaultValue: 'Example',
-  },
+  args: {},
   render: (args) => <Input {...args}/>,
 } satisfies Meta<InputArgs>;
 
 
 export const InputStandard: Story = {};
+
+export const InputWithPlaceholder: Story = {
+  args: {
+    placeholder: 'Some placeholder',
+  }
+};
+
+export const InputWithText: Story = {
+  args: {
+    defaultValue: 'Text input',
+  },
+};
+
+export const InputWithFocus: Story = {
+  args: {
+    autoFocus: true,
+    defaultValue: 'Text input',
+  },
+};
+
+export const InputDisabled: Story = {
+  args: {
+    disabled: true,
+    defaultValue: 'I should be disabled',
+  },
+};
+
+export const InputWithTypeNumber: Story = { args: { type: 'number', defaultValue: '123' } };
+export const InputWithTypePassword: Story = { args: { type: 'password', defaultValue: 'some-password' } };
+
+export const InputWithVisibilityToggle: Story = {
+  args: {
+    toggleVisibility: true,
+    defaultValue: 'This input value should be masked by default',
+  },
+};
+
+const InputControlledC = (props: React.ComponentProps<typeof Input>) => {
+  const [value, setValue] = React.useState(props.defaultValue);
+  
+  return (
+    <>
+      <p>Value: {value}</p>
+      <Input {...props} value={value} onChange={event => { setValue(event.target.value); }}/>
+    </>
+  );
+};
+export const InputControlled: Story = {
+  args: {
+    defaultValue: 'Controlled input',
+  },
+  render: args => <InputControlledC {...args}/>,
+};

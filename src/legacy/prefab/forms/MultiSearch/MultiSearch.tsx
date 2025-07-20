@@ -24,7 +24,7 @@ import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandl
 import { handleOptionKeyDown } from '../../../util/keyboardHandlers';
 
 import { BaklavaIcon } from '../../../components/icons/icon-pack-baklava/BaklavaIcon';
-import Input from '../../../components/forms/Input/Input';
+import { Input } from '../../../components/forms/Input/Input';
 import * as Dropdown from '../../../components/overlays/dropdown/Dropdown';
 import { Tag } from '../../../components/containers/tag/Tag';
 import { useCombinedRefs } from '../../../util/hooks/useCombinedRefs';
