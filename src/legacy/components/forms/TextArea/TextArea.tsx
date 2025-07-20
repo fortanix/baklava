@@ -3,27 +3,28 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { classNames as cx, ClassNameArgument } from '../../../util/component_util';
+import { classNames as cx, type ClassNameArgument } from '../../../util/component_util.tsx';
 
-import TextAreaAutosize, { TextareaAutosizeProps } from 'react-textarea-autosize';
+import TextAreaAutosize, { type TextareaAutosizeProps } from 'react-textarea-autosize';
 
 import './TextArea.scss';
 
 
 export type TextAreaProps = Omit<TextareaAutosizeProps, 'className' | 'onFocus' | 'onBlur'> & {
-  className?: ClassNameArgument,
-  onFocus?: (event: React.FocusEvent<HTMLTextAreaElement>) => void,
-  onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void,
-  maxRows?: number,
-  minRows?: number,
-  primary?: boolean,
-  fixedHeight?: boolean,
+  className?: undefined | ClassNameArgument,
+  onFocus?: undefined | ((event: React.FocusEvent<HTMLTextAreaElement>) => void),
+  onBlur?: undefined | ((event: React.FocusEvent<HTMLTextAreaElement>) => void),
+  maxRows?: undefined | number,
+  minRows?: undefined | number,
+  /** @deprecated */
+  primary?: undefined | boolean,
+  fixedHeight?: undefined | boolean,
 };
-export const TextArea = (props: TextAreaProps): React.ReactElement => {
+export const TextArea = (props: TextAreaProps) => {
   const ref = React.useRef<HTMLTextAreaElement>(null);
   
   const {
-    className = '',
+    className,
     onFocus = () => {},
     onBlur = () => {},
     maxRows,
@@ -58,7 +59,7 @@ export const TextArea = (props: TextAreaProps): React.ReactElement => {
   return (
     <div
       className={cx('bkl-textarea', className, {
-        'bkl-textarea--primary': primary,
+        'bkl-textarea--primary': true, // Always true
         'bkl-textarea--fixed-height': fixedHeight,
       })}
     >
@@ -74,6 +75,3 @@ export const TextArea = (props: TextAreaProps): React.ReactElement => {
     </div>
   );
 };
-TextArea.displayName = 'TextArea';
-
-export default TextArea;
