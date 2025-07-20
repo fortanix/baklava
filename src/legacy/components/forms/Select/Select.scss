@@ -7,66 +7,129 @@
 @use '../../../style/util/z-index.scss' as z;
 @use '../../../style/accessibility.scss' as accessibility;
 
-.bkl-select {
-  position: relative;
-  
-  &__container {
-    inline-size: 100%;
-    @include accessibility.focus-outset;
-  }
-  
-  &__input {
-    cursor: pointer;
+@layer baklava.legacy {
+  .bkl-select {
     position: relative;
-    display: block;
-    inline-size: 100%;
-    block-size: 3rem;
-    min-block-size: 4rem;
-    padding: bkl.$sizing-s bkl.$sizing-l bkl.$sizing-s bkl.$sizing-s;
     
-    outline: none;
-    border: 0.2rem solid bkl.$neutral-color-1;
-    border-radius: bkl.$sizing-2;
-    background-color: bkl.$light-color-2;
-    
-    color: bkl.$dark-color-1;
-    @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
-    font-size: bkl.$font-size-s;
-    line-height: bkl.$line-height-2;
-    
-    &:hover {
-      background-color: bkl.$light-color-1;
-      border-color: var(--bkl-border-color-1);
-      outline: none;
-    }
-     
-    &.bkl-select__input--active {
-      background-color: bkl.$light-color-1;
-      border-color: bkl.$accent-color-light-2;
-    }
-    
-    &.bkl-select__input--changed {
-      color: bkl.$brand-color-dark-1;
-    }
-    
-    &.bkl-select__input--disabled {
-      cursor: initial;
-      color: var(--bkl-placeholder-color);
+    .bkl-select__container {
+      inline-size: 100%;
+      @include accessibility.focus-outset;
       
-      &::placeholder {
-        color: var(--bkl-placeholder-color);
+      .bkl-select__input {
+        cursor: pointer;
+        position: relative;
+        display: block;
+        inline-size: 100%;
+        block-size: 3rem;
+        min-block-size: 4rem;
+        padding: bkl.$sizing-s bkl.$sizing-l bkl.$sizing-s bkl.$sizing-s;
+        
+        outline: none;
+        border: 0.2rem solid bkl.$neutral-color-1;
+        border-radius: bkl.$sizing-2;
+        background-color: bkl.$light-color-2;
+        
+        color: bkl.$dark-color-1;
+        @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+        font-size: bkl.$font-size-s;
+        line-height: bkl.$line-height-2;
+        
+        &:hover {
+          background-color: bkl.$light-color-1;
+          border-color: var(--bkl-border-color-1);
+          outline: none;
+        }
+        
+        &.bkl-select__input--active {
+          background-color: bkl.$light-color-1;
+          border-color: bkl.$accent-color-light-2;
+        }
+        
+        &.bkl-select__input--changed {
+          color: bkl.$brand-color-dark-1;
+        }
+        
+        &.bkl-select__input--disabled {
+          cursor: initial;
+          color: var(--bkl-placeholder-color);
+          
+          &::placeholder {
+            color: var(--bkl-placeholder-color);
+          }
+        }
+        
+        &::placeholder {
+          color: var(--bkl-placeholder-color);
+          @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+          font-size: bkl.$font-size-s;
+          line-height: bkl.$line-height-3;
+        }
+      }
+      
+      .bkl-select__caret {
+        pointer-events: none;
+        position: absolute;
+        inset-inline-end: 1rem;
+        inset-block-start: calc(50% - 0.5rem); // FIXME: use flex box to center this instead
+        margin: auto bkl.$sizing-xs;
+        z-index: 1;
+        color: bkl.$neutral-color-3;
+        
+        &.bkl-select__caret--disabled {
+          opacity: 0.34;
+        }
       }
     }
     
-    &::placeholder {
-      color: var(--bkl-placeholder-color);
-      @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
-      font-size: bkl.$font-size-s;
-      line-height: bkl.$line-height-3;
+    &.bkl-lazy-select {
+      .bkl-lazy-select__search-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: bkl.$sizing-1;
+        background-color: bkl.$light-color-2;
+        border: 0.2rem solid bkl.$neutral-color-1;
+        border-radius: bkl.$border-radius-ms;
+        inline-size: 100%;
+        @include accessibility.focus-outset;
+              
+        &:hover {
+          border-color: bkl.$accent-color;
+        }
+
+        &.bkl-lazy-select__search-container--active {
+          background-color: bkl.$light-color-1;
+          border-color: bkl.$accent-color-light-2;
+          &.bkl-lazy-select__search-container-with-tags {
+            padding: bkl.$sizing-1 bkl.$sizing-0 bkl.$sizing-0 bkl.$sizing-3;
+
+            .bkl-select__input {
+              border-radius: unset
+            }
+          }
+
+          .bkl-select__input {
+            cursor: default;
+            border-radius: bkl.$border-radius-ms;
+          }
+        }
+
+        .bkl-lazy-select__tag {
+          align-self: center;
+        }
+
+        .bkl-select__input {
+          flex: 1;
+          inline-size: unset;
+          border: none;
+          border-radius: unset;
+        }
+      }
     }
   }
   
-  &__dropdown {
+  
+  // Note: the dropdown is portaled into the body, so this selector cannot be nested inside `.bkl-select`
+  .bkl-select__dropdown {
     list-style-type: none;
     display: block;
     margin: bkl.$sizing-0;
@@ -97,8 +160,8 @@
     &:focus {
       outline: none;
     }
-
-    &--lazy {
+    
+    &.bkl-select--lazy {
       min-block-size: 8rem;
       max-block-size: 28rem;
 
@@ -116,126 +179,53 @@
         }
       }
     }
-  }
-
-  &__option {
-    clear: both;
-    cursor: pointer;
-    padding: bkl.$sizing-0;
-    border-radius: bkl.$sizing-2;
     
-    text-align: start;
-    line-height: bkl.$line-height-3;
-    color: bkl.$dark-color-1;
-    @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
-    font-size: bkl.$font-size-s;
-    text-transform: none;
-    inline-size: 100%;
-    
-    &:focus-visible {
-      outline: 2px solid bkl.$focus-outline-color;
-      outline-offset: 0;
-    }  
-        
-    &:not(.bkl-select__option--disabled):hover {
-      background-color: bkl.$light-color-2;
-    }
-
-    &--default {
-      display: block;
-      padding: bkl.$sizing-s bkl.$sizing-s;
-    }
-    
-    &--disabled {
-      opacity: 0.34;
-      user-select: none;
-      cursor: initial;
-    }
-  }
-
-  &__caret {
-    position: absolute;
-    inset-inline-end: 1rem;
-    inset-block-start: calc(50% - 0.5rem); // FIXME: use flex box to center this instead
-    margin: auto bkl.$sizing-xs;
-    z-index: 1;
-    color: bkl.$neutral-color-3;
-    
-    &.bkl-select__caret--disabled {
-      opacity: 0.34;
-    }
-  }
-
-  &.bkl-lazy-select {
-    .bkl-lazy-select__search-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: bkl.$sizing-1;
-      background-color: bkl.$light-color-2;
-      border: 0.2rem solid bkl.$neutral-color-1;
-      border-radius: bkl.$border-radius-ms;
+    .bkl-select__option {
+      clear: both;
+      cursor: pointer;
+      padding: bkl.$sizing-0;
+      border-radius: bkl.$sizing-2;
+      
+      text-align: start;
+      line-height: bkl.$line-height-3;
+      color: bkl.$dark-color-1;
+      @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+      font-size: bkl.$font-size-s;
+      text-transform: none;
       inline-size: 100%;
-      @include accessibility.focus-outset;
-            
-      &:hover {
-        border-color: bkl.$accent-color;
+      
+      &:focus-visible {
+        outline: 2px solid bkl.$focus-outline-color;
+        outline-offset: 0;
       }
-
-      &.bkl-lazy-select__search-container--active {
-        background-color: bkl.$light-color-1;
-        border-color: bkl.$accent-color-light-2;
-        &.bkl-lazy-select__search-container-with-tags {
-          padding: bkl.$sizing-1 bkl.$sizing-0 bkl.$sizing-0 bkl.$sizing-3;
-
-          .bkl-select__input {
-            border-radius: unset
-          }
-        }
-
-        .bkl-select__input {
-          cursor: default;
-          border-radius: bkl.$border-radius-ms;
-        }
+      
+      &:not(.bkl-select__option--disabled):hover {
+        background-color: bkl.$light-color-2;
       }
-
-      .bkl-lazy-select__tag {
-        align-self: center;
+      
+      &.bkl-select__option--disabled {
+        cursor: not-allowed;
+        opacity: 0.34;
+        user-select: none;
       }
-
-      .bkl-select__input {
-        flex: 1;
-        inline-size: unset;
-        border: none;
-        border-radius: unset;
+      
+      &.bkl-select__option--default {
+        display: block;
+        padding: bkl.$sizing-s bkl.$sizing-s;
       }
     }
   }
-}
-
-// TODO: To be removed when icons are added to codebase
-.bkl-caret {
-  border: solid bkl.$neutral-color-3;
-  border-width: 0 .2rem .2rem 0;
-  display: inline-block;
-  padding: .3rem;
   
-  &.bkl-caret--right {
-    transform: rotate(-45deg);
-    transform: rotate(-45deg);
-  }
-  
-  &.bkl-caret--left {
-    transform: rotate(135deg);
-    transform: rotate(135deg);
-  }
-  
-  &.bkl-caret--up {
-    transform: rotate(-135deg);
-    transform: rotate(-135deg);
-  }
-  
-  &.bkl-caret--down {
-    transform: rotate(45deg);
-    transform: rotate(45deg);
+  // TODO: To be removed when icons are added to codebase
+  .bkl-caret {
+    border: solid bkl.$neutral-color-3;
+    border-width: 0 .2rem .2rem 0;
+    display: inline-block;
+    padding: .3rem;
+    
+    &.bkl-caret--right { transform: rotate(-45deg); }
+    &.bkl-caret--left { transform: rotate(135deg); }
+    &.bkl-caret--up { transform: rotate(-135deg); }
+    &.bkl-caret--down { transform: rotate(45deg); }
   }
 }

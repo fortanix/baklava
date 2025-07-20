@@ -8,7 +8,7 @@ import * as React from 'react';
  * Hook that handles clicks outside of the passed ref
  */
 export const useOutsideClickHandler = (
-  ref: React.RefObject<HTMLElement> | React.RefObject<HTMLElement>[],
+  ref: React.RefObject<HTMLElement> | Array<React.RefObject<null | HTMLElement>>,
   onOutsideClick: (event?: MouseEvent) => void,
 ) => {
   const hasClickedOutside = (ref: React.RefObject<HTMLElement>, event: MouseEvent) => {

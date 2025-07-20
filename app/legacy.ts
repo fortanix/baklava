@@ -41,20 +41,22 @@ export { Dropdown } from '../src/legacy/components/overlays/dropdown/Dropdown.ts
 export * from '../src/legacy/components/overlays/notification/Notification.tsx';
 
 // Forms
+export { Label } from '../src/legacy/components/forms/Label/Label.tsx';
+export { Checkbox } from '../src/legacy/components/forms/Checkbox/Checkbox.tsx';
+export { Radio } from '../src/legacy/components/forms/Radio/Radio.tsx';
 export { Input } from '../src/legacy/components/forms/Input/Input.tsx';
 export { MaskedInput } from '../src/legacy/components/forms/MaskedInput/MaskedInput.tsx';
-export { Checkbox } from '../src/legacy/components/forms/Checkbox/Checkbox.tsx';
-export { Select, MultiSelect, LazySelect } from '../src/legacy/components/forms/Select/Select.tsx';
 export { TextArea } from '../src/legacy/components/forms/TextArea/TextArea.tsx';
-export { Radio } from '../src/legacy/components/forms/Radio/Radio.tsx';
+export { Select } from '../src/legacy/components/forms/Select/Select.tsx';
+export { MultiSelect } from '../src/legacy/components/forms/Select/MultiSelect/MultiSelect.tsx';
+export { LazySelect } from '../src/legacy/components/forms/Select/LazySelect/LazySelect.tsx';
 export { DatePicker } from '../src/legacy/components/forms/DateTime/DatePicker.tsx';
 export { DateTimePicker } from '../src/legacy/components/forms/DateTime/DateTimePicker.tsx';
-export { DateTimeRangePicker } from '../src/legacy/components/forms/datetime/DateTimeRangePicker.tsx';
-export * as YearMonthPicker from '../src/legacy/components/forms/datetime/YearMonthPicker.tsx';
+export { DateTimeRangePicker } from '../src/legacy/components/forms/DateTime/DateTimeRangePicker.tsx';
+export * as YearMonthPicker from '../src/legacy/components/forms/DateTime/YearMonthPicker.tsx';
 export * as MultiAssigner from '../src/legacy/components/forms/MultiAssigner/assigner/MultiAssigner.tsx';
 export * as MultiAssignerEager from '../src/legacy/components/forms/MultiAssigner/MultiAssignerEager.tsx';
 export { ColorPicker } from '../src/legacy/components/forms/ColorPicker/ColorPicker.tsx';
-export { Label } from '../src/legacy/components/forms/label/Label.tsx';
 
 // Collection components
 export { Pagination } from '../src/components/tables/DataTable/pagination/Pagination.tsx';

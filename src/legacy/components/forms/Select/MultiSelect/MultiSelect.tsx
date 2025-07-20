@@ -3,19 +3,23 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { createPortal } from 'react-dom';
+import * as ReactDOM from 'react-dom';
 import * as Popper from 'react-popper';
 import * as PopperJS from '@popperjs/core';
 
-import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
-import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandler.ts';
-import { useCombinedRefs } from '../../../util/hooks/useCombinedRefs.ts';
-import { handleOptionKeyDown, handleTriggerKeyDown } from '../../../util/keyboardHandlers.tsx';
+import { classNames as cx, type ComponentProps } from '../../../../util/component_util.tsx';
+import { useOutsideClickHandler } from '../../../../util/hooks/useOutsideClickHandler.ts';
+import { useCombinedRefs } from '../../../../util/hooks/useCombinedRefs.ts';
+import {
+  handleOptionKeyDown,
+  handleTriggerKeyDown
+} from '../../../../util/keyboardHandlers.tsx';
 
-import { useScroller } from '../../layout/util/Scroller.tsx';
-import { Button } from '../../buttons/Button.tsx';
+import { useScroller } from '../../../layout/util/Scroller.tsx';
+import { Button } from '../../../buttons/Button.tsx';
+import { Checkbox } from '../../Checkbox/Checkbox.tsx';
 
-import './Select.scss';
+import '../Select.scss';
 
 
 export type PopperOptions = Partial<PopperJS.Options> & {
@@ -27,25 +31,25 @@ export type SelectOption = {
   disabled?: undefined | boolean,
 };
 
-export type SelectProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
-  onSelect: (value: string) => void,
+export type MultiSelectProps = Omit<ComponentProps<'div'>, 'onSelect'> & {
+  onSelectionChange: (values: Array<string>) => void,
   options: { [key: string]: SelectOption },
-  value?: undefined | string,
-  disabled?: undefined | boolean,
+  selectedValues: Array<string>,
   defaultOption?: undefined | SelectOption,
-  placeholder?: undefined | string,
+  disabled?: undefined | boolean,
   ariaLabel?: undefined | string,
   placement?: undefined | PopperOptions['placement'],
   offset?: undefined | [number, number],
   popperOptions?: undefined | PopperOptions,
   dropdownReference?: undefined | React.RefObject<HTMLUListElement>,
+  isFocusTrapActive?: undefined | boolean,
 };
-export const Select = (props: SelectProps) => {
+export const MultiSelect = (props: MultiSelectProps) => {
   const {
-    onSelect,
+    onSelectionChange,
     options,
+    selectedValues,
     className = '',
-    value = '',
     disabled = false,
     defaultOption = { label: '' },
     placeholder = 'Select',
@@ -53,14 +57,14 @@ export const Select = (props: SelectProps) => {
     placement = 'bottom',
     offset = [],
     popperOptions = {},
-    dropdownReference = null,
+    dropdownReference,
+    isFocusTrapActive = true,
     ...restProps
   } = props;
-
+  
   const scrollerProps = useScroller();
-  const optionsRef = React.useRef<HTMLButtonElement[]>([]);
+  const optionsRef = React.useRef<HTMLInputElement[]>([]);
   const [isActive, setIsActive] = React.useState(false);
-  const [isOptionSelected, setIsOptionSelected] = React.useState(false);
   const [referenceElement, setReferenceElement] = React.useState<HTMLElement | null>(null);
   const [popperElement, setPopperElement] = React.useState<HTMLElement | null>(null);
   
@@ -88,10 +92,10 @@ export const Select = (props: SelectProps) => {
     ],
     placement,
   });
-  
+
   const dropdownRef = { current: popperElement };
   const toggleRef = { current: referenceElement };
-  const combinedRef = useCombinedRefs(setPopperElement, dropdownReference);
+  const combinedRefs = useCombinedRefs(setPopperElement, dropdownReference);
   
   useOutsideClickHandler([dropdownRef, toggleRef], () => {
     setIsActive(false);
@@ -100,10 +104,10 @@ export const Select = (props: SelectProps) => {
   // Scroll to selected item when select item is opened
   React.useEffect(() => {
     if (isActive && optionsRef.current.length > 0) {
-      const selectedItem = optionsRef.current.find(item => item.getAttribute('aria-selected') === 'true');
+      const selectedItem = optionsRef.current.find(item => item?.checked);
       selectedItem?.scrollIntoView({ block: 'nearest' });
     }
-  }, [isActive]);
+  }, [optionsRef, isActive]);
   
   const onContainerClick = () => {
     if (!disabled) {
@@ -111,39 +115,60 @@ export const Select = (props: SelectProps) => {
     }
   };
   
-  const onOptionClick = (selectedKey: string) => {
-    onSelect(selectedKey);
-    setIsActive(false);
-    setIsOptionSelected(true);
+  const formatSelected = (keys: Array<string>) => {
+    if (keys.length === 0) {
+      return placeholder;
+    }
+    
+    const selectedLabels = keys.map(key => {
+      if (!Object.prototype.hasOwnProperty.call(options, key)) {
+        console.error(`Invalid key: ${key}`);
+        return '(Unknown)';
+      }
+      
+      const label = options[key].label;
+      
+      if (typeof label === 'string' || typeof label === 'number') {
+        return String(label);
+      }
+      
+      return key;
+    });
+    
+    return selectedLabels.join(', ');
+  };
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const target = event.target;
+    const checked = target.checked;
+    const value = target.value;
+    if (checked) {
+      onSelectionChange([...selectedValues, value]);
+    } else {
+      onSelectionChange(selectedValues.filter(item => item !== value));
+    }
   };
   
   const renderOptions = () => {
     return Object.entries(options).map(([key, { label, disabled: optionDisabled }], index) =>
-      <li key={key} role="presentation">
-        <Button
-          plain
+      <li
+        key={key}
+        role="option"
+        aria-selected={selectedValues.includes(key)}
+        className={cx(
+          'bkl-select__option', { 'bkl-select__option--disabled': optionDisabled },
+        )}
+      >
+        <Checkbox.Item
           id={key}
-          ref={el => {
-            if (optionsRef.current && el) {
-              optionsRef.current[index] = el;
-            }
-          }}
-          // biome-ignore lint/a11y/useSemanticElements: Cannot use `<option>`
-          role="option"
-          aria-selected={value === key}
-          disabled={optionDisabled}
-          tabIndex={value === key ? 0 : -1}
-          className={cx(
-            'bkl',
-            'bkl-select__option', {
-              'bkl-select__option--default': typeof label === 'string',
-              'bkl-select__option--disabled': optionDisabled,
-            },
-          )}
-          data-label="bkl-select-option"
-          onClick={() => {
+          ref={el => (optionsRef.current[index] = el)}
+          className={cx({ 'bkl-select__option--default': typeof label === 'string' })}
+          value={key}
+          primary
+          label={label}
+          onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
             if (!optionDisabled) {
-              onOptionClick(key);
+              onChange(evt);
             }
           }}
           onKeyDown={evt => {
@@ -152,81 +177,55 @@ export const Select = (props: SelectProps) => {
               index,
               options: optionsRef.current,
               triggerElement: referenceElement,
-              onSelect: () => onOptionClick(key),
               onClose: () => setIsActive(false),
             });
           }}
-        >
-          {label}
-        </Button>
+          checked={selectedValues.includes(key)}
+        />
       </li>);
   };
-
+  
   const renderDropdown = () => {
     return (
       <ul
-        ref={combinedRef}
-        id="select-listbox"
-        // biome-ignore lint/a11y/useSemanticElements: Cannot use `<select>`
-        // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: Cannot use `<select>`
+        ref={combinedRefs}
+        id="multi-select-listbox"
         role="listbox"
+        aria-multiselectable={true}
         className={cx('bkl bkl-select__dropdown', scrollerProps.className)}
         style={popper.styles.popper}
         {...popper.attributes.popper}
       >
         {defaultOption.label &&
-          <li key={defaultOption.label} role="presentation">
-            <Button
-              plain
-              // biome-ignore lint/a11y/useSemanticElements: Cannot use `<option>`
-              role="option"
-              className={cx(
-                'bkl-select__option bkl-select__option--disabled',
-                { 'bkl-select__option--default': typeof defaultOption.label === 'string' },
-              )}
-              onKeyDown={(evt: React.KeyboardEvent) => {
-                if (evt.key === 'Escape') {
-                  setIsActive(false);
-                }
-              }}
-            >
-              {defaultOption.label}
-            </Button>
+          <li
+            role="option"
+            key={defaultOption.label}
+            className={cx(
+              'bkl-select__option bkl-select__option--disabled',
+              { 'bkl-select__option--default': typeof defaultOption.label === 'string' },
+            )}
+            onKeyDown={(evt: React.KeyboardEvent) => {
+              if (evt.key === 'Escape') {
+                setIsActive(false);
+              }
+            }}
+          >
+            {defaultOption.label}
           </li>
         }
         {renderOptions()}
       </ul>
     );
   };
-
-  const formatSelected = (key: string) => {
-    if (key === '') {
-      return placeholder;
-    }
-    
-    if (!Object.hasOwn(options, key)) {
-      console.error(`Invalid key: ${key}`);
-      return '(Unknown)';
-    }
-    
-    const label = options[key].label;
-    if (typeof label === 'string' || typeof label === 'number') {
-      return String(label);
-    }
-    
-    return key;
-  };
   
   return (
-    <div {...restProps} className={cx('bkl-select', className)}>
+    <div {...restProps} className={cx('bkl-select bkl-multi-select', className)}>
       <Button
         plain
         className="bkl-select__container"
         aria-haspopup="listbox"
         aria-expanded={isActive}
-        aria-controls="select-listbox"
-        aria-activedescendant={value}
-        // biome-ignore lint/a11y/useSemanticElements: Cannot use `<select>`
+        aria-controls="multi-select-listbox"
         role="combobox"
         onClick={onContainerClick}
         ref={setReferenceElement}
@@ -248,20 +247,19 @@ export const Select = (props: SelectProps) => {
           type="text"
           className={cx(
             'bkl-select__input', {
-              'bkl-select__input--changed': isOptionSelected || value,
+              'bkl-select__input--changed': selectedValues.length > 0,
               'bkl-select__input--disabled': disabled,
               'bkl-select__input--active': isActive,
             },
           )}
           placeholder={placeholder}
           readOnly
-          tabIndex={-1}
-          value={formatSelected(value)}
+          value={formatSelected(selectedValues)}
           disabled={disabled}
           aria-label={ariaLabel}
         />
       </Button>
-      {isActive && createPortal(renderDropdown(), document.body)}
+      {isActive && ReactDOM.createPortal(renderDropdown(), document.body)}
     </div>
   );
 };

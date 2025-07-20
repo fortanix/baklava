@@ -218,6 +218,11 @@ const preview = {
                 'MaskedInput',
                 'TextArea',
                 'Select',
+                [
+                  'Select',
+                  'MultiSelect',
+                  'LazySelect',
+                ],
                 'DateTime',
                 'ColorPicker',
                 'MultiAssigner',
