@@ -222,6 +222,12 @@ const preview = {
                 'ColorPicker',
                 'MultiAssigner',
               ],
+              'navigation',
+              [
+                'Switcher',
+                'Tabs',
+                'TabEmbedded',
+              ],
               'internal',
               [
                 'CloseButton',

@@ -10,11 +10,11 @@ import { handleRadioKeyDown } from '../../../util/keyboardHandlers.tsx';
 import './Radio.scss';
 
 
-export type RadioItemProps = Omit<ComponentProps<'label'>, 'onChange'> & {
+export type RadioItemProps = Omit<ComponentProps<'label'>, 'ref' | 'onChange'> & {
   ref?: undefined | React.RefObject<Array<HTMLInputElement>>,
   radioItemIndex: number,
-  label?: undefined | React.ReactNode,
   value: string,
+  label?: undefined | React.ReactNode,
   checked?: undefined | boolean,
   inline?: undefined | boolean,
   disabled?: undefined | boolean,
@@ -96,26 +96,31 @@ export type RadioOption = {
   disabled?: undefined | boolean,
   className?: undefined | ClassNameArgument,
 };
-export type RadioGroupProps = ComponentProps<'div'> & {
-  children?: undefined | Array<React.ReactElement>,
+export type RadioGroupProps = Omit<ComponentProps<'div'>, 'children' | 'onChange'> & {
+  children?: undefined | Array<React.ReactElement<RadioItemProps>>,
+  /** As an alternative to using `children`, you can also specify the radio items as an options object. */
+  options?: undefined | { [key: string]: RadioOption },
+  /** @deprecated */
+  primary?: undefined | boolean,
+  /** Display radio items with inline orientation. */
+  inline?: undefined | boolean,
+  /** Display radio items as buttons with a border around them. */
+  radioWithBorder?: undefined | boolean,
+  /** Display radio items as large switcher controls. */
+  radioSwitcher?: undefined | boolean,
   selectedValue?: undefined | string,
   onChange?: undefined | ((event: React.ChangeEvent<HTMLInputElement>) => void),
-  options?: undefined | { [key: string]: RadioOption },
-  primary?: undefined | boolean,
-  radioWithBorder?: undefined | boolean,
-  inline?: undefined | boolean,
-  radioSwitcher?: undefined | boolean,
 };
 const RadioGroup = (props: RadioGroupProps) => {
   const {
     children,
-    selectedValue,
     options = {},
-    onChange = () => {},
     primary,
-    radioWithBorder,
     inline,
+    radioWithBorder,
     radioSwitcher,
+    selectedValue,
+    onChange = () => {},
     ...propsRest
   } = props;
   const radioItemsRef = React.useRef<Array<HTMLInputElement>>([]);
@@ -141,16 +146,17 @@ const RadioGroup = (props: RadioGroupProps) => {
         });
     });
   };
-
+  
   return (
     <div
       role="radiogroup"
       {...propsRest}
       className={cx(
+        'bkl',
         'bkl-radio-group',
         propsRest.className,
         {
-          'bkl-radio-group--primary': primary,
+          'bkl-radio-group--primary': true, // Always enabled
           'bkl-radio-group--inline': inline,
         },
       )}

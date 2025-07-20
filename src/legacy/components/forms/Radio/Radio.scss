@@ -50,7 +50,7 @@
   
   .bkl-radio-group--primary, .bkl-radio--primary {
     .bkl-radio--disabled {
-      opacity: 0.34;
+      opacity: 0.35;
     }
     
     .bkl-radio__wrapper {
@@ -99,7 +99,7 @@
       &:focus-visible {
         inline-size: bkl.$sizing-4;
         block-size: bkl.$sizing-4;
-        inset-inline-start: -0.5rem;
+        inset-inline-start: 0;
         border-radius: 50%;
         opacity: 1;
       }
@@ -118,7 +118,7 @@
       border: bkl.$sizing-hairline solid bkl.$accent-color;
     }
     
-    &:has(.bkl-radio__input:focus-visible) {
+    &:has(.bkl-radio__input:focus-visible), &.pseudo-focus-visible {
       outline: 2px solid bkl.$focus-outline-color;
       outline-offset: 0;
     }

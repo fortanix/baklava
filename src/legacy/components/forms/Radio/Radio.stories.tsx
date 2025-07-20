@@ -12,6 +12,40 @@ import { Radio } from './Radio.tsx';
 type RadioArgs = React.ComponentProps<typeof Radio.Group>;
 type Story = StoryObj<RadioArgs>;
 
+const RadioGroupControlled = (props: Omit<RadioArgs, 'selectedValues' | 'onChange'>) => {
+  const [selectedValue, setSelectedValue] = React.useState<string>('radio-1');
+  return (
+    <Radio.Group
+      selectedValue={selectedValue}
+      onChange={event => {
+        setSelectedValue(event.target.value);
+      }}
+      {...props}
+    />
+  );
+};
+
+const radioItems = Array.from({ length: 4 }, (_, i) => i).map(index =>
+  <Radio.Item
+    key={index}
+    radioItemIndex={index}
+    label={`Radio ${index + 1}`}
+    value={`radio-${index}`}
+    disabled={index === 2}
+  />
+);
+
+const radioItemsWithPseudoFocus = Array.from({ length: 4 }, (_, i) => i).map(index =>
+  <Radio.Item
+    key={index}
+    radioItemIndex={index}
+    label={`Radio ${index + 1}`}
+    value={`radio-${index}`}
+    disabled={index === 2}
+    className={index === 1 ? 'pseudo-focus-visible' : ''}
+  />
+);
+
 export default {
   component: Radio.Group,
   tags: ['autodocs'],
@@ -19,14 +53,52 @@ export default {
     layout: 'centered',
   },
   argTypes: {},
-  args: {
-    primary: true,
-    children: Array.from({ length: 3 }, (_, i) => i).map(index =>
-      <Radio.Item key={index} label={`Radio ${index + 1}`} value={`radio-${index}`}/>
-    ),
-  },
-  render: (args) => <Radio.Group {...args}/>,
+  args: {},
+  render: (args) => <RadioGroupControlled {...args}/>,
 } satisfies Meta<RadioArgs>;
 
 
-export const RadioStandard: Story = {};
+export const RadioStandard: Story = {
+  args: {
+    children: radioItems,
+  },
+};
+
+export const RadioWithFocus: Story = {
+  args: {
+    children: radioItemsWithPseudoFocus,
+  },
+};
+
+export const RadioInline: Story = {
+  args: {
+    children: radioItems,
+    inline: true,
+  },
+};
+
+export const RadioWithBorder: Story = {
+  args: {
+    children: radioItemsWithPseudoFocus,
+    inline: true,
+    radioWithBorder: true,
+  },
+};
+
+export const RadioAsSwitcher: Story = {
+  args: {
+    children: radioItemsWithPseudoFocus,
+    inline: true,
+    radioSwitcher: true,
+  },
+};
+
+export const RadioWithOptionsObject: Story = {
+  args: {
+    options: {
+      'radio-1': { label: 'Radio 1' },
+      'radio-2': { label: 'Radio 2 (disabled)', disabled: true },
+      'radio-3': { label: 'Radio 3' },
+    },
+  },
+};
