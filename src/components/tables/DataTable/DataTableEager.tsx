@@ -30,6 +30,8 @@ export type TableProviderEagerProps<D extends object> = {
   items: ReactTableOptions<D>['data'],
   getRowId: ReactTableOptions<D>['getRowId'],
   plugins?: Array<ReactTable.PluginHook<D>>,
+  identifierColumnConfig?: ReactTable.TableInstance<D>['identifierColumnConfig'],
+  actionColumnConfig?: ReactTable.TableInstance<D>['actionColumnConfig'],
   initialState?: Partial<ReactTable.TableState<D>>,
   isReady?: boolean,
 };
@@ -37,6 +39,8 @@ export const TableProviderEager = <D extends object>(props: TableProviderEagerPr
   const {
     children,
     columns,
+    identifierColumnConfig,
+    actionColumnConfig,
     items,
     getRowId,
     plugins = [],
@@ -48,6 +52,8 @@ export const TableProviderEager = <D extends object>(props: TableProviderEagerPr
     columns,
     data: items,
     ...(getRowId && { getRowId }),
+    ...(identifierColumnConfig ? { identifierColumnConfig } : {}),
+    ...(actionColumnConfig ? { actionColumnConfig } : {}),
   };
   const table = ReactTable.useTable(
     {

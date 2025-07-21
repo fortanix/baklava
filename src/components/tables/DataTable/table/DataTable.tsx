@@ -35,6 +35,10 @@ const isFlexColumn = <D extends object>(col: ReactTable.ColumnInstance<D>) => {
   return (col && Object.hasOwn(col, 'bkColumnWidth'));
 };
 
+const requireNewCol = <D extends object>(col: ReactTable.ColumnInstance<D>) => {
+  return (isFlexColumn(col) && (col.bkColumnWidth?.flex ?? 0) > 0);
+};
+
 const calculateFlexPercentage = <D extends object>(
   allColumns: ReactTable.ColumnInstance<D>[],
   targetColumn: ReactTable.ColumnInstance<D>
@@ -98,7 +102,7 @@ export function useCustomColGroup<D extends object>(
         );
       
         // Add new col with flex width if present
-        if (col && isFlexColumn(col)) {
+        if (col && requireNewCol(col)) {
           newCols.push(
             <col
               key={`${col.id}-stretch`}
@@ -118,10 +122,10 @@ export function useCustomColGroup<D extends object>(
       cols.push(
         <col
           key={`${col.id}-base`}
-          style={{ width: isFlexColumn(col) ? getFlexColumnWidth(col) : '10ch' }}
+          style={{ ...col.style, width: isFlexColumn(col) ? getFlexColumnWidth(col) : col?.style?.width ?? '10ch' }}
         />
       );
-      if (isFlexColumn(col)) {
+      if (requireNewCol(col)) {
         //Add extra dummy cols for using colspan
         cols.push(
           <col
@@ -137,7 +141,7 @@ export function useCustomColGroup<D extends object>(
 };
 
 const getTotalColSpan = <D extends object>(columns: ReactTable.ColumnInstance<D>[]) => {
-  return columns.reduce((total, col) => total + (isFlexColumn(col) ? 2 : 1), 0);
+  return columns.reduce((total, col) => total + (requireNewCol(col) ? 2 : 1), 0);
 };
 
 const isActionColumn = <D extends object>(column: ReactTable.ColumnInstance<D>, config?: ActionColumnConfig) => {
@@ -170,7 +174,6 @@ const getCommonClassNamesForColumn = <D extends object>(
   table: ReactTable.TableInstance<D>,
 ) => {
   return ({
-    [cl['column-action']]: isActionColumn(column, table.actionColumnConfig),
     [cl['column-sticky']]: (isActionColumnSticky(column, table.actionColumnConfig)
       || isIdentifierColumnSticky(column, table.identifierColumnConfig)),
     [cl['column-sticky--right']]: isActionColumnSticky(column, table.actionColumnConfig),
@@ -204,15 +207,22 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
   
   useEffect(() => {
     const el = scrollWrapperRef.current;
+
     if (!el) return;
-  
+
     const updateOverflowPosition = () => {
       const { scrollLeft, scrollWidth, clientWidth } = el;
+
+      // If no horizontal overflow, reset position
+      if (scrollWidth <= clientWidth) {
+        setOverflowPosition(null);
+        return;
+      }
+
       const atStart = scrollLeft === 0;
-      const atEnd = scrollLeft + clientWidth >= scrollWidth;
-    
+      const atEnd = Math.ceil(scrollLeft + clientWidth) >= scrollWidth;
+
       let position: 'left' | 'right' | 'center';
-    
       if (atStart) {
         position = 'left';
       } else if (atEnd) {
@@ -220,20 +230,20 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
       } else {
         position = 'center';
       }
-    
+
       setOverflowPosition(position);
     };
-  
+
     updateOverflowPosition();
-  
+
     el.addEventListener('scroll', updateOverflowPosition);
     window.addEventListener('resize', updateOverflowPosition);
-  
+
     return () => {
       el.removeEventListener('scroll', updateOverflowPosition);
       window.removeEventListener('resize', updateOverflowPosition);
     };
-  }, []);
+  }, [table.visibleColumns]); // recalculate if visible columns change
     
   // Currently we only support one header group
   const headerGroup: undefined | ReactTable.HeaderGroup<D> = table.headerGroups[0];
@@ -244,7 +254,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
   const customColGroup = useCustomColGroup(table.visibleColumns, columnGroups);
   
   return (
-    <div className={cl['bk-data-table__wrapper']}>
+    <>
       <div
         ref={scrollWrapperRef}
         className={cx(cl['bk-data-table__scroll-wrapper'], {
@@ -272,14 +282,14 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                   column.getSortByToggleProps(),
                 ]);
                 
-                const hasFlexColumnProps = isFlexColumn(column);
+                const useExtraColSpan = requireNewCol(column);
                 
                 return (
                   <th
                     {...headerProps}
                     key={headerKey}
                     title={undefined} // Unset the default `title` from `getHeaderProps()`
-                    {...hasFlexColumnProps ? { colSpan: 2 } : {}}
+                    {...useExtraColSpan ? { colSpan: 2 } : {}}
                     className={cx(headerProps.className, getCommonClassNamesForColumn(column, table))}
                   >
                     <div className={cx(cl['column-header'])}> {/* Wrapper element needed to serve as flex container */}
@@ -321,10 +331,10 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                   </td>*/}
                   {row.cells.map(cell => {
                     const { key: cellKey, ...cellProps } = cell.getCellProps();
-                    const hasFlexColumnProps = isFlexColumn(cell.column);
+                    const useExtraColSpan = requireNewCol(cell.column);
                   
                     return (
-                      <td {...cellProps} key={cellKey} {...hasFlexColumnProps ? { colSpan: 2 } : {}} 
+                      <td {...cellProps} key={cellKey} {...useExtraColSpan ? { colSpan: 2 } : {}} 
                         className={cx(cellProps.className, getCommonClassNamesForColumn(cell.column, table))}
                       >
                         <div className={cx(cl['bk-data-table__text-cell'])}>
@@ -352,7 +362,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
           {footer}
         </div>
       }
-    </div>
+    </>
   );
 };
 

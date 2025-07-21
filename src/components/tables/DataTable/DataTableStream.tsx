@@ -122,8 +122,8 @@ export type TableProviderStreamProps<D extends object, P = undefined> = {
   columns: ReactTableOptions<D>['columns'],
   getRowId: ReactTableOptions<D>['getRowId'],
   plugins?: Array<ReactTable.PluginHook<D>>,
-  identifierColumnConfig?: { columnId: string, sticky?: boolean },
-  actionColumnConfig?: { columnId: string, sticky?: boolean },
+  identifierColumnConfig?: ReactTable.TableInstance<D>['identifierColumnConfig'],
+  actionColumnConfig?: ReactTable.TableInstance<D>['actionColumnConfig'],
   initialState: Partial<ReactTable.TableState<D>>,
   
   // Callback to query a new set of items
