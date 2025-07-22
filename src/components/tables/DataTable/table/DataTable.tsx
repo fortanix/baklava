@@ -2,8 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import type * as React from 'react';
-import { isValidElement, useRef, useState, useEffect } from 'react';
+import * as React from 'react';
 import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../../util/componentUtil.ts';
 import type * as ReactTable from 'react-table';
 
@@ -53,11 +52,10 @@ const calculateFlexPercentage = <D extends object>(
   return totalFlex > 0 ? Math.round((targetColumnFlex / totalFlex) * 100) : 0;
 };
 
-export function useCustomColGroup<D extends object>(
+export const generateCustomColGroup = <D extends object>(
   allColumns: ReactTable.ColumnInstance<D>[],
-  columnGroups?: React.ReactNode,
-): React.ReactNode | null {
-  if (columnGroups && isValidElement(columnGroups) && columnGroups.type === 'colgroup') {
+  columnGroups?: React.ReactNode): React.ReactNode | null => {
+  if (columnGroups && React.isValidElement(columnGroups) && columnGroups.type === 'colgroup') {
     return columnGroups;
   } else {
     // Generate a new <colgroup>
@@ -67,7 +65,10 @@ export function useCustomColGroup<D extends object>(
       cols.push(
         <col
           key={`${col.id}-base`}
-          style={{ ...col.style, width: isFlexColumn(col) ? getFlexColumnWidth(col) : col?.style?.width ?? '10ch' }}
+          style={{
+            ...col.style,
+            inlineSize: isFlexColumn(col) ? getFlexColumnWidth(col) : col?.style?.width ?? '10ch'
+          }}
         />
       );
       if (requireNewCol(col)) {
@@ -75,7 +76,9 @@ export function useCustomColGroup<D extends object>(
         cols.push(
           <col
             key={`${col.id}-stretch`}
-            style={{ width: `${calculateFlexPercentage(allColumns, col)}%` }}
+            style={{
+              inlineSize: `${calculateFlexPercentage(allColumns, col)}%`
+            }}
           />
         );
       }
@@ -89,32 +92,28 @@ const getTotalColSpan = <D extends object>(columns: ReactTable.ColumnInstance<D>
   return columns.reduce((total, col) => total + (requireNewCol(col) ? 2 : 1), 0);
 };
 
-const isActionColumn = <D extends object>(
+type ColumnPosition = 'first' | 'last';
+
+export const isColumnAtPosition = <D extends object>(
   column: ReactTable.ColumnInstance<D>,
-  config?: ReactTable.TableInstance<D>['actionColumnConfig'],
-) => {
-  return !!(column && Object.hasOwn(column, 'id') && config?.columnId && column.id && config.columnId === column.id);
+  visibleColumns: ReactTable.ColumnInstance<D>[],
+  position: ColumnPosition
+): boolean => {
+  if (position === 'first') {
+    return column.id === visibleColumns[0]?.id;
+  } else if (position === 'last') {
+    return column.id === visibleColumns[visibleColumns.length - 1]?.id;
+  }
+
+  return false;
 };
 
-const isActionColumnSticky = <D extends object>(
+const isColumnSticky = <D extends object>(
+  position: ColumnPosition,
   column: ReactTable.ColumnInstance<D>,
-  config?: ReactTable.TableInstance<D>['actionColumnConfig'],
+  table: ReactTable.TableInstance<D>,
 ) => {
-  return isActionColumn(column, config) && !!config?.sticky;
-};
-
-const isIdentifierColumn = <D extends object>(
-  column: ReactTable.ColumnInstance<D>,
-  config?: ReactTable.TableInstance<D>['identifierColumnConfig'],
-) => {
-  return !!(column && Object.hasOwn(column, 'id') && config?.columnId && column.id && config.columnId === column.id);
-};
-
-const isIdentifierColumnSticky = <D extends object>(
-  column: ReactTable.ColumnInstance<D>,
-  config?: ReactTable.TableInstance<D>['actionColumnConfig'],
-) => {
-  return isIdentifierColumn(column, config) && !!config?.sticky;
+  return isColumnAtPosition(column, table.visibleColumns, position) && !!table?.bkStickyColumns?.[position];
 };
 
 const getCommonClassNamesForColumn = <D extends object>(
@@ -122,10 +121,10 @@ const getCommonClassNamesForColumn = <D extends object>(
   table: ReactTable.TableInstance<D>,
 ) => {
   return ({
-    [cl['column-sticky']]: (isActionColumnSticky(column, table.actionColumnConfig)
-      || isIdentifierColumnSticky(column, table.identifierColumnConfig)),
-    [cl['column-sticky--right']]: isActionColumnSticky(column, table.actionColumnConfig),
-    [cl['column-sticky--left']]: isIdentifierColumnSticky(column, table.identifierColumnConfig),
+    [cl['column-sticky']]: (isColumnSticky('last', column, table)
+      || isColumnSticky('first', column, table)),
+    [cl['column-sticky--right']]: isColumnSticky('last', column, table),
+    [cl['column-sticky--left']]: isColumnSticky('first', column, table),
   });
 };
 
@@ -150,11 +149,11 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
     ...propsRest
   } = props;
 
-  const scrollWrapperRef = useRef<HTMLDivElement>(null);
-  const [overflowPosition, setOverflowPosition] = useState<'left' | 'right' | 'center' | null>(null);
+  const scrollWrapperRef = React.useRef<HTMLDivElement>(null);
+  const [overflowPosition, setOverflowPosition] = React.useState<'left' | 'right' | 'center' | null>(null);
   const scrollProps = useScroller({ scrollDirection: 'horizontal' });
   
-  useEffect(() => {
+  React.useEffect(() => {
     const el = scrollWrapperRef.current;
 
     if (!el) return;
@@ -200,7 +199,8 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
   
   const { key, ...HeaderGroupPropsRest } = headerGroup.getHeaderGroupProps();
   
-  const customColGroup = useCustomColGroup(table.visibleColumns, columnGroups);
+  const customColGroup = React.useMemo(() => generateCustomColGroup(table.visibleColumns, columnGroups),
+    [table.visibleColumns, columnGroups]);
   
   return (
     <>

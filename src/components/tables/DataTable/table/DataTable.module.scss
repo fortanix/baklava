@@ -60,6 +60,7 @@
       inline-size: 100%;
       table-layout: fixed;
       border-collapse: collapse;
+      background-color: bk.$theme-card-background-default;
       
       th {
         padding: bk.$spacing-3 bk.$spacing-2;

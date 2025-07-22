@@ -5,7 +5,6 @@
 import type * as ReactTable from 'react-table';
 
 import { Checkbox } from '../../../forms/controls/Checkbox/Checkbox.tsx';
-import { classNames as cx } from '../../../../util/componentUtil.ts';
 import cl from './useRowSelectColumn.module.scss';
 
 

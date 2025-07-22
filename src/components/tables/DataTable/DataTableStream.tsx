@@ -122,8 +122,7 @@ export type TableProviderStreamProps<D extends object, P = undefined> = {
   columns: ReactTableOptions<D>['columns'],
   getRowId: ReactTableOptions<D>['getRowId'],
   plugins?: Array<ReactTable.PluginHook<D>>,
-  identifierColumnConfig?: ReactTable.TableInstance<D>['identifierColumnConfig'],
-  actionColumnConfig?: ReactTable.TableInstance<D>['actionColumnConfig'],
+  bkStickyColumns?: ReactTable.TableInstance<D>['bkStickyColumns'],
   initialState: Partial<ReactTable.TableState<D>>,
   
   // Callback to query a new set of items
@@ -140,8 +139,7 @@ export const TableProviderStream = <D extends object, P = undefined>(
   const {
     children,
     columns,
-    identifierColumnConfig,
-    actionColumnConfig,
+    bkStickyColumns,
     getRowId,
     plugins = [],
     initialState,
@@ -171,8 +169,7 @@ export const TableProviderStream = <D extends object, P = undefined>(
     columns,
     data: items,
     ...(getRowId && { getRowId }), // Add `getRowId` only if it is defined
-    ...(identifierColumnConfig ? { identifierColumnConfig } : {}),
-    ...(actionColumnConfig ? { actionColumnConfig } : {}),
+    ...(bkStickyColumns ? { bkStickyColumns } : {}),
   };
 
   const table = ReactTable.useTable<D>(

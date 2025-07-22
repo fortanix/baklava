@@ -67,8 +67,7 @@ interface CustomColumnProps {
 }
 
 interface CustomTableConfig {
-  identifierColumnConfig?: { columnId: string, sticky?: boolean },
-  actionColumnConfig?: { columnId: string, sticky?: boolean },
+  bkStickyColumns: { first?: boolean, last?: boolean },
 }
 
 interface UseCustomFiltersState {

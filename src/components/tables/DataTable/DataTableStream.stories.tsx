@@ -357,7 +357,7 @@ export const WithScrollAndStickyColumn = {
   args: {
     columns: columnDefinitionsMultiple,
     items: generateData({ numItems: 6 }),
-    identifierColumnConfig: { columnId: 'name', sticky: true }
+    bkStickyColumns: { first: true }
   },
   render: (args: dataTeableLazyTemplateProps) => <div style={{ width: '90vw' }}><DataTableStreamTemplate {...args} /></div>,
 };
@@ -366,8 +366,7 @@ export const WithScrollAndStickyNameAndActions = {
   args: {
     columns: columnDefinitionsMultiple,
     items: generateData({ numItems: 6 }),
-    identifierColumnConfig: { columnId: 'name', sticky: true },
-    actionColumnConfig: { columnId: 'actions', sticky: true }
+    bkStickyColumns: { first: true, last: true }
   },
   render: (args: dataTeableLazyTemplateProps) => <div style={{ width: '90vw' }}><DataTableStreamTemplate {...args} /></div>,
 };
