@@ -326,7 +326,7 @@ const columnDefinitionsMultiple = [
     id: 'actions',
     accessor: '',
     Header: 'Actions',
-    disableSortBy: false,
+    disableSortBy: true,
     disableGlobalFilter: true,
     className: 'user-table__column',
     bkColumnWidth: {

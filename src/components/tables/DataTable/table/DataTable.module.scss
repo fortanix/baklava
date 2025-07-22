@@ -141,7 +141,7 @@
               inline-size: bk.$spacing-4;
               
               &.sort-indicator--inactive {
-                opacity: 0;
+                opacity: 0.5;
               }
               
               transition: transform 240ms ease-in-out,

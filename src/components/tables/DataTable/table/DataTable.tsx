@@ -8,6 +8,7 @@ import type * as ReactTable from 'react-table';
 
 import { useScroller } from '../../../../layouts/util/Scroller.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
+import { TextLine } from '../../../text/TextLine/TextLine.tsx';
 
 import {
   DataTablePlaceholderSkeleton,
@@ -245,14 +246,17 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                     className={cx(headerProps.className, getCommonClassNamesForColumn(column, table))}
                   >
                     <div className={cx(cl['column-header'])}> {/* Wrapper element needed to serve as flex container */}
-                      {column.render('Header')}
+                      {typeof column.render('Header') === 'string'
+                        ? <TextLine>{column.render('Header')}</TextLine>
+                        : column.render('Header')
+                      }
                       {column.canSort &&
                         <Icon icon="caret-down"
                           className={cx(
                             cl['sort-indicator'],
                             { [cl['sort-indicator--inactive']]: !column.isSorted },
-                            { [cl['asc']]: !column.isSorted || (column.isSorted && !column.isSortedDesc) },
-                            { [cl['desc']]: column.isSortedDesc },
+                            { [cl['asc']]: (column.isSorted && !column.isSortedDesc) },
+                            { [cl['desc']]: (column.isSorted && column.isSortedDesc) },
                           )}
                         />
                       }
