@@ -7,37 +7,12 @@ import type * as ReactTable from 'react-table';
 import { Checkbox } from '../../../forms/controls/Checkbox/Checkbox.tsx';
 import cl from './useRowSelectColumn.module.scss';
 
-
 // `react-table` plugin for row selection column. Note: depends on `react-table`'s `useRowSelect` plugin.
 export const useRowSelectColumn = <D extends object>(hooks: ReactTable.Hooks<D>): void => {
-  // Prepend a column with row selection checkboxes
-  hooks.visibleColumns.push(columns => [
-    {
-      id: 'selection',
-      className: cl['bk-data-table-row-select'],
-      Header: ({ getToggleAllPageRowsSelectedProps }) => {
-        const { checked, onChange } = getToggleAllPageRowsSelectedProps();
-        return (
-          <Checkbox aria-label="Select all rows" checked={checked} onChange={onChange}/>
-        );
-      },
-      Cell: ({ row }: ReactTable.CellProps<D, null>) => {
-        const { checked, onChange } = row.getToggleRowSelectedProps();
-        return (
-          <Checkbox aria-label="Select row" checked={checked} onChange={onChange}/>
-        );
-      },
-    },
-    ...columns,
-  ]);
-};
-
-export const useRowSelectColumnMerged = <D extends object>(
-  targetColumnId: string,
-) => (hooks: ReactTable.Hooks<D>): void => {
+  // Merge first column with row selection checkboxes
   hooks.visibleColumns.push(columns =>
-    columns.map((col: ReactTable.ColumnInstance<D>) => {
-      if (col.id === targetColumnId) {
+    columns.map((col: ReactTable.ColumnInstance<D>, index: number) => {
+      if (index === 0) {
         return {
           ...col,
           Header: (headerProps: ReactTable.HeaderProps<D>) => {

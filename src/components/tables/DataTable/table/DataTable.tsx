@@ -56,7 +56,7 @@ const calculateFlexPercentage = <D extends object>(
 export const generateCustomColGroup = <D extends object>(
   allColumns: ReactTable.ColumnInstance<D>[],
   columnGroups?: React.ReactNode): React.ReactNode | null => {
-  if (columnGroups && React.isValidElement(columnGroups) && columnGroups.type === 'colgroup') {
+  if (columnGroups) {
     return columnGroups;
   } else {
     // Generate a new <colgroup>
@@ -197,23 +197,25 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
     };
   }, [table.visibleColumns]);
   
+  const customColGroup = React.useMemo(() => generateCustomColGroup(table.visibleColumns, columnGroups),
+    [table.visibleColumns, columnGroups]);
+  
   // Currently we only support one header group
   const headerGroup: undefined | ReactTable.HeaderGroup<D> = table.headerGroups[0];
   if (!headerGroup) { return null; }
   
   const { key, ...HeaderGroupPropsRest } = headerGroup.getHeaderGroupProps();
   
-  const customColGroup = React.useMemo(() => generateCustomColGroup(table.visibleColumns, columnGroups),
-    [table.visibleColumns, columnGroups]);
-  
   return (
     <>
       <div
         {...scrollProps}
         ref={scrollWrapperRef}
-        className={cx(cl['bk-data-table__scroll-wrapper'], {
-            [cl['bk-data-table__scrolled-left']]: overflowPosition === 'left' || overflowPosition === 'center',
-            [cl['bk-data-table__scrolled-right']]: overflowPosition === 'right' || overflowPosition === 'center',
+        className={cx(cl['bk-data-table-container'], {
+            [cl['bk-data-table-container--scrolled-left']]: overflowPosition === 'left'
+              || overflowPosition === 'center',
+            [cl['bk-data-table-container--scrolled-right']]: overflowPosition === 'right'
+              || overflowPosition === 'center',
           },
           scrollProps.className
         )}

@@ -14,7 +14,7 @@
       margin: bk.$spacing-5 0 bk.$spacing-5 0;
     }
     
-    .bk-data-table__scrolled-left {
+    .bk-data-table-container--scrolled-left {
       table.bk-data-table__table {
         thead, tbody {
           th, td {         
@@ -35,7 +35,7 @@
       }
     }
     
-    .bk-data-table__scrolled-right {
+    .bk-data-table-container--scrolled-right {
       table.bk-data-table__table {
         thead, tbody {
           th, td {
