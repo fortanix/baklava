@@ -134,4 +134,3 @@ export { PageLayout } from '../src/layouts/PageLayout/PageLayout.tsx';
  */
 
 export { FortanixLogo } from '../src/fortanix/FortanixLogo/FortanixLogo.tsx';
-export { FortanixLogo as Logo } from '../src/fortanix/FortanixLogo/FortanixLogo.tsx'; // Temporarily alias as `Logo` until migrations are complete
