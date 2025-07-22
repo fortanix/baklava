@@ -2,7 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { vi, describe, test, expect } from 'vitest';
+import { vi, describe, test, beforeEach, expect } from 'vitest';
 
 import * as TL from '@testing-library/react';
 
@@ -28,7 +28,11 @@ describe('Checkbox', () => {
     expect(element).toHaveTextContent('Option');
     element.click();
     expect(handleOnChange).toHaveBeenCalledTimes(1);
-    element.querySelector('input').click();
+    
+    const input = element.querySelector('input');
+    if (!input) { throw new Error(`Could not find the input element`); }
+    
+    input.click();
     expect(handleOnChange).toHaveBeenCalledTimes(2);
   });
 
@@ -43,13 +47,18 @@ describe('Checkbox', () => {
     const checkboxGroup = queries.getByTestId('checkbox-group');
     const checkbox1 = queries.getByTestId('checkbox-item-1');
     const checkbox2 = queries.getByTestId('checkbox-item-2');
+    if (!checkbox1 || !checkbox2) { throw new Error(`Could not find the checkbox element`); }
     
     expect(checkboxGroup).toBeInstanceOf(HTMLDivElement);
     expect(checkboxGroup).toHaveTextContent('Option 1');
     expect(checkboxGroup).toHaveTextContent('Option 2');
     checkbox1.click();
     expect(handleOnChange).toHaveBeenCalledTimes(1);
-    checkbox2.querySelector('input').click();
+    
+    const input = checkbox2.querySelector('input');
+    if (!input) { throw new Error(`Could not find the input element`); }
+    
+    input.click();
     expect(handleOnChange).toHaveBeenCalledTimes(2);
   });
 });

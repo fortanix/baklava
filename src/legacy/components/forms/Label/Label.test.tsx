@@ -2,7 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { describe, test, expect } from 'vitest';
+import { describe, test, beforeEach, expect } from 'vitest';
 
 import * as TL from '@testing-library/react';
 
@@ -30,7 +30,6 @@ describe('Label', () => {
     const { container, ...queries } = TL.render(
       <Label.List
         data-label="label-list"
-        dark
         labels={{ test1: '122', test2: '234' }}
       />,
     );
@@ -81,11 +80,14 @@ describe('Label', () => {
     const element = queries.getByTestId('label-list');
     
     expect(element).toBeInstanceOf(HTMLDivElement);
-    const label = element.getElementsByClassName('bkl-label');
-    TL.fireEvent.mouseOver(label[0]);
+    
+    const label = element.getElementsByClassName('bkl-label')[0];
+    if (typeof label === 'undefined') { throw new Error(`Could not find bkl-label element`); }
+    
+    TL.fireEvent.mouseOver(label);
     await TL.waitFor(() => {
-      const tooltipElement = document.getElementsByClassName('bkl-tooltip__content');
-      expect(tooltipElement.length).toEqual(1);
+      const tooltipElements = document.getElementsByClassName('bkl-tooltip__content');
+      expect(tooltipElements.length).toEqual(1);
     });
   });
 
@@ -93,7 +95,6 @@ describe('Label', () => {
     const { container, ...queries } = TL.render(
       <Label.Item
         data-label="label-item"
-        dark
         labelValue="sit.smartkey.io"
       />,
     );

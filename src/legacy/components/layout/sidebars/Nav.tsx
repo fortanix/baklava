@@ -17,7 +17,6 @@ import './Nav.scss';
 
 
 type NavItemProps = ComponentPropsWithoutRef<'a'> & {
-  key: string,
   tooltip: string,
   to: string,
   active: boolean,
@@ -30,7 +29,6 @@ type NavItemProps = ComponentPropsWithoutRef<'a'> & {
 };
 export const NavItem = (props: NavItemProps) => {
   const {
-    key,
     tooltip,
     to,
     active,
