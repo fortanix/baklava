@@ -219,7 +219,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
   };
   
   return (
-    <div {...restProps} className={cx('bkl-select bkl-multi-select', className)}>
+    <div {...restProps} className={cx('bkl bkl-select bkl-multi-select', className)}>
       <Button
         plain
         className="bkl-select__container"

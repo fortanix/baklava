@@ -612,7 +612,7 @@ export const LazySelect = <D extends object, P extends unknown = undefined>(prop
   const isEmpty = isActive && !isLoading && items.length === 0;
 
   return (
-    <div {...restProps} className={cx('bkl-select bkl-lazy-select', className)}>
+    <div {...restProps} className={cx('bkl bkl-select bkl-lazy-select', className)}>
       <Button
         plain
         className={cx('bkl-lazy-select__search-container', {

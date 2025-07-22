@@ -2,23 +2,23 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import cx from 'classnames';
 import * as React from 'react';
+import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
 
 // Component
-import { SpriteIcon as Icon } from '../../icons/Icon';
+import { SpriteIcon as Icon } from '../../icons/Icon.tsx';
 
 import './ColorPicker.scss';
 
-export type ColorPickerItemProps = Omit<JSX.IntrinsicElements['div'], 'className' | 'onChange'> & {
+
+export type ColorPickerItemProps = Omit<ComponentProps<'div'>, 'onChange'> & {
   value: string,
-  checked?: boolean,
-  className?: string,
-  tabIndex?: number,
-  onColorChange?: (evt: React.ChangeEvent<HTMLInputElement>) => void,
-  onClick?: () => void,
+  checked?: undefined | boolean,
+  tabIndex?: undefined | number,
+  onColorChange?: undefined | ((evt: React.ChangeEvent<HTMLInputElement>) => void),
+  onClick?: undefined | (() => void),
 };
-const ColorPickerItem = (props: ColorPickerItemProps): React.ReactElement => {
+const ColorPickerItem = (props: ColorPickerItemProps) => {
   const {
     id,
     value,
@@ -26,13 +26,13 @@ const ColorPickerItem = (props: ColorPickerItemProps): React.ReactElement => {
     onColorChange = () => {},
     onClick = () => {},
     tabIndex,
-    ...restProps
+    ...propsRest
   } = props;
-
+  
   return (
     <div
-      className="bkl-color-picker__wrapper"
-      {...restProps}
+      {...propsRest}
+      className={cx('bkl bkl-color-picker__wrapper', propsRest.className)}
     >
       <input
         className="bkl-color-picker__item"
@@ -46,52 +46,49 @@ const ColorPickerItem = (props: ColorPickerItemProps): React.ReactElement => {
         tabIndex={tabIndex}
       />
       <label htmlFor={id}>
-        <span className={id} />
+        <span className={id}/>
       </label>
     </div>
   );
 };
 
-ColorPickerItem.displayName = 'ColorPicker';
-
-export type ColorPickerGroupProps = Omit<JSX.IntrinsicElements['div'], 'className' | 'onChange'> & {
+export type ColorPickerGroupProps = Omit<ComponentProps<'div'>, 'onChange'> & {
   colorPreset: Record<string, string>,
   selectedColor: string,
   onChange: (color: string) => void,
-  className?: string,
 };
 const ColorPickerGroup = (props: ColorPickerGroupProps): React.ReactElement => {
   const {
     colorPreset,
-    className = '',
+    className,
     selectedColor,
     onChange,
-    ...restProps
+    ...propsRest
   } = props;
-
-  const customPickerRef = React.useRef(null);
+  
+  const customPickerRef = React.useRef<HTMLInputElement>(null);
   const [customColorPickerValue, setCustomColorPickerValue] = React.useState<string>('');
-
+  
   React.useEffect(() => {
     // Check if the selected color is present in the default preset or part of multi color picker.
     if (!Object.entries(colorPreset).find(([_key, color]) => color === selectedColor)) {
       setCustomColorPickerValue(selectedColor);
       document.documentElement.style.setProperty('--selected-color-picker', selectedColor);
     }
-  }, [selectedColor]);
-
+  }, [selectedColor, colorPreset]);
+  
   const showMultiColorPicker = () => {
     try {
-      customPickerRef?.current?.showPicker();
+      customPickerRef.current?.showPicker();
     } catch (error) {
       console.log(error);
     }
   };
-
+  
   return (
     <div
-      {...restProps}
-      aria-label="Color Picker"
+      {...propsRest}
+      //aria-label="Color Picker"
       className={cx('bkl-color-picker-group--inline', className)}
     >
       {Object.entries(colorPreset).map(([key, color]) => (
@@ -111,7 +108,7 @@ const ColorPickerGroup = (props: ColorPickerGroupProps): React.ReactElement => {
           checked={selectedColor === color && customColorPickerValue === ''}
         />
       ))}
-
+      
       <div className="bkl-custom-color-picker__wrapper">
         <input
           type="color"
@@ -126,7 +123,7 @@ const ColorPickerGroup = (props: ColorPickerGroupProps): React.ReactElement => {
             document.documentElement.style.setProperty('--selected-color-picker', targetVal);
           }}
         />
-
+        
         {!customColorPickerValue ?
           <Icon
             name="color-picker"
@@ -148,8 +145,6 @@ const ColorPickerGroup = (props: ColorPickerGroupProps): React.ReactElement => {
     </div>
   );
 };
-
-ColorPickerGroup.displayName = 'ColorPickerGroup';
 
 type ColorPickerProps = {
   Item: React.FC<ColorPickerItemProps>,
