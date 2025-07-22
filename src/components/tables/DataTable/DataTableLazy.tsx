@@ -106,6 +106,7 @@ export type TableProviderLazyProps<D extends object> = {
   columns: ReactTableOptions<D>['columns'],
   getRowId: ReactTableOptions<D>['getRowId'],
   plugins?: Array<ReactTable.PluginHook<D>>,
+  stickyColumns?: ReactTable.TableInstance<D>['bkStickyColumns'],
   initialState: Partial<ReactTable.TableState<D>>,
   
   // Callback to query a new set of items
@@ -120,6 +121,7 @@ export const TableProviderLazy = <D extends object>(props: TableProviderLazyProp
   const {
     children,
     columns,
+    stickyColumns,
     getRowId,
     plugins = [],
     initialState,
@@ -145,6 +147,7 @@ export const TableProviderLazy = <D extends object>(props: TableProviderLazyProp
     columns,
     data: items.itemsPage,
     ...(getRowId && { getRowId }), // Add `getRowId` only if it is defined
+    ...(stickyColumns ? { bkStickyColumns: stickyColumns } : {}),
   };
   const table = ReactTable.useTable(
     {

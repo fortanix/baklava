@@ -60,6 +60,14 @@ interface CustomColumnProps {
   configurable?: boolean,
   primary?: boolean,
   label?: string,
+  bkColumnWidth?: {
+    flex: number,
+    width: string,
+  },
+}
+
+interface CustomTableConfig {
+  bkStickyColumns?: undefined | 'first' | 'last' | 'both',
 }
 
 interface UseCustomFiltersState {
@@ -108,6 +116,7 @@ declare module 'react-table' {
       UseRowSelectInstanceProps<D>,
       UseRowStateInstanceProps<D>,
       UseSortByInstanceProps<D>,
+      CustomTableConfig,
       UseCustomFiltersInstanceProps {}
   
   export interface TableState<D extends object = {}>
@@ -129,6 +138,7 @@ declare module 'react-table' {
     className?: string,
     style?: CSSProperties | undefined,
   }
+
   export interface ColumnInterface<D>
     extends UseFiltersColumnOptions<D>,
       UseGlobalFiltersColumnOptions<D>,

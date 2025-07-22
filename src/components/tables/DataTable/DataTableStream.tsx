@@ -122,6 +122,7 @@ export type TableProviderStreamProps<D extends object, P = undefined> = {
   columns: ReactTableOptions<D>['columns'],
   getRowId: ReactTableOptions<D>['getRowId'],
   plugins?: Array<ReactTable.PluginHook<D>>,
+  stickyColumns?: ReactTable.TableInstance<D>['bkStickyColumns'],
   initialState: Partial<ReactTable.TableState<D>>,
   
   // Callback to query a new set of items
@@ -138,6 +139,7 @@ export const TableProviderStream = <D extends object, P = undefined>(
   const {
     children,
     columns,
+    stickyColumns,
     getRowId,
     plugins = [],
     initialState,
@@ -167,7 +169,9 @@ export const TableProviderStream = <D extends object, P = undefined>(
     columns,
     data: items,
     ...(getRowId && { getRowId }), // Add `getRowId` only if it is defined
+    ...(stickyColumns ? { bkStickyColumns: stickyColumns } : {}),
   };
+
   const table = ReactTable.useTable<D>(
     {
       ...tableOptions,
@@ -438,7 +442,7 @@ export const TableProviderStream = <D extends object, P = undefined>(
   
   // Note: the `table` reference is mutated, so cannot use it as dependency for `useMemo` directly
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-    const context = React.useMemo<TableContextState<D>>(() => ({
+  const context = React.useMemo<TableContextState<D>>(() => ({
     status,
     setStatus,
     reload,
