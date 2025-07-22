@@ -8,14 +8,9 @@
 @layer baklava.components {
   .bk-data-table {
     @include bk.component-base(bk-data-table);
-    overflow-x: auto;
     inline-size: 100%;
     
-    &__scroll-wrapper {
-      overflow-x: auto;
-    }
-    
-    &__footer {
+    .bk-data-table__footer {
       margin: bk.$spacing-5 0 bk.$spacing-5 0;
     }
     
@@ -27,11 +22,11 @@
               &::after {
                 content: '';
                 position: absolute;
-                top: 0;
-                bottom: 0;
-                left: 0;
-                width: 4px;
-                background: linear-gradient(to right, rgba(0,0,0,0.15), transparent);
+                inset-block: 0;
+                inset-block-end: 0;
+                inset-inline-start: 0;
+                inline-size: 4px;
+                background: linear-gradient(to right, rgb(0 0 0 / 15%), transparent);
                 pointer-events: none;
               }
             }
@@ -48,11 +43,11 @@
               &::after {
                 content: '';
                 position: absolute;
-                top: 0;
-                bottom: 0;
-                right: 0;
-                width: 4px;
-                background: linear-gradient(to right, rgba(0,0,0,0.15), transparent);
+                inset-block: 0;
+                inset-block-end: 0;
+                inset-inline-end: 0;
+                inline-size: 4px;
+                background: linear-gradient(to right, rgb(0 0 0 / 15%), transparent);
                 pointer-events: none;
               }
             }
@@ -62,7 +57,6 @@
     }
     
     table.bk-data-table__table {
-      width: 100%;
       inline-size: 100%;
       table-layout: fixed;
       border-collapse: collapse;
@@ -105,22 +99,18 @@
           &.column-sticky {
             position: sticky;
             z-index: 1;
+            background-color: bk.$theme-card-background-default;
+            // For sticky cells we need a solid colour as background,
+            // otherwise during scroll the content scrolled behind sticky cell will appear as overlapping
           }
           
           &.column-sticky--left {
-            left: 0;
+            inset-inline-start: 0;
           }
           
           &.column-sticky--right {
-            right: 0;
+            inset-inline-end: 0;
           }
-        }
-
-        th.column-sticky,
-        td.column-sticky {
-          background-color: bk.$theme-card-background-default;
-          // For sticky cells we need a solid colour as background,
-          // otherwise during scroll the content scrolled behind sticky cell will appear as overlapping
         }
         
         tr:hover td.column-sticky,

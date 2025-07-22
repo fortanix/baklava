@@ -3,7 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import type * as React from 'react';
-import { Children, isValidElement, cloneElement, useRef, useState, useEffect } from 'react';
+import { isValidElement, useRef, useState, useEffect } from 'react';
 import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../../util/componentUtil.ts';
 import type * as ReactTable from 'react-table';
 
@@ -18,10 +18,6 @@ import {
 import type { DataTableStatus } from '../DataTableContext.tsx';
 
 import cl from './DataTable.module.scss';
-
-type ColElement = React.ReactElement<{ style?: React.CSSProperties }>;
-type IdentifierColumnConfig = { columnId: string, sticky?: boolean };
-type ActionColumnConfig = { columnId: string, sticky?: boolean };
 
 const getFlexValueFromColumn = <D extends object>(col: ReactTable.ColumnInstance<D>) => {
   return (col?.bkColumnWidth?.flex ?? 1); // defaults to 1
@@ -61,59 +57,8 @@ export function useCustomColGroup<D extends object>(
   allColumns: ReactTable.ColumnInstance<D>[],
   columnGroups?: React.ReactNode,
 ): React.ReactNode | null {
-  const hasFlexColumn = allColumns.some((col) => isFlexColumn(col));
-
   if (columnGroups && isValidElement(columnGroups) && columnGroups.type === 'colgroup') {
-    const colGroup = columnGroups as React.ReactElement<{ children?: React.ReactNode }, 'colgroup'>;
-
-    if (!hasFlexColumn) {
-      return colGroup;
-    }
-    
-    // Condition to handle colgroup passes as a prop from consumer
-
-    // For each original <col>, render original + new <col> with flex width as specified
-    const newCols: React.ReactNode[] = [];
-
-    Children.forEach(colGroup.props.children, (child, i) => {
-      // Add original col
-      const col = allColumns[i];
-      
-      if (isValidElement(child) && col) {
-        const element = child as ColElement;
-        const baseStyle = element.props.style ?? {};
-        
-        const style = isFlexColumn(col)
-          ? {
-              ...baseStyle,
-              width: getFlexColumnWidth(col),
-            }
-          : {
-              ...baseStyle,
-              width: '10ch',
-            };
-          
-        newCols.push(
-          cloneElement(element, {
-            ...element.props,
-            key: `${col.id}-base`,
-            style,
-          })
-        );
-      
-        // Add new col with flex width if present
-        if (col && requireNewCol(col)) {
-          newCols.push(
-            <col
-              key={`${col.id}-stretch`}
-              style={{ width: `${calculateFlexPercentage(allColumns, col)}%` }}
-            />
-          );
-        }
-      }
-    });
-
-    return cloneElement(colGroup, {}, newCols);
+    return columnGroups;
   } else {
     // Generate a new <colgroup>
     const cols: React.ReactNode[] = [];
@@ -144,27 +89,30 @@ const getTotalColSpan = <D extends object>(columns: ReactTable.ColumnInstance<D>
   return columns.reduce((total, col) => total + (requireNewCol(col) ? 2 : 1), 0);
 };
 
-const isActionColumn = <D extends object>(column: ReactTable.ColumnInstance<D>, config?: ActionColumnConfig) => {
+const isActionColumn = <D extends object>(
+  column: ReactTable.ColumnInstance<D>,
+  config?: ReactTable.TableInstance<D>['actionColumnConfig'],
+) => {
   return !!(column && Object.hasOwn(column, 'id') && config?.columnId && column.id && config.columnId === column.id);
 };
 
 const isActionColumnSticky = <D extends object>(
   column: ReactTable.ColumnInstance<D>,
-  config?: ActionColumnConfig
+  config?: ReactTable.TableInstance<D>['actionColumnConfig'],
 ) => {
   return isActionColumn(column, config) && !!config?.sticky;
 };
 
 const isIdentifierColumn = <D extends object>(
   column: ReactTable.ColumnInstance<D>,
-  config?: IdentifierColumnConfig
+  config?: ReactTable.TableInstance<D>['identifierColumnConfig'],
 ) => {
   return !!(column && Object.hasOwn(column, 'id') && config?.columnId && column.id && config.columnId === column.id);
 };
 
 const isIdentifierColumnSticky = <D extends object>(
   column: ReactTable.ColumnInstance<D>,
-  config?: ActionColumnConfig
+  config?: ReactTable.TableInstance<D>['actionColumnConfig'],
 ) => {
   return isIdentifierColumn(column, config) && !!config?.sticky;
 };
@@ -204,6 +152,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
 
   const scrollWrapperRef = useRef<HTMLDivElement>(null);
   const [overflowPosition, setOverflowPosition] = useState<'left' | 'right' | 'center' | null>(null);
+  const scrollProps = useScroller({ scrollDirection: 'horizontal' });
   
   useEffect(() => {
     const el = scrollWrapperRef.current;
@@ -256,12 +205,15 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
   return (
     <>
       <div
+        {...scrollProps}
         ref={scrollWrapperRef}
         className={cx(cl['bk-data-table__scroll-wrapper'], {
-          [cl['bk-data-table__scrolled-left']]: overflowPosition === 'left' || overflowPosition === 'center',
-          [cl['bk-data-table__scrolled-right']]: overflowPosition === 'right' || overflowPosition === 'center',
-        }
-      )}>
+            [cl['bk-data-table__scrolled-left']]: overflowPosition === 'left' || overflowPosition === 'center',
+            [cl['bk-data-table__scrolled-right']]: overflowPosition === 'right' || overflowPosition === 'center',
+          },
+          scrollProps.className
+        )}
+      >
         <table
           {...table.getTableProps()}
           className={cx(cl['bk-data-table__table'], props.className)}
@@ -384,7 +336,7 @@ export const DataTableSync = <D extends object>(props: DataTableSyncProps<D>) =>
   } = props;
   
   const isEmpty = status.ready && props.table.page.length === 0;
-  const scrollProps = useScroller({ scrollDirection: 'horizontal' });
+
   const renderPlaceholder = (): React.ReactNode => {
     if (!status.ready) {
       return placeholderSkeleton;
@@ -398,8 +350,7 @@ export const DataTableSync = <D extends object>(props: DataTableSyncProps<D>) =>
   // Note: the wrapper div isn't really necessary, but we include it for structural consistency with `DataTableAsync`
   return (
     <div
-      {...scrollProps}
-      className={cx(cl['bk-data-table'], cl['bk-data-table--sync'], className, scrollProps.className)}
+      className={cx(cl['bk-data-table'], cl['bk-data-table--sync'], className )}
     >
       <DataTable
         {...propsRest}
@@ -438,7 +389,6 @@ export const DataTableAsync = <D extends object>(props: DataTableAsyncProps<D>) 
   const isFailed = status.error !== null;
   const isLoading = status.loading;
   const isEmpty = status.ready && table.page.length === 0;
-  const scrollProps = useScroller({ scrollDirection: 'horizontal' });
   
   const renderPlaceholder = (): React.ReactNode => {
     if (isFailed) {
@@ -456,8 +406,7 @@ export const DataTableAsync = <D extends object>(props: DataTableAsyncProps<D>) 
   
   return (
     <div
-      {...scrollProps}
-      className={cx(cl['bk-data-table'], cl['bk-data-table--async'], props.className, scrollProps.className)}
+      className={cx(cl['bk-data-table'], cl['bk-data-table--async'], props.className )}
     >
       {children}
       
