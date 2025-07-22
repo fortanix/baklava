@@ -64,11 +64,11 @@ export const useRowSelectColumnMerged = <D extends object>(
               </>
             );
           },
-          Cell: (cellProps: ReactTable.CellProps<D, any>) => {
+          Cell: (cellProps: ReactTable.CellProps<D>) => {
             const { checked, onChange } = cellProps.row.getToggleRowSelectedProps();
 
             const cellContent = col.Cell
-              ? (col.Cell as (props: ReactTable.CellProps<D, any>) => React.ReactNode)(cellProps)
+              ? (col.Cell as (props: ReactTable.CellProps<D>) => React.ReactNode)(cellProps)
               : cellProps.value;
 
             return (

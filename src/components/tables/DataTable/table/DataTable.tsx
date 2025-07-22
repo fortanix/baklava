@@ -156,6 +156,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
   const [overflowPosition, setOverflowPosition] = React.useState<'left' | 'right' | 'center' | null>(null);
   const scrollProps = useScroller({ scrollDirection: 'horizontal' });
   
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Required for column manager
   React.useEffect(() => {
     const el = scrollWrapperRef.current;
 
@@ -194,8 +195,8 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
       el.removeEventListener('scroll', updateOverflowPosition);
       window.removeEventListener('resize', updateOverflowPosition);
     };
-  }, [table.visibleColumns]); // recalculate if visible columns change
-    
+  }, [table.visibleColumns]);
+  
   // Currently we only support one header group
   const headerGroup: undefined | ReactTable.HeaderGroup<D> = table.headerGroups[0];
   if (!headerGroup) { return null; }
