@@ -67,7 +67,7 @@ interface CustomColumnProps {
 }
 
 interface CustomTableConfig {
-  bkStickyColumns: { first?: boolean, last?: boolean },
+  bkStickyColumns?: undefined | 'first' | 'last' | 'both',
 }
 
 interface UseCustomFiltersState {

@@ -353,11 +353,11 @@ export const WithScroll = {
   render: (args: dataTeableLazyTemplateProps) => <div style={{ width: '90vw' }}><DataTableStreamTemplate {...args} /></div>,
 };
 
-export const WithScrollAndStickyColumn = {
+export const WithScrollAndStickyNameColumn = {
   args: {
     columns: columnDefinitionsMultiple,
     items: generateData({ numItems: 6 }),
-    bkStickyColumns: { first: true }
+    stickyColumns: 'first'
   },
   render: (args: dataTeableLazyTemplateProps) => <div style={{ width: '90vw' }}><DataTableStreamTemplate {...args} /></div>,
 };
@@ -366,7 +366,7 @@ export const WithScrollAndStickyNameAndActions = {
   args: {
     columns: columnDefinitionsMultiple,
     items: generateData({ numItems: 6 }),
-    bkStickyColumns: { first: true, last: true }
+    stickyColumns: 'both'
   },
   render: (args: dataTeableLazyTemplateProps) => <div style={{ width: '90vw' }}><DataTableStreamTemplate {...args} /></div>,
 };

@@ -114,7 +114,9 @@ const isColumnSticky = <D extends object>(
   column: ReactTable.ColumnInstance<D>,
   table: ReactTable.TableInstance<D>,
 ) => {
-  return isColumnAtPosition(column, table.visibleColumns, position) && !!table?.bkStickyColumns?.[position];
+  return isColumnAtPosition(column, table.visibleColumns, position)
+    && !!table?.bkStickyColumns
+    && (table?.bkStickyColumns === position || table?.bkStickyColumns === 'both')
 };
 
 const getCommonClassNamesForColumn = <D extends object>(
