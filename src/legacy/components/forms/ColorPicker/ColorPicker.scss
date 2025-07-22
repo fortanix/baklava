@@ -23,7 +23,7 @@ $colors: (
       margin: bkl.$sizing-2;
       cursor: pointer;
       
-      // make opacity 0 instead of display: none for outline
+      // Use `opacity: 0` instead of `display: none` for outline
       .bkl-color-picker__item {
         pointer-events: none;
         position: absolute;
@@ -47,14 +47,14 @@ $colors: (
           }
         }
       }
-                
+      
       &:has(.bkl-color-picker__item:focus-visible) {
         label span {
           outline: 2px solid bkl.$focus-outline-color;
           outline-offset: 0;
         }
       }
-
+      
       label {
         display: inline-block;
         inline-size: 25px;
@@ -83,7 +83,7 @@ $colors: (
     }
     
     .bkl-custom-color-picker__wrapper {
-      &:has(.bkl-custom-color-picker___icon) {
+      &:has(.bkl-custom-color-picker__icon) {
         position: relative;
         display: flex;
         margin: bkl.$sizing-2;
@@ -99,7 +99,7 @@ $colors: (
       }
       
       &:has(.bkl-custom-color-picker__item:focus-visible) {
-        .bkl-custom-color-picker___icon {
+        .bkl-custom-color-picker__icon {
           outline: 2px solid bkl.$focus-outline-color;
           outline-offset: 0;
           border-radius: 50%;
@@ -111,7 +111,7 @@ $colors: (
         }
       }
       
-      .bkl-custom-color-picker___icon {
+      .bkl-custom-color-picker__icon {
         inline-size: 25px;
         block-size: 25px;
       }
