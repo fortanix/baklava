@@ -200,6 +200,7 @@ const packageConfig = {
       'react': '$react',
       'react-dom': '$react-dom',
     },
+    'stylus': '0.0.1-security',
   },
 };
 
