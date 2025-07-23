@@ -85,7 +85,7 @@ export type CheckboxGroupProps = ComponentProps<'div'> & {
   children?: undefined | Array<React.ReactElement>,
   inline?: undefined | boolean,
 };
-const CheckboxGroup = (props: CheckboxGroupProps): React.ReactElement => {
+const CheckboxGroup = (props: CheckboxGroupProps) => {
   const {
     options = {},
     selectedValues = [],

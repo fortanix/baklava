@@ -5,18 +5,15 @@
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
 
-// Component
-import { SpriteIcon as Icon } from '../../icons/Icon.tsx';
+import { BaklavaIcon } from '../../icons/icon-pack-baklava/BaklavaIcon.tsx';
 
 import './ColorPicker.scss';
 
 
-export type ColorPickerItemProps = Omit<ComponentProps<'div'>, 'onChange'> & {
+type ColorPickerItemProps = Omit<ComponentProps<'div'>, 'onChange'> & {
   value: string,
   checked?: undefined | boolean,
-  tabIndex?: undefined | number,
-  onColorChange?: undefined | ((evt: React.ChangeEvent<HTMLInputElement>) => void),
-  onClick?: undefined | (() => void),
+  onColorChange?: undefined | ((event: React.ChangeEvent<HTMLInputElement>) => void),
 };
 const ColorPickerItem = (props: ColorPickerItemProps) => {
   const {
@@ -24,7 +21,7 @@ const ColorPickerItem = (props: ColorPickerItemProps) => {
     value,
     checked = false,
     onColorChange = () => {},
-    onClick = () => {},
+    onClick,
     tabIndex,
     ...propsRest
   } = props;
@@ -46,18 +43,18 @@ const ColorPickerItem = (props: ColorPickerItemProps) => {
         tabIndex={tabIndex}
       />
       <label htmlFor={id}>
-        <span className={id}/>
+        <span id={id} className={id}/>
       </label>
     </div>
   );
 };
 
-export type ColorPickerGroupProps = Omit<ComponentProps<'div'>, 'onChange'> & {
+type ColorPickerGroupProps = Omit<ComponentProps<'div'>, 'onChange'> & {
   colorPreset: Record<string, string>,
   selectedColor: string,
   onChange: (color: string) => void,
 };
-const ColorPickerGroup = (props: ColorPickerGroupProps): React.ReactElement => {
+const ColorPickerGroup = (props: ColorPickerGroupProps) => {
   const {
     colorPreset,
     className,
@@ -125,11 +122,10 @@ const ColorPickerGroup = (props: ColorPickerGroupProps): React.ReactElement => {
         />
         
         {!customColorPickerValue ?
-          <Icon
-            name="color-picker"
+          <BaklavaIcon
+            icon="color-picker"
             className="bkl-custom-color-picker___icon"
             onClick={showMultiColorPicker}
-            icon={import(`../../../assets/icons/color-picker.svg?sprite`)}
           />
           : (
             <ColorPickerItem
@@ -146,14 +142,7 @@ const ColorPickerGroup = (props: ColorPickerGroupProps): React.ReactElement => {
   );
 };
 
-type ColorPickerProps = {
-  Item: React.FC<ColorPickerItemProps>,
-  Group: React.FC<ColorPickerGroupProps>,
-};
-
-export const ColorPicker: ColorPickerProps = {
+export const ColorPicker = {
   Item: ColorPickerItem,
   Group: ColorPickerGroup,
 };
-
-export default ColorPicker;

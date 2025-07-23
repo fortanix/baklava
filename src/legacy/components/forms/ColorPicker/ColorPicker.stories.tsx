@@ -6,7 +6,7 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 
-import ColorPicker from './ColorPicker.tsx';
+import { ColorPicker } from './ColorPicker.tsx';
 
 
 type ColorPickerArgs = React.ComponentProps<typeof ColorPicker.Group>;
@@ -34,7 +34,7 @@ const defaultPreset = {
 export const ColorPickerStandard: Story = {
   args: {
     colorPreset: defaultPreset,
-    selectedColor: 'accentColor',
+    selectedColor: 'forestgreen',
     onChange: () => {},
   },
 };

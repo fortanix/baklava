@@ -15,7 +15,7 @@ export type LabelProps = ComponentProps<'span'> & {
   compact?: undefined | boolean,
   showTooltip?: undefined | boolean,
 };
-const LabelItem = (props: LabelProps): React.ReactElement => {
+const LabelItem = (props: LabelProps) => {
   const {
     labelValue,
     labelKey = undefined,
@@ -62,7 +62,7 @@ export type LabelListProps = ComponentProps<'div'> & {
   compact?: undefined | boolean,
   showTooltip?: undefined | boolean,
 };
-const LabelList = (props: LabelListProps): React.ReactElement => {
+const LabelList = (props: LabelListProps) => {
   const {
     labels,
     className = '',

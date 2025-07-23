@@ -34,7 +34,7 @@ type CopyActionButton = {
   message: NotificationContent,
   className?: undefined | ClassNameArgument,
 };
-export const CopyActionButton = ({ message, className }: CopyActionButton): React.ReactElement => {
+export const CopyActionButton = ({ message, className }: CopyActionButton) => {
   const defaultTooltipMessage = 'Copy message';
   const [tooltipMessage, setTooltipMessage] = React.useState(defaultTooltipMessage);
   
@@ -78,7 +78,7 @@ export const NotificationMessage = ({
   message,
   actions,
   actionsInline,
-}: NotificationMessageProps): React.ReactElement => {
+}: NotificationMessageProps) => {
   if (!actions && !actionsInline) {
     return <>{message}</>;
   }
