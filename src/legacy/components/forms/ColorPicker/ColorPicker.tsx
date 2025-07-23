@@ -86,7 +86,7 @@ const ColorPickerGroup = (props: ColorPickerGroupProps) => {
     <div
       {...propsRest}
       //aria-label="Color Picker"
-      className={cx('bkl-color-picker-group--inline', className)}
+      className={cx('bkl bkl-color-picker-group', className)}
     >
       {Object.entries(colorPreset).map(([key, color]) => (
         <ColorPickerItem
@@ -121,12 +121,14 @@ const ColorPickerGroup = (props: ColorPickerGroupProps) => {
           }}
         />
         
-        {!customColorPickerValue ?
-          <BaklavaIcon
-            icon="color-picker"
-            className="bkl-custom-color-picker___icon"
-            onClick={showMultiColorPicker}
-          />
+        {!customColorPickerValue
+          ? (
+            <BaklavaIcon
+              icon="color-picker"
+              className="bkl-custom-color-picker__icon"
+              onClick={showMultiColorPicker}
+            />
+          )
           : (
             <ColorPickerItem
               id="bkl-custom-color"

@@ -12,6 +12,19 @@ import { ColorPicker } from './ColorPicker.tsx';
 type ColorPickerArgs = React.ComponentProps<typeof ColorPicker.Group>;
 type Story = StoryObj<ColorPickerArgs>;
 
+const ColorPickerGroupControlled = (props: Omit<ColorPickerArgs, 'onChange'>) => {
+  const [selectedColor, setSelectedColor] = React.useState<string>(props.selectedColor);
+  return (
+    <ColorPicker.Group
+      {...props}
+      selectedColor={selectedColor}
+      onChange={color => {
+        setSelectedColor(color);
+      }}
+    />
+  );
+};
+
 export default {
   component: ColorPicker.Group,
   tags: ['autodocs'],
@@ -20,7 +33,7 @@ export default {
   },
   argTypes: {},
   args: {},
-  render: args => <ColorPicker.Group {...args}/>,
+  render: args => <ColorPickerGroupControlled {...args}/>,
 } satisfies Meta<ColorPickerArgs>;
 
 
@@ -39,21 +52,19 @@ export const ColorPickerStandard: Story = {
   },
 };
 
-// export const ColorPickerWithCustomPreset: Story = {
-//   args: {
-//     colorPreset: { 'color-red': '#ff0000', 'color-green': '#00ff00', 'color-blue': '#0000ff' },
-//     selectedColor: 'color-blue',
-//     onChange: () => {},
-//   },
-//   render: (args) => (
-//     <>
-//       {/* NOTE: the component doesn't define its own styling for the selectable colors currently. */}
-//       <style>{`
-//         .color-red { background: red; }
-//         .color-green { background: green; }
-//         .color-blue { background: blue; }
-//       `}</style>
-//       <ColorPicker.Group {...args}/>
-//     </>
-//   ),
-// };
+export const ColorPickerWithCustomPreset: Story = {
+  args: {
+    colorPreset: { 'color-red': '#ff0000', 'color-green': '#00ff00', 'color-blue': '#0000ff' },
+    selectedColor: 'yellow',
+  },
+  render: (args) => (
+    <>
+      <style>{`
+        .color-red { background: red; }
+        .color-green { background: green; }
+        .color-blue { background: blue; }
+      `}</style>
+      <ColorPickerGroupControlled {...args}/>
+    </>
+  ),
+};

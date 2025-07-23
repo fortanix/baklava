@@ -11,8 +11,9 @@ $colors: (
 );
 
 @layer baklava.legacy {
-  .bkl-color-picker-group--inline {
+  .bkl-color-picker-group {
     display: flex;
+    align-items: center;
     flex-direction: row;
     flex-wrap: wrap;
     inline-size: 100%;
