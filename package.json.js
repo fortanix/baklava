@@ -149,7 +149,7 @@ const packageConfig = {
     '@percy/storybook': '^7.0.0',
     
     // Styling
-    //'typescript-plugin-css-modules': '^5.2.0', // Disabled for now due to issues with `stylus` dependency
+    'typescript-plugin-css-modules': '^5.2.0',
     'sass-embedded': '^1.89.0',
     'lightningcss': '^1.30.1',
     
