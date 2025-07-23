@@ -43,13 +43,18 @@
     "noUncheckedSideEffectImports": true,
     
     // Check CSS module class names in the IDE
-    "plugins": [{
-      "name": "typescript-plugin-css-modules",
-      "options": {
-        //"classnameTransform": "camelCase",
-        //"goToDefinition": true,
-      },
-    }],
+    "plugins": [
+      /*
+      // Disable for now due to issues with `stylus` dependency
+      {
+        "name": "typescript-plugin-css-modules",
+        "options": {
+          //"classnameTransform": "camelCase",
+          //"goToDefinition": true,
+        },
+      }
+      */
+    ],
   },
   "include": [
     "app",

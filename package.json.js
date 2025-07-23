@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 
 const packageConfig = {
   name: '@fortanix/baklava',
-  version: '1.0.0-beta-20250717',
+  version: '1.0.0-beta-20250723',
   license: 'MPL-2.0',
   author: 'Fortanix',
   description: 'Fortanix Baklava design system',
@@ -107,7 +107,7 @@ const packageConfig = {
     
     // Build
     'browserslist': '^4.24.5',
-    'vite': '^6.3.5', // Cannot yet upgrade to v6, causes some odd pre-transform errors in lightningcss
+    'vite': '^6.3.5',
     '@vitejs/plugin-react': '^4.7.0',
     'vite-plugin-dts': '^4.5.4',
     'vite-plugin-lib-inject-css': '^2.2.1',
@@ -149,7 +149,7 @@ const packageConfig = {
     '@percy/storybook': '^7.0.0',
     
     // Styling
-    'typescript-plugin-css-modules': '^5.0.1',
+    //'typescript-plugin-css-modules': '^5.2.0', // Disabled for now due to issues with `stylus` dependency
     'sass-embedded': '^1.89.0',
     'lightningcss': '^1.30.1',
     

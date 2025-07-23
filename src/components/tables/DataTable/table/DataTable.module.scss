@@ -10,13 +10,60 @@
     @include bk.component-base(bk-data-table);
     inline-size: 100%;
     
+    .bk-data-table__footer {
+      margin: bk.$spacing-5 0 bk.$spacing-5 0;
+    }
+    
+    .bk-data-table-container--scrolled-left {
+      table.bk-data-table__table {
+        thead, tbody {
+          th, td {         
+            &.column-sticky--right {          
+              &::after {
+                content: '';
+                position: absolute;
+                inset-block: 0;
+                inset-block-end: 0;
+                inset-inline-start: 0;
+                inline-size: 4px;
+                background: linear-gradient(to right, rgb(0 0 0 / 15%), transparent);
+                pointer-events: none;
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    .bk-data-table-container--scrolled-right {
+      table.bk-data-table__table {
+        thead, tbody {
+          th, td {
+            &.column-sticky--left {             
+              &::after {
+                content: '';
+                position: absolute;
+                inset-block: 0;
+                inset-block-end: 0;
+                inset-inline-end: 0;
+                inline-size: 4px;
+                background: linear-gradient(to right, rgb(0 0 0 / 15%), transparent);
+                pointer-events: none;
+              }
+            }
+          }
+        }
+      }
+    }
+    
     table.bk-data-table__table {
       inline-size: 100%;
       table-layout: fixed;
       border-collapse: collapse;
+      background-color: bk.$theme-card-background-default;
       
       th {
-        padding: bk.$spacing-5 bk.$spacing-2;
+        padding: bk.$spacing-3 bk.$spacing-2;
         vertical-align: middle;
         white-space: nowrap; // Header should never wrap to multiple lines
         text-overflow: ellipsis;
@@ -29,7 +76,7 @@
         vertical-align: top;
         
         overflow: hidden;
-        padding: bk.$spacing-5 bk.$spacing-2;
+        padding: bk.$spacing-3 bk.$spacing-2;
         
         // Note: need a wrapper div for this because setting a different `display` on a `<td>` will break the table
         .bk-data-table__text-cell {
@@ -45,6 +92,31 @@
           > * {
             min-inline-size: 0;
           }
+        }
+      }
+      
+      thead, tbody {
+        th, td {
+          &.column-sticky {
+            position: sticky;
+            z-index: 1;
+            background-color: bk.$theme-card-background-default;
+            // For sticky cells we need a solid colour as background,
+            // otherwise during scroll the content scrolled behind sticky cell will appear as overlapping
+          }
+          
+          &.column-sticky--left {
+            inset-inline-start: 0;
+          }
+          
+          &.column-sticky--right {
+            inset-inline-end: 0;
+          }
+        }
+        
+        tr:hover td.column-sticky,
+        tr.selected td.column-sticky {
+          background-color: bk.$theme-table-background-hover; // handle hover/selected background
         }
       }
       
@@ -69,7 +141,7 @@
               inline-size: bk.$spacing-4;
               
               &.sort-indicator--inactive {
-                opacity: 0;
+                opacity: 0.5;
               }
               
               transition: transform 240ms ease-in-out,
@@ -91,9 +163,7 @@
       
       tbody {
         tr:not(.bk-data-table__placeholder) {
-          &:not(:last-of-type) {
-            border-block-end: 1px solid bk.$theme-rule-default;
-          }
+          border-block-end: 1px solid bk.$theme-rule-default;
           
           &:hover,
           &.selected {

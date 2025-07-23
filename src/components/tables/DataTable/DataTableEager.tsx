@@ -30,6 +30,7 @@ export type TableProviderEagerProps<D extends object> = {
   items: ReactTableOptions<D>['data'],
   getRowId: ReactTableOptions<D>['getRowId'],
   plugins?: Array<ReactTable.PluginHook<D>>,
+  stickyColumns?: ReactTable.TableInstance<D>['bkStickyColumns'],
   initialState?: Partial<ReactTable.TableState<D>>,
   isReady?: boolean,
 };
@@ -37,6 +38,7 @@ export const TableProviderEager = <D extends object>(props: TableProviderEagerPr
   const {
     children,
     columns,
+    stickyColumns,
     items,
     getRowId,
     plugins = [],
@@ -48,7 +50,9 @@ export const TableProviderEager = <D extends object>(props: TableProviderEagerPr
     columns,
     data: items,
     ...(getRowId && { getRowId }),
+    ...(stickyColumns ? { bkStickyColumns: stickyColumns } : {}),
   };
+
   const table = ReactTable.useTable(
     {
       ...tableOptions,
