@@ -2,14 +2,15 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { classNames as cx, ComponentPropsWithoutRef } from '../../../util/component_util';
 import { format, startOfMonth, lastDayOfMonth, set } from 'date-fns';
-import * as React from 'react';
 
-import { IconDecorated as Icon } from '../../icons/IconDecorated';
-import { SwitcherButtons } from '../../navigation/switcher/Switcher';
-import { Dropdown } from '../../overlays/dropdown/Dropdown';
-import { Button } from '../../buttons/Button';
+import * as React from 'react';
+import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
+
+import { IconDecorated as Icon } from '../../icons/IconDecorated.tsx';
+import { Button } from '../../buttons/Button.tsx';
+import { SwitcherButtons } from '../../navigation/switcher/Switcher.tsx';
+import { Dropdown } from '../../overlays/dropdown/Dropdown.tsx';
 
 import './YearMonthPicker.scss';
 
@@ -37,9 +38,9 @@ export type YearMonthPickerMode = 'previous' | 'current' | 'select' | 'none';
 
 export type YearMonthPickerBuffer = { month: Month, year: Year };
 
-export type YearMonthPickerProps = Omit<ComponentPropsWithoutRef<'div'>, 'onChange'> & {
-  minLimit?: YearMonthPickerBuffer,
-  maxLimit?: YearMonthPickerBuffer,
+export type YearMonthPickerProps = Omit<ComponentProps<'div'>, 'onChange'> & {
+  minLimit?: undefined | YearMonthPickerBuffer,
+  maxLimit?: undefined | YearMonthPickerBuffer,
   selectedDate: YearMonthPickerBuffer,
   mode: YearMonthPickerMode,
   setMode: (mode: YearMonthPickerMode) => void,
@@ -125,8 +126,8 @@ export const getCurrentDateBuffer = () => {
 
 const initializeSelectBuffer = (
   selectedDate: YearMonthPickerBuffer,
-  minLimit?: YearMonthPickerBuffer,
-  maxLimit?: YearMonthPickerBuffer,
+  minLimit?: undefined | YearMonthPickerBuffer,
+  maxLimit?: undefined | YearMonthPickerBuffer,
 ): YearMonthPickerBuffer => {
   const validMinMax = isValidMinMax(minLimit, maxLimit);
   const currentDate = getCurrentDate();
@@ -183,6 +184,7 @@ export const YearMonthPicker = (props: YearMonthPickerProps) => {
     maxLimit
   ));
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Should only run once.
   React.useEffect(() => {
     if (selectedDate.month !== selectBuffer.month || selectedDate.year !== selectBuffer.year) {
       // If the selected date is not valid, it will be updated to a valid date.
@@ -196,6 +198,7 @@ export const YearMonthPicker = (props: YearMonthPickerProps) => {
     }
   }, []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Only call `updateSelectBuffer` when the buffer changes.
   React.useEffect(() => {
     // After opening the dropdown and while incrementing or decremening the year,
     // there is a chance that the selected month gets out of range of the min limit or max limit.
@@ -371,7 +374,7 @@ export const YearMonthPicker = (props: YearMonthPickerProps) => {
     <SwitcherButtons
       selected={mode}
       onChange={setMode}
-      className={cx('bkl-year-month-picker', className)}
+      className={cx('bkl bkl-year-month-picker', className)}
     >
       <SwitcherButtons.Button
         optionKey="current"
@@ -407,5 +410,3 @@ export const YearMonthPicker = (props: YearMonthPickerProps) => {
     </SwitcherButtons>
   );
 };
-
-YearMonthPicker.displayName = 'YearMonthPicker';

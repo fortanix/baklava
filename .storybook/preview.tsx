@@ -224,6 +224,11 @@ const preview = {
                   'LazySelect',
                 ],
                 'DateTime',
+                [
+                  'DatePicker',
+                  'DateTimePicker',
+                  'YearMonthPicker',
+                ],
                 'ColorPicker',
                 'MultiAssigner',
               ],
