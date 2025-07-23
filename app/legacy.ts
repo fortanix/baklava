@@ -52,7 +52,6 @@ export { MultiSelect } from '../src/legacy/components/forms/Select/MultiSelect/M
 export { LazySelect } from '../src/legacy/components/forms/Select/LazySelect/LazySelect.tsx';
 export { DatePicker } from '../src/legacy/components/forms/DateTime/DatePicker.tsx';
 export { DateTimePicker } from '../src/legacy/components/forms/DateTime/DateTimePicker.tsx';
-export { DateTimeRangePicker } from '../src/legacy/components/forms/DateTime/DateTimeRangePicker.tsx';
 export * as YearMonthPicker from '../src/legacy/components/forms/DateTime/YearMonthPicker.tsx';
 export * as MultiAssigner from '../src/legacy/components/forms/MultiAssigner/assigner/MultiAssigner.tsx';
 export * as MultiAssignerEager from '../src/legacy/components/forms/MultiAssigner/MultiAssignerEager.tsx';

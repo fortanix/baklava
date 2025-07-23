@@ -9,7 +9,9 @@ import { BaklavaIcon } from '../../icons/icon-pack-baklava/BaklavaIcon.tsx';
 
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+
 import '../Input/Input.scss';
+import './DateTimePicker.scss';
 
 
 type DatePickerProps = Omit<ComponentProps<typeof ReactDatePicker>, 'onChange'> & {
@@ -27,7 +29,7 @@ export const DatePicker = (props: DatePickerProps) => {
   const { date, maxDate, minDate, onChange = () => {}, ...propsRest } = props;
   
   return (
-    <div className="bkl-date-picker bkl-input">
+    <div className="bkl bkl-date-picker bkl-input">
       <BaklavaIcon icon="calendar" className="bkl-input--calendar__icon"/>
       <ReactDatePicker
         dateFormat="MM/dd/yyyy"

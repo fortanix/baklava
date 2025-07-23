@@ -2,13 +2,14 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { classNames as cx, ComponentPropsWithoutRef } from '../../../util/component_util';
 import { format, getYear, getMonth, getDate, set, addHours, subHours } from 'date-fns';
-import * as React from 'react';
 
-import { Input } from '../Input/Input';
-import { Select } from '../Select/Select';
-import { DatePicker } from './DatePicker';
+import * as React from 'react';
+import { classNames as cx, ComponentProps } from '../../../util/component_util.tsx';
+
+import { Input } from '../Input/Input.tsx';
+import { Select } from '../Select/Select.tsx';
+import { DatePicker } from './DatePicker.tsx';
 import ReactDatePicker from 'react-datepicker';
 
 import './DateTimePicker.scss';
@@ -43,12 +44,14 @@ const TimeInput = ({ time, updateTime }: TimeInputProps) => {
     if (!/\d{1,2}:\d{2}/.test(bufferTrimmed)) { return null; }
     
     const [hours, minutes] = bufferTrimmed.split(':').map(Number);
+    if (typeof hours === 'undefined' || typeof minutes === 'undefined') { return null; } // Should not happen
+    
     if (hours < 0 || hours >= 24 || minutes < 0 || minutes >= 60) { return null; }
     
     return { hours, minutes };
   }, []);
   
-  const update = React.useCallback((): void => {
+  const update = React.useCallback(() => {
     const timeResult: null | Time = parseTimeBuffer(timeBuffer);
     
     if (timeResult === null) {
@@ -58,7 +61,7 @@ const TimeInput = ({ time, updateTime }: TimeInputProps) => {
     }
     
     updateTime(timeResult);
-  }, [timeBuffer, updateTime]);
+  }, [time, timeBuffer, updateTime, parseTimeBuffer]);
   
   React.useEffect(() => {
     // Update the buffer when we get a new time value
@@ -107,7 +110,7 @@ const updateMeridiemInDateTime = (dateTime: Date, meridiemUpdated: Meridiem) => 
 type MeridiemPickerProps = {
   meridiem: Meridiem,
   updateMeridiem: (meridiem: Meridiem) => void,
-  dropdownReference?: React.RefObject<HTMLUListElement>,
+  dropdownReference?: undefined | React.RefObject<HTMLUListElement>,
 };
 const MeridiemPicker = ({ meridiem, updateMeridiem, dropdownReference }: MeridiemPickerProps) => {
   const meridiemOptions = React.useMemo(() => ({
@@ -121,19 +124,25 @@ const MeridiemPicker = ({ meridiem, updateMeridiem, dropdownReference }: Meridie
       options={meridiemOptions}
       value={meridiem}
       dropdownReference={dropdownReference}
-      onSelect={updateMeridiem}
+      // Need the cast because `Select` isn't generic over `options`
+      onSelect={updateMeridiem as (meridiem: string) => void}
     />
   );
 };
 
 
-type DateTimePickerProps = Omit<ComponentPropsWithoutRef<'div'>, 'onChange'> & {
+type DateTimePickerProps = Omit<ComponentProps<'div'>, 'onChange'> & {
   dateTime: Date,
-  maxDate?: Date,
-  minDate?: Date,
-  onChange: (dateTime: Date) => void,
-  dropdownReference?: React.RefObject<HTMLUListElement>,
-  datePickerProps?: Partial<React.ComponentPropsWithoutRef<typeof ReactDatePicker>>,
+  maxDate?: undefined | Date,
+  minDate?: undefined | Date,
+  onChange: (dateTime: null | Date) => void,
+  dropdownReference?: undefined | React.RefObject<HTMLUListElement>,
+  datePickerProps?: undefined | Partial<React.ComponentProps<typeof ReactDatePicker>> & {
+    // Note: need to disable the following features in order to use `ReactDatePicker` as a plain date picker.
+    selectsRange?: never,
+    selectsMultiple?: never,
+    showMonthYearDropdown?: never,
+  },
 };
 export const DateTimePicker = (props: DateTimePickerProps) => {
   const {
@@ -146,13 +155,15 @@ export const DateTimePicker = (props: DateTimePickerProps) => {
     ...propsRest
   } = props;
   
-  const updateDateTime = (dateTime: Date) => {
+  const updateDateTime = (dateTime: null | Date) => {
     // Make sure seconds/miliseconds are set to zero
-    onChange(set(dateTime, { seconds: 0, milliseconds: 0 }));
+    const dateTimeUpdated = dateTime === null ? null : set(dateTime, { seconds: 0, milliseconds: 0 });
+    
+    onChange(dateTimeUpdated);
   };
   
-  const updateDate = (dateUpdated: Date) => {
-    const dateTimeUpdated = set(dateTime, {
+  const updateDate = (dateUpdated: null | Date) => {
+    const dateTimeUpdated = dateUpdated === null ? null : set(dateTime, {
       year: getYear(dateUpdated),
       month: getMonth(dateUpdated),
       date: getDate(dateUpdated),
@@ -176,13 +187,13 @@ export const DateTimePicker = (props: DateTimePickerProps) => {
   };
   
   return (
-    <div {...propsRest} className={cx('bkl-date-time-picker', propsRest.className)}>
+    <div {...propsRest} className={cx('bkl bkl-date-time-picker', propsRest.className)}>
       <DatePicker
         {...datePickerProps}
         date={dateTime}
         onChange={updateDate}
-        maxDate={maxDate}
-        minDate={minDate}
+        {...minDate ? { minDate } : {}} // Workaround for `exactOptionalPropertyTypes`
+        {...maxDate ? { maxDate } : {}} // Workaround for `exactOptionalPropertyTypes`
       />
       <TimeInput
         time={timeFromDateTime(dateTime, { system: '12-hour' })}
