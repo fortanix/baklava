@@ -17,6 +17,7 @@ export type TabProps = ComponentProps<'div'> & {
   tabKey: string,
   title: React.ReactNode,
   hide?: boolean,
+  contentClassName?: string,
   render?: () => React.ReactNode,
 };
 export const Tab = ({ children }: TabProps): React.ReactElement => {
@@ -53,7 +54,7 @@ export const Tabs = (props: TabsProps) => {
   
   type ActiveTabProps = Omit<TabProps, 'children' | 'tabKey' | 'title' | 'hide' | 'render'>;
   const getActiveTabProps = (tab: TabElement): ActiveTabProps => {
-    const { children, tabKey, title, hide, render, ...tabProps } = tab.props;
+    const { children, tabKey, title, hide, contentClassName, render, ...tabProps } = tab.props;
     return tabProps;
   };
   
@@ -112,7 +113,11 @@ export const Tabs = (props: TabsProps) => {
       {activeTab &&
         <div
           {...(activeTabProps ?? {})}
-          className={cx(cl['bk-tabs__tab-content'], activeTabProps?.className)}
+          className={
+            cx(cl['bk-tabs__tab-content'],
+            activeTabProps?.contentClassName,
+            activeTabProps?.className)
+          }
         >
           {renderActive(activeTab)}
         </div>
