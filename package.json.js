@@ -107,8 +107,8 @@ const packageConfig = {
     
     // Build
     'browserslist': '^4.24.5',
-    'vite': '^6.3.5', // Cannot yet upgrade to v6, causes some odd pre-transform errors in lightningcss
-    '@vitejs/plugin-react': '^4.5.0',
+    'vite': '^6.3.5',
+    '@vitejs/plugin-react': '^4.7.0',
     'vite-plugin-dts': '^4.5.4',
     'vite-plugin-lib-inject-css': '^2.2.1',
     'vite-plugin-svgr': '^4.3.0',
@@ -116,17 +116,17 @@ const packageConfig = {
     
     // Static analysis
     'typescript': '^5.7.3',
-    '@types/node': '^24.0.0',
-    'stylelint': '^16.19.1',
+    '@types/node': '^24.1.0',
+    'stylelint': '^16.22.0',
     'stylelint-config-standard-scss': '^15.0.1',
     'stylelint-use-logical': '^2.1.2',
-    '@biomejs/biome': '^2.0.5',
+    '@biomejs/biome': '^2.1.2',
     
     // Testing
     'vitest': '^3.1.4',
     '@vitest/ui': '^3.1.4',
     'axe-playwright': '^2.0.3',
-    '@ngneat/falso': '^7.3.0',
+    '@ngneat/falso': '^8.0.2',
     
     // Storybook
     'storybook': '^8.6.14',
@@ -141,15 +141,15 @@ const packageConfig = {
     '@storybook/addon-links': '^8.6.14',
     '@storybook/addon-storysource': '^8.6.14',
     '@storybook/addon-designs': '^8.2.1',
-    'chromatic': '^11.28.3',
+    'chromatic': '^13.1.2',
     '@chromatic-com/storybook': '^3.2.6', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     'storybook-dark-mode': '^4.0.2',
-    '@percy/cli': '^1.30.11',
-    '@percy/storybook': '^6.0.3',
+    '@percy/cli': '^1.31.1',
+    '@percy/storybook': '^7.0.0',
     
     // Styling
-    'typescript-plugin-css-modules': '^5.0.1',
+    'typescript-plugin-css-modules': '^5.2.0',
     'sass-embedded': '^1.89.0',
     'lightningcss': '^1.30.1',
     
@@ -172,15 +172,15 @@ const packageConfig = {
     'react-dom': '^19.0.0',
     'react-error-boundary': '^6.0.0',
     'classnames': '^2.5.1',
-    'zustand': '^5.0.5',
+    'zustand': '^5.0.6',
     
-    '@floating-ui/react': '^0.27.12',
+    '@floating-ui/react': '^0.27.13',
     'react-table': '^7.8.0',
     'react-datepicker': '^8.0.0',
     
-    'effect': '^3.15.3',
-    'react-hook-form': '^7.56.4',
-    '@tanstack/react-virtual': '^3.13.9',
+    'effect': '^3.17.0',
+    'react-hook-form': '^7.60.0',
+    '@tanstack/react-virtual': '^3.13.12',
     
     'optics-ts': '^2.4.1',
   },
@@ -200,7 +200,6 @@ const packageConfig = {
       'react': '$react',
       'react-dom': '$react-dom',
     },
-    'stylus': '0.0.1-security',
   },
 };
 
