@@ -3,7 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
+import { ClassNameArgument, classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
 import cl from './Tabs.module.scss';
 
@@ -17,7 +17,7 @@ export type TabProps = ComponentProps<'div'> & {
   tabKey: string,
   title: React.ReactNode,
   hide?: boolean,
-  contentClassName?: string,
+  contentClassName?: ClassNameArgument,
   render?: () => React.ReactNode,
 };
 export const Tab = ({ children }: TabProps): React.ReactElement => {
@@ -113,11 +113,11 @@ export const Tabs = (props: TabsProps) => {
       {activeTab &&
         <div
           {...(activeTabProps ?? {})}
-          className={
-            cx(cl['bk-tabs__tab-content'],
+          className={cx(
+            cl['bk-tabs__tab-content'],
             activeTabProps?.contentClassName,
-            activeTabProps?.className)
-          }
+            activeTabProps?.className
+          )}
         >
           {renderActive(activeTab)}
         </div>
