@@ -5,15 +5,18 @@
 import * as React from 'react';
 
 import {
+  type Item,
+  type ItemKey,
+  type MultiAssignerContextState,
   createMultiAssignerContext,
-  Item,
-  MultiAssignerContextState,
 } from './MultiAssignerContext.tsx';
 
-import { MultiAssigner, MultiAssignerProps } from './assigner/MultiAssigner.tsx';
+import { MultiAssigner } from './assigner/MultiAssigner.tsx';
 
 
-export type MultiAssignerEagerProps<T extends Item> = MultiAssignerProps<T>;
+export type { Item, ItemKey };
+
+export type MultiAssignerEagerProps<T extends Item> = React.ComponentProps<typeof MultiAssigner<T>>;
 
 export const MultiAssignerEager = <T extends Item>(props: MultiAssignerEagerProps<T>) => {
   const {
