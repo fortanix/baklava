@@ -46,7 +46,7 @@ export const Card = Object.assign(
     const { children, unstyled = false, flat = false, ...propsRest } = props;
     
     return (
-      <section
+      <article
         {...propsRest}
         className={cx(
           'bk',
@@ -56,7 +56,7 @@ export const Card = Object.assign(
         )}
       >
         {children}
-      </section>
+      </article>
     );
   },
   {
