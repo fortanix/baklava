@@ -6,45 +6,47 @@
 @use '../../../style/mixins.scss' as mixins;
 
 
-.bkl-breadcrumbs {
-  display: flex;
-  flex-wrap: wrap;
-  margin: bkl.$sizing-5 0 bkl.$sizing-8;
-  padding: 0 bkl.$sizing-4 bkl.$sizing-3;
-  border-block-end: .1rem bkl.$neutral-color-1 solid;
-  
-  color: bkl.$neutral-color-2;
-  @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
-  font-size: bkl.$font-size-s;
-  
-  &.bkl-breadcrumbs--no-trailing-slash {
-    .bkl-breadcrumbs-item:last-child {
-      margin-inline-end: 0;
-      
-      ::after {
-        content: '';
+@layer baklava.legacy {
+  .bkl-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    margin: bkl.$sizing-5 0 bkl.$sizing-8;
+    padding: 0 bkl.$sizing-4 bkl.$sizing-3;
+    border-block-end: .1rem bkl.$neutral-color-1 solid;
+    
+    color: bkl.$neutral-color-2;
+    @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+    font-size: bkl.$font-size-s;
+    
+    &.bkl-breadcrumbs--no-trailing-slash {
+      .bkl-breadcrumbs-item:last-child {
+        margin-inline-end: 0;
+        
+        ::after {
+          content: '';
+        }
       }
     }
-  }
-  
-  .bkl-breadcrumbs-item {
-    position: relative;
-    display: flex;
-    align-items: center;
-    margin-inline-end: bkl.$sizing-xs;
     
-    ::after {
-      content: '/';
-      color: bkl.$neutral-color-2;
-      margin-inline-start: bkl.$sizing-xs;
-    }
-    
-    .bkl-breadcrumbs__link {
-      color: bkl.$neutral-color-2;
+    .bkl-breadcrumbs-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-inline-end: bkl.$sizing-xs;
       
-      &:is(:focus-visible, .pseudo-focus-visible) {
-        outline: 2px solid bkl.$focus-outline-color;
-        outline-offset: 0;
+      ::after {
+        content: '/';
+        color: bkl.$neutral-color-2;
+        margin-inline-start: bkl.$sizing-xs;
+      }
+      
+      .bkl-breadcrumbs__link {
+        color: bkl.$neutral-color-2;
+        
+        &:is(:focus-visible, .pseudo-focus-visible) {
+          outline: 2px solid bkl.$focus-outline-color;
+          outline-offset: 0;
+        }
       }
     }
   }

@@ -23,7 +23,7 @@ const BreadcrumbsItem = (props: BreadcrumbItemProps) => {
 
 type BreadcrumbsProps = ComponentProps<'ol'> & {
   children: React.ReactNode,
-  noTrailingSlash?: boolean,
+  noTrailingSlash?: undefined | boolean,
 };
 export const Breadcrumbs = Object.assign(
   (props: BreadcrumbsProps) => {
@@ -38,7 +38,7 @@ export const Breadcrumbs = Object.assign(
       <ol
         {...propsRest}
         aria-label="Breadcrumbs"
-        className={cx('bkl-breadcrumbs', className, { 'bkl-breadcrumbs--no-trailing-slash': noTrailingSlash })}
+        className={cx('bkl bkl-breadcrumbs', className, { 'bkl-breadcrumbs--no-trailing-slash': noTrailingSlash })}
       >
         {children}
       </ol>

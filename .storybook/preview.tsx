@@ -239,6 +239,9 @@ const preview = {
                 'TabEmbedded',
               ],
               'layout',
+              [
+                'Breadcrumbs',
+              ],
               'internal',
               [
                 'CloseButton',
