@@ -8,11 +8,9 @@ import {
   createMultiAssignerContext,
   Item,
   MultiAssignerContextState,
- } from './MultiAssignerContext';
+} from './MultiAssignerContext.tsx';
 
-import { MultiAssigner, MultiAssignerProps } from './assigner/MultiAssigner';
-
-
+import { MultiAssigner, MultiAssignerProps } from './assigner/MultiAssigner.tsx';
 
 
 export type MultiAssignerEagerProps<T extends Item> = MultiAssignerProps<T>;
@@ -23,7 +21,7 @@ export const MultiAssignerEager = <T extends Item>(props: MultiAssignerEagerProp
     assignItem,
     unassignItem,
   } = props;
-
+  
   const context = React.useMemo<MultiAssignerContextState<T>>(() => ({
     // status: { ready: true, loading: false, error: null },
     // setStatus() {},
@@ -32,11 +30,12 @@ export const MultiAssignerEager = <T extends Item>(props: MultiAssignerEagerProp
     unassignItem,
     deriveKey,
   }), [assignItem, unassignItem, deriveKey]);
-    
-  const multiAssignerContext = React.useMemo(() => createMultiAssignerContext<T>(), []);
+  
+  const MultiAssignerContext = React.useMemo(() => createMultiAssignerContext<T>(), []);
+  
   return (
-    <multiAssignerContext.Provider value={context}>
+    <MultiAssignerContext.Provider value={context}>
       <MultiAssigner {...props} />
-    </multiAssignerContext.Provider>
+    </MultiAssignerContext.Provider>
   );
 };

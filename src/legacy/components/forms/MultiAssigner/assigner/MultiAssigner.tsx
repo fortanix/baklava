@@ -2,19 +2,16 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import type { WithOptional } from '../../../../util/types.ts';
+
 import * as React from 'react';
-import { ClassNameArgument, classNames as cx } from '../../../../util/component_util';
+import { classNames as cx, type ClassNameArgument } from '../../../../util/component_util.tsx';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
-import { Button } from '../../../buttons/Button';
-import { BaklavaIcon } from '../../../icons/icon-pack-baklava/BaklavaIcon';
-import { SearchInput } from '../../../../prefab';
-import {
-  Item,
-  ItemKey,
-  useMultiAssigner,
- } from '../MultiAssignerContext';
-import { WithOptional } from '../../../../util/types';
+import { Button } from '../../../buttons/Button.tsx';
+import { BaklavaIcon } from '../../../icons/icon-pack-baklava/BaklavaIcon.tsx';
+import { SearchInput } from '../../../../prefab/forms/SearchInput/SearchInput.tsx';
+import { Item, ItemKey, useMultiAssigner } from '../MultiAssignerContext.tsx';
 
 import './MultiAssigner.scss';
 
@@ -76,16 +73,16 @@ export const MultiAssigner = <T extends Item>(props: MultiAssignerProps<T>) => {
     estimateSize: assignedItemsVirtualizerProps?.estimateSize ?? (() => 65),
     ...(assignedItemsVirtualizerProps ?? {}),
   });
-
+  
   const unassignedItemsVirtualizer = useVirtualizer({
     count: unassignedItems.length,
     getScrollElement: () => unassignedItemsParentRef.current,
     estimateSize: unassignedItemsVirtualizerProps?.estimateSize ?? (() => 65),
     ...(unassignedItemsVirtualizerProps ?? {}),
   });
-
+  
   return (
-    <div className={cx('bkl-multi-assigner', className)}>
+    <div className={cx('bkl bkl-multi-assigner', className)}>
       <div className="col col-1">
         <div className="col-header">
           {renderItemsHeader?.()}
@@ -102,7 +99,8 @@ export const MultiAssigner = <T extends Item>(props: MultiAssignerProps<T>) => {
           >
             {unassignedItemsVirtualizer.getVirtualItems().map(virtualItem => {
               const item = unassignedItems[virtualItem.index];
-
+              if (typeof item === 'undefined') { return null; }
+              
               return (
                 <Button
                   plain
@@ -141,7 +139,8 @@ export const MultiAssigner = <T extends Item>(props: MultiAssignerProps<T>) => {
           >
             {assignedItemsVirtualizer.getVirtualItems().map(virtualItem => {
               const itemKey = assignedItemKeys[virtualItem.index];
-
+              if (typeof itemKey === 'undefined') { return null; }
+              
               return (
                 <div
                   style={{

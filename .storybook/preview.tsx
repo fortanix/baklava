@@ -238,6 +238,7 @@ const preview = {
                 'Tabs',
                 'TabEmbedded',
               ],
+              'layout',
               'internal',
               [
                 'CloseButton',
