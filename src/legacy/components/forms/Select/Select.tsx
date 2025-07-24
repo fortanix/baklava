@@ -12,7 +12,7 @@ import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandl
 import { useCombinedRefs } from '../../../util/hooks/useCombinedRefs.ts';
 import { handleOptionKeyDown, handleTriggerKeyDown } from '../../../util/keyboardHandlers.tsx';
 
-import { useScroller } from '../../layout/util/Scroller.tsx';
+import { useScroller } from '../../util/Scroller.tsx';
 import { Button } from '../../buttons/Button.tsx';
 
 import './Select.scss';

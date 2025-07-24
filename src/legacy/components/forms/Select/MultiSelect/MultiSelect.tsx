@@ -15,7 +15,7 @@ import {
   handleTriggerKeyDown
 } from '../../../../util/keyboardHandlers.tsx';
 
-import { useScroller } from '../../../layout/util/Scroller.tsx';
+import { useScroller } from '../../../util/Scroller.tsx';
 import { Button } from '../../../buttons/Button.tsx';
 import { Checkbox } from '../../Checkbox/Checkbox.tsx';
 

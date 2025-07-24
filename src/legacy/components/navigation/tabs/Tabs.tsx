@@ -10,7 +10,7 @@ import * as ReactIs from 'react-is';
 
 import { handleTabKeyDown } from '../../../util/keyboardHandlers';
 
-import { useScroller } from '../../layout/util/Scroller';
+import { useScroller } from '../../util/Scroller';
 import { Button } from '../../buttons/Button';
 
 import './Tabs.scss';

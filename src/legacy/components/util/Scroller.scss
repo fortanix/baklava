@@ -6,17 +6,11 @@
   //overscroll-behavior: none;
   
   // stylelint-disable-next-line declaration-property-value-disallowed-list
-  &--vertical {
-    overflow-y: auto;
-  }
+  &.bkl-util-scroller--vertical { overflow-y: auto; }
   
   // stylelint-disable-next-line declaration-property-value-disallowed-list
-  &--horizontal {
-    overflow-x: auto;
-  }
+  &.bkl-util-scroller--horizontal { overflow-x: auto; }
   
   // stylelint-disable-next-line declaration-property-value-disallowed-list
-  &--both {
-    overflow: auto;
-  }
+  &.bkl-util-scroller--both { overflow: auto; }
 }

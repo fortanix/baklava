@@ -8,7 +8,7 @@ import { classNames as cx, type ClassNameArgument, type ComponentProps } from '.
 
 import { Button } from '../../buttons/Button.tsx';
 import { SpriteIcon as Icon } from '../../icons/Icon.tsx';
-import { useScroller } from '../../layout/util/Scroller.tsx';
+import { useScroller } from '../../util/Scroller.tsx';
 
 import './Accordion.scss';
 

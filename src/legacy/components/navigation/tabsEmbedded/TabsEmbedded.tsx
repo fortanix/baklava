@@ -10,7 +10,7 @@ import * as React from 'react';
 import * as ReactIs from 'react-is';
 
 import { PanelProps, Panel } from '../../containers/panel/Panel';
-import { useScroller } from '../../layout/util/Scroller';
+import { useScroller } from '../../util/Scroller';
 import { Button } from '../../buttons/Button';
 
 import './TabsEmbedded.scss';

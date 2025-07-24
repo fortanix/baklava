@@ -19,7 +19,7 @@ import {
 
 import type { FieldQuery, FilterQuery } from '../../../../prefab/forms/MultiSearch/MultiSearch.tsx';
 
-import { useScroller } from '../../../layout/util/Scroller.tsx';
+import { useScroller } from '../../../util/Scroller.tsx';
 import { Caption } from '../../../typography/caption/Caption.tsx';
 import { Tag } from '../../../containers/tag/Tag.tsx';
 import { Button } from '../../../buttons/Button.tsx';

@@ -10,7 +10,7 @@ import { classNames as cx, type ComponentProps } from '../../../util/component_u
 import { Backdrop } from '../../internal/Backdrop.tsx';
 import { CloseButton } from '../../internal/CloseButton.tsx';
 import { Loader } from '../loader/Loader.tsx';
-import { useScroller } from '../../layout/util/Scroller.tsx';
+import { useScroller } from '../../util/Scroller.tsx';
 
 import './Modal.scss';
 
