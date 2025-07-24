@@ -3,15 +3,15 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import cx from 'classnames';
+import { classNames as cx, type ClassNameArgument } from '../../../util/component_util.tsx';
 import { Tooltip } from '../../overlays/tooltip/Tooltip';
 import { SidebarContext } from './Sidebar';
 
 
-type SidebarTooltipProps = React.ComponentPropsWithoutRef<typeof Tooltip> & {
-  content: React.ComponentPropsWithoutRef<typeof Tooltip>['content'],
-  show?: boolean,
-  className?: string,
+type SidebarTooltipProps = React.ComponentProps<typeof Tooltip> & {
+  content: React.ComponentProps<typeof Tooltip>['content'],
+  show?: undefined | boolean,
+  className?: undefined | ClassNameArgument,
 };
 export const SidebarTooltip = (props: SidebarTooltipProps) => {
   const { className, show = false, content, ...propsRest } = props;
@@ -20,8 +20,8 @@ export const SidebarTooltip = (props: SidebarTooltipProps) => {
   const [tooltipContent, setTooltipContent] = React.useState<SidebarTooltipProps['content']>('');
 
   const tooltipProps = {
-    placement: 'right',
-    className: cx('bkl-sidebar-tooltip', className),
+    placement: 'right' as const,
+    className: cx('bkl bkl-sidebar-tooltip', className),
   };
   
   React.useEffect(() => {

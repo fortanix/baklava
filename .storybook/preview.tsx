@@ -241,6 +241,19 @@ const preview = {
               'layout',
               [
                 'Breadcrumbs',
+                'headers',
+                [
+                  'HeaderGrid',
+                ],
+                'sidebars',
+                [
+                  'Nav',
+                  'Sidebar',
+                ],
+                'layouts',
+                [
+                  'Layout',
+                ],
               ],
               'internal',
               [

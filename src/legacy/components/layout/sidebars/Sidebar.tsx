@@ -2,21 +2,18 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import cx from 'classnames/dedupe';
 import * as React from 'react';
+import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
 
 // Util
-import { useSidebarCollapseHandler } from '../../../util/hooks/useSidebarCollapseHandler';
+import { useSidebarCollapseHandler } from '../../../util/hooks/useSidebarCollapseHandler.ts';
 
-// Component
-import { SpriteIcon as Icon } from '../../icons/Icon';
-import { Button } from '../../buttons/Button';
+// Components
+import { BaklavaIcon } from '../../icons/icon-pack-baklava/BaklavaIcon.tsx';
+import { Button } from '../../buttons/Button.tsx';
 
 import './Sidebar.scss';
 
-
-const SidebarClosedIcon = import('../../../assets/icons/sidebar-closed.svg?sprite');
-const SidebarOpenIcon = import('../../../assets/icons/sidebar-open.svg?sprite');
 
 type SidebarContextT = {
   isSidebarCollapsed: boolean,
@@ -27,8 +24,7 @@ export const SidebarContext = React.createContext<SidebarContextT>({
   setIsSidebarCollapsed: () => {},
 });
 
-export type CollapseButtonProps = Omit<JSX.IntrinsicElements['button'], 'className'> & {
-  className?: {},
+type CollapseButtonProps = ComponentProps<'button'> & {
   collapsed: boolean,
   toggleCollapsed: () => void,
 };
@@ -39,21 +35,18 @@ export const CollapseButton : React.FC<CollapseButtonProps> = ({ className, coll
       onClick={toggleCollapsed}
       className={cx('bkl-sidebar--collapsed-button', className)}
     >
-      <Icon
-        name={collapsed ? 'sidebar-closed' : 'sidebar-open'}
-        icon={collapsed ? SidebarClosedIcon : SidebarOpenIcon}
+      <BaklavaIcon
+        icon={collapsed ? 'sidebar-closed' : 'sidebar-open'}
         aria-hidden="true"
       />
     </Button>
   );
 };
 
-export type SidebarProps = Omit<JSX.IntrinsicElements['aside'], 'className'> & {
-  children : React.ReactNode,
-  className?: {},
-  collapsable?: boolean,
+type SidebarProps = ComponentProps<'aside'> & {
+  collapsable?: undefined | boolean,
 };
-export const Sidebar : React.FC<SidebarProps>= ({ children, className, collapsable = false, ...props }) => {
+export const Sidebar = ({ children, className, collapsable = false, ...props }: SidebarProps) => {
   const { isSidebarCollapsed, setIsSidebarCollapsed } = useSidebarCollapseHandler();
 
   const context = { isSidebarCollapsed, setIsSidebarCollapsed };
@@ -78,5 +71,3 @@ export const Sidebar : React.FC<SidebarProps>= ({ children, className, collapsab
     </SidebarContext.Provider>
   );
 };
-
-export default Sidebar;

@@ -5,7 +5,7 @@
 import { describe, test, beforeEach, expect } from 'vitest';
 import * as TL from '@testing-library/react';
 
-import Sidebar from './Sidebar';
+import { Sidebar } from './Sidebar';
 
 
 describe('Sidebar', () => {

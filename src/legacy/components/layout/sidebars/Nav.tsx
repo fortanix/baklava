@@ -1,31 +1,32 @@
 /* Copyright (c) Fortanix, Inc.
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 import $msg from 'message-tag';
-import cx from 'classnames/dedupe';
+
 import * as React from 'react';
+import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
 import { Link } from 'react-router-dom';
 
-import { handleNavKeyDown } from '../../../util/keyboardHandlers';
-import { ComponentPropsWithoutRef } from '../../../util/component_util';
+import { handleNavKeyDown } from '../../../util/keyboardHandlers.tsx';
 
-import { Button } from '../../buttons/Button';
-import { SidebarContext } from './Sidebar';
-import { SidebarTooltip } from './SidebarTooltip';
+import { Button } from '../../buttons/Button.tsx';
+import { SidebarContext } from './Sidebar.tsx';
+import { SidebarTooltip } from './SidebarTooltip.tsx';
 
 import './Nav.scss';
 
 
-type NavItemProps = ComponentPropsWithoutRef<'a'> & {
+type NavItemProps = ComponentProps<'a'> & {
   tooltip: string,
   to: string,
   active: boolean,
-  navIndex?: number,
-  navItemsRef?: HTMLAnchorElement[],
-  label?: string,
-  onClick?: () => void,
-  disabled?: boolean,
-  tabIndex?: number,
+  navIndex?: undefined | number,
+  navItemsRef?: undefined | Array<HTMLAnchorElement>,
+  label?: undefined | string,
+  onClick?: undefined | (() => void),
+  disabled?: undefined | boolean,
+  tabIndex?: undefined | number,
 };
 export const NavItem = (props: NavItemProps) => {
   const {
@@ -42,22 +43,23 @@ export const NavItem = (props: NavItemProps) => {
     ...propsRest
   } = props;
   const { isSidebarCollapsed, setIsSidebarCollapsed } = React.useContext(SidebarContext);
-
+  
   return (
     <Link
       role="menuitem"
       to={disabled ? undefined : to}
-      ref={el => (navItemsRef.current[navIndex] = el)}
+      ref={el => { navItemsRef.current[navIndex] = el; }}
       tabIndex={(disabled && -1) || (tabIndex ?? (active ? 0 : -1))}
       {...(active && { 'aria-current': 'page' })}
       aria-disabled={disabled}
       {...propsRest}
       className={cx(
-        'bkl-nav__list-item__link',
-        className, {
-          active: active,
-          disabled: disabled
-        }
+        'bkl bkl-nav__list-item__link',
+        className,
+        {
+          active,
+          disabled,
+        },
       )}
       onKeyDown={(evt: React.KeyboardEvent<HTMLAnchorElement>) => {
         handleNavKeyDown({
@@ -73,12 +75,9 @@ export const NavItem = (props: NavItemProps) => {
   );
 };
 
-export type NavProps = Omit<JSX.IntrinsicElements['nav'], 'className'> & {
-  children : React.ReactNode,
-  className ?: {},
-};
-export const Nav : React.FC<NavProps> = ({ children, className, ...props }) => {
-  const navItemsRef = React.useRef<HTMLAnchorElement[]>([]);
+type NavProps = ComponentProps<'nav'>;
+export const Nav = ({ children, className, ...props }: NavProps) => {
+  const navItemsRef = React.useRef<Array<HTMLAnchorElement>>([]);
   
   React.Children.forEach(children, (child: React.ReactNode) => {
     if (!React.isValidElement(child)) return;
