@@ -73,7 +73,6 @@ export * as Filtering from '../src/components/tables/DataTable/filtering/Filteri
 
 // Layout
 export { Layout } from '../src/legacy/components/layout/layouts/Layout.tsx';
-export { HeaderBar } from '../src/legacy/components/layout/headers/HeaderBar.tsx';
 export { HeaderGrid } from '../src/legacy/components/layout/headers/HeaderGrid.tsx';
 export { Sidebar } from '../src/legacy/components/layout/sidebars/Sidebar.tsx';
 export { Nav, NavItem } from '../src/legacy/components/layout/sidebars/Nav.tsx';
