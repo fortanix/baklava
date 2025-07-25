@@ -63,7 +63,6 @@ export default {
   render: (args) => <MenuProvider {...args}/>,
 } satisfies Meta<MenuProviderArgs>;
 
-
 export const MenuProviderStandard: Story = {};
 
 export const MenuProviderWithDefault: Story = {
