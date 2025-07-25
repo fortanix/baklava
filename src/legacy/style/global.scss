@@ -142,5 +142,8 @@
     
     // FIXME: do we still need this (for legacy components)?
     //line-height: vars.$line-height-6;
+    
+    // FIXME: previously set in `Layout.css`
+    //background: bkl.$light-color-2;
   }
 }

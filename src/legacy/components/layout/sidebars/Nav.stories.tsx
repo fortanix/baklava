@@ -3,7 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { HashRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 
 import type { Meta, StoryObj } from '@storybook/react';
 
@@ -25,13 +25,13 @@ export default {
     children: 'Example',
   },
   render: (args) => <Nav {...args}/>,
+  decorators: [
+    Story => <MemoryRouter><Story/></MemoryRouter>,
+  ],
 } satisfies Meta<NavArgs>;
 
 
 export const NavStandard: Story = {
-  decorators: [
-    Story => <HashRouter><Story/></HashRouter>,
-  ],
   args: {
     children: [
       <NavItem key="dashboard" tooltip="Dashboard" to="/" active={false}>

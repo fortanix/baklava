@@ -166,6 +166,9 @@ const packageConfig = {
     
     // Data table
     '@types/react-table': '^7.7.20',
+    
+    // Legacy
+    '@types/react-router-dom': '^5.3.0',
   },
   
   // Dependencies needed when running the generated build
