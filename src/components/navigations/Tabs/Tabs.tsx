@@ -54,7 +54,7 @@ export const Tabs = (props: TabsProps) => {
   
   type ActiveTabProps = Omit<TabProps, 'children' | 'tabKey' | 'title' | 'hide' | 'render'>;
   const getActiveTabProps = (tab: TabElement): ActiveTabProps => {
-    const { children, tabKey, title, hide, contentClassName, render, ...tabProps } = tab.props;
+    const { children, tabKey, title, hide, render, ...tabProps } = tab.props;
     return tabProps;
   };
   
