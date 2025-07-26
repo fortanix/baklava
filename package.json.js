@@ -168,6 +168,7 @@ const packageConfig = {
     '@types/react-table': '^7.7.20',
     
     // Legacy
+    '@types/react-is': '^19.0.0',
     '@types/react-router-dom': '^5.3.0',
   },
   
@@ -196,7 +197,7 @@ const packageConfig = {
     
     
     // Legacy packages (for `src/legacy`)
-    'react-is': '^17.0.2',
+    'react-is': '^19.1.0',
     'focus-trap-react': '^10.0.0',
     'react-textarea-autosize': '^8.3.2',
     'react-toastify': '^11.0.5',

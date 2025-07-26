@@ -4,35 +4,32 @@
 
 import $msg from 'message-tag';
 
-import { classNames as cx, ComponentPropsWithoutRef } from '../../../util/component_util';
 import * as React from 'react';
 import * as ReactIs from 'react-is';
+import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
 
-import { handleTabKeyDown } from '../../../util/keyboardHandlers';
+import { handleTabKeyDown } from '../../../util/keyboardHandlers.tsx';
 
-import { useScroller } from '../../util/Scroller';
-import { Button } from '../../buttons/Button';
+import { useScroller } from '../../util/Scroller.tsx';
+import { Button } from '../../buttons/Button.tsx';
 
 import './Tabs.scss';
 
 
 export type TabKey = string;
 
-export type TabProps = ComponentPropsWithoutRef<'div'> & {
-  children: React.ReactNode,
+export type TabProps = ComponentProps<'div'> & {
+  children?: undefined | React.ReactNode,
+  render?: undefined | (() => React.ReactNode),
   tabKey: TabKey,
   title: React.ReactNode,
-  hide?: boolean,
-  className?: string,
-  render?: () => React.ReactNode,
+  hide?: undefined | boolean,
 };
-export const Tab = ({ children }: TabProps): React.ReactElement => {
-  return children as React.ReactElement;
-};
+export const Tab = ({ children }: TabProps) => children;
 type TabElement = React.ReactElement<TabProps, React.FunctionComponent<typeof Tab>>;
 
 
-export type TabsProps = ComponentPropsWithoutRef<'div'> & {
+export type TabsProps = ComponentProps<'div'> & {
   children: React.ReactNode,
   active: TabKey,
   onSwitch: (tabKey: TabKey) => void,
@@ -47,21 +44,16 @@ export const Tabs = (props: TabsProps) => {
   } = props;
 
   const tabsRef = React.useRef<HTMLButtonElement[]>([]);
-
-  if (typeof active !== 'string') {
-    console.error($msg`Missing active tab, given ${active}`);
-    return null;
-  }
   
   const scrollerProps = useScroller();
   // Select the active tab among the given list of tabs
   const getActiveTab = (tabs: Array<TabElement>) => {
     const activeTabs = tabs.filter(child => child.props.tabKey === active);
-    
-    if (activeTabs.length === 0) { throw new TypeError($msg`Active tab not found: ${active}`); }
     if (activeTabs.length > 1) { throw new TypeError($msg`Ambiguous active tab`); }
     
     const activeTab = activeTabs[0];
+    if (typeof activeTab === 'undefined') { throw new TypeError($msg`Active tab not found: ${active}`); }
+    
     return activeTab;
   };
   
@@ -71,14 +63,7 @@ export const Tabs = (props: TabsProps) => {
   };
   
   const renderActive = (tab: TabElement) => {
-    let tabElement;
-    if (typeof tab.props.render === 'function') {
-      tabElement = tab.props.render();
-    } else {
-      tabElement = tab.props.children;
-    }
-    
-    return tabElement;
+    return typeof tab.props.render === 'function' ? tab.props.render() : tab.props.children;
   };
   
   React.Children.forEach(children, (child: React.ReactNode) => {
@@ -93,8 +78,13 @@ export const Tabs = (props: TabsProps) => {
   const activeTab = getActiveTab(tabs);
   const activeTabProps = getActiveTabProps(activeTab);
   
+  if (typeof active !== 'string') {
+    console.error($msg`Missing active tab, given ${active}`);
+    return null;
+  }
+  
   return (
-    <div {...propsRest} role="tablist" className={cx('bkl-tabs', className)}>
+    <div {...propsRest} role="tablist" className={cx('bkl bkl-tabs', className)}>
       <ul className="bkl-tabs__switcher">
         {tabs.map((tab, index) => {
           const { hide, tabKey, className, title } = tab.props;
@@ -104,9 +94,13 @@ export const Tabs = (props: TabsProps) => {
             <li key={tabKey} role="presentation">
               <Button
                 plain
+                ref={element => {
+                  if (element) {
+                    tabsRef.current[index] = element;
+                  }
+                }}
                 id={tabKey}
                 role="tab"
-                ref={el => (tabsRef.current[index] = el)}
                 data-tab={tabKey}
                 aria-selected={isActive}
                 aria-controls={`${tabKey}-panel`}
