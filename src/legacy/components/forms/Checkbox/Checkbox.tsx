@@ -10,6 +10,10 @@ import './Checkbox.scss';
 
 export type CheckboxItemProps = Omit<ComponentProps<'label'>, 'ref' | 'onChange'> & {
   ref?: undefined | React.Ref<HTMLInputElement>,
+  
+  /** @deprecated */
+  primary?: undefined | boolean,
+  
   label?: undefined | React.ReactNode,
   value?: undefined | string,
   checked?: undefined | boolean,
@@ -22,6 +26,7 @@ export type CheckboxItemProps = Omit<ComponentProps<'label'>, 'ref' | 'onChange'
 const CheckboxItem = (props: CheckboxItemProps) => {
   const {
     ref,
+    primary,
     label,
     value,
     checked = false,

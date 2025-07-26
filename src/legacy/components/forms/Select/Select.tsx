@@ -19,7 +19,7 @@ import './Select.scss';
 
 
 export type PopperOptions = Partial<PopperJS.Options> & {
-  createPopper?: typeof PopperJS.createPopper;
+  createPopper?: typeof PopperJS.createPopper,
 };
 
 export type SelectOption = {
@@ -54,15 +54,15 @@ export const Select = (props: SelectProps) => {
     offset = [],
     popperOptions = {},
     dropdownReference = null,
-    ...restProps
+    ...propsRest
   } = props;
-
+  
   const scrollerProps = useScroller();
-  const optionsRef = React.useRef<HTMLButtonElement[]>([]);
+  const optionsRef = React.useRef<Array<HTMLButtonElement>>([]);
   const [isActive, setIsActive] = React.useState(false);
   const [isOptionSelected, setIsOptionSelected] = React.useState(false);
-  const [referenceElement, setReferenceElement] = React.useState<HTMLElement | null>(null);
-  const [popperElement, setPopperElement] = React.useState<HTMLElement | null>(null);
+  const [referenceElement, setReferenceElement] = React.useState<null | HTMLElement>(null);
+  const [popperElement, setPopperElement] = React.useState<null | HTMLElement>(null);
   
   const widthModifiers = React.useMemo(() => [
     {
@@ -135,7 +135,8 @@ export const Select = (props: SelectProps) => {
           tabIndex={value === key ? 0 : -1}
           className={cx(
             'bkl',
-            'bkl-select__option', {
+            'bkl-select__option',
+            {
               'bkl-select__option--default': typeof label === 'string',
               'bkl-select__option--disabled': optionDisabled,
             },
@@ -181,8 +182,11 @@ export const Select = (props: SelectProps) => {
               // biome-ignore lint/a11y/useSemanticElements: Cannot use `<option>`
               role="option"
               className={cx(
-                'bkl-select__option bkl-select__option--disabled',
-                { 'bkl-select__option--default': typeof defaultOption.label === 'string' },
+                'bkl-select__option',
+                'bkl-select__option--disabled',
+                {
+                  'bkl-select__option--default': typeof defaultOption.label === 'string',
+                },
               )}
               onKeyDown={(evt: React.KeyboardEvent) => {
                 if (evt.key === 'Escape') {
@@ -218,7 +222,7 @@ export const Select = (props: SelectProps) => {
   };
   
   return (
-    <div {...restProps} className={cx('bkl-select', className)}>
+    <div {...propsRest} className={cx('bkl-select', className)}>
       <Button
         plain
         className="bkl-select__container"

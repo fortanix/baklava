@@ -1,0 +1,75 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+@use '../../../style/util/z-index.scss' as z;
+@use '../../../style/accessibility.scss' as accessibility;
+
+@layer baklava.legacy {
+  .bkl-select.bkl-lazy-select {
+    .bkl-lazy-select__search-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: bkl.$sizing-1;
+      background-color: bkl.$light-color-2;
+      border: 0.2rem solid bkl.$neutral-color-1;
+      border-radius: bkl.$border-radius-ms;
+      inline-size: 100%;
+      @include accessibility.focus-outset;
+      
+      &:hover {
+        border-color: bkl.$accent-color;
+      }
+      
+      &.bkl-lazy-select__search-container--active {
+        background-color: bkl.$light-color-1;
+        border-color: bkl.$accent-color-light-2;
+        &.bkl-lazy-select__search-container-with-tags {
+          padding: bkl.$sizing-1 bkl.$sizing-0 bkl.$sizing-0 bkl.$sizing-3;
+          
+          .bkl-select__input {
+            border-radius: unset;
+          }
+        }
+        
+        .bkl-select__input {
+          cursor: default;
+          border-radius: bkl.$border-radius-ms;
+        }
+      }
+      
+      .bkl-lazy-select__tag {
+        align-self: center;
+      }
+      
+      .bkl-select__input {
+        flex: 1;
+        inline-size: unset;
+        border: none;
+        border-radius: unset;
+      }
+    }
+  }
+  
+  // Note: the dropdown is portaled into the body, so this selector cannot be nested inside `.bkl-select`
+  .bkl-select__dropdown.bkl-select__dropdown--lazy {
+    min-block-size: 8rem;
+    max-block-size: 28rem;
+    
+    .bkl-select__option--selected {
+      background-color: bkl.$light-color-2;
+    }
+    
+    &.bkl-select__dropdown--empty {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
+      li {
+        inline-size: auto;
+      }
+    }
+  }
+}

@@ -155,16 +155,16 @@ export const MultiSelect = (props: MultiSelectProps) => {
         key={key}
         role="option"
         aria-selected={selectedValues.includes(key)}
-        className={cx(
-          'bkl-select__option', { 'bkl-select__option--disabled': optionDisabled },
-        )}
       >
         <Checkbox.Item
           id={key}
           ref={el => (optionsRef.current[index] = el)}
-          className={cx({ 'bkl-select__option--default': typeof label === 'string' })}
+          className={cx(
+            'bkl-select__option',
+            { 'bkl-select__option--default': typeof label === 'string' },
+            { 'bkl-select__option--disabled': optionDisabled },
+          )}
           value={key}
-          primary
           label={label}
           onChange={(evt: React.ChangeEvent<HTMLInputElement>) => {
             if (!optionDisabled) {

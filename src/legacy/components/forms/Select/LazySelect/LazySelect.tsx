@@ -615,10 +615,14 @@ export const LazySelect = <D extends object, P extends unknown = undefined>(prop
     <div {...restProps} className={cx('bkl bkl-select bkl-lazy-select', className)}>
       <Button
         plain
-        className={cx('bkl-lazy-select__search-container', {
-          'bkl-lazy-select__search-container--active': isActive,
-          'bkl-lazy-select__search-container-with-tags': isActive && hasTags,
-        })}
+        className={cx(
+          'bkl-select__container',
+          'bkl-lazy-select__search-container',
+          {
+            'bkl-lazy-select__search-container--active': isActive,
+            'bkl-lazy-select__search-container-with-tags': isActive && hasTags,
+          },
+        )}
         aria-haspopup="listbox"
         aria-expanded={isActive}
         aria-controls="lazy-select-listbox"

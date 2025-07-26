@@ -24,9 +24,16 @@ export default {
 } satisfies Meta<MultiSelectArgs>;
 
 
+const options1 = {
+  apple: { label: 'Apple' },
+  banana: { label: 'Banana' },
+  cherry: { label: 'Cherry', disabled: true },
+  durian: { label: 'Durian' },
+};
+
 export const MultiSelectStandard: Story = {
   args: {
-    options: {},
-    selectedValues: [],
+    options: options1,
+    selectedValues: ['banana', 'durian'],
   },
 };
