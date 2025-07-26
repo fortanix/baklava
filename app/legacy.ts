@@ -80,9 +80,9 @@ export { SidebarTooltip } from '../src/legacy/components/layout/sidebars/Sidebar
 export { Breadcrumbs } from '../src/legacy/components/layout/breadcrumbs/Breadcrumbs.tsx';
 
 // Navigation
-export { SwitcherButtons } from '../src/legacy/components/navigation/switcher/Switcher.tsx';
-export { Tabs } from '../src/legacy/components/navigation/tabs/Tabs.tsx';
-export { TabsEmbedded } from '../src/legacy/components/navigation/tabsEmbedded/TabsEmbedded.tsx';
+export { SwitcherButtons } from '../src/legacy/components/navigation/Switcher/Switcher.tsx';
+export { Tabs } from '../src/legacy/components/navigation/Tabs/Tabs.tsx';
+export { TabsEmbedded } from '../src/legacy/components/navigation/TabsEmbedded/TabsEmbedded.tsx';
 
 // Progress
 export { ProgressBar } from '../src/legacy/components/progress/Progress.tsx';

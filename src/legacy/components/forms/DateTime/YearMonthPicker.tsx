@@ -9,7 +9,7 @@ import { classNames as cx, type ComponentProps } from '../../../util/component_u
 
 import { IconDecorated as Icon } from '../../icons/IconDecorated.tsx';
 import { Button } from '../../buttons/Button.tsx';
-import { SwitcherButtons } from '../../navigation/switcher/Switcher.tsx';
+import { SwitcherButtons } from '../../navigation/Switcher/Switcher.tsx';
 import { Dropdown } from '../../overlays/dropdown/Dropdown.tsx';
 
 import './YearMonthPicker.scss';
