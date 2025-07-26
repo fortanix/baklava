@@ -5,21 +5,23 @@
 @use '../../../style/variables.scss' as *;
 
 
-.bkl-input--search {
-  position: relative;
-  flex: 1;
-  
-  .bkl-input--search__icon {
-    position: absolute;
-    inset-inline-start: 0.4rem;
-    inset-block-start: 0.2rem;
-    z-index: 1;
-    margin: 1rem;
-    inline-size: 1.8rem;
+@layer baklava.legacy {
+  .bkl-input--search {
+    position: relative;
+    flex: 1;
     
-    color: var(--bkl-placeholder-color);
-  }
-  .bkl-input__input {
-    padding-inline-start: 3.5rem !important;
+    .bkl-input--search__icon {
+      position: absolute;
+      inset-inline-start: 0.4rem;
+      inset-block-start: 0.2rem;
+      z-index: 1;
+      margin: 1rem;
+      inline-size: 1.8rem;
+      
+      color: var(--bkl-placeholder-color);
+    }
+    .bkl-input__input {
+      padding-inline-start: 3.5rem !important;
+    }
   }
 }
