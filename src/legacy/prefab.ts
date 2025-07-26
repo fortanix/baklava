@@ -3,9 +3,9 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 // CCM prefab
-export { SearchInput } from './prefab/forms/SearchInput/SearchInput';
-export { MultiSearch } from './prefab/forms/MultiSearch/MultiSearch';
+export { SearchInput } from './prefab/forms/SearchInput/SearchInput.tsx';
+export { MultiSearch } from './prefab/forms/MultiSearch/MultiSearch.tsx';
 
 // DSM prefab
-export * as DsmDataTableStream from './prefab/dsm/DataTable/DataTableStream';
-export * as DataTablePlugins from '../components/tables/DataTable/plugins/useRowSelectColumn';
+export * as DsmDataTableStream from './prefab/dsm/DataTable/DataTableStream.tsx';
+export * as DataTablePlugins from '../components/tables/DataTable/plugins/useRowSelectColumn.tsx';

@@ -121,7 +121,7 @@ export const MultiSelect = (props: MultiSelectProps) => {
     }
     
     const selectedLabels = keys.map(key => {
-      if (!Object.prototype.hasOwnProperty.call(options, key)) {
+      if (!Object.hasOwn(options, key)) {
         console.error(`Invalid key: ${key}`);
         return '(Unknown)';
       }

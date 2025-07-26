@@ -93,8 +93,8 @@ export const Nav = ({ children, className, ...props }: NavProps) => {
     <nav {...props} role="navigation" className={cx('bkl-nav', className)}>
       <ul className="bkl-nav__list" role="menubar">
         {React.Children.map(children, (navItem, index) => {
-          if (!React.isValidElement(navItem)) return null;
-          const { key, tooltip, disabled } = navItem?.props;
+          if (!navItem || !React.isValidElement(navItem)) return null;
+          const { key, tooltip, disabled } = navItem.props;
           return (
             <li className="bkl-nav__list-item" role="presentation" key={key}>
               <SidebarTooltip content={tooltip}>

@@ -2,8 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import * as Random from '../../../util/random';
-import * as ObjectUtil from '../../../util/object_util';
+import * as Random from '../../../util/random.ts';
+import * as ObjectUtil from '../../../util/object_util.ts';
 import {
   isEqual,
   fromUnixTime,
@@ -17,22 +17,22 @@ import {
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { classNames as cx, ClassNameArgument, ComponentPropsWithoutRef } from '../../../util/component_util';
+import { classNames as cx, ClassNameArgument, ComponentPropsWithoutRef } from '../../../util/component_util.tsx';
 import * as Popper from 'react-popper';
 
-import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandler';
-import { handleOptionKeyDown } from '../../../util/keyboardHandlers';
+import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandler.tsx';
+import { handleOptionKeyDown } from '../../../util/keyboardHandlers.tsx';
 
-import { BaklavaIcon } from '../../../components/icons/icon-pack-baklava/BaklavaIcon';
-import { Input } from '../../../components/forms/Input/Input';
-import * as Dropdown from '../../../components/overlays/dropdown/Dropdown';
-import { Tag } from '../../../components/containers/tag/Tag';
-import { useCombinedRefs } from '../../../util/hooks/useCombinedRefs';
-import { useFocus } from '../../../util/hooks/useFocus';
-import { Checkbox } from '../../../components/forms/Checkbox/Checkbox';
-import { Button } from '../../../components/buttons/Button';
-import { DateTimePicker } from '../../../components/forms/DateTime/DateTimePicker';
-import { Caption } from '../../../components/typography/caption/Caption';
+import { BaklavaIcon } from '../../../components/icons/icon-pack-baklava/BaklavaIcon.tsx';
+import { Input } from '../../../components/forms/Input/Input.tsx';
+import * as Dropdown from '../../../components/overlays/dropdown/Dropdown.tsx';
+import { Tag } from '../../../components/containers/tag/Tag.tsx';
+import { useCombinedRefs } from '../../../util/hooks/useCombinedRefs.tsx';
+import { useFocus } from '../../../util/hooks/useFocus.tsx';
+import { Checkbox } from '../../../components/forms/Checkbox/Checkbox.tsx';
+import { Button } from '../../../components/buttons/Button.tsx';
+import { DateTimePicker } from '../../../components/forms/DateTime/DateTimePicker.tsx';
+import { Caption } from '../../../components/typography/caption/Caption.tsx';
 
 import './MultiSearch.scss';
 
@@ -1078,7 +1078,7 @@ export const Filters = (props: FiltersProps) => {
       }
     }
     
-    let operandLabel;
+    let operandLabel: string;
     
     if (field && field.type === 'enum') {
       if (Array.isArray(operand)) {

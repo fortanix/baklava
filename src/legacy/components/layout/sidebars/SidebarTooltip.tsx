@@ -4,8 +4,8 @@
 
 import * as React from 'react';
 import { classNames as cx, type ClassNameArgument } from '../../../util/component_util.tsx';
-import { Tooltip } from '../../overlays/tooltip/Tooltip';
-import { SidebarContext } from './Sidebar';
+import { Tooltip } from '../../overlays/tooltip/Tooltip.tsx';
+import { SidebarContext } from './Sidebar.tsx';
 
 
 type SidebarTooltipProps = React.ComponentProps<typeof Tooltip> & {

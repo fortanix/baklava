@@ -56,7 +56,7 @@ import {
   UseSortByState,
 } from 'react-table';
 
-import * as MultiSearch from '../prefab/forms/MultiSearch/MultiSearch';
+import * as MultiSearch from '../prefab/forms/MultiSearch/MultiSearch.tsx';
 
 interface CustomColumnProps {
   configurable?: boolean,

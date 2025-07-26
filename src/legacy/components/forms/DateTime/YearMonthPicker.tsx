@@ -131,7 +131,7 @@ const initializeSelectBuffer = (
 ): YearMonthPickerBuffer => {
   const validMinMax = isValidMinMax(minLimit, maxLimit);
   const currentDate = getCurrentDate();
-  let defaultDateBuffer = selectedDate && isValidLimit(selectedDate) ? selectedDate : dateToBuffer(currentDate);
+  const defaultDateBuffer = selectedDate && isValidLimit(selectedDate) ? selectedDate : dateToBuffer(currentDate);
   let date = defaultDateBuffer;
 
   if (validMinMax) {
