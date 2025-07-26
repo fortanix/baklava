@@ -66,7 +66,7 @@ export const Tabs = (props: TabsProps) => {
     return typeof tab.props.render === 'function' ? tab.props.render() : tab.props.children;
   };
   
-  React.Children.forEach(children, (child: React.ReactNode) => {
+  React.Children.forEach(children, child => {
     if (!ReactIs.isElement(child) || child.type !== Tab) {
       throw new TypeError(
         $msg`Expected only children of type Tab, received ${child}`,
@@ -88,7 +88,7 @@ export const Tabs = (props: TabsProps) => {
       <ul className="bkl-tabs__switcher">
         {tabs.map((tab, index) => {
           const { hide, tabKey, className, title } = tab.props;
-          if (hide) return null;
+          if (hide) { return null; }
           const isActive = tabKey === active;
           return (
             <li key={tabKey} role="presentation">
@@ -123,7 +123,11 @@ export const Tabs = (props: TabsProps) => {
         id={`${activeTab.props.tabKey}-panel`}
         role="tabpanel"
         aria-labelledby={active}
-        className={cx('bkl-tabs__tab-content', scrollerProps.className, activeTabProps.className)}
+        className={cx(
+          'bkl-tabs__tab-content',
+          scrollerProps.className,
+          activeTabProps.className,
+        )}
       >
         {renderActive(activeTab)}
       </div>

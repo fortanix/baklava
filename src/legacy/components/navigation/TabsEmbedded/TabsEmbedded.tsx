@@ -4,34 +4,32 @@
 
 import $msg from 'message-tag';
 
-import { classNames as cx } from '../../../util/component_util';
-import { handleTabKeyDown } from '../../../util/keyboardHandlers';
 import * as React from 'react';
 import * as ReactIs from 'react-is';
+import { classNames as cx } from '../../../util/component_util.tsx';
 
-import { PanelProps, Panel } from '../../containers/panel/Panel';
-import { useScroller } from '../../util/Scroller';
-import { Button } from '../../buttons/Button';
+import { handleTabKeyDown } from '../../../util/keyboardHandlers.tsx';
+
+import { useScroller } from '../../util/Scroller.tsx';
+import { Button } from '../../buttons/Button.tsx';
+import { Panel } from '../../containers/panel/Panel.tsx';
 
 import './TabsEmbedded.scss';
 
 
 export type TabKey = string;
 
-export type TabEmbeddedProps = PanelProps & {
+export type TabEmbeddedProps = React.ComponentProps<typeof Panel> & {
   children: React.ReactNode | (() => React.ReactNode),
   tabKey: string,
   title: React.ReactNode,
   hide?: boolean,
-  className?: string,
 };
-export const Tab = ({ children }: TabEmbeddedProps): React.ReactElement => {
-  return children as React.ReactElement;
-};
-type TabElement = React.ReactElement<TabEmbeddedProps, React.FunctionComponent<typeof Tab>>;
+export const Tab = ({ children }: TabEmbeddedProps) => children;
+type TabElement = React.ReactElement<TabEmbeddedProps, React.ComponentType<typeof Tab>>;
 
 
-export type TabsEmbeddedProps = PanelProps & {
+export type TabsEmbeddedProps = React.ComponentProps<typeof Panel> & {
   children: React.ReactNode | (() => React.ReactNode),
   active: TabKey,
   onSwitch: (tabKey: TabKey) => void,
@@ -45,22 +43,17 @@ export const TabsEmbedded = (props: TabsEmbeddedProps) => {
     ...propsRest
   } = props;
   
-  const tabsRef = React.useRef<HTMLButtonElement[]>([]);
-
-  if (typeof active !== 'string') {
-    console.error($msg`Missing active tab, given ${active}`);
-    return null;
-  }
+  const tabsRef = React.useRef<Array<HTMLButtonElement>>([]);
   
   const scrollerProps = useScroller();
   // Select the active tab among the given list of tabs
   const getActiveTab = (tabs: Array<TabElement>) => {
     const activeTabs = tabs.filter(child => child.props.tabKey === active);
-    
-    if (activeTabs.length === 0) { throw new TypeError($msg`Active tab not found: ${active}`); }
     if (activeTabs.length > 1) { throw new TypeError($msg`Ambiguous active tab`); }
     
     const activeTab = activeTabs[0];
+    if (typeof activeTab === 'undefined') { throw new TypeError($msg`Active tab not found: ${active}`); }
+    
     return activeTab;
   };
   
@@ -70,16 +63,10 @@ export const TabsEmbedded = (props: TabsEmbeddedProps) => {
   };
   
   const renderActive = (tab: TabElement) => {
-    let tabElement;
-    if (typeof tab.props.children === 'function') {
-      tabElement = tab.props.children();
-    } else {
-      tabElement = tab.props.children;
-    }
-    return tabElement;
+    return typeof tab.props.children === 'function' ? tab.props.children() : tab.props.children;
   };
   
-  React.Children.forEach(children, (child: React.ReactNode) => {
+  React.Children.forEach(children, child => {
     if (!ReactIs.isElement(child) || child.type !== Tab) {
       throw new TypeError(
         $msg`Expected only children of type Tab, received ${child}`,
@@ -91,20 +78,29 @@ export const TabsEmbedded = (props: TabsEmbeddedProps) => {
   const activeTab = getActiveTab(tabs);
   const activeTabProps = getActiveTabProps(activeTab);
   
+  if (typeof active !== 'string') {
+    console.error($msg`Missing active tab, given ${active}`);
+    return null;
+  }
+  
   return (
-    <Panel {...propsRest} role="tablist" className={cx('bkl-tabs-embedded', className)}>
+    <Panel {...propsRest} role="tablist" className={cx('bkl bkl-tabs-embedded', className)}>
       <ul className="bkl-tabs-embedded__switcher">
         {tabs.map((tab, index) => {
           const { hide, tabKey, className, title } = tab.props;
-          if(hide) return null;
+          if (hide) { return null; }
           const isActive = tabKey === active;
           return (
             <li key={tabKey} role="presentation">
               <Button
                 plain
+                ref={element => {
+                  if (element) {
+                    tabsRef.current[index] = element;
+                  }
+                }}
                 id={tabKey}
                 role="tab"
-                ref={el => (tabsRef.current[index] = el)}
                 data-tab={tabKey}
                 aria-selected={isActive}
                 aria-controls={`${tabKey}-panel`}

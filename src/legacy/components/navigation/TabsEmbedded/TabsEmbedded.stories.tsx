@@ -6,19 +6,19 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { type TabKey, Tabs } from './Tabs.tsx';
+import { type TabKey, TabsEmbedded } from './TabsEmbedded.tsx';
 
 
-type TabsArgs = React.ComponentProps<typeof Tabs>;
-type Story = StoryObj<TabsArgs>;
+type TabsEmbeddedArgs = React.ComponentProps<typeof TabsEmbedded>;
+type Story = StoryObj<TabsEmbeddedArgs>;
 
-const TabsControlledC = (props: TabsArgs) => {
+const TabsEmbeddedControlledC = (props: TabsEmbeddedArgs) => {
   const [activeTab, setActiveTab] = React.useState<TabKey>(props.active);
-  return <Tabs {...props} active={activeTab} onSwitch={setActiveTab}/>;
+  return <TabsEmbedded {...props} active={activeTab} onSwitch={setActiveTab}/>;
 };
 
 export default {
-  component: Tabs,
+  component: TabsEmbedded,
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
@@ -26,37 +26,39 @@ export default {
   argTypes: {},
   args: {
   },
-  render: (args) => <TabsControlledC {...args}/>,
-} satisfies Meta<TabsArgs>;
+  render: (args) => <TabsEmbeddedControlledC {...args}/>,
+} satisfies Meta<TabsEmbeddedArgs>;
 
 
-export const TabsStandard: Story = {
+export const TabsEmbeddedStandard: Story = {
   args: {
     active: 'tab-2',
     children: Array.from({ length: 5 }, (_, i) => i + 1).map(tabIndex =>
-      <Tabs.Tab
+      <TabsEmbedded.Tab
         key={tabIndex}
         data-label={`tab-${tabIndex}`}
         tabKey={`tab-${tabIndex}`}
         title={`Tab ${tabIndex}`}
-        render={() => <>Tab {tabIndex} contents</>}
-      />
+      >
+        Tab {tabIndex} contents
+      </TabsEmbedded.Tab>
     ),
   },
 };
 
-export const TabsWithFocus: Story = {
+export const TabsEmbeddedWithFocus: Story = {
   args: {
     active: 'tab-2',
     children: Array.from({ length: 5 }, (_, i) => i + 1).map(tabIndex =>
-      <Tabs.Tab
+      <TabsEmbedded.Tab
         key={tabIndex}
         data-label={`tab-${tabIndex}`}
         tabKey={`tab-${tabIndex}`}
         title={`Tab ${tabIndex}`}
-        render={() => <>Tab {tabIndex} contents</>}
         className={tabIndex === 3 ? 'pseudo-focus-visible' : undefined}
-      />
+      >
+        Tab {tabIndex} contents
+      </TabsEmbedded.Tab>
     ),
   },
 };
