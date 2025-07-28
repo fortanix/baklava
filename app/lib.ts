@@ -86,6 +86,7 @@ export { Tab, Tabs } from '../src/components/navigations/Tabs/Tabs.tsx';
 
 // Overlays
 export { SpinnerModal } from '../src/components/overlays/SpinnerModal/SpinnerModal.tsx';
+export { ContextMenuProvider } from '../src/components/overlays/ContextMenuProvider/ContextMenuProvider.tsx';
 export { DialogModal } from '../src/components/overlays/DialogModal/DialogModal.tsx';
 export { DialogOverlay } from '../src/components/overlays/DialogOverlay/DialogOverlay.tsx';
 export { MenuProvider } from '../src/components/overlays/MenuProvider/MenuProvider.tsx';
