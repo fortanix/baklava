@@ -45,4 +45,16 @@ export default {
   render: (args) => <ContextMenuProvider {...args}/>,
 } satisfies Meta<ContextMenuProviderArgs>;
 
-export const ContextMenu: Story = {};
+export const ContextMenuWithDefaultIconButton: Story = {};
+
+export const ContextMenuWithAnotherIconButton: Story = {
+  args: {
+    icon: 'bell',
+  },
+};
+
+export const ContextMenuWithACustomComponent: Story = {
+  args: {
+    children: (<button>click me</button>),
+  },
+};
