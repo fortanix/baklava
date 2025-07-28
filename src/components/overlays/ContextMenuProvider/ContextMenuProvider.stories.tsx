@@ -55,6 +55,6 @@ export const ContextMenuWithAnotherIconButton: Story = {
 
 export const ContextMenuWithACustomComponent: Story = {
   args: {
-    children: (<button>click me</button>),
+    children: (<button type="button">click me</button>),
   },
 };
