@@ -19,7 +19,7 @@ export const colorsPrimitive: ColorPrimitiveList = {
   "apricot-100": {"category":"apricot","weight":100,"color":"#ffe5cc"},
   "apricot-200": {"category":"apricot","weight":200,"color":"#ffcb99"},
   "apricot-300": {"category":"apricot","weight":300,"color":"#ffb166"},
-  "apricot-400": {"category":"apricot","weight":400,"color":"#ff9733"},
+  "apricot-400": {"category":"apricot","weight":400,"color":"#ff9c3c"},
   "apricot-500": {"category":"apricot","weight":500,"color":"#ff7d00"},
   "apricot-600": {"category":"apricot","weight":600,"color":"#cc6400"},
   "apricot-700": {"category":"apricot","weight":700,"color":"#994b00"},
