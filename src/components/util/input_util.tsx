@@ -15,6 +15,7 @@ export const inputSpecificPropKeys = {
   alt: true,
   autoCapitalize: true,
   autoComplete: true,
+  autoFocus: true,
   capture: true,
   checked: true,
   defaultValue: true,
