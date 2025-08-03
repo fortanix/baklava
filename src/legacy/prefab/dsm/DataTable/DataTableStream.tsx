@@ -5,13 +5,13 @@
 import { classNames as cx } from '../../../util/component_util.tsx';
 import * as React from 'react';
 
-import { PaginationStream } from '../../../../components/tables/DataTable/pagination/PaginationStream.tsx';
+import { PaginationStream } from '../../../components/tables/DataTable/pagination/PaginationStream.tsx';
 
 export { PaginationStream };
 
-import * as DataTable from '../../../../components/tables/DataTable/DataTableStream.tsx';
-export * from '../../../../components/tables/DataTable/DataTableStream.tsx';
-export * from '../../../../components/tables/DataTable/DataTableContext.tsx';
+import * as DataTable from '../../../components/tables/DataTable/DataTableStream.tsx';
+export * from '../../../components/tables/DataTable/DataTableStream.tsx';
+export * from '../../../components/tables/DataTable/DataTableContext.tsx';
 import './DataTableStream.scss';
 
 

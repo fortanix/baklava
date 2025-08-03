@@ -9,7 +9,6 @@
 // NOTE: we cannot put our styling here in an `@layer`, because react-toastify renders its styling without a layer,
 // which means it will always take precedence over styling in a layer. The styling from react-toastify is
 // auto-injected, so we have no control over it.
-//@layer baklava.legacy {}
 
 :is(.bkl-notification-container, #specificity#hack) {
   inline-size: auto;

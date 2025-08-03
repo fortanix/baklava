@@ -1,0 +1,43 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+
+
+@mixin data-table-loading() {
+  position: relative;
+  
+  .bkl-loader {
+    position: absolute;
+    top: calc(50% - (80px / 2));
+    left: calc(50% - (80px / 2));
+  }
+  
+  /*
+  // Loading overlay
+  &::after {
+    content: '';
+    pointer-events: none;
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: var(--bkl-placeholder-color);
+    border-radius: bkl.$border-radius-ms;
+  }
+  */
+  
+  .bkl-data-table__table tbody {
+    opacity: 0.6;
+  }
+}
+
+@layer baklava.legacy {
+  .bkl-data-table-lazy--loading {
+    @include data-table-loading();
+  }
+}

@@ -57,6 +57,7 @@ export * as MultiAssigner from '../src/legacy/components/forms/MultiAssigner/ass
 export * as MultiAssignerEager from '../src/legacy/components/forms/MultiAssigner/MultiAssignerEager.tsx';
 export { ColorPicker } from '../src/legacy/components/forms/ColorPicker/ColorPicker.tsx';
 
+/*
 // Collection components
 export { Pagination } from '../src/components/tables/DataTable/pagination/Pagination.tsx';
 
@@ -70,6 +71,21 @@ export * as DataTableStream from '../src/components/tables/DataTable/DataTableSt
 export { useCustomFilters } from '../src/components/tables/DataTable/plugins/useCustomFilters.tsx';
 export { useRowSelectColumn } from '../src/components/tables/DataTable/plugins/useRowSelectColumn.tsx';
 export * as Filtering from '../src/components/tables/DataTable/filtering/Filtering.ts';
+*/
+
+// Collection components
+export { Pagination } from '../src/legacy/components/tables/DataTable/pagination/Pagination.tsx';
+
+// Tables
+export * as DataTableContext from '../src/legacy/components/tables/DataTable/DataTableContext.tsx';
+export * as DataTable from '../src/legacy/components/tables/DataTable/table/DataTable.tsx';
+export * as DataTablePlaceholder from '../src/legacy/components/tables/DataTable/table/DataTablePlaceholder.tsx';
+export * as DataTableEager from '../src/legacy/components/tables/DataTable/DataTableEager.tsx';
+export * as DataTableLazy from '../src/legacy/components/tables/DataTable/DataTableLazy.tsx';
+export * as DataTableStream from '../src/legacy/components/tables/DataTable/DataTableStream.tsx';
+export { useCustomFilters } from '../src/legacy/components/tables/DataTable/plugins/useCustomFilters.tsx';
+export { useRowSelectColumn } from '../src/legacy/components/tables/DataTable/plugins/useRowSelectColumn.tsx';
+export * as Filtering from '../src/legacy/components/tables/DataTable/filtering/Filtering.ts';
 
 // Layout
 export { Layout } from '../src/legacy/components/layout/layouts/Layout.tsx';

@@ -1,0 +1,82 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../style/variables.scss' as bkl;
+@use '../../../../style/mixins.scss' as mixins;
+
+
+@layer baklava.legacy {
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: bkl.$sizing-m;
+    
+    @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);
+    font-size: bkl.$font-size-s;
+    
+    .pager.pager--indexed {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      
+      .pager__nav {
+        font-size: 0.6rem;
+        
+        @include mixins.circle(2.4rem);
+        padding: bkl.$sizing-2;
+        color: var(--brand-color-dark-1);
+        background: var(--accent-color);
+
+        &:not(.disabled) {
+          cursor: pointer;
+        }
+        &.disabled {
+          background: var(--pagination-nav-background);
+        }
+      }
+      
+      .pager__indices {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        
+        .page-button,
+        .pager__indices__separator {
+          user-select: none;
+          padding: 3px 7px;
+          color: var(--pagination-default);
+        }
+        
+        .page-button {
+          border-radius: bkl.$border-radius-s;
+          transition: background-color 150ms ease-in;
+          
+          &:hover {
+            background-color: var(--pagination-listitem-background);
+          }
+          
+          &.active {
+            background-color: var(--brand-color-light-3);
+          }
+          
+          &:not(.active) {
+            cursor: pointer;
+          }
+        }
+          
+        .pager__indices__separator {
+          padding-inline: 0;
+        }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 1100px) {
+    .pagination {
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+  }
+}

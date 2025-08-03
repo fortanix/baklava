@@ -8,4 +8,4 @@ export { MultiSearch } from './prefab/forms/MultiSearch/MultiSearch.tsx';
 
 // DSM prefab
 export * as DsmDataTableStream from './prefab/dsm/DataTable/DataTableStream.tsx';
-export * as DataTablePlugins from '../components/tables/DataTable/plugins/useRowSelectColumn.tsx';
+export * as DataTablePlugins from './components/tables/DataTable/plugins/useRowSelectColumn.tsx';

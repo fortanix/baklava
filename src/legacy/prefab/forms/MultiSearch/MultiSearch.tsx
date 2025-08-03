@@ -20,15 +20,15 @@ import * as ReactDOM from 'react-dom';
 import { classNames as cx, ClassNameArgument, ComponentPropsWithoutRef } from '../../../util/component_util.tsx';
 import * as Popper from 'react-popper';
 
-import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandler.tsx';
+import { useCombinedRefs } from '../../../util/hooks/useCombinedRefs.ts';
+import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandler.ts';
 import { handleOptionKeyDown } from '../../../util/keyboardHandlers.tsx';
+import { useFocus } from '../../../util/hooks/useFocus.ts';
 
 import { BaklavaIcon } from '../../../components/icons/icon-pack-baklava/BaklavaIcon.tsx';
 import { Input } from '../../../components/forms/Input/Input.tsx';
 import * as Dropdown from '../../../components/overlays/dropdown/Dropdown.tsx';
 import { Tag } from '../../../components/containers/tag/Tag.tsx';
-import { useCombinedRefs } from '../../../util/hooks/useCombinedRefs.tsx';
-import { useFocus } from '../../../util/hooks/useFocus.tsx';
 import { Checkbox } from '../../../components/forms/Checkbox/Checkbox.tsx';
 import { Button } from '../../../components/buttons/Button.tsx';
 import { DateTimePicker } from '../../../components/forms/DateTime/DateTimePicker.tsx';

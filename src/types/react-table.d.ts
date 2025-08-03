@@ -57,9 +57,9 @@ import type {
 
 
 interface CustomColumnProps {
-  configurable?: boolean,
-  primary?: boolean,
-  label?: string,
+  configurable?: undefined | boolean,
+  primary?: undefined | boolean,
+  label?: undefined | string,
 }
 
 interface UseCustomFiltersState {
@@ -126,8 +126,8 @@ declare module 'react-table' {
     
   
   interface BaklavaCustomColumnInterface {
-    className?: string,
-    style?: CSSProperties | undefined,
+    className?: undefined | string,
+    style?: undefined | CSSProperties,
   }
   export interface ColumnInterface<D>
     extends UseFiltersColumnOptions<D>,
@@ -145,6 +145,10 @@ declare module 'react-table' {
       UseResizeColumnsColumnProps<D>,
       UseSortByColumnProps<D>,
       CustomColumnProps {}
+  
+  export interface TableHeaderProps {
+    onClick: (event: React.MouseEvent) => void,
+  }
   
   export interface Cell<D, V = unknown>
     extends UseGroupByCellProps<D>,
