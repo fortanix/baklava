@@ -119,6 +119,13 @@ export const InputWithTypePassword: Story = {
   },
 };
 
+/** In the following story, the input should be automatically focused on mount. */
+export const InputWithAutoFocus: Story = {
+  args: {
+    autoFocus: true,
+  },
+};
+
 export const InputWithAutomaticResizing: Story = {
   args: {
     automaticResize: true,
