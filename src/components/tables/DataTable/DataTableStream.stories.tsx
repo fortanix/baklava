@@ -13,6 +13,7 @@ import { Panel } from '../../containers/Panel/Panel.tsx';
 import { Banner } from '../../containers/Banner/Banner.tsx';
 import type { DataTableAsyncProps } from './table/DataTable.tsx';
 import * as DataTableStream from './DataTableStream.tsx';
+import { useRowSelectColumn, useRowSelectColumnRadio } from './plugins/useRowSelectColumn.tsx';
 
 
 export default {
@@ -425,12 +426,20 @@ export const WithExplicitEndOfStream = {
   render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
 };
 
+const ScrollWrapper = ({ children } : { children: React.ReactNode }) => {
+  return (
+    <div style={{ width: '58vw' }}>
+      {children}
+    </div>
+  );
+};
+
 export const WithScroll = {
   args: {
     columns: columnDefinitionsMultiple,
     items: generateData({ numItems: 6 }),
   },
-  render: (args: DataTableStreamTemplateProps) => <div style={{ width: '58vw' }}><DataTableStreamTemplate {...args} /></div>,
+  render: (args: DataTableStreamTemplateProps) => <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
 };
 
 export const WithScrollAndStickyNameColumn = {
@@ -439,7 +448,27 @@ export const WithScrollAndStickyNameColumn = {
     items: generateData({ numItems: 6 }),
     stickyColumns: 'first'
   },
-  render: (args: DataTableStreamTemplateProps) => <div style={{ width: '58vw' }}><DataTableStreamTemplate {...args} /></div>,
+  render: (args: DataTableStreamTemplateProps) => <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
+};
+
+export const WithScrollAndStickyNameColumnWithCheckboxSelection = {
+  args: {
+    columns: columnDefinitionsMultiple,
+    items: generateData({ numItems: 6 }),
+    stickyColumns: 'first',
+    plugins: [useRowSelectColumn]
+  },
+  render: (args: DataTableStreamTemplateProps) => <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
+};
+
+export const WithScrollAndStickyNameColumnWithRadioSelection = {
+  args: {
+    columns: columnDefinitionsMultiple,
+    items: generateData({ numItems: 6 }),
+    stickyColumns: 'first',
+    plugins: [useRowSelectColumnRadio]
+  },
+  render: (args: DataTableStreamTemplateProps) => <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
 };
 
 export const WithScrollAndStickyNameAndActions = {
@@ -448,7 +477,7 @@ export const WithScrollAndStickyNameAndActions = {
     items: generateData({ numItems: 6 }),
     stickyColumns: 'both'
   },
-  render: (args: DataTableStreamTemplateProps) => <div style={{ width: '58vw' }}><DataTableStreamTemplate {...args} /></div>,
+  render: (args: DataTableStreamTemplateProps) => <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
 };
 
 const LoadingSpinnerTrigger = () => {
@@ -508,17 +537,16 @@ export const WithScrollAndSpinner = {
           width: '30ch',
         },
       },
-      // ...columnDefinitions,
     ],
     items: generateData({ numItems: 15 }),
     stickyColumns: 'first',
     delay: 2500,
   },
   render: (args: DataTableStreamTemplateProps) => (
-    <div style={{ width: '58vw' }}>
+    <ScrollWrapper>
       <DataTableStreamTemplate {...args}>
         <LoadingSpinnerTrigger />
       </DataTableStreamTemplate>
-    </div>
+    </ScrollWrapper>
   ),
 };
