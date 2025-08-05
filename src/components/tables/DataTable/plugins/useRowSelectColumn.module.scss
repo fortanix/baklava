@@ -12,8 +12,19 @@
   }
   
   th, td {
-    .bk-data-table-row-select__checkbox {
+    .bk-data-table-row-select__checkbox, .bk-data-table-row-select__radio {
       margin-inline-end: bk.$spacing-3;
+    }
+  }
+  
+  th {
+    .bk-data-table-row-select__radio {
+      visibility: hidden;
+    }
+    
+    .bk-data-table-row-select__checkbox, .bk-data-table-row-select__radio {
+      // Subtracting the gap set inside column-header in data-table
+      margin-inline-end: calc(bk.$spacing-3 - bk.$spacing-1);
     }
   }
 }

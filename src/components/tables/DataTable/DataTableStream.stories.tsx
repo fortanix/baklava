@@ -39,13 +39,21 @@ export default {
     },
   },
 };
+
 type UserPageState = {
   offsetTasks: number,
   offsetApprovalRequests: number,
 };
-type dataTeableLazyTemplateProps = DataTableStream.TableProviderStreamProps<User> &
-{ delay: number, items: Array<User>, endOfStream: boolean, dataTableProps: DataTableAsyncProps<User> };
-const DataTableStreamTemplate = ({dataTableProps, ...props} : dataTeableLazyTemplateProps) => {
+
+type DataTableStreamTemplateProps = DataTableStream.TableProviderStreamProps<User> &
+{
+  delay: number,
+  items: Array<User>,
+  endOfStream: boolean,
+  dataTableProps: DataTableAsyncProps<User>,
+};
+
+const DataTableStreamTemplate = ({dataTableProps, children, ...props} : DataTableStreamTemplateProps) => {
   const columns = React.useMemo(() => props.columns, [props.columns]);
   const items = React.useMemo(() => props.items, [props.items]);
   const delayQuery = props.delay ?? null;
@@ -110,6 +118,7 @@ const DataTableStreamTemplate = ({dataTableProps, ...props} : dataTeableLazyTemp
         updateItems={setItemsProcessed}
         initialState={{ sortBy: [{ id: 'name', desc: false }] }}
       >
+        {children}
         <DataTableStream.Search />
         <DataTableStream.DataTableStream
           placeholderEmpty={
@@ -342,33 +351,7 @@ export const Empty = {
     columns: columnDefinitions,
     items: generateData({ numItems: 0 }),
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableStreamTemplate {...args} />,
-};
-
-export const WithScroll = {
-  args: {
-    columns: columnDefinitionsMultiple,
-    items: generateData({ numItems: 6 }),
-  },
-  render: (args: dataTeableLazyTemplateProps) => <div style={{ width: '90vw' }}><DataTableStreamTemplate {...args} /></div>,
-};
-
-export const WithScrollAndStickyNameColumn = {
-  args: {
-    columns: columnDefinitionsMultiple,
-    items: generateData({ numItems: 6 }),
-    stickyColumns: 'first'
-  },
-  render: (args: dataTeableLazyTemplateProps) => <div style={{ width: '90vw' }}><DataTableStreamTemplate {...args} /></div>,
-};
-
-export const WithScrollAndStickyNameAndActions = {
-  args: {
-    columns: columnDefinitionsMultiple,
-    items: generateData({ numItems: 6 }),
-    stickyColumns: 'both'
-  },
-  render: (args: dataTeableLazyTemplateProps) => <div style={{ width: '90vw' }}><DataTableStreamTemplate {...args} /></div>,
+  render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
 };
 
 export const SinglePage = {
@@ -376,7 +359,7 @@ export const SinglePage = {
     columns: columnDefinitions,
     items: generateData({ numItems: 10 }),
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableStreamTemplate {...args} />,
+  render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
 };
 
 export const MultiplePagesSmall = {
@@ -384,7 +367,7 @@ export const MultiplePagesSmall = {
     columns: columnDefinitions,
     items: generateData({ numItems: 45 }),
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableStreamTemplate {...args} />,
+  render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
 };
 
 export const MultiplePagesLarge = {
@@ -392,7 +375,7 @@ export const MultiplePagesLarge = {
     columns: columnDefinitions,
     items: generateData({ numItems: 1000 }),
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableStreamTemplate {...args} />,
+  render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
 };
 
 export const SlowNetwork = {
@@ -401,7 +384,7 @@ export const SlowNetwork = {
     items: generateData({ numItems: 1000 }),
     delay: 1500,
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableStreamTemplate {...args} />,
+  render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
 };
 
 export const InfiniteDelay = {
@@ -410,7 +393,7 @@ export const InfiniteDelay = {
     items: generateData({ numItems: 50 }),
     delay: Number.POSITIVE_INFINITY,
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableStreamTemplate {...args} />,
+  render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
 };
 
 export const StatusFailure = {
@@ -419,7 +402,7 @@ export const StatusFailure = {
     items: generateData({ numItems: 1000 }),
     delay: -1,
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableStreamTemplate {...args} />,
+  render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
 };
 
 export const WithEndOfTablePlaceholder = {
@@ -430,7 +413,7 @@ export const WithEndOfTablePlaceholder = {
       placeholderEndOfTable: <Banner variant="info" title="You have reached the end of the table" />
     },
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableStreamTemplate {...args} />,
+  render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
 };
 
 export const WithExplicitEndOfStream = {
@@ -439,5 +422,103 @@ export const WithExplicitEndOfStream = {
     items: generateData({ numItems: 15 }),
     endOfStream: false,
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableStreamTemplate {...args} />,
+  render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
+};
+
+export const WithScroll = {
+  args: {
+    columns: columnDefinitionsMultiple,
+    items: generateData({ numItems: 6 }),
+  },
+  render: (args: DataTableStreamTemplateProps) => <div style={{ width: '58vw' }}><DataTableStreamTemplate {...args} /></div>,
+};
+
+export const WithScrollAndStickyNameColumn = {
+  args: {
+    columns: columnDefinitionsMultiple,
+    items: generateData({ numItems: 6 }),
+    stickyColumns: 'first'
+  },
+  render: (args: DataTableStreamTemplateProps) => <div style={{ width: '58vw' }}><DataTableStreamTemplate {...args} /></div>,
+};
+
+export const WithScrollAndStickyNameAndActions = {
+  args: {
+    columns: columnDefinitionsMultiple,
+    items: generateData({ numItems: 6 }),
+    stickyColumns: 'both'
+  },
+  render: (args: DataTableStreamTemplateProps) => <div style={{ width: '58vw' }}><DataTableStreamTemplate {...args} /></div>,
+};
+
+const LoadingSpinnerTrigger = () => {
+  const table = DataTableStream.useTable();
+  
+  if (!table.status.ready) {
+    return null;
+  }
+  
+  return (
+    <Button
+      kind="secondary"
+      onPress={() => { table.reload() }}
+      style={{ marginBottom: '2rem' }}
+    >
+      Show Loading spinner
+    </Button>
+  );
+};
+
+export const WithScrollAndSpinner = {
+  args: {
+    columns: [
+      {
+        id: 'id',
+        accessor: (user: User) => user.id,
+        Header: 'Id',
+        Cell: ({ value }: { value: string }) => value,
+        disableSortBy: false,
+        disableGlobalFilter: false,
+        bkColumnWidth: {
+          flex: 1,
+          width: '60ch',
+        },
+      },
+      {
+        id: 'name',
+        accessor: (user: User) => user.name,
+        Header: 'Name',
+        Cell: ({ value }: { value: string }) => value,
+        disableSortBy: false,
+        disableGlobalFilter: false,
+        bkColumnWidth: {
+          flex: 1,
+          width: '30ch',
+        },
+      },
+      {
+        id: 'description',
+        accessor: (user: User) => user.dummy_5,
+        Header: 'Job Description',
+        Cell: ({ value }: { value: string }) => value,
+        disableSortBy: false,
+        disableGlobalFilter: false,
+        bkColumnWidth: {
+          flex: 1,
+          width: '30ch',
+        },
+      },
+      // ...columnDefinitions,
+    ],
+    items: generateData({ numItems: 15 }),
+    stickyColumns: 'first',
+    delay: 2500,
+  },
+  render: (args: DataTableStreamTemplateProps) => (
+    <div style={{ width: '58vw' }}>
+      <DataTableStreamTemplate {...args}>
+        <LoadingSpinnerTrigger />
+      </DataTableStreamTemplate>
+    </div>
+  ),
 };

@@ -8,6 +8,9 @@
 @layer baklava.components {
   .bk-data-table {
     @include bk.component-base(bk-data-table);
+    
+    --bk-datatable-background: #{bk.$theme-card-background-default};
+    
     inline-size: 100%;
     
     .bk-data-table__footer {
@@ -60,7 +63,7 @@
       inline-size: 100%;
       table-layout: fixed;
       border-collapse: collapse;
-      background-color: bk.$theme-card-background-default;
+      background-color: var(--bk-datatable-background);
       
       th {
         padding: bk.$spacing-3 bk.$spacing-2;
@@ -100,7 +103,7 @@
           &.column-sticky {
             position: sticky;
             z-index: 1;
-            background-color: bk.$theme-card-background-default;
+            background-color: var(--bk-datatable-background);
             // For sticky cells we need a solid colour as background,
             // otherwise during scroll the content scrolled behind sticky cell will appear as overlapping
           }

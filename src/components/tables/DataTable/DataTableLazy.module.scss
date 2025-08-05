@@ -12,6 +12,7 @@
     position: absolute;
     inset-block-start: calc(50% - (80px / 2));
     inset-inline-start: calc(50% - (80px / 2));
+    z-index: 2; // Tables with sticky columns have z-index - 1.
   }
   
   .bk-data-table__table tbody {
