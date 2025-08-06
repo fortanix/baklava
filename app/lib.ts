@@ -98,7 +98,10 @@ export { TooltipProvider } from '../src/components/overlays/Tooltip/TooltipProvi
 
 // Tables
 export { useCustomFilters } from '../src/components/tables/DataTable/plugins/useCustomFilters.tsx';
-export { useRowSelectColumn } from '../src/components/tables/DataTable/plugins/useRowSelectColumn.tsx';
+export {
+  useRowSelectColumn,
+  useRowSelectColumnRadio
+} from '../src/components/tables/DataTable/plugins/useRowSelectColumn.tsx';
 export * as DataTableContext from '../src/components/tables/DataTable/DataTableContext.tsx';
 export * as DataTablePlaceholder from '../src/components/tables/DataTable/table/DataTablePlaceholder.tsx';
 export * as DataTableEager from '../src/components/tables/DataTable/DataTableEager.tsx';
