@@ -103,6 +103,32 @@
     font-style: normal;
   }
   
+  &:is(table) {
+    inline-size: 100%;
+    border-collapse: collapse;
+    margin-block-start: var(--bk-body-block-spacing);
+    table-layout: fixed;
+  }
+  
+  &:is(th) {
+    padding-inline-start: bk.$spacing-2;
+    padding-block-end: bk.$spacing-1;
+    vertical-align: middle;
+    font-size: bk.$font-size-s;
+    color: bk.$theme-table-text-header-default;
+    text-transform: uppercase;
+    cursor: default;
+  }
+  
+  &:is(td) {
+    vertical-align: top;
+    padding: bk.$spacing-3 bk.$spacing-2;
+  }
+
+  &:is(td, th) {
+    border-block-end: 1px solid bk.$theme-rule-default;
+    overflow: hidden;
+  }
   
   // Media
   
@@ -197,27 +223,6 @@
       // Note: we don't control the code here, so can't use `useScroller()`. Consumer needs to add the tabindex.
       // stylelint-disable-next-line declaration-property-value-disallowed-list
       overflow-x: auto;
-    }
-  }
-  
-  &:is(table) {
-    border-collapse: collapse;
-    margin-block-end: 10px;
-    inline-size: 100%;
-  }
-  
-  &:is(td, th) {
-    padding: 6px;
-    text-align: start;
-  }
-  
-  &:is(th) {
-    border-block-end: bk.rem-from-px(1) solid #dbdbdb;
-  }
-  
-  &:is(tbody) {
-    > tr:nth-child(even):not(.bk) {
-      background-color: #efefef;
     }
   }
   */
