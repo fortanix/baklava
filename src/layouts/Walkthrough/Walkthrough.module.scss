@@ -1,0 +1,138 @@
+@use '../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+	.bk-walkthrough{
+			$border-color: #5F5A7C;
+			$background-color: #14152E;
+
+			&-tooltip{     
+					@include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-s);
+					position: absolute;
+					border-radius: bk.$spacing-1;
+					padding: bk.$spacing-4;
+					color: #FBFBFB;
+					min-inline-size: calc(calc(bk.$spacing-8 + bk.$spacing-1) * 10);
+					max-inline-size: calc(calc(bk.$spacing-8 + bk.$spacing-1) * 10);
+					max-block-size: calc(bk.$spacing-6 * 10);
+					z-index: 1000;
+					
+					& > div:first-child{
+						display: flex;
+						flex-direction: column;
+						gap: bk.$spacing-4;
+						overflow: hidden;
+					}
+
+					&:focus-visible{
+							.bk-walkthrough-tooltip-arrow{
+									border-inline-start: bk.$size-1 solid #ffffff;
+									border-block-end: bk.$size-1 solid #ffffff;
+							}
+					}
+
+					&-header{
+							display: flex;
+							justify-content: space-between;
+							align-items: center;
+							gap: bk.$font-size-xs;
+
+							& h5{
+									margin: 0;
+									font-size: bk.$font-size-m;
+									font-weight: 600;
+									color:#FBFBFB;
+							}
+
+							& .close-icon{
+									block-size: bk.$font-size-xs;
+									inline-size: bk.$font-size-xs;
+									cursor: pointer;
+							}
+					}
+
+					&-content{
+						  flex: 1;
+							block-size: 100%;
+							overflow: auto;
+							font-size: bk.$font-size-m;
+							color: #FBFBFB;
+							font-weight: bk.$font-weight-regular;
+					}
+
+					&-footer{
+							display: flex;
+							justify-content: space-between;
+							align-items: center;
+
+							&-step-count{
+									color:#bdbec1;
+									font-size: bk.$font-size-m;
+							}
+
+							&-action-btns{
+									margin-inline-start: auto;
+									display: flex;
+									gap: bk.$spacing-3;
+									align-items: center;
+							}
+					}
+
+					&-arrow{
+							position: absolute;
+							block-size: bk.$font-size-m;
+							inline-size: bk.$font-size-m;
+							background-color: bk.$color-blackberry-900;
+							border-inline-start: bk.$size-1 solid bk.$color-blackberry-200;
+							border-block-end: bk.$size-1 solid bk.$color-blackberry-200;
+
+							&.arrow{
+									&-left-center, &-left-top, &-left-bottom {
+											inset-inline-end: -0.9rem;
+											inset-block-start: calc(50% - 0.7rem);
+											transform: rotate(225deg);
+									}
+								
+									&-right-center, &-right-top, &-right-bottom {
+										inset-inline-start: -0.9rem;
+										inset-block-start: calc(50% - 0.7rem);
+										transform: rotate(45deg);
+									}
+									
+									&-center-bottom{
+											inset-block-start: -0.9rem;
+											inset-inline-start: calc(50% - 0.7rem);
+											transform: rotate(135deg);
+									}
+
+									&-center-top, &-center-center{
+											inset-block-end: -0.9rem;
+											inset-inline-start: calc(50% - 0.7rem);
+											transform: rotate(-45deg);
+									}
+							}         
+						}
+					}
+			&-spotlight{
+					position: fixed;
+					border-radius: bk.$spacing-2;
+					box-shadow: 0 0 0 9999px #00000099 !important;    
+					pointer-events: none;
+					z-index: 1000;
+			}
+
+			&-overlay {
+					position: fixed;
+					inset-block-start: 0;
+					inset-inline-start: 0;
+					inline-size: 100vw;
+					block-size: 100vh;
+					background: transparent;
+					z-index: 997; 
+					pointer-events: all; 
+			}
+	}
+
+	.bk-walkthrough-open{
+			overflow: hidden;
+	}
+}
