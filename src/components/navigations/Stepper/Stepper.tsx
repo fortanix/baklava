@@ -75,7 +75,7 @@ export const Stepper = (props: StepperProps) => {
           const isDisabled = step.isDisabled ?? false;
           
           return (
-            <li key={step.stepKey} aria-current={isActive}>
+            <li key={step.stepKey} aria-current={isActive ? 'step' : undefined}>
               <Button
                 unstyled
                 nonactive={isDisabled} // Note: disabled steps should still be focusable, so use `nonactive` here

@@ -86,7 +86,7 @@
     }
     
     // The currently active step
-    [aria-current="true"] {
+    [aria-current="step"] {
       .bk-stepper__item {
         color: bk.$theme-stepper-text-selected;
         
