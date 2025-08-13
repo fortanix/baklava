@@ -54,7 +54,6 @@ export const Icon = Object.assign(
     return (
       <svg
         role="img"
-        aria-label={`${icon} icon`}
         aria-hidden // https://stackoverflow.com/questions/61048356/why-do-we-use-aria-hidden-with-icons
         {...props}
         className={cx({
