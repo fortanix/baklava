@@ -40,6 +40,7 @@ export const Switch = Object.assign(
       <Checkbox
         //switch // https://webkit.org/blog/15054/an-html-switch-control
         unstyled
+        role="switch"
         {...propsRest}
         disabled={!isInteractive}
         className={cx(
