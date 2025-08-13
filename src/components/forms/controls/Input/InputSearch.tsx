@@ -9,6 +9,7 @@ import { Input } from './Input.tsx';
 /** A basic search input control. */
 export const InputSearch = (props: React.ComponentProps<typeof Input>) =>
   <Input
+    type="search"
     icon="search"
     iconLabel="Search"
     placeholder="Search"
