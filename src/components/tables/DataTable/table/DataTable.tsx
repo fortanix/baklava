@@ -7,7 +7,7 @@ import { classNames as cx, type ClassNameArgument, type ComponentProps } from '.
 import type * as ReactTable from 'react-table';
 
 import { useScroller } from '../../../../layouts/util/Scroller.tsx';
-import { Icon } from '../../../graphics/Icon/Icon.tsx';
+import { IconButton } from '../../../actions/IconButton/IconButton.tsx';
 import { TextLine } from '../../../text/TextLine/TextLine.tsx';
 
 import {
@@ -241,7 +241,12 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                 ]);
                 
                 const useExtraColSpan = requireNewCol(column);
-                
+                                                    
+                const getNextSort = () => {
+                  if (!column.isSorted) return 'ascending';
+                  return column.isSortedDesc ? 'ascending' : 'descending';
+                };
+
                 return (
                   <th
                     {...headerProps}
@@ -256,7 +261,9 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                         : column.render('Header')
                       }
                       {column.canSort &&
-                        <Icon icon="caret-down"
+                        <IconButton 
+                          icon="caret-down"
+                          label={`Change to ${getNextSort()} sort`}
                           className={cx(
                             cl['sort-indicator'],
                             { [cl['sort-indicator--inactive']]: !column.isSorted },
