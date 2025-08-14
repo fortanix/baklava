@@ -242,7 +242,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                 
                 const useExtraColSpan = requireNewCol(column);
                 const getAriaSort = () => {
-                  if (!column.canSort || !column.isSorted) return undefined;
+                  if (!column.canSort || !column.isSorted) { return undefined };
                   return column.isSortedDesc ? 'descending' : 'ascending';
                 };
 
