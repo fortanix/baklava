@@ -242,9 +242,11 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                 
                 const useExtraColSpan = requireNewCol(column);
                                                     
-                const getNextSort = () => {
-                  if (!column.isSorted) return 'ascending';
-                  return column.isSortedDesc ? 'ascending' : 'descending';
+                const getSortIconLabel = () => {
+                  if (!column.isSorted) {
+                    return 'Change sort order';
+                  };
+                  return `Change to ${column.isSortedDesc ? 'ascending' : 'descending'} sort`;
                 };
 
                 return (
@@ -263,7 +265,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                       {column.canSort &&
                         <IconButton 
                           icon="caret-down"
-                          label={`Change to ${getNextSort()} sort`}
+                          label={getSortIconLabel()}
                           className={cx(
                             cl['sort-indicator'],
                             { [cl['sort-indicator--inactive']]: !column.isSorted },
