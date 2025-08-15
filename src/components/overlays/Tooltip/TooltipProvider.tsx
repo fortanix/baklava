@@ -109,6 +109,11 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     return typeof tooltip === 'function' ? tooltip() : tooltip;
   }, [tooltip, isOpen]);
   
+  const floatingProps = getFloatingProps({
+    popover: 'manual',
+    style: floatingStyles,
+  });
+  
   // biome-ignore lint/correctness/useExhaustiveDependencies: Need to exclude `tooltipProps`
   const tooltipRendered = React.useMemo(() => {
     if (!isMounted || !tooltipContent) { return null; }
@@ -139,10 +144,6 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
       }
     })();
     
-    const floatingProps = getFloatingProps({
-      popover: 'manual',
-      style: floatingStyles,
-    });
     return (
       <Tooltip
         {...floatingProps}
@@ -198,6 +199,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
       
       return {
         ...getReferenceProps(userProps),
+        ['aria-describedby']: floatingProps.id,
         ref: userPropsRef ? mergeRefs(userPropsRef, refs.setReference) : refs.setReference,
       };
     };
@@ -220,6 +222,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
   }, [
     children,
     refs.setReference,
+    floatingProps.id,
     getReferenceProps,
   ]);
   
