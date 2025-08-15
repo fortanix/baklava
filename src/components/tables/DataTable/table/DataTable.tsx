@@ -7,7 +7,7 @@ import { classNames as cx, type ClassNameArgument, type ComponentProps } from '.
 import type * as ReactTable from 'react-table';
 
 import { useScroller } from '../../../../layouts/util/Scroller.tsx';
-import { Icon } from '../../../graphics/Icon/Icon.tsx';
+import { IconButton } from '../../../actions/IconButton/IconButton.tsx';
 import { TextLine } from '../../../text/TextLine/TextLine.tsx';
 
 import {
@@ -241,11 +241,19 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                 ]);
                 
                 const useExtraColSpan = requireNewCol(column);
+                
                 const getAriaSort = () => {
                   if (!column.canSort || !column.isSorted) { return undefined };
                   return column.isSortedDesc ? 'descending' : 'ascending';
                 };
-
+                
+                const getSortIconLabel = () => {
+                  if (!column.isSorted) {
+                    return 'Change sort order';
+                  };
+                  return `Change to ${column.isSortedDesc ? 'ascending' : 'descending'} sort`;
+                };
+                
                 return (
                   <th
                     aria-sort={getAriaSort()}
@@ -261,7 +269,9 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                         : column.render('Header')
                       }
                       {column.canSort &&
-                        <Icon icon="caret-down"
+                        <IconButton 
+                          icon="caret-down"
+                          label={getSortIconLabel()}
                           className={cx(
                             cl['sort-indicator'],
                             { [cl['sort-indicator--inactive']]: !column.isSorted },
