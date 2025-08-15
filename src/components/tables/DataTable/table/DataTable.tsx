@@ -241,9 +241,14 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                 ]);
                 
                 const useExtraColSpan = requireNewCol(column);
-                
+                const getAriaSort = () => {
+                  if (!column.canSort || !column.isSorted) { return undefined };
+                  return column.isSortedDesc ? 'descending' : 'ascending';
+                };
+
                 return (
                   <th
+                    aria-sort={getAriaSort()}
                     {...headerProps}
                     key={headerKey}
                     title={undefined} // Unset the default `title` from `getHeaderProps()`
