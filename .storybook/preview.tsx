@@ -232,6 +232,10 @@ const preview = {
                 'ColorPicker',
                 'MultiAssigner',
               ],
+              'tables',
+              [
+                'DataTable',
+              ],
               'navigation',
               [
                 'Switcher',

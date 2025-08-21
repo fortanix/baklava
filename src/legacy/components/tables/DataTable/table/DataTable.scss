@@ -99,13 +99,13 @@
             // https://stackoverflow.com/questions/5972525/table-row-box-shadow-on-hover-webkit
             // Note: the following does not seem to work in Chrome, so we need both `tr` and `td` solutions
             > td:first-child {
-              border-top-left-radius: bkl.$border-radius-s;
-              border-bottom-left-radius: bkl.$border-radius-s;
+              border-start-start-radius: bkl.$border-radius-s;
+              border-end-start-radius: bkl.$border-radius-s;
               box-shadow: -0.7rem 0 0 0 var(--datatable-body-hover);
             }
             > td:last-child {
-              border-top-right-radius: bkl.$border-radius-s;
-              border-bottom-right-radius: bkl.$border-radius-s;
+              border-start-end-radius: bkl.$border-radius-s;
+              border-end-end-radius: bkl.$border-radius-s;
               box-shadow: 0.7rem 0 0 0 var(--datatable-body-hover);
             }
           }
