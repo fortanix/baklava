@@ -27,7 +27,31 @@ if (!addedTestNotify && import.meta.env.MODE === 'development') {
 }
 */
 
+
+/**
+ * Track the current device pixel ratio and store it as a CSS custom property (for use in styling).
+ * Inspired by: https://frontendmasters.com/blog/obsessing-over-smooth-radial-gradient-disc-edges
+ */
+const useDevicePixelRatioTracker = () => {
+  const [devicePixelRatio, setDevicePixelRatio] = React.useState<number>(window.devicePixelRatio);
+  
+  React.useEffect(() => {
+    document.body.style.setProperty('--bk-device-pixel-ratio', String(devicePixelRatio));
+    
+    const controller = new AbortController();
+    window.matchMedia(`(resolution: ${window.devicePixelRatio}x)`)
+      .addEventListener('change',
+        () => { setDevicePixelRatio(window.devicePixelRatio); },
+        { signal: controller.signal },
+      );
+    
+    return () => { controller.abort(); };
+  }, [devicePixelRatio]);
+};
+
 export const BaklavaProvider = (props: React.PropsWithChildren) => {
+  useDevicePixelRatioTracker();
+  
   return (
     <TopLayerManager>
       <ToastProvider global>
