@@ -34,17 +34,17 @@
     // Render the track (using circles to emulate a capsule shape)
     // Note: add `1px` difference between the stops so that we have a subtle antialiasing
     $col: var(--bk-switch-track-color);
-    $a: 1px; // Antialias
+    $a: calc(1px / var(--bk-device-pixel-ratio, 1)); // Antialias
     background:
       // https://css-tricks.com/drawing-images-with-css-gradients
       linear-gradient($col, $col) 50% 50% / calc(var(--w) - var(--h)) calc(var(--h)) no-repeat,
-      radial-gradient(circle at var(--r), $col calc(var(--h) / 2 - ($a/2)), transparent calc(var(--h) / 2 + ($a/2))),
-      radial-gradient(circle at calc(100% - var(--r)), $col calc(var(--h) / 2 - ($a/2)), transparent calc(var(--h) / 2 + ($a/2)));
+      radial-gradient(circle at var(--r), $col calc(var(--h) / 2 - $a), transparent calc(var(--h) / 2 + $a)),
+      radial-gradient(circle at calc(100% - var(--r)), $col calc(var(--h) / 2 - $a), transparent calc(var(--h) / 2 + $a));
     // Render the thumb
     border-image:
       radial-gradient(circle at var(--bk-switch-pos),
-        var(--bk-switch-thumb-color) calc(var(--r) - ($a/2)),
-        transparent calc(var(--r) + ($a/2))
+        var(--bk-switch-thumb-color) calc(var(--r) - $a),
+        transparent calc(var(--r) + $a)
       ) fill 0 / 1 / 0;
     
     &:checked {
