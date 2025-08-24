@@ -14,13 +14,21 @@
       border-block-end: 1px solid #{bk.$theme-tab-rule-default};
       
       .bk-tabs__switcher__tab {
+        cursor: pointer;
         position: relative;
         user-select: none;
+        
         padding: bk.$spacing-3 bk.$spacing-8;
+        
+        display: grid;
+        grid-template-areas: stack;
+        > * {
+          grid-area: stack;
+        }
+        
         color: #{bk.$theme-tab-text-default};
         @include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-m);
         text-transform: uppercase;
-        cursor: pointer;
         white-space: nowrap;
         
         // The active tab underline (zero height by default)
@@ -32,6 +40,11 @@
           inset-block-end: 0;
           block-size: 0;
           transition: .3s;
+        }
+        
+        > .bk-tabs__switcher__tab__hover-placeholder {
+          visibility: hidden;
+          font-weight: bk.$font-weight-bold;
         }
         
         &:is(:hover, :global(.pseudo-hover)) {

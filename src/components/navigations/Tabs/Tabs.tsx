@@ -104,7 +104,8 @@ export const Tabs = (props: TabsProps) => {
               className={cx(cl['bk-tabs__switcher__tab'],tab.props.className)}
               onClick={() => { onSwitch(tab.props.tabKey); }} // FIXME: add a Button and use that instead
             >
-              {tab.props.title}
+              <span>{tab.props.title}</span>
+              <span className={cx(cl['bk-tabs__switcher__tab__hover-placeholder'])}>{tab.props.title}</span>
             </li>
           )
         })}
