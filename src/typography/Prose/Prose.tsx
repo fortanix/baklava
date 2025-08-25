@@ -10,21 +10,27 @@ import cl from './Prose.module.scss';
 
 export { cl as ProseClassNames };
 
-export type ProseProps = React.PropsWithChildren<ComponentProps<'article'> & {
+export type ProseProps = ComponentProps<'article'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-}>;
+};
 /**
- * Prose component.
+ * This component is intended for prose: document-style text, with rich styling for paragraphs, headings, lists,
+ * tables, etc. By default in Baklava, all base styles for standard HTML elements are removed. Within a `<Prose>`
+ * element, these styles are reapplied, so that you can use elements like `<p>`, `<ul>`, `<b>`, etc. without any class
+ * names and still get the expected visual styling.
+ * 
+ * Note: any Baklava components nested within a `<Prose>` element will not be affected by these styles.
  */
 export const Prose = ({ unstyled, ...propsRest }: ProseProps) => {
   return (
     <article
       {...propsRest}
-      className={cx({
-        bk: true,
-        'bk-prose': !unstyled,
-      }, propsRest.className)}
+      className={cx(
+        'bk',
+        { 'bk-prose': !unstyled },
+        propsRest.className,
+      )}
     />
   );
 };
