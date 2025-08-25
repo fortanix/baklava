@@ -21,7 +21,7 @@ export default {
   },
   tags: ['autodocs'],
   decorators: [
-    Story => <LayoutDecorator size="medium"><p style={{ fontSize: '3rem' }}><Story/></p></LayoutDecorator>,
+    Story => <div style={{ fontSize: '3rem' }}><Story/></div>,
   ],
   argTypes: {},
   render: (args) => <FortanixLogo {...args} />,
@@ -34,11 +34,11 @@ export const FortanixLogoStandard: Story = {};
 export const FortanixLogoInText: Story = {
   decorators: [
     Story => (
-      <p style={{ '--font-size': '1.2rem', fontSize: 'var(--font-size)' }}>
+      <div style={{ '--font-size': '1.2rem', fontSize: 'var(--font-size)' }}>
         <LoremIpsum style={{ fontSize: 'var(--font-size)' }}/>
         <Story/>
         <LoremIpsum style={{ fontSize: 'var(--font-size)' }}/>
-      </p>
+      </div>
     ),
   ],
 };
