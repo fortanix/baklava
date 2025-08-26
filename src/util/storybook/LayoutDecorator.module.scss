@@ -14,7 +14,7 @@
     &.util-layout-decorator--large { --util-layout-decorator-size: 100ch; }
     &.util-layout-decorator--x-large { --util-layout-decorator-size: 140ch; }
     
-    inline-size: min(100cqi - 2em, var(--util-layout-decorator-size));
+    inline-size: min(100cqi - 5em, var(--util-layout-decorator-size));
     
     &.util-layout-decorator--resizable {
       padding-block-end: 10px; // Make space for the resize control in the corner
