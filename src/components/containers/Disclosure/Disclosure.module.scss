@@ -23,7 +23,7 @@
     --bk-disclosure-border-radius-top: #{bk.$radius-3};
     --bk-disclosure-border-radius-bottom: #{bk.$radius-3};
     --bk-disclosure-padding-inline: #{bk.$spacing-4};
-    --bk-disclosure-padding-block: #{bk.rem-from-px(14)}; // FIXME: does not correspond to an existing token
+    --bk-disclosure-padding-block: #{bk.$spacing-3};
     
     overflow: hidden;
     
@@ -91,8 +91,8 @@
     // visible (due to `content-visibility: hidden` still taking up space). So we use this as scroller and for spacing.
     .bk-disclosure__content {
       margin-block:
-        bk.$spacing-8
-        calc(bk.$spacing-8 - var(--bk-disclosure-padding-block)); // Total should equal `bk.$spacing-8`
+        bk.$spacing-3
+        calc(bk.$spacing-6 - var(--bk-disclosure-padding-block)); // Total should equal `bk.$spacing-6`
       overflow: hidden;
     }
     // Make the content scrollable when the content is open
