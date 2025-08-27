@@ -68,6 +68,7 @@
     }
     
     .bk-dialog__content__icon-aside {
+      flex-shrink: 0;
       align-self: flex-start;
       font-size: 1.4em;
       
