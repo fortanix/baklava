@@ -20,6 +20,7 @@ export const icons = {
   'conversation-new': {},
   'copy': {},
   'cross': {},
+  'cryptography':{},
   'dashboard': {},
   'dataverse': {},
   'delete': {},
