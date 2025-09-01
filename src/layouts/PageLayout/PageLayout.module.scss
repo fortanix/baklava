@@ -40,11 +40,13 @@
 
       .bk-page-layout__header__scope-switcher {
         @include typography.h6;
-        
-        > div {
-          border: none;
-        }
       }
     }
+  }
+}
+
+@layer baklava.overrides {
+  .bk-page-layout__header__scope-switcher > div {
+    border: none;
   }
 }
