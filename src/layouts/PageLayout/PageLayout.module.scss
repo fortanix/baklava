@@ -44,3 +44,9 @@
     }
   }
 }
+
+@layer baklava.overrides {
+  .bk-page-layout__header__scope-switcher > div {
+    border: none;
+  }
+}
