@@ -20,30 +20,32 @@ export default {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  decorators: [
-    Story => <LayoutDecorator size="medium"><p style={{ fontSize: '3rem' }}><Story/></p></LayoutDecorator>,
-  ],
   argTypes: {},
   render: (args) => <FortanixLogo {...args} />,
 } satisfies Meta<FortanixLogoArgs>;
 
 
-export const FortanixLogoStandard: Story = {};
+export const FortanixLogoStandard: Story = {
+  decorators: [Story => <div style={{ fontSize: '3rem' }}><Story/></div>],
+};
 
 /** The logo scales with the font size. */
 export const FortanixLogoInText: Story = {
   decorators: [
     Story => (
-      <p style={{ '--font-size': '1.2rem', fontSize: 'var(--font-size)' }}>
-        <LoremIpsum style={{ fontSize: 'var(--font-size)' }}/>
-        <Story/>
-        <LoremIpsum style={{ fontSize: 'var(--font-size)' }}/>
-      </p>
+      <LayoutDecorator size="large">
+        <div style={{ '--font-size': '1.2rem', fontSize: 'var(--font-size)' }}>
+          <LoremIpsum style={{ fontSize: 'var(--font-size)' }}/>
+          <Story/>
+          <LoremIpsum style={{ fontSize: 'var(--font-size)' }}/>
+        </div>
+      </LayoutDecorator>
     ),
   ],
 };
 
 export const FortanixLogoWithSubtitle: Story = {
+  decorators: [Story => <div style={{ fontSize: '3rem' }}><Story/></div>],
   args: {
     subtitle: 'Data Security Manager',
     subtitleTrademark: true,

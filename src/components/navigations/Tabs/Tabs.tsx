@@ -104,7 +104,9 @@ export const Tabs = (props: TabsProps) => {
               className={cx(cl['bk-tabs__switcher__tab'],tab.props.className)}
               onClick={() => { onSwitch(tab.props.tabKey); }} // FIXME: add a Button and use that instead
             >
-              {tab.props.title}
+              <span>{tab.props.title}</span>
+              {/* Hidden duplicated title, used to prevent layout shifts on hover. */}
+              <span aria-hidden className={cx(cl['bk-tabs__switcher__tab__hover-placeholder'])}>{tab.props.title}</span>
             </li>
           )
         })}

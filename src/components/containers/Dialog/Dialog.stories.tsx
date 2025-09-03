@@ -24,7 +24,7 @@ export default {
   tags: ['autodocs'],
   component: Dialog,
   parameters: {
-    layout: 'padded',
+    layout: 'centered',
   },
   decorators: [
     Story => <LayoutDecorator size="large" style={{ maxHeight: '20lh' }}><Story/></LayoutDecorator>,

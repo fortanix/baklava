@@ -23,7 +23,7 @@
     --bk-disclosure-border-radius-top: #{bk.$radius-3};
     --bk-disclosure-border-radius-bottom: #{bk.$radius-3};
     --bk-disclosure-padding-inline: #{bk.$spacing-4};
-    --bk-disclosure-padding-block: #{bk.rem-from-px(14)}; // FIXME: does not correspond to an existing token
+    --bk-disclosure-padding-block: #{bk.$spacing-3};
     
     overflow: hidden;
     
@@ -54,7 +54,7 @@
       
       display: flex;
       align-items: center;
-      gap: bk.$spacing-9;
+      gap: bk.$spacing-3;
       
       line-height: bk.$line-height-m;
       
@@ -91,8 +91,8 @@
     // visible (due to `content-visibility: hidden` still taking up space). So we use this as scroller and for spacing.
     .bk-disclosure__content {
       margin-block:
-        bk.$spacing-8
-        calc(bk.$spacing-8 - var(--bk-disclosure-padding-block)); // Total should equal `bk.$spacing-8`
+        bk.$spacing-3
+        calc(bk.$spacing-6 - var(--bk-disclosure-padding-block)); // Total should equal `bk.$spacing-6`
       overflow: hidden;
     }
     // Make the content scrollable when the content is open
@@ -120,38 +120,6 @@
     }
     &[open]::details-content {
       block-size: auto;
-    }
-    
-    // Fallback styling for browsers that don't support `::details-content` and `interpolate-size`
-    @supports not (selector(::details-content) and (interpolate-size: allow-keywords)) {
-      // Fix padding
-      .bk-disclosure__content {
-        // In case of overflow, since we don't the flex parent, the margin bottom here won't work.
-        // Move it to `details[open]` instead.
-        margin-block-end: 0;
-      }
-      &[open] { padding-block-end: bk.$spacing-8; }
-      
-      // Fix scrolling
-      // stylelint-disable-next-line no-duplicate-selectors
-      .bk-disclosure__content {
-        // It seems there is no easy way to make this element scrollable with `block-size: auto` (and setting the height
-        // on the `<details>` instead), because without `::details-content` there is no way to make the details content
-        // a flex container.
-        // What does work is to set an explicit block-size on the `.bk-disclosure__content`.
-        //block-size: 20rem; // This works
-        
-        // We can use a variable for the `<details>` height and then calculate the height of the content box.
-        --summary-block-size: calc(var(--bk-disclosure-padding-block) + 1.6rem);
-        --padding-block: calc(2 * #{bk.$spacing-8});
-        max-block-size: calc(var(--bk-disclosure-max-height) - var(--summary-block-size) - var(--padding-block));
-      }
-      &[open] .bk-disclosure__content {
-        animation: none;
-        // Apply the `overflow-y: auto` immediately, since there is no animation
-        // stylelint-disable-next-line declaration-property-value-disallowed-list
-        overflow-y: auto;
-      }
     }
   }
 }
