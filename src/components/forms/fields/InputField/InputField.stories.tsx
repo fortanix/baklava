@@ -4,8 +4,8 @@
 
 import { delay } from '../../../../util/time.ts';
 
-import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, fireEvent, within } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { userEvent, fireEvent, within } from 'storybook/test';
 import * as React from 'react';
 
 import { Form } from '../../context/Form/Form.tsx';

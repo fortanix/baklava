@@ -1,39 +1,50 @@
+/// <reference types="vitest/config" />
 /// <reference types="vitest" />
 
-import * as path from 'node:path';
+import * as path from 'node:path'
 //import * as url from 'node:url';
 //import { glob } from 'glob';
 
-import browserslist from 'browserslist';
-import { defineConfig } from 'vite';
-import { Features as LightningCssFeatures, browserslistToTargets } from 'lightningcss';
+import browserslist from 'browserslist'
+import { defineConfig } from 'vite'
+import {
+  Features as LightningCssFeatures,
+  browserslistToTargets,
+} from 'lightningcss'
 
 // Vite plugins
-import dts from 'vite-plugin-dts';
-import { libInjectCss } from 'vite-plugin-lib-inject-css';
-import svgr from 'vite-plugin-svgr';
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
-import react from '@vitejs/plugin-react';
+import dts from 'vite-plugin-dts'
+import { libInjectCss } from 'vite-plugin-lib-inject-css'
+import svgr from 'vite-plugin-svgr'
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+import react from '@vitejs/plugin-react'
+import { fileURLToPath } from 'node:url'
+import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
+const dirname =
+  typeof __dirname !== 'undefined'
+    ? __dirname
+    : path.dirname(fileURLToPath(import.meta.url))
 
+// More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 
 export default defineConfig({
-  root: './app', // Run with `app` as root, so that files like `index.html` are by default referenced from there
-  base: './', // Assets base URL
-  
-  assetsInclude: ['**/*.md'], // Add `.md` as static asset type
-  
+  root: './app',
+  // Run with `app` as root, so that files like `index.html` are by default referenced from there
+  base: './',
+  // Assets base URL
+
+  assetsInclude: ['**/*.md'],
+  // Add `.md` as static asset type
+
   resolve: {
     alias: {
       // Needed for file references in Sass code (relative paths don't resolve properly when imported with `@use`)
       '@': path.resolve(__dirname, './src'),
     },
   },
-  
   plugins: [
     react(),
-    
     svgr(),
-    
     // Handle SVG sprite icons
     createSvgIconsPlugin({
       iconDirs: [path.resolve(__dirname, 'src/assets/icons')],
@@ -42,21 +53,22 @@ export default defineConfig({
       customDomId: 'baklava-icon-sprite',
     }),
     //libInjectCss(), // Disabled for now (`.css` import causes issues in vitest)
-    
+
     // Generate `.d.ts` files
     dts({
       // https://github.com/qmhc/vite-plugin-dts/issues/275#issuecomment-1963123685
-      outDir: 'dist', // dts.root + 'dist' => where we need to rollup.
-      root: '../', //vite.root + ../ = ./ = (dts.root)
+      outDir: 'dist',
+      // dts.root + 'dist' => where we need to rollup.
+      root: '../',
+      //vite.root + ../ = ./ = (dts.root)
       staticImport: true,
       insertTypesEntry: true,
       //rollupTypes: true, // Issue: https://github.com/qmhc/vite-plugin-dts/issues/399
-      
+
       //include: [path.resolve(__dirname, 'app')],
       tsconfigPath: path.resolve(__dirname, 'tsconfig.app.json'),
     }),
   ],
-  
   css: {
     // Configure preprocessing using Sass
     preprocessorOptions: {
@@ -65,21 +77,22 @@ export default defineConfig({
         silenceDeprecations: ['mixed-decls'], // https://sass-lang.com/documentation/breaking-changes/mixed-decls
       },
     },
-    
     // Configure postprocessing using lightningcss
     transformer: 'lightningcss',
     lightningcss: {
-      targets: browserslistToTargets(browserslist(
-        `fully supports css-nesting AND fully supports css-cascade-layers`
-      )),
-      exclude: LightningCssFeatures.LightDark, // Do not include the `light-dark()` polyfill (it's too buggy)
+      targets: browserslistToTargets(
+        browserslist(
+          `fully supports css-nesting AND fully supports css-cascade-layers`
+        )
+      ),
+      exclude: LightningCssFeatures.LightDark,
+      // Do not include the `light-dark()` polyfill (it's too buggy)
       cssModules: {
         //pattern: '[hash]_[local]',
         grid: false, // Workaround for https://github.com/parcel-bundler/lightningcss/issues/762
       },
     },
   },
-  
   // https://dev.to/receter/how-to-create-a-react-component-library-using-vites-library-mode-4lma
   // https://victorlillo.dev/blog/react-typescript-vite-component-library
   build: {
@@ -91,8 +104,9 @@ export default defineConfig({
       },
     },
     */
-    
-    copyPublicDir: false, // Do not copy `./public` into the output dir
+
+    copyPublicDir: false,
+    // Do not copy `./public` into the output dir
     outDir: path.resolve(__dirname, 'dist'),
     lib: {
       entry: path.resolve(__dirname, 'app/lib.ts'),
@@ -121,4 +135,33 @@ export default defineConfig({
       // ),
     },
   },
-});
+  test: {
+    projects: [
+      {
+        extends: true,
+        plugins: [
+          // The plugin will run tests for the stories defined in your Storybook config
+          // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
+          storybookTest({
+            configDir: path.join(dirname, '.storybook'),
+            storybookScript: 'npm run storybook:serve -- --no-open',
+          }),
+        ],
+        test: {
+          name: 'storybook',
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: 'playwright',
+            instances: [
+              {
+                browser: 'chromium',
+              },
+            ],
+          },
+          setupFiles: ['../.storybook/vitest.setup.ts'],
+        },
+      },
+    ],
+  },
+})

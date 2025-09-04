@@ -5,7 +5,7 @@
 import * as React from 'react';
 
 import { loremIpsum } from '../../../../util/storybook/LoremIpsum.tsx';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';

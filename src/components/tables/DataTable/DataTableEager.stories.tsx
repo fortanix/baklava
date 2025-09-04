@@ -5,7 +5,7 @@
 import { differenceInDays } from 'date-fns';
 import * as React from 'react';
 
-//import type { Meta, StoryObj } from '@storybook/react';
+//import type { Meta, StoryObj } from '@storybook/react-vite';
 import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { useEffectAsync } from '../../../util/reactUtil.ts';

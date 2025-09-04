@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { Input } from '../../components/forms/controls/Input/Input.tsx';

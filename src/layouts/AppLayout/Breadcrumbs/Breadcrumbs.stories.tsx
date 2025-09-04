@@ -6,7 +6,7 @@ import { type NonUndefined } from '../../../util/types.ts';
 
 import * as React from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DummyBkLinkWithNotify } from '../../../util/storybook/StorybookLink.tsx';
 import { Link } from '../../../components/actions/Link/Link.tsx';
 import { Button } from '../../../components/actions/Button/Button.tsx';

@@ -144,7 +144,7 @@ const packageConfig = {
     'chromatic': '^13.1.2',
     '@chromatic-com/storybook': '^3.2.6', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
-    'storybook-dark-mode': '^4.0.2',
+    '@storybook-community/storybook-dark-mode': '^4.0.2',
     '@percy/cli': '^1.31.1',
     '@percy/storybook': '^7.0.0',
     

@@ -5,7 +5,7 @@
 import * as React from 'react';
 import { startViewTransition } from '../../../util/reactDomUtil.ts';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 import { loremIpsum, LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
