@@ -7,11 +7,11 @@ import 'virtual:svg-icons-register';
 
 import * as React from 'react';
 
-import { type Preview } from '@storybook/react';
-import { themes } from '@storybook/theming';
-import { addons } from '@storybook/preview-api';
-import { DARK_MODE_EVENT_NAME } from 'storybook-dark-mode';
-import { DocsContainer, Title, Subtitle, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import { type Preview } from '@storybook/react-vite';
+import { themes } from 'storybook/theming';
+import { addons } from 'storybook/preview-api';
+import { DARK_MODE_EVENT_NAME } from '@storybook-community/storybook-dark-mode';
+import { DocsContainer } from '@storybook/addon-docs/blocks';
 
 import { BaklavaProvider } from '../src/context/BaklavaProvider.tsx';
 
@@ -20,7 +20,7 @@ const channel = addons.getChannel();
 
 // Start listening to dark mode events as soon as possible. In Safari it seems the event is emitted *before*
 // the component is first rendered and starts listening to this event.
-// Ticket: https://github.com/hipstersmoothie/storybook-dark-mode/issues/230
+// Ticket: https://github.com/hipstersmoothie/@storybook-community/storybook-dark-mode/issues/230
 let isDarkInitial = false;
 channel.on(DARK_MODE_EVENT_NAME, isDark => { isDarkInitial = isDark; });
 
@@ -194,6 +194,16 @@ const preview = {
     },
     
     docs: {
+      // page: () => (
+      //   <>
+      //     <Title />
+      //     <Subtitle />
+      //     <Description />
+      //     <Primary />
+      //     <Controls />
+      //     <Stories />
+      //   </>
+      // ),
       container: (props) => {
         // `DocsContainer` does not automatically support light/dark mode switching, need to set the theme manually
         const [isDark, setDark] = React.useState(isDarkInitial);
@@ -208,16 +218,8 @@ const preview = {
           <DocsContainer {...props} theme={theme}/>
         );
       },
-      // page: () => (
-      //   <>
-      //     <Title />
-      //     <Subtitle />
-      //     <Description />
-      //     <Primary />
-      //     <Controls />
-      //     <Stories />
-      //   </>
-      // ),
+
+      codePanel: true
     },
     
     darkMode: {
@@ -238,8 +240,14 @@ const preview = {
           { id: 'color-contrast', enabled: false, selector: '*' },
         ],
       },
+
       // Axe's options parameter
       options: {},
+
+      // 'todo' - show a11y violations in the test UI only
+      // 'error' - fail CI on a11y violations
+      // 'off' - skip a11y checks entirely
+      test: 'todo'
     },
   },
 } satisfies Preview;

@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Dialog } from '../../components/containers/Dialog/Dialog.tsx';
 import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';

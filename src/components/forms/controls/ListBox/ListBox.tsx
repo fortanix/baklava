@@ -114,11 +114,11 @@ export const Option = (props: OptionProps) => {
   const handlePress = React.useCallback(() => { requestSelection(); onSelect?.(); }, [requestSelection, onSelect]);
   
   return (
+    // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<option>` for this.
     <Button
       unstyled
       id={id}
       ref={itemRef}
-      // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<option>` for this.
       role="option"
       tabIndex={isFocused ? 0 : -1}
       data-item-key={itemKey}
@@ -424,12 +424,6 @@ export const ListBox = Object.assign(
       const listBoxElement = listBoxRef.current;
       if (listBoxElement === null) { return null; }
       return Object.assign(listBoxElement, {
-        focus: () => {
-          const state = listBox.store.getState();
-          if (state.focusedItem) {
-            state.focusItem(state.focusedItem);
-          }
-        },
         _bkListBoxFocusFirst: () => { listBox.store.getState().focusItemAt('first'); },
         _bkListBoxFocusLast: () => { listBox.store.getState().focusItemAt('last'); },
       });

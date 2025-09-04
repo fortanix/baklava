@@ -5,7 +5,7 @@
 import * as React from 'react';
 import { useEffectOnce } from '../../../util/reactUtil.ts';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '../../actions/Button/Button.tsx';
 
 import { type ToastDescriptor, ToastProvider, notify } from './ToastProvider.tsx';

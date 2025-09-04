@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 

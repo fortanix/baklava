@@ -3,7 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { loremIpsumSentence } from '../../../../util/storybook/LoremIpsum.tsx';
 
 import { Form } from '../../context/Form/Form.tsx';
