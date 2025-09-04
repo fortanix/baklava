@@ -55,8 +55,7 @@
     "test": "npm run check:types && npm run lint:style && npm run verify verify:source",
     "test-ui": "vitest --ui",
     "coverage": "vitest run --coverage",
-    "test:storybook": "test-storybook --failOnConsole --browsers chromium --maxWorkers=1",
-    "test:storybook-ci": "\n      npx playwright install --with-deps chromium        && npx concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\"          \"npm run storybook:build --quiet && npx http-server storybook-static --port 6006 --silent\"          \"npx wait-on tcp:6006 && npm run test:storybook\"\n    ",
+    "test:storybook": "npx vitest --projec=storybook",
     "start": "npm run storybook:serve",
     "prepare": "npm run build"
   },
@@ -73,7 +72,6 @@
     "@storybook/addon-links": "^9.1.4",
     "@storybook/addon-vitest": "^9.1.4",
     "@storybook/react-vite": "^9.1.4",
-    "@storybook/test-runner": "^0.23.0",
     "@types/node": "^24.1.0",
     "@types/react": "^19.1.5",
     "@types/react-dom": "^19.1.5",
