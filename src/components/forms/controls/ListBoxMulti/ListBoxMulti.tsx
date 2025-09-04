@@ -58,7 +58,7 @@ type ListBoxIcon = React.ComponentType<Pick<React.ComponentProps<typeof BkIcon>,
 export type StaticProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-  
+
   /** Whether the item should stick on scroll. Default: false. */
   sticky?: undefined | false | 'start',
 };
@@ -87,19 +87,19 @@ export const Static = ({ unstyled, sticky = false, ...propsRest }: StaticProps) 
 export type OptionProps = ComponentProps<typeof Button> & {
   /** A unique identifier for this option. */
   itemKey: ItemKey,
-  
+
   /** An accessible name for this option. */
   label: string,
-  
+
   /** An icon to be displayed before the label. */
   icon?: undefined | IconName,
-  
+
   /** How to decorate the icon. Default: undefined (i.e. no decoration). */
   iconDecoration?: undefined | 'highlight',
-  
+
   /** A callback to be called when the option is selected. */
   onSelect?: undefined | ((isSelected: boolean) => void),
-  
+
   /** Custom icon component. */
   Icon?: undefined | ListBoxIcon,
 };
@@ -108,24 +108,24 @@ export type OptionProps = ComponentProps<typeof Button> & {
  */
 export const Option = (props: OptionProps) => {
   const { unstyled, itemKey, label, icon, iconDecoration, onSelect, Icon = BkIcon, ...propsRest } = props;
-  
+
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef, isContentItem: true }), [itemKey]);
-  
+
   const { id, disabled, isFocused, isSelected, toggleSelection } = useListBoxItem(itemDef);
   const isNonactive = propsRest.disabled || propsRest.nonactive || disabled;
-  
+
   const handlePress = React.useCallback(() => {
     const isSelected = toggleSelection();
     onSelect?.(isSelected);
   }, [toggleSelection, onSelect]);
-  
+
   return (
+    // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<option>` for this.
     <Button
       unstyled
       id={id}
       ref={itemRef}
-      // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<option>` for this.
       role="option"
       tabIndex={isFocused ? 0 : -1}
       data-item-key={itemKey}
@@ -151,7 +151,7 @@ export const Option = (props: OptionProps) => {
           { 'pseudo-checked': isSelected },
         )}
       />
-      
+
       {icon &&
         <Icon
           icon={icon}
@@ -175,16 +175,16 @@ export const Option = (props: OptionProps) => {
 export type HeaderProps = ComponentProps<typeof Button> & {
   /** A unique identifier for this item. */
   itemKey: ItemKey,
-  
+
   /** An accessible name for this header. */
   label: string,
-  
+
   /** An icon to be displayed before the label. */
   icon?: undefined | IconName,
-  
+
   /** Whether the action should stick on scroll. Default: 'start'. */
   sticky?: undefined | false | 'start',
-  
+
   /** Custom icon component. */
   Icon?: undefined | ListBoxIcon,
 };
@@ -193,7 +193,7 @@ export type HeaderProps = ComponentProps<typeof Button> & {
  */
 export const Header = (props: HeaderProps) => {
   const { unstyled, itemKey, label, icon, sticky = 'start', Icon = BkIcon, ...propsRest } = props;
-  
+
   return (
     <span
       data-item-key={itemKey}
@@ -206,7 +206,7 @@ export const Header = (props: HeaderProps) => {
         propsRest.className,
       )}
     >
-      {icon && <Icon icon={icon} className={cl['bk-list-box-multi__item__icon']}/>}
+      {icon && <Icon icon={icon} className={cl['bk-list-box-multi__item__icon']} />}
       <span className={cl['bk-list-box-multi__item__label']}>{propsRest.children ?? label}</span>
     </span>
   );
@@ -220,22 +220,22 @@ export const Header = (props: HeaderProps) => {
 export type ActionProps = ComponentProps<typeof Button> & {
   /** A unique identifier for this action. */
   itemKey: ItemKey,
-  
+
   /** Explicit position of this item in the list (e.g. for virtualization). */
   itemPos?: undefined | number,
-  
+
   /** An accessible name for this action. */
   label: string,
-  
+
   /** An icon to be displayed before the label. */
   icon?: undefined | IconName,
-  
+
   /** Whether this action is positioned sticky. Default: false. */
   sticky?: undefined | false | 'end',
-  
+
   /** The event handler for when the user activates this action. */
   onActivate: () => void | Promise<void>,
-  
+
   /** Custom icon component. */
   Icon?: undefined | ListBoxIcon,
 };
@@ -244,17 +244,17 @@ export type ActionProps = ComponentProps<typeof Button> & {
  */
 export const Action = (props: ActionProps) => {
   const { unstyled, itemKey, itemPos, label, icon, sticky = false, onActivate, Icon = BkIcon, ...propsRest } = props;
-  
+
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemWithKey>(() => ({
     itemKey,
     itemRef,
     isContentItem: sticky === false,
   }), [itemKey, sticky]);
-  
+
   const { id, disabled, isFocused, requestFocus } = useListBoxItem(itemDef);
   const isNonactive = propsRest.disabled || propsRest.nonactive || disabled;
-  
+
   return (
     <Button
       unstyled
@@ -276,17 +276,17 @@ export const Action = (props: ActionProps) => {
       nonactive={isNonactive}
       onPress={() => { requestFocus(); onActivate?.(); }}
     >
-      {icon && <Icon icon={icon} className={cl['bk-list-box-multi__item__icon']}/>}
+      {icon && <Icon icon={icon} className={cl['bk-list-box-multi__item__icon']} />}
       <span className={cl['bk-list-box-multi__item__label']}>{propsRest.children ?? label}</span>
     </Button>
   );
 };
 
 export const FooterAction = (props: Omit<ActionProps, 'sticky'>) => {
-  return <Action {...props} sticky="end"/>;
+  return <Action {...props} sticky="end" />;
 };
 export const FooterActions = (props: React.ComponentProps<'div'>) => {
-  return <div {...props} className={cx(cl['bk-list-box-multi__footer-actions'], props.className)}/>;
+  return <div {...props} className={cx(cl['bk-list-box-multi__footer-actions'], props.className)} />;
 };
 
 
@@ -296,46 +296,46 @@ export const FooterActions = (props: React.ComponentProps<'div'>) => {
 export type ListBoxMultiProps<K extends ItemKey = ItemKey> = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-  
+
   /** A React ref to pass to the list box element. */
   ref?: undefined | React.Ref<null | ListBoxMultiRef>,
-  
+
   /** The (inline) size of the list box. Optional. Default: `medium`. */
   size?: undefined | 'shrink' | 'small' | 'medium' | 'large',
-  
+
   /** An accessible name for this list box. Required. */
   label: string,
-  
+
   /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
   defaultSelected?: undefined | Set<K>,
-  
+
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */
   selected?: undefined | Set<K>,
-  
+
   /** Event handler to be called when the selected option state changes. */
   onSelect?: undefined | ((selectedItems: Set<K>, itemDetails: Map<K, ItemDetails>) => void),
-  
+
   /** Whether the list box is disabled or not. Default: false. */
   disabled?: undefined | boolean,
-  
+
   /** The machine readable name of the list box control, used as part of `<form>` submission. */
   name?: undefined | string,
-  
+
   /** A placeholder message to display when there are no items in the list. Set to `false` to prevent showing. */
   placeholderEmpty?: undefined | false | React.ReactNode,
-  
+
   /** The ID of the `<form>` element to associate this list box with. Optional. */
   form?: undefined | string,
-  
+
   /** Any additional props to apply to the internal `<input type="hidden"/>`. */
   inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
-  
+
   /** Render the given item key as a string label. If not given, will use the item element's text value. */
   formatItemLabel?: undefined | ((itemKey: K) => undefined | string),
-  
+
   /** Whether the list is currently in loading state. Default: false. */
   isLoading?: undefined | boolean,
-  
+
   /** If the list is virtually rendered, `virtualItemKeys` should be provided with the full list of item keys. */
   virtualItemKeys?: undefined | null | VirtualItemKeys,
 };
@@ -346,7 +346,7 @@ type HiddenSelectedStateProps = Pick<ListBoxMultiProps, 'name' | 'form' | 'input
 /** Hidden input, so that this component can be connected to a <form> element. */
 const HiddenSelectedState = ({ ref, name, form, inputProps }: HiddenSelectedStateProps) => {
   const selectedItems = useListBoxSelector(s => s.selectedItems);
-  const onChange = React.useCallback(() => {}, []);
+  const onChange = React.useCallback(() => { }, []);
   return (
     <>
       {[...selectedItems.values()].map(selectedItem =>
@@ -407,12 +407,12 @@ export const ListBoxMulti = Object.assign(
       formatItemLabel,
       ...propsRest
     } = props;
-    
+
     const id = React.useId();
     const listBoxRef = React.useRef<ListBoxMultiRef>(null);
     const inputRef = React.useRef<React.ComponentRef<typeof HiddenSelectedState>>(null);
     const scrollerProps = useScroller();
-    
+
     /*
     Set up the list box store.
     
@@ -429,7 +429,7 @@ export const ListBoxMulti = Object.assign(
       focusedItem: null,
       virtualItemKeys,
     });
-    
+
     // Sync `selected` prop to the store
     const selectedSerialized = typeof selected === 'undefined' ? '' : JSON.stringify([...selected.values()]);
     // biome-ignore lint/correctness/useExhaustiveDependencies: Using a serialized version of `selected`.
@@ -437,14 +437,14 @@ export const ListBoxMulti = Object.assign(
       if (typeof selected !== 'undefined') {
         const state = listBox.store.getState();
         state.setSelectedItems(selected);
-        
+
         const firstItemKey = selected.values().next().value;
         if (typeof firstItemKey !== 'undefined') {
           state.focusItem(firstItemKey);
         }
       }
     }, [selectedSerialized, listBox.store]);
-    
+
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
     React.useImperativeHandle<null | ListBoxMultiRef, null | ListBoxMultiRef>(ref, () => {
       const listBoxElement = listBoxRef.current;
@@ -460,7 +460,7 @@ export const ListBoxMulti = Object.assign(
         _bkListBoxFocusLast: () => { listBox.store.getState().focusItemAt('last'); },
       });
     }, [listBox]);
-    
+
     // Keep the `virtualItemKeys` prop in sync with the store
     React.useEffect(() => {
       return listBox.store.subscribe(state => {
@@ -469,31 +469,31 @@ export const ListBoxMulti = Object.assign(
         }
       });
     }, [listBox.store, virtualItemKeys]);
-    
+
     const isEmpty = useListBoxSelector(state => state.isEmpty(), listBox.store);
-    
+
     React.useEffect(() => {
       return listBox.store.subscribe((state, prevState) => {
         if (state.selectedItems !== prevState.selectedItems) {
           const itemKeys = state.selectedItems as Set<K>;
-          
+
           const itemDetails = new Map<K, ItemDetails>([...itemKeys.values()].map(itemKey => {
             const label: string = formatItemLabel?.(itemKey)
               ?? state._internalItemsRegistry.get(itemKey)?.itemRef.current?.textContent
               ?? itemKey;
             return [itemKey, { label }];
           }));
-          
+
           onSelect?.(itemKeys, itemDetails);
         }
       });
     }, [listBox.store, onSelect, formatItemLabel]);
-    
+
     const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
       if (event.key === 'Enter') {
         const formId = inputRef.current?.getAttribute('form');
         if (!formId) { return; }
-        
+
         const form = document.getElementById(formId);
         if (form instanceof HTMLFormElement) {
           // Submit the form (after a timeout to allow the `<input>` to be updated in response to the Enter key event)
@@ -501,7 +501,7 @@ export const ListBoxMulti = Object.assign(
         }
       }
     }, []);
-    
+
     // Note: WCAG requires at least one element with `role="option"` (or "group") in a `role="listbox"`. If there are
     // no options, then we should not render a `role="listbox"`.
     // https://github.com/dequelabs/axe-core/issues/383
@@ -515,7 +515,7 @@ export const ListBoxMulti = Object.assign(
       'aria-label': label,
       'aria-busy': isLoading,
     } as const;
-    
+
     return (
       <listBox.Provider>
         {/* biome-ignore lint/a11y/noStaticElementInteractions: `onKeyDown` needed as event ancestor (bubbling). */}
@@ -542,14 +542,14 @@ export const ListBoxMulti = Object.assign(
             propsRest.className,
           )}
         >
-          {typeof name === 'string' && <HiddenSelectedState ref={inputRef} name={name} form={form}/>}
-          
+          {typeof name === 'string' && <HiddenSelectedState ref={inputRef} name={name} form={form} />}
+
           {children}
-          
+
           {isEmpty && placeholderEmpty !== false && !isLoading &&
             <EmptyPlaceholder id={`${id}_empty-placeholder`}>{placeholderEmpty}</EmptyPlaceholder>
           }
-          
+
           {isLoading &&
             <span
               className={cx(
@@ -558,7 +558,7 @@ export const ListBoxMulti = Object.assign(
                 cl['bk-list-box-multi__item--loading'],
               )}
             >
-              Loading... <Spinner inline size="small"/>
+              Loading... <Spinner inline size="small" />
             </span>
           }
         </div>
