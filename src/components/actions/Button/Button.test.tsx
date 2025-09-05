@@ -155,8 +155,8 @@ describe('Button', () => {
       render(<Button icon="home" label="With Icon" />);
       
       const button = screen.getByRole('button');
-      expect(button).toBeInTheDocument();
-      // Note: Icon component is mocked in tests, so we just check that the component renders
+      const svgElement = button.querySelector('svg');
+      expect(svgElement).toBeInTheDocument();
     });
   });
   
@@ -234,7 +234,7 @@ describe('Button', () => {
       
       render(
         <ErrorBoundary
-          FallbackComponent={({ error }) => <div>Error</div>}
+          FallbackComponent={() => <div>Error</div>}
         >
           <Button onPress={slowAsyncOnPress} asyncTimeout={50} label="Slow Async" />);
         </ErrorBoundary>
