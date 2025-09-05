@@ -20,6 +20,20 @@ export default defineConfig({
   root: './app', // Run with `app` as root, so that files like `index.html` are by default referenced from there
   base: './', // Assets base URL
   
+  test: {
+    root: '.', // Override the default `root` of `./app`
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./tests/setup-rtl.ts'],
+    deps: {
+      optimizer: {
+        web: {
+          exclude: [], // Don't exclude externals from bundling in tests
+        },
+      },
+    },
+  },
+  
   assetsInclude: ['**/*.md'], // Add `.md` as static asset type
   
   resolve: {
