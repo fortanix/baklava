@@ -123,8 +123,12 @@ const packageConfig = {
     '@biomejs/biome': '^2.1.2',
     
     // Testing
+    'jsdom': '^26.1.0',
     'vitest': '^3.1.4',
     '@vitest/ui': '^3.1.4',
+    '@testing-library/react': '^16.3.0',
+    '@testing-library/user-event': '^14.6.1',
+    '@testing-library/jest-dom': '^6.8.0',
     'axe-playwright': '^2.0.3',
     '@ngneat/falso': '^8.0.2',
     
