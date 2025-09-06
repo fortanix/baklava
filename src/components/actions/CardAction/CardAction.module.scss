@@ -31,6 +31,8 @@
       padding-block: $spacing calc(bk.$spacing-4 + $spacing);
       border-block-end: bk.$size-hairline solid bk.$theme-rule-default;
       
+      line-height: 1.2;
+      
       @include bk.font(bk.$font-family-display);
       font-size: bk.$font-size-xl;
       
