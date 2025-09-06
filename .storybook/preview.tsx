@@ -75,6 +75,8 @@ const preview = {
               'LinkAsButton',
               'Button',
               'ButtonAsLink',
+              'IconButton',
+              'CardAction',
             ],
             'overlays',
             [
