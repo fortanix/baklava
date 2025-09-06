@@ -9,6 +9,7 @@
     padding: var(--bk-focus-outline-width); // Add some spacing so as not to cut off any focus outlines
     
     --util-layout-decorator-size: 80ch;
+    &.util-layout-decorator--x-small { --util-layout-decorator-size: 40ch; }
     &.util-layout-decorator--small { --util-layout-decorator-size: 60ch; }
     &.util-layout-decorator--medium { --util-layout-decorator-size: 80ch; }
     &.util-layout-decorator--large { --util-layout-decorator-size: 100ch; }

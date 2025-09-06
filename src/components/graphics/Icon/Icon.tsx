@@ -50,17 +50,19 @@ export type IconProps = React.PropsWithChildren<ComponentProps<'svg'> & {
 export const Icon = Object.assign(
   ({ unstyled, icon, color = 'currentColor', decoration, ...props }: IconProps) => {
     const symbolId = `#baklava-icon-${icon}`;
-
+    
     return (
       <svg
-        role="img"
+        role="presentation"
         aria-hidden // https://stackoverflow.com/questions/61048356/why-do-we-use-aria-hidden-with-icons
         {...props}
-        className={cx({
-          bk: true,
-          [cl['bk-icon']]: !unstyled,
-          [cl['bk-icon--background-circle']]: decoration?.type === 'background-circle',
-        }, props.className)}
+        className={cx(
+          'bk',
+          'icon', // Global class name (for generic targeting in CSS)
+          { [cl['bk-icon']]: !unstyled },
+          { [cl['bk-icon--background-circle']]: decoration?.type === 'background-circle' },
+          props.className,
+        )}
       >
         <use href={symbolId} fill={color}/>
       </svg>

@@ -4,7 +4,7 @@
 
 @use '../../styling/defs.scss' as bk;
 
-@layer baklava.components {
+@layer baklava.layouts {
   .bk-fortanix-armor-logo {
     @include bk.component-base(bk-fortanix-armor-logo);
     

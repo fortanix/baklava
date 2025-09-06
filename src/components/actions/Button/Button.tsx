@@ -36,7 +36,10 @@ export type ButtonProps = React.PropsWithChildren<Omit<ComponentProps<'button'>,
   /** The kind of button, from higher prominance to lower. */
   kind?: undefined | 'primary' | 'secondary' | 'tertiary',
   
-  /** Which visual variant to use. Default: 'normal'. */
+  /**
+   * Which visual variant to use. Default: 'normal'.
+   * @deprecated The `card` variant is no longer used.
+   */
   variant?: undefined | 'normal' | 'card',
   
   /**

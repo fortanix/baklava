@@ -4,7 +4,7 @@
 
 @use '../../styling/defs.scss' as bk;
 
-@layer baklava.components {
+@layer baklava.layouts {
   .bk-dialog-layout {
     @include bk.component-base(bk-dialog-layout);
     

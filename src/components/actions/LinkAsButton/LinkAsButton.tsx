@@ -17,13 +17,13 @@ type LinkAsButtonProps = LinkProps & {
   
   // Link props
   //size?: LinkProps['size'], // Not relevant
-  label?: NonNullable<LinkProps['label']>,
+  label?: undefined | NonNullable<LinkProps['label']>,
   
   // Button props
-  kind?: NonNullable<ButtonProps['kind']>,
-  nonactive?: NonNullable<ButtonProps['nonactive']>,
-  disabled?: NonNullable<ButtonProps['disabled']>,
-  trimmed?: NonNullable<ButtonProps['trimmed']>,
+  kind?: undefined | NonNullable<ButtonProps['kind']>,
+  nonactive?: undefined | NonNullable<ButtonProps['nonactive']>,
+  disabled?: undefined | NonNullable<ButtonProps['disabled']>,
+  trimmed?: undefined | NonNullable<ButtonProps['trimmed']>,
 };
 
 /**

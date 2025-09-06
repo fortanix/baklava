@@ -5,7 +5,7 @@
 @use '../../styling/defs.scss' as bk;
 @use '../../styling/features/typography.scss' as typography;
 
-@layer baklava.components {
+@layer baklava.layouts {
   .bk-page-layout {
     @include bk.component-base(bk-page-layout);
 
