@@ -1,0 +1,88 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  // FIXME: we cannot do this from `@layer baklava.overrides`, because `Button` has a focus with `!important`
+  .bk-card-action .bk-card-action__action {
+    @include bk.focus-hidden;
+  }
+}
+
+// Use `overrides` layer to make sure we override the `.bk-card` styles
+@layer baklava.overrides {
+  .bk-card-action {
+    @include bk.component-base(bk-card-action);
+    
+    position: relative;
+    
+    padding-inline: bk.$spacing-7;
+    
+    // If there is only the action, make the padding symmetric (to center the action)
+    &:has(> .bk-card-action__action:only-child) {
+      padding: bk.$spacing-4;
+    }
+    
+    .bk-card-action__heading {
+      $spacing: calc(bk.$spacing-2 - 0.2lh); // Compensate a bit for the extra spacing from the `line-height`
+      margin-block-end: $spacing;
+      padding-block: $spacing calc(bk.$spacing-4 + $spacing);
+      border-block-end: bk.$size-hairline solid bk.$theme-rule-default;
+      
+      line-height: 1.2;
+      
+      @include bk.font(bk.$font-family-display);
+      font-size: bk.$font-size-xl;
+      
+      > * {
+        white-space: wrap;
+      }
+    }
+    
+    .bk-card-action__content {
+      margin-block: bk.$spacing-4;
+    }
+    
+    .bk-card-action__action {
+      // Make sure there's no containment or transforms applied, otherwise the absolute positioning won't work
+      contain: initial;
+      transform: initial;
+      translate: initial;
+      rotate: initial;
+      scale: initial;
+      
+      &::after {
+        content: '';
+        display: block;
+        cursor: pointer;
+        position: absolute;
+        inset: 0;
+      }
+      
+      &.bk-card-action__action--link {
+        align-self: center;
+      }
+      
+      // Hide the default focus (move it to the card instead)
+      @include bk.focus-hidden;
+    }
+    
+    transition: border 150ms ease-in-out;
+    
+    &.bk-card-action--selected {
+      border-color: bk.$theme-card-border-selected;
+    }
+    &:not(.bk-card-action--selected) {
+      &:global(.pseudo-hover), &:has(.bk-card-action__action:hover) {
+        border-color: bk.$theme-card-border-hover;
+      }
+      &:global(.pseudo-focus-visible), &:has(.bk-card-action__action:focus-visible) {
+        border-color: bk.$theme-card-border-hover;
+      }
+    }
+    
+    @include bk.focus-outset($selector: '&:has(.bk-card-action__action:focus-visible), &.pseudo-focus-visible');
+  }
+}

@@ -13,21 +13,32 @@ import cl from './Card.module.scss';
 export { cl as CardClassNames };
 
 
-export type CardHeadingProps = ComponentProps<typeof H5>;
-export const CardHeading = (props: CardHeadingProps) => {
-  return <H5 {...props} className={cx(cl['bk-card__heading'], props.className)}/>;
+export type CardHeadingProps = ComponentProps<typeof H5> & {
+  icon?: undefined | React.ReactElement,
+};
+export const CardHeading = ({ icon, ...propsRest }: CardHeadingProps) => {
+  return (
+    <H5 {...propsRest} className={cx(cl['bk-card__heading'], propsRest.className)}>
+      {icon && <span className={cx(cl['bk-card__heading__icon'])}>{icon}</span>}
+      <span className={cx(cl['bk-card__heading__content'])}>{propsRest.children}</span>
+    </H5>
+  );
 };
 
 export type CardHeadingLinkProps = ComponentProps<typeof LinkDefault> & {
+  icon?: undefined | React.ReactElement,
   Link?: undefined | typeof LinkDefault,
 };
-export const CardHeadingLink = ({ Link = LinkDefault, ...propsRest }: CardHeadingLinkProps) => {
+export const CardHeadingLink = ({ icon, Link = LinkDefault, ...propsRest }: CardHeadingLinkProps) => {
   return (
     <Link
       unstyled
       {...propsRest}
-      className={cx(cl['bk-card__heading'], cl['bk-card__heading-link'], propsRest.className)}
-    />
+      className={cx(cl['bk-card__heading'], cl['bk-card__heading--link'], propsRest.className)}
+    >
+      {icon && <span className={cx(cl['bk-card__heading__icon'])}>{icon}</span>}
+      <span className={cx(cl['bk-card__heading__content'])}>{propsRest.children}</span>
+    </Link>
   );
 };
 

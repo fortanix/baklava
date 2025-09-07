@@ -9,9 +9,9 @@
     @include bk.component-base(bk-textarea);
     
     @include bk.focus-hidden;
-
+    
     --bk-text-area-border-color: #{bk.$theme-text-area-border-filled};
-
+    
     border: bk.rem-from-px(1) solid var(--bk-text-area-border-color);
     border-radius: bk.$radius-1;
     color: bk.$theme-text-area-text-filled;
@@ -24,13 +24,13 @@
     &:placeholder-shown {
       --bk-text-area-border-color: #{bk.$theme-text-area-border-default};
     }
-
+    
     &:disabled {
       color: bk.$theme-text-area-text-disabled;
       --bk-text-area-border-color: #{bk.$theme-text-area-border-disabled};
     }
   }
-
+  
   .bk-text-area--invalid, .bk-text-area--invalid:placeholder-shown {
     --bk-text-area-border-color: #{bk.$theme-text-area-border-error};
   }
@@ -44,7 +44,7 @@
     color: bk.$theme-text-area-text-focused;
     --bk-text-area-border-color: #{bk.$theme-text-area-border-focused};
   }
-
+  
   .bk-text-area--automatic-resize {
     field-sizing: content;
   }
