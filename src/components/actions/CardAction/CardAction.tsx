@@ -50,7 +50,7 @@ export type CardActionProps = ComponentProps<typeof Card> & {
   selected?: undefined | boolean,
 };
 /**
- * An interactive version of a `Card` component. `CardButton` presents itself to the user as clickable, focusable
+ * An interactive version of a `Card` component. `CardAction` presents itself to the user as clickable, focusable
  * and possibly selectable component. Though for accessibility reasons, the actual interactive element ("action") must
  * be a button or link embedded inside the card. Through CSS the interactive area of the action gets extended to the
  * boundary of the `CardAction` component.
