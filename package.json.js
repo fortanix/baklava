@@ -82,14 +82,7 @@ const packageConfig = {
     
     // Browser automation tests
     // https://github.com/storybookjs/test-runner?tab=readme-ov-file#2-running-against-locally-built-storybooks-in-ci
-    'test:storybook': 'test-storybook --failOnConsole --browsers chromium --maxWorkers=1', // For text only: FORCE_COLOR=false
-    // Note: the following assumes `localhost:6006` is free, so don't run it if a dev server is already running
-    'test:storybook-ci': `
-      npx playwright install --with-deps chromium\
-        && npx concurrently -k -s first -n "SB,TEST" -c "magenta,blue"\
-          "npm run storybook:build --quiet && npx http-server storybook-static --port 6006 --silent"\
-          "npx wait-on tcp:6006 && npm run test:storybook"
-    `,
+    'test:storybook': 'vitest --project=storybook',
     
     // Shorthands
     'start': 'npm run storybook:serve',
@@ -125,26 +118,23 @@ const packageConfig = {
     // Testing
     'vitest': '^3.1.4',
     '@vitest/ui': '^3.1.4',
-    'axe-playwright': '^2.0.3',
+    '@vitest/browser': '^3.2.4',
+    '@vitest/coverage-v8': '^3.2.4',
     '@ngneat/falso': '^8.0.2',
+    'playwright': '^1.55.0',
     
     // Storybook
-    'storybook': '^8.6.14',
-    '@storybook/react': '^8.6.14',
-    '@storybook/react-vite': '^8.6.14',
-    '@storybook/blocks': '^8.6.14',
-    '@storybook/test': '^8.6.14',
-    '@storybook/test-runner': '^0.22.0',
-    '@storybook/addon-essentials': '^8.6.14',
-    '@storybook/addon-a11y': '^8.6.14',
-    '@storybook/addon-interactions': '^8.6.14',
-    '@storybook/addon-links': '^8.6.14',
-    '@storybook/addon-storysource': '^8.6.14',
-    '@storybook/addon-designs': '^8.2.1',
+    'storybook': '^9.1.4',
+    '@storybook/react-vite': '^9.1.4',
+    '@storybook/addon-a11y': '^9.1.4',
+    '@storybook/addon-designs': '^10.0.2',
+    '@storybook/addon-docs': '^9.1.4',
+    '@storybook/addon-links': '^9.1.4',
+    '@storybook/addon-vitest': '^9.1.4',
     'chromatic': '^13.1.2',
-    '@chromatic-com/storybook': '^3.2.6', // Chromatic integration for Storybook
+    '@chromatic-com/storybook': '^4.1.1', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
-    '@storybook-community/storybook-dark-mode': '^4.0.2',
+    '@storybook-community/storybook-dark-mode': '^6.0.0',
     '@percy/cli': '^1.31.1',
     '@percy/storybook': '^7.0.0',
     
@@ -168,8 +158,8 @@ const packageConfig = {
     'message-tag': '^0.10.0',
     
     // React
-    'react': '^19.0.0',
-    'react-dom': '^19.0.0',
+    'react': '>= 19.0.0',
+    'react-dom': '>= 19.0.0',
     'react-error-boundary': '^6.0.0',
     'classnames': '^2.5.1',
     'zustand': '^5.0.6',
