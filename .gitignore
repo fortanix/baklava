@@ -13,6 +13,7 @@
 /lib-esm/
 
 # Project
+**/.vite
 /dist/storybook
 /storybook-static
 /build-storybook.log

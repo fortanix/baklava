@@ -131,6 +131,11 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
       }
     },
     focusItem: itemKey => {
+      const state = get();
+      if (state.focusedItem === itemKey) {
+        // Already focused; avoid redundant focus that might re-enter
+        return;
+      }
       set({ focusedItem: itemKey });
       
       if (itemKey !== null) {
@@ -138,10 +143,13 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
         
         // Note: this only works if the item is already rendered, for virtual lists the component will need to handle
         // the scroll.
-        itemTargetRef?.current?.focus({
-          // @ts-ignore Supported in some browsers (e.g. Firefox).
-          focusVisible: false,
-        });
+        const element = itemTargetRef?.current as undefined | HTMLElement;
+        if (element && document.activeElement !== element) {
+          element.focus({
+            // @ts-ignore Supported in some browsers (e.g. Firefox).
+            focusVisible: false,
+          });
+        }
       }
     },
     focusItemAt: position => {

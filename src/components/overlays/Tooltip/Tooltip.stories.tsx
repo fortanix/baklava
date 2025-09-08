@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DummyLink } from '../../../util/storybook/StorybookLink.tsx';
 import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
 

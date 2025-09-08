@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 /// <reference types="vitest" />
 
 import * as path from 'node:path';
@@ -14,40 +15,30 @@ import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import svgr from 'vite-plugin-svgr';
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
 import react from '@vitejs/plugin-react';
+import { fileURLToPath } from 'node:url';
+import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
+const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
+// More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 
 export default defineConfig({
   root: './app', // Run with `app` as root, so that files like `index.html` are by default referenced from there
   base: './', // Assets base URL
   
-  test: {
-    root: '.', // Override the default `root` of `./app`
-    environment: 'jsdom',
-    globals: true,
-    setupFiles: ['./tests/setup-rtl.ts'],
-    deps: {
-      optimizer: {
-        web: {
-          exclude: [], // Don't exclude externals from bundling in tests
-        },
-      },
-    },
-  },
-  
   assetsInclude: ['**/*.md'], // Add `.md` as static asset type
-  
+
   resolve: {
     alias: {
       // Needed for file references in Sass code (relative paths don't resolve properly when imported with `@use`)
       '@': path.resolve(__dirname, './src'),
     },
   },
-  
+
   plugins: [
     react(),
-    
+
     svgr(),
-    
+
     // Handle SVG sprite icons
     createSvgIconsPlugin({
       iconDirs: [path.resolve(__dirname, 'src/assets/icons')],
@@ -56,7 +47,7 @@ export default defineConfig({
       customDomId: 'baklava-icon-sprite',
     }),
     //libInjectCss(), // Disabled for now (`.css` import causes issues in vitest)
-    
+
     // Generate `.d.ts` files
     dts({
       // https://github.com/qmhc/vite-plugin-dts/issues/275#issuecomment-1963123685
@@ -65,12 +56,11 @@ export default defineConfig({
       staticImport: true,
       insertTypesEntry: true,
       //rollupTypes: true, // Issue: https://github.com/qmhc/vite-plugin-dts/issues/399
-      
+
       //include: [path.resolve(__dirname, 'app')],
       tsconfigPath: path.resolve(__dirname, 'tsconfig.app.json'),
     }),
   ],
-  
   css: {
     // Configure preprocessing using Sass
     preprocessorOptions: {
@@ -79,7 +69,6 @@ export default defineConfig({
         silenceDeprecations: ['mixed-decls'], // https://sass-lang.com/documentation/breaking-changes/mixed-decls
       },
     },
-    
     // Configure postprocessing using lightningcss
     transformer: 'lightningcss',
     lightningcss: {
@@ -93,7 +82,6 @@ export default defineConfig({
       },
     },
   },
-  
   // https://dev.to/receter/how-to-create-a-react-component-library-using-vites-library-mode-4lma
   // https://victorlillo.dev/blog/react-typescript-vite-component-library
   build: {
@@ -105,7 +93,7 @@ export default defineConfig({
       },
     },
     */
-    
+
     copyPublicDir: false, // Do not copy `./public` into the output dir
     outDir: path.resolve(__dirname, 'dist'),
     lib: {
@@ -134,5 +122,52 @@ export default defineConfig({
       //   ]),
       // ),
     },
+  },
+  test: {
+    root: '.', // Override the default `root` of `./app`
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: ['./tests/setup-rtl.ts'],
+    deps: {
+      optimizer: {
+        web: {
+          exclude: [], // Don't exclude externals from bundling in tests
+        },
+      },
+    },
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: 'unit',
+          include: ['./src/**/*.test.{ts,tsx}'],
+        },
+      },
+      {
+        extends: true,
+        plugins: [
+          // The plugin will run tests for the stories defined in your Storybook config
+          // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
+          storybookTest({
+            configDir: path.join(dirname, '.storybook'),
+            storybookScript: 'npm run storybook:serve -- --no-open',
+          }),
+        ],
+        test: {
+          name: 'storybook',
+          browser: {
+            enabled: true,
+            headless: true,
+            provider: 'playwright',
+            instances: [
+              {
+                browser: 'chromium',
+              },
+            ],
+          },
+          setupFiles: [path.join(dirname, '.storybook/vitest.setup.ts')],
+        },
+      },
+    ],
   },
 });

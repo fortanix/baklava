@@ -7,7 +7,7 @@ import * as React from 'react';
 import { LoremIpsum, loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
 import { DummyBkLinkWithNotify } from '../../../util/storybook/StorybookLink.tsx';
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Banner } from '../Banner/Banner.tsx';

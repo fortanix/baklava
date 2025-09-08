@@ -114,11 +114,11 @@ export const Option = (props: OptionProps) => {
   const handlePress = React.useCallback(() => { requestSelection(); onSelect?.(); }, [requestSelection, onSelect]);
   
   return (
+    // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<option>` for this.
     <Button
       unstyled
       id={id}
       ref={itemRef}
-      // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<option>` for this.
       role="option"
       tabIndex={isFocused ? 0 : -1}
       data-item-key={itemKey}

@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { H1 } from '../../typography/Heading/Heading.tsx';
 import { Icon } from '../../components/graphics/Icon/Icon.tsx';
