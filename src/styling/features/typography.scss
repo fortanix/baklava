@@ -60,11 +60,11 @@ Note: these mixins are used as part of `.bk-prose`. In order to not break the wo
   @include text.font(vars.$font-family-body);
   color: var(--bk-link-color);
   
-  /* https://css-tricks.com/styling-links-with-real-underlines */
+  // https://css-tricks.com/styling-links-with-real-underlines
   text-decoration: underline;
   text-decoration-skip-ink: auto;
-  text-underline-offset: from-font;
-  // text-decoration-thickness: from-font;
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: from-font;
   
   &:is(#{$self}--small) {
     font-size: 0.8em;
