@@ -19,8 +19,13 @@ export type CardHeadingProps = ComponentProps<typeof H5> & {
 export const CardHeading = ({ icon, ...propsRest }: CardHeadingProps) => {
   return (
     <H5 {...propsRest} className={cx(cl['bk-card__heading'], propsRest.className)}>
-      {icon && <span className={cx(cl['bk-card__heading__icon'])}>{icon}</span>}
-      <span className={cx(cl['bk-card__heading__content'])}>{propsRest.children}</span>
+      {icon &&
+        <>
+          <span className={cx('_icon', cl['bk-card__heading__icon'])}>{icon}</span>
+          <span className={cx('_content', cl['bk-card__heading__content'])}>{propsRest.children}</span>
+        </>
+      }
+      {!icon && propsRest.children}
     </H5>
   );
 };
@@ -36,8 +41,13 @@ export const CardHeadingLink = ({ icon, Link = LinkDefault, ...propsRest }: Card
       {...propsRest}
       className={cx(cl['bk-card__heading'], cl['bk-card__heading--link'], propsRest.className)}
     >
-      {icon && <span className={cx(cl['bk-card__heading__icon'])}>{icon}</span>}
-      <span className={cx(cl['bk-card__heading__content'])}>{propsRest.children}</span>
+      {icon &&
+        <>
+          <span className={cx('_icon', cl['bk-card__heading__icon'])}>{icon}</span>
+          <span className={cx('_content', cl['bk-card__heading__content'])}>{propsRest.children}</span>
+        </>
+      }
+      {!icon && propsRest.children}
     </Link>
   );
 };

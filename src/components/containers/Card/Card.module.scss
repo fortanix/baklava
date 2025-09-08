@@ -33,14 +33,21 @@
     
     margin-block-end: bk.$spacing-5;
     
-    display: flex;
-    align-items: center;
-    gap: 0.8ch;
-    
-    .#{$name}__heading__icon { --keep: ; }
-    
-    .#{$name}__heading__content {
+    // Note: use `:has()` here so that we don't break existing usages of this component without the additional
+    // `<span>` nested elements
+    &:not(:has(.#{$name}__heading__content)) {
       @include bk.text-one-line;
+    }
+    &:has(.#{$name}__heading__content) {
+      display: flex;
+      align-items: center;
+      gap: 0.8ch;
+      
+      .#{$name}__heading__icon { --keep: ; }
+      
+      .#{$name}__heading__content {
+        @include bk.text-one-line;
+      }
     }
   }
   
