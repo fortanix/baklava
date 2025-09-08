@@ -69,7 +69,7 @@
       
       font-size: bk.$font-size-l;
       
-      [role="img"] {
+      :global(.icon) {
         font-size: 2em;
       }
     }
