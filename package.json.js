@@ -74,15 +74,15 @@ const packageConfig = {
     'lint': 'npm run lint:style; npm run lint:script',
     
     // Test
-    // Note: use `vitest run --root=. src/...` to run a single test file
-    'test:unit': 'vitest run',
+    // Note: use `vitest run src/...` to run a single test file
+    'test:unit': 'vitest run --project=unit',
     'test': 'npm run check:types && npm run test:unit && npm run lint:style && npm run verify verify:source', // TODO: add `lint:script`
     'test-ui': 'vitest --ui',
     'coverage': 'vitest run --coverage',
     
     // Browser automation tests
     // https://github.com/storybookjs/test-runner?tab=readme-ov-file#2-running-against-locally-built-storybooks-in-ci
-    'test:storybook': 'vitest --project=storybook',
+    'test:storybook': 'vitest run --project=storybook',
     
     // Shorthands
     'start': 'npm run storybook:serve',

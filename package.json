@@ -52,11 +52,11 @@
     "lint:style": "stylelint 'src/**/*.scss'",
     "lint:script": "biome lint",
     "lint": "npm run lint:style; npm run lint:script",
-    "test:unit": "vitest run",
+    "test:unit": "vitest run --project=unit",
     "test": "npm run check:types && npm run test:unit && npm run lint:style && npm run verify verify:source",
     "test-ui": "vitest --ui",
     "coverage": "vitest run --coverage",
-    "test:storybook": "vitest --project=storybook",
+    "test:storybook": "vitest run --project=storybook",
     "start": "npm run storybook:serve",
     "prepare": "npm run build"
   },

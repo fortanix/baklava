@@ -27,10 +27,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - run: npm ci
-      
-      - name: Install playwright dependencies
-        run: npx playwright install chromium --with-deps
-      
       #- run: npm run build --if-present
       - run: npm test
       - run: cd tests/installation && npm ci && npm test
