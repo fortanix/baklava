@@ -75,8 +75,8 @@ const packageConfig = {
     
     // Test
     // Note: use `vitest run --root=. src/...` to run a single test file
-    //'test:unit': 'vitest run --root=.', // Need to specify `--root=.` since the vite root is set to `./app`
-    'test': 'npm run check:types && npm run lint:style && npm run verify verify:source', // TODO: add `lint:script`, `test:unit`
+    'test:unit': 'vitest run',
+    'test': 'npm run check:types && npm run test:unit && npm run lint:style && npm run verify verify:source', // TODO: add `lint:script`
     'test-ui': 'vitest --ui',
     'coverage': 'vitest run --coverage',
     
@@ -116,10 +116,14 @@ const packageConfig = {
     '@biomejs/biome': '^2.1.2',
     
     // Testing
+    'jsdom': '^26.1.0',
     'vitest': '^3.1.4',
     '@vitest/ui': '^3.1.4',
     '@vitest/browser': '^3.2.4',
     '@vitest/coverage-v8': '^3.2.4',
+    '@testing-library/react': '^16.3.0',
+    '@testing-library/user-event': '^14.6.1',
+    '@testing-library/jest-dom': '^6.8.0',
     '@ngneat/falso': '^8.0.2',
     'playwright': '^1.55.0',
     

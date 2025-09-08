@@ -12,7 +12,7 @@
   overflow: hidden;
   
   &:where(:not(.#{$name}--flat)) {
-    min-block-size: bk.$spacing-16;
+    //min-block-size: bk.$spacing-16;
     padding: bk.$spacing-4;
     padding-block-end: bk.$spacing-8;
     
@@ -24,18 +24,24 @@
   @include bk.flex-column;
   
   .#{$name}__heading {
-    &.#{$name}__heading-link {
+    &.#{$name}__heading--link {
       align-self: start;
       max-inline-size: 100%;
       cursor: pointer;
       @include heading.h5;
     }
     
-    &, &.#{$name}__heading-link { // Note: need the extra specificity to override the above
+    margin-block-end: bk.$spacing-5;
+    
+    display: flex;
+    align-items: center;
+    gap: 0.8ch;
+    
+    .#{$name}__heading__icon { --keep: ; }
+    
+    .#{$name}__heading__content {
       @include bk.text-one-line;
     }
-    
-    margin-block-end: bk.$spacing-5;
   }
   
   &.#{$name}--flat > .#{$name}__heading {

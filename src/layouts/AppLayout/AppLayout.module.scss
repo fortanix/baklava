@@ -17,7 +17,7 @@
   }
 }
 
-@layer baklava.components {
+@layer baklava.layouts {
   .bk-app-layout {
     @include bk.component-base(bk-app-layout);
     container-type: inline-size;

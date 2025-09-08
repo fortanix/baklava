@@ -39,6 +39,7 @@ $spacing-17: round(math.div(224, 14) * 1rem, 1px) !default; // ~224px
 $spacing-18: round(math.div(256, 14) * 1rem, 1px) !default; // ~256px
 
 // These sizes do not match Figma variables
+$size-hairline: math.div(1, 14) * 1rem !default; // ~1px
 $size-1: math.div(1, 14) * 1rem !default; // ~1px
 $size-2: math.div(2, 14) * 1rem !default; // ~2px
 $size-3: math.div(3, 14) * 1rem !default; // ~3px

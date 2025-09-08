@@ -9,6 +9,7 @@ import { DummyBkLinkWithNotify } from '../../../util/storybook/StorybookLink.tsx
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Banner } from '../Banner/Banner.tsx';
 
 import { Card } from './Card.tsx';
@@ -61,6 +62,18 @@ export const CardWithHeadingOverflow: Story = {
   },
 };
 
+export const CardWithHeadingAndIcon: Story = {
+  decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
+  args: {
+    children: (
+      <>
+        <Card.Heading icon={<Icon icon="account"/>}>{loremIpsumSentence}</Card.Heading>
+        <LoremIpsum/>
+      </>
+    ),
+  },
+};
+
 export const CardWithHeadingLink: Story = {
   decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
   args: {
@@ -79,6 +92,20 @@ export const CardWithHeadingLinkOverflow: Story = {
     children: (
       <>
         <Card.HeadingLink Link={DummyBkLinkWithNotify}>{loremIpsumSentence}</Card.HeadingLink>
+        <LoremIpsum/>
+      </>
+    ),
+  },
+};
+
+export const CardWithHeadingLinkAndIcon: Story = {
+  decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
+  args: {
+    children: (
+      <>
+        <Card.HeadingLink Link={DummyBkLinkWithNotify} icon={<Icon icon="account"/>}>
+          {loremIpsumSentence}
+        </Card.HeadingLink>
         <LoremIpsum/>
       </>
     ),
