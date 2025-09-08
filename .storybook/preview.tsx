@@ -194,16 +194,6 @@ const preview = {
     },
     
     docs: {
-      // page: () => (
-      //   <>
-      //     <Title />
-      //     <Subtitle />
-      //     <Description />
-      //     <Primary />
-      //     <Controls />
-      //     <Stories />
-      //   </>
-      // ),
       container: (props) => {
         // `DocsContainer` does not automatically support light/dark mode switching, need to set the theme manually
         const [isDark, setDark] = React.useState(isDarkInitial);
@@ -218,8 +208,17 @@ const preview = {
           <DocsContainer {...props} theme={theme}/>
         );
       },
-
-      codePanel: true
+      // page: () => (
+      //   <>
+      //     <Title />
+      //     <Subtitle />
+      //     <Description />
+      //     <Primary />
+      //     <Controls />
+      //     <Stories />
+      //   </>
+      // ),
+      codePanel: true,
     },
     
     darkMode: {
@@ -247,7 +246,7 @@ const preview = {
       // 'todo' - show a11y violations in the test UI only
       // 'error' - fail CI on a11y violations
       // 'off' - skip a11y checks entirely
-      test: 'todo'
+      test: 'todo',
     },
   },
 } satisfies Preview;
