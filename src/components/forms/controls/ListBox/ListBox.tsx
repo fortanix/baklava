@@ -424,6 +424,12 @@ export const ListBox = Object.assign(
       const listBoxElement = listBoxRef.current;
       if (listBoxElement === null) { return null; }
       return Object.assign(listBoxElement, {
+        focus: () => {
+          const state = listBox.store.getState();
+          if (state.focusedItem) {
+            state.focusItem(state.focusedItem);
+          }
+        },
         _bkListBoxFocusFirst: () => { listBox.store.getState().focusItemAt('first'); },
         _bkListBoxFocusLast: () => { listBox.store.getState().focusItemAt('last'); },
       });
