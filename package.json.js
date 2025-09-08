@@ -144,7 +144,7 @@ const packageConfig = {
     
     // Styling
     'typescript-plugin-css-modules': '^5.2.0',
-    'sass-embedded': '^1.89.0',
+    'sass-embedded': '^1.92.1',
     'lightningcss': '^1.30.1',
     
     // React
