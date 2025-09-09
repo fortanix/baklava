@@ -94,12 +94,12 @@ const packageConfig = {
   // Dev dependencies (only needed when building, or making changes to the code)
   devDependencies: {
     // CLI
-    'plop': '^4.0.1',
-    'tsx': '^4.19.4',
+    'plop': '^4.0.2',
+    'tsx': '^4.20.5',
     'glob': '^11.0.2',
     
     // Build
-    'browserslist': '^4.24.5',
+    'browserslist': '^4.25.4',
     'vite': '^6.3.5',
     '@vitejs/plugin-react': '^4.7.0',
     'vite-plugin-dts': '^4.5.4',
@@ -108,12 +108,12 @@ const packageConfig = {
     'vite-plugin-svg-icons': '^2.0.1',
     
     // Static analysis
-    'typescript': '^5.7.3',
-    '@types/node': '^24.1.0',
-    'stylelint': '^16.22.0',
+    'typescript': '^5.9.2',
+    '@types/node': '^24.3.1',
+    'stylelint': '^16.24.0',
     'stylelint-config-standard-scss': '^15.0.1',
     'stylelint-use-logical': '^2.1.2',
-    '@biomejs/biome': '^2.1.2',
+    '@biomejs/biome': '^2.2.3',
     
     // Testing
     'jsdom': '^26.1.0',
@@ -128,19 +128,19 @@ const packageConfig = {
     'playwright': '^1.55.0',
     
     // Storybook
-    'storybook': '^9.1.4',
-    '@storybook/react-vite': '^9.1.4',
-    '@storybook/addon-a11y': '^9.1.4',
+    'storybook': '^9.1.5',
+    '@storybook/react-vite': '^9.1.5',
+    '@storybook/addon-a11y': '^9.1.5',
     '@storybook/addon-designs': '^10.0.2',
-    '@storybook/addon-docs': '^9.1.4',
-    '@storybook/addon-links': '^9.1.4',
-    '@storybook/addon-vitest': '^9.1.4',
-    'chromatic': '^13.1.2',
+    '@storybook/addon-docs': '^9.1.5',
+    '@storybook/addon-links': '^9.1.5',
+    '@storybook/addon-vitest': '^9.1.5',
+    'chromatic': '^13.1.4',
     '@chromatic-com/storybook': '^4.1.1', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     '@storybook-community/storybook-dark-mode': '^6.0.0',
-    '@percy/cli': '^1.31.1',
-    '@percy/storybook': '^7.0.0',
+    //'@percy/cli': '^1.31.2',
+    //'@percy/storybook': '^9.0.0',
     
     // Styling
     'typescript-plugin-css-modules': '^5.2.0',
@@ -148,8 +148,8 @@ const packageConfig = {
     'lightningcss': '^1.30.1',
     
     // React
-    '@types/react': '^19.1.5',
-    '@types/react-dom': '^19.1.5',
+    '@types/react': '^19.1.12',
+    '@types/react-dom': '^19.1.9',
     
     // Data table
     '@types/react-table': '^7.7.20',
@@ -162,18 +162,18 @@ const packageConfig = {
     'message-tag': '^0.10.0',
     
     // React
-    'react': '>= 19.0.0',
-    'react-dom': '>= 19.0.0',
+    'react': '^19.1.1',
+    'react-dom': '^19.1.1',
     'react-error-boundary': '^6.0.0',
     'classnames': '^2.5.1',
-    'zustand': '^5.0.6',
+    'zustand': '^5.0.8',
     
-    '@floating-ui/react': '^0.27.13',
+    '@floating-ui/react': '^0.27.16',
     'react-table': '^7.8.0',
     'react-datepicker': '^8.0.0',
     
-    'effect': '^3.17.0',
-    'react-hook-form': '^7.60.0',
+    'effect': '^3.17.13',
+    'react-hook-form': '^7.62.0',
     '@tanstack/react-virtual': '^3.13.12',
     
     'optics-ts': '^2.4.1',
