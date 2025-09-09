@@ -60,7 +60,7 @@
           font-weight: bk.$font-weight-bold;
           
           &::after {
-            background-color: #{bk.$theme-tab-tabs-focused};
+            background-color: #{bk.$theme-tab-tabs-selected};
             block-size: 5px;
           }
         }
@@ -70,7 +70,7 @@
           
           &::after {
             cursor: default;
-            background-color: #{bk.$theme-tab-tabs-focused};
+            background-color: #{bk.$theme-tab-tabs-selected};
             block-size: 5px;
           }
         }

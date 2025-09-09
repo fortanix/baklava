@@ -238,7 +238,7 @@ const preview = {
         rules: [
           // Known accessibility issues (need to fix these)
           //{ id: 'color-contrast', enabled: false, selector: '*:not(button[class*=primary])' },
-          { id: 'color-contrast', enabled: false, selector: '*' },
+          //{ id: 'color-contrast', enabled: false, selector: '*' },
         ],
       },
 
