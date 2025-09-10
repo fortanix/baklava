@@ -138,3 +138,119 @@ export const ToastWithDismiss: Story = {
     ),
   },
 };
+
+export const ToastWithPromise: Story = {
+  args: {
+    children: (
+      <>
+        <div className="bk-prose">
+          <h3>Promise Toast Examples</h3>
+          <p>Click the buttons below to see how <code>notify.promise</code> handles different async scenarios:</p>
+        </div>
+        
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
+          <Button 
+            kind="primary" 
+            label="Success Promise"
+            onPress={() => {
+              const promise = new Promise((resolve) => 
+                setTimeout(() => resolve({ name: 'Baklava' }), 2000)
+              );
+              
+              notify.promise(promise, {
+                loading: 'Loading data...',
+                success: (data: any) => `Successfully loaded ${data.name}!`,
+                error: 'Failed to load data',
+              });
+            }}
+          />
+          
+          <Button 
+            kind="primary" 
+            label="Error Promise"
+            onPress={() => {
+              const promise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Network error')), 1500)
+              );
+              
+              notify.promise(promise, {
+                loading: 'Attempting to connect...',
+                success: 'Connected successfully!',
+                error: (error: Error) => `Connection failed: ${error.message}`,
+              });
+            }}
+          />
+          
+          <Button 
+            kind="secondary" 
+            label="Quick Success"
+            onPress={() => {
+              const promise = Promise.resolve({ count: 42 });
+              
+              notify.promise(promise, {
+                loading: 'Processing...',
+                success: (data: any) => `Processed ${data.count} items`,
+                error: 'Processing failed',
+              });
+            }}
+          />
+          
+          <Button 
+            kind="secondary" 
+            label="With Custom Options"
+            onPress={() => {
+              const promise = new Promise((resolve) => 
+                setTimeout(() => resolve('Custom result'), 1000)
+              );
+              
+              notify.promise(promise, {
+                loading: { 
+                  message: 'Custom loading message...', 
+                  title: 'Processing' 
+                },
+                success: { 
+                  message: 'Custom success!', 
+                  title: 'Completed',
+                  options: { autoClose: 5000 }
+                },
+                error: { 
+                  message: 'Custom error message', 
+                  title: 'Failed' 
+                },
+              });
+            }}
+          />
+          
+          <Button 
+            kind="tertiary" 
+            label="Only Loading"
+            onPress={() => {
+              const promise = new Promise((resolve) => 
+                setTimeout(() => resolve('Done'), 1000)
+              );
+              
+              notify.promise(promise, {
+                loading: 'Just showing loading state...',
+              });
+            }}
+          />
+          
+          <Button 
+            kind="tertiary" 
+            label="No Loading State"
+            onPress={() => {
+              const promise = new Promise((resolve) => 
+                setTimeout(() => resolve({ result: 'background task' }), 2000)
+              );
+              
+              notify.promise(promise, {
+                success: (data: any) => `Background ${data.result} completed silently`,
+                error: 'Background task failed',
+              });
+            }}
+          />
+        </div>
+      </>
+    ),
+  },
+};
