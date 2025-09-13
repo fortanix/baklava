@@ -24,8 +24,8 @@ type InputSensitiveProps = Omit<React.ComponentProps<typeof Input>, 'ref'> & {
   allowReveal?: undefined | boolean,
 };
 /**
- * A input for sensitive text. By default, the input will be masked and copying to the clipboard will not work. If
- * `allowReveal` is true, the user will be able to reveal the contents of the input.
+ * An input for sensitive text. By default, the input will be masked and copying to the clipboard will not work. If
+ * `allowReveal` is set to true, the user will be able to reveal the contents of the input.
  * 
  * Note: this is not meant for passwords, use `InputPassword` for that instead. The `InputSensitive` does not integrate
  * with password managers.
@@ -72,7 +72,7 @@ export const InputSensitive = (props: InputSensitiveProps) => {
       className={cx(
         cl['bk-sensitive-input'],
         // Note: this class triggers `-webkit-text-security`, but that does not have any effect for `type="password"`
-        { [cl['bk-sensitive-input--revealed']]: !isRevealed },
+        { [cl['bk-sensitive-input--revealed']]: isRevealed },
         propsRest.className,
       )}
       type={inputType}
@@ -83,8 +83,8 @@ export const InputSensitive = (props: InputSensitiveProps) => {
             hidden={!allowReveal}
             icon={isRevealed ? 'eye-open' : 'eye-closed'}
             label={isRevealed
-              ? `${capitalizeFirstLetter(contentLabel)} is revealed`
-              : `${capitalizeFirstLetter(contentLabel)} is hidden`
+              ? `Hide ${capitalizeFirstLetter(contentLabel)}`
+              : `Reveal ${capitalizeFirstLetter(contentLabel)}`
             }
             onPress={toggleRevealed}
           />
