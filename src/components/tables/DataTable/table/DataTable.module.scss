@@ -25,8 +25,8 @@
       &.bk-data-table-container--scrolled-left {
         table.bk-data-table__table {
           thead, tbody {
-            th, td {         
-              &.column-sticky--right {          
+            th, td {
+              &.column-sticky--right {
                 &::after {
                   content: '';
                   position: absolute;
@@ -71,13 +71,13 @@
       border-collapse: collapse;
       background-color: var(--bk-datatable-background);
       
-      tr {
+      :is(td, th) > * {
         // Reset the inset compensation for any nested data tables
         --bk-panel-inset-compensation: 0;
       }
       
       th {
-        padding: bk.$spacing-3 bk.$spacing-2;
+        padding: bk.$spacing-3 calc(bk.$spacing-2 + var(--bk-panel-inset-compensation));
         vertical-align: middle;
         white-space: nowrap; // Header should never wrap to multiple lines
         text-overflow: ellipsis;
@@ -90,7 +90,7 @@
         vertical-align: top;
         
         overflow: hidden;
-        padding: bk.$spacing-3 bk.$spacing-2;
+        padding: bk.$spacing-3 calc(bk.$spacing-2 + var(--bk-panel-inset-compensation));
         
         // Note: need a wrapper div for this because setting a different `display` on a `<td>` will break the table
         .bk-data-table__text-cell {

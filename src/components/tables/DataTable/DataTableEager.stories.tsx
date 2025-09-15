@@ -5,7 +5,7 @@
 import { differenceInDays } from 'date-fns';
 import * as React from 'react';
 
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { StoryObj } from '@storybook/react-vite';
 import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { useEffectAsync } from '../../../util/reactUtil.ts';
@@ -15,14 +15,13 @@ import { sortDateTime } from '../util/sorting_util.ts';
 import * as Filtering from './filtering/Filtering.ts';
 import type { Fields, FilterQuery } from '../MultiSearch/filterQuery.ts';
 
-import { Card } from '../../containers/Card/Card.tsx';
+import { PageLayout } from '../../../layouts/PageLayout/PageLayout.tsx';
 import { Panel } from '../../containers/Panel/Panel.tsx';
 import * as MultiSearch from '../MultiSearch/MultiSearch.tsx';
 import * as DataTablePlugins from './plugins/useRowSelectColumn.tsx';
 import * as DataTableEager from './DataTableEager.tsx';
 
 import './DataTableEager_stories.scss';
-import { PageLayout } from '../../../layouts/PageLayout/PageLayout.tsx';
 
 
 const columns = [
@@ -136,6 +135,86 @@ const DataTableEagerTemplate = (props: DataTableEagerTemplateProps) => {
   );
 };
 
+type LoremIpsum = {
+  lorem: string,
+  ipsum: string,
+};
+const loremIpsumItems = [
+  { lorem: 'lorem', ipsum: 'ipsum' },
+  { lorem: 'lorem', ipsum: 'ipsum' },
+];
+const DataTableEagerEdgeCasesInnerTemplate = () => {
+  const innerColumns = [
+    {
+      id: 'lorem',
+      accessor: (data: LoremIpsum) => data.lorem,
+      Header: 'Lorem',
+      Cell: ({ value }: { value: string }) => value,
+      disableSortBy: false,
+      disableGlobalFilter: false,
+      className: 'user-table__column',
+    },
+    {
+      id: 'ipsum',
+      accessor: (data: LoremIpsum) => data.ipsum,
+      Header: 'Ipsum',
+      Cell: ({ value }: { value: LoremIpsum }) => value,
+      disableSortBy: false,
+      disableGlobalFilter: false,
+      className: 'user-table__column',
+    }
+  ];
+
+  return (
+    <DataTableEager.TableProviderEager
+      columns={innerColumns}
+      items={loremIpsumItems}
+      // getRowId={(item: User) => item.id}
+      plugins={[DataTablePlugins.useRowSelectColumn]}
+    >
+      <DataTableEager.DataTableEager />
+    </DataTableEager.TableProviderEager>
+  );
+};
+
+const DataTableEagerEdgeCasesTemplate = (props: DataTableEager.TableProviderEagerProps<LoremIpsum>) => {
+  const columns = [
+    {
+      id: 'innertable',
+      accessor: null,
+      Header: 'Inner table',
+      Cell: () => <DataTableEagerEdgeCasesInnerTemplate/>,
+      disableSortBy: false,
+      disableGlobalFilter: false,
+      className: 'user-table__column',
+    },
+    {
+      id: 'modalbutton',
+      accessor: null,
+      Header: 'Modal Button',
+      Cell: () => <>hello world 2</>,
+      disableSortBy: false,
+      disableGlobalFilter: false,
+      className: 'user-table__column',
+    },
+  ];
+  
+  const items = [{}, {}];
+
+  return (
+    <DataTableEager.TableProviderEager
+      {...props}
+      columns={columns}
+      items={items}
+      // getRowId={(item: User) => item.id}
+      plugins={[DataTablePlugins.useRowSelectColumn]}
+    >
+      <DataTableEager.Search />
+      <DataTableEager.DataTableEager />
+    </DataTableEager.TableProviderEager>
+  );
+};
+
 type Story = StoryObj<typeof DataTableEagerTemplate>;
 
 // Template: Table with Filtering
@@ -158,18 +237,16 @@ const DataTableEagerWithFilterTemplate = (props: DataTableEagerTemplateProps) =>
   const query = React.useCallback((filters: FilterQuery) => { setFilters(filters); }, []);
 
   return (
-    <Panel>
-      <DataTableEager.TableProviderEager
-        {...props}
-        columns={memoizedColumns}
-        items={filteredItems}
-        getRowId={(item: User) => item.id}
-        plugins={[DataTablePlugins.useRowSelectColumn]}
-      >
-        <MultiSearch.MultiSearch query={query} fields={fields} filters={filters}/>
-        <DataTableEager.DataTableEager />
-      </DataTableEager.TableProviderEager>
-    </Panel>
+    <DataTableEager.TableProviderEager
+      {...props}
+      columns={memoizedColumns}
+      items={filteredItems}
+      getRowId={(item: User) => item.id}
+      plugins={[DataTablePlugins.useRowSelectColumn]}
+    >
+      <MultiSearch.MultiSearch query={query} fields={fields} filters={filters}/>
+      <DataTableEager.DataTableEager />
+    </DataTableEager.TableProviderEager>
   );
 };
 
@@ -188,7 +265,7 @@ export const Empty: Story = {
     items: generateData({ numItems: 0 }),
   },
   render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
-  decorators: [Story => <Card><Story/></Card>],
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
 export const SinglePage: Story = {
@@ -197,6 +274,7 @@ export const SinglePage: Story = {
     items: generateData({ numItems: 5 }),
   },
   render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
 export const MultiplePagesSmall: Story = {
@@ -205,6 +283,7 @@ export const MultiplePagesSmall: Story = {
     items: generateData({ numItems: 45 }),
   },
   render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
 export const MultiplePagesLarge: Story = {
@@ -213,6 +292,7 @@ export const MultiplePagesLarge: Story = {
     items: generateData({ numItems: 1000 }),
   },
   render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
 export const AsyncInitialization: Story = {
@@ -223,6 +303,7 @@ export const AsyncInitialization: Story = {
     isReady: false,
   },
   render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
 export const WithFilter: Story = {
@@ -231,101 +312,102 @@ export const WithFilter: Story = {
     items: generateData({ numItems: 45 }),
   },
   render: (args: DataTableEagerTemplateProps) => <DataTableEagerWithFilterTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-const moreColumns = [
-  ...columns, 
-  {
-    id: 'dummy_1',
-    accessor: (user: User) => user.name,
-    Header: 'Name',
-    Cell: ({ value }: { value: string }) => value,
-    disableSortBy: false,
-    disableGlobalFilter: true,
-    className: 'user-table__column',
-  },
-  {
-    id: 'dummy_2',
-    accessor: (user: User) => user.email,
-    Header: 'Email',
-    disableSortBy: false,
-    disableGlobalFilter: true,
-    className: 'user-table__column',
-  },
-  {
-    id: 'dummy_3',
-    accessor: (user: User) => user.company,
-    Header: 'Company',
-    disableSortBy: false,
-    disableGlobalFilter: true,
-    className: 'user-table__column',
-  },
-  {
-    id: 'dummy_4',
-    accessor: (user: User) => user.company,
-    Header: 'Company',
-    disableSortBy: false,
-    disableGlobalFilter: true,
-    className: 'user-table__column',
-  },
-  {
-    id: 'dummy_5',
-    accessor: (user: User) => user.company,
-    Header: 'Company',
-    disableSortBy: false,
-    disableGlobalFilter: true,
-    className: 'user-table__column',
-  },
-  {
-    id: 'dummy_6',
-    accessor: (user: User) => user.company,
-    Header: 'Company',
-    disableSortBy: false,
-    disableGlobalFilter: true,
-    className: 'user-table__column',
-  },
-  {
-    id: 'dummy_7',
-    accessor: (user: User) => user.company,
-    Header: 'Company',
-    disableSortBy: false,
-    disableGlobalFilter: true,
-    className: 'user-table__column',
-  },
-  {
-    id: 'dummy_8',
-    accessor: (user: User) => user.company,
-    Header: 'Company',
-    disableSortBy: false,
-    disableGlobalFilter: true,
-    className: 'user-table__column',
-  },
-  {
-    id: 'dummy_9',
-    accessor: (user: User) => user.company,
-    Header: 'Company',
-    disableSortBy: false,
-    disableGlobalFilter: true,
-    className: 'user-table__column',
-  },
-  {
-    id: 'dummy_10',
-    accessor: (user: User) => user.company,
-    Header: 'Company',
-    disableSortBy: false,
-    disableGlobalFilter: true,
-    className: 'user-table__column',
-  },
-  {
-    id: 'dummy_11',
-    accessor: (user: User) => user.company,
-    Header: 'Company',
-    disableSortBy: false,
-    disableGlobalFilter: true,
-    className: 'user-table__column',
-  },
-  
-];
+// const moreColumns = [
+//   ...columns, 
+//   {
+//     id: 'dummy_1',
+//     accessor: (user: User) => user.name,
+//     Header: 'Name',
+//     Cell: ({ value }: { value: string }) => value,
+//     disableSortBy: false,
+//     disableGlobalFilter: true,
+//     className: 'user-table__column',
+//   },
+//   {
+//     id: 'dummy_2',
+//     accessor: (user: User) => user.email,
+//     Header: 'Email',
+//     disableSortBy: false,
+//     disableGlobalFilter: true,
+//     className: 'user-table__column',
+//   },
+//   {
+//     id: 'dummy_3',
+//     accessor: (user: User) => user.company,
+//     Header: 'Company',
+//     disableSortBy: false,
+//     disableGlobalFilter: true,
+//     className: 'user-table__column',
+//   },
+//   {
+//     id: 'dummy_4',
+//     accessor: (user: User) => user.company,
+//     Header: 'Company',
+//     disableSortBy: false,
+//     disableGlobalFilter: true,
+//     className: 'user-table__column',
+//   },
+//   {
+//     id: 'dummy_5',
+//     accessor: (user: User) => user.company,
+//     Header: 'Company',
+//     disableSortBy: false,
+//     disableGlobalFilter: true,
+//     className: 'user-table__column',
+//   },
+//   {
+//     id: 'dummy_6',
+//     accessor: (user: User) => user.company,
+//     Header: 'Company',
+//     disableSortBy: false,
+//     disableGlobalFilter: true,
+//     className: 'user-table__column',
+//   },
+//   {
+//     id: 'dummy_7',
+//     accessor: (user: User) => user.company,
+//     Header: 'Company',
+//     disableSortBy: false,
+//     disableGlobalFilter: true,
+//     className: 'user-table__column',
+//   },
+//   {
+//     id: 'dummy_8',
+//     accessor: (user: User) => user.company,
+//     Header: 'Company',
+//     disableSortBy: false,
+//     disableGlobalFilter: true,
+//     className: 'user-table__column',
+//   },
+//   {
+//     id: 'dummy_9',
+//     accessor: (user: User) => user.company,
+//     Header: 'Company',
+//     disableSortBy: false,
+//     disableGlobalFilter: true,
+//     className: 'user-table__column',
+//   },
+//   {
+//     id: 'dummy_10',
+//     accessor: (user: User) => user.company,
+//     Header: 'Company',
+//     disableSortBy: false,
+//     disableGlobalFilter: true,
+//     className: 'user-table__column',
+//   },
+//   {
+//     id: 'dummy_11',
+//     accessor: (user: User) => user.company,
+//     Header: 'Company',
+//     disableSortBy: false,
+//     disableGlobalFilter: true,
+//     className: 'user-table__column',
+//   },
+//   
+// ];
 // FIXME: example with horizontal scroll
 // export const WithScroll: Story = {
 //   args: {
@@ -335,8 +417,6 @@ const moreColumns = [
 //   render: (args: DataTableEagerTemplateProps) => <DataTableEagerWithFilterTemplate {...args} />,
 // };
 
-
-
 export const DataTableEagerWithPageLayout: Story = {
   args: {
     columns,
@@ -344,6 +424,37 @@ export const DataTableEagerWithPageLayout: Story = {
   },
   render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
   decorators: [
-    Story => <PageLayout><PageLayout.Body edgeless><Story/></PageLayout.Body></PageLayout>
+    Story => (
+      <PageLayout>
+        <PageLayout.Body edgeless={true}>
+          <Story/>
+        </PageLayout.Body>
+      </PageLayout>
+    ),
+  ],
+};
+
+export const DataTableEagerWithPageLayoutEdgeCases: StoryObj<typeof DataTableEagerEdgeCasesTemplate> = {
+  args: {
+    items: [
+      {
+        lorem: 'lorem',
+        ipsum: 'ipsum',
+      },
+      {
+        lorem: 'lorem',
+        ipsum: 'ipsum',
+      },
+    ],
+  },
+  render: (args: DataTableEager.TableProviderEagerProps<LoremIpsum>) => <DataTableEagerEdgeCasesTemplate {...args} />,
+  decorators: [
+    Story => (
+      <PageLayout>
+        <PageLayout.Body edgeless={true}>
+          <Story/>
+        </PageLayout.Body>
+      </PageLayout>
+    ),
   ],
 };

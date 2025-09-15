@@ -15,9 +15,6 @@
   --bk-panel-border-color: #{bk.$theme-card-border-default};
   --bk-panel-inset: #{bk.$spacing-4};
   
-  // Communicate the current panel inset to any children who might want to compensate for it (e.g. edgeless layouts)
-  --bk-panel-inset-compensation: var(--bk-panel-inset);
-  
   overflow: hidden;
   
   min-block-size: 4rem;
@@ -32,6 +29,11 @@
   .bk-panel {
     @include bk.component-base(bk-panel);
     @include panel;
+    
+    &--edgeless {
+      // Communicate the current panel inset to any children who might want to compensate for it (e.g. edgeless layouts)
+      --bk-panel-inset-compensation: var(--bk-panel-inset);
+    }
     
     .bk-panel__heading {
       margin-block-end: bk.$spacing-7;
