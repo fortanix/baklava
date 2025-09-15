@@ -110,7 +110,7 @@ const DataTableStreamTemplate = ({dataTableProps, children, ...props} : DataTabl
   );
 
   return (
-    <Panel className={'bk-data-table'}>
+    <Panel>
       <DataTableStream.TableProviderStream
         {...props}
         columns={columns}

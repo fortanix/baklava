@@ -4,14 +4,24 @@
 
 @use '../../../styling/defs.scss' as bk;
 
+@property --bk-panel-inset-compensation {
+  syntax: '<length>';
+  initial-value: 0;
+  inherits: true;
+}
+
 @mixin panel($name: bk-panel) {
   --bk-panel-background-color: #{bk.$theme-card-background-default};
   --bk-panel-border-color: #{bk.$theme-card-border-default};
+  --bk-panel-inset: #{bk.$spacing-4};
+  
+  // Communicate the current panel inset to any children who might want to compensate for it (e.g. edgeless layouts)
+  --bk-panel-inset-compensation: var(--bk-panel-inset);
   
   overflow: hidden;
   
   min-block-size: 4rem;
-  padding: bk.$spacing-4;
+  padding: var(--bk-panel-inset);
   background: var(--bk-panel-background-color);
   border: bk.rem-from-px(1) solid var(--bk-panel-border-color);
   border-radius: bk.$radius-3;

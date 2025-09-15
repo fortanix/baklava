@@ -5,7 +5,7 @@
 import { differenceInDays } from 'date-fns';
 import * as React from 'react';
 
-//import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { useEffectAsync } from '../../../util/reactUtil.ts';
@@ -15,12 +15,14 @@ import { sortDateTime } from '../util/sorting_util.ts';
 import * as Filtering from './filtering/Filtering.ts';
 import type { Fields, FilterQuery } from '../MultiSearch/filterQuery.ts';
 
+import { Card } from '../../containers/Card/Card.tsx';
 import { Panel } from '../../containers/Panel/Panel.tsx';
 import * as MultiSearch from '../MultiSearch/MultiSearch.tsx';
 import * as DataTablePlugins from './plugins/useRowSelectColumn.tsx';
 import * as DataTableEager from './DataTableEager.tsx';
 
 import './DataTableEager_stories.scss';
+import { PageLayout } from '../../../layouts/PageLayout/PageLayout.tsx';
 
 
 const columns = [
@@ -105,9 +107,9 @@ const fields: Fields = {
   },
 };
 
-type dataTeableEagerTemplateProps = DataTableEager.TableProviderEagerProps<User> & { delay: number };
+type DataTableEagerTemplateProps = DataTableEager.TableProviderEagerProps<User> & { delay: number };
 
-const DataTableEagerTemplate = (props: dataTeableEagerTemplateProps) => {
+const DataTableEagerTemplate = (props: DataTableEagerTemplateProps) => {
   const memoizedColumns = React.useMemo(() => props.columns, [props.columns]);
   const memoizedItems = React.useMemo(() => props.items, [props.items]);
 
@@ -120,24 +122,24 @@ const DataTableEagerTemplate = (props: dataTeableEagerTemplateProps) => {
   }, [props.delay]);
 
   return (
-    <Panel>
-      <DataTableEager.TableProviderEager
-        {...props}
-        isReady={isReady}
-        columns={memoizedColumns}
-        items={memoizedItems}
-        getRowId={(item: User) => item.id}
-        plugins={[DataTablePlugins.useRowSelectColumn]}
-      >
-        <DataTableEager.Search />
-        <DataTableEager.DataTableEager />
-      </DataTableEager.TableProviderEager>
-    </Panel>
+    <DataTableEager.TableProviderEager
+      {...props}
+      isReady={isReady}
+      columns={memoizedColumns}
+      items={memoizedItems}
+      getRowId={(item: User) => item.id}
+      plugins={[DataTablePlugins.useRowSelectColumn]}
+    >
+      <DataTableEager.Search />
+      <DataTableEager.DataTableEager />
+    </DataTableEager.TableProviderEager>
   );
 };
 
+type Story = StoryObj<typeof DataTableEagerTemplate>;
+
 // Template: Table with Filtering
-const DataTableEagerWithFilterTemplate = (props: dataTeableEagerTemplateProps) => {
+const DataTableEagerWithFilterTemplate = (props: DataTableEagerTemplateProps) => {
   const memoizedColumns = React.useMemo(() => props.columns, [props.columns]);
 
   const [filters, setFilters] = React.useState<FilterQuery>([]);
@@ -180,54 +182,55 @@ export default {
 };
 
 // Stories
-export const Empty = {
+export const Empty: Story = {
   args: {
     columns,
     items: generateData({ numItems: 0 }),
   },
-  render: (args: dataTeableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
+  render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
+  decorators: [Story => <Card><Story/></Card>],
 };
 
-export const SinglePage = {
+export const SinglePage: Story = {
   args: {
     columns,
     items: generateData({ numItems: 5 }),
   },
-  render: (args: dataTeableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
+  render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
 };
 
-export const MultiplePagesSmall = {
+export const MultiplePagesSmall: Story = {
   args: {
     columns,
     items: generateData({ numItems: 45 }),
   },
-  render: (args: dataTeableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
+  render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
 };
 
-export const MultiplePagesLarge = {
+export const MultiplePagesLarge: Story = {
   args: {
     columns,
     items: generateData({ numItems: 1000 }),
   },
-  render: (args: dataTeableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
+  render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
 };
 
-export const AsyncInitialization = {
+export const AsyncInitialization: Story = {
   args: {
     columns,
     items: generateData({ numItems: 1000 }),
     delay: 1500,
     isReady: false,
   },
-  render: (args: dataTeableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
+  render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
 };
 
-export const WithFilter = {
+export const WithFilter: Story = {
   args: {
     columns,
     items: generateData({ numItems: 45 }),
   },
-  render: (args: dataTeableEagerTemplateProps) => <DataTableEagerWithFilterTemplate {...args} />,
+  render: (args: DataTableEagerTemplateProps) => <DataTableEagerWithFilterTemplate {...args} />,
 };
 
 const moreColumns = [
@@ -324,10 +327,23 @@ const moreColumns = [
   
 ];
 // FIXME: example with horizontal scroll
-// export const WithScroll = {
+// export const WithScroll: Story = {
 //   args: {
 //     columns: moreColumns,
 //     items: generateData({ numItems: 45 }),
 //   },
-//   render: (args: dataTeableEagerTemplateProps) => <DataTableEagerWithFilterTemplate {...args} />,
+//   render: (args: DataTableEagerTemplateProps) => <DataTableEagerWithFilterTemplate {...args} />,
 // };
+
+
+
+export const DataTableEagerWithPageLayout: Story = {
+  args: {
+    columns,
+    items: generateData({ numItems: 45 }),
+  },
+  render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
+  decorators: [
+    Story => <PageLayout><PageLayout.Body edgeless><Story/></PageLayout.Body></PageLayout>
+  ],
+};
