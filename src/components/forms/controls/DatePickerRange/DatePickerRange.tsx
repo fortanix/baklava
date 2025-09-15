@@ -8,7 +8,6 @@ import ReactDatePicker from 'react-datepicker';
 
 import { Input } from '../Input/Input.tsx';
 
-import 'react-datepicker/dist/react-datepicker.css';
 import cl from './DatePickerRange.module.scss';
 
 

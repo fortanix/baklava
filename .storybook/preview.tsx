@@ -132,6 +132,11 @@ const preview = {
                 'DatePickerRange',
                 'TimePicker',
                 'DateTimePicker',
+                'datetime',
+                [
+                  'DatePicker',
+                  'DateInput',
+                ],
               ],
               'fields',
               [
