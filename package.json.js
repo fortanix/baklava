@@ -125,6 +125,7 @@ const packageConfig = {
     '@testing-library/user-event': '^14.6.1',
     '@testing-library/jest-dom': '^6.8.0',
     '@ngneat/falso': '^8.0.2',
+    'mockdate': '^3.0.5',
     'playwright': '^1.55.0',
     
     // Storybook
@@ -170,7 +171,7 @@ const packageConfig = {
     
     '@floating-ui/react': '^0.27.16',
     'react-table': '^7.8.0',
-    'react-datepicker': '^8.0.0',
+    'react-datepicker': '^8.7.0',
     
     'effect': '^3.17.13',
     'react-hook-form': '^7.62.0',

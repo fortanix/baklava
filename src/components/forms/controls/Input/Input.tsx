@@ -27,6 +27,7 @@ const InputAction = (props: React.ComponentProps<typeof IconButton>) => {
   return (
     <IconButton
       {...props}
+      className={cx('action-icon', props.className)}
       // Prevent cursor shifting when clicking on actions (see also: https://github.com/mui/material-ui/issues/26007)
       onMouseDown={preventDefault}
       onMouseUp={preventDefault}
@@ -142,7 +143,9 @@ export const Input = Object.assign(
           [handleContainerClick, containerProps.onMouseDown, propsExtracted.containerProps.onMouseDown]
         )}
       >
-        {(icon || Icon !== IconDefault) && <Icon icon={icon} aria-label={iconLabel} {...iconProps}/>}
+        {(icon || Icon !== IconDefault) &&
+          <Icon icon={icon} aria-label={iconLabel} {...iconProps} className={cx('input-icon', iconProps.className)}/>
+        }
         {prefix}
         <input
           {...inputProps}
