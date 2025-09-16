@@ -15,6 +15,8 @@ import { sortDateTime } from '../util/sorting_util.ts';
 import * as Filtering from './filtering/Filtering.ts';
 import type { Fields, FilterQuery } from '../MultiSearch/filterQuery.ts';
 
+import { Button } from '../../actions/Button/Button.tsx';
+import { DialogModal } from '../../overlays/DialogModal/DialogModal.tsx';
 import { PageLayout } from '../../../layouts/PageLayout/PageLayout.tsx';
 import { Panel } from '../../containers/Panel/Panel.tsx';
 import * as MultiSearch from '../MultiSearch/MultiSearch.tsx';
@@ -127,86 +129,6 @@ const DataTableEagerTemplate = (props: DataTableEagerTemplateProps) => {
       columns={memoizedColumns}
       items={memoizedItems}
       getRowId={(item: User) => item.id}
-      plugins={[DataTablePlugins.useRowSelectColumn]}
-    >
-      <DataTableEager.Search />
-      <DataTableEager.DataTableEager />
-    </DataTableEager.TableProviderEager>
-  );
-};
-
-type LoremIpsum = {
-  lorem: string,
-  ipsum: string,
-};
-const loremIpsumItems = [
-  { lorem: 'lorem', ipsum: 'ipsum' },
-  { lorem: 'lorem', ipsum: 'ipsum' },
-];
-const DataTableEagerEdgeCasesInnerTemplate = () => {
-  const innerColumns = [
-    {
-      id: 'lorem',
-      accessor: (data: LoremIpsum) => data.lorem,
-      Header: 'Lorem',
-      Cell: ({ value }: { value: string }) => value,
-      disableSortBy: false,
-      disableGlobalFilter: false,
-      className: 'user-table__column',
-    },
-    {
-      id: 'ipsum',
-      accessor: (data: LoremIpsum) => data.ipsum,
-      Header: 'Ipsum',
-      Cell: ({ value }: { value: LoremIpsum }) => value,
-      disableSortBy: false,
-      disableGlobalFilter: false,
-      className: 'user-table__column',
-    }
-  ];
-
-  return (
-    <DataTableEager.TableProviderEager
-      columns={innerColumns}
-      items={loremIpsumItems}
-      // getRowId={(item: User) => item.id}
-      plugins={[DataTablePlugins.useRowSelectColumn]}
-    >
-      <DataTableEager.DataTableEager />
-    </DataTableEager.TableProviderEager>
-  );
-};
-
-const DataTableEagerEdgeCasesTemplate = (props: DataTableEager.TableProviderEagerProps<LoremIpsum>) => {
-  const columns = [
-    {
-      id: 'innertable',
-      accessor: null,
-      Header: 'Inner table',
-      Cell: () => <DataTableEagerEdgeCasesInnerTemplate/>,
-      disableSortBy: false,
-      disableGlobalFilter: false,
-      className: 'user-table__column',
-    },
-    {
-      id: 'modalbutton',
-      accessor: null,
-      Header: 'Modal Button',
-      Cell: () => <>hello world 2</>,
-      disableSortBy: false,
-      disableGlobalFilter: false,
-      className: 'user-table__column',
-    },
-  ];
-  
-  const items = [{}, {}];
-
-  return (
-    <DataTableEager.TableProviderEager
-      {...props}
-      columns={columns}
-      items={items}
-      // getRowId={(item: User) => item.id}
       plugins={[DataTablePlugins.useRowSelectColumn]}
     >
       <DataTableEager.Search />
@@ -426,6 +348,7 @@ export const DataTableEagerWithPageLayout: Story = {
   decorators: [
     Story => (
       <PageLayout>
+        <PageLayout.Header title={<PageLayout.Heading>PageLayout with edgeless parameter</PageLayout.Heading>}/>
         <PageLayout.Body edgeless={true}>
           <Story/>
         </PageLayout.Body>
@@ -434,23 +357,107 @@ export const DataTableEagerWithPageLayout: Story = {
   ],
 };
 
+// Edge cases: table within table and table within modal within table
+
+type LoremIpsum = {
+  lorem: string,
+  ipsum: string,
+};
+const loremIpsumItems = [
+  { lorem: 'lorem', ipsum: 'ipsum' },
+  { lorem: 'lorem', ipsum: 'ipsum' },
+];
+const DataTableEagerEdgeCasesInnerTemplate = () => {
+  const innerColumns = [
+    {
+      id: 'lorem',
+      accessor: (data: LoremIpsum) => data.lorem,
+      Header: 'Lorem',
+      Cell: ({ value }: { value: string }) => value,
+      disableSortBy: false,
+      disableGlobalFilter: false,
+      className: 'user-table__column',
+    },
+    {
+      id: 'ipsum',
+      accessor: (data: LoremIpsum) => data.ipsum,
+      Header: 'Ipsum',
+      Cell: ({ value }: { value: LoremIpsum }) => value,
+      disableSortBy: false,
+      disableGlobalFilter: false,
+      className: 'user-table__column',
+    }
+  ];
+
+  return (
+    <DataTableEager.TableProviderEager
+      columns={innerColumns}
+      items={loremIpsumItems}
+      // getRowId={(item: User) => item.id}
+      plugins={[DataTablePlugins.useRowSelectColumn]}
+    >
+      <DataTableEager.DataTableEager />
+    </DataTableEager.TableProviderEager>
+  );
+};
+const ModalButton = () => {
+  return (
+    <DialogModal
+      title="Modal with renderMethod inline"
+      trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={activate}/>}
+      renderMethod="inline"
+      size="small"
+    >
+      <DataTableEagerEdgeCasesInnerTemplate />
+    </DialogModal>
+  );
+};
+const DataTableEagerEdgeCasesTemplate = (props: DataTableEager.TableProviderEagerProps<LoremIpsum>) => {
+  const columns = [
+    {
+      id: 'innertable',
+      accessor: null,
+      Header: 'Inner table',
+      Cell: () => <DataTableEagerEdgeCasesInnerTemplate/>,
+      disableSortBy: false,
+      disableGlobalFilter: false,
+      className: 'user-table__column',
+    },
+    {
+      id: 'modalbutton',
+      accessor: null,
+      Header: 'Modal Button',
+      Cell: () => <ModalButton/>,
+      disableSortBy: false,
+      disableGlobalFilter: false,
+      className: 'user-table__column',
+    },
+  ];
+  
+  const items = [{}, {}];
+
+  return (
+    <DataTableEager.TableProviderEager
+      {...props}
+      columns={columns}
+      items={items}
+      // getRowId={(item: User) => item.id}
+      plugins={[DataTablePlugins.useRowSelectColumn]}
+    >
+      <DataTableEager.Search />
+      <DataTableEager.DataTableEager />
+    </DataTableEager.TableProviderEager>
+  );
+};
 export const DataTableEagerWithPageLayoutEdgeCases: StoryObj<typeof DataTableEagerEdgeCasesTemplate> = {
   args: {
-    items: [
-      {
-        lorem: 'lorem',
-        ipsum: 'ipsum',
-      },
-      {
-        lorem: 'lorem',
-        ipsum: 'ipsum',
-      },
-    ],
+    items: loremIpsumItems,
   },
   render: (args: DataTableEager.TableProviderEagerProps<LoremIpsum>) => <DataTableEagerEdgeCasesTemplate {...args} />,
   decorators: [
     Story => (
       <PageLayout>
+        <PageLayout.Header title={<PageLayout.Heading>PageLayout with edgeless parameter - edge cases</PageLayout.Heading>}/>
         <PageLayout.Body edgeless={true}>
           <Story/>
         </PageLayout.Body>
