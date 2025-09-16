@@ -3,14 +3,16 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
+import type { StoryObj } from '@storybook/react-vite';
 
 import { delay } from '../util/async_util.ts';
 import { sortDateTime } from '../util/sorting_util.ts';
 import { generateData, type User } from '../util/generateData.ts';
 
+import { Banner } from '../../containers/Banner/Banner.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { Panel } from '../../containers/Panel/Panel.tsx';
-import { Banner } from '../../containers/Banner/Banner.tsx';
+import { PageLayout } from '../../../layouts/PageLayout/PageLayout.tsx';
 import type { DataTableAsyncProps } from './table/DataTable.tsx';
 import * as DataTableStream from './DataTableStream.tsx';
 import { useRowSelectColumn, useRowSelectColumnRadio } from './plugins/useRowSelectColumn.tsx';
@@ -110,36 +112,36 @@ const DataTableStreamTemplate = ({dataTableProps, children, ...props} : DataTabl
   );
 
   return (
-    <Panel>
-      <DataTableStream.TableProviderStream
-        {...props}
-        columns={columns}
-        query={query}
-        items={itemsProcessed}
-        updateItems={setItemsProcessed}
-        initialState={{ sortBy: [{ id: 'name', desc: false }] }}
-      >
-        {children}
-        <DataTableStream.Search />
-        <DataTableStream.DataTableStream
-          placeholderEmpty={
-            <DataTableStream.DataTablePlaceholderEmpty
-              icon="file"
-              title="No users"
-              actions={
-                <DataTableStream.PlaceholderEmptyAction>
-                  <Button kind="secondary" onPress={() => {}}>Action 1</Button>
-                  <Button kind="primary" onPress={() => {}}>Action 2</Button>
-                </DataTableStream.PlaceholderEmptyAction>
-              }
-            />
-          }
-          {...dataTableProps}
-        />
-      </DataTableStream.TableProviderStream>
-    </Panel>
+    <DataTableStream.TableProviderStream
+      {...props}
+      columns={columns}
+      query={query}
+      items={itemsProcessed}
+      updateItems={setItemsProcessed}
+      initialState={{ sortBy: [{ id: 'name', desc: false }] }}
+    >
+      {children}
+      <DataTableStream.Search />
+      <DataTableStream.DataTableStream
+        placeholderEmpty={
+          <DataTableStream.DataTablePlaceholderEmpty
+            icon="file"
+            title="No users"
+            actions={
+              <DataTableStream.PlaceholderEmptyAction>
+                <Button kind="secondary" onPress={() => {}}>Action 1</Button>
+                <Button kind="primary" onPress={() => {}}>Action 2</Button>
+              </DataTableStream.PlaceholderEmptyAction>
+            }
+          />
+        }
+        {...dataTableProps}
+      />
+    </DataTableStream.TableProviderStream>
   );
 };
+
+type Story = StoryObj<typeof DataTableStreamTemplate>;
 
 // Column definitions
 const columnDefinitions = [
@@ -347,66 +349,73 @@ const columnDefinitionsMultiple = [
 ];
 
 // Stories
-export const Empty = {
+export const Empty: Story = {
   args: {
     columns: columnDefinitions,
     items: generateData({ numItems: 0 }),
   },
   render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const SinglePage = {
+export const SinglePage: Story = {
   args: {
     columns: columnDefinitions,
     items: generateData({ numItems: 10 }),
   },
   render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const MultiplePagesSmall = {
+export const MultiplePagesSmall: Story = {
   args: {
     columns: columnDefinitions,
     items: generateData({ numItems: 45 }),
   },
   render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const MultiplePagesLarge = {
+export const MultiplePagesLarge: Story = {
   args: {
     columns: columnDefinitions,
     items: generateData({ numItems: 1000 }),
   },
   render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const SlowNetwork = {
+export const SlowNetwork: Story = {
   args: {
     columns: columnDefinitions,
     items: generateData({ numItems: 1000 }),
     delay: 1500,
   },
   render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const InfiniteDelay = {
+export const InfiniteDelay: Story = {
   args: {
     columns: columnDefinitions,
     items: generateData({ numItems: 50 }),
     delay: Number.POSITIVE_INFINITY,
   },
   render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const StatusFailure = {
+export const StatusFailure: Story = {
   args: {
     columns: columnDefinitions,
     items: generateData({ numItems: 1000 }),
     delay: -1,
   },
   render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const WithEndOfTablePlaceholder = {
+export const WithEndOfTablePlaceholder: Story = {
   args: {
     columns: columnDefinitions,
     items: generateData({ numItems: 15 }),
@@ -415,15 +424,17 @@ export const WithEndOfTablePlaceholder = {
     },
   },
   render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const WithExplicitEndOfStream = {
+export const WithExplicitEndOfStream: Story = {
   args: {
     columns: columnDefinitions,
     items: generateData({ numItems: 15 }),
     endOfStream: false,
   },
   render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
 const ScrollWrapper = ({ children } : { children: React.ReactNode }) => {
@@ -434,24 +445,26 @@ const ScrollWrapper = ({ children } : { children: React.ReactNode }) => {
   );
 };
 
-export const WithScroll = {
+export const WithScroll: Story = {
   args: {
     columns: columnDefinitionsMultiple,
     items: generateData({ numItems: 6 }),
   },
   render: (args: DataTableStreamTemplateProps) => <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const WithScrollAndStickyNameColumn = {
+export const WithScrollAndStickyNameColumn: Story = {
   args: {
     columns: columnDefinitionsMultiple,
     items: generateData({ numItems: 6 }),
     stickyColumns: 'first'
   },
   render: (args: DataTableStreamTemplateProps) => <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const WithScrollAndStickyNameColumnWithCheckboxSelection = {
+export const WithScrollAndStickyNameColumnWithCheckboxSelection: Story = {
   args: {
     columns: columnDefinitionsMultiple,
     items: generateData({ numItems: 6 }),
@@ -459,9 +472,10 @@ export const WithScrollAndStickyNameColumnWithCheckboxSelection = {
     plugins: [useRowSelectColumn]
   },
   render: (args: DataTableStreamTemplateProps) => <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const WithScrollAndStickyNameColumnWithRadioSelection = {
+export const WithScrollAndStickyNameColumnWithRadioSelection: Story = {
   args: {
     columns: columnDefinitionsMultiple,
     items: generateData({ numItems: 6 }),
@@ -469,15 +483,17 @@ export const WithScrollAndStickyNameColumnWithRadioSelection = {
     plugins: [useRowSelectColumnRadio]
   },
   render: (args: DataTableStreamTemplateProps) => <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const WithScrollAndStickyNameAndActions = {
+export const WithScrollAndStickyNameAndActions: Story = {
   args: {
     columns: columnDefinitionsMultiple,
     items: generateData({ numItems: 6 }),
     stickyColumns: 'both'
   },
   render: (args: DataTableStreamTemplateProps) => <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
 const LoadingSpinnerTrigger = () => {
@@ -498,7 +514,7 @@ const LoadingSpinnerTrigger = () => {
   );
 };
 
-export const WithScrollAndSpinner = {
+export const WithScrollAndSpinner: Story = {
   args: {
     columns: [
       {
@@ -549,4 +565,23 @@ export const WithScrollAndSpinner = {
       </DataTableStreamTemplate>
     </ScrollWrapper>
   ),
+  decorators: [Story => <Panel><Story/></Panel>],
+};
+
+export const DataTableStreamWithPageLayout: Story = {
+  args: {
+    columns: columnDefinitions,
+    items: generateData({ numItems: 45 }),
+  },
+  render: (args: DataTableStreamTemplateProps) => <DataTableStreamTemplate {...args} />,
+  decorators: [
+    Story => (
+      <PageLayout>
+        <PageLayout.Header title={<PageLayout.Heading>PageLayout with edgeless parameter</PageLayout.Heading>}/>
+        <PageLayout.Body edgeless={true}>
+          <Story/>
+        </PageLayout.Body>
+      </PageLayout>
+    ),
+  ],
 };

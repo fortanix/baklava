@@ -3,12 +3,14 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
+import type { StoryObj } from '@storybook/react-vite';
 
 import { delay } from '../util/async_util.ts';
 import { type User, generateData } from '../util/generateData.ts';
 import { sortDateTime } from '../util/sorting_util.ts';
 
 import { Button } from '../../actions/Button/Button.tsx';
+import { PageLayout } from '../../../layouts/PageLayout/PageLayout.tsx';
 import { Panel } from '../../containers/Panel/Panel.tsx';
 import * as DataTableLazy from './DataTableLazy.tsx';
 
@@ -20,8 +22,8 @@ export default {
   },
 };
 
-type dataTeableLazyTemplateProps = DataTableLazy.TableProviderLazyProps<User> & { delay: number, items: Array<User> };
-const DataTableLazyTemplate = (props: dataTeableLazyTemplateProps) => {
+type DataTableLazyTemplateProps = DataTableLazy.TableProviderLazyProps<User> & { delay: number, items: Array<User> };
+const DataTableLazyTemplate = (props: DataTableLazyTemplateProps) => {
   const columns = React.useMemo(() => props.columns, [props.columns]);
   const items = React.useMemo(() => props.items, [props.items]);
   const delayQuery = props.delay ?? null;
@@ -51,33 +53,32 @@ const DataTableLazyTemplate = (props: dataTeableLazyTemplateProps) => {
   );
 
   return (
-    <Panel>
-      <DataTableLazy.TableProviderLazy
-        {...props}
-        columns={columns}
-        items={itemsProcessed}
-        updateItems={setItemsProcessed}
-        query={query}
-      >
-        <DataTableLazy.Search />
-        <DataTableLazy.DataTableLazy
-          placeholderEmpty={
-            <DataTableLazy.DataTablePlaceholderEmpty
-              icon="file"
-              title="No users"
-              actions={
-                <DataTableLazy.PlaceholderEmptyAction>
-                  <Button kind="secondary" onPress={() => {}}>Action 1</Button>
-                  <Button kind="primary" onPress={() => {}}>Action 2</Button>
-                </DataTableLazy.PlaceholderEmptyAction>
-              }
-            />
-          }
-        />
-      </DataTableLazy.TableProviderLazy>
-    </Panel>
+    <DataTableLazy.TableProviderLazy
+      {...props}
+      columns={columns}
+      items={itemsProcessed}
+      updateItems={setItemsProcessed}
+      query={query}
+    >
+      <DataTableLazy.Search />
+      <DataTableLazy.DataTableLazy
+        placeholderEmpty={
+          <DataTableLazy.DataTablePlaceholderEmpty
+            icon="file"
+            title="No users"
+            actions={
+              <DataTableLazy.PlaceholderEmptyAction>
+                <Button kind="secondary" onPress={() => {}}>Action 1</Button>
+                <Button kind="primary" onPress={() => {}}>Action 2</Button>
+              </DataTableLazy.PlaceholderEmptyAction>
+            }
+          />
+        }
+      />
+    </DataTableLazy.TableProviderLazy>
   );
 };
+type Story = StoryObj<typeof DataTableLazyTemplate>;
 
 // Column definitions
 const columns = [
@@ -116,61 +117,86 @@ const columns = [
 ];
 
 // Stories
-export const Empty = {
+export const Empty: Story = {
   args: {
     columns,
     items: generateData({ numItems: 0 }),
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
+  render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const SinglePage = {
+export const SinglePage: Story = {
   args: {
     columns,
     items: generateData({ numItems: 10 }),
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
+  render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const MultiplePagesSmall = {
+export const MultiplePagesSmall: Story = {
   args: {
     columns,
     items: generateData({ numItems: 45 }),
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
+  render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const MultiplePagesLarge = {
+export const MultiplePagesLarge: Story = {
   args: {
     columns,
     items: generateData({ numItems: 1000 }),
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
+  render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const SlowNetwork = {
+export const SlowNetwork: Story = {
   args: {
     columns,
     items: generateData({ numItems: 1000 }),
     delay: 1500,
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
+  render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const InfiniteDelay = {
+export const InfiniteDelay: Story = {
   args: {
     columns,
     items: generateData({ numItems: 50 }),
     delay: Number.POSITIVE_INFINITY,
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
+  render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const StatusFailure = {
+export const StatusFailure: Story = {
   args: {
     columns,
     items: generateData({ numItems: 1000 }),
     delay: -1,
   },
-  render: (args: dataTeableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
+  render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
+  decorators: [Story => <Panel><Story/></Panel>],
+};
+
+export const DataTableLazyWithPageLayout: Story = {
+  args: {
+    columns,
+    items: generateData({ numItems: 45 }),
+  },
+  render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
+  decorators: [
+    Story => (
+      <PageLayout>
+        <PageLayout.Header title={<PageLayout.Heading>PageLayout with edgeless parameter</PageLayout.Heading>}/>
+        <PageLayout.Body edgeless={true}>
+          <Story/>
+        </PageLayout.Body>
+      </PageLayout>
+    ),
+  ],
 };
