@@ -360,8 +360,8 @@ export const DataTableEagerWithPageLayout: Story = {
 // Edge cases: table within table and table within modal within table
 
 type LoremIpsum = {
-  lorem: string,
-  ipsum: string,
+  lorem: string | LoremIpsum,
+  ipsum: string | LoremIpsum,
 };
 const loremIpsumItems = [
   { lorem: 'lorem', ipsum: 'ipsum' },
@@ -382,7 +382,7 @@ const DataTableEagerEdgeCasesInnerTemplate = () => {
       id: 'ipsum',
       accessor: (data: LoremIpsum) => data.ipsum,
       Header: 'Ipsum',
-      Cell: ({ value }: { value: LoremIpsum }) => value,
+      Cell: ({ value }: { value: string }) => value,
       disableSortBy: false,
       disableGlobalFilter: false,
       className: 'user-table__column',
@@ -393,7 +393,7 @@ const DataTableEagerEdgeCasesInnerTemplate = () => {
     <DataTableEager.TableProviderEager
       columns={innerColumns}
       items={loremIpsumItems}
-      // getRowId={(item: User) => item.id}
+      getRowId={undefined}
       plugins={[DataTablePlugins.useRowSelectColumn]}
     >
       <DataTableEager.DataTableEager />
@@ -416,7 +416,7 @@ const DataTableEagerEdgeCasesTemplate = (props: DataTableEager.TableProviderEage
   const columns = [
     {
       id: 'innertable',
-      accessor: null,
+      accessor: (data: LoremIpsum) => data.lorem,
       Header: 'Inner table',
       Cell: () => <DataTableEagerEdgeCasesInnerTemplate/>,
       disableSortBy: false,
@@ -425,7 +425,7 @@ const DataTableEagerEdgeCasesTemplate = (props: DataTableEager.TableProviderEage
     },
     {
       id: 'modalbutton',
-      accessor: null,
+      accessor: (data: LoremIpsum) => data.ipsum,
       Header: 'Modal Button',
       Cell: () => <ModalButton/>,
       disableSortBy: false,
@@ -433,15 +433,13 @@ const DataTableEagerEdgeCasesTemplate = (props: DataTableEager.TableProviderEage
       className: 'user-table__column',
     },
   ];
-  
-  const items = [{}, {}];
 
   return (
     <DataTableEager.TableProviderEager
       {...props}
       columns={columns}
-      items={items}
-      // getRowId={(item: User) => item.id}
+      items={loremIpsumItems}
+      getRowId={undefined}
       plugins={[DataTablePlugins.useRowSelectColumn]}
     >
       <DataTableEager.Search />

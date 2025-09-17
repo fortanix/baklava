@@ -22,10 +22,13 @@ export default {
   },
 };
 
-type DataTableLazyTemplateProps = DataTableLazy.TableProviderLazyProps<User> & { delay: number, items: Array<User> };
+type DataTableLazyTemplateProps = DataTableLazy.TableProviderLazyProps<User> & {
+  delay: number,
+  storyItems: Array<User>,
+};
 const DataTableLazyTemplate = (props: DataTableLazyTemplateProps) => {
   const columns = React.useMemo(() => props.columns, [props.columns]);
-  const items = React.useMemo(() => props.items, [props.items]);
+  const items = React.useMemo(() => props.storyItems, [props.storyItems]);
   const delayQuery = props.delay ?? null;
 
   const [itemsProcessed, setItemsProcessed] = React.useState<DataTableLazy.DataTableQueryResult<User>>({
@@ -120,7 +123,7 @@ const columns = [
 export const Empty: Story = {
   args: {
     columns,
-    items: generateData({ numItems: 0 }),
+    storyItems: generateData({ numItems: 0 }),
   },
   render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
   decorators: [Story => <Panel><Story/></Panel>],
@@ -129,7 +132,7 @@ export const Empty: Story = {
 export const SinglePage: Story = {
   args: {
     columns,
-    items: generateData({ numItems: 10 }),
+    storyItems: generateData({ numItems: 10 }),
   },
   render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
   decorators: [Story => <Panel><Story/></Panel>],
@@ -138,7 +141,7 @@ export const SinglePage: Story = {
 export const MultiplePagesSmall: Story = {
   args: {
     columns,
-    items: generateData({ numItems: 45 }),
+    storyItems: generateData({ numItems: 45 }),
   },
   render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
   decorators: [Story => <Panel><Story/></Panel>],
@@ -147,7 +150,7 @@ export const MultiplePagesSmall: Story = {
 export const MultiplePagesLarge: Story = {
   args: {
     columns,
-    items: generateData({ numItems: 1000 }),
+    storyItems: generateData({ numItems: 1000 }),
   },
   render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
   decorators: [Story => <Panel><Story/></Panel>],
@@ -156,7 +159,7 @@ export const MultiplePagesLarge: Story = {
 export const SlowNetwork: Story = {
   args: {
     columns,
-    items: generateData({ numItems: 1000 }),
+    storyItems: generateData({ numItems: 1000 }),
     delay: 1500,
   },
   render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
@@ -166,7 +169,7 @@ export const SlowNetwork: Story = {
 export const InfiniteDelay: Story = {
   args: {
     columns,
-    items: generateData({ numItems: 50 }),
+    storyItems: generateData({ numItems: 50 }),
     delay: Number.POSITIVE_INFINITY,
   },
   render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
@@ -176,7 +179,7 @@ export const InfiniteDelay: Story = {
 export const StatusFailure: Story = {
   args: {
     columns,
-    items: generateData({ numItems: 1000 }),
+    storyItems: generateData({ numItems: 1000 }),
     delay: -1,
   },
   render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
@@ -186,7 +189,7 @@ export const StatusFailure: Story = {
 export const DataTableLazyWithPageLayout: Story = {
   args: {
     columns,
-    items: generateData({ numItems: 45 }),
+    storyItems: generateData({ numItems: 45 }),
   },
   render: (args: DataTableLazyTemplateProps) => <DataTableLazyTemplate {...args} />,
   decorators: [
