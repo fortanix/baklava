@@ -2,18 +2,19 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import * as React from 'react';
-import type { StoryObj } from '@storybook/react-vite';
-
 import { delay } from '../util/async_util.ts';
 import { sortDateTime } from '../util/sorting_util.ts';
+
+import * as React from 'react';
+import { type Column } from 'react-table';
+
+import type { StoryObj } from '@storybook/react-vite';
 import { generateData, type User } from '../util/generateData.ts';
 
 import { Banner } from '../../containers/Banner/Banner.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { Panel } from '../../containers/Panel/Panel.tsx';
 import { PageLayout } from '../../../layouts/PageLayout/PageLayout.tsx';
-import type { DataTableAsyncProps } from './table/DataTable.tsx';
 import * as DataTableStream from './DataTableStream.tsx';
 import { useRowSelectColumn, useRowSelectColumnRadio } from './plugins/useRowSelectColumn.tsx';
 
@@ -48,15 +49,13 @@ type UserPageState = {
   offsetApprovalRequests: number,
 };
 
-type DataTableStreamTemplateProps = DataTableStream.TableProviderStreamProps<User> &
-{
+type DataTableStreamTemplateProps = DataTableStream.TableProviderStreamProps<User> & {
   delay: number,
   items: Array<User>,
   endOfStream: boolean,
-  dataTableProps: DataTableAsyncProps<User>,
+  dataTableProps: React.ComponentProps<typeof DataTableStream.DataTableStream>,
 };
-
-const DataTableStreamTemplate = ({dataTableProps, children, ...props} : DataTableStreamTemplateProps) => {
+const DataTableStreamTemplate = ({ dataTableProps, children, ...props }: DataTableStreamTemplateProps) => {
   const columns = React.useMemo(() => props.columns, [props.columns]);
   const items = React.useMemo(() => props.items, [props.items]);
   const delayQuery = props.delay ?? null;
@@ -144,7 +143,7 @@ const DataTableStreamTemplate = ({dataTableProps, children, ...props} : DataTabl
 type Story = StoryObj<typeof DataTableStreamTemplate>;
 
 // Column definitions
-const columnDefinitions = [
+const columnDefinitions: Array<Column<User>> = [
   {
     id: 'name',
     accessor: (user: User) => user.name,
@@ -179,7 +178,7 @@ const columnDefinitions = [
   },
 ];
 
-const columnDefinitionsMultiple = [
+const columnDefinitionsMultiple: Array<Column<User>> = [
   {
     id: 'name',
     accessor: (user: User) => user.name,
@@ -336,7 +335,7 @@ const columnDefinitionsMultiple = [
   },
   {
     id: 'actions',
-    accessor: '',
+    accessor: () => null,
     Header: 'Actions',
     disableSortBy: true,
     disableGlobalFilter: true,
