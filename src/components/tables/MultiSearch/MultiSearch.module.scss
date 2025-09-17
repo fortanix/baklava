@@ -119,7 +119,7 @@
   .bk-multi-search__error-msg,
   .bk-multi-search__dropdown-error-msg {
     padding-block-start: bk.$spacing-3;
-    color: bk.$theme-form-text-error;
+    color: bk.$theme-form-text-error-message;
     max-inline-size: calc(bk.$spacing-8 * 10);
     display: block;
   }
