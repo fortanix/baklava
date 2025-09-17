@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.5/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.3/schema.json",
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
@@ -42,7 +42,8 @@
         //"useExhaustiveDependencies": "off",
         "useImportExtensions": "error",
         "noUnusedVariables": "off",
-        "noUnusedFunctionParameters": "off"
+        "noUnusedFunctionParameters": "off",
+        "useUniqueElementIds": "off" // Not needed in `.stories.tsx` files
       },
       "complexity": {
         "noBannedTypes": "off",
@@ -55,9 +56,7 @@
         "noUnusedTemplateLiteral": "off",
         "noUselessElse": "off"
       },
-      "nursery": {
-        "useUniqueElementIds": "off" // Not needed in `.stories.tsx` files
-      }
+      "nursery": {}
     }
   }
 }
