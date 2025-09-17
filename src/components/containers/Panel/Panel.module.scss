@@ -30,7 +30,7 @@
     @include bk.component-base(bk-panel);
     @include panel;
     
-    &--edgeless {
+    .bk-panel--edgeless {
       // Communicate the current panel inset to any children who might want to compensate for it (e.g. edgeless layouts)
       --bk-panel-inset-compensation: var(--bk-panel-inset);
     }
