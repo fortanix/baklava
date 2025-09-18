@@ -417,6 +417,7 @@ export type SearchInputProps = ComponentProps<typeof Input> & {
   fields: FQ.Fields,
   fieldQueryBuffer: FieldQueryBuffer,
   inputRef: React.RefObject<HTMLInputElement | null>
+  validation: FQ.ValidatorResponse
 };
 export const SearchInput = (props: SearchInputProps) => {
   const {
@@ -427,6 +428,7 @@ export const SearchInput = (props: SearchInputProps) => {
     inputRef,
     onFocus,
     onBlur,
+    validation,
     ...propsRest
   } = props;
   
@@ -496,7 +498,7 @@ export const SearchInput = (props: SearchInputProps) => {
       // div used as clickable wrapper to keep custom layout & avoid button semantics
       role="button"
       tabIndex={0}
-      className={cx(cl['bk-search-input'], className, { [cl['bk-search-input--active']]: isFocused })}
+      className={cx(cl['bk-search-input'], className, { [cl['bk-search-input--active']]: isFocused }, { [cl['bk-search-input--invalid']]: !validation.isValid && validation.message})}
       onClick={onWrapperClick}
       onKeyDown={onWrapperKeyDown}
     >
@@ -1234,6 +1236,7 @@ export const MultiSearch = (props: MultiSearchProps) => {
       onFocus={onSearchInputFocus}
       onClick={onClick}
       disabled={disabled}
+      validation={validatorResponse}
     />
   );
   
