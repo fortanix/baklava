@@ -30,14 +30,15 @@
     @include bk.component-base(bk-panel);
     @include panel;
     
+    &.bk-panel--edgeless {
+      // Communicate the current panel inset to any children who might want to compensate for it (e.g. edgeless layouts)
+      --bk-panel-inset-compensation: var(--bk-panel-inset);
+    }
+    
     .bk-panel__heading {
       margin-block-end: bk.$spacing-7;
       text-wrap: nowrap;
       text-overflow: ellipsis;
     }
-  }
-  .bk-panel--edgeless {
-    // Communicate the current panel inset to any children who might want to compensate for it (e.g. edgeless layouts)
-    --bk-panel-inset-compensation: var(--bk-panel-inset);
   }
 }
