@@ -22,13 +22,16 @@ export const PanelHeading = (props: PanelHeadingProps) => {
 export type PanelProps = React.PropsWithChildren<ComponentProps<'section'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
+  
+  /** Whether the panel should be edgeless. */
+  edgeless?: undefined | boolean,
 }>;
 /**
  * Panel component.
  */
 export const Panel = Object.assign(
   (props: PanelProps) => {
-    const { children, unstyled = false, ...propsRest } = props;
+    const { children, unstyled = false, edgeless = false, ...propsRest } = props;
     const scrollerProps = useScroller();
     
     return (
@@ -38,6 +41,7 @@ export const Panel = Object.assign(
         className={cx(
           'bk',
           { [cl['bk-panel']]: !unstyled },
+          { [cl['bk-panel--edgeless']]: !!edgeless },
           scrollerProps.className,
           propsRest.className,
         )}

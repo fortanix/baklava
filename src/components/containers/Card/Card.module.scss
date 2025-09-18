@@ -8,12 +8,13 @@
 @mixin bk-card($name: bk-card) {
   --bk-card-background-color: #{bk.$theme-card-background-default};
   --bk-card-border-color: #{bk.$theme-card-border-default};
+  --bk-card-inset: bk.$spacing-4;
   
   overflow: hidden;
   
   &:where(:not(.#{$name}--flat)) {
     //min-block-size: bk.$spacing-16;
-    padding: bk.$spacing-4;
+    padding: var(--bk-card-inset);
     padding-block-end: bk.$spacing-8;
     
     background: var(--bk-card-background-color);
