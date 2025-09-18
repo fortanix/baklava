@@ -31,6 +31,14 @@
       flex: 1 0 auto;
     }
   }
+  
+  .bk-search-input--invalid {
+    border-block-end: 1px solid bk.$theme-form-rule-error;
+  }
+  
+  .bk-search-input--active {
+    border-block-end: 1px solid bk.$theme-form-rule-focused;
+  }
 
   .bk-multi-search__filters {
     display: flex;
