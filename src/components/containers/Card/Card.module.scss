@@ -8,7 +8,7 @@
 @mixin bk-card($name: bk-card) {
   --bk-card-background-color: #{bk.$theme-card-background-default};
   --bk-card-border-color: #{bk.$theme-card-border-default};
-  --bk-card-inset: bk.$spacing-4;
+  --bk-card-inset: #{bk.$spacing-4};
   
   overflow: hidden;
   
