@@ -209,6 +209,7 @@ const runImportColorsSemantic = async (args: ScriptArgs) => {
   const isDryRun = args.values['dry-run'] ?? false;
   
   const pathOutputSass = fileURLToPath(new URL('../src/styling/generated/colors_semantic.scss', import.meta.url));
+  const pathOutputTs = fileURLToPath(new URL('../src/styling/generated/colors_semantic.ts', import.meta.url));
   
   type SemanticColor = { theme: 'light' | 'dark', name: string, color: string };
   const parseToken = (tokenName: TokenName, tokenValue: string, prefix: null | string): SemanticColor => {
@@ -273,7 +274,7 @@ const runImportColorsSemantic = async (args: ScriptArgs) => {
     
     // Dynamic theme
     ${tokensByTheme.light
-      .map(({ theme, name }) => `$theme-${name}: #{ld($light-${name}, $dark-${name})} !default;`)
+      .map(({ name }) => `$theme-${name}: #{ld($light-${name}, $dark-${name})} !default;`)
       .join('\n')
     }
     
@@ -296,6 +297,38 @@ const runImportColorsSemantic = async (args: ScriptArgs) => {
     logger.log(generatedSass);
   } else {
     await fs.writeFile(pathOutputSass, addGenerationComment(generatedSass), 'utf-8');
+  }
+  
+  
+  //
+  // Generate a `.ts` version as well (for programmatic usage, e.g. generating diffs)
+  //
+  
+  const generatedTs = dedent`
+    export type TokenName = string;
+    export type ColorSemantic = { color: string };
+    export type ColorSemanticList = Record<TokenName, ColorSemantic>;
+    
+    export const colorsLight: ColorSemanticList = {
+      ${tokensByTheme.light
+        .map(({ name, color }) => `${JSON.stringify(name)}: { color: ${JSON.stringify(color)} },`)
+        .join('\n')
+      }
+    };
+    
+    export const colorsDark: ColorSemanticList = {
+      ${tokensByTheme.dark
+        .map(({ name, color }) => `${JSON.stringify(name)}: { color: ${JSON.stringify(color)} },`)
+        .join('\n')
+      }
+    };
+  `;
+  
+  logger.log(`Writing generated TypeScript to: ${rel(pathOutputTs)}`);
+  if (isDryRun) {
+    logger.log(generatedTs);
+  } else {
+    await fs.writeFile(pathOutputTs, addGenerationComment(generatedTs), 'utf-8');
   }
 };
 
