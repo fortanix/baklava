@@ -208,8 +208,13 @@ const runImportColorsSemantic = async (args: ScriptArgs) => {
   const { logger } = getServices();
   const isDryRun = args.values['dry-run'] ?? false;
   
+  logger.log('THIS IS A DRY RUN: changes will not be committed to the file system\n');
+  
   const pathOutputSass = fileURLToPath(new URL('../src/styling/generated/colors_semantic.scss', import.meta.url));
   const pathOutputTs = fileURLToPath(new URL('../src/styling/generated/colors_semantic.ts', import.meta.url));
+  
+  // Save the current colors for later analysis
+  const semanticColorsOld = await import('../src/styling/generated/colors_semantic.ts');
   
   type SemanticColor = { theme: 'light' | 'dark', name: string, color: string };
   const parseToken = (tokenName: TokenName, tokenValue: string, prefix: null | string): SemanticColor => {
@@ -330,6 +335,21 @@ const runImportColorsSemantic = async (args: ScriptArgs) => {
   } else {
     await fs.writeFile(pathOutputTs, addGenerationComment(generatedTs), 'utf-8');
   }
+  
+  
+  //
+  // Diff the old and new tokens and create a summary of what's changed
+  //
+  
+  logger.log('--- Summary of the changes: ---');
+  
+  const tokensLightOld = new Set(Object.keys(semanticColorsOld.colorsLight));
+  const tokensLightAdded = tokensLight.difference(tokensLightOld);
+  const tokensLightRemoved = tokensLightOld.difference(tokensLight);
+  
+  // Note: should not matter whether we take light or dark here (we checked earlier that there should be no difference)
+  logger.log('Tokens added:', tokensLightAdded);
+  logger.log('Tokens removed:', tokensLightRemoved);
 };
 
 
