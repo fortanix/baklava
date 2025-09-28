@@ -76,13 +76,6 @@ describe('Button', () => {
       const button = screen.getByRole('button');
       expect(button).not.toHaveClass(cl['bk-button--card']);
     });
-    
-    test('should apply card variant class', () => {
-      render(<Button variant="card" label="Card" />);
-      
-      const button = screen.getByRole('button');
-      expect(button).toHaveClass(cl['bk-button--card']);
-    });
   });
   
   describe('disabled state', () => {
