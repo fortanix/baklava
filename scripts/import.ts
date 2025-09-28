@@ -208,7 +208,13 @@ const runImportColorsSemantic = async (args: ScriptArgs) => {
   const { logger } = getServices();
   const isDryRun = args.values['dry-run'] ?? false;
   
+  logger.log('THIS IS A DRY RUN: changes will not be committed to the file system\n');
+  
   const pathOutputSass = fileURLToPath(new URL('../src/styling/generated/colors_semantic.scss', import.meta.url));
+  const pathOutputTs = fileURLToPath(new URL('../src/styling/generated/colors_semantic.ts', import.meta.url));
+  
+  // Save the current colors for later analysis
+  const semanticColorsOld = await import('../src/styling/generated/colors_semantic.ts');
   
   type SemanticColor = { theme: 'light' | 'dark', name: string, color: string };
   const parseToken = (tokenName: TokenName, tokenValue: string, prefix: null | string): SemanticColor => {
@@ -273,7 +279,7 @@ const runImportColorsSemantic = async (args: ScriptArgs) => {
     
     // Dynamic theme
     ${tokensByTheme.light
-      .map(({ theme, name }) => `$theme-${name}: #{ld($light-${name}, $dark-${name})} !default;`)
+      .map(({ name }) => `$theme-${name}: #{ld($light-${name}, $dark-${name})} !default;`)
       .join('\n')
     }
     
@@ -289,6 +295,11 @@ const runImportColorsSemantic = async (args: ScriptArgs) => {
     $light-notification-icon-default: $color-neutral-900 !default;
     $dark-notification-icon-default: $color-neutral-900 !default;
     $theme-notification-icon-default: #{ld($light-notification-icon-default, $dark-notification-icon-default)} !default;
+    
+    // FIXME: breaking change (without a replacement)
+    $light-tag-text-default: $color-neutral-900 !default;
+    $dark-tag-text-default: $color-neutral-20 !default;
+    $theme-tag-text-default: #{ld($light-tag-text-default, $dark-tag-text-default)} !default;
   `;
   
   logger.log(`Writing generated Sass to: ${rel(pathOutputSass)}`);
@@ -297,6 +308,53 @@ const runImportColorsSemantic = async (args: ScriptArgs) => {
   } else {
     await fs.writeFile(pathOutputSass, addGenerationComment(generatedSass), 'utf-8');
   }
+  
+  
+  //
+  // Generate a `.ts` version as well (for programmatic usage, e.g. generating diffs)
+  //
+  
+  const generatedTs = dedent`
+    export type TokenName = string;
+    export type ColorSemantic = { color: string };
+    export type ColorSemanticList = Record<TokenName, ColorSemantic>;
+    
+    export const colorsLight: ColorSemanticList = {
+      ${tokensByTheme.light
+        .map(({ name, color }) => `${JSON.stringify(name)}: { color: ${JSON.stringify(color)} },`)
+        .join('\n')
+      }
+    };
+    
+    export const colorsDark: ColorSemanticList = {
+      ${tokensByTheme.dark
+        .map(({ name, color }) => `${JSON.stringify(name)}: { color: ${JSON.stringify(color)} },`)
+        .join('\n')
+      }
+    };
+  `;
+  
+  logger.log(`Writing generated TypeScript to: ${rel(pathOutputTs)}`);
+  if (isDryRun) {
+    logger.log(generatedTs);
+  } else {
+    await fs.writeFile(pathOutputTs, addGenerationComment(generatedTs), 'utf-8');
+  }
+  
+  
+  //
+  // Diff the old and new tokens and create a summary of what's changed
+  //
+  
+  logger.log('--- Summary of the changes: ---');
+  
+  const tokensLightOld = new Set(Object.keys(semanticColorsOld.colorsLight));
+  const tokensLightAdded = tokensLight.difference(tokensLightOld);
+  const tokensLightRemoved = tokensLightOld.difference(tokensLight);
+  
+  // Note: should not matter whether we take light or dark here (we checked earlier that there should be no difference)
+  logger.log('Tokens added:', tokensLightAdded);
+  logger.log('Tokens removed:', tokensLightRemoved);
 };
 
 
