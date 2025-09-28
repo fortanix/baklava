@@ -53,12 +53,16 @@
       rotate: initial;
       scale: initial;
       
-      &::after {
-        content: '';
-        display: block;
-        cursor: pointer;
-        position: absolute;
-        inset: 0;
+      &:not(:disabled) {
+        // Render a pseudo element that covers the entire card. This way, the entire card will "act" like the embedded
+        // action button, while still keeping the button/link as the interactive element (necessary for a11y).
+        &::after {
+          content: '';
+          display: block;
+          cursor: pointer;
+          position: absolute;
+          inset: 0;
+        }
       }
       
       &.bk-card-action__action--link {
