@@ -73,17 +73,22 @@
         --bk-button-color-background: #{bk.$theme-button-primary-background-hover};
       }
     }
+    
+    /*
+    // NOTE: in current design focused state no longer gets any specialized colors besides the focus outline
     &:is(:focus-visible, :global(.pseudo-focus-visible)) {
       &.bk-button--tertiary {
-        --bk-button-color-text: #{bk.$theme-button-tertiary-text-focused};
+        --bk-button-color-text: #/{bk.$theme-button-tertiary-text-focused};
       }
       &.bk-button--secondary {
-        --bk-button-color-border: #{bk.$theme-button-secondary-border-focused};
+        --bk-button-color-border: #/{bk.$theme-button-secondary-border-focused};
       }
       &.bk-button--primary {
-        --bk-button-color-background: #{bk.$theme-button-primary-background-focused};
+        --bk-button-color-background: #/{bk.$theme-button-primary-background-focused};
       }
     }
+    */
+    
     &:is(:disabled, .bk-button--disabled) {
       cursor: not-allowed;
       
