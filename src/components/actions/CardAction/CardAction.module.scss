@@ -74,7 +74,7 @@
     &.bk-card-action--selected {
       border-color: bk.$theme-card-border-selected;
     }
-    &:not(.bk-card-action--selected) {
+    &:not(.bk-card-action--selected, :has(.bk-card-action__action:disabled)) {
       &:global(.pseudo-hover), &:has(.bk-card-action__action:hover) {
         border-color: bk.$theme-card-border-hover;
       }
