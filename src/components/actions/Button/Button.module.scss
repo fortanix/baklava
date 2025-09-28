@@ -45,34 +45,16 @@
       --bk-button-color-text: #{bk.$theme-button-tertiary-text-default};
       
       padding-inline: 0; // Remove the padding (since tertiary buttons don't have a background
-      
-      &:where(.bk-button--card) {
-        --bk-button-color-border: transparent;
-        --bk-button-color-background: transparent;
-        --bk-button-color-text: #{bk.$theme-button-card-tertiary-text-default};
-      }
     }
     &.bk-button--secondary {
       --bk-button-color-border: #{bk.$theme-button-secondary-border-default};
       --bk-button-color-background: transparent;
       --bk-button-color-text: #{bk.$theme-button-secondary-text-default};
-      
-      &:where(.bk-button--card) {
-        --bk-button-color-border: #{bk.$theme-button-card-secondary-border-default};
-        --bk-button-color-background: transparent;
-        --bk-button-color-text: #{bk.$theme-button-card-secondary-text-default};
-      }
     }
     &.bk-button--primary {
       --bk-button-color-border: transparent;
       --bk-button-color-background: #{bk.$theme-button-primary-background-default};
       --bk-button-color-text: #{bk.$theme-button-primary-text-default};
-      
-      &:where(.bk-button--card) {
-        --bk-button-color-border: transparent;
-        --bk-button-color-background: #{bk.$theme-button-card-primary-background-default};
-        --bk-button-color-text: #{bk.$theme-button-card-primary-text-default};
-      }
     }
     
     @include bk.focus-outset;
@@ -90,19 +72,6 @@
       &.bk-button--primary {
         --bk-button-color-background: #{bk.$theme-button-primary-background-hover};
       }
-      
-      &:where(.bk-button--card) {
-        &.bk-button--tertiary {
-          --bk-button-color-text: #{bk.$theme-button-card-tertiary-text-hover};
-        }
-        &.bk-button--secondary {
-          --bk-button-color-border: #{bk.$theme-button-card-secondary-border-hover};
-          --bk-button-color-text: #{bk.$theme-button-card-secondary-text-hover};
-        }
-        &.bk-button--primary {
-          --bk-button-color-background: #{bk.$theme-button-card-primary-background-hover};
-        }
-      }
     }
     &:is(:focus-visible, :global(.pseudo-focus-visible)) {
       &.bk-button--tertiary {
@@ -113,18 +82,6 @@
       }
       &.bk-button--primary {
         --bk-button-color-background: #{bk.$theme-button-primary-background-focused};
-      }
-      
-      &:where(.bk-button--card) {
-        &.bk-button--tertiary {
-          --bk-button-color-text: #{bk.$theme-button-card-tertiary-text-focused};
-        }
-        &.bk-button--secondary {
-          --bk-button-color-border: #{bk.$theme-button-card-secondary-border-focused};
-        }
-        &.bk-button--primary {
-          --bk-button-color-background: #{bk.$theme-button-card-primary-background-focused};
-        }
       }
     }
     &:is(:disabled, .bk-button--disabled) {
@@ -140,19 +97,6 @@
       &.bk-button--primary {
         --bk-button-color-background: #{bk.$theme-button-primary-background-disabled};
       }
-      
-      &:where(.bk-button--card) {
-        &.bk-button--tertiary {
-          --bk-button-color-text: #{bk.$theme-button-card-tertiary-text-disabled};
-        }
-        &.bk-button--secondary {
-          --bk-button-color-border: #{bk.$theme-button-card-secondary-border-disabled};
-          --bk-button-color-text: #{bk.$theme-button-card-secondary-text-disabled};
-        }
-        &.bk-button--primary {
-          --bk-button-color-background: #{bk.$theme-button-card-primary-background-disabled};
-        }
-      }
     }
     &.bk-button--nonactive {
       cursor: not-allowed;
@@ -166,19 +110,6 @@
       }
       &.bk-button--primary {
         --bk-button-color-background: #{bk.$theme-button-primary-background-non-active};
-      }
-      
-      &:where(.bk-button--card) {
-        &.bk-button--tertiary {
-          --bk-button-color-text: #{bk.$theme-button-card-tertiary-text-non-active};
-        }
-        &.bk-button--secondary {
-          --bk-button-color-border: #{bk.$theme-button-card-secondary-border-non-active};
-          --bk-button-color-text: #{bk.$theme-button-card-secondary-text-non-active};
-        }
-        &.bk-button--primary {
-          --bk-button-color-background: #{bk.$theme-button-card-primary-background-non-active};
-        }
       }
     }
     &:not(:disabled, .bk-button--disabled, .bk-button--nonactive):active {
