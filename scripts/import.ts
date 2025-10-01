@@ -295,11 +295,6 @@ const runImportColorsSemantic = async (args: ScriptArgs) => {
     $light-notification-icon-default: $color-neutral-900 !default;
     $dark-notification-icon-default: $color-neutral-900 !default;
     $theme-notification-icon-default: #{ld($light-notification-icon-default, $dark-notification-icon-default)} !default;
-    
-    // FIXME: breaking change (without a replacement)
-    $light-tag-text-default: $color-neutral-900 !default;
-    $dark-tag-text-default: $color-neutral-20 !default;
-    $theme-tag-text-default: #{ld($light-tag-text-default, $dark-tag-text-default)} !default;
   `;
   
   logger.log(`Writing generated Sass to: ${rel(pathOutputSass)}`);
