@@ -20,6 +20,7 @@ export { ButtonAsLink } from '../src/components/actions/ButtonAsLink/ButtonAsLin
 export { Link } from '../src/components/actions/Link/Link.tsx';
 export { LinkAsButton } from '../src/components/actions/LinkAsButton/LinkAsButton.tsx';
 export { IconButton } from '../src/components/actions/IconButton/IconButton.tsx';
+export { CardAction } from '../src/components/actions/CardAction/CardAction.tsx';
 
 // Containers
 export { Panel } from '../src/components/containers/Panel/Panel.tsx';
