@@ -143,12 +143,8 @@ export const Button = (props: ButtonProps) => {
     buttonType = 'submit';
   }
   
-  // If both children and label are specified, use the `label` as the accessible name by default
-  const accessibleName = typeof children !== 'undefined' && label ? label : undefined;
-  
   return (
     <button
-      aria-label={accessibleName}
       aria-disabled={isInteractive ? undefined : true}
       disabled={disabled}
       {...propsRest}
@@ -166,7 +162,11 @@ export const Button = (props: ButtonProps) => {
       }, props.className)}
       onClick={handleClick}
     >
-      {renderContent()}
+      {/* Workaround: some screenreaders read all caps as abbreviations (BUTTON = B. U. T. T. O. N.) */}
+      {/* Thus we should render content twice: once with all caps hidden for screen readers, */}
+      <span aria-hidden="true" className={cl['bk-button__all-caps']}>{renderContent()}</span>
+      {/* and another visually hidden, without the all caps, intended for screen readers */}
+      <span className="visually-hidden">{renderContent()}</span>
     </button>
   );
 };
