@@ -286,3 +286,57 @@ export const ButtonTrimmed: Story = {
     style: { background: 'light-dark(white, black)' },
   },
 };
+
+export const ButtonLabelOnly: Story = {
+  ...PrimaryStory,
+  args: {
+    label: 'Only Label',
+  },
+};
+
+export const ButtonAriaLabelOnly: Story = {
+  ...PrimaryStory,
+  args: {
+    "aria-label": 'Only aria-label',
+  },
+};
+
+export const ButtonLabelAndAriaLabel: Story = {
+  ...PrimaryStory,
+  args: {
+    label: 'Label',
+    "aria-label": 'aria-label',
+  },
+};
+
+export const ButtonChildren: Story = {
+  ...PrimaryStory,
+  args: {
+    children: (<span>children</span>),
+  },
+};
+
+export const ButtonChildrenAndLabel: Story = {
+  ...PrimaryStory,
+  args: {
+    label: 'label',
+    children: (<span>children</span>),
+  },
+};
+
+export const ButtonChildrenAndAriaLabel: Story = {
+  ...PrimaryStory,
+  args: {
+    "aria-label": 'aria-label',
+    children: (<span>children</span>),
+  },
+};
+
+export const ButtonChildrenLabelAndAriaLabel: Story = {
+  ...PrimaryStory,
+  args: {
+    label: 'label',
+    "aria-label": 'aria-label',
+    children: (<span>children</span>),
+  },
+};
