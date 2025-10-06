@@ -164,7 +164,7 @@ export const Button = (props: ButtonProps) => {
     >
       {/* Workaround: some screenreaders read all caps as abbreviations (BUTTON = B. U. T. T. O. N.) */}
       {/* Thus we should render content twice: once with all caps hidden for screen readers, */}
-      <span aria-hidden="true" className={cl['bk-button__all-caps']}>{renderContent()}</span>
+      <span aria-hidden="true" className={cl['bk-button__content']}>{renderContent()}</span>
       {/* and another visually hidden, without the all caps, intended for screen readers */}
       <span className="visually-hidden">{renderContent()}</span>
     </button>

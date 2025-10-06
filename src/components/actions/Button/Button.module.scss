@@ -38,7 +38,7 @@
     @include bk.font(bk.$font-family-display, bk.$font-weight-semibold);
     font-size: bk.$font-size-s;
 
-    .bk-button__all-caps {
+    .bk-button__content {
       text-transform: uppercase;
     }
     
