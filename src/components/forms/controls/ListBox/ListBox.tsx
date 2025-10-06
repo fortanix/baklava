@@ -122,7 +122,6 @@ export const Option = (props: OptionProps) => {
       role="option"
       tabIndex={isFocused ? 0 : -1}
       data-item-key={itemKey}
-      aria-label={label}
       aria-selected={isSelected}
       {...propsRest}
       className={cx(
@@ -246,7 +245,6 @@ export const Action = (props: ActionProps) => {
       ref={itemRef}
       tabIndex={isFocused ? 0 : -1}
       data-item-key={itemKey}
-      aria-label={label}
       aria-posinset={itemPos}
       {...propsRest}
       className={cx(
