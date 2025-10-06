@@ -72,15 +72,15 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
             }}
           />
           
+          <span className="visually-hidden">Current page:</span>
           <Input
             type="number"
             automaticResize
             className={cx(cl['pagination__page-input'])}
             inputProps={{ className: cx(cl['pagination__page-input__input']) }}
-            aria-label={`Current page: ${pageIndexIndicator}`}
             value={pageIndexIndicator}
             max={table.pageCount}
-            onChange={(event) => { setPageIndexIndicator(Number.parseInt(event.target.value)); }}
+            onChange={(event) => { setPageIndexIndicator(Number.parseInt(event.target.value, 10)); }}
             onBlur={() => { updatePage(); }}
             onKeyDown={event => {
               if (event.key === 'Enter') {

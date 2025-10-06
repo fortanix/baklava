@@ -47,7 +47,6 @@ export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
           <Button
             kind="tertiary"
             {...props()}
-            aria-label={`${table.state.pageSize} rows per page`}
             className={cx(
               cl['page-size-selector__trigger'],
               { [cl['page-size-selector__trigger--open']]: open },
