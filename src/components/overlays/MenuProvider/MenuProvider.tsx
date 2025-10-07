@@ -11,6 +11,7 @@ import {
   type UseFloatingElementOptions,
   useFloatingElement,
 } from '../../util/overlays/floating-ui/useFloatingElement.tsx';
+import { useFloatingElementNative } from '../../util/overlays/floating-ui/useFloatingElementNative.tsx';
 
 import * as ListBox from '../../forms/controls/ListBox/ListBox.tsx';
 
@@ -151,7 +152,8 @@ export const MenuProvider = Object.assign(
       getFloatingProps,
       isOpen,
       setIsOpen,
-    } = useFloatingElement({
+      isMounted,
+    } = useFloatingElementNative({
       role,
       triggerAction: triggerAction ?? action,
       keyboardInteractions,
@@ -179,7 +181,8 @@ export const MenuProvider = Object.assign(
       // END TEMP
     });
     
-    const [shouldMountMenu] = useDebounce(isOpen, isOpen ? 0 : 1000);
+    //const [shouldMountMenu] = useDebounce(isOpen, isOpen ? 0 : 1000);
+    const shouldMountMenu = isMounted;
     
     const renderDefaultSelected = (): null | string => {
       const defaultSelectedKey = typeof selected !== 'undefined' ? selected : (defaultSelected ?? null);
@@ -242,7 +245,7 @@ export const MenuProvider = Object.assign(
         const props = getReferenceProps(userProps);
         return {
           ...props,
-          ref: userPropsRef ? mergeRefs(anchorRef, userPropsRef, refs.setReference) : refs.setReference,
+          ref: mergeRefs(anchorRef, userPropsRef, props.ref, refs.setReference),
           'aria-controls': listBoxId,
           'aria-haspopup': 'listbox',
           'aria-expanded': isOpen,
@@ -376,6 +379,12 @@ export const MenuProvider = Object.assign(
       const floatingProps = getFloatingProps({
         popover: 'manual',
         style: floatingStyles,
+        // style: {
+        //   position: 'fixed',
+        //   positionAnchor: 'auto',
+        //   positionArea: 'bottom span-right',
+        //   positionTryFallbacks: 'flip-block',
+        // },
         ...propsRest,
         className: cx(cl['bk-menu-provider__list-box'], propsRest.className),
         onKeyDown: mergeCallbacks([propsRest.onKeyDown, handleMenuKeyDown]),

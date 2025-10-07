@@ -20,6 +20,8 @@ import {
   type UseFloatingOptions,
   type FlipOptions,
   type ShiftOptions,
+  type ReferenceType,
+  type ExtendedRefs,
   type FloatingContext,
   useFloating,
   // Interactions
@@ -29,6 +31,7 @@ import {
   useDismiss,
   useDelayGroup,
   useHover,
+  type UseInteractionsReturn,
   useInteractions,
   useTransitionStatus,
 } from '@floating-ui/react';
@@ -36,11 +39,30 @@ import {
 
 export type { Placement };
 
-// Sync the `isOpen` state with browser `popover` state
+/** Sync the `isOpen` state with browser `popover` state. */
 const usePopover = (context: FloatingContext): ElementProps => {
   return {
+    reference: {
+      //popoverTarget: popoverId,
+      ref: ref => {
+        if (!ref) { return; }
+        
+        const popoverEl = context.elements.floating;
+        if (popoverEl && popoverEl.isConnected) {
+          //ref.popoverTargetElement = popoverEl;
+          popoverEl.togglePopover({
+            source: ref,
+            force: context.open,
+          });
+        }
+      },
+      style: {
+      },
+    },
     floating: {
+      //id: popoverId,
       ref: floatingElement => {
+        /*
         if (!floatingElement) { return; }
         
         const isPopoverShown = floatingElement.matches(':popover-open');
@@ -49,6 +71,7 @@ const usePopover = (context: FloatingContext): ElementProps => {
         } else if (!context.open && isPopoverShown) {
           floatingElement.hidePopover();
         }
+        */
       },
     },
   };
@@ -100,11 +123,27 @@ export type UseFloatingElementOptions = {
   /** Additional interactions to pass to the internal `useFloating` hook. */
   floatingUiInteractions?: undefined | ((context: FloatingContext) => Array<undefined | ElementProps>),
 };
+
+export type UseFloatingElementResult = {
+  context: FloatingContext,
+  isOpen: boolean,
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  isMounted: boolean,
+  refs: ExtendedRefs<ReferenceType>,
+  placement: Placement,
+  floatingStyles: React.CSSProperties,
+  getReferenceProps: UseInteractionsReturn['getReferenceProps'],
+  getFloatingProps: UseInteractionsReturn['getFloatingProps'],
+  getItemProps: UseInteractionsReturn['getItemProps'],
+};
+
 /**
  * Configure an element to float on top of the content, and is anchored to some reference element. Internally uses
  * `useFloating` from `floating-ui`.
  */
-export const useFloatingElement = <E extends HTMLElement>(options: UseFloatingElementOptions = {}) => {
+export const useFloatingElement = <E extends HTMLElement>(
+  options: UseFloatingElementOptions = {},
+): UseFloatingElementResult => {
   const opts = {
     ...options,
     role: options.role,

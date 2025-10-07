@@ -6,6 +6,8 @@ import * as React from 'react';
 
 
 export type PopoverController = {
+  //source?: undefined | React.Ref<HTMLElement>,
+  
   /** Whether the popover should be active. */
   active: boolean,
   /** Notify that the popover has been opened. Change must be respected (otherwise no longer in sync). */
@@ -24,7 +26,7 @@ export type PopoverProps<E extends HTMLElement> = {
 };
 
 /*
- * A utility hook to control the state of a <popover> element used as a modal (with `.showModal()`).
+ * A utility hook to control the state of a popover element.
  */
 export const usePopover = <E extends HTMLElement>(
   controller: PopoverController,
