@@ -66,6 +66,22 @@ export const ListBoxStandard: Story = {
   },
 };
 
+export const ListBoxWithLabel: Story = {
+  args: {
+    defaultSelected: 'Blueberry',
+    'aria-label': undefined,
+    'aria-describedby': 'my-label',
+  },
+  decorators: [
+    Story => (
+      <div>
+        <span id="my-label">My list box:</span>
+        <Story/>
+      </div>
+    ),
+  ],
+};
+
 export const ListBoxShrink: Story = { args: { size: 'shrink' } };
 export const ListBoxSmall: Story = { args: { size: 'small' } };
 export const ListBoxMedium: Story = { args: { size: 'medium' } };
