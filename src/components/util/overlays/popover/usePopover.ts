@@ -6,7 +6,8 @@ import * as React from 'react';
 
 
 export type PopoverController = {
-  //source?: undefined | React.Ref<HTMLElement>,
+  /** The source element (trigger/anchor) of the popover. */
+  source?: undefined | React.RefObject<null | HTMLElement>,
   
   /** Whether the popover should be active. */
   active: boolean,
@@ -41,11 +42,14 @@ export const usePopover = <E extends HTMLElement>(
     if (!popover) { console.warn(`Unable to close popover: reference does not exist.`); return; }
     
     try {
-      popover.hidePopover();
+      popover.togglePopover({
+        force: false,
+        source: controller.source?.current ?? undefined,
+      });
     } catch (error: unknown) {
       console.error(`Failed to close popover`, error);
     }
-  }, []);
+  }, [controller.source]);
   
   // Sync active state with popover DOM state
   const sync = () => {
@@ -54,9 +58,11 @@ export const usePopover = <E extends HTMLElement>(
     
     const isPopoverOpen = popover.matches(':popover-open');
     if (controller.active && !isPopoverOpen) { // Should be active but isn't
-      // Note: `showPopover()` can throw in some rare circumstances
       try {
-        popover.showPopover();
+        popover.togglePopover({
+          force: true,
+          source: controller.source?.current ?? undefined,
+        });
       } catch (error: unknown) {
         console.error(`Unable to open modal popover`, error);
         controller.deactivate();

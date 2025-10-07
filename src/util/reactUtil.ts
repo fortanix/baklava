@@ -72,7 +72,7 @@ const chain = (...callbacks: Array<unknown>): ((...args: Array<unknown>) => void
   };
 };
 
-type Props = { [key: string]: unknown };
+type Props = React.HTMLProps<Element>;
 type PropsArg = Props | null | undefined;
 type NullToObject<T> = T extends (null | undefined) ? {} : T;
 type TupleTypes<T> = { [P in keyof T]: T[P] } extends { [key: number]: infer V } ? NullToObject<V> : never;
@@ -87,9 +87,9 @@ type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) exten
 export const mergeProps = <T extends Array<PropsArg>>(...args: T): UnionToIntersection<TupleTypes<T>> => {
   // Start with a base clone of the first argument. This is a lot faster than starting
   // with an empty object and adding properties as we go.
-  const result: Props = {...args[0]};
+  const result = { ...args[0] } as Record<string, unknown>;
   for (let i = 1; i < args.length; i++) {
-    const props = args[i];
+    const props = args[i] as Record<string, unknown>;
     for (const key in props) {
       const a = result[key];
       const b = props[key];
