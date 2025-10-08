@@ -20,9 +20,7 @@ export default {
   tags: ['autodocs'],
   argTypes: {
   },
-  args: {
-    'aria-label': 'Test checkbox',
-  },
+  args: {},
   decorators: [
     Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
   ],
