@@ -78,19 +78,21 @@
       padding: var(--bk-list-box-multi-item-padding-block) var(--bk-list-box-multi-item-padding-inline);
       background: bk.$theme-dropdown-menu-menu-background-default;
       
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: bk.$spacing-2;
-      
       @include bk.font(bk.$font-family-body);
       font-size: bk.$font-size-m;
       
-      > .bk-list-box-multi__item__label {
+      > * {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: bk.$spacing-2;
+      }
+
+      .bk-list-box-multi__item__label {
         @include bk.text-one-line($include-padding: false);
       }
-      
-      > .bk-list-box-multi__item__icon {
+
+      .bk-list-box-multi__item__icon {
         &.bk-list-box-multi__item__icon--highlight {
           --bk-icon-accent-color: color-mix(
             in oklch, #{bk.$theme-dropdown-menu-menu-icon-background-default}, 30% transparent
