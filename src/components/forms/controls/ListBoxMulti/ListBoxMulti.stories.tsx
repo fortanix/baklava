@@ -65,6 +65,21 @@ export default {
 
 export const ListBoxMultiStandard: Story = {};
 
+export const ListBoxMultiWithLabel: Story = {
+  args: {
+    'aria-label': undefined,
+    'aria-describedby': 'my-label',
+  },
+  decorators: [
+    Story => (
+      <div>
+        <span id="my-label">My list box multi:</span>
+        <Story/>
+      </div>
+    ),
+  ],
+};
+
 export const ListBoxMultiShrink: Story = { args: { size: 'shrink' } };
 export const ListBoxMultiSmall: Story = { args: { size: 'small' } };
 export const ListBoxMultiMedium: Story = { args: { size: 'medium' } };
