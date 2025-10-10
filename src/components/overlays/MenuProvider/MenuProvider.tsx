@@ -147,7 +147,7 @@ export const MenuProvider = Object.assign(
     const {
       refs,
       placement: placementEffective,
-      floatingStyles,
+      //floatingStyles,
       getReferenceProps,
       getFloatingProps,
       isOpen,
@@ -245,7 +245,7 @@ export const MenuProvider = Object.assign(
         const props = getReferenceProps(userProps);
         return {
           ...props,
-          ref: mergeRefs(anchorRef, userPropsRef, props.ref, refs.setReference),
+          ref: mergeRefs(anchorRef, userPropsRef, props.ref),
           'aria-controls': listBoxId,
           'aria-haspopup': 'listbox',
           'aria-expanded': isOpen,
@@ -378,13 +378,6 @@ export const MenuProvider = Object.assign(
     const renderMenu = () => {
       const floatingProps = getFloatingProps({
         popover: 'manual',
-        style: floatingStyles,
-        // style: {
-        //   position: 'fixed',
-        //   positionAnchor: 'auto',
-        //   positionArea: 'bottom span-right',
-        //   positionTryFallbacks: 'flip-block',
-        // },
         ...propsRest,
         className: cx(cl['bk-menu-provider__list-box'], propsRest.className),
         onKeyDown: mergeCallbacks([propsRest.onKeyDown, handleMenuKeyDown]),
@@ -398,7 +391,6 @@ export const MenuProvider = Object.assign(
           ref={mergeRefs<React.ComponentRef<typeof ListBox.ListBox>>(
             listBoxRef,
             listBoxFocusRef,
-            refs.setFloating,
             floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBox.ListBox>>,
             //propsRest.ref,
           )}

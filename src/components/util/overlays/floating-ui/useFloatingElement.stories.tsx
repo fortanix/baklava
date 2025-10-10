@@ -85,8 +85,15 @@ export const FloatingElementNativeWithPlacementTop: Story = {
 export const FloatingElementNativeWithPlacementRight: Story = {
   args: { options: { placement: 'right' } },
 };
+export const FloatingElementNativeWithPlacementBottom: Story = {
+  args: { options: { placement: 'bottom' } },
+};
 export const FloatingElementNativeWithPlacementLeft: Story = {
   args: { options: { placement: 'left' }, },
+};
+
+export const FloatingElementNativeWithOffset: Story = {
+  args: { options: { offset: 8 }, },
 };
 
 export const FloatingElementNativeWithTriggerHover: Story = {

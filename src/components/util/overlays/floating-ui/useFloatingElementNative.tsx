@@ -179,7 +179,6 @@ export const useFloatingElementNative = (options: UseFloatingElementOptions = {}
       default: return 'block-end span-all';
     }
   }, [opts.placement]);
-  
   const getFloatingProps = React.useCallback(
     (userProps?: undefined | React.HTMLProps<Element>): Record<string, unknown> => {
       return {
@@ -193,6 +192,7 @@ export const useFloatingElementNative = (options: UseFloatingElementOptions = {}
               positionAnchor: 'auto',
               positionArea,
               positionTryFallbacks: 'flip-block',
+              margin: opts.offset,
               ...userProps,
             },
           },
