@@ -20,7 +20,9 @@ export default {
   tags: ['autodocs'],
   argTypes: {
   },
-  args: {},
+  args: {
+    'aria-label': 'Test radio',
+  },
   decorators: [
     Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
   ],

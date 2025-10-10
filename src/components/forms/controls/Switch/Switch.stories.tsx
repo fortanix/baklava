@@ -14,7 +14,9 @@ export default {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {},
+  argTypes: {
+    'aria-label': 'Test switch',
+  },
   args: {
     defaultChecked: true,
   },
@@ -30,6 +32,7 @@ export const Checked: Story = {};
 export const SwitchWithLabel: Story = {
   args: {
     'aria-describedby': 'my-label',
+    'aria-label': undefined,
   },
   decorators: [
     Story => (
