@@ -14,10 +14,9 @@ export default {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {
-    'aria-label': 'Test switch',
-  },
+  argTypes: {},
   args: {
+    'aria-label': 'Test switch',
     defaultChecked: true,
   },
   decorators: [
