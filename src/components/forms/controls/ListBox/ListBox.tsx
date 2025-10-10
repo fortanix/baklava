@@ -22,9 +22,11 @@ import {
   useListBoxSelector,
   useListBox,
   useListBoxItem,
+  useListBoxGroup,
 } from './ListBoxStore.tsx';
 
 import cl from './ListBox.module.scss';
+import { InputSearch } from '../Input/InputSearch.tsx';
 
 
 /*
@@ -98,12 +100,14 @@ export type OptionProps = ComponentProps<typeof Button> & {
   
   /** Custom icon component. */
   Icon?: undefined | ListBoxIcon,
+  
+  info?: React.ReactNode,
 };
 /**
  * A list box item that can be selected.
  */
 export const Option = (props: OptionProps) => {
-  const { unstyled, itemKey, label, icon, iconDecoration, onSelect, Icon = BkIcon, ...propsRest } = props;
+  const { unstyled, itemKey, label, icon, iconDecoration, onSelect, Icon = BkIcon, info, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef, isContentItem: true }), [itemKey]);
@@ -147,9 +151,100 @@ export const Option = (props: OptionProps) => {
         />
       }
       <TextLine className={cl['bk-list-box__item__label']}>{propsRest.children ?? label}</TextLine>
+      <div className={cl['bk-list-box__item__info']}>
+        {info}
+      </div>
     </Button>
   );
 };
+
+export const Search = (props: React.ComponentProps<'input'>) => {
+  const searchTerm = useListBoxSelector(s => s.searchTerm);
+  const setSearchTerm = useListBoxSelector(s => s.setSearchTerm);
+
+  return (
+    <InputSearch
+      {...props}
+      className={cl['bk-list-box__search-input']}
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+    />
+  );
+};
+
+
+//
+// Group
+//
+
+export type GroupProps = ComponentProps<typeof Button> & {
+  /** A unique identifier for this option. */
+  itemKey: ItemKey,
+  
+  /** An accessible name for this option. */
+  label: string,
+  
+  /** An icon to be displayed before the label. */
+  icon?: undefined | IconName,
+  
+  /** How to decorate the icon. Default: undefined (i.e. no decoration). */
+  iconDecoration?: undefined | 'highlight',
+  
+  /** A callback to be called when the option is selected. */
+  onSelect?: undefined | (() => void),
+  
+  /** Custom icon component. */
+  Icon?: undefined | ListBoxIcon,
+  
+  info?: React.ReactNode,
+};
+/**
+ * A list box item that can be selected.
+ */
+export const Group = (props: GroupProps) => {
+  const { unstyled, itemKey, label, icon, iconDecoration, onSelect, Icon = BkIcon, info, ...propsRest } = props;
+  
+  const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
+  const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef, isContentItem: true }), [itemKey]);
+  
+  const { id, disabled, isFocused, isSelected, requestSelection } = useListBoxGroup(itemDef);
+  const isNonactive = propsRest.disabled || propsRest.nonactive || disabled;
+  
+  const handlePress = React.useCallback(() => { requestSelection(); onSelect?.(); }, [requestSelection, onSelect]);
+
+  return (
+    // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<option>` for this.
+    <Button
+      unstyled
+      id={id}
+      ref={itemRef}
+      role="option"
+      tabIndex={isFocused ? 0 : -1}
+      data-item-key={itemKey}
+      aria-label={label}
+      aria-selected={isSelected}
+      {...propsRest}
+      className={cx(
+        { [cl['bk-list-box__item']]: !unstyled },
+        { [cl['bk-list-box__item--disabled']]: isNonactive },
+        cl['bk-list-box__item--group'],
+        propsRest.className,
+      )}
+      // See: https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Keyboard-navigable_JavaScript_widgets#grouping_controls
+      disabled={false} // Use `nonactive` for disabled state, so that we still allow focus
+      nonactive={isNonactive}
+      onPress={handlePress}
+    >
+      <TextLine className={cl['bk-list-box__item__label']}>{label}</TextLine>
+      
+      <div className={cl['bk-list-box__item__info']}>
+        {info}
+        {icon ? <Icon icon={icon} /> : <Icon icon="caret-right" />}
+      </div>
+    </Button>
+  );
+};
+Group.isListBoxGroup = true;
 
 
 //
@@ -273,6 +368,112 @@ export const FooterActions = (props: React.ComponentProps<'div'>) => {
   return <div {...props} className={cx(cl['bk-list-box__footer-actions'], props.className)}/>;
 };
 
+function isListBoxGroupElement(
+  node: React.ReactNode
+): node is React.ReactElement<GroupProps, typeof Group> {
+  return React.isValidElement(node) && (node.type as typeof Group).isListBoxGroup === true;
+}
+
+type OptionElement = React.ReactElement<OptionProps>;
+
+function isListBoxOptionElement(el: React.ReactNode): el is OptionElement {
+  if (!React.isValidElement(el)) return false;
+  if (typeof el.type === 'string') return false;
+
+  const props = el.props as Partial<OptionProps>;
+  return typeof props.itemKey === 'string';
+}
+
+export const GroupLayout = (props: React.ComponentProps<'div'> & { defaultView?: React.ReactNode }) => {
+  const { children, defaultView } = props;
+
+  const scrollerProps = useScroller();
+  const selectedItemKey = useListBoxSelector((s) => s.selectedItem);
+  const searchTerm = useListBoxSelector((s) => s.searchTerm)?.toLowerCase().trim() ?? '';
+
+  const allChildren = React.Children.toArray(children);
+  const groups = allChildren.filter(isListBoxGroupElement);
+
+  // If searching, flatten all group children
+  const isSearching = searchTerm.length > 0;
+  const filteredOptions = React.useMemo(() => {
+    if (!isSearching) return [];
+  
+    const results: OptionElement[] = [];
+  
+    groups.forEach((group) => {
+      React.Children.forEach(group.props.children, (option) => {
+        if (!isListBoxOptionElement(option)) return;
+      
+        const label = option.props.label?.toLowerCase() ?? '';
+        if (label.includes(searchTerm)) {
+          results.push(option);
+        }
+      });
+    });
+  
+    return results;
+  }, [groups, searchTerm, isSearching]);
+
+  const selectedGroup = React.useMemo(() => {
+    if (!selectedItemKey) return null;
+    for (const group of groups) {
+      const children = React.Children.toArray(group.props.children);
+      const foundChild = children.find(
+        (child: React.ReactNode): child is OptionElement =>
+          React.isValidElement(child) &&
+          (child.props as OptionProps)?.itemKey === selectedItemKey
+      );
+      if (foundChild) return group;
+    }
+    return groups.find((g) => g.props.itemKey === selectedItemKey) || null;
+  }, [groups, selectedItemKey]);
+
+  // --- Layout selection ---
+  let content: React.ReactNode;
+
+  const renderDefaultView = () => (
+    <div className={cx(cl['bk-list-box__group-layout__children__default-view'])}>
+      {defaultView}
+    </div>
+  );
+  
+  if (isSearching) {
+    content = (
+      <div {...scrollerProps} className={cx(cl['bk-list-box__group-layout__search-results'], scrollerProps.className)}>
+        {filteredOptions.length > 0 ? (
+          filteredOptions
+        ) : null}
+      </div>
+    );
+  } else {
+    content = (
+      <>
+        <div className={cx(cl['bk-list-box__group-layout__parents'])}>
+          {children}
+        </div>
+        <div {...scrollerProps} className={cx(cl['bk-list-box__group-layout__children'], scrollerProps.className)} >
+          {selectedGroup ?
+            selectedGroup.props.children
+              : (defaultView ? renderDefaultView() : null)}
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <div
+      className={cx(
+        cl['bk-list-box__group-layout'],
+        { [cl['is-searching']]: isSearching },
+        props.className
+      )}
+    >
+      {content}
+    </div>
+  );
+};
+
 
 //
 // List box
@@ -286,7 +487,7 @@ export type ListBoxProps = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
   ref?: undefined | React.Ref<null | ListBoxRef>,
   
   /** The (inline) size of the list box. Optional. Default: `medium`. */
-  size?: undefined | 'shrink' | 'small' | 'medium' | 'large',
+  size?: undefined | 'shrink' | 'small' | 'medium' | 'large' | 'xl',
   
   /** An accessible name for this list box. Required. */
   label: string,
@@ -511,6 +712,7 @@ export const ListBox = Object.assign(
             { [cl['bk-list-box--size-small']]: size === 'small' },
             { [cl['bk-list-box--size-medium']]: size === 'medium' },
             { [cl['bk-list-box--size-large']]: size === 'large' },
+            { [cl['bk-list-box--size-xl']]: size === 'xl' },
             listBox.props.className,
             propsRest.className,
           )}
@@ -537,6 +739,9 @@ export const ListBox = Object.assign(
   {
     Static,
     Option,
+    Group,
+    GroupLayout,
+    Search,
     Header,
     Action,
     FooterAction,
