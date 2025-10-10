@@ -34,6 +34,15 @@ describe('Button', () => {
     expect(button).toHaveTextContent('Custom Content');
   });
   
+  test('should use label as aria-label when both children and label are provided', () => {
+    render(<Button label="Accessible Name">Visible Content</Button>);
+
+    const button = screen.getByRole('button', { name: 'Accessible Name' });
+    expect(button).toBeInTheDocument();
+    expect(button).toHaveTextContent('Visible Content');
+    expect(button).toHaveAttribute('aria-label', 'Accessible Name');
+  });
+  
   describe('kinds', () => {
     test('should apply primary kind class', () => {
       render(<Button kind="primary" label="Primary" />);
