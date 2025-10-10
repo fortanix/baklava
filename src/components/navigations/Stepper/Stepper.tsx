@@ -55,7 +55,7 @@ export const Stepper = (props: StepperProps) => {
   
   return (
     <nav
-      aria-label={props['aria-label'] || 'Steps'}
+      aria-label="Steps" // Recommendation is to override this per usage
       {...propsRest}
       className={cx(
         'bk',
