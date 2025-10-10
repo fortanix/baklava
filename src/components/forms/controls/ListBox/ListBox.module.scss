@@ -44,6 +44,16 @@
       min-inline-size: 38ch;
       max-inline-size: 70svi;
     }
+    &.bk-list-box--size-xl {
+      min-inline-size: 90ch;
+      max-inline-size: 140svi;
+    }
+    
+    .bk-list-box__search-input {
+      flex: 1;
+      margin-block: bk.$spacing-2;
+      margin-inline: bk.$spacing-1;
+    }
     
     background: bk.$theme-dropdown-menu-menu-background-default;
     border: bk.rem-from-px(1) solid bk.$theme-dropdown-menu-menu-border-default;
@@ -82,12 +92,19 @@
       flex-direction: row;
       align-items: center;
       gap: bk.$spacing-2;
+      inline-size: 100%;
       
       @include bk.font(bk.$font-family-body);
       font-size: bk.$font-size-m;
       
       > .bk-list-box__item__label {
         @include bk.text-one-line($include-padding: false);
+      }
+      
+      > .bk-list-box__item__info {
+        display: flex;
+        align-items: center;
+        gap: bk.$spacing-2;
       }
       
       > .bk-list-box__item__icon {
@@ -98,7 +115,7 @@
           padding: 4px;
         }
       }
-      
+            
       // Add a separator between each item
       &:not(:nth-child(1 of .bk-list-box__item)) {
         border-block-start: bk.$size-1 solid bk.$theme-dropdown-menu-menu-border-default;
@@ -112,7 +129,7 @@
           
           @include bk.scroll-shadow($dir: start);
         }
-        
+               
         /* In the future, we could use a scroll state query to add a shadow while stuck
         @container scroll-state(stuck: top) {
           box-shadow: ...
@@ -153,9 +170,23 @@
         outline-offset: calc(-1 * var(--bk-focus-outline-width)) !important;
       }
       
-      &.bk-list-box__item--option {
+      &.bk-list-box__item--group, &.bk-list-box__item--option {
+        display: flex;
+        justify-content: space-between;
+        inline-size: 100%;
         // Options get indented a little bit more
         padding-inline-start: calc(var(--bk-list-box-item-padding-inline) + bk.$spacing-2);
+
+        .bk-list-box__item__label {
+          min-inline-size: 0;
+          flex: 1 1 auto;
+        }
+      }
+      
+      &.bk-list-box__item--option {
+        .bk-list-box__item__info {
+          margin-inline-end: calc(bk.$spacing-7 + 2px); 
+        }
       }
       
       &.bk-list-box__item--header {
@@ -181,6 +212,41 @@
         text-transform: uppercase;
       }
     }
+    
+    .bk-list-box__group-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+      block-size: 100%;
+      max-block-size: 100%;
+      min-block-size: 0;
+      border-block-start: bk.$size-1 solid bk.$theme-dropdown-menu-menu-border-default;
+ 
+      &.is-searching {
+        grid-template-columns: minmax(0, 1fr); // collapse to single column
+      }
+    
+      .bk-list-box__group-layout__children {
+        border-inline-start: bk.$size-1 solid bk.$theme-dropdown-menu-menu-border-default;
+        overflow-x: hidden;
+        min-block-size: 0;
+        
+        .bk-list-box__group-layout__children__default-view {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex: 1;
+          block-size: 100%;
+        }
+      }
+    
+      .bk-list-box__group-layout__search-results {
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+        min-block-size: 0;
+        gap: bk.$spacing-1;
+      }
+    }    
     
     // Wrapper for sticky footer items. Need a wrapper element for this, otherwise all the sticky elements will
     // overlap each other. We want them to stack.
