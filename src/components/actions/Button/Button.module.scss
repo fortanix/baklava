@@ -37,10 +37,7 @@
     
     @include bk.font(bk.$font-family-display, bk.$font-weight-semibold);
     font-size: bk.$font-size-s;
-
-    .bk-button__content {
-      text-transform: uppercase;
-    }
+    text-transform: uppercase;
     
     &.bk-button--tertiary {
       --bk-button-color-border: transparent;

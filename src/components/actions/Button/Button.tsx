@@ -145,6 +145,7 @@ export const Button = (props: ButtonProps) => {
   
   return (
     <button
+      aria-label={label}
       aria-disabled={isInteractive ? undefined : true}
       disabled={disabled}
       {...propsRest}
@@ -162,11 +163,7 @@ export const Button = (props: ButtonProps) => {
       }, props.className)}
       onClick={handleClick}
     >
-      {/* Workaround: some screenreaders read all caps as abbreviations (BUTTON = B. U. T. T. O. N.) */}
-      {/* Thus we should render content twice: once with all caps hidden for screen readers, */}
-      <div aria-hidden="true" className={cl['bk-button__content']}>{renderContent()}</div>
-      {/* and another visually hidden, without the all caps, intended for screen readers */}
-      <div className="visually-hidden">{renderContent()}</div>
+      {renderContent()}
     </button>
   );
 };
