@@ -237,6 +237,7 @@ export const CustomContent: Story = {
   ...PrimaryStory,
   args: {
     ...PrimaryStory.args,
+    'aria-label': 'Custom content', // Make sure to set an aria-label when using custom content to keep it accessible
     children: (
       <span style={{ textDecoration: 'underline' }}>
         Custom content
@@ -250,6 +251,7 @@ export const CustomContentWithIconBefore: Story = {
   name: 'Custom Content – With icon (before)',
   args: {
     ...PrimaryStory.args,
+    'aria-label': 'Button with icon',
     children: <>
       <Icon icon="status-success" className="icon"/>
       Button with icon
@@ -262,6 +264,7 @@ export const CustomContentWithIconAfter: Story = {
   name: 'Custom Content – With icon (after)',
   args: {
     ...PrimaryStory.args,
+    'aria-label': 'Button with icon',
     children: <>
       Button with icon
       <Icon icon="caret-down" className="icon"/>
@@ -279,10 +282,18 @@ export const ButtonTrimmed: Story = {
   args: {
     ...Tertiary.args,
     trimmed: true,
+    'aria-label': 'Trimmed button',
     children: <>
       Trimmed button
       <Icon icon="caret-down" className="icon"/>
     </>,
     style: { background: 'light-dark(white, black)' },
+  },
+};
+
+export const ButtonWithAriaLabel: Story = {
+  ...PrimaryStory,
+  args: {
+    'aria-label': 'Button with aria-label',
   },
 };

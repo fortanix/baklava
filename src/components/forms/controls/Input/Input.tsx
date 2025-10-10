@@ -82,6 +82,7 @@ export type InputProps = InputContainerProps & InputSpecificProps & {
 export const Input = Object.assign(
   (props: InputProps) => {
     const {
+      id,
       className,
       ref,
       unstyled = false,
@@ -145,6 +146,7 @@ export const Input = Object.assign(
         {(icon || Icon !== IconDefault) && <Icon icon={icon} aria-label={iconLabel} {...iconProps}/>}
         {prefix}
         <input
+          id={id}
           {...inputProps}
           {...propsExtracted.inputProps}
           ref={mergeRefs(inputRef, inputProps?.ref, ref)}

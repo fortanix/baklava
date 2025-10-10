@@ -36,7 +36,7 @@ describe('Button', () => {
   
   test('should use label as aria-label when both children and label are provided', () => {
     render(<Button label="Accessible Name">Visible Content</Button>);
-    
+
     const button = screen.getByRole('button', { name: 'Accessible Name' });
     expect(button).toBeInTheDocument();
     expect(button).toHaveTextContent('Visible Content');
