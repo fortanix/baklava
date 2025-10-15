@@ -296,6 +296,14 @@ export const DialogModalWithSubject: Story = {
   render: (args) => <DialogModalControlledWithSubject {...args}/>,
 };
 
+export const DialogModalWithSubjectunmountDelayZero: Story = {
+  args: {
+    trigger: undefined,
+    unmountDelay: 0,
+  },
+  render: (args) => <DialogModalControlledWithSubject {...args}/>,
+};
+
 const DialogModalControlledConfirmation = (props: React.ComponentProps<typeof DialogModal>) => {
   type Subject = { name: string };
   const [deleted, setDeleted] = React.useState(new Set());

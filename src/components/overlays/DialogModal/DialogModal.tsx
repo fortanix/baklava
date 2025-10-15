@@ -53,6 +53,9 @@ export type DialogModalProps = Omit<React.ComponentProps<typeof Dialog>, 'childr
   
   /** Whether to render the model inline or with in a portal */
   renderMethod?: undefined | ModalProviderProps['renderMethod'],
+  
+  /** How long to keep the dialog in the DOM for exit animation purposes. Default: 3 seconds. */
+  unmountDelay?: undefined | number,
 };
 
 export type ModalWithSubject<S> = {
@@ -184,6 +187,7 @@ export const DialogModal = Object.assign(
       modalRef,
       providerProps,
       renderMethod = 'portal',
+      unmountDelay = 3000, // ms
       ...propsRest
     } = props;
     
@@ -193,6 +197,7 @@ export const DialogModal = Object.assign(
         allowUserClose={allowUserClose}
         shouldCloseOnBackdropClick={display !== 'full-screen'}
         renderMethod={renderMethod}
+        unmountDelay={unmountDelay}
         dialog={dialogController =>
           <Dialog
             aria-modal="true"
