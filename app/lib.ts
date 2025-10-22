@@ -52,6 +52,7 @@ export { InputPassword } from '../src/components/forms/controls/Input/InputPassw
 export { TextArea } from '../src/components/forms/controls/TextArea/TextArea.tsx';
 export { DatePicker } from '../src/components/forms/controls/DatePicker/DatePicker.tsx';
 export { TimePicker } from '../src/components/forms/controls/TimePicker/TimePicker.tsx';
+export { DateTimePicker } from '../src/components/forms/controls/DateTimePicker/DateTimePicker.tsx';
 export { DatePickerRange } from '../src/components/forms/controls/DatePickerRange/DatePickerRange.tsx';
 export { ListBox } from '../src/components/forms/controls/ListBox/ListBox.tsx';
 export { ListBoxLazy } from '../src/components/forms/controls/ListBoxLazy/ListBoxLazy.tsx';
