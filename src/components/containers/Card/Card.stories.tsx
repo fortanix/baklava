@@ -10,6 +10,7 @@ import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Icon } from '../../graphics/Icon/Icon.tsx';
+import { Button } from '../../actions/Button/Button.tsx';
 import { Banner } from '../Banner/Banner.tsx';
 
 import { Card } from './Card.tsx';
@@ -167,6 +168,37 @@ export const CardNested: Story = {
             <LoremIpsum/>
           </Card>
         </div>
+      </>
+    ),
+  },
+};
+
+
+const suspensePromise = Promise.withResolvers();
+const SuspenseDemo = () => {
+  React.use(suspensePromise.promise);
+  
+  return 'Done';
+};
+export const CardSuspense: Story = {
+  decorators: [
+    Story => (
+      <LayoutDecorator size="small">
+        <Story/>
+        <Button kind="primary" label="Resolve" style={{ marginTop: '1lh', alignSelf: 'center' }}
+          onPress={() => { suspensePromise.resolve(null); }}
+        />
+        <Button kind="primary" label="Reject" style={{ marginTop: '1lh', alignSelf: 'center' }}
+          onPress={() => { suspensePromise.reject(new Error('Test error')); }}
+        />
+      </LayoutDecorator>
+    ),
+  ],
+  args: {
+    children: (
+      <>
+        <Card.Heading>A card</Card.Heading>
+        <SuspenseDemo/>
       </>
     ),
   },
