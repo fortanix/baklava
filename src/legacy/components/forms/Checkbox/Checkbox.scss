@@ -7,8 +7,8 @@
 
 @layer baklava.legacy {
   .bkl-checkbox {
-    --bkl-checkbox-size: 1.8rem;
-    --bkl-checkbox-border-size: 0.2rem;
+    --bkl-checkbox-size: 1.3rem;
+    --bkl-checkbox-border-size: 2px;
     
     display: block;
     padding: bkl.$sizing-xxs bkl.$sizing-none;
@@ -53,8 +53,8 @@
     .bkl-checkbox__wrapper::before {
       inline-size: 0;
       block-size: 0;
-      inset-block-start: 1rem;
-      inset-inline-start: 0.6rem;
+      inset-block-start: 0.7rem;
+      inset-inline-start: 0.4rem;
       z-index: 1;
       border: bkl.$sizing-xxs solid transparent;
       transform: rotateZ(37deg);
@@ -84,9 +84,9 @@
       &:focus-visible, &.pseudo-focus-visible {
         inline-size: calc(var(--bkl-checkbox-size) + var(--bkl-checkbox-border-size));
         block-size: calc(var(--bkl-checkbox-size) + var(--bkl-checkbox-border-size));
-        inset-block-start: 0.3rem;
+        inset-block-start: 0.2rem;
         inset-inline-start: 0;
-        border-radius: 0.2rem;
+        border-radius: 0.1rem;
         opacity: 1;
       }
     }
@@ -98,8 +98,8 @@
     }
     
     .bkl-checkbox--checked .bkl-checkbox__wrapper::before {
-      inline-size: 0.8rem;
-      block-size: 1.6rem;
+      inline-size: 0.6rem;
+      block-size: 1.1rem;
       inset-block-start: var(--bkl-checkbox-border-size);
       inset-inline-start: 0;
       border-block-start: var(--bkl-checkbox-border-size) solid transparent;
@@ -120,10 +120,10 @@
     }
     
     &.bkl-checkbox--checked .bkl-checkbox__wrapper::before {
-      inline-size: 0.8rem;
-      block-size: 1.6rem;
-      inset-block-start: var(--bkl-checkbox-border-size);
-      inset-inline-start: 0;
+      inline-size: 8px;
+      block-size: 16px;
+      inset-block-start: 3px;
+      inset-inline-start: 1px;
       border-block-start: var(--bkl-checkbox-border-size) solid transparent;
       border-inline-start: var(--bkl-checkbox-border-size) solid transparent;
       border-inline-end: var(--bkl-checkbox-border-size) solid bkl.$dark-color-1;

@@ -12,7 +12,7 @@
     flex-wrap: wrap;
     margin: bkl.$sizing-5 0 bkl.$sizing-8;
     padding: 0 bkl.$sizing-4 bkl.$sizing-3;
-    border-block-end: .1rem bkl.$neutral-color-1 solid;
+    border-block-end: 0.1rem bkl.$neutral-color-1 solid;
     
     color: bkl.$neutral-color-2;
     @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-regular);

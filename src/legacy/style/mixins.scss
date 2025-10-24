@@ -37,7 +37,7 @@
   background-color: bkl.$light-color-1;
 }
 
-@mixin circle($size: 2.5rem) {
+@mixin circle($size: 1.8rem) {
   box-sizing: border-box; // Allow padding to shrink the contents, rather than expanding the circle itself
   flex: none; // Do not allow this item to shrink/grow
   inline-size: $size;
@@ -62,7 +62,7 @@
   @include flex-center();
 }
 
-@mixin shimmer($baseColor, $highlightColor, $shimmerSize: 20rem) {
+@mixin shimmer($baseColor, $highlightColor, $shimmerSize: 14.3rem) {
   background-color: $baseColor;
   background-image: linear-gradient(
     90deg,

@@ -11,12 +11,12 @@
   .bkl-tooltip {
     position: absolute;
     z-index: z.$z-index--tooltip;
-    max-inline-size: 24rem;
+    max-inline-size: 17.1rem;
     padding: bkl.$sizing-s bkl.$sizing-s;
     
     border: 0;
     border-radius: bkl.$border-radius-s;
-    box-shadow: 0 0.1rem 0.5rem 0 var(--bkl-shadow-color);
+    box-shadow: 0 0.1rem 0.4rem 0 var(--bkl-shadow-color);
     background: var(--bkl-tooltip-bg-color);
     
     line-height: bkl.$line-height-1;
@@ -35,7 +35,7 @@
     }
     
     .bkl-tooltip__arrow {
-      --arrow-size: 0.96rem;
+      --arrow-size: 0.7rem;
       inline-size: var(--arrow-size);
       block-size: var(--arrow-size);
       
@@ -58,9 +58,9 @@
     &[data-popper-placement^="bottom"] { margin-block-start: bkl.$sizing-s; }
     &[data-popper-placement^="left"] { margin-inline-end: bkl.$sizing-s; }
     
-    &[data-popper-placement^="top"] .bkl-tooltip__arrow { inset-block-end: -0.5rem; }
-    &[data-popper-placement^="right"] .bkl-tooltip__arrow { inset-inline-start: -0.5rem; }
-    &[data-popper-placement^="bottom"] .bkl-tooltip__arrow { inset-block-start: -0.5rem; }
-    &[data-popper-placement^="left"] .bkl-tooltip__arrow { inset-inline-end: -0.5rem; }
+    &[data-popper-placement^="top"] .bkl-tooltip__arrow { inset-block-end: -0.4rem; }
+    &[data-popper-placement^="right"] .bkl-tooltip__arrow { inset-inline-start: -0.4rem; }
+    &[data-popper-placement^="bottom"] .bkl-tooltip__arrow { inset-block-start: -0.4rem; }
+    &[data-popper-placement^="left"] .bkl-tooltip__arrow { inset-inline-end: -0.4rem; }
   }
 }

@@ -56,38 +56,38 @@ $font-weight-medium: 500 !default;
 $font-weight-semibold: 600 !default;
 $font-weight-bold: 700 !default;
 
-$font-size-xxxs: 0.8rem !default;
-$font-size-xxs: 1.0rem !default;
-$font-size-xs: 1.2rem !default;
-$font-size-s: 1.4rem !default;
-$font-size-m: 1.6rem !default;
-$font-size-l: 2.0rem !default;
-$font-size-xl: 2.4rem !default;
-$font-size-xxl: 3.0rem !default;
-$font-size-xxxl: 4.2rem !default;
+$font-size-xxxs: 0.6rem !default;
+$font-size-xxs: 0.7rem !default;
+$font-size-xs: 0.9rem !default;
+$font-size-s: 1rem !default;
+$font-size-m: 1.1rem !default;
+$font-size-l: 1.4rem !default;
+$font-size-xl: 1.7rem !default;
+$font-size-xxl: 2.1rem !default;
+$font-size-xxxl: 3rem !default;
 
-$line-height-1: 1.4rem !default;
-$line-height-2: 1.7rem !default;
-$line-height-3: 1.8rem !default;
-$line-height-4: 1.9rem !default;
-$line-height-5: 2.0rem !default;
-$line-height-6: 2.2rem !default;
-$line-height-7: 2.6rem !default;
-$line-height-8: 3.0rem !default;
-$line-height-9: 3.6rem !default;
-$line-height-10: 5.4rem !default;
+$line-height-1: 1rem !default;
+$line-height-2: 1.2rem !default;
+$line-height-3: 1.3rem !default;
+$line-height-4: 1.4rem !default;
+$line-height-5: 1.4rem !default;
+$line-height-6: 1.6rem !default;
+$line-height-7: 1.9rem !default;
+$line-height-8: 2.1rem !default;
+$line-height-9: 2.6rem !default;
+$line-height-10: 3.9rem !default;
 
 // Sizings
 $sizing-0: 0 !default;
-$sizing-1: 0.3rem !default;
-$sizing-2: 0.6rem !default;
-$sizing-3: 1.2rem !default;
-$sizing-4: 1.8rem !default;
-$sizing-5: 2.4rem !default;
-$sizing-6: 3.0rem !default;
-$sizing-7: 3.6rem !default;
-$sizing-8: 4.2rem !default;
-$sizing-9: 4.8rem !default;
+$sizing-1: 0.2rem !default;
+$sizing-2: 0.4rem !default;
+$sizing-3: 0.9rem !default;
+$sizing-4: 1.3rem !default;
+$sizing-5: 1.7rem !default;
+$sizing-6: 2.1rem !default;
+$sizing-7: 2.6rem !default;
+$sizing-8: 3rem !default;
+$sizing-9: 3.4rem !default;
 
 $sizing-none: $sizing-0 !default;
 $sizing-hairline: 1px !default;
@@ -111,4 +111,4 @@ $border-radius-circle: 100% !default;
 
 // Accessibility
 $focus-outline-color: #64b3fc !default;
-$focus-outline-width: 0.2rem !default;
+$focus-outline-width: 0.1rem !default;

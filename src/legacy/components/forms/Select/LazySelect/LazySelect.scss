@@ -14,7 +14,7 @@
       flex-wrap: wrap;
       gap: bkl.$sizing-1;
       background-color: bkl.$light-color-2;
-      border: 0.2rem solid bkl.$neutral-color-1;
+      border: 0.1rem solid bkl.$neutral-color-1;
       border-radius: bkl.$border-radius-ms;
       inline-size: 100%;
       @include accessibility.focus-outset;
@@ -55,8 +55,8 @@
   
   // Note: the dropdown is portaled into the body, so this selector cannot be nested inside `.bkl-select`
   .bkl-select__dropdown.bkl-select__dropdown--lazy {
-    min-block-size: 8rem;
-    max-block-size: 28rem;
+    min-block-size: 5.7rem;
+    max-block-size: 20rem;
     
     .bkl-select__option--selected {
       background-color: bkl.$light-color-2;

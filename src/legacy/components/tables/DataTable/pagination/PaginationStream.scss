@@ -33,7 +33,7 @@
       
       .pager__nav {
         &.pager__nav--first {
-          @include mixins.circle($size: 3.5rem);
+          @include mixins.circle($size: 2.5rem);
           background: bkl.$light-color-1;
           padding: bkl.$sizing-s;
           
@@ -44,7 +44,7 @@
         }
         
         &.pager__nav--prev, &.pager__nav--next {
-          min-width: 12rem;
+          min-width: 8.6rem;
           
           display: flex;
           align-items: center;

@@ -6,12 +6,12 @@
 
 @layer baklava.legacy {
   .bkl-panel {
-    --panel-inset: 2rem;
+    --panel-inset: 1.4rem;
     
     position: relative; // For positioned child elements
     
-    min-block-size: 2rem;
-    margin-block-end: 2rem;
+    min-block-size: 1.4rem;
+    margin-block-end: 1.4rem;
     padding: var(--panel-inset);
     
     border-radius: bkl.$sizing-2;
@@ -19,7 +19,7 @@
     color: bkl.$dark-color-1;
     
     .bkl-panel__subheading { // Will typically be an <H6>
-      margin-block: 1rem 0.5rem;
+      margin-block: 0.7rem 0.4rem;
       font-weight: bkl.$font-weight-medium;
     }
     
@@ -29,18 +29,18 @@
       box-shadow: none;
       
       .bkl-panel__heading { // Will typically be an <H5>
-        margin-block-end: 0.5rem;
+        margin-block-end: 0.4rem;
       }
       
       .bkl-panel__subheading { // Will typically be an <H6>
-        margin-block: 1rem 0.5rem;
+        margin-block: 0.7rem 0.4rem;
         font-weight: bkl.$font-weight-medium;
       }
       
       p {
         margin: 0;
         padding: 0;
-        font-size: 1.4rem;
+        font-size: 1rem;
       }
       
       .columns {
@@ -52,7 +52,7 @@
           flex-grow: 1;
           
           &:not(:first-child) {
-            margin-inline-start: 2rem;
+            margin-inline-start: 1.4rem;
           }
         }
       }
@@ -60,6 +60,6 @@
   }
   
   .bkl-panel + .bkl-panel {
-    margin-block-start: 2rem;
+    margin-block-start: 1.4rem;
   }
 }

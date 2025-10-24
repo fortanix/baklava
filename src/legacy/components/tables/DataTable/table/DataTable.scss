@@ -21,7 +21,7 @@
       border-collapse: collapse;
       
       th {
-        padding: 1.5rem 0.5rem;
+        padding: 1.1rem 0.4rem;
         
         white-space: nowrap; // Header should never wrap to multiple lines
         text-overflow: ellipsis;
@@ -29,7 +29,7 @@
       }
       
       td {
-        padding: 1.5rem 0.5rem;
+        padding: 1.1rem 0.4rem;
         
         white-space: nowrap; // Prevent wrapping by default, can override this on case-by-case basis
         overflow: hidden; // Hide overflow by default; may need to override this for things like local dropdown menus
@@ -44,7 +44,7 @@
         
         th {
           cursor: default;
-          padding-block-end: 1rem;
+          padding-block-end: 0.7rem;
           
           color: bkl.$neutral-color-3;
           @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-semibold);
@@ -57,12 +57,12 @@
             
             .sort-button {
               display: flex;
-              margin-inline-start: 0.8rem;
+              margin-inline-start: 0.6rem;
             }
             
             .sort-indicator {
               align-self: baseline; // Override .bkl-icon
-              block-size: 1rem;
+              block-size: 0.7rem;
               transition: transform 240ms ease-in-out, opacity 120ms ease-in-out;
               
               &:focus-visible {
@@ -93,7 +93,7 @@
             
             // Add rounded edges to the sides of the table row
             border-radius: bkl.$border-radius-s;
-            box-shadow: -0.7rem 0 0 0 var(--datatable-body-hover), 0.7rem 0 0 0 var(--datatable-body-hover);
+            box-shadow: -0.5rem 0 0 0 var(--datatable-body-hover), 0.5rem 0 0 0 var(--datatable-body-hover);
             
             // Workaround for WebKit, where box-shadow on `tr` does not work:
             // https://stackoverflow.com/questions/5972525/table-row-box-shadow-on-hover-webkit
@@ -101,12 +101,12 @@
             > td:first-child {
               border-start-start-radius: bkl.$border-radius-s;
               border-end-start-radius: bkl.$border-radius-s;
-              box-shadow: -0.7rem 0 0 0 var(--datatable-body-hover);
+              box-shadow: -0.5rem 0 0 0 var(--datatable-body-hover);
             }
             > td:last-child {
               border-start-end-radius: bkl.$border-radius-s;
               border-end-end-radius: bkl.$border-radius-s;
-              box-shadow: 0.7rem 0 0 0 var(--datatable-body-hover);
+              box-shadow: 0.5rem 0 0 0 var(--datatable-body-hover);
             }
           }
           
@@ -155,14 +155,14 @@
       
       /* Common styling for both `thead tr` and `tbody tr`*/
       tr {
-        padding: 0.6rem 0;
+        padding: 0.4rem 0;
         
         display: flex;
         flex-direction: column;
         white-space: normal;
         
         > td, > th {
-          padding: 0.6rem 0;
+          padding: 0.4rem 0;
           
           display: flex;
           flex-direction: row;
@@ -181,8 +181,8 @@
         flex-direction: column;
         
         tr:not(.bkl-data-table__placeholder) {
-          margin: 1.5rem 0;
-          padding: 1.5rem;
+          margin: 1.1rem 0;
+          padding: 1.1rem;
           border-radius: bkl.$border-radius-ms;
           background: var(--datatable-body-hover);
           box-shadow: bkl.$sizing-hairline bkl.$sizing-hairline bkl.$sizing-hairline var(--bkl-datatable-shadow-color);
