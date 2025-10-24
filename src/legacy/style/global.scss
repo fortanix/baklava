@@ -133,17 +133,15 @@
 @mixin styles {
   :root {
     @include runtime-variables();
-    
-    font-size: 10px !important; // TEMP: just for testing legacy component stories
   }
   
+  /*
   body {
-    font-size: 16px; // TEMP
-    
     // FIXME: do we still need this (for legacy components)?
     //line-height: vars.$line-height-6;
     
     // FIXME: previously set in `Layout.css`
     //background: bkl.$light-color-2;
   }
+  */
 }
