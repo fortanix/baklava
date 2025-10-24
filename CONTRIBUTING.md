@@ -121,7 +121,7 @@ This repo is not published to npm. If you need to import this library, use the b
 
 Or, use the following URL, replacing `[tag]` with the appropriate tag (format: `v1.0.0-legacy-<date>`):
 
-https://github.com/mkrause/baklava/releases/new?target=baklava-v1-legacy&prelease=1&tag=v[tag]&title=Release%20v[tag]
+https://github.com/mkrause/baklava/releases/new?target=baklava-v1-legacy&prerelease=1&tag=v[tag]&title=Release%20v[tag]
 
 ### Syncing with upstream
 
