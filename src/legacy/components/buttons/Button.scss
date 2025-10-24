@@ -24,12 +24,12 @@
     align-items: center;
     
     block-size: fit-content;
-    line-height: 1.6rem;
+    line-height: 1.1rem;
     padding: bkl.$sizing-xs bkl.$sizing-s;
     
     background-color: transparent;
     border: 1px solid transparent;
-    border-radius: 0.4rem;
+    border-radius: 0.3rem;
     opacity: 1;
 
     @include font-button();

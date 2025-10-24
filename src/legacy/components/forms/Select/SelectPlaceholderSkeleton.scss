@@ -13,14 +13,14 @@
     padding: bkl.$sizing-3;
     
     &.bkl-select-placeholder--skeleton {
-      min-block-size: 24rem;
+      min-block-size: 17.1rem;
       align-items: stretch;
       justify-content: space-around;
       gap: bkl.$sizing-6;
       
       > .skeleton-row {
         display: block;
-        block-size: 1.4rem;
+        block-size: 1rem;
         border-radius: bkl.$border-radius-ms;
         
         @include mixins.shimmer(

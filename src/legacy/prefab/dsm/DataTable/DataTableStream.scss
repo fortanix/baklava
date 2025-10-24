@@ -26,7 +26,7 @@
               position: absolute;
               flex-wrap: nowrap;
               inset-block-start: 0;
-              inset-inline-end: 1rem;
+              inset-inline-end: 0.7rem;
               align-items: center;
               block-size: 100%;
               display: none;
@@ -39,7 +39,7 @@
               position: absolute;
               inset-inline-start: 0;
               inset-block-start: 0;
-              inline-size: .6rem;
+              inline-size: 0.4rem;
               block-size: 100%;
               background-color: bkl.$accent-color-light-2;
             }
@@ -48,7 +48,7 @@
                 display: flex;
                 .key-rotation, .download-logs, .edit-state, .remove-key, .download-key, .copy-uuid {
                   .bkl-icon {
-                    --icon-size: 1.4rem;
+                    --icon-size: 1rem;
                   }
                   color: bkl.$light-color-1;
                   background-color: bkl.$accent-color;
@@ -56,8 +56,8 @@
                   border-width: 0;
                   margin-inline-start: bkl.$sizing-m;
                   line-height: bkl.$line-height-4;
-                  inline-size: 3rem;
-                  block-size: 3rem;
+                  inline-size: 2.1rem;
+                  block-size: 2.1rem;
                   position: relative;
                   z-index: 1;
                   float: inline-end;
@@ -69,7 +69,7 @@
             }
           }
           &:not(:last-of-type) {
-            border-block-end: .1rem;
+            border-block-end: 0.1rem;
           }
         }
 

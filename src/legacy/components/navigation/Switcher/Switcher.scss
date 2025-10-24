@@ -32,8 +32,8 @@
       justify-content: center;
       gap: bkl.$sizing-xs * 1.5;
       
-      padding: 1.2rem;
-      padding-block-end: 1.1rem;
+      padding: 0.9rem;
+      padding-block-end: 0.8rem;
       background: transparent;
       min-inline-size: $button-width + bkl.$sizing-2 + bkl.$sizing-1;
       
@@ -61,7 +61,7 @@
       
       .count {
         @include mixins.capsule();
-        padding: bkl.$sizing-hairline 0.8rem;
+        padding: bkl.$sizing-hairline 0.6rem;
         min-inline-size: unset;
         background: var(--bkl-switcher-bg-color);
         color: bkl.$neutral-color-2;

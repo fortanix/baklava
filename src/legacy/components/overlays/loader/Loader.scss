@@ -28,13 +28,13 @@
     border-radius: bkl.$border-radius-l;
     
     .bkl-loader__spinner {
-      --spinner-thickness: 0.8rem;
+      --spinner-thickness: 0.6rem;
       
       border: var(--spinner-thickness) solid bkl.$neutral-color-1;
       border-block-start: var(--spinner-thickness) solid bkl.$brand-color;
       border-radius: 50%;
-      inline-size: 6rem;
-      block-size: 6rem;
+      inline-size: 4.3rem;
+      block-size: 4.3rem;
       animation: spin 1s linear infinite;
     }
   }
