@@ -50,15 +50,15 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
     padding-block: bkl.$sizing-2;
     .account-switcher__selected-icon {
       position: absolute;
-      inset-block-start: 1.3rem;
-      inset-inline-end: 0.7rem;
+      inset-block-start: 1.8rem;
+      inset-inline-end: 1rem;
       
       @include mixins.circle($size: 1.3rem);
       background-color: bkl.$status-color-success;
       
       .icon-check {
         color: bkl.$light-color-1;
-        font-size: 0.6rem * math.div(1.3, 1.8);
+        font-size: 0.8rem * math.div(1.3, 1.8);
       }
     }
     .account-switcher__name {
@@ -212,7 +212,7 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
           
           border-radius: 50%;
           background: var(--bkl-header-bg-color);
-          inline-size: 1.7rem;
+          inline-size: 2.4rem;
           color: bkl.$neutral-color-2;
         }
         
@@ -224,7 +224,7 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
         
         .icon-dropdown {
           margin-inline-start: 0.8em;
-          inline-size: 0.9rem;
+          inline-size: 1.3rem;
           color: bkl.$neutral-color-2;
         }
       }
@@ -245,7 +245,7 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
         }
         
         .count {
-          --size: 1.1rem;
+          --size: 1.6rem;
           
           @include mixins.capsule();
           position: absolute;
@@ -356,7 +356,7 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
           &__plus-icon {
             .bkl-icon {
               position: relative;
-              inset-block-start: 0.4rem;
+              inset-block-start: 0.5rem;
               inline-size: bkl.$sizing-4;
             }
             background-color: bkl.$accent-color;

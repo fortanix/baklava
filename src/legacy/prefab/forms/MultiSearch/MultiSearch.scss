@@ -14,7 +14,7 @@
     padding: $sizing-none;
     
     background-color: var(--bkl-input-bg-color);
-    border: 0.1rem solid $neutral-color-1;
+    border: 0.2rem solid $neutral-color-1;
     border-radius: $sizing-2;
     inline-size: 100%;
     
@@ -42,7 +42,7 @@
     }
     
     .bkl-search-input__search-icon, .bkl-search-input__search-key {
-      padding: 0.7rem;
+      padding: 1rem;
       padding-inline-end: $sizing-none;
     }
     

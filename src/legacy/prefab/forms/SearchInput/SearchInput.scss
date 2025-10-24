@@ -12,16 +12,16 @@
     
     .bkl-input--search__icon {
       position: absolute;
-      inset-inline-start: 0.3rem;
-      inset-block-start: 0.1rem;
+      inset-inline-start: 0.4rem;
+      inset-block-start: 0.2rem;
       z-index: 1;
-      margin: 0.7rem;
-      inline-size: 1.3rem;
+      margin: 1rem;
+      inline-size: 1.8rem;
       
       color: var(--bkl-placeholder-color);
     }
     .bkl-input__input {
-      padding-inline-start: 2.5rem !important;
+      padding-inline-start: 3.5rem !important;
     }
   }
 }

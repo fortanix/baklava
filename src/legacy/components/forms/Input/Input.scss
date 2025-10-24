@@ -11,9 +11,9 @@
     
     .bkl-input__input {
       background-color: bkl.$light-color-2;
-      border: 0.1rem solid bkl.$neutral-color-1;
+      border: 0.2rem solid bkl.$neutral-color-1;
       border-radius: bkl.$sizing-2;
-      padding: 0.7rem;
+      padding: 1rem;
       outline: none;
       inline-size: 100%;
       color: bkl.$dark-color-1;
@@ -49,7 +49,7 @@
       }
       
       &.bkl-input__input--toggle-visibility {
-        padding-inline-end: 2.9rem; // Make room for the visibility toggle
+        padding-inline-end: 4rem; // Make room for the visibility toggle
       }
       &.bkl-input__input--toggle-visibility::-webkit-outer-spin-button,
       &.bkl-input__input--toggle-visibility::-webkit-inner-spin-button {
@@ -59,13 +59,13 @@
     
     .bkl-input__input--toggle-visibility-button {
       position: absolute;
-      inset-inline-end: 0.3rem;
+      inset-inline-end: 0.4rem;
       inset-block-start: 50%;
       transform: translate(0%, -50%);
       
       .password-toggle-icon {
-        margin: 0.7rem;
-        inline-size: 1.3rem;
+        margin: 1rem;
+        inline-size: 1.8rem;
         cursor: pointer;
         font-size: bkl.$font-size-xxs;
         fill: bkl.$neutral-color-2;

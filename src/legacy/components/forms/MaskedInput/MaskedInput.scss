@@ -11,20 +11,20 @@
     
     .bkl-masked-input__visibility-button {
       position: absolute;
-      inset-inline-end: 0.3rem;
-      inset-block-start: 0.1rem;
+      inset-inline-end: 0.4rem;
+      inset-block-start: 0.2rem;
       z-index: 1;
     }
     
     .bkl-masked-input__visibility-icon {
-      margin: 0.7rem;
-      inline-size: 1.3rem;
+      margin: 1rem;
+      inline-size: 1.8rem;
       cursor: pointer;
       color: var(--bkl-input-color);
     }
     
     .bkl-input__input {
-      padding-inline-end: 2.5rem;
+      padding-inline-end: 3.5rem;
     }
   }
 }

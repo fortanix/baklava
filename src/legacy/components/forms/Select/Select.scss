@@ -20,12 +20,12 @@
         position: relative;
         display: block;
         inline-size: 100%;
-        block-size: 2.1rem;
-        min-block-size: 2.9rem;
+        block-size: 3rem;
+        min-block-size: 4rem;
         padding: bkl.$sizing-s bkl.$sizing-l bkl.$sizing-s bkl.$sizing-s;
         
         outline: none;
-        border: 0.1rem solid bkl.$neutral-color-1;
+        border: 0.2rem solid bkl.$neutral-color-1;
         border-radius: bkl.$sizing-2;
         background-color: bkl.$light-color-2;
         
@@ -69,8 +69,8 @@
       .bkl-select__caret {
         pointer-events: none;
         position: absolute;
-        inset-inline-end: 0.7rem;
-        inset-block-start: calc(50% - 0.4rem); // FIXME: use flex box to center this instead
+        inset-inline-end: 1rem;
+        inset-block-start: calc(50% - 0.5rem); // FIXME: use flex box to center this instead
         margin: auto bkl.$sizing-xs;
         z-index: 1;
         color: bkl.$neutral-color-3;
@@ -91,7 +91,7 @@
     margin-block-start: bkl.$sizing-2;
     padding: bkl.$sizing-xs;
     inline-size: 100%;
-    max-block-size: 32.1rem;
+    max-block-size: 45rem;
     overflow-y: auto;
     z-index: z.$z-index--dropdown;
     
@@ -155,9 +155,9 @@
   // TODO: To be removed when icons are added to codebase
   .bkl-caret {
     border: solid bkl.$neutral-color-3;
-    border-width: 0 0.1rem 0.1rem 0;
+    border-width: 0 .2rem .2rem 0;
     display: inline-block;
-    padding: 0.2rem;
+    padding: .3rem;
     
     &.bkl-caret--right { transform: rotate(-45deg); }
     &.bkl-caret--left { transform: rotate(135deg); }

@@ -20,7 +20,7 @@
   
   .bkl-label {
     flex: none;
-    max-inline-size: 21.4rem;
+    max-inline-size: 30rem;
     overflow: hidden;
     text-overflow: ellipsis;
     padding: bkl.$sizing-xxs bkl.$sizing-s;
@@ -45,7 +45,7 @@
     
     .bkl-label__key {
       flex: 1; // If not enough space, have key shrink first (rather than the value)
-      min-inline-size: 1.4rem;
+      min-inline-size: 2rem;
       overflow: hidden;
       text-overflow: ellipsis;
       font-weight: bkl.$font-weight-regular;
@@ -54,7 +54,7 @@
     }
     .bkl-label__value {
       flex: none; // If not enough space, have key shrink first (rather than the value)
-      min-inline-size: 1.4rem;
+      min-inline-size: 2rem;
       overflow: hidden;
       text-overflow: ellipsis;
       font-weight: bkl.$font-weight-semibold;
@@ -66,7 +66,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.5rem;
     word-break: break-all;
     text-align: center;
     
@@ -81,7 +81,7 @@
   }
   
   .bkl-labels-list--compact .bkl-label, .bkl-label--compact {
-    max-inline-size: 12.9rem;
+    max-inline-size: 18rem;
     padding: bkl.$sizing-xxs bkl.$sizing-xs;
     font-size: bkl.$font-size-xxs;
   }

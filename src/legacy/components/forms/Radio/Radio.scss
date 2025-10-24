@@ -29,8 +29,8 @@
       
       .bkl-radio__input {
         margin-inline-end: bkl.$sizing-xs;
-        inline-size: 1.3rem;
-        block-size: 1.3rem;
+        inline-size: 1.8rem;
+        block-size: 1.8rem;
         margin-block-start: bkl.$sizing-none;
         
         &:focus-visible {
@@ -65,10 +65,10 @@
       margin: bkl.$sizing-xxs bkl.$sizing-xs bkl.$sizing-xxs bkl.$sizing-none;
       z-index: z.$z-index--base;
       transition: 280ms ease;
-      inline-size: 1.3rem;
-      block-size: 1.3rem;
+      inline-size: 1.8rem;
+      block-size: 1.8rem;
       border-radius: 50%;
-      border: 0.1rem solid var(--dark-color-4);
+      border: 0.2rem solid var(--dark-color-4);
     }
     
     .bkl-radio.pseudo-focus-visible {
@@ -79,7 +79,7 @@
     }
     
     .bkl-radio--checked .bkl-radio__wrapper::before {
-      border: 0.1rem solid var(--bkl-accent-color);
+      border: 0.2rem solid var(--bkl-accent-color);
     }
     
     .bkl-radio--checked .bkl-radio__wrapper::after {
@@ -131,8 +131,8 @@
     padding: bkl.$sizing-s;
     text-transform: uppercase;
     color: bkl.$neutral-color-2;
-    min-inline-size: 23.6rem;
-    line-height: 3.6rem;
+    min-inline-size: 33rem;
+    line-height: 5rem;
     background-color: bkl.$light-color-1;
     border-radius: bkl.$border-radius-s;
     border: bkl.$sizing-hairline solid bkl.$accent-color;

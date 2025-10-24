@@ -8,8 +8,8 @@
 
 @layer baklava.legacy {
   .bkl-sidebar {
-    $sidebar-width-expanded: 15.7rem;
-    $sidebar-width-collapsed: 5.1rem;
+    $sidebar-width-expanded: 22rem;
+    $sidebar-width-collapsed: 7.2rem;
     $collapse-duration: 300ms;
     
     position: sticky;
@@ -17,7 +17,7 @@
     overflow-x: hidden;
     overflow-y: auto;
     inline-size: $sidebar-width-expanded;
-    padding: 0 1.4rem;
+    padding: 0 2rem;
     
     // Set the sidebar to cover the whole viewport height.
     block-size: 100vh;
@@ -42,7 +42,7 @@
       }
       
       img {
-        block-size: 2.9rem;
+        block-size: 4rem;
       }
     }
     
@@ -55,7 +55,7 @@
         }
         
         img {
-          block-size: 4.3rem;
+          block-size: 6rem;
           inline-size: auto;
         }
       }
@@ -64,12 +64,12 @@
     &--collapsed-button {
       padding: 0 !important;
       position: absolute;
-      inset-block-end: 1.4rem;
+      inset-block-end: 2rem;
       
       .bkl-icon {
         z-index: 1;
-        inline-size: 1.4rem;
-        block-size: 1.4rem;
+        inline-size: 2rem;
+        block-size: 2rem;
         cursor: pointer;
       }
     }

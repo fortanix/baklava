@@ -9,18 +9,18 @@
 @layer baklava.legacy {
   .bkl-nav {
     &:first-of-type {
-      margin-block-start: 1.8rem;
+      margin-block-start: 2.5rem;
     }
     
     &:not(:first-of-type) {
-      margin-block-start: 0.7rem;
+      margin-block-start: 1rem;
       border-block-start: 1px solid var(--sidebar-nav-border);
     }
     
-    padding: 0.7rem 0;
+    padding: 1rem 0;
     
     header {
-      margin-block: 0.4rem 0.7rem;
+      margin-block: 0.5rem 1rem;
       
       color: var(--sidebar-nav-header-default);
       text-transform: uppercase;
@@ -45,8 +45,8 @@
       &__link {
         display: flex;
         align-items: center;
-        margin: bkl.$sizing-0 -0.7rem;
-        padding: 0.6rem 1.4rem;
+        margin: bkl.$sizing-0 -1rem;
+        padding: 0.8rem 2rem;
         @include mixins.rounded;
         color: var(--bkl-dark-color-1);
         @include mixins.font($family: bkl.$font-family-display, $weight: bkl.$font-weight-medium);

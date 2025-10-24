@@ -19,10 +19,10 @@
     .pager.pager--indexed {
       display: flex;
       align-items: center;
-      gap: 0.7rem;
+      gap: 1rem;
       
       .pager__nav {
-        font-size: 0.4rem;
+        font-size: 0.6rem;
         
         @include mixins.circle(2.4rem);
         padding: bkl.$sizing-2;
@@ -40,7 +40,7 @@
       .pager__indices {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
         
         .page-button,
         .pager__indices__separator {

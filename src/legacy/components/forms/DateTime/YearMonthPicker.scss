@@ -26,7 +26,7 @@
         
         &.active {
           .bkl-caret {
-            border-width: 0 0.1rem 0.1rem 0;
+            border-width: 0 0.2rem 0.2rem 0;
           }
         }
       }
@@ -85,7 +85,7 @@
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
         gap: bkl.$sizing-1 + bkl.$sizing-2;
-        min-inline-size: 23.9rem;
+        min-inline-size: 33.5rem;
         
         .bkl-year-month-picker__month {
           @include mixins.font($family: bkl.$font-family-body, $weight: bkl.$font-weight-regular, $size: bkl.$font-size-xs);

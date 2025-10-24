@@ -8,7 +8,7 @@
 
 @layer baklava.legacy {
   .bkl-table-placeholder {
-    min-height: 28.6rem;
+    min-height: 40rem;
     padding: bkl.$sizing-l;
     
     display: flex;
@@ -48,14 +48,14 @@
         
         .icon-cross {
           position: absolute;
-          top: 1rem;
-          right: 1.1rem;
+          top: 1.4rem;
+          right: 1.6rem;
           
           @include mixins.circle($size: 1.8rem);
           background: bkl.$status-color-error;
           color: bkl.$light-color-1;
           
-          border: 0.1rem solid bkl.$light-color-1;
+          border: 0.2rem solid bkl.$light-color-1;
         }
       }
     }
@@ -65,7 +65,7 @@
     background: hsla(37, 91%, 55%, 0.04);
     border: 1px solid var(--datatable-color);
     padding: bkl.$sizing-3 (bkl.$sizing-4 + bkl.$sizing-1);
-    height: 3.7rem;
+    height: 5.2rem;
     display: flex;
     align-items: center;
 
@@ -88,11 +88,11 @@
   .bkl-table-placeholder.bkl-table-placeholder--skeleton {
     align-items: stretch;
     justify-content: space-around;
-    gap: 0.7rem;
+    gap: 1rem;
     
     > .skeleton-row {
       display: block;
-      height: 1.1rem;
+      height: 1.5rem;
       border-radius: bkl.$border-radius-ms;
       
       @include mixins.shimmer(
