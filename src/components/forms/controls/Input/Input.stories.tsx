@@ -32,8 +32,7 @@ export default {
 } satisfies Meta<InputArgs>;
 
 
-export const InputStandard: Story = {
-};
+export const InputStandard: Story = {};
 
 export const InputFocused: Story = {
   args: {
@@ -133,4 +132,9 @@ export const InputWithAutomaticResizing: Story = {
     // Add an action to test whether resizing works correctly with additional UI
     actions: <Input.Action icon="caret-down" label="Open menu" onPress={() => { notify.info('Clicked'); }}/>,
   },
+};
+
+/** The `id` prop should be applied to the inner `<input>`. */
+export const InputWithId: Story = {
+  args: { id: 'test-id' },
 };

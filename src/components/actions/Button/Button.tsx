@@ -38,9 +38,8 @@ export type ButtonProps = React.PropsWithChildren<Omit<ComponentProps<'button'>,
   
   /**
    * Which visual variant to use. Default: 'normal'.
-   * @deprecated The `card` variant is no longer used.
    */
-  variant?: undefined | 'normal' | 'card',
+  variant?: undefined | 'normal',
   
   /**
    * Whether the button is disabled. This is meant for essentially permanent disabled buttons, not for buttons that
@@ -144,12 +143,9 @@ export const Button = (props: ButtonProps) => {
     buttonType = 'submit';
   }
   
-  // If both children and label are specified, use the `label` as the accessible name by default
-  const accessibleName = typeof children !== 'undefined' && label ? label : undefined;
-  
   return (
     <button
-      aria-label={accessibleName}
+      aria-label={label}
       aria-disabled={isInteractive ? undefined : true}
       disabled={disabled}
       {...propsRest}
@@ -161,7 +157,6 @@ export const Button = (props: ButtonProps) => {
         [cl['bk-button--primary']]: kind === 'primary',
         [cl['bk-button--secondary']]: kind === 'secondary',
         [cl['bk-button--tertiary']]: kind === 'tertiary',
-        [cl['bk-button--card']]: variant === 'card',
         [cl['bk-button--disabled']]: !isInteractive,
         [cl['bk-button--nonactive']]: isNonactive,
         'nonactive': isNonactive, // Global class name so that consumers can style nonactive states

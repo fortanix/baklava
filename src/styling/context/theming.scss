@@ -15,7 +15,7 @@ a `light-dark()` expression in a variable and reuse that in a different theme. M
 @mixin theme-variables {
   --bk-page-color-text: #{bk.$theme-text-body-default};
   --bk-page-color-background: #{bk.$theme-page-default};
-  --bk-focus-outline-color: light-dark(#81bcec, #81bcec); // FIXME: need the outline colors
+  --bk-focus-outline-color: #{bk.$theme-focused-default};
   --bk-focus-outline-width: 0.2rem;
 }
 

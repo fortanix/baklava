@@ -21,7 +21,7 @@ export default {
   },
   argTypes: {},
   args: {
-    'aria-label': 'Visible',
+    label: 'Visible',
     icon: 'eye-open',
     onPress: () => { notify.info(`You clicked the icon button`); },
   },

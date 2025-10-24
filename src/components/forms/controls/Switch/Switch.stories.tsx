@@ -28,6 +28,21 @@ export default {
 
 export const Checked: Story = {};
 
+export const SwitchWithLabel: Story = {
+  args: {
+    'aria-describedby': 'my-label',
+    'aria-label': undefined,
+  },
+  decorators: [
+    Story => (
+      <div>
+        <span id="my-label">My switch:</span>
+        <Story/>
+      </div>
+    ),
+  ],
+};
+
 export const Unchecked: Story = {
   args: { defaultChecked: false },
 };

@@ -62,3 +62,51 @@ export const DateNotSet: Story = {
     );
   }
 };
+
+/**
+ * For accessibility, the date picker should be associated with a `<label>` element that provides an accessible name.
+ */
+export const DateWithLabel: Story = {
+  render: (args) => {
+    const [startDate, setStartDate] = React.useState<Date | null>(null);
+    
+    return (
+      <>
+        {/* biome-ignore lint/a11y/noLabelWithoutControl: There is an input inside `DatePicker` */}
+        <label style={{ blockSize: 500 }}>
+          Date input:
+          <DatePicker
+            {...args}
+            selected={startDate}
+            onChange={(date: Date | null) => { setStartDate(date) }}
+          />
+        </label>
+        <p>Date selected: {startDate?.toDateString()}</p>
+      </>
+    );
+  }
+};
+
+/**
+ * The label may be visually hidden if you don't want to display it to non-assistive technology users.
+ */
+export const DateWithVisuallyHiddenLabel: Story = {
+  render: (args) => {
+    const [startDate, setStartDate] = React.useState<Date | null>(null);
+    
+    return (
+      <>
+        {/* biome-ignore lint/a11y/noLabelWithoutControl: There is an input inside `DatePicker` */}
+        <label style={{ blockSize: 500 }}>
+          <span className="visually-hidden">Date input:</span>
+          <DatePicker
+            {...args}
+            selected={startDate}
+            onChange={(date: Date | null) => { setStartDate(date) }}
+          />
+        </label>
+        <p>Date selected: {startDate?.toDateString()}</p>
+      </>
+    );
+  }
+};

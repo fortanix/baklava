@@ -20,7 +20,7 @@ export type IconButtonProps = React.PropsWithChildren<ComponentProps<typeof Butt
   /** Class name to apply to the icon. */
   iconClassName?: undefined | ClassNameArgument,
   
-  /** The accessible name for the icon. */
+  /** The accessible name for the icon, used as aria-label. */
   label: string,
   
   /** The icon to use as button label. */

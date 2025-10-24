@@ -33,7 +33,7 @@ export const TimePickerStory: Story = {
 
     return (
       <div>
-        <TimePicker aria-label="Example time picker" time={time} onUpdate={setTime}/>
+        <TimePicker time={time} onUpdate={setTime}/>
         <p>
           The selected time is: <time>{time.hours}:{time.minutes}</time>
         </p>

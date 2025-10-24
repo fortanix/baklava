@@ -21,7 +21,7 @@ export default {
   argTypes: {
   },
   args: {
-    'aria-label': 'Test radio button',
+    'aria-label': 'Test radio',
   },
   decorators: [
     Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,

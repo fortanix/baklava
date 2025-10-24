@@ -35,7 +35,7 @@ To create a new release:
 VERSION=x.y.z
 
 # Bump the version and create a PR
-if [ "$VERSION" = "x.y.z" ]; then echo "\n\nDid you forget to change the VERSION?"; else
+if [ -z "$VERSION" ] || [ "$VERSION" = "x.y.z" ]; then echo "\n\nDid you forget to change the VERSION?"; else
 git checkout -b release/v${VERSION}
 sed -i.bak "s/version: '.*'/version: '${VERSION}'/" package.json.js
 rm package.json.js.bak

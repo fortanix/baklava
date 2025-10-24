@@ -68,7 +68,6 @@ export const DateTimePicker = (props: DateTimePickerProps) => {
       )}
     >
       <DatePicker
-        aria-label="Date input"
         selected={date}
         onChange={onChange}
         dateFormat={dateFormat}
@@ -77,7 +76,6 @@ export const DateTimePicker = (props: DateTimePickerProps) => {
         {...(maxDate ? { maxDate: new Date(maxDate) } : {})}
       />
       <TimePicker
-        aria-label="Time input"
         time={time}
         onUpdate={onTimeUpdate}
         className={cx(cl['bk-date-time-picker--time-picker'])}

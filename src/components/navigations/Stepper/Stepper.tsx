@@ -87,7 +87,8 @@ export const Stepper = (props: StepperProps) => {
                 )}
                 onPress={() => { onSwitch(step.stepKey); }}
               >
-                <span aria-label={`Step ${stepNumber}:`} className={cx(cl['bk-stepper__item__indicator'])}>
+                <span className="visually-hidden">Step {stepNumber}{isChecked && ' (checked)'}</span>
+                <span className={cx(cl['bk-stepper__item__indicator'])} aria-hidden="true">
                   {isChecked
                     ? <Icon icon="check" className={cx(cl['bk-stepper__item__indicator__icon'])}/> 
                     : stepNumber
