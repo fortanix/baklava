@@ -1,0 +1,16 @@
+
+@use '../style/variables.scss' as bkl;
+
+@layer storybook {
+  .typography__font-sizes {
+    .font-size-1rem { font-size: 1rem; }
+    
+    .font-size-xxs { font-size: bkl.$font-size-xxs; }
+    .font-size-xs { font-size: bkl.$font-size-xs; }
+    .font-size-s { font-size: bkl.$font-size-s; }
+    .font-size-m { font-size: bkl.$font-size-m; }
+    .font-size-l { font-size: bkl.$font-size-l; }
+    .font-size-xl { font-size: bkl.$font-size-xl; }
+    .font-size-xxl { font-size: bkl.$font-size-xxl; }
+  }
+}
