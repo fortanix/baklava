@@ -54,7 +54,7 @@
   "include": [
     "app",
     "src",
-    "tests/installation",
+    //"tests/installation", // Don't type check this, will fail in CI due to missing `node_modules`
   ],
   "exclude": [
     "node_modules",
