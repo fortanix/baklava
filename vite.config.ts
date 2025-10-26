@@ -21,7 +21,7 @@ const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(file
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 
-export default defineConfig(({ mode, command }) => ({
+export default defineConfig({
   root: './app', // Run with `app` as root, so that files like `index.html` are by default referenced from there
   base: './', // Assets base URL
   
@@ -109,10 +109,6 @@ export default defineConfig(({ mode, command }) => ({
       // Do not include React in the output (rely on the consumer to bring their own version)
       external: ['react', 'react/jsx-runtime', 'react-router-dom'],
       
-      // input: {
-      //   baklava: path.resolve(__dirname, 'app/main.tsx'),
-      // },
-      
       // input: Object.fromEntries(
       //   glob.sync('src/**/*.{ts,tsx}', {
       //     ignore: ['src/**/*.d.ts'],
@@ -177,4 +173,4 @@ export default defineConfig(({ mode, command }) => ({
       },
     ],
   },
-}));
+});

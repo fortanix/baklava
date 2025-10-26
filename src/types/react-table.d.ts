@@ -156,10 +156,6 @@ declare module 'react-table' {
       UseSortByColumnProps<D>,
       CustomColumnProps {}
   
-  export interface TableHeaderProps {
-    onClick: (event: React.MouseEvent) => void,
-  }
-  
   export interface Cell<D, V = unknown>
     extends UseGroupByCellProps<D>,
       UseRowStateCellProps<D> {}
@@ -169,4 +165,9 @@ declare module 'react-table' {
       UseGroupByRowProps<D>,
       UseRowSelectRowProps<D>,
       UseRowStateRowProps<D> {}
+  
+  // LEGACY
+  export interface TableHeaderProps {
+    onClick: (event: React.MouseEvent) => void,
+  }
 }
