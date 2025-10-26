@@ -3,6 +3,6 @@
  * the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { configure } from '@testing-library/react';
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom'; // Extends `expect` with DOM element utilities
 
-//configure({ testIdAttribute: 'data-label' });
+configure({ testIdAttribute: 'data-label' });

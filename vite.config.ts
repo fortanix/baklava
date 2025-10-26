@@ -96,9 +96,8 @@ export default defineConfig({
     copyPublicDir: false, // Do not copy `./public` into the output dir
     outDir: path.resolve(__dirname, 'dist'),
     lib: {
-      entry: path.resolve(__dirname, 'app/lib.ts'),
-      name: 'baklava',
-      fileName: 'baklava',
+      entry: path.resolve(__dirname, 'app/baklava.ts'),
+      fileName: (_format, entryName) => `${entryName}.js`,
       //cssFileName: 'baklava',
       formats: ['es'],
     },
