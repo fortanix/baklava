@@ -151,7 +151,7 @@ $account-switcher-logo-container-spacing: math.div(bkl.$sizing-6, 2);
       align-items: center;
       
       & > * {
-        margin-inline-end: math.floor(math.div(bkl.$sizing-8, 2));
+        margin-inline-end: math.div(bkl.$sizing-8, 2);
       }
       
       .sysadmin-account-selector {

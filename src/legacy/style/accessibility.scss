@@ -3,6 +3,15 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 @use './variables.scss' as bkl;
 
+@mixin focus-hidden($override-layer: true) {
+  --bk-focus-color-anim: transparent; // Start transparent for animation purposes
+  
+  &, &.pseudo-focus-visible {
+    box-shadow: none if($override-layer, !important, null);
+    outline: none if($override-layer, !important, null);
+  }
+}
+
 // Configure an element with a focus outline outset from the element.
 @mixin focus-outset($override-layer: true) {
   --bkl-focus-color-anim: transparent; // Start transparent for animation purposes

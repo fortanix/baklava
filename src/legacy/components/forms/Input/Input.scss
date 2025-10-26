@@ -8,6 +8,7 @@
 @layer baklava.legacy {
   .bkl-input {
     position: relative;
+    text-align: start; // Align inputs to start, even in a `text-align: center` context
     
     .bkl-input__input {
       background-color: bkl.$light-color-2;

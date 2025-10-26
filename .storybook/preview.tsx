@@ -178,6 +178,10 @@ const preview = {
           ],
           'legacy',
           [
+            'docs',
+            [
+              'Typography',
+            ],
             'components',
             [
               'typography',
