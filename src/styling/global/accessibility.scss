@@ -86,10 +86,11 @@
   */
   
   $elements-with-inset: div, section, dialog;
-  [tabindex]:is(#{$elements-with-inset}) {
+  $inset-selector: '[tabindex]:is(#{$elements-with-inset})';
+  *:is(#{$inset-selector}) {
     @include focus-inset($override-layer: false);
   }
-  :not([tabindex]:is(#{$elements-with-inset})) {
+  *:not(#{$inset-selector}) {
     @include focus-outset($override-layer: false);
   }
   

@@ -30,6 +30,8 @@
   "typescript.tsdk": "node_modules/typescript/lib", // Use the TypeScript SDK from the current project
   "typescript.preferences.autoImportFileExcludePatterns": [
     "app/lib.ts",
+    "app/baklava.ts",
+    "app/legacy.ts",
     "storybook/internal/**/*"
   ],
   

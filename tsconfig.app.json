@@ -54,6 +54,7 @@
   "include": [
     "app",
     "src",
+    "tests/installation",
   ],
   "exclude": [
     "node_modules",
