@@ -101,7 +101,7 @@ export default defineConfig(({ mode, command }) => ({
         path.resolve(__dirname, 'app/baklava.ts'),
         path.resolve(__dirname, 'app/legacy.ts'),
       ],
-      fileName: (_format, entryName) => `${entryName}.ts`,
+      fileName: (_format, entryName) => `${entryName}.js`,
       //cssFileName: 'baklava',
       formats: ['es'],
     },
