@@ -6,7 +6,9 @@ import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
 import { Button } from '../Button/Button.tsx';
+import { ButtonAsLink } from '../ButtonAsLink/ButtonAsLink.tsx';
 import { Link } from '../Link/Link.tsx';
+import { LinkAsButton } from '../LinkAsButton/LinkAsButton.tsx';
 import { Card } from '../../containers/Card/Card.tsx';
 
 import cl from './CardAction.module.scss';
@@ -21,6 +23,12 @@ const CardActionButton = (props: React.ComponentProps<typeof Button>) =>
     className={cx(cl['bk-card-action__action'], cl['bk-card-action__action--button'], props.className)}
   />;
 
+const CardActionButtonAsLink = (props: React.ComponentProps<typeof ButtonAsLink>) =>
+  <ButtonAsLink
+    {...props}
+    className={cx(cl['bk-card-action__action'], cl['bk-card-action__action--link'], props.className)}
+  />;
+
 type CardActionLinkProps = React.ComponentProps<typeof Link> & {
   Link?: undefined | React.ComponentType< React.ComponentProps<typeof Link>>,
 };
@@ -28,6 +36,16 @@ const CardActionLink = ({ Link: LinkC = Link, ...propsRest }: CardActionLinkProp
   <LinkC
     {...propsRest}
     className={cx(cl['bk-card-action__action'], cl['bk-card-action__action--link'], propsRest.className)}
+  />;
+
+type CardActionLinkAsButtonProps = React.ComponentProps<typeof LinkAsButton> & {
+  LinkAsButton?: undefined | React.ComponentType< React.ComponentProps<typeof LinkAsButton>>,
+};
+const CardActionLinkAsButton = ({ LinkAsButton: LinkC = LinkAsButton, ...propsRest }: CardActionLinkAsButtonProps) =>
+  <LinkC
+    kind="primary"
+    {...propsRest}
+    className={cx(cl['bk-card-action__action'], cl['bk-card-action__action--button'], propsRest.className)}
   />;
 
 const CardActionHeading = (props: React.ComponentProps<typeof Card.Heading>) =>
@@ -72,7 +90,9 @@ export const CardAction = Object.assign(
   },
   {
     Button: CardActionButton,
+    ButtonAsLink: CardActionButtonAsLink,
     Link: CardActionLink,
+    LinkAsButton: CardActionLinkAsButton,
     Heading: CardActionHeading,
     Content: CardActionContent,
   },

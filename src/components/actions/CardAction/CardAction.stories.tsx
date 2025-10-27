@@ -80,6 +80,29 @@ export const CardActionSelected: Story = {
   },
 };
 
+export const CardActionDisabled: Story = {
+  args: {
+    children: (
+      <>
+        <CardAction.Content>Some content</CardAction.Content>
+        <CardAction.Button disabled label="Disabled" onPress={handlePress}/>
+      </>
+    ),
+  },
+};
+
+export const CardActionSelectedDisabled: Story = {
+  args: {
+    selected: true,
+    children: (
+      <>
+        <CardAction.Content>Some content</CardAction.Content>
+        <CardAction.Button disabled label="Disabled" onPress={handlePress}/>
+      </>
+    ),
+  },
+};
+
 export const CardActionWithCustomButton: Story = {
   args: {
     children: (
@@ -103,14 +126,36 @@ export const CardActionWithLink: Story = {
   },
 };
 
-const LinkAsButtonC = (props: React.ComponentProps<typeof Link>) =>
-  <LinkAsButton {...props} href="/" kind="primary" style={{ alignSelf: 'stretch' }} onClick={handleClick}/>;
+const CustomLinkC = (props: React.ComponentProps<typeof Link>) =>
+  <LinkAsButton {...props} kind="secondary" href="/" style={{ alignSelf: 'stretch' }} onClick={handleClick}/>;
+export const CardActionWithCustomLink: Story = {
+  args: {
+    children: (
+      <>
+        <CardAction.Content>Some content</CardAction.Content>
+        <CardAction.Link Link={CustomLinkC}>Custom link</CardAction.Link>
+      </>
+    ),
+  },
+};
+
+export const CardActionWithButtonAsLink: Story = {
+  args: {
+    children: (
+      <>
+        <CardAction.Content>Some content</CardAction.Content>
+        <CardAction.ButtonAsLink>Button as link</CardAction.ButtonAsLink>
+      </>
+    ),
+  },
+};
+
 export const CardActionWithLinkAsButton: Story = {
   args: {
     children: (
       <>
         <CardAction.Content>Some content</CardAction.Content>
-        <CardAction.Link Link={LinkAsButtonC}>Link</CardAction.Link>
+        <CardAction.LinkAsButton Link={DummyBkLinkWithNotify}>Link as button</CardAction.LinkAsButton>
       </>
     ),
   },
