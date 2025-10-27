@@ -19,10 +19,18 @@ export { cl as ToasterClassNames };
 
 export type { ToastDescriptor };
 
+export type PromiseToastOptions<T = any> = {
+  loading?: string | Omit<ToastDescriptor, 'variant'>,
+  success?: string | ((data: T) => string) | Omit<ToastDescriptor, 'variant'> | ((data: T) => Omit<ToastDescriptor, 'variant'>),
+  error?: string | ((error: any) => string) | Omit<ToastDescriptor, 'variant'> | ((error: any) => Omit<ToastDescriptor, 'variant'>),
+  options?: ToastOptions,
+};
+
 export const createToastNotifier = (toastStore: ToastStore) => {
   const notify = (toast: ToastDescriptor) => {
     const toastId = toastStore.uniqueId();
     toastStore.announceToast(toastId, toast);
+    return toastId;
   };
   const notifyVariant = (
     variant: BannerVariant,
@@ -32,8 +40,78 @@ export const createToastNotifier = (toastStore: ToastStore) => {
     const descriptor: ToastDescriptor = typeof toast === 'string'
       ? { variant, message: toast, options }
       : { ...toast, variant, options: { ...toast.options, ...(options ?? {}) } };
-    notify(descriptor);
+    return notify(descriptor);
   };
+  
+  const promiseMethod = async <T = any>(
+    promise: Promise<T>,
+    options: PromiseToastOptions<T>
+  ): Promise<T> => {
+    let loadingToastId: ToastId | null = null;
+    
+    // Show loading toast if provided
+    if (options.loading) {
+      const loadingDescriptor: ToastDescriptor = typeof options.loading === 'string'
+        ? { variant: 'info', message: options.loading, options: { autoClose: false, ...options.options } }
+        : { ...options.loading, variant: 'info', options: { autoClose: false, ...options.loading.options, ...options.options } };
+      loadingToastId = notify(loadingDescriptor);
+    }
+    
+    try {
+      const data = await promise;
+      
+      // Dismiss loading toast
+      if (loadingToastId) {
+        toastStore.dismissToast(loadingToastId);
+      }
+      
+      // Show success toast if provided
+      if (options.success) {
+        let successDescriptor: ToastDescriptor;
+        
+        if (typeof options.success === 'string') {
+          successDescriptor = { variant: 'success', message: options.success, options: options.options };
+        } else if (typeof options.success === 'function') {
+          const result = options.success(data);
+          successDescriptor = typeof result === 'string'
+            ? { variant: 'success', message: result, options: options.options }
+            : { ...result, variant: 'success', options: { ...result.options, ...options.options } };
+        } else {
+          successDescriptor = { ...options.success, variant: 'success', options: { ...options.success.options, ...options.options } };
+        }
+        
+        notify(successDescriptor);
+      }
+      
+      return data;
+    } catch (error: any) {
+      // Dismiss loading toast
+      if (loadingToastId) {
+        toastStore.dismissToast(loadingToastId);
+      }
+      
+      // Show error toast if provided
+      if (options.error) {
+        let errorDescriptor: ToastDescriptor;
+        
+        if (typeof options.error === 'string') {
+          errorDescriptor = { variant: 'error', message: options.error, options: options.options };
+        } else if (typeof options.error === 'function') {
+          const result = options.error(error);
+          errorDescriptor = typeof result === 'string'
+            ? { variant: 'error', message: result, options: options.options }
+            : { ...result, variant: 'error', options: { ...result.options, ...options.options } };
+        } else {
+          errorDescriptor = { ...options.error, variant: 'error', options: { ...options.error.options, ...options.options } };
+        }
+        
+        notify(errorDescriptor);
+      }
+      
+      throw error; // Re-throw the error so the caller can handle it
+    }
+  };
+  
   return Object.assign(notify, {
     info: (toast: string | Omit<ToastDescriptor, 'variant'>, options?: undefined | ToastOptions) =>
       notifyVariant('info', toast, options),
@@ -43,6 +121,7 @@ export const createToastNotifier = (toastStore: ToastStore) => {
       notifyVariant('error', toast, options),
     success: (toast: string | Omit<ToastDescriptor, 'variant'>, options?: undefined | ToastOptions) =>
       notifyVariant('success', toast, options),
+    promise: promiseMethod,
     dismiss: (toastId: ToastId) => {
       toastStore.dismissToast(toastId);
     },
