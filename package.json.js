@@ -128,13 +128,13 @@ const packageConfig = {
     'playwright': '^1.55.0',
     
     // Storybook
-    'storybook': '^9.1.5',
-    '@storybook/react-vite': '^9.1.5',
-    '@storybook/addon-a11y': '^9.1.5',
+    'storybook': '^9.1.7',
+    '@storybook/react-vite': '^9.1.7',
+    '@storybook/addon-a11y': '^9.1.7',
     '@storybook/addon-designs': '^10.0.2',
-    '@storybook/addon-docs': '^9.1.5',
-    '@storybook/addon-links': '^9.1.5',
-    '@storybook/addon-vitest': '^9.1.5',
+    '@storybook/addon-docs': '^9.1.7',
+    '@storybook/addon-links': '^9.1.7',
+    '@storybook/addon-vitest': '^9.1.7',
     'chromatic': '^13.1.4',
     '@chromatic-com/storybook': '^4.1.1', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',

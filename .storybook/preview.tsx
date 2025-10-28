@@ -172,6 +172,10 @@ const preview = {
             ],
             'PublicLayout',
           ],
+          'fortanix',
+          [
+            'FortanixLogo',
+          ],
         ],
       },
     },

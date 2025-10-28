@@ -57,10 +57,10 @@ import type {
 
 
 interface CustomColumnProps {
-  configurable?: boolean,
-  primary?: boolean,
-  label?: string,
-  bkColumnWidth?: {
+  configurable?: undefined | boolean,
+  primary?: undefined | boolean,
+  label?: undefined | string,
+  bkColumnWidth?: undefined | {
     flex: number,
     width: string,
   },
@@ -135,8 +135,8 @@ declare module 'react-table' {
     
   
   interface BaklavaCustomColumnInterface {
-    className?: string,
-    style?: CSSProperties | undefined,
+    className?: undefined | string,
+    style?: undefined | CSSProperties,
   }
 
   export interface ColumnInterface<D>
