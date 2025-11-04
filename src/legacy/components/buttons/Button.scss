@@ -37,7 +37,7 @@
     transition: .3s ease;
     
     &:hover {
-      color: var(--bkl-button-hover-color);
+      color: var(--bkl-button-tertiary-default-hover-color);
     }
     
     &:is(:focus-visible, .pseudo-focus-visible) {
@@ -48,7 +48,7 @@
     // Note: generally we just used `:disabled`, but sometimes it's useful to have a class to make a button look
     // disabled without it actually being in disabled state (e.g. React disabled button mouseEnter/mouseLeave bug).
     &:disabled, &.disabled {
-      color: var(--bkl-button-disabled-text-color);
+      color: var(--bkl-button-tertiary-default-disabled-color);
       cursor: not-allowed;
 
       .bkl-icon {
@@ -57,16 +57,16 @@
     }
     
     &.bkl-button--primary {
-      background-color: bkl.$accent-color;
+      background-color: var(--bkl-button-primary-default-color);
       color: var(--bkl-button-text-default);
       
       &:hover {
-        background-color: var(--bkl-button-hover-color);
+        background-color: var(--bkl-button-primary-hover-color);
       }
       
       &:disabled, &.disabled {
-        background-color: var(--bkl-button-disabled-color);
-        color: var(--bkl-button-disabled-text-color);
+        background-color: var(--bkl-button-primary-disabled-color);
+        color: var(--bkl-button-primary-disabled-text-color);
       }
     }
     
@@ -80,16 +80,16 @@
     }
     
     &.bkl-button--light {
-      border: 1px solid bkl.$accent-color;
-      color: var(--bkl-button-text-default);
+      border: 1px solid var(--bkl-button-secondary-default-color);
+      color: var(--bkl-button-secondary-default-color);
       
       &:hover {
-        border: 1px solid var(--bkl-button-hover-color);
+        border: 1px solid var(--bkl-button-secondary-hover-color);
       }
       
       &:disabled, &.disabled {
-        color: var(--bkl-button-disabled-text-color);
-        border-color: var(--bkl-button-disabled-color);
+        color: var(--bkl-button-secondary-disabled-text-color);
+        border-color: var(--bkl-button-secondary-disabled-color);
       }
     }
     

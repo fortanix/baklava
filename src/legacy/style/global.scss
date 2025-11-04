@@ -18,7 +18,7 @@
   --brand-color-light-2: #5F6089; // #6e7fbb;
   --brand-color-light-3: #383962; // #6c6e9b;
   
-  --accent-color: #178DFB;
+  --accent-color: #1064b2;
   --accent-color-dark-1: #00838f;
   --accent-color-light-1: oklch(25.41% 0.0442 212.19deg); // #00c6da;
   --accent-color-light-2: #178DFB; // #47c2ce;
@@ -74,9 +74,21 @@
   --bkl-nav-color-1: rgb(33 33 68 / 50%);
   --bkl-nav-bg-color-1: rgb(255 255 255 / 50%);
   --bkl-backdrop-color: rgb(0 0 0 / 50%);
-  --bkl-button-hover-color: #1580E4;
-  --bkl-button-disabled-color: #363740;
-  --bkl-button-disabled-text-color: #808086;
+
+  --bkl-button-primary-default-color: #1064b2;
+  --bkl-button-primary-hover-color: #0d4e8a;
+  --bkl-button-primary-disabled-color: #e3e4e5;
+  --bkl-button-primary-disabled-text-color: #808086;
+
+  --bkl-button-secondary-default-color: #1580e4;
+  --bkl-button-secondary-hover-color: #1064b2;
+  --bkl-button-secondary-disabled-color: #b3b3b7;
+  --bkl-button-secondary-disabled-text-color: #b3b3b7;
+
+  --bkl-button-tertiary-default-text-color: #1064b2;
+  --bkl-button-tertiary-default-hover-color: #1064b2;
+  --bkl-button-tertiary-default-disabled-color: #b3b3b7;
+
   --bkl-tooltip-bg-color: #4c4665;
   --bkl-input-bg-color: #090915;
   --bkl-bg-color-default: #0D0D0D;
