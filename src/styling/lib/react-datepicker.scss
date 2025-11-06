@@ -4,10 +4,11 @@
 
 @use '../defs.scss' as bk;
 
-// Note: this doesn't work because we can't use `:global {}` with lightningcss
+// Note: including the library `.css` doesn't work because the class names will be transformed. And lightningcss
+// doesn't support the `:global { ... }` block syntax. Instead, we need to copy all the styles and add `global()`.
 // https://github.com/parcel-bundler/lightningcss/issues/6
 //@use 'sass:meta';
-//@include meta.load-css('react-datepicker/dist/react-datepicker.css');
+//:global { @include meta.load-css('react-datepicker/dist/react-datepicker.css'); }
 
 // Custom `react-datepicker` styles
 
@@ -27,9 +28,9 @@
   position: absolute;
   clip-path: circle(0);
   border: 0;
-  block-size: 1px;
-  inline-size: 1px;
-  margin: -1px;
+  block-size: bk.$size-hairline;
+  inline-size: bk.$size-hairline;
+  margin: calc(-1 * bk.$size-hairline);
   overflow: hidden;
   padding: 0;
   white-space: nowrap;
@@ -37,12 +38,13 @@
 
 :global(.react-datepicker) {
   position: relative;
-  inline-size: 284px;
+  inline-size: 18rem;
   text-align: center;
-  padding: 22px 26px 30px;
+  padding: bk.$spacing-4;
+  padding-block-end: bk.$spacing-6;
   background-color: bk.$theme-card-background-default;
-  border-radius: 6px;
-  border: 1px solid bk.$theme-card-border-default;
+  border-radius: bk.$radius-3;
+  border: bk.$size-hairline solid bk.$theme-card-border-default;
   font-family: bk.$font-family-body;
   font-size: bk.$font-size-m;
   font-weight: bk.$font-weight-regular;
@@ -70,7 +72,7 @@
 :global(.react-datepicker__current-month) {
   color: bk.$theme-text-heading-default;
   font-family: bk.$font-family-display;
-  font-size: 16px;
+  font-size: bk.$font-size-l;
   font-style: normal;
   font-weight: bk.$font-weight-semibold;
   text-transform: uppercase;
@@ -78,7 +80,7 @@
 
 :global(.react-datepicker__navigation) {
   position: absolute;
-  inset-block-start: 1.6rem;
+  inset-block-start: 1rem;
   
   inline-size: 2rem;
   aspect-ratio: 1;
@@ -93,7 +95,7 @@
     display: block;
     block-size: 1rem;
     aspect-ratio: 1;
-    border: 2px solid currentColor;
+    border: bk.rem-from-px(2) solid currentColor;
     border-inline-end-width: 0;
     border-block-end-width: 0;
     rotate: -45deg;
@@ -104,7 +106,7 @@
     outline: var(--bk-focus-outline-width) solid var(--bk-focus-outline-color);
   }
 }
-$navigation-distance: 1.8rem;
+$navigation-distance: 1.2rem;
 :global(.react-datepicker__navigation--previous) {
   inset-inline-start: $navigation-distance;
 }
@@ -129,14 +131,15 @@ $navigation-distance: 1.8rem;
 :global(.react-datepicker__quarter-text),
 :global(.react-datepicker__year-text) {
   cursor: pointer;
+  --bk-focus-outline-width: 0.1rem;
 }
 
 :global(.react-datepicker__day-name),
 :global(.react-datepicker__day) {
   display: inline-block;
-  inline-size: 30px;
-  line-height: 30px;
-  margin: 5px 0;
+  inline-size: bk.rem-from-px(30);
+  line-height: bk.rem-from-px(30);
+  margin: bk.rem-from-px(5) 0;
   color: bk.$theme-date-picker-text-default;
 }
 
@@ -229,11 +232,11 @@ $navigation-distance: 1.8rem;
 }
 
 :global(.react-datepicker__input-container .react-datepicker__calendar-icon) {
-  inline-size: 14px;
-  block-size: 14px;
-  inset-block-end: 4px;
+  inline-size: bk.rem-from-px(14);
+  block-size: bk.rem-from-px(14);
+  inset-block-end: bk.rem-from-px(4);
 }
 
 :global(.react-datepicker__view-calendar-icon input) {
-  padding: 6px 10px 0 25px;
+  padding: bk.rem-from-px(6) bk.rem-from-px(10) 0 bk.rem-from-px(25);
 }
