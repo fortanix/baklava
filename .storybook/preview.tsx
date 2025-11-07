@@ -134,6 +134,7 @@ const preview = {
                 'DateTimePicker',
                 'datetime',
                 [
+                  'TimeInput',
                   'DatePicker',
                   'DateInput',
                 ],
