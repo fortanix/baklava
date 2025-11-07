@@ -136,6 +136,7 @@ const preview = {
                 [
                   'TimeInput',
                   'DatePicker',
+                  'DateRangePicker',
                   'DateInput',
                 ],
               ],

@@ -7,8 +7,10 @@ import { classNames as cx, type ClassNameArgument } from '../../../../../util/co
 
 import ReactDatePicker from 'react-datepicker';
 
-import cl from './DatePicker.module.scss';
+import cl from './DateRangePicker.module.scss';
 
+
+type ReactDatePickerProps = React.ComponentProps<typeof ReactDatePicker>;
 
 type ReactDatePickerIrrelevant = (
   | 'date' // This is in the type, but doesn't seem to actually do anything (use `selected` instead)
@@ -19,40 +21,54 @@ type ReactDatePickerIrrelevant = (
   | 'toggleCalendarOnIconClick' 
 );
 
+// Note: each end (or both) may be `null` while the user is editing
+export type DateRange = [null | Date, null | Date];
+
 /**
- * @see https://github.com/Hacker0x01/react-datepicker/blob/main/docs/datepicker.md
+ * @see https://github.com/Hacker0x01/react-dateRangepicker/blob/main/docs/dateRangepicker.md
  */
 // Omit `date` (which is misleadingly in the `ReactDatePicker` props type, but doesn't actually do anything)
-type DatePickerProps = Omit<React.ComponentProps<typeof ReactDatePicker>, ReactDatePickerIrrelevant | 'onChange'> & {
+type DateRangePickerProps = Omit<ReactDatePickerProps, ReactDatePickerIrrelevant | 'selected' | 'onChange'> & {
   className?: undefined | ClassNameArgument,
   
-  // Narrow the type down to just a single-date date picker
-  selectsRange?: never,
+  // Customize `selected` and `onChange` to use `DateRange`
+  selected?: DateRange,
+  onChange: (date: DateRange, event?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => void,
+  
+  // Disallow the `startDate` and `endDate` props (we combine these into `selected` instead)
+  
+  // Narrow the type down to be suitable for a date range picker
+  selectsRange?: true,
   selectsMultiple?: never,
   showMonthYearDropdown?: never,
-  onChange: ((date: null | Date, event?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => void),
-  selected: null | Date,
 };
 
 /**
  * A form control to select a single date through a calendar view.
  */
-export const DatePicker = (props: DatePickerProps) => {
+export const DateRangePicker = (props: DateRangePickerProps) => {
   const {
     className,
     dateFormat = 'MM/dd/yyyy',
+    selected,
+    onChange,
     ...propsRest
   } = props;
+  
+  const [startDate, endDate] = selected ?? [null, null];
   
   return (
     <ReactDatePicker
       inline
+      selectsRange
       dateFormat={dateFormat}
       {...propsRest}
       //className // Note: `className` does nothing in `inline` mode, use `calendarClassName` instead
-      calendarClassName={cx('bk', cl['bk-date-picker'], className)}
-      selected={props.selected}
-      onChange={props.onChange}
+      calendarClassName={cx('bk', cl['bk-date-range-picker'], className)}
+      selected={null} // Not used with `selectsRange`, set `startDate` and `endDate` instead
+      startDate={startDate}
+      endDate={endDate}
+      onChange={onChange}
     />
   );
 };

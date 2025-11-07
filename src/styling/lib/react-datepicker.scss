@@ -198,16 +198,18 @@ $navigation-distance: 1.2rem;
   color: bk.$theme-date-picker-text-hover;
 }
 
-:global(.react-datepicker__day--range-start),
-:global(.react-datepicker__day--selecting-range-start),
-:global(.react-datepicker__day--range-start:not([aria-disabled="true" i]):hover) {
-  border-radius: bk.$border-radius-circle 0 0 bk.$border-radius-circle;
-}
-
+// Note: make sure to put `end` before `start`, so that `start` takes precedence. This ensures that a range with
+// only start date will have the border radius on the correct side.
 :global(.react-datepicker__day--range-end),
 :global(.react-datepicker__day--selecting-range-end),
 :global(.react-datepicker__day--range-end:not([aria-disabled="true" i]):hover) {
   border-radius: 0 bk.$border-radius-circle bk.$border-radius-circle 0;
+}
+
+:global(.react-datepicker__day--range-start),
+:global(.react-datepicker__day--selecting-range-start),
+:global(.react-datepicker__day--range-start:not([aria-disabled="true" i]):hover) {
+  border-radius: bk.$border-radius-circle 0 0 bk.$border-radius-circle;
 }
 
 :global(.react-datepicker__day--range-start.react-datepicker__day--range-end),

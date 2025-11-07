@@ -41,6 +41,7 @@ export const DatePickerRange = (props: DatePickerRangeProps) => {
       )}
     >
       <ReactDatePicker
+        aria-modal={false}
         selectsRange
         dateFormat={dateFormat}
         placeholderText={placeholderText}
