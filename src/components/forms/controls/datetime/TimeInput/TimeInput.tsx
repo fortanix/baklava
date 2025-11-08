@@ -10,14 +10,14 @@ import { Input } from '../../Input/Input.tsx';
 import cl from './TimeInput.module.scss';
 
 
-export type Time = {
+export type TimeInputValue = {
   hours: number,
   minutes: number,
 };
-const formatTime = (time: Time) => {
+const formatTime = (time: TimeInputValue) => {
   return `${String(time.hours).padStart(2, '0')}:${String(time.minutes).padStart(2, '0')}`;
 };
-const parseTime = (time: string): null | Time => {
+const parseTime = (time: string): null | TimeInputValue => {
   const [hoursString, minutesString] = time.trim().split(':');
   if (typeof hoursString !== 'string' || typeof minutesString !== 'string') {
     console.warn(`Invalid time string: ${time}`)
@@ -34,51 +34,65 @@ const parseTime = (time: string): null | Time => {
   return { hours, minutes };
 };
 
-export type TimeInputProps = Omit<ComponentProps<'input'>, 'time' | 'onUpdate'> & {
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
+export type TimeInputProps = Omit<ComponentProps<typeof Input>, 'time' | 'onUpdate'> & {
+  /**
+   * The time value, specified as an object with the hours and minutes. If `null`, the time input will be empty.
+   * If `undefined`, this form control will be treated as uncontrolled.
+   */
+  time?: undefined | null | TimeInputValue,
   
-  /** The time value, specified as an object with the hours and minutes. If `null`, the time input will be empty. */
-  time: null | Time,
+  /** If uncontrolled, the default time value. */
+  defaultTime?: undefined | null | TimeInputValue,
   
-  /** A callback function that is called when the time is updated by the user. */
-  onUpdate: (time: null | Time) => void,
+  /** A callback function that is called when the time is updated by the user. If uncontrolled, should not be given. */
+  onUpdateTime?: undefined | ((time: null | TimeInputValue) => void),
 };
-export const TimeInput = (props: TimeInputProps) => {
-  const { unstyled = false, time, onUpdate, ...propsRest } = props;
-  
-  // Format the time as a string
-  const timeString: string = time === null ? '' : formatTime(time);
-  
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newTimeString = event.target.value.trim();
+export const TimeInput = Object.assign(
+  (props: TimeInputProps) => {
+    const { time, defaultTime, onUpdateTime, ...propsRest } = props;
     
-    // Note: `newTimeString` may be empty (can reproduce by hitting backspace while editing the time input)
-    if (newTimeString === '') {
-      onUpdate(null);
-    } else {
-      const timeParsed: null | Time = parseTime(newTimeString);
-      onUpdate(timeParsed);
-    }
-  };
-  
-  return (
-    <div
-      className={cx(
-        'bk',
-        { [cl['bk-time-input']]: !unstyled },
-        propsRest.className,
-      )
-    }>
+    // Format the time as a string
+    // Note: we need to support both controlled (`time` is not undefined) and uncontrolled (`time` is undefined)
+    const timeString: undefined | string = time === undefined ? undefined
+      : (time === null ? '' : formatTime(time));
+    const defaultTimeString: undefined | string = defaultTime === undefined ? undefined
+      : (defaultTime === null ? '' : formatTime(defaultTime));
+    
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (typeof onUpdateTime === 'undefined') {
+        // Should not happen: `handleChange` should not be passed to the input when uncontrolled
+        console.error(`Unexpected: onUpdateTime is undefined on controlled TimeInput`);
+        return;
+      }
+      
+      // Most modern browsers will produce a valid time string (`hh:mm`), or an empty string.
+      // Empty string will be produced either if the input is invalid, or if the user clears the input (e.g. backspace).
+      const timeValue: string = event.target.value.trim();
+      
+      if (timeValue === '') {
+        onUpdateTime(null);
+      } else {
+        const timeParsed: null | TimeInputValue = parseTime(timeValue);
+        onUpdateTime(timeParsed);
+      }
+    };
+    
+    return (
       <Input
         type="time"
         value={timeString}
-        onChange={onChange}
-        className={cx(
-          { [cl['bk-time-input--input']]: !unstyled },
-        )}
+        defaultValue={typeof timeString === 'undefined' ? defaultTimeString : undefined}
+        onChange={typeof timeString === 'undefined' ? undefined : handleChange}
         {...propsRest}
+        className={cx(
+          cl['bk-time-input'],
+          propsRest.className,
+        )}
       />
-    </div>
-  );
-};
+    );
+  },
+  {
+    formatTime,
+    parseTime,
+  },
+);

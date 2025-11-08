@@ -134,10 +134,10 @@ const preview = {
                 'DateTimePicker',
                 'datetime',
                 [
-                  'TimeInput',
                   'DatePicker',
                   'DateRangePicker',
                   'DateInput',
+                  'TimeInput',
                 ],
               ],
               'fields',

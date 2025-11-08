@@ -78,7 +78,7 @@ export type InputProps = InputContainerProps & InputSpecificProps & {
   automaticResize?: undefined | boolean,
 };
 /**
- * Input control.
+ * A text input control.
  */
 export const Input = Object.assign(
   (props: InputProps) => {

@@ -5,8 +5,11 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { LayoutDecorator } from '../../../../../util/storybook/LayoutDecorator.tsx';
+import { SubmitButton } from '../../../../../util/storybook/SubmitButton.tsx';
+import { notify } from '../../../../overlays/ToastProvider/ToastProvider.tsx';
 
-import { type Time, TimeInput } from './TimeInput.tsx';
+import { type TimeInputValue, TimeInput } from './TimeInput.tsx';
 
 
 type TimeInputArgs = React.ComponentProps<typeof TimeInput>;
@@ -18,37 +21,73 @@ export default {
     layout: 'centered',
   },
   tags: ['autodocs'],
+  decorators: [
+    Story => (
+      <LayoutDecorator size="x-small">
+        <style>{`@scope { form { display: flex; align-items: center; flex-direction: column; gap: 0.6lh; } }`}</style>
+        <Story/>
+      </LayoutDecorator>
+    ),
+  ],
   argTypes: {},
   args: {},
 } satisfies Meta<TimeInputArgs>;
 
-const TimeInputStory = (props: TimeInputArgs) => {
-  const [time, setTime] = React.useState<null | Time>(props.time);
-  
-  const formatTime = (time: Time) =>
-    `${String(time.hours).padStart(2, '0')}:${String(time.minutes).padStart(2, '0')}`;
+const TimeInputControlledDec = ({ defaultTime, ...props }: TimeInputArgs) => {
+  const [time, setTime] = React.useState<null | TimeInputValue>(defaultTime ?? null);
   
   return (
     <form onSubmit={event => { event.preventDefault(); }}>
-      <TimeInput aria-label="Example time input" time={time} onUpdate={setTime}/>
+      <TimeInput aria-label="Example time input" {...props} time={time} onUpdateTime={setTime}/>
       <p>
-        The selected time is: <time>{time === null ? '(empty)' : formatTime(time)}</time>
+        The selected time is: <time>{time === null ? '(empty)' : TimeInput.formatTime(time)}</time>
       </p>
     </form>
   );
 };
 
 export const TimeInputStandard: Story = {
-  decorators: [(_, { args }) => <TimeInputStory {...args}/>],
+  decorators: [(_, { args }) => <TimeInputControlledDec {...args}/>],
   args: {
-    time: { hours: 9, minutes: 42 },
+    defaultTime: { hours: 9, minutes: 42 },
   },
 };
 
 export const TimeInputEmpty: Story = {
-  decorators: [(_, { args }) => <TimeInputStory {...args}/>],
-
+  decorators: [(_, { args }) => <TimeInputControlledDec {...args}/>],
   args: {
-    time: null,
+    defaultTime: null,
+  },
+};
+
+const TimeInputUncontrolledDec = (props: TimeInputArgs) => {
+  return (
+    <form
+      onSubmit={event => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        notify.success(`Time: ${formData.get('story_component') || '(empty)'}`);
+      }}
+    >
+      <TimeInput aria-label="Example time input" {...props} name="story_component"/>
+      <SubmitButton label="Submit"/>
+    </form>
+  );
+};
+
+export const TimeInputUncontrolled: Story = {
+  decorators: [(_, { args }) => <TimeInputUncontrolledDec {...args}/>],
+  args: {
+    time: undefined,
+    onTimeUpdate: undefined,
+  },
+};
+
+export const TimeInputUncontrolledWithDefault: Story = {
+  decorators: [(_, { args }) => <TimeInputUncontrolledDec {...args}/>],
+  args: {
+    time: undefined,
+    defaultTime: { hours: 23, minutes: 59 },
+    onTimeUpdate: undefined,
   },
 };
