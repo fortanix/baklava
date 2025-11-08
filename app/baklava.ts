@@ -56,7 +56,7 @@ export {
   type DateRange,
   DateRangePicker,
 } from '../src/components/forms/controls/datetime/DateRangePicker/DateRangePicker.tsx';
-export { DateInput } from '../src/components/forms/controls/datetime/DateInput/DateInput.tsx';
+export { type DateInputValue, DateInput } from '../src/components/forms/controls/datetime/DateInput/DateInput.tsx';
 export { type TimeInputValue, TimeInput } from '../src/components/forms/controls/datetime/TimeInput/TimeInput.tsx';
 export { ListBox } from '../src/components/forms/controls/ListBox/ListBox.tsx';
 export { ListBoxLazy } from '../src/components/forms/controls/ListBoxLazy/ListBoxLazy.tsx';

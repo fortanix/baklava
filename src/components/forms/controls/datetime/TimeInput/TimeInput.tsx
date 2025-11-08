@@ -44,15 +44,15 @@ export type TimeInputProps = Omit<ComponentProps<typeof Input>, 'time' | 'onUpda
   /** If uncontrolled, the default time value. */
   defaultTime?: undefined | null | TimeInputValue,
   
-  /** A callback function that is called when the time is updated by the user. If uncontrolled, should not be given. */
+  /** A callback that is called when the time is updated by the user. If uncontrolled, should be undefined. */
   onUpdateTime?: undefined | ((time: null | TimeInputValue) => void),
 };
 export const TimeInput = Object.assign(
   (props: TimeInputProps) => {
     const { time, defaultTime, onUpdateTime, ...propsRest } = props;
     
-    // Format the time as a string
-    // Note: we need to support both controlled (`time` is not undefined) and uncontrolled (`time` is undefined)
+    // Format the `time` as a string
+    // Note: we need to support both controlled (`time` is defined) and uncontrolled (`time` is undefined)
     const timeString: undefined | string = time === undefined ? undefined
       : (time === null ? '' : formatTime(time));
     const defaultTimeString: undefined | string = defaultTime === undefined ? undefined
@@ -80,10 +80,10 @@ export const TimeInput = Object.assign(
     return (
       <Input
         type="time"
+        {...propsRest}
         value={timeString}
         defaultValue={typeof timeString === 'undefined' ? defaultTimeString : undefined}
         onChange={typeof timeString === 'undefined' ? undefined : handleChange}
-        {...propsRest}
         className={cx(
           cl['bk-time-input'],
           propsRest.className,

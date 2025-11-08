@@ -7,5 +7,11 @@
 @layer baklava.components {
   .bk-date-input {
     @include bk.component-base(bk-date-input);
+    
+    // FIXME: calendar icon is a bit too big (visually) compared to other icons
+    :global(.input-icon) {
+      font-size: 0.8em;
+      margin-inline: calc(bk.$spacing-1 / 2);
+    }
   }
 }
