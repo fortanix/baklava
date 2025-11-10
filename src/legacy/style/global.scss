@@ -2,6 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+@use './defs.scss' as bk;
+
 @mixin runtime-variables {
   // Set the multi color picker value to be used in color picker component.
   --selected-color-picker: '';
@@ -75,19 +77,19 @@
   --bkl-nav-bg-color-1: rgb(255 255 255 / 50%);
   --bkl-backdrop-color: rgb(0 0 0 / 50%);
 
-  --bkl-button-primary-default-color: #1064b2;
-  --bkl-button-primary-hover-color: #0d4e8a;
-  --bkl-button-primary-disabled-color: #e3e4e5;
-  --bkl-button-primary-disabled-text-color: #808086;
+  --bkl-button-primary-default-color: #{bk.$theme-button-primary-background-default};
+  --bkl-button-primary-hover-color: #{bk.$theme-button-primary-background-hover};
+  --bkl-button-primary-disabled-color: #{bk.$theme-button-primary-background-disabled};
+  --bkl-button-primary-disabled-text-color: #{bk.$theme-button-primary-background-default};
 
-  --bkl-button-secondary-default-color: #1580e4;
-  --bkl-button-secondary-hover-color: #1064b2;
-  --bkl-button-secondary-disabled-color: #b3b3b7;
-  --bkl-button-secondary-disabled-text-color: #b3b3b7;
+  --bkl-button-secondary-default-color: #{bk.$theme-button-secondary-border-default};
+  --bkl-button-secondary-hover-color: #{bk.$theme-button-secondary-border-hover};
+  --bkl-button-secondary-disabled-color: #{bk.$theme-button-secondary-border-disabled};
+  --bkl-button-secondary-disabled-text-color: #{bk.$theme-button-secondary-text-disabled};
 
-  --bkl-button-tertiary-default-text-color: #1064b2;
-  --bkl-button-tertiary-default-hover-color: #1064b2;
-  --bkl-button-tertiary-default-disabled-color: #b3b3b7;
+  --bkl-button-tertiary-default-text-color: #{bk.$theme-button-tertiary-text-default};
+  --bkl-button-tertiary-default-hover-color: #{bk.$theme-button-tertiary-text-hover};
+  --bkl-button-tertiary-default-disabled-color: #{bk.$theme-button-tertiary-text-disabled};
 
   --bkl-tooltip-bg-color: #4c4665;
   --bkl-input-bg-color: #090915;
