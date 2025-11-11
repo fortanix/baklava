@@ -80,6 +80,10 @@ const preview = {
             ],
             'overlays',
             [
+              'util',
+              [
+                'FloatingElement',
+              ],
               'SpinnerModal',
               'DialogModal',
               'DialogOverlay',
