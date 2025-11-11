@@ -121,6 +121,7 @@
       scale: 0.98;
     }
     
+    --bk-button-transition: 150ms ease-in-out; // Allow consumer code to extend the transition for other properties
     @media (prefers-reduced-motion: no-preference) {
       transition:
         border 150ms ease-in-out,

@@ -270,7 +270,7 @@ describe('Button', () => {
   
   describe('custom props', () => {
     test('should pass through additional HTML attributes', () => {
-      render(<Button data-testid="custom-button" title="Custom Title" label="Custom" />);
+      render(<Button data-label="custom-button" title="Custom Title" label="Custom" />);
       
       const button = screen.getByTestId('custom-button');
       expect(button).toHaveAttribute('title', 'Custom Title');
