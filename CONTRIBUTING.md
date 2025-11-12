@@ -112,6 +112,32 @@ This repo is not published to npm. If you need to import this library, use the b
 '@fortanix/baklava': 'https://github.com/mkrause/baklava/releases/download/v1.0.0-legacy-<version>/package.tar.gz',
 ```
 
+
+### Syncing with upstream
+
+You can use the GitHub UI to sync with upstream. If you need a local version of the legacy `master` branch, you can
+also follow the following:
+
+- In your local repo, make sure you have one remote set up for upstream (`origin`) and one for the fork (`legacy`).
+
+```shell
+git remote add legacy git@github.com:mkrause/baklava.git
+```
+
+- Check out the `master` branch from `legacy` as a new local `legacy-master` branch:
+
+```shell
+git checkout -b legacy-master legacy/master
+```
+
+- Make sure your local `master` branch is up to date, then use `git rebase -i` to rebase `legacy-master`.
+
+```shell
+git checkout legacy-master
+git rebase -i master
+```
+
+
 ## Publishing a new release
 
 - Create a [new GitHub release](https://github.com/mkrause/baklava/releases), with the following parameters:
@@ -122,8 +148,3 @@ This repo is not published to npm. If you need to import this library, use the b
 Or, use the following URL, replacing `[tag]` with the appropriate tag (format: `v1.0.0-legacy-<date>`):
 
 https://github.com/mkrause/baklava/releases/new?target=baklava-v1-legacy&prerelease=1&tag=v[tag]&title=Release%20v[tag]
-
-### Syncing with upstream
-
-- In your local repo, make sure you have one remote set up for upstream (`origin`) and one for the fork (`legacy`).
-- Make sure your local `origin/master` branch is up to date, then use `git rebase -i` to rebase `legacy/master`.
