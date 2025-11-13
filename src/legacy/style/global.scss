@@ -2,6 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+@use '../../styling/generated/colors_semantic.scss' as bk;
+
 @mixin runtime-variables {
   // Set the multi color picker value to be used in color picker component.
   --selected-color-picker: '';
@@ -74,9 +76,21 @@
   --bkl-nav-color-1: rgb(33 33 68 / 50%);
   --bkl-nav-bg-color-1: rgb(255 255 255 / 50%);
   --bkl-backdrop-color: rgb(0 0 0 / 50%);
-  --bkl-button-hover-color: #1580E4;
-  --bkl-button-disabled-color: #363740;
-  --bkl-button-disabled-text-color: #808086;
+
+  --bkl-button-primary-default-color: #{bk.$dark-button-primary-background-default};
+  --bkl-button-primary-hover-color: #{bk.$dark-button-primary-background-hover};
+  --bkl-button-primary-disabled-color: #{bk.$dark-button-primary-background-disabled};
+  --bkl-button-primary-disabled-text-color: #{bk.$dark-button-primary-text-disabled};
+
+  --bkl-button-secondary-default-color: #{bk.$dark-button-secondary-border-default};
+  --bkl-button-secondary-hover-color: #{bk.$dark-button-secondary-border-hover};
+  --bkl-button-secondary-disabled-color: #{bk.$dark-button-secondary-border-disabled};
+  --bkl-button-secondary-disabled-text-color: #{bk.$dark-button-secondary-text-disabled};
+
+  --bkl-button-tertiary-default-text-color: #{bk.$dark-button-tertiary-text-default};
+  --bkl-button-tertiary-default-hover-color: #{bk.$dark-button-tertiary-text-hover};
+  --bkl-button-tertiary-default-disabled-color: #{bk.$dark-button-tertiary-text-disabled};
+
   --bkl-tooltip-bg-color: #4c4665;
   --bkl-input-bg-color: #090915;
   --bkl-bg-color-default: #0D0D0D;
