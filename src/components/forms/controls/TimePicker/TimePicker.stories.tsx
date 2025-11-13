@@ -26,16 +26,36 @@ export default {
   ],
 } satisfies Meta<TimePickerArgs>;
 
-export const TimePickerStory: Story = {
-  name: 'Time Picker',
+export const TimePickerStandard: Story = {
   render: (args) => {
-    const [time, setTime] = React.useState<Time>({ hours: 9, minutes: 41 });
-
+    const [time, setTime] = React.useState<null | Time>({ hours: 9, minutes: 41 });
+    
+    const formatTime = (time: Time) =>
+      `${String(time.hours).padStart(2, '0')}:${String(time.minutes).padStart(2, '0')}`;
+    
     return (
       <div>
         <TimePicker time={time} onUpdate={setTime}/>
         <p>
-          The selected time is: <time>{time.hours}:{time.minutes}</time>
+          The selected time is: <time>{time === null ? '(none)' : formatTime(time)}</time>
+        </p>
+      </div>
+    );
+  }
+};
+
+export const TimePickerEmpty: Story = {
+  render: (args) => {
+    const [time, setTime] = React.useState<null | Time>(null);
+    
+    const formatTime = (time: Time) =>
+      `${String(time.hours).padStart(2, '0')}:${String(time.minutes).padStart(2, '0')}`;
+    
+    return (
+      <div>
+        <TimePicker aria-label="Example time picker" time={time} onUpdate={setTime}/>
+        <p>
+          The selected time is: <time>{time === null ? '(none)' : formatTime(time)}</time>
         </p>
       </div>
     );
