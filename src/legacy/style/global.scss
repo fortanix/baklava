@@ -2,7 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@use './defs.scss' as bk;
+@use '../../styling/generated/colors_semantic.scss' as bk;
 
 @mixin runtime-variables {
   // Set the multi color picker value to be used in color picker component.
@@ -20,7 +20,7 @@
   --brand-color-light-2: #5F6089; // #6e7fbb;
   --brand-color-light-3: #383962; // #6c6e9b;
   
-  --accent-color: #1064b2;
+  --accent-color: #178DFB;
   --accent-color-dark-1: #00838f;
   --accent-color-light-1: oklch(25.41% 0.0442 212.19deg); // #00c6da;
   --accent-color-light-2: #178DFB; // #47c2ce;

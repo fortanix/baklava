@@ -2,9 +2,6 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@forward '../../styling/generated/colors_primitive.scss';
-@forward '../../styling/generated/colors_semantic.scss';
-
 // Colors
 $brand-color: var(--brand-color) !default; // #5f6089 !default;
 $brand-color-dark-1: var(--brand-color-dark-1) !default; // #13132a !default;
