@@ -26,6 +26,7 @@ import { Button } from '../../../buttons/Button.tsx';
 import { SelectPlaceholderSkeleton } from '../SelectPlaceholderSkeleton.tsx';
 
 import '../Select.scss';
+import './LazySelect.scss';
 
 
 export type PopperOptions = Partial<PopperJS.Options> & {
@@ -114,22 +115,23 @@ const useLazySelectPageHistory = <PageHistoryItem extends object>(params: UseLaz
   return pageHistoryApi;
 };
 
-export type LazySelectQueryResult<D extends object, P extends unknown = undefined> = {
+export type LazySelectQueryResult<D extends object, P = undefined> = {
   itemsPage: Array<D>,
   pageState?: P, // Custom page state to be stored in page history
 };
 
-export type LazySelectQuery<D extends object, P extends unknown = undefined> =
-  (params: {
-    previousItem: null | D,
-    previousPageState?: undefined | P,
-    offset: number,
-    pageSize: number,
-    limit: number, // Note: the `limit` may be different from the `pageSize` (`limit` may include a +1 overflow)
-    filters: FilterQuery,
-  }) => Promise<LazySelectQueryResult<D, P>>;
+export type LazySelectQueryParams<D extends object, P = undefined> = {
+  previousItem: null | D,
+  previousPageState?: undefined | P,
+  offset: number,
+  pageSize: number,
+  limit: number, // Note: the `limit` may be different from the `pageSize` (`limit` may include a +1 overflow)
+  filters: FilterQuery,
+};
+export type LazySelectQuery<D extends object, P = undefined> =
+  (params: LazySelectQueryParams<D>) => Promise<LazySelectQueryResult<D, P>>;
 
-type UseLazySelectQueryParams<D extends object, P extends unknown = undefined> = {
+type UseLazySelectQueryParams<D extends object, P = undefined> = {
   isActive: boolean,
   pageIndex: number,
   pageSize: number,
@@ -139,7 +141,7 @@ type UseLazySelectQueryParams<D extends object, P extends unknown = undefined> =
   handleResult: (status: LazySelectStatus, items: Array<D>, isEndOfStream: boolean) => void,
 };
 
-const useLazySelectQuery = <D extends object, P extends unknown = undefined>(
+const useLazySelectQuery = <D extends object, P = undefined>(
   {
     isActive,
     pageIndex,
@@ -224,7 +226,7 @@ const useLazySelectQuery = <D extends object, P extends unknown = undefined>(
 };
 
 export type LazySelectProps<
-  D extends object, P extends unknown = undefined
+  D extends object, P = undefined
 > = Omit<ComponentProps<'div'>, 'onSelect'> & {
   getItemId: (item: D) => string,
   onSelect: (item: D) => void,
@@ -302,7 +304,7 @@ export const LazySelect = <D extends object, P extends unknown = undefined>(prop
   
   const isLoading = _isLoading ?? status.loading;
   const selectedItemId = selectedItem ? getItemId(selectedItem) : null;
-
+  
   //Infinite scroll logic
   const lastItemRef = React.useCallback(node => {
     // This ref should always target the last element in the list
@@ -438,7 +440,7 @@ export const LazySelect = <D extends object, P extends unknown = undefined>(prop
     return items.map((item, index) => {
       const itemId = getItemId(item);
       const isSelected = selectedItemId === itemId;
-
+      
       return (
         <li
           key={itemId}
@@ -457,9 +459,8 @@ export const LazySelect = <D extends object, P extends unknown = undefined>(prop
             aria-selected={isSelected}
             tabIndex={isSelected ? 0 : -1}
             className={cx(
-              'bkl-select__option bkl-select__option--default', {
-                'bkl-select__option--selected': isSelected,
-              },
+              'bkl-select__option bkl-select__option--default',
+              { 'bkl-select__option--selected': isSelected },
             )}
             onClick={() => { onOptionClick({ ...item }); }}
             onKeyDown={evt => {
@@ -502,14 +503,14 @@ export const LazySelect = <D extends object, P extends unknown = undefined>(prop
           <li key="empty" role="presentation">
             <Button
               plain
-              className="bkl-select__option bkl-select__option--empty"
+              className="bkl-select__option bkl-select__option--empty bkl-select__option--disabled"
               onKeyDown={(evt: React.KeyboardEvent) => {
                 if (evt.key === 'Escape') {
                   setIsActive(false);
                 }
               }}
             >
-              {placeholderEmpty || <Caption>No result found</Caption>}
+              {placeholderEmpty || <Caption>No results found</Caption>}
             </Button>
           </li>
         }

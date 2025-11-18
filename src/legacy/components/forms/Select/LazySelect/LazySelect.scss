@@ -2,10 +2,10 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@use '../../../style/variables.scss' as bkl;
-@use '../../../style/mixins.scss' as mixins;
-@use '../../../style/util/z-index.scss' as z;
-@use '../../../style/accessibility.scss' as accessibility;
+@use '../../../../style/variables.scss' as bkl;
+@use '../../../../style/mixins.scss' as mixins;
+@use '../../../../style/util/z-index.scss' as z;
+@use '../../../../style/accessibility.scss' as accessibility;
 
 @layer baklava.legacy {
   .bkl-select.bkl-lazy-select {
@@ -28,15 +28,10 @@
         border-color: bkl.$accent-color-light-2;
         &.bkl-lazy-select__search-container-with-tags {
           padding: bkl.$sizing-1 bkl.$sizing-0 bkl.$sizing-0 bkl.$sizing-3;
-          
-          .bkl-select__input {
-            border-radius: unset;
-          }
         }
         
         .bkl-select__input {
           cursor: default;
-          border-radius: bkl.$border-radius-ms;
         }
       }
       
@@ -48,7 +43,7 @@
         flex: 1;
         inline-size: unset;
         border: none;
-        border-radius: unset;
+        border-radius: bkl.$border-radius-ms;
       }
     }
   }
