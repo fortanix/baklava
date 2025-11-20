@@ -7,6 +7,9 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { LayoutDecorator } from '../../../../../util/storybook/LayoutDecorator.tsx';
 
+import { notify } from '../../../../overlays/ToastProvider/ToastProvider.tsx';
+import { Button } from '../../../../actions/Button/Button.tsx';
+
 import { DateInput } from './DateInput.tsx';
 
 
@@ -26,7 +29,7 @@ export default {
       <LayoutDecorator size="x-small">
         <style>{`
           @scope {
-            form {
+            &, form {
               display: flex;
               flex-direction: column;
               align-items: center;
@@ -35,6 +38,7 @@ export default {
           }
         `}</style>
         <Story/>
+        <p><Button label="Focus target"/></p>
       </LayoutDecorator>
     ),
   ],
@@ -44,7 +48,6 @@ const DateInputStory = (props: DateInputArgs) => {
   const { defaultDate, ...propsRest } = props;
   
   const [date, setDate] = React.useState<null | Date>(defaultDate ?? null);
-  
   return (
     <form onSubmit={event => { event.preventDefault(); }}>
       <DateInput {...propsRest} date={date} onUpdateDate={setDate} />
@@ -56,13 +59,22 @@ const DateInputStory = (props: DateInputArgs) => {
 export const DateInputStandard: Story = {
   decorators: [(_, { args }) => <DateInputStory {...args}/>],
   args: {
-    date: new Date('2024-04-19'),
+    defaultDate: new Date('2024-04-19'),
+  },
+};
+
+/** Add an action, to test that focus of other interactive elements still trigger the popover. */
+export const DateInputWithAction: Story = {
+  decorators: [(_, { args }) => <DateInputStory {...args}/>],
+  args: {
+    defaultDate: new Date('2024-04-19'),
+    actions: <DateInput.Action icon="bell" label="Bell" onPress={() => { notify.info('Click'); }}/>,
   },
 };
 
 export const DateInputEmpty: Story = {
   decorators: [(_, { args }) => <DateInputStory {...args}/>],
   args: {
-    date: null,
+    defaultDate: null,
   },
 };

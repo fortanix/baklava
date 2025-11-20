@@ -8,6 +8,11 @@
   .bk-date-input {
     @include bk.component-base(bk-date-input);
     
+    .bk-date-input__inner {
+      // Date inputs have a fixed max length, so we don't want the input to stretch by default
+      inline-size: min-content;
+    }
+    
     // FIXME: calendar icon is a bit too big (visually) compared to other icons
     :global(.input-icon) {
       font-size: 0.8em;

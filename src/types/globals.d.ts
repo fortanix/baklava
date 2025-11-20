@@ -15,3 +15,9 @@ declare module "*.module.scss" {
   const classes: any; // Must be `any` rather than `Record<>`, because with record index returns `string | undefined`
   export default classes;
 }
+
+// Extend `HTMLElement` with `togglePopover` variant that accepts an object. Remove this once TypeScript adds support:
+// https://github.com/microsoft/TypeScript/blob/d0d675a363bf25d435857766757d97b9ad508909/src/lib/dom.generated.d.ts#L14240
+interface HTMLElement {
+  togglePopover(options?: undefined | { force?: undefined | boolean, source?: undefined | Element }): boolean,
+}

@@ -171,7 +171,7 @@ const packageConfig = {
     
     '@floating-ui/react': '^0.27.16',
     'react-table': '^7.8.0',
-    'react-datepicker': '^8.7.0',
+    'react-datepicker': '^8.9.0',
     
     'effect': '^3.17.13',
     'react-hook-form': '^7.62.0',
