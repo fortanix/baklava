@@ -24,27 +24,39 @@ export type TimePickerProps = ComponentProps<'input'> & {
   className?: ClassNameArgument,
   
   /** A time object with hours and minutes, as numbers. */
-  time: Time,
+  time: null | Time,
   
   /** A callback function to update the time. */
-  onUpdate: (time: Time) => void,
+  onUpdate: (time: null | Time) => void,
 };
 
-export const TimePicker = ({ unstyled = false, className, time, onUpdate, ...propsRest }: TimePickerProps) => {
-  const timeString = `${String(time.hours).padStart(2, '0')}:${String(time.minutes).padStart(2, '0')}`;
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTimeString = e.target.value;
-    const [hours, minutes] = newTimeString.split(':');
-    onUpdate({ hours: Number(hours), minutes: Number(minutes) });
+export const TimePicker = (props: TimePickerProps) => {
+  const { unstyled = false, className, time, onUpdate, ...propsRest } = props;
+  
+  const timeString: string = time === null
+    ? ''
+    : `${String(time.hours).padStart(2, '0')}:${String(time.minutes).padStart(2, '0')}`;
+  
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newTimeString = event.target.value;
+    
+    // Note: `newTimeString` may be empty (reproduce by hitting backspace while editing the time input)
+    if (newTimeString.trim() === '') {
+      onUpdate(null);
+    } else {
+      const [hours, minutes] = newTimeString.split(':');
+      onUpdate({ hours: Number(hours), minutes: Number(minutes) });
+    }
   };
-
+  
   return (
-    <div className={cx(
-      'bk',
-      { [cl['bk-time-picker']]: !unstyled },
-      className,
-    )}>
+    <div
+      className={cx(
+        'bk',
+        { [cl['bk-time-picker']]: !unstyled },
+        className,
+      )
+    }>
       <Input
         type="time"
         value={timeString}

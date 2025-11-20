@@ -20,6 +20,8 @@ import {
   type UseFloatingOptions,
   type FlipOptions,
   type ShiftOptions,
+  type ReferenceType,
+  type ExtendedRefs,
   type FloatingContext,
   useFloating,
   // Interactions
@@ -29,6 +31,7 @@ import {
   useDismiss,
   useDelayGroup,
   useHover,
+  type UseInteractionsReturn,
   useInteractions,
   useTransitionStatus,
 } from '@floating-ui/react';
@@ -36,21 +39,32 @@ import {
 
 export type { Placement };
 
-// Sync the `isOpen` state with browser `popover` state
+/**
+ * Floating UI custom hook to sync the `isOpen` state with browser `popover` state.
+ */
 const usePopover = (context: FloatingContext): ElementProps => {
   return {
-    floating: {
-      ref: floatingElement => {
-        if (!floatingElement) { return; }
+    reference: {
+      //popoverTarget: popoverId,
+      ref: ref => {
+        if (!ref) { return; }
         
-        const isPopoverShown = floatingElement.matches(':popover-open');
-        if (context.open && !isPopoverShown) {
-          floatingElement.showPopover();
-        } else if (!context.open && isPopoverShown) {
-          floatingElement.hidePopover();
+        const popoverEl = context.elements.floating;
+        if (popoverEl && popoverEl.isConnected) {
+          // We can use the following to link the reference to the popover. However, we may want to not do this since
+          // it won't work with multiple popovers on the same anchor. We can use `togglePopover({ source })` instead.
+          //ref.popoverTargetElement = popoverEl;
+          
+          // Force the popover state to be in sync with `context.open`.
+          // Note: it is important that the `source` points to the anchor element, so that the browser will add the
+          // popover in the focus tab order after the `source` element. It is also necessary that `ref` is a focusable
+          // element, otherwise the tab order will break (popover won't be in the tab order at all).
+          popoverEl.togglePopover({ source: ref, force: context.open });
         }
       },
+      //style: {},
     },
+    //floating: {},
   };
 };
 
@@ -67,8 +81,8 @@ export type UseFloatingElementOptions = {
    */
   keyboardInteractions?: undefined | 'none' | 'form-control' | 'default',
   
-  /** The action on the reference element that should cause the floating element to open. */
-  triggerAction?: undefined | 'hover' | 'focus' | 'click',
+  /** The action on the reference element that should cause the floating element to open. Default: `'click'`. */
+  triggerAction?: undefined | 'none' | 'click' | 'hover' | 'focus',
   
   /** Where to place the floating element, relative to the reference element. */
   placement?: undefined | Placement,
@@ -100,11 +114,27 @@ export type UseFloatingElementOptions = {
   /** Additional interactions to pass to the internal `useFloating` hook. */
   floatingUiInteractions?: undefined | ((context: FloatingContext) => Array<undefined | ElementProps>),
 };
+
+export type UseFloatingElementResult = {
+  context: FloatingContext,
+  isOpen: boolean,
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  isMounted: boolean,
+  refs: ExtendedRefs<ReferenceType>,
+  placement: Placement,
+  floatingStyles: React.CSSProperties,
+  getReferenceProps: UseInteractionsReturn['getReferenceProps'],
+  getFloatingProps: UseInteractionsReturn['getFloatingProps'],
+  getItemProps: UseInteractionsReturn['getItemProps'],
+};
+
 /**
  * Configure an element to float on top of the content, and is anchored to some reference element. Internally uses
  * `useFloating` from `floating-ui`.
  */
-export const useFloatingElement = <E extends HTMLElement>(options: UseFloatingElementOptions = {}) => {
+export const useFloatingElement = <E extends HTMLElement>(
+  options: UseFloatingElementOptions = {},
+): UseFloatingElementResult => {
   const opts = {
     ...options,
     role: options.role,

@@ -96,11 +96,3 @@ $border-radius-cap: 999px !default; // Cap the edges (i.e. as large of a radius 
 $radius-1: math.div(2, 14) * 1rem !default; // ~2px
 $radius-2: math.div(4, 14) * 1rem !default; // ~4px
 $radius-3: math.div(6, 14) * 1rem !default; // ~6px
-
-
-//
-// Z-Indexes
-//
-
-// FIXME: remove once date picker uses native HTML/CSS popover
-$z-index-date-picker: 100;
