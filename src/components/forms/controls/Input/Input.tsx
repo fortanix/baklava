@@ -38,6 +38,10 @@ const InputAction = (props: React.ComponentProps<typeof IconButton>) => {
 type InputSpecificProps = Omit<InputUtil.InputSpecificProps, 'type'>;
 type InputContainerProps = Omit<ComponentProps<'div'>, 'ref' | 'prefix' | keyof InputSpecificProps>;
 export type InputProps = InputContainerProps & InputSpecificProps & {
+  /**
+   * By default, the `ref` will be linked to the inner input element. To get a ref to the container, use
+   * `containerProps.ref`.
+   */
   ref?: undefined | React.Ref<HTMLInputElement>,
   
   /** Whether this component should be unstyled. */
