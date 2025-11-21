@@ -138,3 +138,40 @@ export const ToastWithDismiss: Story = {
     ),
   },
 };
+
+export const ToastWithDeduplication: Story = {
+  args: {
+    children: (
+      <>
+        <p>
+          <Button kind="primary" label="Notify (success)"
+            onPress={() => {
+              notify.success({
+                title: 'Notification title',
+                message: 'this is a success notification.',
+              });
+            }}
+          />
+        </p>
+        <br/>
+        <p>
+          <Button kind="primary" label="Notify (error)"
+            onPress={() => {
+              notify.error({
+                title: 'Notification title',
+                message: 'this is an error notification deduplicated using a key.',
+              }, { dedupeKey: 'some dedupe key' });
+            }}
+          />
+        </p>
+        <br/>
+        <p>
+          <Button kind="secondary" label="Dismiss all"
+            onPress={() => { notify.dismissAll(); }}
+          />
+        </p>
+      </>
+    ),
+  },
+};
+
