@@ -113,10 +113,9 @@ This repo is not published to npm. If you need to import this library, use the b
 ```
 
 
-### Syncing with upstream
+## Setup local working directory
 
-You can use the GitHub UI to sync with upstream. If you need a local version of the legacy `master` branch, you can
-also follow the following:
+When you have a new working copy, perform the following one-time setup:
 
 - In your local repo, make sure you have one remote set up for upstream (`origin`) and one for the fork (`legacy`).
 
@@ -130,12 +129,25 @@ git remote add legacy git@github.com:mkrause/baklava.git
 git checkout -b legacy-master legacy/master
 ```
 
-- Make sure your local `master` branch is up to date, then use `git rebase -i` to rebase `legacy-master`.
+
+### Syncing with upstream
+
+When there is a change upstream (on `origin/master`), you can sync the changes as follows:
+
+1. From the GitHub UI, sync the fork through the "Sync fork" menu on the main page of the repo. This will update
+   `legacy-master` to match `origin/master`.
+2. Merge `legacy-master` into `baklava-v1-legacy`:
 
 ```shell
-git checkout legacy-master
-git rebase -i master
+git checkout baklava-v1-legacy
+git merge legacy-master
+git push
 ```
+
+
+## Making changes to legacy code
+
+If you're making a change to the legacy code (e.g. `src/legacy`), create a PR that targets `baklava-v1-legacy`.
 
 
 ## Publishing a new release
