@@ -21,6 +21,7 @@ export type { ToastDescriptor };
 
 export const createToastNotifier = (toastStore: ToastStore) => {
   const notify = (toast: ToastDescriptor) => {
+    if (toastStore.hasAddedDedupeKey(toast)) { return; }
     const toastId = toastStore.uniqueId();
     toastStore.announceToast(toastId, toast);
   };
