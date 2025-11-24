@@ -39,15 +39,19 @@ import {
 
 export type { Placement };
 
+type UsePopoverOptions = {
+  /** The popover type for the floating element. */
+  popoverType: null | 'auto' /*| 'hint'*/ | 'manual',
+};
 /**
  * Floating UI custom hook to sync the `isOpen` state with browser `popover` state.
  */
-const usePopover = (context: FloatingContext): ElementProps => {
+const usePopover = (options: UsePopoverOptions, context: FloatingContext): ElementProps => {
   return {
     reference: {
       //popoverTarget: popoverId,
-      ref: ref => {
-        if (!ref) { return; }
+      ref: el => {
+        if (!el) { return; }
         
         const popoverEl = context.elements.floating;
         if (popoverEl && popoverEl.isConnected) {
@@ -59,17 +63,22 @@ const usePopover = (context: FloatingContext): ElementProps => {
           // Note: it is important that the `source` points to the anchor element, so that the browser will add the
           // popover in the focus tab order after the `source` element. It is also necessary that `ref` is a focusable
           // element, otherwise the tab order will break (popover won't be in the tab order at all).
-          popoverEl.togglePopover({ source: ref, force: context.open });
+          popoverEl.togglePopover({ source: el, force: context.open });
         }
       },
       //style: {},
     },
-    //floating: {},
+    floating: {
+      popover: options.popoverType ?? undefined,
+    },
   };
 };
 
 export type UseFloatingElementOptions = {
-  /* The ARIA role for this element (e.g. `'tooltip'`). */
+  /** The popover type for the floating element. Default: `'manual'`. */
+  popoverType?: undefined | UsePopoverOptions['popoverType'],
+  
+  /** The ARIA role for this element (e.g. `'tooltip'`, `'listbox'`, `'combobox'`). */
   role?: undefined | UseRoleProps['role'],
   
   /**
@@ -81,8 +90,16 @@ export type UseFloatingElementOptions = {
    */
   keyboardInteractions?: undefined | 'none' | 'form-control' | 'default',
   
-  /** The action on the reference element that should cause the floating element to open. Default: `'click'`. */
-  triggerAction?: undefined | 'none' | 'click' | 'hover' | 'focus',
+  /**
+   * The action on the reference element that should cause the floating element to open. Default: `'click'`.
+   * - `click`: Clicking on the reference element will toggle the floating element.
+   * - `hover`: The floating element will be open when the user hovers on or focuses the reference element.
+   * - `focus`: The floating element will be open when the reference element is focused.
+   * - `focus-interactive`: The floating element will be open when the reference element is focused, or when the user
+   *   focuses ane lement inside of the floating element. Clicking inside the floating element (thus losing focus) will
+   *   also not close it, light dismiss will only occur when clicking outside of the floating/reference element.
+   */
+  triggerAction?: undefined | 'none' | 'click' | 'hover' | 'focus' | 'focus-interactive',
   
   /** Where to place the floating element, relative to the reference element. */
   placement?: undefined | Placement,
@@ -96,7 +113,7 @@ export type UseFloatingElementOptions = {
   /** Boundary around the floating element that will be used for things like overflow detection. */
   boundary?: undefined | Element,
   
-  /* Reference to an arrow element (like a tooltip arrow), if any. */
+  /** Reference to an arrow element (like a tooltip arrow), if any. */
   arrowRef?: undefined | null | React.RefObject<Element>,
   
   /**
@@ -137,6 +154,7 @@ export const useFloatingElement = <E extends HTMLElement>(
 ): UseFloatingElementResult => {
   const opts = {
     ...options,
+    popoverType: options.popoverType ?? 'manual',
     role: options.role,
     triggerAction: options.triggerAction ?? 'click',
     placement: options.placement ?? 'top',
@@ -235,7 +253,7 @@ export const useFloatingElement = <E extends HTMLElement>(
   
   const interactions: Array<ElementProps> = [
     role,
-    usePopover(context),
+    usePopover({ popoverType: opts.popoverType }, context),
   ];
   
   // Trigger action: click
@@ -275,6 +293,13 @@ export const useFloatingElement = <E extends HTMLElement>(
   const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([
     ...interactions,
     ...opts.floatingUiInteractions(context),
+    
+    // Support React 19 style `ref` prop out of the box rather than requiring them to be separate
+    // XXX this doesn't work because the `ref` prop doesn't get merged properly in `useInteraction`
+    // {
+    //   reference: { ref: el => { refs.setReference(el); } },
+    //   floating: { ref: el => { refs.setFloating(el); } },
+    // },
   ]);
   
   
