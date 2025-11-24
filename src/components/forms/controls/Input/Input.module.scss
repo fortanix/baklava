@@ -18,6 +18,10 @@
     align-items: center;
     column-gap: bk.$spacing-1;
     
+    // Don't inherit the `text-align` (e.g. parent with center aligned text). If the context really wants to do this
+    // for inputs, then it can be overridden for that given input element specifically.
+    text-align: start;
+    
     > .bk-input__input {
       flex-grow: 1;
       min-inline-size: 0;
