@@ -130,7 +130,10 @@ export const DateInput = Object.assign(
       triggerAction: 'none',
       placement: 'bottom',
       offset: 4,
-      role: 'dialog',
+      role: 'combobox',
+      floatingUiFlipOptions: {
+        fallbackAxisSideDirection: 'none', // Do not flip to the left/right
+      },
     });
     
     const closeWatcherAnchorRef: React.RefCallback<HTMLElement> = React.useCallback(anchorEl => {
