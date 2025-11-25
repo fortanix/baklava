@@ -139,12 +139,21 @@ export const ToastWithDismiss: Story = {
   },
 };
 
+/**
+ * This story demonstrates how the `notify` utility works, including notification deduplication using a `dedupeKey`.
+ * 
+ * - Show success notification without deduplication – Displays a standard success toast without deduplication.
+ * - Show deduplicated error notification – Displays an error toast that won’t show again if a toast with the same `dedupeKey` is already visible.
+ * - Dismiss all – Clears all current toasts.
+ */
 export const ToastWithDeduplication: Story = {
   args: {
     children: (
       <>
         <p>
-          <Button kind="primary" label="Notify (success)"
+          <Button
+            kind="primary"
+            label="Show success notification without deduplication"
             onPress={() => {
               notify.success({
                 title: 'Notification title',
@@ -155,7 +164,9 @@ export const ToastWithDeduplication: Story = {
         </p>
         <br/>
         <p>
-          <Button kind="primary" label="Notify (error)"
+          <Button
+            kind="primary"
+            label="Show deduplicated error notification"
             onPress={() => {
               notify.error({
                 title: 'Notification title',

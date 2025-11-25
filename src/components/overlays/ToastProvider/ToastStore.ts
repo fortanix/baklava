@@ -11,7 +11,7 @@ import { type BannerVariant } from '../../containers/Banner/Banner.tsx';
 export type ToastId = string;
 export type ToastOptions = {
   autoClose?: undefined | false | number /*ms*/, // Time after which to automatically close the toast
-  dedupeKey?: string, // Optional unique identifier used to deduplicate notifications
+  dedupeKey?: undefined | string, // Optional unique identifier used to deduplicate notifications
 };
 export type ToastDescriptor = {
   variant: BannerVariant,
@@ -43,7 +43,7 @@ export class ToastStore {
   #idCounter = 0; // Maintain a count for automatic ID generation
   #toasts: ToastStorage = Object.create(null);
   #subscribers: Set<ToastSubscriber> = new Set();
-  #dedupeKeys: Set<string> = new Set();
+  #dedupeKeys: Set<string> = new Set(); // Tracks active dedupe keys to prevent showing duplicate notifications.
   
   constructor(options: ToastStoreOptions = {}) {
     this.#options = {
@@ -105,16 +105,16 @@ export class ToastStore {
 
   // Returns true if the toast has a dedupeKey and it already exists in the set,
   // indicating that a duplicate toast should be suppressed.
-  hasAddedDedupeKey(toast: ToastDescriptor) {
-    return toast.options?.dedupeKey
-      ?  this.#dedupeKeys.has(toast.options.dedupeKey)
+  hasActiveDedupeKey(toast: ToastDescriptor) {
+    return typeof toast.options?.dedupeKey !== 'undefined'
+      ? this.#dedupeKeys.has(toast.options.dedupeKey)
       : false;
   }
 
   addDedupeKey(toast: ToastWithMetadata) {
     const dedupeKey = toast.descriptor.options?.dedupeKey;
 
-    if (dedupeKey) {
+    if (typeof dedupeKey !== 'undefined') {
       this.#dedupeKeys.add(dedupeKey);
     }
   }
@@ -122,7 +122,7 @@ export class ToastStore {
   deleteDedupeKey(toast: ToastWithMetadata) {
     const dedupeKey = toast.descriptor.options?.dedupeKey;
 
-    if (dedupeKey) {
+    if (typeof dedupeKey !== 'undefined') {
       this.#dedupeKeys.delete(dedupeKey);
     }
   }
@@ -183,7 +183,7 @@ export class ToastStore {
       descriptor: toast,
     };
     
-    this.addDedupeKey(toasts[toastKey])
+    this.addDedupeKey(toasts[toastKey]);
     this.#toasts = toasts;
     this.publish();
   }

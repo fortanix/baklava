@@ -21,7 +21,8 @@ export type { ToastDescriptor };
 
 export const createToastNotifier = (toastStore: ToastStore) => {
   const notify = (toast: ToastDescriptor) => {
-    if (toastStore.hasAddedDedupeKey(toast)) { return; }
+    // If a toast with the same dedupeKey is already active, do not create another one.
+    if (toastStore.hasActiveDedupeKey(toast)) { return; }
     const toastId = toastStore.uniqueId();
     toastStore.announceToast(toastId, toast);
   };
