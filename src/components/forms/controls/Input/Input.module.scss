@@ -22,7 +22,7 @@
       flex-grow: 1;
       min-inline-size: 0;
       
-      line-height: bk.$line-height-m;
+      line-height: calc(bk.$line-height-m * 1.2);
       
       @include bk.focus-hidden; // Apply focus outline on the container instead
       
