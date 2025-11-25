@@ -466,24 +466,6 @@ export const SearchInput = (props: SearchInputProps) => {
     key = field.suggestedKeys?.[fieldQueryBuffer.key.trim()]?.label ?? fieldQueryBuffer.key.trim();
   }
   
-  const onWrapperClick = (evt: React.MouseEvent) => {
-    evt.preventDefault();
-    
-    if (inputRef?.current) {
-      inputRef.current.click();
-    }
-  };
-  
-  const onWrapperKeyDown = (evt: React.KeyboardEvent) => {
-    if (evt.key === 'Enter') {
-      evt.preventDefault();
-
-      if (inputRef?.current) {
-        inputRef.current.click();
-      }
-    }
-  };
-
   const renderPlaceholder = () => {
     if (field?.type === 'dictionary' && key) {
       return `Enter a value for ${key}`;
@@ -494,13 +476,14 @@ export const SearchInput = (props: SearchInputProps) => {
   
   return (
     <div
-      // biome-ignore lint/a11y/useSemanticElements:
-      // div used as clickable wrapper to keep custom layout & avoid button semantics
-      role="button"
-      tabIndex={0}
-      className={cx(cl['bk-search-input'], className, { [cl['bk-search-input--active']]: isFocused }, { [cl['bk-search-input--invalid']]: !validation.isValid && validation.message})}
-      onClick={onWrapperClick}
-      onKeyDown={onWrapperKeyDown}
+      className={cx(
+        cl['bk-search-input'],
+        className,
+        {
+          [cl['bk-search-input--active']]: isFocused,
+          [cl['bk-search-input--invalid']]: !validation.isValid && validation.message  
+        }
+      )}
     >
       <Icon icon="search" className={cx(cl['bk-search-input__search-icon'])} />
       {field &&
