@@ -108,9 +108,9 @@ export const TableProviderEager = <D extends object>(props: TableProviderEagerPr
   const TableContext = React.useMemo(() => createTableContext<D>(), []);
   
   return (
-    <TableContext.Provider value={context}>
+    <TableContext value={context}>
       {children}
-    </TableContext.Provider>
+    </TableContext>
   );
 };
 TableProviderEager.displayName = 'TableProviderEager';

@@ -50,7 +50,7 @@ export const Accordion = Object.assign(
     }, [exclusive, name]);
     
     return (
-      <AccordionContext.Provider value={context}>
+      <AccordionContext value={context}>
         <div
           {...propsRest}
           className={cx({
@@ -58,7 +58,7 @@ export const Accordion = Object.assign(
             [cl['bk-accordion']]: !unstyled,
           }, propsRest.className)}
         />
-      </AccordionContext.Provider>
+      </AccordionContext>
     );
   },
   { Item: AccordionItem },

@@ -464,9 +464,9 @@ export const TableProviderStream = <D extends object, P = undefined>(
   }, [pageSize]);
   
   return (
-    <TableContext.Provider value={context}>
+    <TableContext value={context}>
       {children}
-    </TableContext.Provider>
+    </TableContext>
   );
 };
 TableProviderStream.displayName = 'TableProviderStream';
