@@ -83,14 +83,13 @@ export const Tabs = (props: TabsProps) => {
   return (
     <div
       {...propsRest}
-      role="tablist"
       className={cx(
         'bk',
         { [cl['bk-tabs']]: !unstyled },
         propsRest.className,
       )}
     >
-      <ul className={cx(cl['bk-tabs__switcher'])}>
+      <ul className={cx(cl['bk-tabs__switcher'])} role="tablist">
         {tabs.map(tab => {
           if (tab.props.hide) return null;
           const isActive = tab.props.tabKey === activeKey;
@@ -114,6 +113,7 @@ export const Tabs = (props: TabsProps) => {
       
       {activeTab &&
         <div
+          role="tabpanel"
           {...(activeTabProps ?? {})}
           className={cx(
             cl['bk-tabs__tab-content'],
