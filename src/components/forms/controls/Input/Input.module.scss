@@ -20,9 +20,10 @@
     
     > .bk-input__input {
       flex-grow: 1;
+      padding-block-start: bk.$spacing-1; // Expand the target area to min 24px for accessibility compliance
       min-inline-size: 0;
       
-      line-height: calc(bk.$line-height-m * 1.2);
+      line-height: bk.$line-height-m;
       
       @include bk.focus-hidden; // Apply focus outline on the container instead
       
