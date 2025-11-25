@@ -267,7 +267,7 @@ export const MenuProvider = Object.assign(
       // If a render prop is not used, try to attach it to the element directly.
       // NOTE: `cloneElement` is marked as a legacy function by React. Recommended is to use a render prop instead.
       if (!React.isValidElement(children)) {
-        return <span {...anchorProps()}>{children}</span>;
+        return <span aria-hidden={true} {...anchorProps()}>{children}</span>;
       }
       if (React.Children.count(children) === 1) {
         return React.cloneElement(children, anchorProps(children.props as React.HTMLProps<Element>));
