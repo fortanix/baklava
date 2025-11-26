@@ -266,6 +266,9 @@ export const MenuProvider = Object.assign(
       
       // Add anchorProps only when anchor is a valid element
       // NOTE: `cloneElement` is marked as a legacy function by React. Recommended is to use a render prop instead.
+      if (!children) {
+        return null;
+      }
       if (React.isValidElement(children) && React.Children.count(children) === 1) {
         return React.cloneElement(children, anchorProps(children.props as React.HTMLProps<Element>));
       }
