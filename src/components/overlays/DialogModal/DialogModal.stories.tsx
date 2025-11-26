@@ -346,3 +346,112 @@ export const DialogModalConfirmation: Story = {
   },
   render: (args) => <DialogModalControlledConfirmation {...args}/>,
 };
+
+/* ---------------------------
+   Example modal hook A (Onprem call Component With hook 2)
+   --------------------------- */
+ const useConfigModalOne = () => {
+  const modal = DialogModal.useModalWithSubject<string>();
+
+  const closeModal = (e) => {
+    e?.stopPropagation?.();
+    console.log('ModalOne.close called', new Error().stack);
+    modal.deactivate();
+  };
+
+  const render = () => (
+    <DialogModal
+      {...modal.props}
+      display="full-screen"
+      title={null}
+      showCancelAction={false}
+      className="on-prem-account-create-modal"
+      onClose={closeModal}
+    >
+      {(({ close }) =>
+        <div style={{ padding: 20 }}>
+          <h3>Modal One (OnPrem)</h3>
+          <div style={{ marginBottom: 12 }}>
+            <Button onPress={() => {
+              console.log('ModalOne: internal button clicked');
+              close();
+            }}>
+              Close Modal One (onPrem)
+            </Button>
+          </div>
+          <TestComponentTrigger2/>
+        </div>
+      )}
+    </DialogModal>
+  );
+
+  return {
+    ...modal,
+    render,
+    activateWith(subject: string) {
+      modal.activateWith(subject);
+    }
+  };
+};
+
+/* ---------------------------
+   Modal hook B (external) — (External modal hook with custom close)
+   --------------------------- */
+ const useConfigModalTwo = () => {
+  const modal = DialogModal.useModalWithSubject<string>();
+
+  const closeModal = (e) => {
+    e?.stopPropagation?.();
+    console.log('ModalTwo.close called', new Error().stack);
+    modal.deactivate();
+  };
+
+  const render = () => (
+    <DialogModal
+      {...modal.props}
+      display="full-screen"
+      title={null}
+      showCancelAction={false}
+      onClose={closeModal}
+    >
+      {(({ close }) =>
+        <div style={{ padding: 20 }}>
+          <h4>Modal Two (External)</h4>
+          <div style={{ marginBottom: 12 }}>
+            <Button kind='primary' onPress={() => {
+              console.log('ModalTwo: internal close button clicked');
+              close();
+            }}>
+              Close Modal Two (External KeySource)
+            </Button>
+          </div>
+        </div>
+      )}
+    </DialogModal>
+  );
+
+  return {
+    ...modal,
+    render,
+    activateWith(subject?: string) {
+      modal.activateWith(subject);
+    },
+  };
+};
+
+
+export const NestedFullScreenComponentTriggerUsingHooks = () => {
+  const modal = useConfigModalOne()
+  return <>
+    {modal.render()}
+    <Button kind="primary" onPress={() =>modal.activateWith('test1')}>Trigger Modal 1 (onPrem)</Button>
+  </>;
+};
+
+const TestComponentTrigger2 = () => {
+  const modal = useConfigModalTwo()
+  return <>
+    {modal.render()}
+    <Button kind="primary" onPress={() =>modal.activateWith('test2')}>Trigger Modal 2 (External KeySource)</Button>
+  </>;
+};
