@@ -262,14 +262,18 @@ export const MenuProvider = Object.assign(
             // FIXME: this does not have a label on the first render with `defaultSelected`
             : { itemKey: selectedOption, label: (selectedLabelRef.current ?? selectedOption) },
         });
-      }
-      
-      // Add anchorProps only when anchor is a valid element
-      // NOTE: `cloneElement` is marked as a legacy function by React. Recommended is to use a render prop instead.
-      if (!children) {
+      } else if (!children) {
+        // If no `children` are defined, the consumer may be using an imperative handler rather than an anchor.
+        // Do not render any anchor in this case.
         return null;
-      }
-      if (React.isValidElement(children) && React.Children.count(children) === 1) {
+      } else if (!React.isValidElement(children)) {
+        // Edge case: if `children` is defined but not a valid element, then wrap it in an element ourselves.
+        // Note: must be an interactive element, like a `<button>`, in order for this to be valid in terms of ARIA.
+        return <button {...anchorProps()}>{children}</button>;
+      } else if (React.Children.count(children) === 1) {
+        // If a single element is given, apply the anchor props on that element. Note: the consumer must ensure
+        // that this element is a valid interactive element, like a `<button>`.
+        // NOTE: `cloneElement` is marked as a legacy function by React. Recommended is to use a render prop instead.
         return React.cloneElement(children, anchorProps(children.props as React.HTMLProps<Element>));
       }
       
