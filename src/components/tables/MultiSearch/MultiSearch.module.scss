@@ -20,6 +20,11 @@
         border: none;
       }
     }
+    
+    .bk-search-input__search-key,
+    .bk-search-input__search-icon {
+      padding-block-start: 0.2rem; // To adjust vertical alignment with the input field
+    }
 
     .bk-search-input__search-icon,
     .bk-search-input__search-key {
