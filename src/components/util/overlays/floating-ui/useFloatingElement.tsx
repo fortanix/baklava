@@ -163,6 +163,8 @@ const useFocusInteractive = (context: FloatingContext, options: UseFocusInteract
         && (anchorEl.contains(event.target) || popoverEl?.contains(event.target));
       
       if (!isInside) {
+        // Set a timeout, to give the component the chance to run some logic (e.g. focus guards).
+        // FIXME: use React `flushSync()` here?
         window.setTimeout(() => {
           const isInside = document.activeElement instanceof Node
             && (
@@ -206,11 +208,11 @@ export type UseFloatingElementOptions = {
   /**
    * The kind of keyboard interactions to configure on the floating element. Default: `'default'`.
    * - 'none': No keyboard interactions set.
-   * - 'form-control': Appropriate keyboard interactions for a form control (e.g. Enter key should trigger submit).
-   * - 'default': Acts as a menu button [1] (e.g. Enter key will activate the popover).
+   * - 'default': Acts as a menu button [1] (e.g. "enter" key will activate the popover).
    *   [1] https://www.w3.org/WAI/ARIA/apg/patterns/menu-button
+   * - 'form-control': Appropriate keyboard interactions for a form control (e.g. "enter" key should trigger submit).
    */
-  keyboardInteractions?: undefined | 'none' | 'form-control' | 'default',
+  keyboardInteractions?: undefined | 'none' | 'default' | 'form-control',
   
   /**
    * The action on the reference element that should cause the floating element to open. Default: `'click'`.
@@ -218,7 +220,7 @@ export type UseFloatingElementOptions = {
    * - `hover`: The floating element will be open when the user hovers on or focuses the reference element.
    * - `focus`: The floating element will be open when the reference element is focused.
    * - `focus-interactive`: The floating element will be open when the reference element is focused, or when the user
-   *   focuses ane lement inside of the floating element. Clicking inside the floating element (thus losing focus) will
+   *   focuses an element inside of the floating element. Clicking inside the floating element (thus losing focus) will
    *   also not close it, light dismiss will only occur when clicking outside of the floating/reference element.
    */
   triggerAction?: undefined | 'none' | 'click' | 'hover' | 'focus' | 'focus-interactive',
