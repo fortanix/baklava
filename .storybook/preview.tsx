@@ -128,10 +128,6 @@ const preview = {
                 'ComboBox',
                 'Select',
                 'SelectMulti',
-                'DatePicker',
-                'DatePickerRange',
-                'TimePicker',
-                'DateTimePicker',
                 'datetime',
                 [
                   'DatePicker',
