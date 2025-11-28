@@ -20,14 +20,14 @@ const formatTime = (time: TimeInputValue) => {
 const parseTime = (time: string): null | TimeInputValue => {
   const [hoursString, minutesString] = time.trim().split(':');
   if (typeof hoursString !== 'string' || typeof minutesString !== 'string') {
-    console.warn(`Invalid time string: ${time}`)
+    console.warn(`Invalid time string: ${time}`);
     return null;
   }
   
   const hours = Number(hoursString);
   const minutes = Number(minutesString);
   if (hours < 0 || hours >= 24 || minutes < 0 || minutes >= 60) {
-    console.warn(`Invalid time string: ${time}`)
+    console.warn(`Invalid time string: ${time}`);
     return null;
   }
   
