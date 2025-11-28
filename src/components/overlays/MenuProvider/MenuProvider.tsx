@@ -153,7 +153,7 @@ export const MenuProvider = Object.assign(
       setIsOpen,
     } = useFloatingElement({
       role,
-      triggerAction: triggerAction ?? action,
+      triggerAction: triggerAction ?? action ?? 'click',
       keyboardInteractions,
       placement,
       offset,
@@ -240,9 +240,11 @@ export const MenuProvider = Object.assign(
         }
         
         const props = getReferenceProps(userProps);
+        const ref = mergeRefs(anchorRef, userPropsRef, refs.setReference, props.ref);
+        
         return {
           ...props,
-          ref: userPropsRef ? mergeRefs(anchorRef, userPropsRef, refs.setReference) : refs.setReference,
+          ref,
           'aria-controls': listBoxId,
           'aria-haspopup': 'listbox',
           'aria-expanded': isOpen,
