@@ -46,31 +46,87 @@ type UsePopoverOptions = {
 /**
  * Floating UI custom hook to sync the `isOpen` state with browser `popover` state.
  */
-const usePopover = (options: UsePopoverOptions, context: FloatingContext): ElementProps => {
+const usePopover = (context: FloatingContext, options: UsePopoverOptions): ElementProps => {
+  const anchorEl = context.elements.reference;
+  const popoverEl = context.elements.floating;
+  
+  // Should be memoized, since React will call the ref callback for every new function reference
+  const referenceRef = React.useCallback((anchorEl: HTMLElement) => {
+    if (!anchorEl) { return; }
+    
+    if (popoverEl && popoverEl.isConnected) {
+      // We can use the following to link the reference to the popover. However, we may want to not do this since
+      // it won't work with multiple popovers on the same anchor. We can use `togglePopover({ source })` instead.
+      //ref.popoverTargetElement = popoverEl;
+      
+      // Force the popover state to be in sync with `context.open`.
+      // Note: it is important that the `source` points to the anchor element, so that the browser will add the
+      // popover in the focus tab order after the `source` element. It is also necessary that `ref` is a focusable
+      // element, otherwise the tab order will break (popover won't be in the tab order at all).
+      popoverEl.togglePopover({ source: anchorEl, force: context.open });
+    }
+  }, [popoverEl, context.open]);
+  
+  const handleReferenceFocus = React.useCallback((event: React.FocusEvent) => {
+    context.onOpenChange(true, event.nativeEvent, 'focus');
+  }, [context.onOpenChange]);
+  const handleReferenceBlur = React.useCallback((event: React.FocusEvent) => {
+    const anchorEl = event.currentTarget;
+    
+    const isInside = event.relatedTarget instanceof Node && (
+      popoverEl && popoverEl.isConnected && popoverEl.contains(event.relatedTarget)
+        || anchorEl.contains(event.relatedTarget)
+    );
+    
+    if (!isInside) {
+      context.onOpenChange(false, event.nativeEvent, 'focus-out');
+    }
+  }, [popoverEl, context.onOpenChange]);
+  
+  // Handle click outside
+  React.useEffect(() => {
+    const controller = new AbortController();
+    
+    document.addEventListener('click', event => {
+      if (!anchorEl || !(anchorEl instanceof Node)) { return; }
+      
+      const isInside = event.target instanceof Node
+        && (anchorEl.contains(event.target) || popoverEl?.contains(event.target));
+      
+      if (!isInside) {
+        window.setTimeout(() => {
+          const isInside = document.activeElement instanceof Node
+            && (
+              anchorEl.contains(document.activeElement) || popoverEl?.contains(document.activeElement)
+            );
+          if (!isInside) {
+            console.log('CLICKED OUTSIDE');
+            context.onOpenChange(false, event, 'outside-press');
+          }
+        }, 0);
+      }
+    }, { signal: controller.signal });
+    
+    return () => { controller.abort(); };
+  }, [anchorEl, popoverEl, context.onOpenChange]);
+  
+  // Must be memoized, since this is used as a memo dep in `useInteractions`
+  const referenceProps = React.useMemo<React.HTMLProps<Element>>(() => ({
+    //popoverTarget: popoverId,
+    ref: referenceRef,
+    onFocus: handleReferenceFocus,
+    onBlur: handleReferenceBlur,
+    //style: {},
+  }), [referenceRef, handleReferenceFocus, handleReferenceBlur]);
+  
+  // Must be memoized, since this is used as a memo dep in `useInteractions`
+  const floatingProps = React.useMemo<React.HTMLProps<HTMLElement>>(() => ({
+    popover: options.popoverType ?? undefined,
+  }), [options.popoverType]);
+  
   return {
-    reference: {
-      //popoverTarget: popoverId,
-      ref: el => {
-        if (!el) { return; }
-        
-        const popoverEl = context.elements.floating;
-        if (popoverEl && popoverEl.isConnected) {
-          // We can use the following to link the reference to the popover. However, we may want to not do this since
-          // it won't work with multiple popovers on the same anchor. We can use `togglePopover({ source })` instead.
-          //ref.popoverTargetElement = popoverEl;
-          
-          // Force the popover state to be in sync with `context.open`.
-          // Note: it is important that the `source` points to the anchor element, so that the browser will add the
-          // popover in the focus tab order after the `source` element. It is also necessary that `ref` is a focusable
-          // element, otherwise the tab order will break (popover won't be in the tab order at all).
-          popoverEl.togglePopover({ source: el, force: context.open });
-        }
-      },
-      //style: {},
-    },
-    floating: {
-      popover: options.popoverType ?? undefined,
-    },
+    reference: referenceProps,
+    floating: floatingProps,
   };
 };
 
@@ -201,6 +257,7 @@ export const useFloatingElement = <E extends HTMLElement>(
     middleware.push(arrow({ element: opts.arrowRef }));
   }
   
+  // Track the open state of the popover
   const [isOpen, setIsOpen] = React.useState(false);
   
   const onOpenChange = React.useCallback<Required<UseFloatingOptions>['onOpenChange']>(
@@ -242,18 +299,19 @@ export const useFloatingElement = <E extends HTMLElement>(
     ],
   });
   
+  // Interactions
+  // Note: floating-ui interactions may call React hooks, so make sure to apply the rules of React hooks here. For
+  // conditional rendering, use the various `enabled` options.
+  
   // Note: for `role="tooltip"`, no `aria-haspopup` is necessary on the anchor because it is not interactive:
   // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-haspopup
   const role = useRole(context, {
     ...opts.role ? { role: opts.role } : {},
   });
   
-  
-  // Interactions
-  
   const interactions: Array<ElementProps> = [
     role,
-    usePopover({ popoverType: opts.popoverType }, context),
+    usePopover(context, { popoverType: opts.popoverType }),
   ];
   
   // Trigger action: click
@@ -290,6 +348,8 @@ export const useFloatingElement = <E extends HTMLElement>(
   if (opts.triggerAction === 'focus') { interactions.push(...focusInteractions); }
   if (opts.triggerAction === 'hover') { interactions.push(...hoverInteractions); }
   
+  // Note: the array that is passed to `useInteractions()` will internally be passed as `useMemo` deps. Take care
+  // to memoize anything we pass in here.
   const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([
     ...interactions,
     ...opts.floatingUiInteractions(context),

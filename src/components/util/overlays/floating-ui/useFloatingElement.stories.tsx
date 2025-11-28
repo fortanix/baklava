@@ -13,8 +13,6 @@ import { Input } from '../../../forms/controls/Input/Input.tsx';
 import { type UseFloatingElementOptions, useFloatingElement } from './useFloatingElement.tsx';
 
 
-const css = String.raw; // Dummy template literal for syntax highlighting
-
 type FloatingElementControlledProps = {
   label: string,
   popoverContent?: undefined | React.ReactNode,
@@ -33,8 +31,9 @@ const FloatingElementControlled = (props: FloatingElementControlledProps) => {
     getItemProps,
   } = useFloatingElement(props.options);
   
-  //console.log('r', getReferenceProps());
-  //console.log('f', getFloatingProps());
+  // console.log('r', getReferenceProps());
+  // console.log('f', getFloatingProps());
+  //console.log('s', floatingStyles);
   
   // Merge everything into one props object for reference/floating
   const referenceProps = getReferenceProps();
@@ -47,7 +46,7 @@ const FloatingElementControlled = (props: FloatingElementControlledProps) => {
   
   return (
     <>
-      <style>{css`
+      <style>{`
         @scope {
           [popover] {
             padding: 1em;
@@ -138,7 +137,7 @@ export const FloatingElementWithTriggerFocusInteractive: Story = {
   decorators: [
     Story => (
       <div>
-        <style>{css`@scope { text-align: center; }`}</style>
+        <style>{`@scope { text-align: center; }`}</style>
         <Story/>
         <p><Button label="Focus target (should close active popover)"/></p>
       </div>
@@ -155,6 +154,6 @@ export const FloatingElementWithTriggerFocusInteractive: Story = {
         <p>Tabbing beyond the popover should also trigger a close.</p>
       </>
     ),
-    options: { triggerAction: 'focus' },
+    options: { triggerAction: 'none' },
   },
 };

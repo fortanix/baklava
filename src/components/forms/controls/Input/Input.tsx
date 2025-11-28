@@ -51,7 +51,7 @@ export type InputProps = InputContainerProps & InputSpecificProps & {
   type?: undefined | Exclude<ComponentProps<'input'>['type'], 'button' | 'submit' | 'reset'>,
   
   /** Props to apply to the container element. */
-  containerProps?: React.ComponentProps<'div'>,
+  containerProps?: React.ComponentProps<'span'>,
   
   /** Props to apply to the inner `<input/>` element. */
   inputProps?: React.ComponentProps<'input'>,
@@ -134,7 +134,7 @@ export const Input = Object.assign(
     
     return (
       // biome-ignore lint/a11y/noStaticElementInteractions: Visual-only convenience.
-      <div
+      <span
         {...containerProps}
         {...propsExtracted.containerProps}
         className={cx(
@@ -161,7 +161,7 @@ export const Input = Object.assign(
           className={cx(cl['bk-input__input'], inputProps?.className)}
         />
         {actions}
-      </div>
+      </span>
     );
   },
   {
