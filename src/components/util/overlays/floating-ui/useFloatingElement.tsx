@@ -392,7 +392,11 @@ export const useFloatingElement = <E extends HTMLElement>(
   
   // Trigger action: focus
   const focusInteractions = [
-    useFocus(context, { enabled: opts.triggerAction === 'focus' }),
+    useFocus(context, {
+      enabled: opts.triggerAction === 'focus',
+      // Trigger even when a focus is caused that is not `:focus-visible`. For instance, clicking on a button.
+      visibleOnly: false,
+    }),
   ];
   
   // Trigger action: focus-interactive
