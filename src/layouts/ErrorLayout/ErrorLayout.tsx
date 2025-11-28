@@ -4,16 +4,11 @@
 import { classNames as cx, type ComponentProps } from '../../util/componentUtil.ts';
 import * as React from 'react';
 
-import { Icon, IconProps } from '../../components/graphics/Icon/Icon.tsx';
+import { Icon, IconName } from '../../components/graphics/Icon/Icon.tsx';
 import { Link } from '../../components/actions/Link/Link.tsx';
 import { H2 } from '../../typography/Heading/Heading.tsx';
 
 import cl from './ErrorLayout.module.scss';
-
-
-export { cl as ErrorLayoutClassNames };
-
-
 
 
 const ErrorLayoutActions = (props: React.ComponentProps<'div'>) => (
@@ -28,7 +23,7 @@ export type ErorrLayoutProps = Omit<ComponentProps<'div'>, 'title'> & {
   flat?: undefined | boolean,
 
   /** The error icon */
-  icon: string,
+  icon: IconName,
 
   /** The title of the error, to be displayed in the under the icon. */
   title: string,
@@ -37,10 +32,10 @@ export type ErorrLayoutProps = Omit<ComponentProps<'div'>, 'title'> & {
   description?: string
 
   /** Optional redirection link for the displayed error */
-  redirectTo?: undefined | React.ReactNode,
+  redirectTo?: string | undefined,
 
   /** Optional redirection link label for the error */
-  redirectLinkLabel?: undefined | React.ReactNode,
+  redirectLinkLabel?: string | undefined,
 };
 /**
  * The error component displays an interaction with the user, for example a confirmation, or a form to be submitted.
