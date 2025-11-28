@@ -154,6 +154,6 @@ export const FloatingElementWithTriggerFocusInteractive: Story = {
         <p>Tabbing beyond the popover should also trigger a close.</p>
       </>
     ),
-    options: { triggerAction: 'none' },
+    options: { triggerAction: 'focus-interactive' },
   },
 };

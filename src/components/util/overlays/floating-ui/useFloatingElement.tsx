@@ -39,15 +39,15 @@ import {
 
 export type { Placement };
 
+
 type UsePopoverOptions = {
   /** The popover type for the floating element. */
   popoverType: null | 'auto' /*| 'hint'*/ | 'manual',
 };
 /**
- * Floating UI custom hook to sync the `isOpen` state with browser `popover` state.
+ * Floating UI interaction hook to sync the `isOpen` state with browser `popover` state.
  */
 const usePopover = (context: FloatingContext, options: UsePopoverOptions): ElementProps => {
-  const anchorEl = context.elements.reference;
   const popoverEl = context.elements.floating;
   
   // Should be memoized, since React will call the ref callback for every new function reference
@@ -67,10 +67,47 @@ const usePopover = (context: FloatingContext, options: UsePopoverOptions): Eleme
     }
   }, [popoverEl, context.open]);
   
+  // Must be memoized, since this is used as a memo dep in `useInteractions`
+  const referenceProps = React.useMemo<React.HTMLProps<Element>>(() => ({
+    //popoverTarget: popoverId,
+    ref: referenceRef,
+    //style: {},
+  }), [referenceRef]);
+  
+  // Must be memoized, since this is used as a memo dep in `useInteractions`
+  const floatingProps = React.useMemo<React.HTMLProps<HTMLElement>>(() => ({
+    popover: options.popoverType ?? undefined,
+  }), [options.popoverType]);
+  
+  return {
+    reference: referenceProps,
+    floating: floatingProps,
+  };
+};
+
+
+type UseFocusInteractiveOptions = {
+  /** Whether to enable this interaction. Useful for conditional usage of the hook. */
+  enabled?: undefined | boolean,
+};
+/**
+ * Floating UI interaction hooks for interactive focus trigger.
+ */
+const useFocusInteractive = (context: FloatingContext, options: UseFocusInteractiveOptions = {}): ElementProps => {
+  const enabled = options.enabled ?? true;
+  
+  const anchorEl = context.elements.reference;
+  const popoverEl = context.elements.floating;
+  
   const handleReferenceFocus = React.useCallback((event: React.FocusEvent) => {
+    if (!enabled) { return; }
+    
     context.onOpenChange(true, event.nativeEvent, 'focus');
-  }, [context.onOpenChange]);
+  }, [enabled, context.onOpenChange]);
+  
   const handleReferenceBlur = React.useCallback((event: React.FocusEvent) => {
+    if (!enabled) { return; }
+    
     const anchorEl = event.currentTarget;
     
     const isInside = event.relatedTarget instanceof Node && (
@@ -81,10 +118,42 @@ const usePopover = (context: FloatingContext, options: UsePopoverOptions): Eleme
     if (!isInside) {
       context.onOpenChange(false, event.nativeEvent, 'focus-out');
     }
-  }, [popoverEl, context.onOpenChange]);
+  }, [enabled, popoverEl, context.onOpenChange]);
+  
+  const handleFloatingBlur = React.useCallback((event: React.FocusEvent) => {
+    if (!enabled) { return; }
+    
+    const popoverEl = event.currentTarget;
+    
+    const isInside = event.relatedTarget instanceof Node
+      && (
+        (anchorEl instanceof Node && anchorEl.contains(event.relatedTarget))
+        || popoverEl.contains(event.relatedTarget)
+      );
+    
+    if (!isInside) {
+      // Give the component a little bit of time to perform its own internal focus management. For example:
+      // in `DatePicker` (react-datepicker), navigating by keyboard (arrow keys) to a day from another month will
+      // cause a re-render to switch to another month, during which a `focusout` happens.
+      window.setTimeout(() => {
+        if (!popoverEl.isConnected) { return; } // Make sure the popover element is still there after the timeout
+        
+        const isInside = document.activeElement instanceof Node
+          && (
+            (anchorEl instanceof Node && anchorEl.contains(document.activeElement))
+            || popoverEl.contains(document.activeElement)
+          );
+        if (!isInside) {
+          context.onOpenChange(false, event.nativeEvent, 'focus-out');
+        }
+      }, 0);
+    }
+  }, [enabled, anchorEl, context.onOpenChange]);
   
   // Handle click outside
   React.useEffect(() => {
+    if (!enabled) { return; }
+    
     const controller = new AbortController();
     
     document.addEventListener('click', event => {
@@ -100,7 +169,6 @@ const usePopover = (context: FloatingContext, options: UsePopoverOptions): Eleme
               anchorEl.contains(document.activeElement) || popoverEl?.contains(document.activeElement)
             );
           if (!isInside) {
-            console.log('CLICKED OUTSIDE');
             context.onOpenChange(false, event, 'outside-press');
           }
         }, 0);
@@ -108,27 +176,25 @@ const usePopover = (context: FloatingContext, options: UsePopoverOptions): Eleme
     }, { signal: controller.signal });
     
     return () => { controller.abort(); };
-  }, [anchorEl, popoverEl, context.onOpenChange]);
+  }, [enabled, anchorEl, popoverEl, context.onOpenChange]);
   
   // Must be memoized, since this is used as a memo dep in `useInteractions`
   const referenceProps = React.useMemo<React.HTMLProps<Element>>(() => ({
-    //popoverTarget: popoverId,
-    ref: referenceRef,
     onFocus: handleReferenceFocus,
     onBlur: handleReferenceBlur,
-    //style: {},
-  }), [referenceRef, handleReferenceFocus, handleReferenceBlur]);
+  }), [handleReferenceFocus, handleReferenceBlur]);
   
   // Must be memoized, since this is used as a memo dep in `useInteractions`
   const floatingProps = React.useMemo<React.HTMLProps<HTMLElement>>(() => ({
-    popover: options.popoverType ?? undefined,
-  }), [options.popoverType]);
+    onBlur: handleFloatingBlur,
+  }), [handleFloatingBlur]);
   
   return {
     reference: referenceProps,
     floating: floatingProps,
   };
 };
+
 
 export type UseFloatingElementOptions = {
   /** The popover type for the floating element. Default: `'manual'`. */
@@ -329,6 +395,11 @@ export const useFloatingElement = <E extends HTMLElement>(
     useFocus(context, { enabled: opts.triggerAction === 'focus' }),
   ];
   
+  // Trigger action: focus-interactive
+  const focusInteractiveInteractions = [
+    useFocusInteractive(context, { enabled: opts.triggerAction === 'focus-interactive' }),
+  ];
+  
   // Trigger action: hover
   const { delay: groupDelay } = useDelayGroup(context, { enabled: opts.triggerAction === 'hover' });
   const delay = opts.hasDelayGroup ? groupDelay : {
@@ -346,6 +417,7 @@ export const useFloatingElement = <E extends HTMLElement>(
   
   if (opts.triggerAction === 'click') { interactions.push(...clickInteractions); }
   if (opts.triggerAction === 'focus') { interactions.push(...focusInteractions); }
+  if (opts.triggerAction === 'focus-interactive') { interactions.push(...focusInteractiveInteractions); }
   if (opts.triggerAction === 'hover') { interactions.push(...hoverInteractions); }
   
   // Note: the array that is passed to `useInteractions()` will internally be passed as `useMemo` deps. Take care
