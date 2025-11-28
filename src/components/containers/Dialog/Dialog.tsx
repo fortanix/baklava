@@ -91,7 +91,7 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   
   /** If specified, a close action is displayed in the footer. Default: true. */
   showCancelAction?: undefined | boolean,
-  
+
   /** Callback that is called when the user requests the dialog to close. */
   onRequestClose?: undefined | (() => void), // Note: cannot name this `onClose`, dialog already has an `onClose` prop
   
@@ -116,6 +116,7 @@ export const Dialog = Object.assign(
       title,
       showCloseIcon = true,
       showCancelAction = true,
+      onClose,
       onRequestClose,
       actions,
       autoFocusClose = false,
@@ -135,6 +136,13 @@ export const Dialog = Object.assign(
       close: onRequestClose ?? (() => { console.warn('Missing `onRequestClose` callback.'); })
     }), [onRequestClose]);
     
+    const handleClose = React.useCallback((event: React.SyntheticEvent<HTMLDialogElement>) => {
+      // Workaround for a bug in React where the close event will bubble up to parent components, even though native
+      // close events do not bubble.
+      event.stopPropagation();
+      onClose?.(event);
+    }, [onClose]);
+    
     return (
       <DialogContext value={dialogContext}>
         <dialog
@@ -153,6 +161,7 @@ export const Dialog = Object.assign(
             scrollerProps.className,
             propsRest.className,
           )}
+          onClose={handleClose}
         >
           <header className={cx(cl['bk-dialog__header'])}>
             <H5 id={`${dialogId}-title`} className={cx(cl['bk-dialog__header__title'])}>{title}</H5>

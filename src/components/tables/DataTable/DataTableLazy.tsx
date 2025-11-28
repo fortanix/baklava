@@ -240,9 +240,9 @@ export const TableProviderLazy = <D extends object>(props: TableProviderLazyProp
   }, [reloadTrigger]);
   
   return (
-    <TableContext.Provider value={context}>
+    <TableContext value={context}>
       {children}
-    </TableContext.Provider>
+    </TableContext>
   );
 };
 TableProviderLazy.displayName = 'TableProviderLazy';

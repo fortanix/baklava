@@ -95,6 +95,41 @@ export const DialogModalNested: Story = {
   },
 };
 
+const DialogModalNestedCloseTestC = (args: DialogModalArgs) => {
+  const modalRef = DialogModal.useModalRef();
+  
+  return (
+    <DialogModal {...args} modalRef={modalRef}>
+      <Button kind="primary" label="Close inner modal" onPress={() => { modalRef.current?.deactivate(); }}/>
+    </DialogModal>
+  );
+};
+export const DialogModalNestedCloseTest: Story = {
+  args: {
+    title: 'Modal with a submodal',
+    className: 'outer',
+    // The inner close event should not bubble, but there seems to be a bug in React's event handling:
+    // https://github.com/facebook/react/issues/34038
+    onClose: event => {
+      if (event.target instanceof HTMLDialogElement && event.target.className.includes('inner')) {
+        notify.error('BUG: outer modal received close event for the inner dialog modal');
+      }
+    },
+    children: (
+      <DialogModalNestedCloseTestC
+        className="inner"
+        title="Submodal"
+        trigger={({ activate }) => <Button kind="primary" label="Open submodal" onPress={activate}/>}
+        onClose={() => {
+          notify.success('Successfully received close event for the inner dialog modal');
+        }}
+      >
+        This is a submodal. Closing this modal should keep the outer modal still open.
+      </DialogModalNestedCloseTestC>
+    ),
+  },
+};
+
 export const DialogModalWithTooltip: Story = {
   args: {
     title: 'Modal with a tooltip',
