@@ -126,8 +126,7 @@ export const DateInput = Object.assign(
       getReferenceProps,
       getFloatingProps,
     } = useFloatingElement({
-      //triggerAction: 'focus',
-      triggerAction: 'none',
+      triggerAction: 'focus-interactive',
       placement: 'bottom',
       offset: 4,
       role: 'combobox',
@@ -136,97 +135,17 @@ export const DateInput = Object.assign(
       },
     });
     
-    const closeWatcherAnchorRef: React.RefCallback<HTMLElement> = React.useCallback(anchorEl => {
-      if (!anchorEl) { return; }
-      
-      const floatingRef = refs.floating;
-      const controller = new AbortController();
-      
-      anchorEl.addEventListener('focusin', () => {
-        setIsOpen(true);
-      }, { signal: controller.signal });
-      anchorEl.addEventListener('focusout', event => {
-        const isInside = event.relatedTarget instanceof Node && (
-          floatingRef.current && floatingRef.current.contains(event.relatedTarget)
-            || anchorEl.contains(event.relatedTarget)
-        );
-        
-        if (!isInside) {
-          setIsOpen(false);
-        }
-      }, { signal: controller.signal });
-      
-      // Handle click outside
-      // TODO: move this out to a separate useEffect?
-      document.addEventListener('click', event => {
-        const isInside = event.target instanceof Node
-          && (anchorEl.contains(event.target) || floatingRef.current?.contains(event.target));
-        
-        if (!isInside) {
-          window.setTimeout(() => {
-            const isInside = document.activeElement instanceof Node
-              && (
-                anchorEl.contains(document.activeElement) || floatingRef.current?.contains(document.activeElement)
-              );
-            if (!isInside) {
-              setIsOpen(false);
-            }
-          }, 0);
-        }
-      }, { signal: controller.signal });
-      
-      return () => {
-        controller.abort();
-      };
-    }, [setIsOpen, refs.floating]);
-    const closeWatcherPopoverRef = React.useCallback((floatingEl: null | HTMLDivElement) => {
-      if (!floatingEl) { return; }
-      
-      const anchorRef = refs.reference;
-      const controller = new AbortController();
-      
-      floatingEl.addEventListener('focusout', event => {
-        const isInside = event.relatedTarget instanceof Node
-          && (
-            (anchorRef.current instanceof Node && anchorRef.current.contains(event.relatedTarget))
-            || floatingEl.contains(event.relatedTarget)
-          );
-        
-        if (!isInside) {
-          //setIsOpen(false);
-          
-          // Give the component a little bit of time to perform its own internal focus management. For example:
-          // in `DatePicker` (react-datepicker), navigating by keyboard (arrow keys) to a day from another month will
-          // cause a re-render to switch to another month, during which a `focusout` happens.
-          window.setTimeout(() => {
-            const isInside = document.activeElement instanceof Node
-              && (
-                (anchorRef.current instanceof Node && anchorRef.current.contains(document.activeElement))
-                || floatingEl.contains(document.activeElement)
-              );
-            if (!isInside) {
-              setIsOpen(false);
-            }
-          }, 0);
-        }
-      }, { signal: controller.signal });
-      
-      return () => {
-        controller.abort();
-      };
-    }, []);
-    
     
     const anchorProps = mergeProps(
       getReferenceProps(propsRest.containerProps),
-      { ref: mergeRefs(propsRest.containerProps?.ref, refs.setReference, closeWatcherAnchorRef) },
+      { ref: mergeRefs(propsRest.containerProps?.ref, refs.setReference) },
     );
     
     const handleChange = React.useCallback((date: DateInputValue) => {
       onUpdateDate?.(date);
       //setIsOpen(false); // Doesn't really make sense, since focusing the input will just re-open it
       inputRef.current?.focus();
-    }, [onUpdateDate, setIsOpen]);
+    }, [onUpdateDate]);
     
     return (
       <>
@@ -252,7 +171,7 @@ export const DateInput = Object.assign(
               style: floatingStyles,
               popover: 'manual',
             })}
-            ref={mergeRefs<HTMLDivElement>(refs.setFloating, closeWatcherPopoverRef)}
+            ref={mergeRefs<HTMLDivElement>(refs.setFloating)}
           >
             <DatePicker
               {...datePickerProps}
