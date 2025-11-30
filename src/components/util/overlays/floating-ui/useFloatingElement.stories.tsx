@@ -9,12 +9,13 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Button } from '../../../actions/Button/Button.tsx';
 import { Input } from '../../../forms/controls/Input/Input.tsx';
+import { Icon } from '../../../graphics/Icon/Icon.tsx';
 
 import { type UseFloatingElementOptions, useFloatingElement } from './useFloatingElement.tsx';
 
 
 type FloatingElementControlledProps = {
-  label: string,
+  renderAnchor: (props: Record<string, unknown>) => React.ReactNode,
   popoverContent?: undefined | React.ReactNode,
   options: UseFloatingElementOptions,
 };
@@ -30,10 +31,6 @@ const FloatingElementControlled = (props: FloatingElementControlledProps) => {
     getFloatingProps,
     getItemProps,
   } = useFloatingElement(props.options);
-  
-  // console.log('r', getReferenceProps());
-  // console.log('f', getFloatingProps());
-  //console.log('s', floatingStyles);
   
   // Merge everything into one props object for reference/floating
   const referenceProps = getReferenceProps();
@@ -68,13 +65,16 @@ const FloatingElementControlled = (props: FloatingElementControlledProps) => {
         }
       `}</style>
       
-      <Button {...referenceProps} kind="primary" label={props.label}/>
+      {props.renderAnchor(referenceProps)}
       {isMounted &&
         <div {...floatingProps}>{props.popoverContent ?? 'This is a popover'}</div>
       }
     </>
   );
 };
+
+const buttonAnchor = (label: string) =>
+  (props: Record<string, unknown>) => <Button {...props} kind="primary" label={label}/>;
 
 type FloatingElementControlledArgs = React.ComponentProps<typeof FloatingElementControlled>;
 type Story = StoryObj<FloatingElementControlledArgs>;
@@ -88,7 +88,7 @@ export default {
   tags: ['autodocs'],
   argTypes: {},
   args: {
-    label: 'Open popover',
+    renderAnchor: buttonAnchor('Open popover'),
   },
   render: (args) => <FloatingElementControlled {...args}/>,
   decorators: [
@@ -103,8 +103,8 @@ export default {
 } satisfies Meta<FloatingElementControlledArgs>;
 
 
-export const FloatingElement: Story = {
-  args: { label: 'Click me' },
+export const FloatingElementStandard: Story = {
+  args: { renderAnchor: buttonAnchor('Click me') },
 };
 
 export const FloatingElementWithPlacementTop: Story = {
@@ -125,13 +125,13 @@ export const FloatingElementWithOffset: Story = {
 };
 
 export const FloatingElementWithTriggerClick: Story = {
-  args: { label: 'Click me', options: { triggerAction: 'click' }, },
+  args: { renderAnchor: buttonAnchor('Click me'), options: { triggerAction: 'click' }, },
 };
 export const FloatingElementWithTriggerHover: Story = {
-  args: { label: 'Hover over me', options: { triggerAction: 'hover' }, },
+  args: { renderAnchor: buttonAnchor('Hover over me'), options: { triggerAction: 'hover' }, },
 };
 export const FloatingElementWithTriggerFocus: Story = {
-  args: { label: 'Focus me', options: { triggerAction: 'focus' }, },
+  args: { renderAnchor: buttonAnchor('Focus me'), options: { triggerAction: 'focus' }, },
 };
 export const FloatingElementWithTriggerFocusInteractive: Story = {
   decorators: [
@@ -144,7 +144,7 @@ export const FloatingElementWithTriggerFocusInteractive: Story = {
     ),
   ],
   args: {
-    label: 'Focus me',
+    renderAnchor: buttonAnchor('Focus me'),
     popoverContent: (
       <>
         <p>Clicking this static text will lose focus, but it should not close the popover.</p>
@@ -156,4 +156,62 @@ export const FloatingElementWithTriggerFocusInteractive: Story = {
     ),
     options: { triggerAction: 'focus-interactive' },
   },
+};
+
+
+/**
+ * HTML popover expects the `source` element (the anchor) to be a focusable element. If a non-interactive element like
+ * a `<div>` without a `tabindex` is passed, then the automatic tab order will fail.
+ */
+export const FloatingElementWithNoninteractiveAnchor: Story = {
+  decorators: [
+    Story => (
+      <div>
+        <style>{`@scope { text-align: center; }`}</style>
+        <Story/>
+        <p><Button label="Focus target"/></p>
+      </div>
+    ),
+  ],
+  args: {
+    renderAnchor: props => <div {...props}>Click me</div>,
+    popoverContent: (
+      <>
+        <p><Button kind="primary" label="This button will not be next in the tab order"/></p>
+      </>
+    ),
+    options: { triggerAction: 'click' },
+  },
+};
+
+/**
+ * HTML popover expects the `source` element (the anchor) to be an HTML element. If a non-HTML element, like an SVG
+ * element is passed instead, `useFloatingElement` should still work however there will be no `source` (and thus no
+ * tab ordering or implicit anchor). (Note: in Chrome at least, the tab ordering does still seem to work here?)
+ */
+export const FloatingElementWithSVGAnchor: Story = {
+  decorators: [
+    Story => (
+      <div>
+        <style>{`@scope { text-align: center; }`}</style>
+        <p><Button label="Focus target"/></p>
+        <Story/>
+        <p><Button label="Focus target"/></p>
+      </div>
+    ),
+  ],
+  args: {
+    renderAnchor: props => <Icon {...props} icon="bell"/>,
+    popoverContent: (
+      <>
+        <p><Button kind="primary" label="This button will not be next in the tab order"/></p>
+      </>
+    ),
+    options: { triggerAction: 'click' },
+  },
+};
+
+
+export const FloatingElementWithPopoverAuto: Story = {
+  args: { renderAnchor: buttonAnchor('Click me'), options: { popoverBehavior: 'auto' } },
 };
