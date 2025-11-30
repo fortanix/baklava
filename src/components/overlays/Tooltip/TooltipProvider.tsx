@@ -197,10 +197,13 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
         return (userProps ?? {}) as Record<string, unknown>;
       }
       
+      const props = getReferenceProps(userProps);
+      const ref = mergeRefs(userPropsRef, refs.setReference, props.ref);
+      
       return {
-        ...getReferenceProps(userProps),
+        ...props,
         ['aria-describedby']: floatingProps.id,
-        ref: userPropsRef ? mergeRefs(userPropsRef, refs.setReference) : refs.setReference,
+        ref,
       };
     };
     

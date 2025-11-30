@@ -88,7 +88,9 @@
   $elements-with-inset: div, section, dialog;
   $inset-selector: '[tabindex]:is(#{$elements-with-inset})';
   *:is(#{$inset-selector}) {
-    @include focus-inset($override-layer: false);
+    &:not([data-floating-ui-focusable]) { // Note: do not show focus outlines on floating-ui focus guards
+      @include focus-inset($override-layer: false);
+    }
   }
   *:not(#{$inset-selector}) {
     @include focus-outset($override-layer: false);

@@ -44,10 +44,30 @@ export const inputSpecificPropKeys = {
   type: true,
   value: true,
   width: true,
-  onInput: true,
-  onInputCapture: true,
+  
+  // Form events
   onChange: true,
   onChangeCapture: true,
+  onBeforeInput: true,
+  onBeforeInputCapture: true,
+  onInput: true,
+  onInputCapture: true,
+  onReset: true,
+  onResetCapture: true,
+  onSubmit: true,
+  onSubmitCapture: true,
+  onInvalid: true,
+  onInvalidCapture: true,
+  
+  // Focus events
+  // Note: do *not* include these as input-specific. The reason is because React uses the `focusin` and `focusout`
+  // events for `onFocus` and `onBlur` respectively. Thus, focus/blur on the input will already be captures by the
+  // parent.
+  // See: https://github.com/facebook/react/pull/19186
+  // onFocus: true,
+  // onFocusCapture: true,
+  // onBlur: true,
+  // onBlurCapture: true,
 } as const satisfies Partial<{ [key in keyof React.InputHTMLAttributes<HTMLInputElement>]: true }>;
 export type InputSpecificPropKeys = keyof typeof inputSpecificPropKeys;
 

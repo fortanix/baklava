@@ -125,6 +125,32 @@ export const InputWithAutoFocus: Story = {
   },
 };
 
+/**
+ * Test that `onFocus` and `onBlur` are properly handled, such that:
+ * - Focusing the inner input triggers focus/blur.
+ * - Focusing any other interactive elements in the input (like actions) also trigger focus/blur.
+ */
+export const InputWithFocusTracking: Story = {
+  decorators: [
+    (_, { args }) => {
+      const [isFocused, setIsFocused] = React.useState(false);
+      return (
+        <>
+          <Input
+            {...args}
+            onFocus={() => { setIsFocused(true); }}
+            onBlur={() => { setIsFocused(false); }}
+          />
+          <p>Focused: {isFocused ? 'yes' : 'no'}</p>
+        </>
+      );
+    },
+  ],
+  args: {
+    actions: <Input.Action icon="caret-down" label="Open menu" onPress={() => { notify.info('Clicked'); }}/>,
+  },
+};
+
 export const InputWithAutomaticResizing: Story = {
   args: {
     automaticResize: true,
