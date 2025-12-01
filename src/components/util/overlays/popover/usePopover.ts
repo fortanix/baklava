@@ -28,13 +28,12 @@ const syncPopoverWithController = (params: {
   // Make sure we have something to sync with
   if (!popoverEl || !popoverEl.isConnected) { return; }
   
-  // The "source" of the `togglePopover` [...]
+  // Tell the browser the "source" of the `togglePopover`. This will (1) change the tab order so that the popover is
+  // injected after the source while it's open, (2) set up an "implicit anchor" for CSS anchor positioning, and (3)
+  // be added to the `ToggleEvent` so that we can link a popover toggle to its source from an event listener.
   // Requirements:
   // - Must be an `HTMLElement` (`<svg>` won't work, browser will throw an exception)
-  // - Must be an interactive element (`<div>` won't work)
-  // Note: it is important that the `source` points to the anchor element, so that the browser will add the
-  // popover in the focus tab order after the `source` element. It is also necessary that it is a focusable
-  // element, otherwise the tab order will break (popover won't be in the tab order at all).
+  // - Should be an interactive (i.e. focusable) element (won't cause an exception, but tab order will not work)
   const source = ((): undefined | HTMLElement => {
     if (sourceEl instanceof HTMLElement && sourceEl.isConnected) {
       return sourceEl;
