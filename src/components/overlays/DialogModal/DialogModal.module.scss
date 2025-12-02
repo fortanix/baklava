@@ -7,9 +7,15 @@
 // Note: `$blur` should be in px, not rem (blur effect should be independent of any font size scaling)
 @mixin dialog-backdrop($entry-dur: 200ms, $exit-dur: 180ms, $blur: 2px) {
   &::backdrop {
-    transition-property: overlay, display, background-color, backdrop-filter;
+    --transition-props: background-color, backdrop-filter;
+    transition-property: overlay, display, var(--transition-props);
     transition-timing-function: linear;
     transition-behavior: allow-discrete;
+    
+    // Fallback for older browsers. See: https://codepen.io/maikelkrause/pen/qEZybQX
+    @supports not (overlay: auto) {
+      transition-property: var(--transition-props); // Exclude display/overlay
+    }
     
     // Open state styling
     background-color: light-dark(rgb(0 0 0 / 10%), rgb(0 0 0 / 20%));
@@ -38,9 +44,15 @@
 
 @mixin dialog-backdrop-opaque($entry-dur: 200ms, $exit-dur: 180ms) {
   &::backdrop {
-    transition-property: overlay, display, background-color;
+    --transition-props: background-color;
+    transition-property: overlay, display, var(--transition-props);
     transition-timing-function: linear;
     transition-behavior: allow-discrete;
+    
+    // Fallback for older browsers. See: https://codepen.io/maikelkrause/pen/qEZybQX
+    @supports not (overlay: auto) {
+      transition-property: var(--transition-props); // Exclude display/overlay
+    }
     
     // Open state styling
     background-color: bk.$theme-page-default;
@@ -65,9 +77,15 @@
 }
 
 @mixin dialog-fade-in($entry-dur: 200ms, $exit-dur: 180ms, $scale: 1) {
-  transition-property: overlay, display, opacity, scale;
+  --transition-props: opacity, scale;
+  transition-property: overlay, display, var(--transition-props);
   transition-timing-function: ease-out;
   transition-behavior: allow-discrete;
+  
+  // Fallback for older browsers. See: https://codepen.io/maikelkrause/pen/qEZybQX
+  @supports not (overlay: auto) {
+    transition-property: var(--transition-props); // Exclude display/overlay
+  }
   
   // Open state styling
   opacity: 1;
@@ -97,9 +115,15 @@
 @mixin dialog-slide-over($entry-dur: 200ms, $exit-dur: 180ms, $size: 0.8, $origin: right) {
   $dir: if($origin==right, 1, -1);
   
-  transition-property: overlay, display, translate;
+  --transition-props: translate;
+  transition-property: overlay, display, var(--transition-props);
   transition-timing-function: ease-out;
   transition-behavior: allow-discrete;
+  
+  // Fallback for older browsers. See: https://codepen.io/maikelkrause/pen/qEZybQX
+  @supports not (overlay: auto) {
+    transition-property: var(--transition-props); // Exclude display/overlay
+  }
   
   // Open state styling
   translate: 0;
