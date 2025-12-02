@@ -55,24 +55,26 @@ const FloatingElementControlled = (props: FloatingElementControlledProps) => {
               margin-top: 0.6lh;
             }
             
-            /* Entry/exit animation */
-            --transition-props: opacity;
-            transition: none 100ms ease-in allow-discrete;
-            transition-property: display, overlay, var(--transition-props);
-            &:not(:popover-open) { opacity: 0; }
-            
-            /*
-            Safari (at least v26.0) supports 'transition-property: display allow-discrete', but it does not support
-            the 'overlay' property. This means that our exit animations are broken in this browser, because during the
-            exit animation the popover will no longer be in the top layer ("overlay"). Note: we cannot feature detect
-            support for discrete 'display', so we will instead feature detect support for 'overlay'.
-            See: https://codepen.io/maikelkrause/pen/qEZybQX
-            */
-            @supports not (overlay: auto) {
-              transition-property: var(--transition-props); /* Exclude 'display' and 'overlay' */
+            /* Entry/exit animations */
+            @media (prefers-reduced-motion: no-preference) {
+              --transition-props: opacity;
+              transition: none 100ms ease-in allow-discrete;
+              transition-property: display, overlay, var(--transition-props);
+              &:not(:popover-open) { opacity: 0; }
+              
+              /*
+              Safari (at least v26.0) supports 'transition-property: display allow-discrete', but it does not support
+              the 'overlay' property. This means that our exit animations are broken in this browser, because during the
+              exit animation the popover will no longer be in the top layer ("overlay"). Note: we cannot feature detect
+              support for discrete 'display', so we will instead feature detect support for 'overlay'.
+              See: https://codepen.io/maikelkrause/pen/qEZybQX
+              */
+              @supports not (overlay: auto) {
+                transition-property: var(--transition-props); /* Exclude 'display' and 'overlay' */
+              }
+              
+              @starting-style { opacity: 0; }
             }
-            
-            @starting-style { opacity: 0; }
           }
         }
       `}</style>

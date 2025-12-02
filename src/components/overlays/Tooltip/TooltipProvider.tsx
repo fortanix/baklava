@@ -7,7 +7,7 @@ import { assertUnreachable } from '../../../util/types.ts';
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import { classNames as cx, type ClassNameArgument } from '../../../util/componentUtil.ts';
-import { mergeRefs } from '../../../util/reactUtil.ts';
+import { mergeRefs, mergeProps } from '../../../util/reactUtil.ts';
 
 import {
   type UseFloatingElementOptions,
@@ -146,8 +146,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     
     return (
       <Tooltip
-        {...floatingProps}
-        {...tooltipProps}
+        {...mergeProps(floatingProps, tooltipProps)}
         ref={mergeRefs<HTMLDivElement>(
           refs.setFloating,
           floatingProps.ref as React.Ref<HTMLDivElement>,
@@ -182,6 +181,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     arrow,
     floatingStyles,
     getFloatingProps,
+    floatingProps.ref,
     refs.setFloating,
     size,
     //tooltipProps, // Changes on every render
