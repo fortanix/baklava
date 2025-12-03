@@ -118,8 +118,6 @@ export const DateInput = Object.assign(
     const inputRef = React.useRef<React.ComponentRef<typeof DateInputInner>>(null);
     
     const {
-      isOpen,
-      setIsOpen,
       isMounted,
       refs,
       floatingStyles,
@@ -147,6 +145,12 @@ export const DateInput = Object.assign(
       inputRef.current?.focus();
     }, [onUpdateDate]);
     
+    const floatingProps = getFloatingProps({
+      style: floatingStyles,
+      popover: 'manual',
+    });
+    floatingProps.ref = mergeRefs<HTMLDivElement>(refs.setFloating, floatingProps.ref);
+    
     return (
       <>
         <DateInputInner
@@ -164,14 +168,11 @@ export const DateInput = Object.assign(
           inputProps={anchorProps} // FIXME: merge with the rest of the props?
         />
         
-        {isOpen &&
+        {isMounted &&
           <div
             // FIXME: props merger
-            {...getFloatingProps({
-              style: floatingStyles,
-              popover: 'manual',
-            })}
-            ref={mergeRefs<HTMLDivElement>(refs.setFloating)}
+            {...floatingProps}
+            className={cx(cl['bk-date-input__picker'])}
           >
             <DatePicker
               {...datePickerProps}
