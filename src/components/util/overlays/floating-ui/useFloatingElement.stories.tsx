@@ -174,8 +174,10 @@ export const FloatingElementWithTriggerFocusInteractive: Story = {
 
 
 /**
- * HTML popover expects the `source` element (the anchor) to be a focusable element. If a non-interactive element like
- * a `<div>` without a `tabindex` is passed, then the automatic tab order will fail.
+ * Consumers should avoid using non-interactive (non-focusable) elements as anchors, because:
+ * - It is bad for accessibility, users won't be able to use assistive technology to focus and activate the anchor.
+ * - HTML popover expects the `source` element (the anchor) to be a focusable element. If a non-interactive element
+ *   like a `<div>` without a `tabindex` is passed, then the automatic tab order will fail. 
  */
 export const FloatingElementWithNoninteractiveAnchor: Story = {
   decorators: [
@@ -188,11 +190,9 @@ export const FloatingElementWithNoninteractiveAnchor: Story = {
     ),
   ],
   args: {
-    renderAnchor: props => <div {...props}>Click me</div>,
+    renderAnchor: props => <div {...props} style={{ border: '1px solid rebeccapurple' }}>Click me</div>,
     popoverContent: (
-      <>
-        <p><Button kind="primary" label="This button will not be next in the tab order"/></p>
-      </>
+      <p><Button kind="primary" label="This button will not be next in the tab order"/></p>
     ),
     options: { triggerAction: 'click' },
   },
