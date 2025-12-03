@@ -161,6 +161,10 @@
     --bk-dialog-modal-exit-dur: 120ms;
     --bk-dialog-modal-fade-scale: 1;
     
+    // Prevent the background page scrolling upon overscroll.
+    // See: https://www.bram.us/2025/11/25/use-overscroll-behavior-contain-to-prevent-a-page-from-scrolling-while-a-dialog-is-open/
+    overscroll-behavior: contain;
+    
     // Basic modal positioning
     position: fixed;
     inset: 0;
