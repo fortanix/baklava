@@ -5,7 +5,7 @@
 import { formatDate /*, parse as parseDate*/ } from 'date-fns';
 
 import * as React from 'react';
-import { mergeProps, mergeRefs } from '../../../../../util/reactUtil.ts';
+import { mergeCallbacks, mergeProps, mergeRefs } from '../../../../../util/reactUtil.ts';
 import { classNames as cx } from '../../../../../util/componentUtil.ts';
 import { useFloatingElement } from '../../../../util/overlays/floating-ui/useFloatingElement.tsx';
 
@@ -17,20 +17,20 @@ import cl from './DateInput.module.scss';
 
 export { cl as DateInputClassNames };
 
-export type DateInputValue = null | Date;
+export type DateInputValue = Date;
 
 type DateInputInnerProps = React.ComponentProps<typeof Input> & {
   /**
    * The currently selected date. If `null`, the input will be empty. If `undefined`, this form control will be treated
    * as uncontrolled.
    */
-  date?: undefined | DateInputValue,
+  date?: undefined | null | DateInputValue,
   
   /** If uncontrolled, the default date value. */
-  defaultDate?: undefined | DateInputValue,
+  defaultDate?: undefined | null | DateInputValue,
   
   /** A callback that is called when the `date` is updated by the user. If uncontrolled, should be undefined. */
-  onUpdateDate?: undefined | ((date: DateInputValue) => void),
+  onUpdateDate?: undefined | ((date: null | DateInputValue) => void),
   
   /** The date format to use for parsing/formatting the user input. Default: `'MM/dd/yyyy'` */
   dateFormat?: undefined | string,
@@ -80,6 +80,10 @@ const DateInputInner = (props: DateInputInnerProps) => {
   return (
     <Input
       type="text"
+      automaticResize
+      placeholder={placeholder}
+      icon={icon}
+      iconLabel={iconLabel}
       {...propsRest}
       className={cx(
         cl['bk-date-input__inner'],
@@ -88,10 +92,7 @@ const DateInputInner = (props: DateInputInnerProps) => {
       readOnly // TODO: allow the user to enter a date through text input in addition to through the calendar picker
       value={dateString}
       defaultValue={typeof dateString === 'undefined' ? defaultDateString : undefined}
-      onChange={handleChange}
-      placeholder={placeholder}
-      icon={icon}
-      iconLabel={iconLabel}
+      onChange={mergeCallbacks([handleChange, propsRest.onChange])}
     />
   );
 };
@@ -139,7 +140,7 @@ export const DateInput = Object.assign(
       { ref: mergeRefs(propsRest.containerProps?.ref, refs.setReference) },
     );
     
-    const handleChange = React.useCallback((date: DateInputValue) => {
+    const handleChange = React.useCallback((date: null | DateInputValue) => {
       onUpdateDate?.(date);
       //setIsOpen(false); // Doesn't really make sense, since focusing the input will just re-open it
       inputRef.current?.focus();
