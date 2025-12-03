@@ -145,10 +145,11 @@ export const SelectMultiInForm: Story = {
           id="story-form"
           onSubmit={event => {
             event.preventDefault();
-            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || 'none'}`);
+            notify.info(`You have chosen: ${new FormData(event.currentTarget).getAll('story_component1[]').join(', ') || 'none'}`);
           }}
-        />
-        <Story/>
+        >
+          <Story/>
+        </form>
         <button type="submit" form="story-form">Submit</button>
       </>
     ),

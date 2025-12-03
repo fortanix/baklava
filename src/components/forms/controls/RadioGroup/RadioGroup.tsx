@@ -144,7 +144,6 @@ export const RadioGroup = Object.assign(
           legend={label}
           orientation={labelOrientation}
           role="radiogroup"
-          aria-orientation={orientation}
           {...propsRest}
           className={cx(
             'bk',

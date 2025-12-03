@@ -21,9 +21,10 @@
         padding: bk.$spacing-3 bk.$spacing-8;
         
         display: grid;
-        grid-template-areas: stack;
+        grid-template-areas: "stack";
         > * {
           grid-area: stack;
+          text-align: center;
         }
         
         color: #{bk.$theme-tab-text-default};

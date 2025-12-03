@@ -17,6 +17,7 @@
     display: flex;
     align-items: center;
     column-gap: bk.$spacing-1;
+    padding-block-start: 0.2rem; // Expand the target area to min 24px for accessibility compliance
     
     // Don't inherit the `text-align` (e.g. parent with center aligned text). If the context really wants to do this
     // for inputs, then it can be overridden for that given input element specifically.
