@@ -16,6 +16,11 @@ declare module "*.module.scss" {
   export default classes;
 }
 
+// Extend `HTMLOrSVGElement` focus options with `focusVisible`
+interface FocusOptions {
+  focusVisible?: undefined | boolean,
+}
+
 // Extend `HTMLElement` with `togglePopover` variant that accepts an object. Remove this once TypeScript adds support:
 // https://github.com/microsoft/TypeScript/blob/d0d675a363bf25d435857766757d97b9ad508909/src/lib/dom.generated.d.ts#L14240
 type TogglePopoverOptions = {

@@ -259,7 +259,7 @@ export const MenuMultiProvider = Object.assign(
         }
         
         const props = getReferenceProps(userProps);
-        const ref = mergeRefs(anchorRef, userPropsRef, refs.setReference, props.ref);
+        const ref = mergeRefs(anchorRef, userPropsRef, refs.setReference, props.ref as React.Ref<Element>);
         
         return {
           ...props,

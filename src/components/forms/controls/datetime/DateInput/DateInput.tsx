@@ -150,7 +150,7 @@ export const DateInput = Object.assign(
       style: floatingStyles,
       popover: 'manual',
     });
-    floatingProps.ref = mergeRefs<HTMLDivElement>(refs.setFloating, floatingProps.ref);
+    floatingProps.ref = mergeRefs<HTMLDivElement>(refs.setFloating, floatingProps.ref as React.Ref<HTMLDivElement>);
     
     return (
       <>
@@ -165,7 +165,7 @@ export const DateInput = Object.assign(
           onUpdateDate={onUpdateDate}
           // Note: needs to be on `inputProps` because the `ref` must be the inner input, since
           // `togglePopover({ source })` requires a focusable element for popover tab order to work.
-          // FIXME: the bounding box calculate will be off here for anchor positioning
+          // FIXME: the bounding box calculation will be off here for anchor positioning
           inputProps={anchorProps} // FIXME: merge with the rest of the props?
         />
         

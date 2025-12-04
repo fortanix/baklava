@@ -156,7 +156,10 @@ const useFocusInteractive = (context: FloatingContext, options: UseFocusInteract
     
     const controller = new AbortController();
     
-    document.addEventListener('click', event => {
+    // Note: should use `pointerdown` here, not `click`, because focus happens on `pointerdown`. If we do `click`,
+    // we can get a desync by a `pointerdown` on the anchor (which focuses, and thus opens the popover), and then a
+    // `pointerup` outside the anchor (which then closes the popover but doesn't affect the focus state).
+    document.addEventListener('pointerdown', event => {
       if (!anchorEl || !(anchorEl instanceof Node)) { return; }
       
       const isInside = event.target instanceof Node

@@ -27,7 +27,7 @@ export type TooltipProviderProps = Omit<TooltipProps, 'children'> & {
    * The content to render, which should contain the anchor. Should be defined as a render prop which takes props to
    * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
    */
-  children?: ((getReferenceProps: GetReferenceProps) => React.ReactNode) | React.ReactNode,
+  children?: undefined | React.ReactNode | ((getReferenceProps: GetReferenceProps) => React.ReactNode),
   
   /**
    * The tooltip message. If `null`, the tooltip will not be shown at all (useful in case the tooltip should be shown
@@ -72,16 +72,6 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
   
   const arrowRef = React.useRef<HTMLElement>(null);
   
-  const floatingElement = useFloatingElement({
-    role: 'tooltip',
-    triggerAction,
-    keyboardInteractions: 'default',
-    placement,
-    offset: 14,
-    enablePreciseTracking,
-    boundary,
-    ...(arrowRef.current ? { arrowRef: arrowRef as React.RefObject<HTMLElement> } : {}),
-  });
   const {
     context,
     isMounted,
@@ -91,31 +81,71 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
     getReferenceProps,
     getFloatingProps,
     placement: activePlacement,
-  } = floatingElement;
-  
+  } = useFloatingElement({
+    role: 'tooltip',
+    triggerAction,
+    keyboardInteractions: 'default',
+    placement,
+    offset: 14,
+    enablePreciseTracking,
+    boundary,
+    ...(arrowRef.current ? { arrowRef: arrowRef as React.RefObject<HTMLElement> } : {}),
+  });
   const arrow = useFloatingElementArrow({ context });
   
   // Call event listeners, if any
-  React.useLayoutEffect(() => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies(onTooltipActivated): Only call on state change
+  // biome-ignore lint/correctness/useExhaustiveDependencies(onTooltipDeactivated): Only call on state change
+  React.useEffect(() => {
     if (isMounted) {
       onTooltipActivated?.();
     } else {
       onTooltipDeactivated?.();
     }
-  }, [isMounted, onTooltipActivated, onTooltipDeactivated]);
+  }, [isMounted]);
   
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Depend on `isOpen` to rerender content on open
-  const tooltipContent = React.useMemo(() => {
-    return typeof tooltip === 'function' ? tooltip() : tooltip;
-  }, [tooltip, isOpen]);
   
+  // Get the `floatingProps` early, because the anchor depends on `floatingProps.id`
   const floatingProps = getFloatingProps({
     popover: 'manual',
     style: floatingStyles,
   });
   
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Need to exclude `tooltipProps`
-  const tooltipRendered = React.useMemo(() => {
+  const renderAnchor = () => {
+    const renderPropArg: GetReferenceProps = (userProps: React.HTMLProps<Element> = {}) => {
+      const props = getReferenceProps(userProps);
+      const ref = mergeRefs(userProps?.ref, refs.setReference, props.ref as undefined | React.Ref<Element>);
+      
+      return {
+        ...props,
+        ref,
+        ['aria-describedby']: floatingProps.id,
+      };
+    };
+    
+    if (typeof children === 'function') {
+      return children(renderPropArg);
+    }
+    
+    // If a render prop is not used, try to attach it to the element directly.
+    // NOTE: `cloneElement` is marked as a legacy function by React. Recommended is to use a render prop instead.
+    if (!React.isValidElement(children)) {
+      return <span {...renderPropArg()}>{children}</span>;
+    }
+    if (React.Children.count(children) === 1) {
+      return React.cloneElement(children, renderPropArg(children.props as React.HTMLProps<Element>));
+    }
+    
+    console.error(`Invalid children passed to TooltipContainer, expected a render prop or single child element.`);
+    return children;
+  };
+  
+  // biome-ignore lint/correctness/useExhaustiveDependencies(isOpen): We want to rerender content on open
+  const tooltipContent = React.useMemo(() => {
+    return typeof tooltip === 'function' ? tooltip() : tooltip;
+  }, [tooltip, isOpen]);
+  
+  const renderTooltip = () => {
     if (!isMounted || !tooltipContent) { return null; }
     
     const arrowClassName = (() => {
@@ -174,66 +204,14 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
         <span ref={arrowRef} hidden/>
       </Tooltip>
     );
-  }, [
-    isMounted,
-    tooltipContent,
-    activePlacement,
-    arrow,
-    floatingStyles,
-    getFloatingProps,
-    floatingProps.ref,
-    refs.setFloating,
-    size,
-    //tooltipProps, // Changes on every render
-  ]);
-  
-  // Note: memoize this, so that the anchor does not get rerendered every time the floating element position changes
-  const anchorRendered = React.useMemo(() => {
-    const renderPropArg: GetReferenceProps = (userProps?: undefined | React.HTMLProps<Element>) => {
-      const userPropsRef: undefined | string | React.Ref<Element> = userProps?.ref ?? undefined;
-      if (typeof userPropsRef === 'string') {
-        // We can't merge refs if one of the refs is a string
-        console.error(`Failed to render Tooltip, due to use of legacy string ref`);
-        return (userProps ?? {}) as Record<string, unknown>;
-      }
-      
-      const props = getReferenceProps(userProps);
-      const ref = mergeRefs(userPropsRef, refs.setReference, props.ref);
-      
-      return {
-        ...props,
-        ['aria-describedby']: floatingProps.id,
-        ref,
-      };
-    };
-    
-    if (typeof children === 'function') {
-      return children(renderPropArg);
-    }
-    
-    // If a render prop is not used, try to attach it to the element directly.
-    // NOTE: `cloneElement` is marked as a legacy function by React. Recommended is to use a render prop instead.
-    if (!React.isValidElement(children)) {
-      return <span {...renderPropArg()}>{children}</span>;
-    }
-    if (React.Children.count(children) === 1) {
-      return React.cloneElement(children, renderPropArg(children.props as React.HTMLProps<Element>));
-    }
-    
-    console.error(`Invalid children passed to TooltipContainer, expected a render prop or single child element.`);
-    return children;
-  }, [
-    children,
-    refs.setReference,
-    floatingProps.id,
-    getReferenceProps,
-  ]);
+  };
   
   return (
     <>
-      {/* NOTE: `portal` is used here to prevent CSS rules from the parent from being inherited into the Tooltip */}
-      {createPortal(tooltipRendered, document.body)} 
-      {anchorRendered}
+      {renderAnchor()}
+      
+      {/* Use a portal to prevent CSS rules from the parent from being inherited into the Tooltip */}
+      {createPortal(renderTooltip(), document.body)} 
     </>
   );
 };
