@@ -135,22 +135,24 @@ export const DateInput = Object.assign(
     });
     
     
-    const anchorProps = mergeProps(
-      getReferenceProps(propsRest.containerProps),
-      { ref: mergeRefs(propsRest.containerProps?.ref, refs.setReference) },
+    const anchorProps: React.ComponentProps<'input'> = mergeProps(
+      getReferenceProps(propsRest.inputProps),
+      { ref: mergeRefs<HTMLInputElement>(propsRest.inputProps?.ref, refs.setReference) },
     );
     
+    const floatingProps = mergeProps(
+      getFloatingProps({
+        style: floatingStyles,
+        popover: 'manual',
+      }),
+      { ref: refs.setFloating },
+    );
+        
     const handleChange = React.useCallback((date: null | DateInputValue) => {
       onUpdateDate?.(date);
       //setIsOpen(false); // Doesn't really make sense, since focusing the input will just re-open it
       inputRef.current?.focus();
     }, [onUpdateDate]);
-    
-    const floatingProps = getFloatingProps({
-      style: floatingStyles,
-      popover: 'manual',
-    });
-    floatingProps.ref = mergeRefs<HTMLDivElement>(refs.setFloating, floatingProps.ref as React.Ref<HTMLDivElement>);
     
     return (
       <>
@@ -165,8 +167,9 @@ export const DateInput = Object.assign(
           onUpdateDate={onUpdateDate}
           // Note: needs to be on `inputProps` because the `ref` must be the inner input, since
           // `togglePopover({ source })` requires a focusable element for popover tab order to work.
-          // FIXME: the bounding box calculation will be off here for anchor positioning
-          inputProps={anchorProps} // FIXME: merge with the rest of the props?
+          // FIXME: the bounding box calculation will be off here for anchor positioning, ideally it would be on the
+          // container (but the container is not focusable). Maybe: override `getBoundingClientRect`?
+          inputProps={anchorProps}
         />
         
         {isMounted &&
