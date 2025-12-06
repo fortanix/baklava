@@ -1,0 +1,14 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-time-input {
+    @include bk.component-base(bk-time-input);
+    
+    // Time inputs have a fixed max length (hh:mm), so we don't want the input to stretch by default
+    inline-size: min-content;
+  }
+}

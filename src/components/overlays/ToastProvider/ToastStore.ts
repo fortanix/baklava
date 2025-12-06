@@ -193,8 +193,9 @@ export class ToastStore {
     const toast = this.#toasts[toastKey];
     if (typeof toast === 'undefined') { return; }
     
+    const isDismissed = toast.metadata.dismissed;
     const openedAt: Date = toast.metadata.openedAt;
-    return (Date.now() - openedAt.valueOf()) >= this.#options.entryAnimationDelay;
+    return !isDismissed && (Date.now() - openedAt.valueOf()) >= this.#options.entryAnimationDelay;
   }
   
   pauseAutoClose(toastId: ToastId) {

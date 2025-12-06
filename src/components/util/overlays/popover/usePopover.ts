@@ -6,6 +6,9 @@ import * as React from 'react';
 
 
 export type PopoverController = {
+  /** The source element (trigger/anchor) of the popover. */
+  source?: undefined | null | HTMLElement,
+  
   /** Whether the popover should be active. */
   active: boolean,
   /** Notify that the popover has been opened. Change must be respected (otherwise no longer in sync). */
@@ -14,62 +17,93 @@ export type PopoverController = {
   deactivate: () => void,
 };
 
+// Sync the given controller state with the popover DOM state
+const syncPopoverWithController = (params: {
+  popoverEl: null | HTMLElement,
+  sourceEl: null | HTMLElement,
+  controllerActive: boolean,
+}) => {
+  const { popoverEl, sourceEl, controllerActive } = params;
+  
+  // Make sure we have something to sync with
+  if (!popoverEl || !popoverEl.isConnected) { return; }
+  
+  // Tell the browser the "source" of the `togglePopover`. This will (1) change the tab order so that the popover is
+  // injected after the source while it's open, (2) set up an "implicit anchor" for CSS anchor positioning, and (3)
+  // be added to the `ToggleEvent` so that we can link a popover toggle to its source from an event listener.
+  // Requirements:
+  // - Must be an `HTMLElement` (`<svg>` won't work, browser will throw an exception)
+  // - Should be an interactive (i.e. focusable) element (won't cause an exception, but tab order will not work)
+  const source = ((): undefined | HTMLElement => {
+    if (sourceEl instanceof HTMLElement && sourceEl.isConnected) {
+      return sourceEl;
+    } else {
+      return undefined;
+    }
+  })();
+  
+  /*
+  Possible reasons `popoverEl.togglePopover` may throw an exception:
+    - `source` is not a valid `HTMLElement`
+    - `popoverEl` is not a popover (i.e. not an `HTMLElement` with `popover` attribute set)
+  */
+  
+  const isPopoverActive = popoverEl.matches(':popover-open');
+  if (controllerActive && !isPopoverActive) { // Case: should be active but isn't
+    try {
+      popoverEl.togglePopover({ force: true, source });
+    } catch (error: unknown) {
+      console.error(`Unable to open popover`, error);
+      //controller.deactivate(); // Attempt to feed this state back to the controller to prevent de-sync
+    }
+  } else if (!controllerActive && isPopoverActive) { // Case: should not be active but is
+    try {
+      popoverEl.togglePopover({ force: false, source });
+    } catch (error: unknown) {
+      console.error(`Failed to close popover`, error);
+      //controller.activate(); // Attempt to feed this state back to the controller to prevent de-sync
+    }
+  }
+};
+
 export type UsePopoverOptions = {
   popoverBehavior?: undefined | React.HTMLAttributes<unknown>['popover'], // Default: 'auto'
 };
 
-export type PopoverProps<E extends HTMLElement> = {
-  close: () => void,
+export type UsePopoverResult<E extends HTMLElement> = {
   popoverProps: React.DetailedHTMLProps<React.HTMLAttributes<E>, E>,
 };
 
-/*
- * A utility hook to control the state of a <popover> element used as a modal (with `.showModal()`).
+/**
+ * A utility hook to control the state of a popover element.
  */
-export const usePopover = <E extends HTMLElement>(
+export const usePopover = <E extends HTMLElement = HTMLElement>(
   controller: PopoverController,
   options: undefined | UsePopoverOptions = {},
-): PopoverProps<E> => {
-  const { popoverBehavior = 'auto' } = options ?? {};
+): UsePopoverResult<E> => {
+  const { popoverBehavior = 'auto' } = options;
   
   const popoverRef = React.useRef<E>(null);
   
-  const requestPopoverClose = React.useCallback(() => {
-    const popover = popoverRef.current;
-    if (!popover) { console.warn(`Unable to close popover: reference does not exist.`); return; }
+  // Should be memoized, since React will call the ref callback for every new function reference we pass to `ref`
+  const popoverRefCallback: React.RefCallback<E> = React.useCallback(ref => {
+    popoverRef.current = ref;
     
-    try {
-      popover.hidePopover();
-    } catch (error: unknown) {
-      console.error(`Failed to close popover`, error);
-    }
-  }, []);
+    // Sync when the ref changes. This helps prevent timing issues where `active` is set to `true`, but the popover is
+    // not yet mounted (and thus the ref is still `null`). In that case, our sync `useEffect` will be too early.
+    syncPopoverWithController({
+      popoverEl: ref,
+      sourceEl: controller.source ?? null,
+      controllerActive: controller.active,
+    });
+  }, [controller.source, controller.active, /*controller.deactivate*/]);
   
-  // Sync active state with popover DOM state
-  const sync = () => {
-    const popover = popoverRef.current;
-    if (!popover) { return; } // Nothing to sync with
-    
-    const isPopoverOpen = popover.matches(':popover-open');
-    if (controller.active && !isPopoverOpen) { // Should be active but isn't
-      // Note: `showPopover()` can throw in some rare circumstances
-      try {
-        popover.showPopover();
-      } catch (error: unknown) {
-        console.error(`Unable to open modal popover`, error);
-        controller.deactivate();
-      }
-    } else if (!controller.active && isPopoverOpen) { // Should not be active but is
-      requestPopoverClose();
-    }
-  };
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Lists dependencies used in `sync`
-  React.useEffect(sync, [controller.active, controller.deactivate, requestPopoverClose]);
-  
+  // Track toggle events (i.e. user events that change the popover state, like light dismiss for `popover="auto"`)
   const handlePopoverToggle = React.useCallback((event: React.ToggleEvent<E>) => {
-    // Note: it seems this event handler is also called for popovers/dialogs nested inside. Even though the event
-    // should not bubble?
-    if (event.target !== popoverRef.current) { return; }
+    // Make sure this event targets our popover and not some other element.
+    // Note: toggle events should not bubble, but it seems this event handler is called for nested popovers/dialogs?
+    // Possibly related to this React bug: https://github.com/facebook/react/issues/34038
+    if (!popoverRef.current || event.target !== popoverRef.current) { return; }
     
     // Sync with the controller
     if (event.newState === 'open') {
@@ -79,18 +113,9 @@ export const usePopover = <E extends HTMLElement>(
     }
   }, [controller.activate, controller.deactivate]);
   
-  // Sync when the ref changes. This helps prevent time issues where `active` is set to `true`, but the popover is not
-  // yet mounted (and thus the ref is `null`). In that case our sync `useEffect` will be too early.
-  const popoverRefCallback: React.RefCallback<E> = (ref) => {
-    popoverRef.current = ref;
-    sync();
-  };
-  
   return {
-    close: requestPopoverClose,
     popoverProps: {
       ref: popoverRefCallback,
-      
       popover: popoverBehavior,
       onToggle: handlePopoverToggle,
     },

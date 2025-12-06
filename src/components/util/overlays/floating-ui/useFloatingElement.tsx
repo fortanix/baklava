@@ -20,6 +20,8 @@ import {
   type UseFloatingOptions,
   type FlipOptions,
   type ShiftOptions,
+  type ReferenceType,
+  type ExtendedRefs,
   type FloatingContext,
   useFloating,
   // Interactions
@@ -29,46 +31,202 @@ import {
   useDismiss,
   useDelayGroup,
   useHover,
+  type UseInteractionsReturn,
   useInteractions,
   useTransitionStatus,
 } from '@floating-ui/react';
+import { usePopover } from '../popover/usePopover.ts';
 
 
 export type { Placement };
 
-// Sync the `isOpen` state with browser `popover` state
-const usePopover = (context: FloatingContext): ElementProps => {
+
+type UsePopoverInteractionOptions = {
+  /** The popover behavior for the floating element. */
+  popoverBehavior: React.HTMLAttributes<unknown>['popover'],
+};
+/**
+ * Floating UI interaction hook to sync the `isOpen` state with browser `popover` state.
+ */
+const usePopoverInteraction = (context: FloatingContext, options: UsePopoverInteractionOptions): ElementProps => {
+  const anchorEl = context.elements.reference;
+  
+  // FIXME: add `event`/`reason` args here to `onOpenChange`?
+  const activate = React.useCallback(() => { context.onOpenChange(true); }, [context.onOpenChange]);
+  const deactivate = React.useCallback(() => { context.onOpenChange(false); }, [context.onOpenChange]);
+  
+  const popoverController = React.useMemo(() => ({
+    source: anchorEl instanceof HTMLElement ? anchorEl : null,
+    active: context.open,
+    activate,
+    deactivate,
+  }), [anchorEl, context.open, activate, deactivate]);
+  const { popoverProps } = usePopover(popoverController, {
+    popoverBehavior: options.popoverBehavior,
+  });
+  
+  /*
+  // Must be memoized, since this is used as a memo dep in `useInteractions`
+  const referenceProps = React.useMemo<React.HTMLProps<Element>>(() => ({
+    //popoverTarget: popoverId,
+    //style: {},
+  }), []);
+  */
+  
+  // Must be memoized, since this is used as a memo dep in `useInteractions`
+  const floatingProps = React.useMemo<React.HTMLProps<HTMLElement>>(() => ({
+    ref: popoverProps.ref,
+    popover: options.popoverBehavior,
+  }), [popoverProps.ref, options.popoverBehavior]);
+  
   return {
-    floating: {
-      ref: floatingElement => {
-        if (!floatingElement) { return; }
-        
-        const isPopoverShown = floatingElement.matches(':popover-open');
-        if (context.open && !isPopoverShown) {
-          floatingElement.showPopover();
-        } else if (!context.open && isPopoverShown) {
-          floatingElement.hidePopover();
-        }
-      },
-    },
+    //reference: referenceProps,
+    floating: floatingProps,
   };
 };
 
+
+type UseFocusInteractiveOptions = {
+  /** Whether to enable this interaction. Useful for conditional usage of the hook. */
+  enabled?: undefined | boolean,
+};
+/**
+ * Floating UI interaction hooks for interactive focus trigger.
+ */
+const useFocusInteractive = (context: FloatingContext, options: UseFocusInteractiveOptions = {}): ElementProps => {
+  const enabled = options.enabled ?? true;
+  
+  const anchorEl = context.elements.reference;
+  const popoverEl = context.elements.floating;
+  
+  const handleReferenceFocus = React.useCallback((event: React.FocusEvent) => {
+    if (!enabled) { return; }
+    
+    context.onOpenChange(true, event.nativeEvent, 'focus');
+  }, [enabled, context.onOpenChange]);
+  
+  const handleReferenceBlur = React.useCallback((event: React.FocusEvent) => {
+    if (!enabled) { return; }
+    
+    const anchorEl = event.currentTarget;
+    
+    const isInside = event.relatedTarget instanceof Node && (
+      popoverEl && popoverEl.isConnected && popoverEl.contains(event.relatedTarget)
+        || anchorEl.contains(event.relatedTarget)
+    );
+    
+    if (!isInside) {
+      context.onOpenChange(false, event.nativeEvent, 'focus-out');
+    }
+  }, [enabled, popoverEl, context.onOpenChange]);
+  
+  const handleFloatingBlur = React.useCallback((event: React.FocusEvent) => {
+    if (!enabled) { return; }
+    
+    const popoverEl = event.currentTarget;
+    
+    const isInside = event.relatedTarget instanceof Node
+      && (
+        (anchorEl instanceof Node && anchorEl.contains(event.relatedTarget))
+        || popoverEl.contains(event.relatedTarget)
+      );
+    
+    if (!isInside) {
+      // Give the component a little bit of time to perform its own internal focus management. For example:
+      // in `DatePicker` (react-datepicker), navigating by keyboard (arrow keys) to a day from another month will
+      // cause a re-render to switch to another month, during which a `focusout` happens.
+      window.setTimeout(() => {
+        if (!popoverEl.isConnected) { return; } // Make sure the popover element is still there after the timeout
+        
+        const isInside = document.activeElement instanceof Node
+          && (
+            (anchorEl instanceof Node && anchorEl.contains(document.activeElement))
+            || popoverEl.contains(document.activeElement)
+          );
+        if (!isInside) {
+          context.onOpenChange(false, event.nativeEvent, 'focus-out');
+        }
+      }, 0);
+    }
+  }, [enabled, anchorEl, context.onOpenChange]);
+  
+  // Handle click outside
+  React.useEffect(() => {
+    if (!enabled) { return; }
+    
+    const controller = new AbortController();
+    
+    // Note: should use `pointerdown` here, not `click`, because focus happens on `pointerdown`. If we do `click`,
+    // we can get a desync by a `pointerdown` on the anchor (which focuses, and thus opens the popover), and then a
+    // `pointerup` outside the anchor (which then closes the popover but doesn't affect the focus state).
+    document.addEventListener('pointerdown', event => {
+      if (!anchorEl || !(anchorEl instanceof Node)) { return; }
+      
+      const isInside = event.target instanceof Node
+        && (anchorEl.contains(event.target) || popoverEl?.contains(event.target));
+      
+      if (!isInside) {
+        // Set a timeout, to give the component the chance to run some logic (e.g. focus guards).
+        // FIXME: use React `flushSync()` here?
+        window.setTimeout(() => {
+          const isInside = document.activeElement instanceof Node
+            && (
+              anchorEl.contains(document.activeElement) || popoverEl?.contains(document.activeElement)
+            );
+          if (!isInside) {
+            context.onOpenChange(false, event, 'outside-press');
+          }
+        }, 0);
+      }
+    }, { signal: controller.signal });
+    
+    return () => { controller.abort(); };
+  }, [enabled, anchorEl, popoverEl, context.onOpenChange]);
+  
+  // Must be memoized, since this is used as a memo dep in `useInteractions`
+  const referenceProps = React.useMemo<React.HTMLProps<Element>>(() => ({
+    onFocus: handleReferenceFocus,
+    onBlur: handleReferenceBlur,
+  }), [handleReferenceFocus, handleReferenceBlur]);
+  
+  // Must be memoized, since this is used as a memo dep in `useInteractions`
+  const floatingProps = React.useMemo<React.HTMLProps<HTMLElement>>(() => ({
+    onBlur: handleFloatingBlur,
+  }), [handleFloatingBlur]);
+  
+  return {
+    reference: referenceProps,
+    floating: floatingProps,
+  };
+};
+
+
 export type UseFloatingElementOptions = {
-  /* The ARIA role for this element (e.g. `'tooltip'`). */
+  /** The popover type for the floating element. Default: `'manual'`. */
+  popoverBehavior?: undefined | UsePopoverInteractionOptions['popoverBehavior'],
+  
+  /** The ARIA role for this element (e.g. `'tooltip'`, `'listbox'`, `'combobox'`). */
   role?: undefined | UseRoleProps['role'],
   
   /**
    * The kind of keyboard interactions to configure on the floating element. Default: `'default'`.
    * - 'none': No keyboard interactions set.
-   * - 'form-control': Appropriate keyboard interactions for a form control (e.g. Enter key should trigger submit).
-   * - 'default': Acts as a menu button [1] (e.g. Enter key will activate the popover).
+   * - 'default': Acts as a menu button [1] (e.g. "enter" key will activate the popover).
    *   [1] https://www.w3.org/WAI/ARIA/apg/patterns/menu-button
+   * - 'form-control': Appropriate keyboard interactions for a form control (e.g. "enter" key should trigger submit).
    */
-  keyboardInteractions?: undefined | 'none' | 'form-control' | 'default',
+  keyboardInteractions?: undefined | 'none' | 'default' | 'form-control',
   
-  /** The action on the reference element that should cause the floating element to open. */
-  triggerAction?: undefined | 'hover' | 'focus' | 'click',
+  /**
+   * The action on the reference element that should cause the floating element to open. Default: `'click'`.
+   * - `click`: Clicking on the reference element will toggle the floating element.
+   * - `hover`: The floating element will be open when the user hovers on or focuses the reference element.
+   * - `focus`: The floating element will be open when the reference element is focused.
+   * - `focus-interactive`: The floating element will be open when the reference element is focused, or when the user
+   *   focuses an element inside of the floating element. Clicking inside the floating element (thus losing focus) will
+   *   also not close it, light dismiss will only occur when clicking outside of the floating/reference element.
+   */
+  triggerAction?: undefined | 'none' | 'click' | 'hover' | 'focus' | 'focus-interactive',
   
   /** Where to place the floating element, relative to the reference element. */
   placement?: undefined | Placement,
@@ -82,7 +240,7 @@ export type UseFloatingElementOptions = {
   /** Boundary around the floating element that will be used for things like overflow detection. */
   boundary?: undefined | Element,
   
-  /* Reference to an arrow element (like a tooltip arrow), if any. */
+  /** Reference to an arrow element (like a tooltip arrow), if any. */
   arrowRef?: undefined | null | React.RefObject<Element>,
   
   /**
@@ -100,13 +258,30 @@ export type UseFloatingElementOptions = {
   /** Additional interactions to pass to the internal `useFloating` hook. */
   floatingUiInteractions?: undefined | ((context: FloatingContext) => Array<undefined | ElementProps>),
 };
+
+export type UseFloatingElementResult = {
+  context: FloatingContext,
+  isOpen: boolean,
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  isMounted: boolean,
+  refs: ExtendedRefs<ReferenceType>,
+  placement: Placement,
+  floatingStyles: React.CSSProperties,
+  getReferenceProps: UseInteractionsReturn['getReferenceProps'],
+  getFloatingProps: UseInteractionsReturn['getFloatingProps'],
+  getItemProps: UseInteractionsReturn['getItemProps'],
+};
+
 /**
  * Configure an element to float on top of the content, and is anchored to some reference element. Internally uses
  * `useFloating` from `floating-ui`.
  */
-export const useFloatingElement = <E extends HTMLElement>(options: UseFloatingElementOptions = {}) => {
+export const useFloatingElement = <E extends HTMLElement>(
+  options: UseFloatingElementOptions = {},
+): UseFloatingElementResult => {
   const opts = {
     ...options,
+    popoverBehavior: options.popoverBehavior ?? 'manual',
     role: options.role,
     triggerAction: options.triggerAction ?? 'click',
     placement: options.placement ?? 'top',
@@ -153,6 +328,7 @@ export const useFloatingElement = <E extends HTMLElement>(options: UseFloatingEl
     middleware.push(arrow({ element: opts.arrowRef }));
   }
   
+  // Track the open state of the popover
   const [isOpen, setIsOpen] = React.useState(false);
   
   const onOpenChange = React.useCallback<Required<UseFloatingOptions>['onOpenChange']>(
@@ -194,18 +370,19 @@ export const useFloatingElement = <E extends HTMLElement>(options: UseFloatingEl
     ],
   });
   
+  // Interactions
+  // Note: floating-ui interactions may call React hooks, so make sure to apply the rules of React hooks here. For
+  // conditional rendering, use the various `enabled` options.
+  
   // Note: for `role="tooltip"`, no `aria-haspopup` is necessary on the anchor because it is not interactive:
   // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-haspopup
   const role = useRole(context, {
     ...opts.role ? { role: opts.role } : {},
   });
   
-  
-  // Interactions
-  
   const interactions: Array<ElementProps> = [
     role,
-    usePopover(context),
+    usePopoverInteraction(context, { popoverBehavior: opts.popoverBehavior }),
   ];
   
   // Trigger action: click
@@ -220,7 +397,16 @@ export const useFloatingElement = <E extends HTMLElement>(options: UseFloatingEl
   
   // Trigger action: focus
   const focusInteractions = [
-    useFocus(context, { enabled: opts.triggerAction === 'focus' }),
+    useFocus(context, {
+      enabled: opts.triggerAction === 'focus',
+      // Trigger even when a focus is caused that is not `:focus-visible`. For instance, clicking on a button.
+      visibleOnly: false,
+    }),
+  ];
+  
+  // Trigger action: focus-interactive
+  const focusInteractiveInteractions = [
+    useFocusInteractive(context, { enabled: opts.triggerAction === 'focus-interactive' }),
   ];
   
   // Trigger action: hover
@@ -240,11 +426,21 @@ export const useFloatingElement = <E extends HTMLElement>(options: UseFloatingEl
   
   if (opts.triggerAction === 'click') { interactions.push(...clickInteractions); }
   if (opts.triggerAction === 'focus') { interactions.push(...focusInteractions); }
+  if (opts.triggerAction === 'focus-interactive') { interactions.push(...focusInteractiveInteractions); }
   if (opts.triggerAction === 'hover') { interactions.push(...hoverInteractions); }
   
+  // Note: the array that is passed to `useInteractions()` will internally be passed as `useMemo` deps. Take care
+  // to memoize anything we pass in here.
   const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([
     ...interactions,
     ...opts.floatingUiInteractions(context),
+    
+    // Support React 19 style `ref` prop out of the box rather than requiring them to be separate
+    // XXX this doesn't work because the `ref` prop doesn't get merged properly in `useInteraction`
+    // {
+    //   reference: { ref: el => { refs.setReference(el); } },
+    //   floating: { ref: el => { refs.setFloating(el); } },
+    // },
   ]);
   
   

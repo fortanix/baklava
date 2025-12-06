@@ -92,6 +92,23 @@
       }
     }
     
+    //
+    // Top layer (overlays)
+    //
+    
+    [popover]:not(dialog) {
+      inset: auto; // Note: future versions of Chrome should have this by default
+      position: fixed;
+      
+      // Use a variable (`--display`) to allow higher level styling to override the visible display type (e.g. to use
+      // `flex` instead of `block`), without having to reimplement all the `display: none` logic.
+      display: var(--display, block);
+      
+      &:not(:popover-open) {
+        display: none;
+      }
+    }
+    
     // Note: we assume that all styling for dialog (including `:modal` and `:backdrop`) has been hard reset.
     // `the-new-css-reset` has an exception for `dialog:modal`, but we don't want this exception, so here we unset all.
     dialog, dialog:modal, dialog::backdrop {
