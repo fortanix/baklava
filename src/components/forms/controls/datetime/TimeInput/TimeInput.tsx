@@ -14,7 +14,7 @@ export type TimeInputValue = {
   hours: number,
   minutes: number,
 };
-const formatTime = (time: TimeInputValue) => {
+const formatTime = (time: TimeInputValue): string => {
   return `${String(time.hours).padStart(2, '0')}:${String(time.minutes).padStart(2, '0')}`;
 };
 const parseTime = (time: string): null | TimeInputValue => {

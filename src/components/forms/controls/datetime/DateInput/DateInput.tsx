@@ -2,7 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { formatDate /*, parse as parseDate*/ } from 'date-fns';
+import { format as dateFnsFormat/*, parse as dateFnsParse*/ } from 'date-fns';
 
 import * as React from 'react';
 import { mergeCallbacks, mergeProps, mergeRefs } from '../../../../../util/reactUtil.ts';
@@ -18,6 +18,12 @@ import cl from './DateInput.module.scss';
 export { cl as DateInputClassNames };
 
 export type DateInputValue = Date;
+
+const dateFormatDefault = 'MM/dd/yyyy';
+
+const formatDate = (date: DateInputValue, dateFormat: string): string => {
+  return dateFnsFormat(date, dateFormat);
+};
 
 type DateInputInnerProps = React.ComponentProps<typeof Input> & {
   /**
@@ -43,7 +49,7 @@ const DateInputInner = (props: DateInputInnerProps) => {
     date,
     defaultDate,
     onUpdateDate,
-    dateFormat = 'MM/dd/yyyy',
+    dateFormat = dateFormatDefault,
     placeholder = 'MM/DD/YYYY', // Human-friendly equivalent of the default `dateFormat`
     icon = 'calendar',
     iconLabel = 'Date input',
@@ -102,7 +108,10 @@ type DatePickerProps = React.ComponentProps<typeof DatePicker>;
 
 export type DateInputProps = React.ComponentProps<typeof DateInputInner> & {
   /** Props to be passed to the inner `DatePicker` component. */
-  datePickerProps?: undefined | Omit<DatePickerProps, 'selected' | 'onChange'>,
+  datePickerProps?: undefined | Omit<DatePickerProps, 'selected' | 'onChange' | 'dateFormat'>,
+  
+  /** The date format to use for parsing/formatting the user input. Default: `'MM/dd/yyyy'` */
+  dateFormat?: undefined | string,
 };
 /**
  * A text input to enter a date, or pick one from a date picker popover.
@@ -111,10 +120,25 @@ export const DateInput = Object.assign(
   (props: DateInputProps) => {
     const {
       date,
+      defaultDate,
       onUpdateDate,
       datePickerProps,
+      dateFormat = dateFormatDefault,
       ...propsRest
     } = props;
+    
+    const [uncontrolledDate, setUncontrolledDate] = React.useState<null | DateInputValue>(defaultDate ?? null);
+    
+    if (typeof onUpdateDate !== 'undefined' && typeof date === 'undefined') {
+      console.warn('Missing onUpdateDate in DateInput that is used as an uncontrolled component');
+    }
+    if (typeof onUpdateDate === 'undefined' && typeof date !== 'undefined') {
+      console.warn('Missing date in DateInput that is used as an uncontrolled component');
+    }
+    
+    const dateSelected: null | DateInputValue = typeof onUpdateDate === 'function'
+      ? (date ?? null) // Controlled case
+      : uncontrolledDate; // Uncontrolled case
     
     const inputRef = React.useRef<React.ComponentRef<typeof DateInputInner>>(null);
     
@@ -147,12 +171,17 @@ export const DateInput = Object.assign(
       }),
       { ref: refs.setFloating },
     );
-        
-    const handleChange = React.useCallback((date: null | DateInputValue) => {
-      onUpdateDate?.(date);
+    
+    const handleChange = (date: null | DateInputValue) => {
+      if (typeof onUpdateDate === 'function') { // Controlled case
+        onUpdateDate(date);
+      } else {
+        setUncontrolledDate(date);
+      }
+      
       //setIsOpen(false); // Doesn't really make sense, since focusing the input will just re-open it
       inputRef.current?.focus();
-    }, [onUpdateDate]);
+    };
     
     return (
       <>
@@ -163,7 +192,8 @@ export const DateInput = Object.assign(
             cl['bk-date-input'],
             propsRest.className,
           )}
-          date={date}
+          date={dateSelected}
+          defaultDate={defaultDate}
           onUpdateDate={onUpdateDate}
           // Note: needs to be on `inputProps` because the `ref` must be the inner input, since
           // `togglePopover({ source })` requires a focusable element for popover tab order to work.
@@ -174,13 +204,12 @@ export const DateInput = Object.assign(
         
         {isMounted &&
           <div
-            // FIXME: props merger
             {...floatingProps}
             className={cx(cl['bk-date-input__picker'])}
           >
             <DatePicker
               {...datePickerProps}
-              selected={date ?? null}
+              selected={dateSelected}
               onChange={handleChange}
             />
           </div>
@@ -189,6 +218,8 @@ export const DateInput = Object.assign(
     );
   },
   {
+    formatDate,
+    //parseDate,
     Action: Input.Action,
   },
 );

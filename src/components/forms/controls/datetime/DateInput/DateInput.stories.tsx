@@ -6,6 +6,7 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { LayoutDecorator } from '../../../../../util/storybook/LayoutDecorator.tsx';
+import { SubmitButton } from '../../../../../util/storybook/SubmitButton.tsx';
 
 import { notify } from '../../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Button } from '../../../../actions/Button/Button.tsx';
@@ -76,5 +77,37 @@ export const DateInputEmpty: Story = {
   decorators: [(_, { args }) => <DateInputStory {...args}/>],
   args: {
     defaultDate: null,
+  },
+};
+
+const DateInputUncontrolledDec = (props: DateInputArgs) => {
+  return (
+    <form
+      onSubmit={event => {
+        event.preventDefault();
+        const formData = new FormData(event.currentTarget);
+        notify.success(`Date: ${formData.get('story_component') || '(empty)'}`);
+      }}
+    >
+      <DateInput {...props} name="story_component"/>
+      <SubmitButton label="Submit"/>
+    </form>
+  );
+};
+
+export const DateInputUncontrolled: Story = {
+  decorators: [(_, { args }) => <DateInputUncontrolledDec {...args}/>],
+  args: {
+    date: undefined,
+    onUpdateDate: undefined,
+  },
+};
+
+export const DateInputUncontrolledWithDefault: Story = {
+  decorators: [(_, { args }) => <DateInputUncontrolledDec {...args}/>],
+  args: {
+    date: undefined,
+    defaultDate: new Date('2024-04-19'),
+    onUpdateDate: undefined,
   },
 };

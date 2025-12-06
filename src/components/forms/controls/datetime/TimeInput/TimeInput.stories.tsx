@@ -79,7 +79,7 @@ export const TimeInputUncontrolled: Story = {
   decorators: [(_, { args }) => <TimeInputUncontrolledDec {...args}/>],
   args: {
     time: undefined,
-    onTimeUpdate: undefined,
+    onUpdateTime: undefined,
   },
 };
 
@@ -88,6 +88,6 @@ export const TimeInputUncontrolledWithDefault: Story = {
   args: {
     time: undefined,
     defaultTime: { hours: 23, minutes: 59 },
-    onTimeUpdate: undefined,
+    onUpdateTime: undefined,
   },
 };
