@@ -47,7 +47,12 @@ export const InputSensitive = (props: InputSensitiveProps) => {
   );
   
   // On blur, turn off the reveal
-  const handleBlur = React.useCallback(() => { setIsRevealed(false); }, []);
+  const handleBlur = React.useCallback((event: React.FocusEvent<HTMLInputElement>) => {
+    // Check if the `relatedTarget` (where the focus moves to) is outside of this component
+    if (!event.relatedTarget || !event.currentTarget.contains(event.relatedTarget)) {
+      setIsRevealed(false);
+    }
+  }, []);
   
   // Determine the kind of the content based on the `type` prop.
   // Note: if we need more granularity in the future we could consider an explicit `contentType` prop.
