@@ -2,10 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { capitalizeFirstLetter } from '../../../../util/formatting.ts';
-
-import { classNames as cx } from '../../../../util/componentUtil.ts';
 import * as React from 'react';
+import { classNames as cx } from '../../../../util/componentUtil.ts';
 import { mergeCallbacks } from '../../../../util/reactUtil.ts';
 
 import { Input } from './Input.tsx';
@@ -88,8 +86,8 @@ export const InputSensitive = (props: InputSensitiveProps) => {
             hidden={!allowReveal}
             icon={isRevealed ? 'eye-open' : 'eye-closed'}
             label={isRevealed
-              ? `Hide ${capitalizeFirstLetter(contentLabel)}`
-              : `Reveal ${capitalizeFirstLetter(contentLabel)}`
+              ? `Hide ${contentLabel}`
+              : `Reveal ${contentLabel}`
             }
             onPress={toggleRevealed}
           />
