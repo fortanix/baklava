@@ -27,7 +27,7 @@ const config: StorybookConfig = {
     '@storybook/addon-links', // Allows creating links from one story to another
     '@storybook/addon-designs',
     '@chromatic-com/storybook',
-    '@storybook-community/storybook-dark-mode',
+    //'@storybook-community/storybook-dark-mode',
     '@storybook/addon-docs',
     '@storybook/addon-vitest',
 

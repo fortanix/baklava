@@ -65,6 +65,7 @@
 // https://www.w3.org/WAI/tutorials/forms/labels/#note-on-hiding-elements
 @mixin visually-hidden {
   border: 0;
+  /* stylelint-disable-next-line property-no-deprecated */
   clip: rect(1px, 1px, 1px, 1px);
   clip-path: inset(50%);
   block-size: 1px;

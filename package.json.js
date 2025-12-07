@@ -47,12 +47,10 @@ const packageConfig = {
     'install-project': 'npm run gen-package && npm install', // Project-specific version of `npm install`
     
     // CLI
-    'node': 'node --import=tsx',
-    'repl': 'tsx',
-    'plop': 'NODE_OPTIONS="--import tsx" plop',
-    'import': 'tsx scripts/import.ts',
-    'automate': 'tsx scripts/automate.ts',
-    'verify': 'tsx scripts/verify.ts',
+    'plop': 'plop',
+    'import': 'node scripts/import.ts',
+    'automate': 'node scripts/automate.ts',
+    'verify': 'node scripts/verify.ts',
     
     // Library
     //'lib:build': '',
@@ -94,63 +92,62 @@ const packageConfig = {
   // Dev dependencies (only needed when building, or making changes to the code)
   devDependencies: {
     // CLI
-    'plop': '^4.0.2',
-    'tsx': '^4.20.5',
-    'glob': '^11.0.2',
+    'plop': '^4.0.4',
+    'glob': '^13.0.0',
     
     // Build
-    'browserslist': '^4.25.4',
-    'vite': '^6.3.5',
-    '@vitejs/plugin-react': '^4.7.0',
+    'browserslist': '^4.28.1',
+    'vite': '^7.2.6',
+    '@vitejs/plugin-react': '^5.1.1',
     'vite-plugin-dts': '^4.5.4',
     'vite-plugin-lib-inject-css': '^2.2.1',
-    'vite-plugin-svgr': '^4.3.0',
+    'vite-plugin-svgr': '^4.5.0',
     'vite-plugin-svg-icons': '^2.0.1',
     
     // Static analysis
-    'typescript': '^5.9.2',
-    '@types/node': '^24.3.1',
-    'stylelint': '^16.24.0',
-    'stylelint-config-standard-scss': '^15.0.1',
+    'typescript': '^5.9.3',
+    '@types/node': '^24.10.1',
+    'stylelint': '^16.26.1',
+    'stylelint-config-standard-scss': '^16.0.0',
     'stylelint-use-logical': '^2.1.2',
-    '@biomejs/biome': '^2.2.3',
+    '@biomejs/biome': '^2.3.8',
     
     // Testing
-    'jsdom': '^26.1.0',
-    'vitest': '^3.1.4',
-    '@vitest/ui': '^3.1.4',
-    '@vitest/browser': '^3.2.4',
-    '@vitest/coverage-v8': '^3.2.4',
+    'jsdom': '^27.2.0',
+    'vitest': '^4.0.15',
+    '@vitest/ui': '^4.0.15',
+    '@vitest/browser-playwright': '^4.0.15',
+    '@vitest/coverage-v8': '^4.0.15',
     '@testing-library/react': '^16.3.0',
     '@testing-library/user-event': '^14.6.1',
-    '@testing-library/jest-dom': '^6.8.0',
+    '@testing-library/jest-dom': '^6.9.1',
     '@ngneat/falso': '^8.0.2',
     'mockdate': '^3.0.5',
-    'playwright': '^1.55.0',
+    'playwright': '^1.57.0',
     
     // Storybook
-    'storybook': '^9.1.7',
-    '@storybook/react-vite': '^9.1.7',
-    '@storybook/addon-a11y': '^9.1.7',
-    '@storybook/addon-designs': '^10.0.2',
-    '@storybook/addon-docs': '^9.1.7',
-    '@storybook/addon-links': '^9.1.7',
-    '@storybook/addon-vitest': '^9.1.7',
+    'storybook': '^10.1.4',
+    '@storybook/react-vite': '^10.1.4',
+    '@storybook/addon-a11y': '^10.1.4',
+    '@storybook/addon-designs': '^11.0.3',
+    '@storybook/addon-docs': '^10.1.4',
+    '@storybook/addon-links': '^10.1.4',
+    '@storybook/addon-vitest': '^10.1.4',
     'chromatic': '^13.1.4',
-    '@chromatic-com/storybook': '^4.1.1', // Chromatic integration for Storybook
+    '@chromatic-com/storybook': '^4.1.3', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
-    '@storybook-community/storybook-dark-mode': '^6.0.0',
+    //'@storybook-community/storybook-dark-mode': '^6.0.0',
     //'@percy/cli': '^1.31.2',
     //'@percy/storybook': '^9.0.0',
     
     // Styling
     'typescript-plugin-css-modules': '^5.2.0',
-    'sass-embedded': '^1.92.1',
-    'lightningcss': '^1.30.1',
+    'sass-embedded': '^1.93.3',
+    'lightningcss': '^1.30.2',
     
     // React
-    '@types/react': '^19.1.12',
-    '@types/react-dom': '^19.1.9',
+    '@types/react': '^19.2.7',
+    '@types/react-dom': '^19.2.3',
     
     // Data table
     '@types/react-table': '^7.7.20',
@@ -163,18 +160,18 @@ const packageConfig = {
     'message-tag': '^0.10.0',
     
     // React
-    'react': '^19.1.1',
-    'react-dom': '^19.1.1',
+    'react': '^19.2.1',
+    'react-dom': '^19.2.1', // Must be in sync with `react`
     'react-error-boundary': '^6.0.0',
     'classnames': '^2.5.1',
-    'zustand': '^5.0.8',
+    'zustand': '^5.0.9',
     
     '@floating-ui/react': '^0.27.16',
     'react-table': '^7.8.0',
-    'react-datepicker': '^8.9.0',
+    'react-datepicker': '^8.10.0',
     
-    'effect': '^3.17.13',
-    'react-hook-form': '^7.62.0',
+    'effect': '^3.19.9',
+    'react-hook-form': '^7.68.0',
     '@tanstack/react-virtual': '^3.13.12',
     
     'optics-ts': '^2.4.1',

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.2.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
@@ -25,9 +25,7 @@
       }
     }
   },
-  "plugins": [
-    "./linter/react-default-props.grit"
-  ],
+  "plugins": ["./linter/react-default-props.grit"],
   "linter": {
     "enabled": true,
     "includes": [
