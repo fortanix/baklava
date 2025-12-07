@@ -52,6 +52,13 @@ const DialogOverlayControlledWithSubject = (props: React.ComponentProps<typeof D
   type Subject = { name: string };
   const overlay = DialogOverlay.useOverlayWithSubject<Subject>();
   
+  const activatorFor = (subject: Subject) => () => {
+    // Note: do not activate again if the subject is already shown
+    if (!overlay.props.popoverRef?.current?.active || subject.name !== overlay.subject?.name) {
+      overlay.activateWith(subject);
+    }
+  };
+  
   return (
     <article className="bk-prose">
       {overlay.subject &&
@@ -63,10 +70,10 @@ const DialogOverlayControlledWithSubject = (props: React.ComponentProps<typeof D
       <p>A single details overlay will be used, filled in with the subject based on which name was pressed.</p>
       
       <p>
-        <Button kind="primary" label="Open: Alice" onPress={() => { overlay.activateWith({ name: 'Alice' }); }}/>
+        <Button kind="primary" label="Open: Alice" onPress={activatorFor({ name: 'alice' })}/>
       </p>
       <p>
-        <Button kind="primary" label="Open: Bob" onPress={() => { overlay.activateWith({ name: 'Bob' }); }}/>
+        <Button kind="primary" label="Open: Bob" onPress={activatorFor({ name: 'bob' })}/>
       </p>
     </article>
   );
