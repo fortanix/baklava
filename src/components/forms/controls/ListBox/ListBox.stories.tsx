@@ -59,7 +59,6 @@ export default {
   render: (args) => <ListBox {...args}/>,
 } satisfies Meta<ListBoxArgs>;
 
-
 export const ListBoxStandard: Story = {
   args: {
     defaultSelected: 'Blueberry',
@@ -86,6 +85,201 @@ export const ListBoxShrink: Story = { args: { size: 'shrink' } };
 export const ListBoxSmall: Story = { args: { size: 'small' } };
 export const ListBoxMedium: Story = { args: { size: 'medium' } };
 export const ListBoxLarge: Story = { args: { size: 'large' } };
+
+const info = <><Icon icon='warning' /> Critical</>;
+
+export const ListBoxWithGroup: Story = {
+  args: {
+    size: 'xl',
+    children: (
+      <>
+        <ListBox.Static sticky="start">
+          <ListBox.Search placeholder="Search Connections" />
+        </ListBox.Static>
+
+        <ListBox.GroupLayout defaultView={<>This is a placeholder</>}>
+          <ListBox.Option itemKey="all-connections" label="All Connections" info={info}/>
+          <ListBox.Group itemKey="group-1" label="Cloud" info={info}>
+            <ListBox.Option
+              itemKey="group-1-connection-1"
+              label="Cloud Connection 1"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-1-connection-2"
+              label="Cloud Connection 2"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-1-connection-3"
+              label="Cloud Connection 3"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+          </ListBox.Group>
+          <ListBox.Group itemKey="group-2" label="On-Premises" info={info}>
+            <ListBox.Option
+              itemKey="group-2-all"
+              label="All On-Premises Connections"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-2-connection-1"
+              label="On-Premises Connection 1"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-2-connection-2"
+              label="On-Premises Connection 2"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-2-connection-3"
+              label="On-Premises Connection 3"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-2-connection-4"
+              label="On-Premises Connection 4"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-2-connection-5"
+              label="On-Premises Connection 5"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-2-connection-6"
+              label="On-Premises Connection 6"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-2-connection-7"
+              label="On-Premises Connection 7"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-2-connection-8"
+              label="On-Premises Connection 8"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-2-connection-9"
+              label="On-Premises Connection 9"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+          </ListBox.Group>
+          <ListBox.Group itemKey="group-3" label="External KMS" info={info}>
+            <ListBox.Option
+              itemKey="group-3-connection-1"
+              label="External KMS Connection 1"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-3-connection-2"
+              label="External KMS Connection 2"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-3-connection-3"
+              label="External KMS Connection 3"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+          </ListBox.Group>
+          <ListBox.Group itemKey="group-4" label="Infra" info={info}>
+            <ListBox.Option
+              itemKey="group-4-connection-1"
+              label="Infra Connection 1"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-4-connection-2"
+              label="Infra Connection 2"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-4-connection-3"
+              label="Infra Connection 3"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+          </ListBox.Group>
+          <ListBox.Group
+            itemKey="group-5"
+            label={`This is a long Test - This is a long Test - This is a long Test This is a long Test`}
+            info={info}
+          >
+            <ListBox.Option
+              itemKey="group-5-connection-1"
+              label="Test Connection 1"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-5-connection-2"
+              label="Test Connection 2"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+            <ListBox.Option
+              itemKey="group-5-connection-3"
+              label="Test Connection 3"
+              iconDecoration='highlight'
+              icon="badge-assessment"
+              info={info}
+            />
+          </ListBox.Group>
+        </ListBox.GroupLayout>
+
+        <ListBox.FooterActions>
+          <ListBox.FooterAction
+            itemKey="manage-all-connections"
+            label="Manage All Connections"
+            onActivate={() => { notifyPressed(); }}
+          />
+        </ListBox.FooterActions>
+      </>
+    ),
+  },
+};
 
 export const ListBoxEmpty: Story = {
   args: {

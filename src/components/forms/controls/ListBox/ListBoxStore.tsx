@@ -70,6 +70,8 @@ export type ListBoxState = {
   /** The currently selected item (if any). */
   selectedItem: null | ItemKey,
   
+  searchTerm: string,
+  
   /**
    * If the list is virtually rendered, `virtualItemKeys` should be provided with the full list of item keys. This list
    * should be ordered in the same way as the items are rendered on screen.
@@ -94,6 +96,8 @@ export type ListBoxStateApi = ListBoxState & {
   
   /** Request the given `itemKey` to be selected. If `null`, unset selection. */
   selectItem: (itemKey: null | ItemKey) => void,
+  
+  setSearchTerm: (term: string) => void;
 };
 
 // Ref: https://zustand.docs.pmnd.rs/guides/initialize-state-with-props#wrapping-the-context-provider
@@ -109,6 +113,7 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
     focusedItem: null,
     selectedItem: null,
     virtualItemKeys: null,
+    searchTerm: '',
     ...props,
   };
   return createStore<ListBoxStateApi>()((set, get) => ({
@@ -164,6 +169,8 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
       }
     },
     selectItem: itemKey => { set({ selectedItem: itemKey }); },
+    
+    setSearchTerm: (term) => set({ searchTerm: term }),
   }));
 };
 export type ListBoxStore = ReturnType<typeof createListBoxStore>;
@@ -408,5 +415,101 @@ export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
     
     isSelected,
     requestSelection,
+  };
+};
+
+export type UseListBoxGroupResult = {
+  id: string;
+  disabled: boolean;
+  itemPosition: null | number, // Position of this item in the total collection, or `null` if unknown
+  isFocused: boolean;
+  requestFocus: () => void;
+  isSelected: boolean;
+  requestSelection: () => void;
+  selectedChildKey: string | null;
+};
+
+export const useListBoxGroup = (group: ItemWithKey): UseListBoxGroupResult => {
+  const store = React.use(ListBoxContext);
+  if (store === null) {
+    throw new Error(`Missing ListBoxContext provider`);
+  }
+
+  const id = useStore(store, s => s.id);
+  const disabled = useStore(store, s => s.disabled);
+
+  const itemPosition = useStore(store, s => s.getItemPosition(group.itemKey));
+  
+  // Register the item
+  React.useEffect(() => {
+    store.setState(state => {
+      state._internalItemsRegistry.set(group.itemKey, group); // Mutate to prevent frequent rerendering
+      
+      const stateUpdated = { ...state };
+      
+      if (group.isContentItem) {
+        stateUpdated._internalItemsCount += 1;
+      }
+      
+      if (state.focusedItem === null) {
+        stateUpdated.focusedItem = group.itemKey; // Immutable update
+      }
+      
+      return stateUpdated;
+    });
+    return () => {
+      store.setState(state => {
+        state._internalItemsRegistry.delete(group.itemKey); // Mutate to prevent frequent rerendering
+        
+        const stateUpdated = { ...state };
+        
+        if (group.isContentItem) {
+          // Immutable update, since we do want to trigger updates in case this hits 0
+          stateUpdated._internalItemsCount -= 1;
+        }
+        
+        if (state.focusedItem === group.itemKey) {
+          const firstKey = state._internalItemsRegistry.keys().next();
+          const focusedItem = firstKey.done ? null : firstKey.value;
+          
+          stateUpdated.focusedItem = focusedItem; // Immutable update
+        }
+        
+        return stateUpdated;
+      });
+    };
+  }, [store, group]);
+  
+  const focusedItem = useStore(store, s => s.focusedItem);
+  const focusItem = useStore(store, s => s.focusItem);
+  const requestFocus = React.useCallback(() => {
+    focusItem(group.itemKey);
+  }, [group.itemKey, focusItem]);
+
+  const selectedItem = useStore(store, s => s.selectedItem);
+  const selectItem = useStore(store, s => s.selectItem);
+
+  const selectedChildKey =
+    selectedItem && selectedItem.startsWith(`${group.itemKey}-`)
+      ? selectedItem
+      : null;
+
+  const isSelected = selectedItem === group.itemKey || !!selectedChildKey;
+  const isFocused = focusedItem === group.itemKey;
+
+  const requestSelection = React.useCallback(() => {
+    selectItem(group.itemKey);
+    focusItem(group.itemKey);
+  }, [group.itemKey, selectItem, focusItem]);
+
+  return {
+    id: `${id}_${group.itemKey}`,
+    disabled,
+    itemPosition,
+    isFocused,
+    requestFocus,
+    isSelected,
+    requestSelection,
+    selectedChildKey,
   };
 };
