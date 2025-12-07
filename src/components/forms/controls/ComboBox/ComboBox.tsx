@@ -85,7 +85,6 @@ export const ComboBox = Object.assign(
           // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
           const anchorProps = props({
             placeholder: 'Select an option',
-            ...propsRest,
             className: cx(cl['bk-combo-box'], { [cl['bk-combo-box--open']]: open }),
             //value: selectedOption === null ? '' : selectedOption.label,
             //onChange: () => {},
