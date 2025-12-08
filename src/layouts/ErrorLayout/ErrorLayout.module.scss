@@ -22,23 +22,27 @@
 
       .bk-error-icon {
         color: bk.$color-blackberry-100;
-        font-size: bk.$font-size-6xl;
+        font-size: 7rem;
         padding: bk.$spacing-4;
       }
 
       .bk-error-title {
         padding: bk.$spacing-1;
-        //font-size: 3rem;
       }
 
       .bk-error-description {
         @include bk.font-family-body();
-        display: flex;
+        display: block;
         justify-content: center;
         align-items: center;
-        width: 30rem;
+        inline-size: 30rem;
+        margin-inline-end: bk.$spacing-4;
         padding: bk.$spacing-4;
         flex-shrink: 0;
+
+        a {
+          margin-inline-start: bk.$spacing-1;
+        }
       }
     }
 
