@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import { defineConfig, searchForWorkspaceRoot } from 'vite';
 import react from '@vitejs/plugin-react';
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons-ng';
 
 // https://vitejs.dev/config/
 export default defineConfig({
