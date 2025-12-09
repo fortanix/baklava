@@ -13,7 +13,7 @@ import { Features as LightningCssFeatures, browserslistToTargets } from 'lightni
 import dts from 'vite-plugin-dts';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import svgr from 'vite-plugin-svgr';
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons-ng';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';

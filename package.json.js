@@ -102,7 +102,7 @@ const packageConfig = {
     'vite-plugin-dts': '^4.5.4',
     'vite-plugin-lib-inject-css': '^2.2.1',
     'vite-plugin-svgr': '^4.5.0',
-    'vite-plugin-svg-icons': '^2.0.1',
+    'vite-plugin-svg-icons-ng': '^1.5.2',
     
     // Static analysis
     'typescript': '^5.9.3',
@@ -174,7 +174,7 @@ const packageConfig = {
     'react-hook-form': '^7.68.0',
     '@tanstack/react-virtual': '^3.13.12',
     
-    'optics-ts': '^2.4.1',
+    //'optics-ts': '^2.4.1',
   },
   peerDependencies: {
     'react': '>= 19.0.0',
