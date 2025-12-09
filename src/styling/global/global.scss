@@ -78,7 +78,4 @@ case where we set CSS variables (using a `--bk-` prefix to minimize conflicts wi
   .translated-rtl {
     direction: rtl;
   }
-  
-  // Workaround for https://github.com/vbenjs/vite-plugin-svg-icons/issues/90
-  #baklava-icon-sprite { display: none; }
 }

@@ -3,7 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import './preview.scss'; // Note: must be imported before any other CSS for `@layer` to work
-import 'virtual:svg-icons-register';
+import 'virtual:svg-icons/register';
 
 import { useState, useEffect } from 'react';
 
