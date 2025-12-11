@@ -52,7 +52,7 @@ const ListItemVirtual = ({ virtualItem, itemsCount, renderItem, renderItemLabel 
       aria-posinset={virtualItem.index}
       label={label}
       aria-setsize={itemsCount}
-      className={cx(cl['bk-list-box-lazy__item'])}
+      className={cx(cl['bk-list-box-multi-lazy__item'])}
       style={styles}
     >
       {typeof content !== 'string' ? content : undefined}
@@ -172,7 +172,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   return (
     // FIXME: we could do away with this extra <div> if we force a scroll bar with a (hidden?) item at the far end
     <div
-      className={cx(cl['bk-list-box-lazy__scroller'])}
+      className={cx(cl['bk-list-box-multi-lazy__scroller'])}
       style={{
         blockSize: virtualizer.getTotalSize(),
       }}
@@ -262,7 +262,7 @@ export const ListBoxMultiLazy = (props: ListBoxMultiLazyProps) => {
       ref={mergeRefs(listBoxRef, props.ref)}
       className={cx(
         'bk',
-        { [cl['bk-list-box-lazy']]: !unstyled },
+        { [cl['bk-list-box-multi-lazy']]: !unstyled },
         propsRest.className,
       )}
       virtualItemKeys={virtualItemKeys}
