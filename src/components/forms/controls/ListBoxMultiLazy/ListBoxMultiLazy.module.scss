@@ -1,0 +1,22 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-list-box-lazy {
+    @include bk.component-base(bk-list-box-lazy);
+    
+    .bk-list-box-lazy__scroller {
+      flex-shrink: 0; // Prevent the div from shrinking inside the parent flex box
+      
+      > .bk-list-box-lazy__item {
+        position: absolute;
+        inset-block-start: 0;
+        inset-inline-start: 0;
+        inline-size: 100%;
+      }
+    }
+  }
+}
