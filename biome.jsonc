@@ -59,6 +59,9 @@
         "noUnusedTemplateLiteral": "off",
         "noUselessElse": "off"
       },
+      "suspicious": {
+        "noTsIgnore": "off"
+      },
       "nursery": {}
     }
   }
