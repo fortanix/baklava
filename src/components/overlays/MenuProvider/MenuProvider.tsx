@@ -149,6 +149,7 @@ export const MenuProvider = Object.assign(
       floatingStyles,
       getReferenceProps,
       getFloatingProps,
+      isMounted,
       isOpen,
       setIsOpen,
     } = useFloatingElement({
@@ -178,8 +179,6 @@ export const MenuProvider = Object.assign(
       },
       // END TEMP
     });
-    
-    const [shouldMountMenu] = useDebounce(isOpen, isOpen ? 0 : 1000);
     
     const renderDefaultSelected = (): null | string => {
       const defaultSelectedKey = typeof selected !== 'undefined' ? selected : (defaultSelected ?? null);
@@ -436,7 +435,7 @@ export const MenuProvider = Object.assign(
     return (
       <>
         {anchor}
-        {shouldMountMenu && renderMenu()}
+        {isMounted && renderMenu()}
       </>
     );
   },

@@ -3,7 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { mergeRefs, mergeCallbacks } from '../../../../util/reactUtil.ts';
+import { mergeRefs, mergeCallbacks, mergeProps } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import { useScroller } from '../../../../layouts/util/Scroller.tsx';
 
@@ -495,10 +495,12 @@ export const ListBox = Object.assign(
         <div
           {...scrollerProps}
           tabIndex={undefined} // Do not make the listbox focusable, use a roving tabindex instead
-          {...ariaProps}
-          {...propsRest}
-          {...listBox.props}
-          ref={listBoxRef}
+          {...mergeProps(
+            ariaProps as Record<string, unknown>,
+            propsRest,
+            listBox.props,
+            { ref: listBoxRef },
+          )}
           onKeyDown={mergeCallbacks([handleKeyDown, propsRest.onKeyDown, listBox.props.onKeyDown])}
           onToggle={mergeCallbacks([props.onToggle, listBox.props.onToggle])}
           className={cx(
