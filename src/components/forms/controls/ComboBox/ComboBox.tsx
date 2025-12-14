@@ -71,7 +71,6 @@ export const ComboBox = Object.assign(
       <MenuProvider
         label={label}
         items={options}
-        // biome-ignore lint/a11y/useSemanticElements: False positive: this `role` doesn't directly map to HTML `role`
         role="combobox"
         triggerAction="focus-interactive" // Keep the dropdown menu open while the input is focused
         keyboardInteractions="default" // FIXME

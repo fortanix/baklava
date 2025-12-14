@@ -148,6 +148,7 @@ export const MenuMultiProvider = Object.assign(
       floatingStyles,
       getReferenceProps,
       getFloatingProps,
+      isMounted,
       isOpen,
       setIsOpen,
     } = useFloatingElement({
@@ -177,8 +178,6 @@ export const MenuMultiProvider = Object.assign(
       },
       // END TEMP
     });
-    
-    const [shouldMountMenu] = useDebounce(isOpen, isOpen ? 0 : 1000);
     
     // biome-ignore lint/correctness/useExhaustiveDependencies: Should not depend on `defaultSelected` (run once only)
     const defaultSelectedLabels = React.useMemo((): Map<ItemKey, string> => {
@@ -339,10 +338,7 @@ export const MenuMultiProvider = Object.assign(
         const previousActiveElement = previousActiveElementRef.current;
         
         if (previousActiveElement && listBoxElement.matches(':focus-within')) {
-          previousActiveElement.focus({
-            // @ts-ignore Supported in some browsers (e.g. Firefox).
-            focusVisible: false,
-          });
+          previousActiveElement.focus({ focusVisible: false });
         }
       }
     }, [action]);
@@ -436,7 +432,7 @@ export const MenuMultiProvider = Object.assign(
     return (
       <>
         {anchor}
-        {shouldMountMenu && renderMenu()}
+        {isMounted && renderMenu()}
       </>
     );
   },

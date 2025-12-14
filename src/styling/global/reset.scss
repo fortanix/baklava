@@ -97,8 +97,10 @@
     //
     
     [popover]:not(dialog) {
-      inset: auto; // Note: future versions of Chrome should have this by default
-      position: fixed;
+      margin: 0;
+      position: absolute;
+      inset: auto; // Make sure there's no `inset` (e.g. for anchor positioning)
+      place-self: normal; // Set to the "normal" alignment (e.g. in anchor positioning, uses the sensible alignment)
       
       // Use a variable (`--display`) to allow higher level styling to override the visible display type (e.g. to use
       // `flex` instead of `block`), without having to reimplement all the `display: none` logic.

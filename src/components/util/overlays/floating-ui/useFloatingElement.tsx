@@ -447,6 +447,25 @@ export const useFloatingElement = <E extends HTMLElement>(
   // Keep the tooltip mounted for a little while after close to allow exit animations to occur
   const { isMounted } = useTransitionStatus(context, { duration: { open: 0, close: 500 } });
   
+  // Transform floating-ui `Placement` to CSS `position-area` value
+  const positionArea = React.useMemo<string>(() => {
+    switch (opts.placement) {
+      case 'top': return 'block-start span-all';
+      case 'top-start': return 'block-start span-inline-end';
+      case 'top-end': return 'block-start span-inline-start';
+      case 'right': return 'inline-end span-all';
+      case 'right-start': return 'inline-end span-block-end';
+      case 'right-end': return 'inline-end span-block-start';
+      case 'bottom': return 'block-end span-all';
+      case 'bottom-start': return 'block-end span-inline-end';
+      case 'bottom-end': return 'block-end span-inline-start';
+      case 'left': return 'inline-start span-all';
+      case 'left-start': return 'inline-start span-block-end';
+      case 'left-end': return 'inline-start span-block-start';
+      default: return 'block-end span-all';
+    }
+  }, [opts.placement]);
+  
   return {
     context,
     isOpen,
@@ -454,7 +473,12 @@ export const useFloatingElement = <E extends HTMLElement>(
     isMounted,
     refs,
     placement,
-    floatingStyles,
+    floatingStyles: {
+      //...floatingStyles, // TEMP: disable the floating-ui styles
+      margin: opts.offset,
+      positionArea,
+      positionTryFallbacks: 'flip-block', // FIXME: should be configurable through `opts.floatingUiFlipOptions`
+    },
     getReferenceProps,
     getFloatingProps,
     getItemProps,
