@@ -145,10 +145,7 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
         // the scroll.
         const element = itemTargetRef?.current as undefined | HTMLElement;
         if (element && document.activeElement !== element) {
-          element.focus({
-            // @ts-ignore Supported in some browsers (e.g. Firefox).
-            focusVisible: false,
-          });
+          element.focus({ focusVisible: false });
         }
       }
     },

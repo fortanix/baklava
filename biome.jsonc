@@ -1,5 +1,16 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
+  "files": {
+    "includes": [
+      "**/app/**",
+      "**/src/**",
+      "**/tests/**",
+      "!**/node_modules",
+      "!!**/dist", // Use `!!` to force-ignore since this is a build output directory (recommended by Biome docs)
+      "!**/src/components/tables/MultiSearch/MultiSearch.tsx",
+      "!**/tests/installation"
+    ]
+  },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
@@ -28,15 +39,6 @@
   "plugins": ["./linter/react-default-props.grit"],
   "linter": {
     "enabled": true,
-    "includes": [
-      "**/app/**",
-      "**/src/**",
-      "**/tests/**",
-      "!**/node_modules",
-      "!**/dist",
-      "!**/src/components/tables/MultiSearch/MultiSearch.tsx",
-      "!**/tests/installation"
-    ],
     "rules": {
       "recommended": true,
       "correctness": {

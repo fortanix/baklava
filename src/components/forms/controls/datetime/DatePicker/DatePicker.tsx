@@ -16,7 +16,10 @@ type ReactDatePickerIrrelevant = (
   | 'placeholderText'
   | 'showIcon'
   | 'icon'
-  | 'toggleCalendarOnIconClick' 
+  | 'toggleCalendarOnIconClick'
+  // Omit the `holidays` prop to prevent a `TS4082` error at declaration generation time because `react-datepicker`
+  // does not export the `Holiday` type
+  | 'holidays'
 );
 
 /**

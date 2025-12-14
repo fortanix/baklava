@@ -10,7 +10,9 @@ import ReactDatePicker from 'react-datepicker';
 import cl from './DateRangePicker.module.scss';
 
 
-type ReactDatePickerProps = React.ComponentProps<typeof ReactDatePicker>;
+// Note: omit the `holidays` prop to prevent a `TS4082` error at declaration generation time because `react-datepicker`
+// does not export the `Holiday` type
+type ReactDatePickerProps = Omit<React.ComponentProps<typeof ReactDatePicker>, 'holidays'>;
 
 type ReactDatePickerIrrelevant = (
   | 'date' // This is in the type, but doesn't seem to actually do anything (use `selected` instead)
