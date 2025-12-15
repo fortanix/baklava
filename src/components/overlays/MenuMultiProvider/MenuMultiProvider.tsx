@@ -339,10 +339,7 @@ export const MenuMultiProvider = Object.assign(
         const previousActiveElement = previousActiveElementRef.current;
         
         if (previousActiveElement && listBoxElement.matches(':focus-within')) {
-          previousActiveElement.focus({
-            // @ts-ignore Supported in some browsers (e.g. Firefox).
-            focusVisible: false,
-          });
+          previousActiveElement.focus({ focusVisible: false });
         }
       }
     }, [action]);

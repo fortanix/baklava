@@ -93,7 +93,7 @@ export const useRowSelectColumnRadio = <D extends object>(hooks: ReactTable.Hook
 
             const handleRadioChange = () => {
               // deselect all other rows first (mimic radio button behavior)
-              cellProps.rows.forEach(row => row.toggleRowSelected(false));
+              cellProps.rows.forEach(row => { row.toggleRowSelected(false); });
               // then select this row
               onChange?.({ target: { checked: true } } as any);
             };

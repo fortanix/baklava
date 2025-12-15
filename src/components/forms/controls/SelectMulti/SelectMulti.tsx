@@ -86,7 +86,6 @@ export const SelectMulti = Object.assign(
         label={label}
         formatItemLabel={formatItemLabel}
         items={options}
-        // biome-ignore lint/a11y/useSemanticElements: False positive: this `role` doesn't directly map to HTML `role`
         role="listbox"
         keyboardInteractions="form-control"
         placement="bottom-start"

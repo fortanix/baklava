@@ -50,7 +50,7 @@ export const InputDisabled: Story = {
 export const InputInvalid: Story = {
   args: {
     required: true,
-    pattern: '\d+',
+    pattern: String.raw`\d+`,
     className: 'invalid',
     value: 'invalid input',
   },

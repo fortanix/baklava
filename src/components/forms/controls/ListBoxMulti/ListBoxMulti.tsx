@@ -121,7 +121,6 @@ export const Option = (props: OptionProps) => {
   }, [toggleSelection, onSelect]);
 
   return (
-    // biome-ignore lint/a11y/useSemanticElements: Cannot (yet) use `<option>` for this.
     <Button
       unstyled
       id={id}
