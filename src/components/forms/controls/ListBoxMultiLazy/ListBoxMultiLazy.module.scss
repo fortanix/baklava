@@ -6,7 +6,7 @@
 
 @layer baklava.components {
   .bk-list-box-multi-lazy {
-    @include bk.component-base(bk-list-box-lazy);
+    @include bk.component-base(bk-list-box-multi-lazy);
     
     .bk-list-box-multi-lazy__scroller {
       flex-shrink: 0; // Prevent the div from shrinking inside the parent flex box

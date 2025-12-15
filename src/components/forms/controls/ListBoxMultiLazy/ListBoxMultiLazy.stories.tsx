@@ -8,6 +8,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { generateData } from '../../../tables/util/generateData.ts'; // FIXME: move to a common location
 
 import { InputSearch } from '../Input/InputSearch.tsx';
+import { Button } from '../../../actions/Button/Button.tsx';
 
 import { type ItemKey, type VirtualItemKeys } from '../ListBoxMulti/ListBoxStore.tsx';
 import { ListBoxMultiLazy } from './ListBoxMultiLazy.tsx';
@@ -43,7 +44,7 @@ export default {
 } satisfies Meta<ListBoxMultiLazyArgs>;
 
 
-export const ListBoxLazyStandard: Story = {
+export const ListBoxMultiLazyStandard: Story = {
   args: {
     virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(10_000)),
     defaultSelected: new Set(['test-2', 'test-3']),
@@ -52,13 +53,13 @@ export const ListBoxLazyStandard: Story = {
   },
 };
 
-export const ListBoxLazyEmpty: Story = {
+export const ListBoxMultiLazyEmpty: Story = {
   args: {
     virtualItemKeys: [],
   },
 };
 
-export const ListBoxLazyLoading: Story = {
+export const ListBoxMultiLazyLoading: Story = {
   args: {
     virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(5)),
     isLoading: true,
@@ -66,7 +67,7 @@ export const ListBoxLazyLoading: Story = {
 };
 
 
-const ListBoxLazyInfiniteC = (props: ListBoxMultiLazyArgs) => {
+const ListBoxMultiLazyInfiniteC = (props: ListBoxMultiLazyArgs) => {
   const pageSize = 20;
   const maxItems = 90;
   
@@ -111,13 +112,13 @@ const ListBoxLazyInfiniteC = (props: ListBoxMultiLazyArgs) => {
     />
   );
 };
-export const ListBoxLazyInfinite: Story = {
-  render: args => <ListBoxLazyInfiniteC {...args}/>,
+export const ListBoxMultiLazyInfinite: Story = {
+  render: args => <ListBoxMultiLazyInfiniteC {...args}/>,
   args: {
   },
 };
 
-const ListBoxLazyWithFilterC = (props: ListBoxMultiLazyArgs) => {
+const ListBoxMultiLazyWithFilterC = (props: ListBoxMultiLazyArgs) => {
   const pageSize = 20;
   const maxItems = 90;
   
@@ -179,6 +180,64 @@ const ListBoxLazyWithFilterC = (props: ListBoxMultiLazyArgs) => {
     </>
   );
 };
-export const ListBoxLazyWithFilter: Story = {
-  render: args => <ListBoxLazyWithFilterC {...args}/>,
+export const ListBoxMultiLazyWithFilter: Story = {
+  render: args => <ListBoxMultiLazyWithFilterC {...args}/>,
 };
+
+const ListBoxMultiLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxMultiLazyArgs) => {
+  const pageSize = 20;
+  const maxItems = 90;
+  
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [limit, setLimit] = React.useState(pageSize);
+  const [items, setItems] = React.useState<Array<{ id: string, name: string }>>([]);
+  
+  const hasMoreItems = items.length < maxItems;
+  
+  const updateLimit = React.useCallback(async () => {
+    if (hasMoreItems) {
+      setLimit(Math.min(limit + pageSize, maxItems));
+      setIsLoading(true); // Immediately set `isLoading` so we can skip a render cycle (before the effect kicks in)
+    }
+  }, [limit, pageSize, hasMoreItems]);
+  
+  React.useEffect(() => {
+    setIsLoading(false);
+    
+    if (hasMoreItems) {
+      setIsLoading(true);
+      window.setTimeout(() => {
+        setIsLoading(false);
+        setItems(generateData({ numItems: limit }));
+      }, 2000);
+    }
+  }, [limit, hasMoreItems]);
+  
+  const virtualItemKeys = items.map(item => item.id);
+
+  const renderLoadMoreItemsTrigger = () => {
+    if (limit === maxItems) { return null; }
+
+    return (
+      <Button kind="primary" onPress={updateLimit}>Load more items</Button>
+    );
+  };
+  
+  return (
+    <ListBoxMultiLazy
+      {...props}
+      virtualItemKeys={virtualItemKeys}
+      isLoading={isLoading}
+      renderItem={item => <div>Item {item.index + 1}</div>}
+      renderItemLabel={item => `Item ${item.index + 1}`}
+      loadMoreItemsTriggerType="custom"
+      loadMoreItemsTrigger={renderLoadMoreItemsTrigger()}
+    />
+  );
+};
+export const ListBoxMultiLazyWithCustomLoadMoreItemsTrigger: Story = {
+  render: args => <ListBoxMultiLazyWithCustomLoadMoreItemsTriggerC {...args}/>,
+  args: {
+  },
+};
+
