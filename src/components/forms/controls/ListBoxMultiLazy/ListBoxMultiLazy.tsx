@@ -92,16 +92,16 @@ const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
 type ListBoxVirtualListProps = {
   scrollElement: null | React.ComponentRef<typeof ListBoxMulti>,
   virtualItemKeys: VirtualItemKeys,
-  limit?: number,
-  pageSize?: number,
-  hasMoreItems?: boolean,
-  onUpdateLimit?: (limit: number) => void,
+  limit?: undefined | number,
+  pageSize?: undefined | number,
+  hasMoreItems?: undefined | boolean,
+  onUpdateLimit?: undefined | ((limit: number) => void),
   isLoading: boolean,
   placeholderEmpty?: undefined | false | React.ReactNode,
   renderItem: ListItemVirtualProps['renderItem'],
   renderItemLabel: ListItemVirtualProps['renderItemLabel'],
-  loadMoreItemsTriggerType?: 'scroll' | 'custom',
-  loadMoreItemsTrigger?: React.ReactNode,
+  loadMoreItemsTriggerType?: undefined | 'scroll' | 'custom',
+  loadMoreItemsTrigger?: undefined | React.ReactNode,
 };
 const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   const {
@@ -273,7 +273,7 @@ export type ListBoxMultiLazyProps = Omit<ComponentProps<typeof ListBoxMulti>, 'c
   virtualItemKeys: VirtualItemKeys,
   
   /** The maximum number of items to load. */
-  limit?: ListBoxVirtualListProps['limit'],
+  limit?: undefined | ListBoxVirtualListProps['limit'],
   
   /** Size of a page (set of additional data to load in). Default: 10. */
   pageSize?: undefined | ListBoxVirtualListProps['pageSize'],
@@ -282,7 +282,7 @@ export type ListBoxMultiLazyProps = Omit<ComponentProps<typeof ListBoxMulti>, 'c
   hasMoreItems?: undefined | ListBoxVirtualListProps['hasMoreItems'],
   
   /** Request to update the limit. */
-  onUpdateLimit?: ListBoxVirtualListProps['onUpdateLimit'],
+  onUpdateLimit?: undefined | ListBoxVirtualListProps['onUpdateLimit'],
   
   /** Callback to render the given list item. */
   renderItem: ListBoxVirtualListProps['renderItem'],
@@ -291,10 +291,10 @@ export type ListBoxMultiLazyProps = Omit<ComponentProps<typeof ListBoxMulti>, 'c
   renderItemLabel: ListBoxVirtualListProps['renderItemLabel'],
 
   /** Determines how additional items are loaded: automatically on scroll, or through a custom trigger. */
-  loadMoreItemsTriggerType: ListBoxVirtualListProps['loadMoreItemsTriggerType'],
+  loadMoreItemsTriggerType?: undefined | ListBoxVirtualListProps['loadMoreItemsTriggerType'],
   
   /** A render function for the custom trigger element, used when loadMoreItemsTriggerType is set to 'custom'. */
-  loadMoreItemsTrigger: ListBoxVirtualListProps['loadMoreItemsTrigger'],
+  loadMoreItemsTrigger?: undefined | ListBoxVirtualListProps['loadMoreItemsTrigger'],
 };
 export const ListBoxMultiLazy = (props: ListBoxMultiLazyProps) => {
   const {
