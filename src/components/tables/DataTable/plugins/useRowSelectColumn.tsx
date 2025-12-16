@@ -32,7 +32,11 @@ export const useRowSelectColumn = <D extends object>(hooks: ReactTable.Hooks<D>)
                   <Checkbox
                     aria-label="Select all rows"
                     checked={checked}
-                    onChange={onChange}
+                    onClick={(e) => e.stopPropagation()}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      onChange?.(e);
+                    }}
                     className={cl['bk-data-table-row-select__checkbox']}
                   />
                 )}
@@ -52,7 +56,11 @@ export const useRowSelectColumn = <D extends object>(hooks: ReactTable.Hooks<D>)
                 <Checkbox
                   aria-label="Select row"
                   checked={checked}
-                  onChange={onChange}
+                  onClick={(e) => e.stopPropagation()}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    onChange?.(e);
+                  }}
                   className={cl['bk-data-table-row-select__checkbox']}
                 />
                 {cellContent}
