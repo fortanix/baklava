@@ -184,7 +184,7 @@ export const ListBoxLazyWithFilter: Story = {
   render: args => <ListBoxLazyWithFilterC {...args}/>,
 };
 
-const ListBoxLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxMultiLazyArgs) => {
+const ListBoxLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxLazyArgs) => {
   const pageSize = 20;
   const maxItems = 90;
   
