@@ -19,7 +19,13 @@ import {
   VirtualItemKeysUtil,
   useListBoxSelector,
 } from '../ListBoxMulti/ListBoxStore.tsx';
-import { type ListBoxMultiRef, ListBoxMulti, ListBoxMultiClassNames } from '../ListBoxMulti/ListBoxMulti.tsx';
+import {
+  type ListBoxMultiRef,
+  ListBoxMulti,
+  EmptyPlaceholder,
+  LoadingSpinner,
+  ListBoxMultiClassNames,
+} from '../ListBoxMulti/ListBoxMulti.tsx';
 import { Spinner } from '../../../graphics/Spinner/Spinner.tsx';
 
 import cl from './ListBoxMultiLazy.module.scss';
@@ -74,21 +80,6 @@ const isScrollNearEnd = (virtualizer: Virtualizer<ListBoxMultiRef, Element>): bo
   return distanceFromEnd < (scrollRectHeight / 2);
 };
 
-const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
-  return (
-    <div
-      {...props}
-      className={cx(
-        ListBoxMultiClassNames['bk-list-box-multi__item'],
-        ListBoxMultiClassNames['bk-list-box-multi__item--static'],
-        ListBoxMultiClassNames['bk-list-box-multi__item--disabled'],
-        ListBoxMultiClassNames['bk-list-box-multi__empty-placeholder'],
-        props.className,
-      )}
-    />
-  );
-};
-
 type ListBoxVirtualListProps = {
   scrollElement: null | React.ComponentRef<typeof ListBoxMulti>,
   virtualItemKeys: VirtualItemKeys,
@@ -119,7 +110,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     loadMoreItemsTrigger,
   } = props;
   
-  const id = React.useId();
+  const id = useListBoxSelector(s => s.id);
   const focusedItemKey = useListBoxSelector(s => s.focusedItem);
   const focusedItemIndex: null | number = focusedItemKey === null
     ? null
@@ -201,17 +192,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   */
 
   const renderLoadingSpinner = () => {
-    return (
-      <span
-        className={cx(
-          ListBoxMultiClassNames['bk-list-box-multi__item'],
-          ListBoxMultiClassNames['bk-list-box-multi__item--static'],
-          ListBoxMultiClassNames['bk-list-box-multi__item--loading'],
-        )}
-      >
-        Loading... <Spinner inline size="small"/>
-      </span> 
-    );
+    return <LoadingSpinner id={`${id}_loading-spinner`}/>;
   };
 
   const renderScrollTrigger = () => {

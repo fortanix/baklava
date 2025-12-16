@@ -8,6 +8,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { generateData } from '../../../tables/util/generateData.ts'; // FIXME: move to a common location
 
 import { InputSearch } from '../Input/InputSearch.tsx';
+import { Button } from '../../../actions/Button/Button.tsx';
 
 import { type ItemKey, type VirtualItemKeys } from '../ListBox/ListBoxStore.tsx';
 import { ListBoxLazy } from './ListBoxLazy.tsx';
@@ -182,3 +183,61 @@ const ListBoxLazyWithFilterC = (props: ListBoxLazyArgs) => {
 export const ListBoxLazyWithFilter: Story = {
   render: args => <ListBoxLazyWithFilterC {...args}/>,
 };
+
+const ListBoxLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxMultiLazyArgs) => {
+  const pageSize = 20;
+  const maxItems = 90;
+  
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [limit, setLimit] = React.useState(pageSize);
+  const [items, setItems] = React.useState<Array<{ id: string, name: string }>>([]);
+  
+  const hasMoreItems = items.length < maxItems;
+  
+  const updateLimit = React.useCallback(async () => {
+    if (hasMoreItems) {
+      setLimit(Math.min(limit + pageSize, maxItems));
+      setIsLoading(true); // Immediately set `isLoading` so we can skip a render cycle (before the effect kicks in)
+    }
+  }, [limit, pageSize, hasMoreItems]);
+  
+  React.useEffect(() => {
+    setIsLoading(false);
+    
+    if (hasMoreItems) {
+      setIsLoading(true);
+      window.setTimeout(() => {
+        setIsLoading(false);
+        setItems(generateData({ numItems: limit }));
+      }, 2000);
+    }
+  }, [limit, hasMoreItems]);
+  
+  const virtualItemKeys = items.map(item => item.id);
+
+  const renderLoadMoreItemsTrigger = () => {
+    if (limit === maxItems) { return null; }
+
+    return (
+      <Button kind="primary" onPress={updateLimit}>Load more items</Button>
+    );
+  };
+  
+  return (
+    <ListBoxLazy
+      {...props}
+      virtualItemKeys={virtualItemKeys}
+      isLoading={isLoading}
+      renderItem={item => <div>Item {item.index + 1}</div>}
+      renderItemLabel={item => `Item ${item.index + 1}`}
+      loadMoreItemsTriggerType="custom"
+      loadMoreItemsTrigger={renderLoadMoreItemsTrigger()}
+    />
+  );
+};
+export const ListBoxLazyWithCustomLoadMoreItemsTrigger: Story = {
+  render: args => <ListBoxLazyWithCustomLoadMoreItemsTriggerC {...args}/>,
+  args: {
+  },
+};
+

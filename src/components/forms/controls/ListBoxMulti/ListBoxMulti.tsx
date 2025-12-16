@@ -363,7 +363,7 @@ const HiddenSelectedState = ({ ref, name, form, inputProps }: HiddenSelectedStat
   );
 };
 
-const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
+export const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
   return (
     <div
       {...props}
@@ -375,6 +375,21 @@ const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
         props.className,
       )}
     />
+  );
+};
+
+export const LoadingSpinner = (props: React.ComponentProps<'span'>) => {
+  return (
+    <span
+      {...props}
+      className={cx(
+        cl['bk-list-box-multi__item'],
+        cl['bk-list-box-multi__item--static'],
+        cl['bk-list-box-multi__item--loading'],
+      )}
+    >
+      Loading... <Spinner inline size="small" />
+    </span>
   );
 };
 
@@ -549,15 +564,7 @@ export const ListBoxMulti = Object.assign(
           }
 
           {isLoading &&
-            <span
-              className={cx(
-                cl['bk-list-box-multi__item'],
-                cl['bk-list-box-multi__item--static'],
-                cl['bk-list-box-multi__item--loading'],
-              )}
-            >
-              Loading... <Spinner inline size="small" />
-            </span>
+            <LoadingSpinner id={`${id}_loading-spinner`}/>
           }
         </div>
       </listBox.Provider>
