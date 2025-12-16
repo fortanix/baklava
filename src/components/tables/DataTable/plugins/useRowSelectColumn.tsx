@@ -32,6 +32,8 @@ export const useRowSelectColumn = <D extends object>(hooks: ReactTable.Hooks<D>)
                   <Checkbox
                     aria-label="Select all rows"
                     checked={checked}
+                    // Prevent the click event from triggering a click on the parent table header/cell
+                    onClick={event => { event.stopPropagation(); }}
                     onChange={onChange}
                     className={cl['bk-data-table-row-select__checkbox']}
                   />
@@ -52,6 +54,8 @@ export const useRowSelectColumn = <D extends object>(hooks: ReactTable.Hooks<D>)
                 <Checkbox
                   aria-label="Select row"
                   checked={checked}
+                  // Prevent the click event from triggering a click on the parent table header/cell
+                  onClick={event => { event.stopPropagation(); }}
                   onChange={onChange}
                   className={cl['bk-data-table-row-select__checkbox']}
                 />
