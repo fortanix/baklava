@@ -23,7 +23,7 @@ export type ErorrLayoutProps = Omit<ComponentProps<'div'>, 'title'> & {
   flat?: undefined | boolean,
 
   /** The error icon */
-  icon: IconName,
+  icon?: undefined | React.ReactElement,
 
   /** The title of the error, to be displayed in the under the icon. */
   title: string,
@@ -63,7 +63,7 @@ export const ErrorLayout = Object.assign(
         )}
       >
         <div className={cl['bk-error-layout__content']}>
-          <Icon className={cl['bk-error-icon']} icon={icon}/>
+          {icon && <span className={cx('_icon', cl['bk-error-icon'])}>{icon}</span>}
           <H2 className={cl['bk-error-title']}>{title}</H2>
           {description &&
             <div className={cl['bk-error-description']}>

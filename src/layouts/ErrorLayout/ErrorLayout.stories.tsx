@@ -5,8 +5,10 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Icon } from '../../components/graphics/Icon/Icon.tsx';
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { ErrorLayout } from './ErrorLayout.tsx';
+import { Card } from '../../components/containers/Card/Card.tsx';
 
 type ErrorLayoutArgs = React.ComponentProps<typeof ErrorLayout>;
 type Story = StoryObj<ErrorLayoutArgs>;
@@ -19,13 +21,13 @@ export default {
   },
 } satisfies Meta<ErrorLayoutArgs>;
 
-export const ErrorApp: Story = {
-  render: () => {
-    return (
+export const ErrorLayoutStandard : Story = {
+  args: {
+    children: (
       <ErrorLayout
         title="Error"
         description="In case there is a secondary text to be added withIn case there is a secondary text to be added with"
-        icon="badge-dashboard"
+        icon={<Icon icon="badge-dashboard"/>}
         redirectLinkLabel="Link"
         redirectTo="#"
       >
@@ -38,6 +40,32 @@ export const ErrorApp: Story = {
           </Button>
         </ErrorLayout.Actions>
       </ErrorLayout>
-    );
+    )
+  }
+};
+
+export const ErrorLayoutInCard : Story = {
+  decorators: [Story => <Card><Story/></Card>],
+  args: {
+    children: (
+      <>
+        <ErrorLayout
+          title="Error"
+          description="In case there is a secondary text to be added withIn case there is a secondary text to be added with"
+          icon={<Icon icon="audit-log"/>}
+          redirectLinkLabel="Link"
+          redirectTo="#"
+        >
+          <ErrorLayout.Actions>
+            <Button kind ='secondary'>
+              Back
+            </Button>
+            <Button kind ='primary'>
+              Refresh
+            </Button>
+          </ErrorLayout.Actions>
+        </ErrorLayout>
+      </>
+    ),
   },
 };
