@@ -10,8 +10,8 @@ import { generateData } from '../../../tables/util/generateData.ts'; // FIXME: m
 import { InputSearch } from '../Input/InputSearch.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
-import { type ItemKey, type VirtualItemKeys } from '../ListBox/ListBoxStore.tsx';
-import { ListBoxLazy } from './ListBoxLazy.tsx';
+import { type ItemKey, type VirtualItemKeys } from '../ListBoxMulti/ListBoxStore.tsx';
+import { ListBoxMultiLazy } from './ListBoxMultiLazy.tsx';
 
 
 const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKeys => {
@@ -24,11 +24,11 @@ const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKey
 };
 const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `test-${i}`);
 
-type ListBoxLazyArgs = React.ComponentProps<typeof ListBoxLazy>;
-type Story = StoryObj<ListBoxLazyArgs>;
+type ListBoxMultiLazyArgs = React.ComponentProps<typeof ListBoxMultiLazy>;
+type Story = StoryObj<ListBoxMultiLazyArgs>;
 
 export default {
-  component: ListBoxLazy,
+  component: ListBoxMultiLazy,
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
@@ -40,26 +40,26 @@ export default {
     renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
     renderItemLabel: item => `Item ${item.index}`,
   },
-  render: (args) => <ListBoxLazy {...args}/>,
-} satisfies Meta<ListBoxLazyArgs>;
+  render: (args) => <ListBoxMultiLazy {...args}/>,
+} satisfies Meta<ListBoxMultiLazyArgs>;
 
 
-export const ListBoxLazyStandard: Story = {
+export const ListBoxMultiLazyStandard: Story = {
   args: {
     virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(10_000)),
-    defaultSelected: 'test-2',
+    defaultSelected: new Set(['test-2', 'test-3']),
     renderItem: item => `Item ${item.index + 1}`,
     renderItemLabel: item => `Item ${item.index + 1}`,
   },
 };
 
-export const ListBoxLazyEmpty: Story = {
+export const ListBoxMultiLazyEmpty: Story = {
   args: {
     virtualItemKeys: [],
   },
 };
 
-export const ListBoxLazyLoading: Story = {
+export const ListBoxMultiLazyLoading: Story = {
   args: {
     virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(5)),
     isLoading: true,
@@ -67,7 +67,7 @@ export const ListBoxLazyLoading: Story = {
 };
 
 
-const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
+const ListBoxMultiLazyInfiniteC = (props: ListBoxMultiLazyArgs) => {
   const pageSize = 20;
   const maxItems = 90;
   
@@ -99,7 +99,7 @@ const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
   const virtualItemKeys = items.map(item => item.id);
   
   return (
-    <ListBoxLazy
+    <ListBoxMultiLazy
       {...props}
       limit={limit}
       pageSize={pageSize}
@@ -112,13 +112,13 @@ const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
     />
   );
 };
-export const ListBoxLazyInfinite: Story = {
-  render: args => <ListBoxLazyInfiniteC {...args}/>,
+export const ListBoxMultiLazyInfinite: Story = {
+  render: args => <ListBoxMultiLazyInfiniteC {...args}/>,
   args: {
   },
 };
 
-const ListBoxLazyWithFilterC = (props: ListBoxLazyArgs) => {
+const ListBoxMultiLazyWithFilterC = (props: ListBoxMultiLazyArgs) => {
   const pageSize = 20;
   const maxItems = 90;
   
@@ -163,28 +163,28 @@ const ListBoxLazyWithFilterC = (props: ListBoxLazyArgs) => {
         }}
       />
       {filter !== 'hide' &&
-        <ListBoxLazy
-          data-placement="bottom"
-          {...props}
-          limit={limit}
-          pageSize={pageSize}
-          onUpdateLimit={updateLimit}
-          virtualItemKeys={virtualItemKeys}
-          hasMoreItems={hasMoreItems}
-          isLoading={isLoading}
-          renderItem={item => <>{itemsFiltered[item.index]?.name}</>}
-          renderItemLabel={item => itemsFiltered[item.index]?.name ?? 'Unknown'}
-          placeholderEmpty={items.length === 0 ? 'No items' : 'No items found'}
-        />
+      <ListBoxMultiLazy
+        data-placement="bottom"
+        {...props}
+        limit={limit}
+        pageSize={pageSize}
+        onUpdateLimit={updateLimit}
+        virtualItemKeys={virtualItemKeys}
+        hasMoreItems={hasMoreItems}
+        isLoading={isLoading}
+        renderItem={item => <>{itemsFiltered[item.index]?.name}</>}
+        renderItemLabel={item => itemsFiltered[item.index]?.name ?? 'Unknown'}
+        placeholderEmpty={items.length === 0 ? 'No items' : 'No items found'}
+      />
       }
     </>
   );
 };
-export const ListBoxLazyWithFilter: Story = {
-  render: args => <ListBoxLazyWithFilterC {...args}/>,
+export const ListBoxMultiLazyWithFilter: Story = {
+  render: args => <ListBoxMultiLazyWithFilterC {...args}/>,
 };
 
-const ListBoxLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxLazyArgs) => {
+const ListBoxMultiLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxMultiLazyArgs) => {
   const pageSize = 20;
   const maxItems = 90;
   
@@ -224,7 +224,7 @@ const ListBoxLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxLazyArgs) => {
   };
   
   return (
-    <ListBoxLazy
+    <ListBoxMultiLazy
       {...props}
       limit={limit}
       virtualItemKeys={virtualItemKeys}
@@ -236,8 +236,8 @@ const ListBoxLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxLazyArgs) => {
     />
   );
 };
-export const ListBoxLazyWithCustomLoadMoreItemsTrigger: Story = {
-  render: args => <ListBoxLazyWithCustomLoadMoreItemsTriggerC {...args}/>,
+export const ListBoxMultiLazyWithCustomLoadMoreItemsTrigger: Story = {
+  render: args => <ListBoxMultiLazyWithCustomLoadMoreItemsTriggerC {...args}/>,
   args: {
   },
 };

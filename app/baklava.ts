@@ -62,6 +62,7 @@ export { DateTimeInput } from '../src/components/forms/controls/datetime/DateTim
 export { ListBox } from '../src/components/forms/controls/ListBox/ListBox.tsx';
 export { ListBoxLazy } from '../src/components/forms/controls/ListBoxLazy/ListBoxLazy.tsx';
 export { ListBoxMulti } from '../src/components/forms/controls/ListBoxMulti/ListBoxMulti.tsx';
+export { ListBoxMultiLazy } from '../src/components/forms/controls/ListBoxMultiLazy/ListBoxMultiLazy.tsx';
 export { ComboBox } from '../src/components/forms/controls/ComboBox/ComboBox.tsx';
 export { Select } from '../src/components/forms/controls/Select/Select.tsx';
 export { SelectMulti } from '../src/components/forms/controls/SelectMulti/SelectMulti.tsx';
