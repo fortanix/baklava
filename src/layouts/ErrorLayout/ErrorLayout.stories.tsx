@@ -9,6 +9,7 @@ import { Icon } from '../../components/graphics/Icon/Icon.tsx';
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { ErrorLayout } from './ErrorLayout.tsx';
 import { Card } from '../../components/containers/Card/Card.tsx';
+import { Link } from '../../components/actions/Link/Link.tsx';
 
 type ErrorLayoutArgs = React.ComponentProps<typeof ErrorLayout>;
 type Story = StoryObj<ErrorLayoutArgs>;
@@ -25,17 +26,18 @@ export const ErrorLayoutStandard : Story = {
   args: {
     children: (
       <ErrorLayout
-        title="Error"
-        description="In case there is a secondary text to be added withIn case there is a secondary text to be added with"
         icon={<Icon icon="badge-dashboard"/>}
-        redirectLinkLabel="Link"
-        redirectTo="#"
+        title="Error"
+        description={<>
+          In case there is a secondary text to be added with. In case there is a secondary text to be added with
+          <Link href="#" label="link"/>
+        </>}
       >
         <ErrorLayout.Actions>
-          <Button kind ='secondary'>
+          <Button kind="secondary">
             Back
           </Button>
-          <Button kind ='primary'>
+          <Button kind="primary">
             Refresh
           </Button>
         </ErrorLayout.Actions>
@@ -50,17 +52,18 @@ export const ErrorLayoutInCard : Story = {
     children: (
       <>
         <ErrorLayout
-          title="Error"
-          description="In case there is a secondary text to be added withIn case there is a secondary text to be added with"
           icon={<Icon icon="audit-log"/>}
-          redirectLinkLabel="Link"
-          redirectTo="#"
+          title="Error"
+          description={<>
+            In case there is a secondary text to be added with. In case there is a secondary text to be added with
+            <Link href="#" label="link"/>
+          </>}
         >
           <ErrorLayout.Actions>
-            <Button kind ='secondary'>
+            <Button kind="secondary">
               Back
             </Button>
-            <Button kind ='primary'>
+            <Button kind="primary">
               Refresh
             </Button>
           </ErrorLayout.Actions>

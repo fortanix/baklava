@@ -3,9 +3,6 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 import { classNames as cx, type ComponentProps } from '../../util/componentUtil.ts';
 import * as React from 'react';
-
-import { Icon, IconName } from '../../components/graphics/Icon/Icon.tsx';
-import { Link } from '../../components/actions/Link/Link.tsx';
 import { H2 } from '../../typography/Heading/Heading.tsx';
 
 import cl from './ErrorLayout.module.scss';
@@ -29,13 +26,7 @@ export type ErorrLayoutProps = Omit<ComponentProps<'div'>, 'title'> & {
   title: string,
 
   /** The error description, to be displayed in the under the title. */
-  description?: string
-
-  /** Optional redirection link for the displayed error */
-  redirectTo?: string | undefined,
-
-  /** Optional redirection link label for the error */
-  redirectLinkLabel?: string | undefined,
+  description?: undefined | React.ReactElement,
 };
 /**
  * The error component displays an interaction with the user, for example a confirmation, or a form to be submitted.
@@ -48,8 +39,6 @@ export const ErrorLayout = Object.assign(
       icon,
       title,
       description,
-      redirectTo,
-      redirectLinkLabel,
       children,
       ...propsRest
     } = props;
@@ -68,7 +57,6 @@ export const ErrorLayout = Object.assign(
           {description &&
             <div className={cl['bk-error-description']}>
               {description}
-              {redirectTo && <Link href={redirectTo} label={redirectLinkLabel} onClick={() => {}}/>}
             </div>
           }
           <div>{children}</div>
