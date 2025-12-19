@@ -199,7 +199,7 @@ const ListBoxMultiLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxMultiLazy
       setLimit(Math.min(limit + pageSize, maxItems));
       setIsLoading(true); // Immediately set `isLoading` so we can skip a render cycle (before the effect kicks in)
     }
-  }, [limit, pageSize, hasMoreItems]);
+  }, [limit, hasMoreItems]);
   
   React.useEffect(() => {
     setIsLoading(false);
@@ -226,6 +226,7 @@ const ListBoxMultiLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxMultiLazy
   return (
     <ListBoxMultiLazy
       {...props}
+      limit={limit}
       virtualItemKeys={virtualItemKeys}
       isLoading={isLoading}
       renderItem={item => <div>Item {item.index + 1}</div>}

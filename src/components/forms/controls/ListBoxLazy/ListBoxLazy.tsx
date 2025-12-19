@@ -84,7 +84,7 @@ const isScrollNearEnd = (virtualizer: Virtualizer<ListBoxRef, Element>): boolean
 type ListBoxVirtualListProps = {
   scrollElement: null | React.ComponentRef<typeof ListBox>,
   virtualItemKeys: VirtualItemKeys,
-  limit?: undefined | number,
+  limit: number,
   pageSize?: undefined | number,
   hasMoreItems?: undefined | boolean,
   onUpdateLimit?: undefined | ((limit: number) => void),
@@ -165,7 +165,6 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
       && hasMoreItems
       && scrollNearEnd
       && !isLoading
-      && typeof limit !== 'undefined'
     ) {
       onUpdateLimit?.(limit + pageSize);
     }
@@ -176,6 +175,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     onUpdateLimit,
     limit,
     pageSize,
+    loadMoreItemsTriggerType,
   ]);
   
   /*
@@ -193,7 +193,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   */
   
   const renderLoadingSpinner = () => {
-    return <LoadingSpinner id={`${id}_loading-spinner`}/>;
+    return <LoadingSpinner className={cx(cl['bk-list-box-lazy__item'])} id={`${id}_loading-spinner`}/>;
   };
 
   const renderScrollTrigger = () => {
@@ -207,6 +207,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     return (
       <div
         className={cx(
+          cl['bk-list-box-lazy__item'],
           ListBoxClassNames['bk-list-box__item'],
           ListBoxClassNames['bk-list-box__item--static'],
         )}
@@ -255,7 +256,7 @@ export type ListBoxLazyProps = Omit<ComponentProps<typeof ListBox>, 'children' |
   virtualItemKeys: VirtualItemKeys,
   
   /** The maximum number of items to load. */
-  limit?: undefined | ListBoxVirtualListProps['limit'],
+  limit: ListBoxVirtualListProps['limit'],
   
   /** Size of a page (set of additional data to load in). Default: 10. */
   pageSize?: undefined | ListBoxVirtualListProps['pageSize'],

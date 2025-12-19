@@ -368,6 +368,7 @@ export const LoadingSpinner = (props: React.ComponentProps<'span'>) => {
         cl['bk-list-box__item'],
         cl['bk-list-box__item--static'],
         cl['bk-list-box__item--loading'],
+        props.className,
       )}
     >
       Loading... <Spinner inline size="small"/>

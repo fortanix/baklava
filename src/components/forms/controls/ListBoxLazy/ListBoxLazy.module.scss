@@ -19,8 +19,8 @@
       }
 
       // Add a separator below the virtual list when it has items and is not the last child.
-      &:not(:empty, :last-child) {
-        border-block-end: bk.$size-1 solid bk.$theme-dropdown-menu-menu-border-default;
+      &:not(:empty, :last-child) + .bk-list-box-lazy__item {
+        border-block-start: bk.$size-1 solid bk.$theme-dropdown-menu-menu-border-default;
       }
     }
   }
