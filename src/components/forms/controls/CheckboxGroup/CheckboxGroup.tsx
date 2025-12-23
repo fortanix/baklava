@@ -132,7 +132,6 @@ export const CheckboxGroup = Object.assign(
         <FieldSet
           legend={label}
           //role="group" // Note: already the default (and no other suitable `role` for checkbox group exists)
-          aria-orientation={orientation}
           {...propsRest}
           className={cx(
             'bk',

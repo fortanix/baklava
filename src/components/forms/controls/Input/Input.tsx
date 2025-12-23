@@ -27,6 +27,7 @@ const InputAction = (props: React.ComponentProps<typeof IconButton>) => {
   return (
     <IconButton
       {...props}
+      className={cx('action-icon', props.className)}
       // Prevent cursor shifting when clicking on actions (see also: https://github.com/mui/material-ui/issues/26007)
       onMouseDown={preventDefault}
       onMouseUp={preventDefault}
@@ -37,6 +38,10 @@ const InputAction = (props: React.ComponentProps<typeof IconButton>) => {
 type InputSpecificProps = Omit<InputUtil.InputSpecificProps, 'type'>;
 type InputContainerProps = Omit<ComponentProps<'div'>, 'ref' | 'prefix' | keyof InputSpecificProps>;
 export type InputProps = InputContainerProps & InputSpecificProps & {
+  /**
+   * By default, the `ref` will be linked to the inner input element. To get a ref to the container, use
+   * `containerProps.ref`.
+   */
   ref?: undefined | React.Ref<HTMLInputElement>,
   
   /** Whether this component should be unstyled. */
@@ -46,7 +51,7 @@ export type InputProps = InputContainerProps & InputSpecificProps & {
   type?: undefined | Exclude<ComponentProps<'input'>['type'], 'button' | 'submit' | 'reset'>,
   
   /** Props to apply to the container element. */
-  containerProps?: React.ComponentProps<'div'>,
+  containerProps?: React.ComponentProps<'span'>,
   
   /** Props to apply to the inner `<input/>` element. */
   inputProps?: React.ComponentProps<'input'>,
@@ -77,7 +82,7 @@ export type InputProps = InputContainerProps & InputSpecificProps & {
   automaticResize?: undefined | boolean,
 };
 /**
- * Input control.
+ * A text input control.
  */
 export const Input = Object.assign(
   (props: InputProps) => {
@@ -129,7 +134,7 @@ export const Input = Object.assign(
     
     return (
       // biome-ignore lint/a11y/noStaticElementInteractions: Visual-only convenience.
-      <div
+      <span
         {...containerProps}
         {...propsExtracted.containerProps}
         className={cx(
@@ -143,7 +148,9 @@ export const Input = Object.assign(
           [handleContainerClick, containerProps.onMouseDown, propsExtracted.containerProps.onMouseDown]
         )}
       >
-        {(icon || Icon !== IconDefault) && <Icon icon={icon} aria-label={iconLabel} {...iconProps}/>}
+        {(icon || Icon !== IconDefault) &&
+          <Icon icon={icon} aria-label={iconLabel} {...iconProps} className={cx('input-icon', iconProps.className)}/>
+        }
         {prefix}
         <input
           id={id}
@@ -154,7 +161,7 @@ export const Input = Object.assign(
           className={cx(cl['bk-input__input'], inputProps?.className)}
         />
         {actions}
-      </div>
+      </span>
     );
   },
   {

@@ -13,10 +13,11 @@ import { Features as LightningCssFeatures, browserslistToTargets } from 'lightni
 import dts from 'vite-plugin-dts';
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 import svgr from 'vite-plugin-svgr';
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons-ng';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
+import { playwright } from '@vitest/browser-playwright';
 const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
@@ -66,7 +67,7 @@ export default defineConfig({
     // Configure preprocessing using Sass
     preprocessorOptions: {
       scss: {
-        api: 'modern-compiler',
+        //api: 'modern-compiler',
       },
     },
     // Configure postprocessing using lightningcss
@@ -161,7 +162,7 @@ export default defineConfig({
           browser: {
             enabled: true,
             headless: true,
-            provider: 'playwright',
+            provider: playwright(),
             instances: [
               {
                 browser: 'chromium',

@@ -39,7 +39,7 @@ export const Standard: Story = {};
 export const InvalidInput: Story = {
   args: {
     required: true,
-    pattern: '\d+',
+    pattern: String.raw`\d+`,
     placeholder: 'Invalid input',
     className: 'invalid',
   },

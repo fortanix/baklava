@@ -4,22 +4,52 @@
 
 @use '../defs.scss' as bk;
 
-// Override react-datepicker styles
+// Note: including the library `.css` doesn't work because the class names will be transformed. And lightningcss
+// doesn't support the `:global { ... }` block syntax. Instead, we need to copy all the styles and add `global()`.
+// https://github.com/parcel-bundler/lightningcss/issues/6
+//@use 'sass:meta';
+//:global { @include meta.load-css('react-datepicker/dist/react-datepicker.css'); }
 
-:global(.react-datepicker-popper) {
-  z-index: bk.$z-index-date-picker;
+// Custom `react-datepicker` styles
+
+:global(.react-datepicker__sr-only) {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  /* stylelint-disable-next-line property-no-deprecated */
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:global(.react-datepicker__aria-live) {
+  position: absolute;
+  clip-path: circle(0);
+  border: 0;
+  block-size: bk.$size-hairline;
+  inline-size: bk.$size-hairline;
+  margin: calc(-1 * bk.$size-hairline);
+  overflow: hidden;
+  padding: 0;
+  white-space: nowrap;
 }
 
 :global(.react-datepicker) {
-  inline-size: 284px;
+  position: relative;
+  inline-size: 18rem;
   text-align: center;
-  padding: 22px 26px 30px;
+  padding: bk.$spacing-4;
+  padding-block-end: bk.$spacing-6;
   background-color: bk.$theme-card-background-default;
-  border-radius: 6px;
-  border: 1px solid bk.$theme-card-border-default;
+  border-radius: bk.$radius-3;
+  border: bk.$size-hairline solid bk.$theme-card-border-default;
   font-family: bk.$font-family-body;
   font-size: bk.$font-size-m;
   font-weight: bk.$font-weight-regular;
+  color: inherit;
 }
 
 :global(.react-datepicker__triangle),
@@ -43,7 +73,7 @@
 :global(.react-datepicker__current-month) {
   color: bk.$theme-text-heading-default;
   font-family: bk.$font-family-display;
-  font-size: 16px;
+  font-size: bk.$font-size-l;
   font-style: normal;
   font-weight: bk.$font-weight-semibold;
   text-transform: uppercase;
@@ -51,22 +81,39 @@
 
 :global(.react-datepicker__navigation) {
   position: absolute;
-  inline-size: 3rem;
+  inset-block-start: 1rem;
+  
+  inline-size: 2rem;
+  aspect-ratio: 1;
+  background: transparent;
   border: none;
+  
+  // Hide the text label (it should be there for accessibility purposes, but not visible)
   text-indent: -999em;
-  mask: url('@/assets/icons/caret-down.svg') no-repeat center center;
-  mask-size: 32px;
-  background: bk.$theme-date-picker-text-default;
-  inset-block-start: 1.8rem;
+  
+  &::after {
+    content: '';
+    display: block;
+    block-size: 1rem;
+    aspect-ratio: 1;
+    border: bk.rem-from-px(2) solid currentColor;
+    border-inline-end-width: 0;
+    border-block-end-width: 0;
+    rotate: -45deg;
+    translate: 0.8rem 0;
+  }
+  
+  &:focus-visible {
+    outline: var(--bk-focus-outline-width) solid var(--bk-focus-outline-color);
+  }
 }
-$navigation-distance: 1rem;
+$navigation-distance: 1.2rem;
 :global(.react-datepicker__navigation--previous) {
   inset-inline-start: $navigation-distance;
-  transform: rotate(90deg);
 }
 :global(.react-datepicker__navigation--next) {
   inset-inline-end: $navigation-distance;
-  transform: rotate(-90deg);
+  transform: rotate(180deg);
 }
 :global(.react-datepicker__navigation:hover) {
   opacity: 0.7;
@@ -80,17 +127,21 @@ $navigation-distance: 1rem;
   border-block-end: 0.1rem solid bk.$theme-date-picker-rule-default;
 }
 
+:global(.react-datepicker__day),
+:global(.react-datepicker__month-text),
+:global(.react-datepicker__quarter-text),
+:global(.react-datepicker__year-text) {
+  cursor: pointer;
+  --bk-focus-outline-width: 0.1rem;
+}
+
 :global(.react-datepicker__day-name),
 :global(.react-datepicker__day) {
   display: inline-block;
-  inline-size: 30px;
-  line-height: 30px;
-  margin: 5px 0;
+  inline-size: bk.rem-from-px(30);
+  line-height: bk.rem-from-px(30);
+  margin: bk.rem-from-px(5) 0;
   color: bk.$theme-date-picker-text-default;
-}
-
-:global(.react-datepicker__day--today) {
-  font-weight: bk.$font-weight-semibold;
 }
 
 :global(.react-datepicker__day--outside-month),
@@ -102,15 +153,29 @@ $navigation-distance: 1rem;
   color: bk.$theme-date-picker-text-unavailable;
 }
 
-:global(.react-datepicker__day--selected),
-:global(.react-datepicker__day--keyboard-selected) {
-  background: bk.$theme-date-picker-background-selected;
-  border-radius: bk.$border-radius-circle;
-  color: bk.$theme-date-picker-text-selected;
+:global(.react-datepicker__day--today) {
+  font-weight: bk.$font-weight-semibold;
+  text-decoration: underline;
+  text-underline-offset: 0.1lh;
 }
 
-:global(.react-datepicker__day:not([aria-disabled="true"]):hover),
-:global(.react-datepicker__day--selected:not([aria-disabled="true"]):hover),
+:global(.react-datepicker__day--selected),
+:global(.react-datepicker__day--keyboard-selected) {
+  border-radius: bk.$border-radius-circle;
+  color: bk.$theme-date-picker-text-selected;
+  background: transparent;
+  
+  &:global(.react-datepicker__day--selected) {
+    background: bk.$theme-date-picker-background-selected;
+  }
+  
+  &:global(.react-datepicker__day--keyboard-selected) {
+    @include bk.focus-outset;
+  }
+}
+
+:global(.react-datepicker__day:not([aria-disabled="true" i]):hover),
+:global(.react-datepicker__day--selected:not([aria-disabled="true" i]):hover),
 :global(.react-datepicker__day--keyboard-selected:not([aria-disabled="true"]):hover) {
   background: bk.$theme-date-picker-background-hover;
   border-radius: bk.$border-radius-circle;
@@ -127,35 +192,37 @@ $navigation-distance: 1rem;
   border-radius: 0;
   color: bk.$theme-date-picker-text-selected;
 }
-:global(.react-datepicker__day--in-range:not([aria-disabled="true"]):hover),
+:global(.react-datepicker__day--in-range:not([aria-disabled="true" i]):hover),
 :global(.react-datepicker__day--in-selecting-range:not([aria-disabled="true"]):hover) {
   background: bk.$theme-date-picker-background-hover;
   border-radius: 0;
   color: bk.$theme-date-picker-text-hover;
 }
 
-:global(.react-datepicker__day--range-start),
-:global(.react-datepicker__day--selecting-range-start),
-:global(.react-datepicker__day--range-start:not([aria-disabled="true"]):hover) {
-  border-radius: bk.$border-radius-circle 0 0 bk.$border-radius-circle;
-}
-
+// Note: make sure to put `end` before `start`, so that `start` takes precedence. This ensures that a range with
+// only start date will have the border radius on the correct side.
 :global(.react-datepicker__day--range-end),
 :global(.react-datepicker__day--selecting-range-end),
-:global(.react-datepicker__day--range-end:not([aria-disabled="true"]):hover) {
+:global(.react-datepicker__day--range-end:not([aria-disabled="true" i]):hover) {
   border-radius: 0 bk.$border-radius-circle bk.$border-radius-circle 0;
 }
 
+:global(.react-datepicker__day--range-start),
+:global(.react-datepicker__day--selecting-range-start),
+:global(.react-datepicker__day--range-start:not([aria-disabled="true" i]):hover) {
+  border-radius: bk.$border-radius-circle 0 0 bk.$border-radius-circle;
+}
+
 :global(.react-datepicker__day--range-start.react-datepicker__day--range-end),
-:global(.react-datepicker__day--range-start.react-datepicker__day--range-end:not([aria-disabled="true"]):hover) {
+:global(.react-datepicker__day--range-start.react-datepicker__day--range-end:not([aria-disabled="true" i]):hover) {
   border-radius: bk.$border-radius-circle;
 }
 
-:global(.react-datepicker-popper[data-placement^="bottom"]) {
+:global(.react-datepicker-popper[data-placement^="bottom" i]) {
   margin-block-start: 0;
 }
 
-:global(.react-datepicker-popper[data-placement^="top"]) {
+:global(.react-datepicker-popper[data-placement^="top" i]) {
   margin-block-end: 0;
 }
 
@@ -168,11 +235,11 @@ $navigation-distance: 1rem;
 }
 
 :global(.react-datepicker__input-container .react-datepicker__calendar-icon) {
-  inline-size: 14px;
-  block-size: 14px;
-  inset-block-end: 4px;
+  inline-size: bk.rem-from-px(14);
+  block-size: bk.rem-from-px(14);
+  inset-block-end: bk.rem-from-px(4);
 }
 
 :global(.react-datepicker__view-calendar-icon input) {
-  padding: 6px 10px 0 25px;
+  padding: bk.rem-from-px(6) bk.rem-from-px(10) 0 bk.rem-from-px(25);
 }

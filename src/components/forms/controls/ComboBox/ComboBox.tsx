@@ -71,9 +71,8 @@ export const ComboBox = Object.assign(
       <MenuProvider
         label={label}
         items={options}
-        // biome-ignore lint/a11y/useSemanticElements: False positive: this `role` doesn't directly map to HTML `role`
         role="combobox"
-        action="focus" // Keep the dropdown menu open while the input is focused
+        triggerAction="focus-interactive" // Keep the dropdown menu open while the input is focused
         keyboardInteractions="default" // FIXME
         placement="bottom-start"
         offset={1}
@@ -85,7 +84,6 @@ export const ComboBox = Object.assign(
           // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
           const anchorProps = props({
             placeholder: 'Select an option',
-            ...propsRest,
             className: cx(cl['bk-combo-box'], { [cl['bk-combo-box--open']]: open }),
             //value: selectedOption === null ? '' : selectedOption.label,
             //onChange: () => {},

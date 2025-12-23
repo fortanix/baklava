@@ -162,19 +162,19 @@ const ListBoxLazyWithFilterC = (props: ListBoxLazyArgs) => {
         }}
       />
       {filter !== 'hide' &&
-      <ListBoxLazy
-        data-placement="bottom"
-        {...props}
-        limit={limit}
-        pageSize={pageSize}
-        onUpdateLimit={updateLimit}
-        virtualItemKeys={virtualItemKeys}
-        hasMoreItems={hasMoreItems}
-        isLoading={isLoading}
-        renderItem={item => <>{itemsFiltered[item.index]?.name}</>}
-        renderItemLabel={item => itemsFiltered[item.index]?.name ?? 'Unknown'}
-        placeholderEmpty={items.length === 0 ? 'No items' : 'No items found'}
-      />
+        <ListBoxLazy
+          data-placement="bottom"
+          {...props}
+          limit={limit}
+          pageSize={pageSize}
+          onUpdateLimit={updateLimit}
+          virtualItemKeys={virtualItemKeys}
+          hasMoreItems={hasMoreItems}
+          isLoading={isLoading}
+          renderItem={item => <>{itemsFiltered[item.index]?.name}</>}
+          renderItemLabel={item => itemsFiltered[item.index]?.name ?? 'Unknown'}
+          placeholderEmpty={items.length === 0 ? 'No items' : 'No items found'}
+        />
       }
     </>
   );

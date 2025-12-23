@@ -72,6 +72,7 @@ export default {
     ],
     
     // Properties
+    'no-invalid-position-declaration': null, // Lots of false positives with Sass code
     'csstools/use-logical': 'always',
     'declaration-block-no-redundant-longhand-properties': null,
     'declaration-block-single-line-max-declarations': 2,
