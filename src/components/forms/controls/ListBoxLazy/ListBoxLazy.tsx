@@ -21,6 +21,7 @@ import {
 } from '../ListBox/ListBoxStore.tsx';
 import {
   type ListBoxRef,
+  type ItemDetails,
   ListBox,
   EmptyPlaceholder,
   LoadingSpinner,
@@ -30,6 +31,7 @@ import {
 import cl from './ListBoxLazy.module.scss';
 
 
+export type { VirtualItem, ItemKey, ItemDetails, ListBoxRef };
 export { cl as ListBoxLazyClassNames };
 
 
@@ -47,7 +49,7 @@ const ListItemVirtual = ({ ref, virtualItem, itemsCount, renderItem, renderItemL
     left: 0,
     width: '100%',
     transform: `translateY(${virtualItem.start}px)`,
-  }), [virtualItem.size, virtualItem.start]);
+  }), [virtualItem.start]);
   
   const content = renderItem(virtualItem);
   const label = renderItemLabel(virtualItem);
