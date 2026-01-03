@@ -158,6 +158,7 @@ const packageConfig = {
     // Utilities
     'date-fns': '^4.1.0',
     'message-tag': '^0.10.0',
+    'avl': '^2.0.0',
     
     // React
     'react': '^19.2.1',

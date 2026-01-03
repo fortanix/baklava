@@ -42,7 +42,18 @@
     "rules": {
       "recommended": true,
       "correctness": {
-        //"useExhaustiveDependencies": "off",
+        "useExhaustiveDependencies": {
+          "level": "error",
+          "options": {
+            "hooks": [
+              // `useMemoOnce` is guaranteed to return a stable result (same value throughout the component lifecycle)
+              {
+                "name": "useMemoOnce",
+                "stableResult": true
+              }
+            ]
+          }
+        },
         "useImportExtensions": "error",
         "noUnusedVariables": "off",
         "noUnusedFunctionParameters": "off",

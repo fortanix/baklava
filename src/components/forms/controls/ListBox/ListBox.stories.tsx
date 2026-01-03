@@ -327,10 +327,11 @@ export const ListBoxTypeAhead: Story = {
 type ListBoxManyProps = Omit<React.ComponentProps<typeof ListBox>, 'selected'>;
 const ListBoxManyC = (props: ListBoxManyProps) => {
   const [isPending, startTransition] = React.useTransition();
-  const [count, setCount] = React.useState(100);
+  const [count, setCount] = React.useState(10);
   return (
     <>
       <div style={{ display: 'flex', gap: 5, margin: 5 }}>
+        <Button kind="primary" onPress={() => { startTransition(() => setCount(10)); }}>10 items</Button>
         <Button kind="primary" onPress={() => { startTransition(() => setCount(100)); }}>100 items</Button>
         <Button kind="primary" onPress={() => { startTransition(() => setCount(1000)); }}>1K items</Button>
         <Button kind="primary" onPress={() => { startTransition(() => setCount(10_000)); }}>10K items</Button>

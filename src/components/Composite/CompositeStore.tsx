@@ -2,19 +2,34 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { type RequireOnly } from '../../../../util/types.ts';
-import { removeCombiningCharacters } from '../../../../util/formatting.ts';
+import { type RequireOnly } from '../../util/types.ts';
+import { removeCombiningCharacters } from '../../util/formatting.ts';
 
 import * as React from 'react';
-import { mergeCallbacks } from '../../../../util/reactUtil.ts';
+import { mergeCallbacks, useMemoOnce } from '../../util/reactUtil.ts';
 import { type StoreApi, createStore, useStore } from 'zustand';
 
-import { useTypeAhead } from '../../../../util/hooks/useTypeAhead.ts';
+import { useTypeAhead } from '../../util/hooks/useTypeAhead.ts';
 
 
 /*
-Store for a composable list box with (up to) a single selected item state.
+Store for a composable list with support for multiple selected items.
 */
+
+/**
+ * The minimal subtype of `Array` that we need to be able to render a virtualized list. We keep it minimal
+ * so that the consumer may compute this information dynamically rather than storing it all in memory. For best
+ * performance, each of the defined operations should be computable in (or close to) O(1), this may require some
+ * caching (e.g. maintaining a reverse lookup table for `indexOf`).
+ */
+export type MinimalArray<T> = Pick<ReadonlyArray<T>, 'length' | 'at' | 'indexOf'>;
+export const MinimalArrayUtil = {
+  /** Find the index of the given `key`, or `null` if not found in the array. */
+  indexForKey: <T,>(minimalArray: MinimalArray<T>, key: T): null | number => {
+    const index = minimalArray.indexOf(key);
+    return index >= 0 ? index : null;
+  },
+};
 
 /** Unique key of an item. */
 export type ItemKey = string;
@@ -26,25 +41,10 @@ export type ItemDef = {
 export type ItemMap = Map<ItemKey, ItemDef>;
 export type ItemWithKey = ItemDef & { itemKey: ItemKey };
 
-export type ItemDetails = { itemKey: ItemKey, label: string };
+export type ItemDetails = { label: string };
 
-/**
- * The minimal subtype of `Array<ItemKey>` that we need to be able to render a virtualized list. We keep it minimal
- * so that the consumer may compute this information dynamically rather than storing it all in memory. For best
- * performance, each of the defined operations should be computable in (or close to) O(1), this may require some
- * caching (e.g. maintaining a reverse lookup table for `indexOf`).
- */
-export type VirtualItemKeys = Pick<ReadonlyArray<ItemKey>, 'length' | 'at' | 'indexOf'>;
-export const VirtualItemKeysUtil = {
-  /** Find the index of the given `itemKey`, or `null` if not found in the list. */
-  indexForItemKey: (virtualItemKeys: VirtualItemKeys, itemKey: ItemKey): null | number => {
-    const index = virtualItemKeys.indexOf(itemKey);
-    return index >= 0 ? index : null;
-  },
-};
-
-const internalKey = Symbol('baklava.ListBox.internal');
-type ListBoxInternal = {
+const internalKey = Symbol('baklava.CompositeStore.internal');
+type CompositeInternal = {
   /**
    * Used to track the items that have been rendered. Note: this property is internal only, it should not be accessed
    * by consumers. The `Map` is mutated in place for performance, since there may be a lot of items. On initial render,
@@ -59,34 +59,34 @@ type ListBoxInternal = {
   itemsCount: number,
 };
 
-export type ListBoxState = {
+export type CompositeState = {
   /** Internal bookkeeping. */
-  [internalKey]: ListBoxInternal,
+  [internalKey]: CompositeInternal,
   
-  /** Globally unique ID for the list box control (e.g. for ARIA attributes). */
+  /** Globally unique ID for the composite component (e.g. for ARIA attributes). */
   id: string,
   
-  /** Whether the list box control is currently disabled or not. */
+  /** Whether the composite component is currently disabled or not. */
   disabled: boolean,
   
   /** The currently focused item (if any). */
   focusedItem: null | ItemKey,
   
-  /** The currently selected item (if any). */
-  selectedItem: null | ItemKey,
+  /** The currently selected items. */
+  selectedItems: Set<ItemKey>,
   
   /**
    * If the list is virtually rendered, `virtualItemKeys` should be provided with the full list of item keys. This list
    * should be ordered in the same way as the items are rendered on screen.
    */
-  virtualItemKeys: null | VirtualItemKeys,
+  virtualItemKeys: null | MinimalArray<ItemKey>,
 };
-export type ListBoxStateApi = ListBoxState & {
-  /** Whether the list box is empty (no content items). */
+export type CompositeStateApi = CompositeState & {
+  /** Whether the composite component is empty (no content items). */
   isEmpty: () => boolean,
   
   /** Update `virtualItemKeys`. */
-  setVirtualItemKeys: (virtualItemKeys: null | VirtualItemKeys) => void,
+  setVirtualItemKeys: (virtualItemKeys: null | MinimalArray<ItemKey>) => void,
   
   /** Get the position (integer between 0 and n-1) of the given item in the list, or `null` if not found. */
   getItemPosition: (itemKey: ItemKey) => null | number,
@@ -97,29 +97,35 @@ export type ListBoxStateApi = ListBoxState & {
   /** Request the item at the given position in the list to be focused. If no items, this is ignored. */
   focusItemAt: (position: 'first' | 'last') => void,
   
-  /** Request the given `itemKey` to be selected. If `null`, unset selection. */
-  selectItem: (itemKey: null | ItemKey) => void,
+  /** Update the selected items state to the given set. */
+  setSelectedItems: (itemKeys: Set<ItemKey>) => void,
+  
+  /** Toggle the selected state of the given item. Returns the new selected state of the item. */
+  toggleItemSelection: (itemKey: ItemKey) => boolean,
 };
 
 // Ref: https://zustand.docs.pmnd.rs/guides/initialize-state-with-props#wrapping-the-context-provider
 
-export type ListBoxProps = RequireOnly<ListBoxState, 'id'>;
-export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<null | E>, props: ListBoxProps) => {
-  // FIXME: do we need `_ref`?
+export type CompositeProps = RequireOnly<CompositeState, 'id'>;
+export type CompositeStore = StoreApi<CompositeStateApi>;
+export const createCompositeStore = <E extends HTMLElement>(
+  _ref: React.RefObject<null | E>,
+  props: CompositeProps,
+): CompositeStore => {
+  // FIXME: do we need `ref`?
   
-  const internal: ListBoxInternal = {
-    itemsRegistry: new Map(),
-    itemsCount: 0,
-  };
-  const propsWithDefaults: ListBoxState = {
-    [internalKey]: internal,
+  const propsWithDefaults: CompositeState = {
+    [internalKey]: {
+      itemsRegistry: new Map(),
+      itemsCount: 0,
+    },
     disabled: false,
     focusedItem: null,
-    selectedItem: null,
+    selectedItems: new Set(),
     virtualItemKeys: null,
     ...props,
   };
-  return createStore<ListBoxStateApi>()((set, get) => ({
+  return createStore<CompositeStateApi>()((set, get) => ({
     ...propsWithDefaults,
     isEmpty: () => get()[internalKey].itemsCount === 0,
     setVirtualItemKeys: virtualItemKeys => set({ virtualItemKeys }),
@@ -128,11 +134,11 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
       
       const virtualItemKeys = state.virtualItemKeys;
       if (virtualItemKeys) {
-        return VirtualItemKeysUtil.indexForItemKey(virtualItemKeys, itemKey);
+        return MinimalArrayUtil.indexForKey(virtualItemKeys, itemKey);
       } else {
         // FIXME 1: cache the reverse mapping (track the index)
         // FIXME 2: there's no guarantee that the registry is ordered by DOM position
-        return VirtualItemKeysUtil.indexForItemKey([...state[internalKey].itemsRegistry.keys()], itemKey);
+        return MinimalArrayUtil.indexForKey([...state[internalKey].itemsRegistry.keys()], itemKey);
       }
     },
     focusItem: itemKey => {
@@ -161,17 +167,33 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
       const registeredItemKeys = [...registeredItems.keys()]; // FIXME: sort registered items?
       
       // Get the complete list of item keys (possibly lazily computed in case of virtualization)
-      const itemKeys: VirtualItemKeys = virtualItemKeys ?? registeredItemKeys;
+      const itemKeys: MinimalArray<ItemKey> = virtualItemKeys ?? registeredItemKeys;
       
       const itemKey = itemKeys.at(position === 'first' ? 0 : -1) ?? null;
       if (itemKey !== null) {
         state.focusItem(itemKey);
       }
     },
-    selectItem: itemKey => { set({ selectedItem: itemKey }); },
+    setSelectedItems: itemKeys => {
+      set({ selectedItems: itemKeys });
+    },
+    toggleItemSelection: itemKey => {
+      const selectedItems = get().selectedItems;
+      
+      const isSelected = selectedItems.has(itemKey);
+      
+      const selectedItemsUpdated = new Set(selectedItems);
+      if (isSelected) {
+        selectedItemsUpdated.delete(itemKey);
+      } else {
+        selectedItemsUpdated.add(itemKey);
+      }
+      
+      set({ selectedItems: selectedItemsUpdated });
+      return !isSelected;
+    },
   }));
 };
-export type ListBoxStore = ReturnType<typeof createListBoxStore>;
 
 
 //
@@ -179,11 +201,11 @@ export type ListBoxStore = ReturnType<typeof createListBoxStore>;
 //
 
 /**
- * Keyboard event handler for the list box to handle keyboard interactions (e.g. arrow key navigation).
+ * Keyboard event handler for the composite component to handle keyboard interactions (e.g. arrow key navigation).
  * 
  * @see {@link https://www.w3.org/WAI/ARIA/apg/patterns/listbox}
  */
-export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React.KeyboardEvent) => {
+const handleKeyboardInteractions = (store: CompositeStore) => (event: React.KeyboardEvent) => {
   try {
     const state = store.getState();
     const virtualItemKeys = state.virtualItemKeys;
@@ -191,22 +213,21 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
     const registeredItemKeys = [...registeredItems.keys()]; // FIXME: sort registered items?
     
     // Get the complete list of item keys (possibly lazily computed in case of virtualization)
-    const itemKeys: VirtualItemKeys = virtualItemKeys ?? registeredItemKeys;
-    
-    const selectedItemKey = state.selectedItem;
+    const itemKeys: MinimalArray<ItemKey> = virtualItemKeys ?? registeredItemKeys;
     
     // NOTE: we assume that all items are focusable, even disabled ones (this is also recommended by the WCAG standard)
     const firstFocusableItem = itemKeys.at(0);
     if (typeof firstFocusableItem === 'undefined') { return; } // If no focusable items, no interactions needed
     
-    const focusedItemKey: ItemKey = state.focusedItem ?? selectedItemKey ?? firstFocusableItem;
-    const focusedItemIndex: null | number = VirtualItemKeysUtil.indexForItemKey(itemKeys, focusedItemKey);
+    const focusedItemKey: ItemKey = state.focusedItem ?? firstFocusableItem;
+    const focusedItemIndex: null | number = MinimalArrayUtil.indexForKey(itemKeys, focusedItemKey);
     if (focusedItemIndex === null) { throw new Error(`Unable to resolve focused item '${focusedItemKey}'`); }
     
     // Determine the index of the item to focus based on the keyboard event. If `null`, do not navigate.
     const pageSize = 10; // TODO: could we make this dynamic based on scrollport height?
     const itemTargetIndex = ((): null | number => {
       // Note: list boxes should not "cycle" (e.g. going beyond the last item should not go to the first)
+      // FIXME: make this configurable so we can use it for things other than list box controls
       switch (event.key) {
         case ' ': return focusedItemIndex;
         case 'ArrowUp': return Math.max(0, focusedItemIndex - 1);
@@ -242,11 +263,11 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
   }
 };
 
-export const useListBoxTypeAhead = (storeRef: React.RefObject<null | StoreApi<ListBoxStateApi>>) => {
+const useCompositeTypeAhead = (store: StoreApi<CompositeStateApi>) => {
   const typeAhead = useTypeAhead();
   
   React.useEffect(() => {
-    const state = storeRef.current?.getState();
+    const state = store.getState();
     if (!state) { return; }
     
     const query: string = removeCombiningCharacters(typeAhead.sequence.join(''));
@@ -263,61 +284,65 @@ export const useListBoxTypeAhead = (storeRef: React.RefObject<null | StoreApi<Li
         break;
       }
     }
-  }, [storeRef, typeAhead.sequence]);
+  }, [store, typeAhead.sequence]);
   
   return typeAhead;
 };
 
 
 //
-// Context
+// Context + hooks
 //
 
-export const ListBoxContext = React.createContext<null | ListBoxStore>(null);
+export const CompositeContext = React.createContext<null | CompositeStore>(null);
 
-export const useListBoxSelector = <T,>(selector: (state: ListBoxStateApi) => T, storeParam?: ListBoxStore): T => {
-  const storeFromContext = React.use(ListBoxContext);
+export const useCompositeSelector = <T,>(selector: (state: CompositeStateApi) => T, storeParam?: CompositeStore): T => {
+  const storeFromContext = React.use(CompositeContext);
   const store = storeParam ?? storeFromContext;
-  if (!store) { throw new Error('Missing ListBoxContext provider'); }
+  
+  if (!store) { throw new Error('Missing CompositeContext provider'); }
+  
   return useStore(store, selector);
 };
 
-export type UseListBoxResult<E extends HTMLElement> = {
-  /** The list box store. */
-  store: ListBoxStore,
-  /** The context provider element for the list box context. */
+
+export type UseCompositeResult<E extends HTMLElement> = {
+  /** The composite store. */
+  store: CompositeStore,
+  /** The context provider element for the composite context. */
   Provider: (props: React.PropsWithChildren) => React.ReactNode,
-  /** Some props that should be applied to the list box element. */
+  /** Some props that should be applied to the composite element. */
   // Note: using `div` here as a proxy for `E` (since there is no easy way to get the `ComponentProps` for a generic
   // `HTMLElement in the React types).
   props: Pick<React.ComponentProps<'div'>, 'className' | 'onKeyDown' | 'onToggle'> & {
     ref: React.RefObject<null | E>,
   },
 };
-export const useListBox = <E extends HTMLElement>(
-  ref: React.RefObject<null | E>,
-  props: ListBoxProps,
-): UseListBoxResult<E> => {
-  const storeRef = React.useRef<ListBoxStore>(null);
-  if (!storeRef.current) {
-    storeRef.current = createListBoxStore(ref, props);
-  }
+/** Set up a composite component store. */
+export const useComposite = <E extends HTMLElement>(
+  /** Props to configure the composite store. */
+  props: CompositeProps,
+): UseCompositeResult<E> => {
+  const ref = React.useRef<E>(null);
   
-  const Provider = React.useCallback(
-    ({ children }: React.PropsWithChildren) =>
-      <ListBoxContext value={storeRef.current}>{children}</ListBoxContext>,
+  const store = useMemoOnce<CompositeStore>(() => createCompositeStore(ref, props));
+  
+  const Provider = React.useCallback(({ children }: React.PropsWithChildren) =>
+    <CompositeContext value={store}>{children}</CompositeContext>,
     [],
   );
   
-  const typeAhead = useListBoxTypeAhead(storeRef);
+  const typeAhead = useCompositeTypeAhead(store);
   
   const handleKeyDown = React.useMemo(() => {
-    if (storeRef.current) {
-      return mergeCallbacks([
-        handleKeyboardInteractions(storeRef.current),
-        typeAhead.handleKeyDown,
-      ]);
-    }
+    const store = storeRef.current;
+    if (!store) { return undefined; }
+    
+    // FIXME: just pass the `storeRef` to `handleKeyboardInteractions` and let it handle the `current` null check?
+    return mergeCallbacks([
+      handleKeyboardInteractions(store),
+      typeAhead.handleKeyDown,
+    ]);
   }, [typeAhead.handleKeyDown]);
   
   return {
@@ -330,106 +355,79 @@ export const useListBox = <E extends HTMLElement>(
   };
 };
 
-export type UseListBoxItemResult = {
+
+export type UseCompositeItemResult = {
   id: string,
   disabled: boolean,
   itemPosition: null | number, // Position of this item in the total collection, or `null` if unknown
   isFocused: boolean,
   requestFocus: () => void,
   isSelected: boolean,
-  requestSelection: () => void,
+  toggleSelection: () => boolean,
 };
-export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
-  const store = React.use(ListBoxContext);
-  if (store === null) { throw new Error(`Missing ListBoxContext provider`); }
+/** Register an element as an item within the nearest composite context. */
+export const useCompositeItem = (item: ItemWithKey): UseCompositeItemResult => {
+  const store = React.use(CompositeContext);
+  if (store === null) { throw new Error(`Missing CompositeContext provider`); }
   
-  // NOTE: be careful in this hook to minimize any additional rendering. If each item triggers a state update, then
-  // that can snowball into an O(N^2) operation on the initial render (each new item that renders causes all of the
-  // previously rendered items to rerender):
-  // - Make sure all selectors return primitives or existing references, not new object references
-  // (zustand determines whether to rerender the subscribed component based on reference equality).
-  // - In the `useEffect`, make sure not to cause unnecessary rerenders (e.g. through `store.setState()`).
-  
-  // Fetch a reference to the internal bookkeeping store
-  const internal = useStore(store, s => s[internalKey]);
-  
-  // Store API
-  const focusItem = useStore(store, s => s.focusItem);
-  const selectItem = useStore(store, s => s.selectItem);
-  
-  // List state
-  const focusedItemKey = useStore(store, s => s.focusedItem);
-  const selectedItemKey = useStore(store, s => s.focusedItem);
-  
-  // Item state
   const id = useStore(store, s => s.id);
   const disabled = useStore(store, s => s.disabled);
-  // FIXME: the selector here is computationally expensive (this is bad since it will get called very frequently)
+  
   const itemPosition = useStore(store, s => s.getItemPosition(item.itemKey));
   
-  // Derived state
-  const isFocused = item.itemKey === focusedItemKey;
-  const isSelected = item.itemKey === selectedItemKey;
-  
-  // Use an effect to register/unregister this item's presence in the list
+  // Register the item
   React.useEffect(() => {
-    //console.log(`Register ${item.itemKey}`);
-    
-    // Register the item
-    internal.itemsRegistry.set(item.itemKey, item);
-    
-    if (item.isContentItem) {
-      internal.itemsCount += 1;
-    }
-    
-    // if (focusedItemKey === null) {
-    //   requestFocus();
-    // }
-    
-    // store.setState(state => {
-    //   let stateUpdated = state;
-    //   
-    //   if (state.focusedItem === null) {
-    //     stateUpdated = { ...stateUpdated, focusedItem: item.itemKey };
-    //   }
-    //   
-    //   return stateUpdated;
-    // });
-    
-    return () => {
-      // console.log(`Unregister ${item.itemKey}`);
+    store.setState(state => {
+      state[internalKey].itemsRegistry.set(item.itemKey, item); // Mutate to prevent frequent rerendering
       
-      // Unregister the item
-      internal.itemsRegistry.delete(item.itemKey);
+      const stateUpdated = { ...state };
       
       if (item.isContentItem) {
-        // Immutable update, since we do want to trigger updates in case this hits 0
-        internal.itemsCount -= 1;
+        stateUpdated[internalKey].itemsCount += 1;
       }
       
-      // store.setState(state => {
-      //   /*
-      //   if (state.focusedItem === item.itemKey) {
-      //     const firstKey = state[internalKey].itemsRegistry.keys().next();
-      //     const focusedItem = firstKey.done ? null : firstKey.value;
-      //     
-      //     stateUpdated.focusedItem = focusedItem; // Immutable update
-      //   }
-      //   */
-      //   
-      //   return state;
-      // });
+      if (state.focusedItem === null) {
+        stateUpdated.focusedItem = item.itemKey; // Immutable update
+      }
+      
+      return stateUpdated;
+    });
+    return () => {
+      store.setState(state => {
+        state[internalKey].itemsRegistry.delete(item.itemKey); // Mutate to prevent frequent rerendering
+        
+        const stateUpdated = { ...state };
+        
+        if (item.isContentItem) {
+          // Immutable update, since we do want to trigger updates in case this hits 0
+          stateUpdated[internalKey].itemsCount -= 1;
+        }
+        
+        if (state.focusedItem === item.itemKey) {
+          const firstKey = state[internalKey].itemsRegistry.keys().next();
+          const focusedItem = firstKey.done ? null : firstKey.value;
+          
+          stateUpdated.focusedItem = focusedItem; // Immutable update
+        }
+        
+        return stateUpdated;
+      });
     };
   }, [store, item]);
   
-  // Memoize the item-specific callbacks
-  const requestSelection = React.useCallback(() => {
-    selectItem(item.itemKey)
-    focusItem(item.itemKey);
-  }, [item.itemKey, selectItem, focusItem]);
+  // Make sure the following selectors return primitives or existing references, not new object references
+  const isFocused = useStore(store, s => s.focusedItem === item.itemKey);
+  const focusItem = useStore(store, s => s.focusItem);
   const requestFocus = React.useCallback(() => {
     focusItem(item.itemKey);
   }, [item.itemKey, focusItem]);
+  
+  const isSelected = useStore(store, s => s.selectedItems.has(item.itemKey));
+  const toggleItemSelection = useStore(store, s => s.toggleItemSelection);
+  const toggleSelection = React.useCallback(() => {
+    focusItem(item.itemKey);
+    return toggleItemSelection(item.itemKey);
+  }, [item.itemKey, toggleItemSelection, focusItem]);
   
   return {
     id: `${id}_${item.itemKey}`,
@@ -441,6 +439,6 @@ export const useListBoxItem = (item: ItemWithKey): UseListBoxItemResult => {
     requestFocus,
     
     isSelected,
-    requestSelection,
+    toggleSelection,
   };
 };
