@@ -217,9 +217,7 @@ export const FloatingElementWithSVGAnchor: Story = {
   args: {
     renderAnchor: props => <Icon {...props} icon="bell"/>,
     popoverContent: (
-      <>
-        <p><Button kind="primary" label="This button will not be next in the tab order"/></p>
-      </>
+      <p><Button kind="primary" label="This button will not be next in the tab order"/></p>
     ),
     options: { triggerAction: 'click' },
   },

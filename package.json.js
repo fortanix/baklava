@@ -159,6 +159,7 @@ const packageConfig = {
     'message-tag': '^0.10.0',
     'effect': '^3.21.2',
     //'optics-ts': '^2.4.1',
+    'avl': '^2.0.0',
     
     // React
     'react': '^19.2.6',

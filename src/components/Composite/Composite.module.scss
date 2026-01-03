@@ -5,10 +5,32 @@
 @use '../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-composite {
+  .bk-list {
     @include bk.component-base(bk-composite);
     
-    .bk-composite-item {
+    // stylelint-disable-next-line declaration-property-value-disallowed-list
+    overflow-block: auto;
+    
+    min-inline-size: 18ch;
+    max-block-size: 10lh;
+    background: bk.$theme-dropdown-menu-menu-background-default;
+    
+    display: flex;
+    flex-direction: column;
+    
+    .bk-list-item {
+      flex: none;
+      
+      --block-size: 40px;
+      block-size: var(--block-size);
+      padding: 0.4em 1.2em;
+      
+      content-visibility: auto;
+      contain-intrinsic-block-size: var(--block-size);
+      
+      &:not(:nth-child(1 of .bk-list-item)) {
+        border-block-start: bk.$size-hairline solid bk.$theme-rule-default;
+      }
     }
   }
 }

@@ -61,16 +61,43 @@ export const ListStandard: Story = {
   },
 };
 
-const ListWithReorderingC = (args: ListArgs) => {
-  const [items, setItems] = React.useState<Record<ItemKey, ListItemProps>>(() =>
-    Object.fromEntries(fruits.map(fruitName => [fruitName, { itemKey: fruitName, children: fruitName }]))
-  );
+const generateItems = (itemCount: number) =>
+  Object.fromEntries(Array.from({ length: itemCount }, (_, i) => i + 1).map(index => [`item-${index}`, {
+    itemKey: `item-${index}`,
+    children: `Item ${index}`,
+  }]));
+const ListWithControlsC = (args: ListArgs) => {
+  // const [isTransitionPending, startTransition] = React.useTransition();
+  const startTransition = fn => fn();
+  
+  const [itemCount, setItemCount] = React.useState(10);
+  const [items, setItems] = React.useState<Record<ItemKey, ListItemProps>>(() => generateItems(itemCount));
+  
+  React.useEffect(() => {
+    setItems(generateItems(itemCount));
+  }, [itemCount]);
   
   const randomizeItems = React.useCallback(() => {
     setItems(items => {
       return Object.fromEntries(Object.entries(items)
         .sort(() => Math.random() >= 0.5 ? 1 : -1)
       );
+    });
+  }, []);
+  
+  const randomizeItemsAndSplice = React.useCallback(() => {
+    setItems(items => {
+      const entries = Object.entries(items)
+        .sort(() => Math.random() >= 0.5 ? 1 : -1);
+      
+      const newItem = fruits.at(Math.floor(Math.random() * fruits.length));
+      if (!newItem) { throw new Error(`Should not happen`); }
+      const newItemKey = `${newItem}-${entries.length}`;
+      
+      const startIndex = Math.floor(entries.length / 2);
+      entries.splice(startIndex, 1, [newItemKey, { itemKey: newItemKey, children: newItemKey }]);
+      
+      return Object.fromEntries(entries);
     });
   }, []);
   
@@ -95,18 +122,39 @@ const ListWithReorderingC = (args: ListArgs) => {
   }, []);
   
   return (
-    <>
-      <List>
+    <div>
+      <style>{`
+        @scope {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          
+          .story-list {
+            margin-block: 1lh;
+          }
+        }
+      `}</style>
+      
+      <div>
+        <style>{`@scope { display: flex; gap: 1ch; align-items: center; }`}</style>
+        <Button kind="secondary" label="10" onPress={() => { startTransition(() => { setItemCount(10); }); }}/>
+        <Button kind="secondary" label="100" onPress={() => { startTransition(() => { setItemCount(100); }); }}/>
+        <Button kind="secondary" label="1K" onPress={() => { startTransition(() => { setItemCount(1000); }); }}/>
+        <Button kind="secondary" label="10K" onPress={() => { startTransition(() => { setItemCount(10_000); }); }}/>
+      </div>
+      
+      <List {...args} className="story-list">
         {Object.entries(items).map(([itemKey, itemProps]) =>
           <List.Item key={itemKey} {...itemProps}/>
         )}
       </List>
-      <Button label="Append" onPress={() => { appendItem(); }}/><br/>
-      <Button label="Prepend" onPress={() => { prependItem(); }}/><br/>
-      <Button label="Randomize" onPress={() => { randomizeItems(); }}/>
-    </>
+      <Button label="Append" onPress={() => { startTransition(() => { appendItem(); }); }}/>
+      <Button label="Prepend" onPress={() => { startTransition(() => { prependItem(); }); }}/>
+      <Button label="Randomize" onPress={() => { startTransition(() => { randomizeItems(); }); }}/>
+      <Button label="Randomize + splice" onPress={() => { startTransition(() => { randomizeItemsAndSplice(); }); }}/>
+    </div>
   );
 };
-export const ListWithReordering: Story = {
-  decorators: (_, { args }) => <ListWithReorderingC {...args}/>,
+export const ListWithControls: Story = {
+  decorators: (_, { args }) => <ListWithControlsC {...args}/>,
 };

@@ -2,11 +2,13 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { AVLTree } from 'avl';
+//import { AVLTree } from 'avl';
 
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../util/componentUtil.ts';
-import { mergeProps, useEffectOnce } from '../../util/reactUtil.ts';
+import { mergeProps } from '../../util/reactUtil.ts';
+
+import { Button } from '../actions/Button/Button.tsx';
 
 import cl from './Composite.module.scss';
 
@@ -19,8 +21,13 @@ export type ItemKey = string;
 export type ItemDef = { itemKey: ItemKey };
 
 type CompositeContext = {
+  componentId: string,
+  
+  // Internal bookkeeping (mutable)
   registry: Map<ItemKey, ItemDef & { el: Element }>,
-  ordering: AVLTree<ItemKey>,
+  //orderingAvl: AVLTree<ItemKey>,
+  ordering: Array<ItemKey>,
+  needsReordering: boolean,
 };
 const CompositeContext = React.createContext<null | CompositeContext>(null);
 const useCompositeContext = () => {
@@ -34,31 +41,36 @@ const useCompositeItem = (itemDef: ItemDef): CompositeItemProps => {
   
   const context = useCompositeContext();
   
-  // useEffectOnce(() => {
-  //   console.log(`register ${itemDef.itemKey}`);
-  // });
+  React.useEffect(() => {
+    console.log(`effect ${itemDef.itemKey}`);
+  });
   
   const ref = React.useCallback<React.RefCallback<Element>>(el => {
-    debugger;
-    
     const itemKey = itemDef.itemKey;
+    console.log('REF', itemKey);
+    
+    context.needsReordering = true;
+    
     
     if (el === null) {
-      console.log(`unregister ${itemKey}`);
-      context.ordering.remove(itemKey);
+      // console.log(`unregister [arg] ${itemKey}`);
+      //context.orderingAvl.remove(itemKey);
       context.registry.delete(itemKey);
       return;
     }
     
     //const item = context.registry.get(itemKey) ?? null;
-    console.log(`register ${itemKey}`);
-    
+    // console.log(`register ${itemKey}`);
     context.registry.set(itemKey, { itemKey: itemKey, el });
-    context.ordering.insert(itemKey);
+    //context.orderingAvl.insert(itemKey);
     
     return () => {
-      console.log(`unregister [cb] ${itemKey}`);
-      context.ordering.remove(itemKey);
+      console.log('REF [cleanup]', itemKey);
+      
+      context.needsReordering = true;
+      
+      // console.log(`unregister [cb] ${itemKey}`);
+      //context.orderingAvl.remove(itemKey);
       context.registry.delete(itemKey);
     };
   }, [context, itemDef.itemKey]);
@@ -76,25 +88,31 @@ const useCompositeItem = (itemDef: ItemDef): CompositeItemProps => {
 
 
 
-export type ListItemProps = ComponentProps<'div'> & {
+export type ListItemProps = React.ComponentProps<typeof Button> & {
   itemKey: string,
 };
 export const ListItem = (props: ListItemProps) => {
   const { itemKey, ...propsRest } = props;
   
+  const { componentId } = useCompositeContext();
   const compositeProps = useCompositeItem({ itemKey });
   
   return (
-    <div
+    <Button
+      unstyled
       {...mergeProps(
         propsRest,
         compositeProps,
         {
+          //id: `list-${componentId}-${itemKey}`,
+          'data-bk-list-id': componentId,
+          'data-bk-list-item-id': itemKey,
           className: cx(
             'bk',
-            cl['bk-composite-item'],
+            cl['bk-list-item'],
             propsRest.className,
           ),
+          onPress: () => {},
         },
       )}
     />
@@ -124,25 +142,43 @@ export const List = Object.assign(
       return el1.compareDocumentPosition(el2) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
     }, [registry]);
     
+    const componentId = React.useId();
     const context = React.useMemo<CompositeContext>(() => ({
+      componentId,
       registry,
-      ordering: new AVLTree<ItemKey>(registryComparator, true),
-    }), [registry, registryComparator]);
+      //orderingAvl: new AVLTree<ItemKey>(registryComparator, true),
+      ordering: [],
+      needsReordering: false,
+    }), [componentId, registry]);
     
     Object.assign(window, { _c: context }); // DEBUG
     
-    useEffectOnce(() => {
+    React.useEffect(() => {
       console.log('List effect', context);
-      debugger;
+      
+      // FIXME: this won't work if the items only get reordered but no insertions/removals (`ref` callbacks too late)
+      if (context.needsReordering) {
+        // TODO: instead of `document` use a list `ref`
+        context.ordering = Array.from(document.querySelectorAll(`[data-bk-list-id=${componentId}]`))
+          .flatMap(item => {
+            if (!(item instanceof HTMLElement)) { return []; }
+            
+            const itemId = item.dataset.bkListItemId;
+            return typeof itemId === 'string' ? [itemId] : [];
+          });
+        context.needsReordering = false;
+        console.log('REORDERED', context.ordering);
+      }
     });
     
     return (
       <CompositeContext value={context}>
         <div
           {...propsRest}
+          data-component-id={`bk-list-${componentId}`}
           className={cx(
             'bk',
-            cl['bk-composite'],
+            cl['bk-list'],
             propsRest.className,
           )}
         />

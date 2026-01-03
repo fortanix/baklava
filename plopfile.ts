@@ -128,8 +128,8 @@ const componentTemplate = {
         overflow: hidden;
         cursor: default;
         
-        max-width: 30rem;
-        max-height: 8lh;
+        max-inline-size: 30rem;
+        max-block-size: 8lh;
         
         margin: bk.$spacing-3;
         padding: bk.$spacing-3;
