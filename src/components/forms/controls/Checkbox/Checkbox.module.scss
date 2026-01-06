@@ -50,6 +50,8 @@
     border: bk.rem-from-px(1) solid bk.$theme-checkbox-border-default;
     border-radius: bk.$radius-1;
     
+    @include bk.expand-target-area();
+    
     &:is(:checked, :global(.pseudo-checked)), &:indeterminate {
       border: none;
       background-color: bk.$theme-checkbox-background-default;
@@ -75,7 +77,7 @@
       transition: none $bk-checkbox-transition-duration ease-out;
       transition-property: scale, background-color, border-color;
     }
-    
+
     //
     // Draw the checkmark
     //

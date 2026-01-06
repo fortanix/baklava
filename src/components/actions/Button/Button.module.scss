@@ -26,6 +26,7 @@
     &.bk-button--trimmed {
       padding: 0;
       border: none;
+      @include bk.expand-target-area();
     }
     
     display: inline-flex;

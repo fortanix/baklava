@@ -77,6 +77,35 @@
   white-space: nowrap;
 }
 
+// Expand interactive min target area size to 24px without layout change
+// https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html
+@mixin expand-target-area(
+  $base-width: 1.85rem,
+  $base-height: 1.85rem,
+) {
+  position: relative;
+  // Make sure there's no containment or transforms applied, otherwise the absolute positioning won't work
+  contain: initial;
+  transform: initial;
+  translate: initial;
+  rotate: initial;
+  scale: initial;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: $base-width;
+    min-height: $base-height;
+    // prevent to make it smaller than the actual element size
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+  }
+}
+
 @mixin styles {
   /*
   :root {

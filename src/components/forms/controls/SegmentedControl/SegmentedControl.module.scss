@@ -45,6 +45,7 @@
       color: var(--bk-segmented-control-text-color);
       @include bk.font($family: bk.$font-family-body, $weight: bk.$font-weight-semibold);
       text-transform: uppercase;
+      @include bk.expand-target-area();
       
       &:first-of-type {
         border-start-start-radius: var(--inner-radius);

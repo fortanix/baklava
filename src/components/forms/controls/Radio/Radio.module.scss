@@ -33,6 +33,8 @@
     padding: 3px; // Distance between background filling and the center of border
     // Since the border is 2px when checked, its center is 1px, thus for a distance of 2px we need to have 1 + 2 = 3px.
     
+    @include bk.expand-target-area();
+
     &:checked {
       background-color: bk.$theme-radio-selected;
       border: 2px solid bk.$theme-radio-selected;

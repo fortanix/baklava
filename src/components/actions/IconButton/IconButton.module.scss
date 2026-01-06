@@ -10,6 +10,7 @@
     
     cursor: pointer;
     display: flex;
+    @include bk.expand-target-area();
     
     &.inline {
       display: inline-flex;
