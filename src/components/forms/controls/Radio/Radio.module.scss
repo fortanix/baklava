@@ -16,6 +16,7 @@
   
   .bk-radio {
     @include bk.component-base(bk-radio);
+    @include bk.expand-target-area();
     
     flex-shrink: 0;
     cursor: pointer;
@@ -32,7 +33,7 @@
     background-clip: content-box;
     padding: 3px; // Distance between background filling and the center of border
     // Since the border is 2px when checked, its center is 1px, thus for a distance of 2px we need to have 1 + 2 = 3px.
-    
+
     &:checked {
       background-color: bk.$theme-radio-selected;
       border: 2px solid bk.$theme-radio-selected;

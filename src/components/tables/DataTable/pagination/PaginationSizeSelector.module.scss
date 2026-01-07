@@ -16,7 +16,7 @@
     
     .page-size-selector__trigger {
       color: bk.$theme-pagination-text-default;
-      padding: 0;
+      padding-block: 0.2rem; // Expand target size
       
       &.page-size-selector__trigger--open {
         .page-size-selector__trigger__icon {

@@ -103,7 +103,7 @@ export type OptionProps = ComponentProps<typeof Button> & {
  * A list box item that can be selected.
  */
 export const Option = (props: OptionProps) => {
-  const { unstyled, itemKey, label, icon, iconDecoration, onSelect, Icon = BkIcon, ...propsRest } = props;
+  const { ref, unstyled, itemKey, label, icon, iconDecoration, onSelect, Icon = BkIcon, ...propsRest } = props;
   
   const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
   const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef, isContentItem: true }), [itemKey]);
@@ -117,7 +117,7 @@ export const Option = (props: OptionProps) => {
     <Button
       unstyled
       id={id}
-      ref={itemRef}
+      ref={mergeRefs(ref, itemRef)}
       role="option"
       tabIndex={isFocused ? 0 : -1}
       data-item-key={itemKey}
@@ -344,7 +344,7 @@ const HiddenSelectedState = ({ ref, name, form, inputProps }: HiddenSelectedStat
   );
 };
 
-const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
+export const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
   return (
     <div
       {...props}
@@ -356,6 +356,22 @@ const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
         props.className,
       )}
     />
+  );
+};
+
+export const LoadingSpinner = (props: React.ComponentProps<'span'>) => {
+  return (
+    <span
+      {...props}
+      className={cx(
+        cl['bk-list-box__item'],
+        cl['bk-list-box__item--static'],
+        cl['bk-list-box__item--loading'],
+        props.className,
+      )}
+    >
+      Loading... <Spinner inline size="small"/>
+    </span> 
   );
 };
 
@@ -523,11 +539,7 @@ export const ListBox = Object.assign(
           }
           
           {isLoading &&
-            <span
-              className={cx(cl['bk-list-box__item'], cl['bk-list-box__item--static'], cl['bk-list-box__item--loading'])}
-            >
-              Loading... <Spinner inline size="small"/>
-            </span>
+            <LoadingSpinner id={`${id}_loading-spinner`}/>
           }
         </div>
       </listBox.Provider>

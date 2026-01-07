@@ -30,6 +30,8 @@
     // Note: may want to implement https://heydonworks.com/article/the-flexbox-holy-albatross-reincarnated
     
     .bk-segmented-control__button {
+      @include bk.expand-target-area();
+
       // For the inner radius, subtract the border width
       --inner-radius: #{calc(bk.$radius-1 - bk.rem-from-px(1))};
       

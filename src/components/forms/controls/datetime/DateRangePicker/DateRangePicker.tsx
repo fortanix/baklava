@@ -21,6 +21,7 @@ type ReactDatePickerIrrelevant = (
   | 'showIcon'
   | 'icon'
   | 'toggleCalendarOnIconClick' 
+  | 'formatMultipleDates'
 );
 
 // Note: each end (or both) may be `null` while the user is editing
