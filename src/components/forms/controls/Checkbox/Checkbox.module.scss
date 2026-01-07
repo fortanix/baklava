@@ -36,7 +36,8 @@
   
   .bk-checkbox {
     @include bk.component-base(bk-checkbox);
-    
+    @include bk.expand-target-area();
+
     $bk-checkbox-transition-duration: 120ms;
     
     flex-shrink: 0;
@@ -75,7 +76,7 @@
       transition: none $bk-checkbox-transition-duration ease-out;
       transition-property: scale, background-color, border-color;
     }
-    
+
     //
     // Draw the checkmark
     //
