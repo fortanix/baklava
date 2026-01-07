@@ -28,7 +28,7 @@ export type TabProps = ComponentProps<'div'> & {
   /** A class name to set on the tab panel content. */
   contentClassName?: undefined | ClassNameArgument,
   /** Any additional props to pass to the tab trigger button. */
-  tabTriggerProps?: undefined | (ComponentProps<'li'> & { 'data-label': string }),
+  tabTriggerProps?: undefined | ComponentProps<'li'> & { [key: `data-${string}`]: string },
 };
 export const Tab = ({ children }: TabProps): React.ReactElement => {
   return children as React.ReactElement;
