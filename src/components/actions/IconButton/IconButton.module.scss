@@ -7,10 +7,10 @@
 @layer baklava.components {
   .bk-icon-button {
     @include bk.component-base(bk-icon-button);
-    
+    @include bk.expand-target-area();
+
     cursor: pointer;
     display: flex;
-    @include bk.expand-target-area();
     
     &.inline {
       display: inline-flex;

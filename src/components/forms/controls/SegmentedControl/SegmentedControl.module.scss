@@ -30,6 +30,8 @@
     // Note: may want to implement https://heydonworks.com/article/the-flexbox-holy-albatross-reincarnated
     
     .bk-segmented-control__button {
+      @include bk.expand-target-area();
+
       // For the inner radius, subtract the border width
       --inner-radius: #{calc(bk.$radius-1 - bk.rem-from-px(1))};
       
@@ -45,7 +47,6 @@
       color: var(--bk-segmented-control-text-color);
       @include bk.font($family: bk.$font-family-body, $weight: bk.$font-weight-semibold);
       text-transform: uppercase;
-      @include bk.expand-target-area();
       
       &:first-of-type {
         border-start-start-radius: var(--inner-radius);
