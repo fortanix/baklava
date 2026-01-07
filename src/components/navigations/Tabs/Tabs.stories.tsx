@@ -35,7 +35,7 @@ type TabWithTriggerProps = React.PropsWithChildren<Partial<TabsArgs>> & {
 const TabWithTrigger = (props: TabWithTriggerProps) => {
   const { options = defaultTabOptions, defaultActiveTabKey, ...tabContext } = props;
   
-  const [activeTabKey, setActiveTabKey] = React.useState<undefined | string>(defaultActiveTabKey);
+  const [activeTabKey, setActiveTabKey] = React.useState<undefined | string>(defaultActiveTabKey ?? '1');
   
   return (
     <Tabs onSwitch={setActiveTabKey} activeKey={activeTabKey} {...tabContext}>
@@ -63,13 +63,11 @@ export const TabsStandard: StoryWithTrigger = {
   args: { ...BaseStory.args },
 };
 
-// TODO: This seems to not work atm
-// See https://github.com/fortanix/baklava/issues/261
 export const TabsWithDefaultActive: StoryWithTrigger = {
   ...BaseStory,
   args: {
     ...BaseStory.args,
-    defaultActiveTabKey: '1',
+    defaultActiveTabKey: '2',
   },
 };
 
@@ -102,7 +100,6 @@ export const TabsWithFocus: StoryWithTrigger = {
       }
       return option;
     }),
-    defaultActiveTabKey: 'tab1',
   },
 };
 
@@ -120,6 +117,5 @@ export const TabsWithCustomProps: StoryWithTrigger = {
         'data-label': `tab-trigger-${option.tabKey}`,
       },
     })),
-    defaultActiveTabKey: 'tab1',
   },
 };
