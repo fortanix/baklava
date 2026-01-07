@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import * as React from 'react';
 
-import { Tabs, Tab } from './Tabs.tsx';
+import { type TabProps, Tabs, Tab } from './Tabs.tsx';
 
 
 type TabsArgs = React.ComponentProps<typeof Tabs>;
@@ -26,34 +26,25 @@ export default {
   render: (args) => <Tabs {...args}/>,
 } satisfies Meta<TabsArgs>;
 
-type DefaultTabOption = {
-  index: number,
-  className?: string,
-};
-const defaultTabOptions: DefaultTabOption[] = [1,2,3,4].map(index => { 
-  return { index };
-});
+const defaultTabOptions: Array<TabProps> = [1,2,3,4].map(index => ({ tabKey: `${index}`, title: `Tab ${index}` }));
 
 type TabWithTriggerProps = React.PropsWithChildren<Partial<TabsArgs>> & {
-  options?: undefined | Array<DefaultTabOption>,
+  options?: undefined | Array<TabProps>,
   defaultActiveTabKey?: undefined | string,
 };
 const TabWithTrigger = (props: TabWithTriggerProps) => {
   const { options = defaultTabOptions, defaultActiveTabKey, ...tabContext } = props;
   
-  const [activeTabKey, setActiveTabKey] = React.useState<undefined | string>(defaultActiveTabKey);
+  const [activeTabKey, setActiveTabKey] = React.useState<undefined | string>(defaultActiveTabKey ?? '1');
   
   return (
     <Tabs onSwitch={setActiveTabKey} activeKey={activeTabKey} {...tabContext}>
-      {options.map(tab => {
+      {options.map(tabProps => {
         return (
           <Tab
-            key={tab.index}
-            data-label={`tab${tab.index}`}
-            tabKey={`tab${tab.index}`}
-            title={`Tab ${tab.index}`}
-            render={() => <>Tab {tab.index} contents</>}
-            className={tab.className}
+            key={tabProps.tabKey}
+            render={() => <>Tab {tabProps.tabKey} contents</>}
+            {...tabProps}
           />
         )
       })}
@@ -67,30 +58,25 @@ const BaseStory: StoryWithTrigger = {
   render: (args) => <TabWithTrigger {...args} />,
 };
 
-export const Standard: StoryWithTrigger = {
+export const TabsStandard: StoryWithTrigger = {
   ...BaseStory,
-  name: 'Standard',
   args: { ...BaseStory.args },
 };
 
-// TODO: This seems to not work atm
-// See https://github.com/fortanix/baklava/issues/261
-export const StandardDefaultActive: StoryWithTrigger = {
+export const TabsWithDefaultActive: StoryWithTrigger = {
   ...BaseStory,
-  name: 'Standard [default active]',
   args: {
     ...BaseStory.args,
-    defaultActiveTabKey: '1',
+    defaultActiveTabKey: '2',
   },
 };
 
-export const StandardHover: StoryWithTrigger = {
+export const TabsWithHover: StoryWithTrigger = {
   ...BaseStory,
-  name: 'Standard [hover]',
   args: {
     ...BaseStory.args,
     options: defaultTabOptions.map(option => {
-      if (option.index === 1) {
+      if (option.tabKey === '1') {
         return {
           ...option,
           className: 'pseudo-hover',
@@ -101,13 +87,12 @@ export const StandardHover: StoryWithTrigger = {
   },
 };
 
-export const StandardFocus: StoryWithTrigger = {
+export const TabsWithFocus: StoryWithTrigger = {
   ...BaseStory,
-  name: 'Standard [focus]',
   args: {
     ...BaseStory.args,
     options: defaultTabOptions.map(option => {
-      if (option.index === 1) {
+      if (option.tabKey === '1') {
         return {
           ...option,
           className: 'pseudo-focus-visible',
@@ -115,6 +100,22 @@ export const StandardFocus: StoryWithTrigger = {
       }
       return option;
     }),
-    defaultActiveTabKey: 'tab1',
+  },
+};
+
+/**
+ * In the following story, each tab should have a `data-label` attribute on their respective tab panels and buttons.
+ */
+export const TabsWithCustomProps: StoryWithTrigger = {
+  ...BaseStory,
+  args: {
+    ...BaseStory.args,
+    options: defaultTabOptions.map(option => ({
+      ...option,
+      'data-label': `tab-content-${option.tabKey}`,
+      tabTriggerProps: {
+        'data-label': `tab-trigger-${option.tabKey}`,
+      },
+    })),
   },
 };
