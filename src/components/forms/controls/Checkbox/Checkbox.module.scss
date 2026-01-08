@@ -37,6 +37,7 @@
   .bk-checkbox {
     @include bk.component-base(bk-checkbox);
     @include bk.expand-target-area();
+    contain: layout style; // Prevent the checkbox from moving when it is checked
 
     $bk-checkbox-transition-duration: 120ms;
     
