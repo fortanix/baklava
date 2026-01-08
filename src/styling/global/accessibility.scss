@@ -94,7 +94,7 @@
   rotate: initial;
   scale: initial;
 
-  &::before {
+  &::after {
     content: '';
     position: absolute;
     inset-block-start: 50%;
@@ -110,7 +110,7 @@
 @mixin expand-target-area-relative($offset: vars.$sizing-1) {
   position: relative;
   
-  &::before {
+  &::after {
     content: '';
     position: absolute;
     inset: calc(-1 * $offset);
