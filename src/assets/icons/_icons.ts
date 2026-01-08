@@ -8,6 +8,7 @@ export const icons = {
   'badge-assessment': {},
   'badge-dashboard': {},
   'bell': {},
+  'build': {},
   'calendar': {},
   'caret-down': {},
   'caret-left': {},
