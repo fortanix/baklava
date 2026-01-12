@@ -38,7 +38,7 @@ export default {
     limit: 5,
     onUpdateLimit: () => {},
     renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
-    renderItemLabel: item => `Item ${item.index}`,
+    renderItemLabel: item => `Item ${item.index + 1}`,
   },
   render: (args) => <ListBoxLazy {...args}/>,
 } satisfies Meta<ListBoxLazyArgs>;
@@ -107,6 +107,7 @@ const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
       virtualItemKeys={virtualItemKeys}
       hasMoreItems={hasMoreItems}
       isLoading={isLoading}
+      onSelect={() => { console.log('testing'); }}
       renderItem={item => <>Item {item.index + 1}</>}
       renderItemLabel={item => `Item ${item.index + 1}`}
     />

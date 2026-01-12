@@ -10,31 +10,23 @@ import { generateData } from '../../tables/util/generateData.ts'; // FIXME: move
 
 import { Button } from '../../actions/Button/Button.tsx';
 
-import { type ItemKey, MenuLazyProvider } from './MenuLazyProvider.tsx';
+import { type ItemKey, type VirtualItemKeys, type ItemDetails, MenuLazyProvider } from './MenuLazyProvider.tsx';
 
 
 type MenuLazyProviderArgs = React.ComponentProps<typeof MenuLazyProvider>;
 type Story = StoryObj<MenuLazyProviderArgs>;
 
-// Sample options
-const fruits = {
-  'item-apple': 'Apple',
-  'item-apricot': 'Apricot',
-  'item-blueberry': 'Blueberry',
-  'item-cherry': 'Cherry',
-  'item-durian': 'Durian',
-  'item-jackfruit': 'Jackfruit',
-  'item-melon': 'Melon',
-  'item-mango': 'Mango',
-  'item-mangosteen': 'Mangosteen',
-  'item-orange': 'Orange',
-  'item-peach': 'Peach',
-  'item-pineapple': 'Pineapple',
-  'item-razzberry': 'Razzberry',
-  'item-strawberry': 'Strawberry',
+const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKeys => {
+  const indicesByKey = new Map(itemKeys.map((itemKey, index) => [itemKey, index]));
+  return {
+    length: itemKeys.length,
+    at: (index: number) => itemKeys.at(index),
+    indexOf: (itemKey: ItemKey) => indicesByKey.get(itemKey) ?? -1,
+  };
 };
-type FruitKey = keyof typeof fruits;
-const formatFruitLabel = (itemKey: ItemKey): string => fruits[itemKey as FruitKey] ?? 'UNKNOWN';
+const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `test-${i}`);
+
+const formatFruitLabel = (item: ItemDetails): string => item.label;
 
 export default {
   component: MenuLazyProvider,
@@ -46,6 +38,9 @@ export default {
   },
   args: {
     label: 'Test menu lazy provider',
+    virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(100)),
+    limit: 5,
+    onUpdateLimit: () => {},
     renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
     renderItemLabel: item => `Item ${item.index}`,
     children: ({ props, selectedOption }) => (
@@ -53,7 +48,7 @@ export default {
         {typeof selectedOption !== 'undefined' ? `Selected: ${selectedOption?.label ?? 'none'}` : 'Open dropdown'}
       </Button>
     ),
-    onSelect: selectedOption => { console.log('Selected:', selectedOption); },
+    onSelect: (selectedItemKey, selectedItem) => { console.log('Selected:', selectedItemKey, selectedItem); },
   },
   render: (args) => <MenuLazyProvider {...args}/>,
 } satisfies Meta<MenuLazyProviderArgs>;
@@ -62,7 +57,7 @@ export const MenuLazyProviderStandard: Story = {};
 
 export const MenuLazyProviderWithDefault: Story = {
   args: {
-    defaultSelected: 'item-blueberry',
+    defaultSelected: 'item-3',
   },
 };
 
@@ -103,14 +98,13 @@ const MenuProviderControlledC = (props: React.ComponentProps<typeof MenuLazyProv
   
   return (
     <>
-      <p>Selected: {selectedOption === null ? '(none)' : formatFruitLabel(selectedOption)}</p>
+      <p>Selected: {selectedOption === null ? '(none)' : 'formatFruitLabel(selectedOption)'}</p>
       <MenuLazyProvider
         {...props}
-        formatItemLabel={formatFruitLabel}
         selected={selectedOption}
         onSelect={setSelectedOption}
       />
-      <div><Button label="Update state" onPress={() => { setSelectedOption('item-strawberry'); }}/></div>
+      <div><Button label="Update state" onPress={() => { setSelectedOption('item-3'); }}/></div>
     </>
   );
 };
@@ -118,5 +112,5 @@ export const MenuProviderControlled: Story = {
   render: args => <MenuProviderControlledC {...args}/>,
 };
 export const MenuProviderControlledWithDefault: Story = {
-  render: args => <MenuProviderControlledC {...args} defaultSelected="item-blueberry"/>,
+  render: args => <MenuProviderControlledC {...args} defaultSelected="item-3"/>,
 };

@@ -19,6 +19,7 @@ import cl from './MenuLazyProvider.module.scss';
 
 export type ItemDetails = ListBoxLazy.ItemDetails;
 export type ItemKey = ListBoxLazy.ItemKey;
+export type VirtualItemKeys = ListBoxLazy.VirtualItemKeys;
 
 export { cl as MenuLazyProviderClassNames };
 export type MenuLazyProviderRef = {
@@ -126,8 +127,8 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
   } = props;
 
   const anchorRef = React.useRef<HTMLElement>(null);
-  const listBoxLazyRef = React.useRef<React.ComponentRef<typeof ListBoxLazy.ListBoxLazy>>(null);
-  const listBoxLazyId = `listbox-lazy-${React.useId()}`;
+  const listBoxRef = React.useRef<React.ComponentRef<typeof ListBoxLazy.ListBoxLazy>>(null);
+  const listBoxId = `listbox-lazy-${React.useId()}`;
 
   const {
     refs,
@@ -213,7 +214,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
       // Note: need to wait until the list has actually opened
       // FIXME: need a more reliable way to do this (ref callback?)
       window.setTimeout(() => {
-        const listBoxLazyElement = listBoxLazyRef.current;
+        const listBoxLazyElement = listBoxRef.current;
         if (!listBoxLazyElement) { return; }
 
         if (event.key === 'ArrowDown') {
@@ -243,7 +244,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
       return {
         ...props,
         ref,
-        'aria-controls': listBoxLazyId,
+        'aria-controls': listBoxId,
         'aria-haspopup': 'listbox',
         'aria-expanded': isOpen,
         // biome-ignore lint/suspicious/noExplicitAny: `onKeyDown` should be a function here
@@ -285,7 +286,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
       handleAnchorKeyDown,
       isOpen,
       setIsOpen,
-      listBoxLazyId,
+      listBoxId,
       refs.setReference,
       selectedOption,
       selectedOptionInternal,
@@ -313,7 +314,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
   // Focus management (focus on open + restore focus on close)
   const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
   const handleToggle = React.useCallback((event: React.ToggleEvent) => {
-    const listBoxElement = listBoxLazyRef.current;
+    const listBoxElement = listBoxRef.current;
     if (!listBoxElement) { return; }
 
     if (event.oldState === 'closed' && event.newState === 'open') {
@@ -387,13 +388,14 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
         {...propsRest}
         {...floatingProps}
         ref={mergeRefs<React.ComponentRef<typeof ListBoxLazy.ListBoxLazy>>(
-          listBoxLazyRef,
+          listBoxRef,
           listBoxFocusRef,
           refs.setFloating,
           floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBoxLazy.ListBoxLazy>>,
           //propsRest.ref,
         )}
-        id={listBoxLazyId}
+        formatItemLabel={formatItemLabel}
+        id={listBoxId}
         defaultSelected={defaultSelected}
         selected={selectedOption}
         onSelect={handleSelect}

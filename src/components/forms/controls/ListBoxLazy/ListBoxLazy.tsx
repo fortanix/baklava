@@ -31,7 +31,7 @@ import {
 import cl from './ListBoxLazy.module.scss';
 
 
-export type { VirtualItem, ItemKey, ItemDetails, ListBoxRef };
+export type { VirtualItem, ItemKey, VirtualItemKeys, ItemDetails, ListBoxRef };
 export { cl as ListBoxLazyClassNames };
 
 
