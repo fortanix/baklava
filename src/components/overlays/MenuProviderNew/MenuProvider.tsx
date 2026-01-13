@@ -24,6 +24,7 @@ import cl from './MenuProvider.module.scss';
 export type ItemDetails = ListBox.ItemDetails;
 export type ItemKey = ListBox.ItemKey;
 type ListBoxProps = ComponentProps<typeof ListBox.ListBox>;
+type InternalItemDetails = Map<string, { label: string }>;
 
 /**
  * FLOATING MENU + CONTROLLED OPTIONS
@@ -332,21 +333,33 @@ export const useMenuListBoxFocus = (options: UseMenuListBoxFocusOptions) => {
  * MENU SELECT HANDLER
  * ---------------------------------------------------------------------------------------------------------------------
  */
-const getLabel = (
-  selected?: undefined | ListBoxProps['selected'],
-  formatItemLabel?: undefined | ListBoxProps['formatItemLabel'],
-): string | null => {
+const buildSelectedItemDetailsMap = (
+  selected?: undefined | Set<string>,
+  formatItemLabel?: undefined | ((itemKey: string) => string | undefined),
+): Map<string, { label: string }> => {
   return selected
-    ? formatItemLabel?.(selected) ?? String(selected)
-    : null;
+    ? new Map([...selected].map(k => [k, { label: formatItemLabel?.(k) ?? String(k) }]))
+    : new Map();
+};
+
+// Helper hook 'useLazyRef' lazily initializes a ref value without re-running the initializer
+// on every render. Passing an expression directly to 'React.useRef()' (e.g. 'React.useRef(fn())')
+// would unnecessarily invoke 'fn' on each render, even though the ref value itself is preserved.
+// This helper ensures the initializer runs exactly once.
+const useLazyRef = <T,>(initializer: () => T) => {
+  const ref = React.useRef<T | null>(null);
+
+  if (ref.current === null) { ref.current = initializer(); }
+
+  return ref as React.RefObject<T>;
 };
 
 type UseMenuSelectHandlerOptions = {
   previousActiveElementRef: React.RefObject<HTMLElement | null>,
   setIsOpen: (open: boolean) => void;
   triggerAction?: undefined | UseFloatingElementOptions['triggerAction'];
-  selected?: undefined | ListBoxProps['selected'],
-  defaultSelected?: undefined | ListBoxProps['defaultSelected'],
+  selected?: undefined | Set<string>,
+  defaultSelected?: undefined | Set<string>,
   formatItemLabel?: undefined | ListBoxProps['formatItemLabel'],
   onSelect?: undefined | ListBoxProps['onSelect'];
 };
@@ -360,33 +373,41 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
     formatItemLabel,
     onSelect,
   } = options;
-
-  const [internalSelected, setInternalSelected] = React.useState<ListBox.ItemKey | null>(selected ?? defaultSelected ?? null);
-  // `selectedLabelsRef` is required because option labels can be provided directly via
-  // `MenuProvider.Option` (e.g. `<MenuProvider.Option itemKey="x" label="Label" />`).
-  // Consumers may or may not provide `formatItemLabel`, and an explicit `label` on the
-  // option can override the value returned by `formatItemLabel`. This ref stores the
-  // resolved label so the correct value can be passed to the menu anchor.
-  const selectedLabelsRef = React.useRef<string | null>(getLabel(internalSelected, formatItemLabel));
+  
+  // If the 'selected' prop is provided, the component is treated as controlled.
   const isControlled = typeof selected !== 'undefined';
+  // State 'internalSelected' stores the currently selected item keys.
+  // When the menu provider is used in controlled mode, this state is kept
+  // in sync with the `selected` prop.
+  const [internalSelected, setInternalSelected] = React.useState<InternalItemDetails>(() => {
+    return buildSelectedItemDetailsMap(selected ?? defaultSelected, formatItemLabel);
+  });
+  // Ref 'selectedItemDetailsRef' is required because option labels can be provided directly via
+  // 'MenuProvider.Option' (e.g. '<MenuProvider.Option itemKey="x" label="Label" />').
+  // Consumers may or may not provide 'formatItemLabel', and an explicit 'label' on the
+  // option can override the value returned by 'formatItemLabel'. This ref stores the
+  // resolved label so the correct value can be passed to the menu anchor.
+  const selectedItemDetailsRef = useLazyRef<InternalItemDetails>(() => {
+    return buildSelectedItemDetailsMap(selected ?? defaultSelected, formatItemLabel);
+  });
 
   React.useEffect(() => {
     if (isControlled) {
       // In controlled mode, keep internal state in sync with the parent-controlled value
-      setInternalSelected(selected);
-      selectedLabelsRef.current = getLabel(selected, formatItemLabel);
+      const itemDetails = buildSelectedItemDetailsMap(selected, formatItemLabel);
+      setInternalSelected(itemDetails);
+      selectedItemDetailsRef.current = itemDetails;
     }
   }, [isControlled, selected, formatItemLabel]);
 
-  const handleInternalSelect = React.useCallback((_key: ListBox.ItemKey | null, itemDetails: ListBox.ItemDetails | null) => {
-    const label = itemDetails?.label ?? null;
-    const itemKey = itemDetails?.itemKey ?? null;
-    onSelect?.(itemKey, itemDetails);
+  const handleInternalSelect = React.useCallback((selectedItemDetails: InternalItemDetails) => {
+    // NOTE: Important - the label from 'MenuProvider.Option' is captured here so it can
+    // be forwarded to the menu anchor.
+    selectedItemDetailsRef.current = selectedItemDetails;
 
     if (!isControlled) {
       // When not controlled by the parent, update the internal selection state directly
-      setInternalSelected(itemKey);
-      selectedLabelsRef.current = label;
+      setInternalSelected(selectedItemDetails);
     }
 
     window.setTimeout(() => {
@@ -404,7 +425,7 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
 
   return {
     internalSelected,
-    selectedLabelsRef,
+    selectedItemDetailsRef,
     handleInternalSelect,
     setInternalSelected,
     isControlled,
@@ -578,14 +599,14 @@ export const MenuProvider = Object.assign((props: MenuProviderProps<null | ListB
   const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, listBoxRef });
   const { handleToggle } = useMenuToggle({ listBoxRef, action, toggleCauseRef, previousActiveElementRef });
   const { listBoxFocusRef } = useMenuListBoxFocus({ setIsOpen });
-  const { internalSelected, selectedLabelsRef: selectedLabelRef, handleInternalSelect: handleSelect } = useMenuSelect({
+  const { internalSelected, selectedItemDetailsRef, handleInternalSelect } = useMenuSelect({
     previousActiveElementRef,
     setIsOpen,
     triggerAction: triggerAction ?? action,
     onSelect,
     formatItemLabel,
-    selected,
-    defaultSelected,
+    selected: selected ? new Set([selected]) : undefined,
+    defaultSelected: defaultSelected ? new Set([defaultSelected]) : undefined,
   });
   const { anchor } = useMenuAnchor<ListBox.ItemDetails | null>({
     children,
@@ -596,7 +617,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps<null | ListB
     refs,
     onKeyDown: onAnchorKeyDown,
     selected: internalSelected
-      ? { itemKey: internalSelected, label: selectedLabelRef.current ?? internalSelected }
+      ? { itemKey: internalSelected, label: selectedItemDetailsRef.current ?? internalSelected }
       : null,
   });
 
@@ -624,6 +645,18 @@ export const MenuProvider = Object.assign((props: MenuProviderProps<null | ListB
     floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBox.ListBox>>,
   );
 
+  const selectedFromInternalSelected = React.useMemo(() => {
+    return internalSelected.keys().next().value ?? null; // 'null' for controlled 'ListBox'
+  }, [internalSelected]);
+
+  const handleSelect = React.useCallback((_key: ListBox.ItemKey | null, itemDetails: ListBox.ItemDetails | null) => {
+    const label = itemDetails?.label ?? null;
+    const itemKey = itemDetails?.itemKey ?? null;
+    onSelect?.(itemKey, itemKey === null ? null : { itemKey, label: (label ?? itemKey) });
+    handleInternalSelect(itemKey ? new Map([[itemKey, { label }]]) : new Map());
+  }, [onSelect, handleInternalSelect]);
+
+
   return (
     <>
       {anchor}
@@ -634,7 +667,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps<null | ListB
           ref={mergedListBoxRef}
           size={menuSize}
           label={label}
-          selected={internalSelected}
+          selected={selectedFromInternalSelected}
           defaultSelected={defaultSelected}
           onSelect={handleSelect}
           onToggle={handleToggle}
