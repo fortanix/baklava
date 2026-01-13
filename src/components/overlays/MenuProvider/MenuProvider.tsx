@@ -25,6 +25,7 @@ export type ItemDetails = ListBox.ItemDetails;
 export type ItemKey = ListBox.ItemKey;
 type ListBoxProps = ComponentProps<typeof ListBox.ListBox>;
 type InternalItemDetails = Map<string, { label: string }>;
+export { cl as MenuProviderClassNames };
 
 /**
  * FLOATING MENU + CONTROLLED OPTIONS

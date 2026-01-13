@@ -44,7 +44,7 @@ export default {
     renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
     renderItemLabel: item => `Item ${item.index}`,
     children: ({ props, selectedOption }) => (
-      <Button kind="primary" {...props()}>
+      <Button tabIndex={0} kind="primary" {...props()}>
         {typeof selectedOption !== 'undefined' ? `Selected: ${selectedOption?.label ?? 'none'}` : 'Open dropdown'}
       </Button>
     ),

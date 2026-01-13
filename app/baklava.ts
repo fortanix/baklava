@@ -99,8 +99,6 @@ export { DialogOverlay } from '../src/components/overlays/DialogOverlay/DialogOv
 export { MenuProvider } from '../src/components/overlays/MenuProvider/MenuProvider.tsx';
 export { MenuProvider as DropdownMenuProvider } from '../src/components/overlays/MenuProvider/MenuProvider.tsx'; // alias
 export { MenuMultiProvider } from '../src/components/overlays/MenuMultiProvider/MenuMultiProvider.tsx';
-export { MenuProvider as MenuProviderNew } from '../src/components/overlays/MenuProviderNew/MenuProvider.tsx';
-export { MenuMultiProvider as MenuMultiProviderNew } from '../src/components/overlays/MenuMultiProviderNew/MenuMultiProvider.tsx';
 export { ToastProvider, notify } from '../src/components/overlays/ToastProvider/ToastProvider.tsx';
 export { Tooltip } from '../src/components/overlays/Tooltip/Tooltip.tsx';
 export { TooltipProvider } from '../src/components/overlays/Tooltip/TooltipProvider.tsx';

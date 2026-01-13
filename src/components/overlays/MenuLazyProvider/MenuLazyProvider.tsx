@@ -3,75 +3,73 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { mergeCallbacks, mergeRefs } from '../../../util/reactUtil.ts';
+
+// Utils
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
-import { useDebounce } from '../../../util/hooks/useDebounce.ts';
+import { mergeCallbacks, mergeRefs } from '../../../util/reactUtil.ts';
+import { type UseFloatingElementOptions } from '../../util/overlays/floating-ui/useFloatingElement.tsx';
 
-import {
-  type UseFloatingElementOptions,
-  useFloatingElement,
-} from '../../util/overlays/floating-ui/useFloatingElement.tsx';
-
+// Components
 import * as ListBoxLazy from '../../forms/controls/ListBoxLazy/ListBoxLazy.tsx';
+import {
+  BaseAnchorRenderArgs,
+  MenuProviderRef,
+  useFloatingMenu,
+  useMenuAnchor,
+  useMenuImperativeRef,
+  useMenuKeyboardNavigation,
+  useMenuListBoxFocus,
+  useMenuOpenControl,
+  useMenuSelect,
+  useMenuToggle,
+} from '../MenuProvider/MenuProvider.tsx';
 
-import cl from './MenuLazyProvider.module.scss';
+// Styles
+import { MenuProviderClassNames as cl } from '../MenuProvider/MenuProvider.tsx';
 
 
 export type ItemDetails = ListBoxLazy.ItemDetails;
 export type ItemKey = ListBoxLazy.ItemKey;
 export type VirtualItemKeys = ListBoxLazy.VirtualItemKeys;
-
-export { cl as MenuLazyProviderClassNames };
-export type MenuLazyProviderRef = {
-  setIsOpen: (open: boolean) => void,
-  isOpen: boolean,
-  floatingEl: null | HTMLElement,
-};
-
 type ListBoxLazyProps = ComponentProps<typeof ListBoxLazy.ListBoxLazy>;
 
-export type AnchorRenderArgs = {
-  props: (userProps?: undefined | React.HTMLProps<Element>) => Record<string, unknown>,
-  open: boolean,
-  requestOpen: () => void, // FIXME: better naming
-  close: () => void,
-  selectedOption: null | ItemDetails,
+/**
+ * MENU PROVIDER
+ * Provider for a menu overlay that is triggered by (and positioned relative to) some anchor element.
+ * ---------------------------------------------------------------------------------------------------------------------
+ */
+type AnchorRenderArgs = BaseAnchorRenderArgs & {
+  selectedOption: ListBoxLazy.ItemDetails | null,
 };
-
 export type MenuLazyProviderProps = Omit<ListBoxLazyProps, 'ref' | 'children' | 'label' | 'size'> & {
-  // ---
-  // TEMP
-  
-  /** A React ref to control the menu lazy provider imperatively. */
-  ref?: undefined | React.Ref<null | MenuLazyProviderRef>,
-  
+  // Imperative control (TEMP)
+  /** A React ref to control the menu provider imperatively. */
+  ref?: undefined | React.Ref<null | MenuProviderRef>,
   /** For controlled open state. */
   open?: undefined | boolean,
-  
   /** When controlled, callback to set state. */
   onOpenChange?: undefined | ((isOpen: boolean) => void),
-  
   /** (optional) Use an existing DOM node as the positioning anchor. */
   anchorRef?: undefined | React.RefObject<HTMLElement | null>,
-  
-  // END TEMP
-  // ---
-  
-  /** An accessible name for this menu lazy provider. Required. */
-  label: string,
-  
+
+  /** An accessible name for this menu provider. Required. */
+  label: string;
+
   /**
   * The content to render, which should contain the anchor. This should be a render prop which takes props to
   * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
   */
-  children?: ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode,
-  
+  children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode | React.ReactNode);
+
+  /** The menu items. */
+  items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode);
+
   /** The accessible role of the menu. */
   role?: undefined | UseFloatingElementOptions['role'],
   
   /** The action that should trigger the menu to open. */
   triggerAction?: undefined | UseFloatingElementOptions['triggerAction'],
-  
+
   /**
    * Alias for `triggerAction`. Deprecated, use `triggerAction` instead.
    * @deprecated
@@ -99,13 +97,11 @@ export type MenuLazyProviderProps = Omit<ListBoxLazyProps, 'ref' | 'children' | 
   /** Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
   enablePreciseTracking?: undefined | UseFloatingElementOptions['enablePreciseTracking'],
 };
-/**
- * Provider for a menu overlay that is triggered by (and positioned relative to) some anchor element.
- */
 export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
   const {
     label,
     children,
+    items,
     defaultSelected,
     selected,
     onSelect,
@@ -114,328 +110,132 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
     action,
     menuSize,
     keyboardInteractions,
-    placement = 'bottom',
-    offset = 8,
-    enablePreciseTracking,
+    placement,
+    offset,
+    formatItemLabel,
 
-    ref: forwardRef,
-    open: controlledOpen,
-    onOpenChange: controlledOnOpenChange,
-    anchorRef: anchorRefSeparate,
+    ref,
+    open,
+    onOpenChange,
+    anchorRef,
 
     ...propsRest
   } = props;
 
-  const anchorRef = React.useRef<HTMLElement>(null);
   const listBoxRef = React.useRef<React.ComponentRef<typeof ListBoxLazy.ListBoxLazy>>(null);
-  const listBoxId = `listbox-lazy-${React.useId()}`;
-
+  const listBoxId = `listboxlazy-${React.useId()}`;
+  const previousActiveElementRef = React.useRef<HTMLElement | null>(null);
+  const selectedSet = React.useMemo(
+    () => (selected != null ? new Set([selected]) : undefined),
+    [selected],
+  );
+  const defaultSelectedSet = React.useMemo(
+    () => (defaultSelected != null ? new Set([defaultSelected]) : undefined),
+    [defaultSelected],
+  ); 
   const {
-    refs,
-    placement: placementEffective,
-    floatingStyles,
-    getReferenceProps,
-    getFloatingProps,
     isOpen,
     setIsOpen,
-  } = useFloatingElement({
+    refs,
+    getReferenceProps,
+    getFloatingProps,
+    floatingStyles,
+    placement: floatingPlacement,
+  } = useFloatingMenu({
     role,
-    triggerAction: triggerAction ?? action ?? 'click',
+    triggerAction,
+    action,
     keyboardInteractions,
     placement,
     offset,
-    floatingUiFlipOptions: {
-      fallbackAxisSideDirection: 'none',
-      fallbackStrategy: 'initialPlacement',
-    },
-
-    // TEMP
-    floatingUiOptions: {
-      ...(
-        typeof controlledOpen !== 'undefined' ?
-          {
-            open: controlledOpen,
-            ...(
-              typeof controlledOnOpenChange !== 'undefined' ?
-                { onOpenChange: controlledOnOpenChange } : {}
-            ),
-
-          } : {}
-      ),
-    },
-    // END TEMP
+    open,
+    onOpenChange,
   });
+  const { shouldMountMenu } = useMenuOpenControl({ isOpen, setIsOpen, open });
+  const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, listBoxRef });
+  const { handleToggle } = useMenuToggle({ listBoxRef, action, toggleCauseRef, previousActiveElementRef });
+  const { listBoxFocusRef } = useMenuListBoxFocus({ setIsOpen });
+  const { internalSelected, selectedItemDetailsRef, handleInternalSelect } = useMenuSelect({
+    previousActiveElementRef,
+    setIsOpen,
+    triggerAction: triggerAction ?? action,
+    formatItemLabel,
+    selected: selectedSet,
+    defaultSelected: defaultSelectedSet,
+  })
+  const getRenderArgs = React.useCallback((base: BaseAnchorRenderArgs): AnchorRenderArgs => {
+    const itemKey = selectedItemDetailsRef.current.keys().next().value;
+    const label = selectedItemDetailsRef.current.values().next().value?.label;
 
-  const [shouldMountMenu] = useDebounce(isOpen, isOpen ? 0 : 1000);
-
-  const formatItemLabel = React.useCallback((itemKey: ItemKey) => {
-    const virtualItem: ListBoxLazy.VirtualItem = {
-      key: itemKey,
-      index: 0,
-      start: 0,
-      end: 0,
-      size: 0,
-      lane: 0,
+    return {
+      ...base,
+      selectedOption: itemKey ? { itemKey, label: label ?? itemKey } : null,
     };
-    return props.renderItemLabel(virtualItem);
-  }, [props.renderItemLabel]);
-
-  const renderDefaultSelected = (): null | string => {
-    const defaultSelectedKey = typeof selected !== 'undefined' ? selected : (defaultSelected ?? null);
-    return defaultSelectedKey === null ? null : (formatItemLabel?.(defaultSelectedKey) ?? defaultSelectedKey);
-  };
-
-  const selectedLabelRef = React.useRef<null | string>(renderDefaultSelected());
-  const [selectedOptionInternal, setSelectedOptionInternal] = React.useState<null | ItemKey>(defaultSelected ?? null);
-  const selectedOption = typeof selected !== 'undefined' ? selected : selectedOptionInternal;
-  const setSelectedOption = React.useCallback((itemKey: null | ItemKey) => {
-    if (typeof selected === 'undefined') {
-      setSelectedOptionInternal(itemKey);
-    }
-
-    onSelect?.(itemKey, itemKey === null ? null : { itemKey, label: (selectedLabelRef.current ?? itemKey) });
-  }, [selected, onSelect]);
-
-  // Sync `selected` prop with internal state
-  React.useEffect(() => {
-    if (typeof selected !== 'undefined') {
-      selectedLabelRef.current = selected === null ? selected : (formatItemLabel?.(selected) ?? selected);
-      setSelectedOptionInternal(selected);
-    }
-  }, [selected, formatItemLabel]);
-
-  const toggleCause = React.useRef<null | 'ArrowUp' | 'ArrowDown'>(null);
-  const handleAnchorKeyDown = React.useCallback((event: React.KeyboardEvent) => {
-    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
-      toggleCause.current = event.key; // Store for later use in `handleToggle`
-      event.preventDefault(); // Prevent scrolling
-      setIsOpen(true);
-
-      // Note: need to wait until the list has actually opened
-      // FIXME: need a more reliable way to do this (ref callback?)
-      window.setTimeout(() => {
-        const listBoxLazyElement = listBoxRef.current;
-        if (!listBoxLazyElement) { return; }
-
-        if (event.key === 'ArrowDown') {
-          listBoxLazyElement._bkListBoxFocusFirst();
-        } else if (event.key === 'ArrowUp') {
-          listBoxLazyElement._bkListBoxFocusLast();
-        }
-      }, 100);
-    }
-  }, [setIsOpen]);
-
-  // Note: memoize this, so that the anchor does not get rerendered every time the floating element position changes
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Should rerender on `selectedOptionInternal` change.
-  const anchor = React.useMemo(() => {
-    // FIXME: make `React.HTMLProps<Element>` generic, since not all component props extend from this type
-    const anchorProps: AnchorRenderArgs['props'] = (userProps?: undefined | React.HTMLProps<Element>) => {
-      const userPropsRef: undefined | string | React.Ref<Element> = userProps?.ref ?? undefined;
-      if (typeof userPropsRef === 'string') {
-        // We can't merge refs if one of the refs is a string
-        console.error(`Failed to render MenuLazyProvider, due to use of legacy string ref`);
-        return (userProps ?? {}) as Record<string, unknown>;
-      }
-
-      const props = getReferenceProps(userProps);
-      const ref = mergeRefs(anchorRef, userPropsRef, refs.setReference, props.ref as React.Ref<Element>);
-
-      return {
-        ...props,
-        ref,
-        'aria-controls': listBoxId,
-        'aria-haspopup': 'listbox',
-        'aria-expanded': isOpen,
-        // biome-ignore lint/suspicious/noExplicitAny: `onKeyDown` should be a function here
-        onKeyDown: mergeCallbacks([props.onKeyDown as any, handleAnchorKeyDown]),
-      };
-    };
-
-    if (typeof children === 'function') {
-      return children({
-        props: anchorProps,
-        open: isOpen,
-        requestOpen: () => { setIsOpen(true); },
-        close: () => { setIsOpen(false); },
-        selectedOption: selectedOption === null
-          ? null
-          // FIXME: this does not have a label on the first render with `defaultSelected`
-          : { itemKey: selectedOption, label: (selectedLabelRef.current ?? selectedOption) },
-      });
-    } else if (!children) {
-      // If no `children` are defined, the consumer may be using an imperative handler rather than an anchor.
-      // Do not render any anchor in this case.
-      return null;
-    } else if (!React.isValidElement(children)) {
-      // Edge case: if `children` is defined but not a valid element, then wrap it in an element ourselves.
-      // Note: must be an interactive element, like a `<button>`, in order for this to be valid in terms of ARIA.
-      return <button {...anchorProps()}>{children}</button>;
-    } else if (React.Children.count(children) === 1) {
-      // If a single element is given, apply the anchor props on that element. Note: the consumer must ensure
-      // that this element is a valid interactive element, like a `<button>`.
-      // NOTE: `cloneElement` is marked as a legacy function by React. Recommended is to use a render prop instead.
-      return React.cloneElement(children, anchorProps(children.props as React.HTMLProps<Element>));
-    }
-
-    console.error(`Invalid children passed to MenuLazyProvider, expected a render prop or single child element.`);
-    return children;
-  }, [
-      children,
-      getReferenceProps,
-      handleAnchorKeyDown,
-      isOpen,
-      setIsOpen,
-      listBoxId,
-      refs.setReference,
-      selectedOption,
-      selectedOptionInternal,
-    ]);
-
-  const handleSelect = React.useCallback(
-    (_key: null | ListBoxLazy.ItemKey, itemDetails: null | ListBoxLazy.ItemDetails) => {
-      selectedLabelRef.current = itemDetails?.label ?? null;
-      setSelectedOption(itemDetails?.itemKey ?? null);
-
-      // Note: add a slight delay before closing, to make it less jarring (and allow "select" animations to complete)
-      window.setTimeout(() => {
-        const previousActiveElement = previousActiveElementRef.current;
-
-        if (previousActiveElement) {
-          previousActiveElement.focus({ focusVisible: false });
-        }
-
-        if (action !== 'focus') {
-          setIsOpen(false);
-        }
-      }, 150);
-    }, [setIsOpen, setSelectedOption, action]);
-
-  // Focus management (focus on open + restore focus on close)
-  const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
-  const handleToggle = React.useCallback((event: React.ToggleEvent) => {
-    const listBoxElement = listBoxRef.current;
-    if (!listBoxElement) { return; }
-
-    if (event.oldState === 'closed' && event.newState === 'open') {
-      if (document.activeElement instanceof HTMLElement) {
-        previousActiveElementRef.current = document.activeElement;
-      }
-
-      // For click actions, move focus to the list box upon toggling
-      if (action !== 'click') { return; }
-
-      if (toggleCause.current === 'ArrowDown') {
-        listBoxElement._bkListBoxFocusFirst();
-      } else if (toggleCause.current === 'ArrowUp') {
-        listBoxElement._bkListBoxFocusLast();
-      } else {
-        listBoxElement.focus();
-      }
-      toggleCause.current = null;
-    } else if (event.oldState === 'open' && event.newState === 'closed') {
-      const previousActiveElement = previousActiveElementRef.current;
-
-      if (previousActiveElement && listBoxElement.matches(':focus-within')) {
-        previousActiveElement.focus({ focusVisible: false });
-      }
-    }
-  }, [action]);
-
-  const handleMenuKeyDown = React.useCallback((event: React.KeyboardEvent) => {
-    // On "enter", select the currently focused item and close the menu
-    // Note: already handled through the `ListBox` element
-    //if (event.key === 'Enter') { ... }
-
-    // On "escape", close the menu
-    // Note: already handled by floating-ui
-    //if (event.key === 'Escape') { setIsOpen(false); }
-  }, []);
-
-  // A ref callback for focus management of the list box
-  const listBoxFocusRef: React.RefCallback<ListBoxLazy.ListBoxRef> = React.useCallback((listBoxElement) => {
-    if (!listBoxElement) { return; }
-
-    const controller = new AbortController();
-    listBoxElement.addEventListener('focusout', event => {
-      // Special case: in Firefox triggering a file select causes a `focusout` which we don't want closing the menu
-      if (event.target instanceof HTMLInputElement && event.target.type === 'file' && event.relatedTarget === null) {
-        return;
-      }
-
-      const focusTarget = event.relatedTarget; // The new element being focused
-      if (!focusTarget || (focusTarget instanceof Node && !listBoxElement.contains(focusTarget))) {
-        setIsOpen(false);
-      }
-    }, { signal: controller.signal });
-
-    return () => { controller.abort(); };
-  }, [setIsOpen]);
-
-  const renderMenu = () => {
-    const floatingProps = getFloatingProps({
-      popover: 'manual',
-      style: floatingStyles,
-      ...propsRest,
-      className: cx(cl['bk-menu-provider__list-box'], propsRest.className),
-      onKeyDown: mergeCallbacks([propsRest.onKeyDown, handleMenuKeyDown]),
-    });
-
-    return (
-      <ListBoxLazy.ListBoxLazy
-        size={menuSize}
-        label={label}
-        {...propsRest}
-        {...floatingProps}
-        ref={mergeRefs<React.ComponentRef<typeof ListBoxLazy.ListBoxLazy>>(
-          listBoxRef,
-          listBoxFocusRef,
-          refs.setFloating,
-          floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBoxLazy.ListBoxLazy>>,
-          //propsRest.ref,
-        )}
-        formatItemLabel={formatItemLabel}
-        id={listBoxId}
-        defaultSelected={defaultSelected}
-        selected={selectedOption}
-        onSelect={handleSelect}
-        onToggle={handleToggle}
-        data-placement={placementEffective}
-      />
-    );
-  };
-
-
-  // TEMP
-  // keep internal state in sync with the controlled prop
-  React.useEffect(() => {
-    if (controlledOpen !== undefined) {
-      setIsOpen(controlledOpen);
-    }
-  }, [controlledOpen, setIsOpen]);
+  }, [selectedItemDetailsRef.current]);
+  const { anchor } = useMenuAnchor({
+    children,
+    isOpen,
+    setIsOpen,
+    listBoxId,
+    getReferenceProps,
+    refs,
+    onKeyDown: onAnchorKeyDown,
+    getRenderArgs,
+  });
 
   // Use external element as the reference, if provided
   React.useLayoutEffect(() => {
-    if (anchorRefSeparate?.current) {
-      refs.setReference(anchorRefSeparate.current);
+    if (anchorRef?.current) {
+      refs.setReference(anchorRef.current);
     }
-  }, [anchorRefSeparate?.current, refs.setReference]);
+  }, [anchorRef, refs]);
 
-  const menuLazyProviderRef = React.useMemo<MenuLazyProviderRef>(() => ({
-    isOpen,
-    setIsOpen,
-    get floatingEl() {
-      return refs.floating.current;
-    },
-  }), [isOpen, setIsOpen, refs.floating]);
+  useMenuImperativeRef({ ref, isOpen, setIsOpen, floatingRef: refs.floating });
 
-  React.useImperativeHandle(forwardRef, () => menuLazyProviderRef, [menuLazyProviderRef]);
-  // END TEMP
+  const floatingProps = getFloatingProps({
+    popover: 'manual',
+    style: floatingStyles,
+    ...propsRest,
+    className: cx(cl['bk-menu-provider__list-box'], propsRest.className),
+    onKeyDown: mergeCallbacks([propsRest.onKeyDown, onMenuKeyDown]),
+  });
+
+  const mergedListBoxRef = mergeRefs<React.ComponentRef<typeof ListBoxLazy.ListBoxLazy>>(
+    listBoxRef,
+    listBoxFocusRef,
+    refs.setFloating,
+    floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBoxLazy.ListBoxLazy>>,
+  );
+
+  const selectedFromInternalSelected = React.useMemo(() => {
+    return internalSelected.keys().next().value ?? null; // 'null' for controlled 'ListBox'
+  }, [internalSelected]);
+
+  const handleSelect = React.useCallback((_key: ListBoxLazy.ItemKey | null, itemDetails: ListBoxLazy.ItemDetails | null) => {
+    const label = itemDetails?.label ?? null;
+    const itemKey = itemDetails?.itemKey ?? null;
+    onSelect?.(itemKey, itemKey === null ? null : { itemKey, label: (label ?? itemKey) });
+    handleInternalSelect(itemKey ? new Map([[itemKey, { label: label ?? itemKey }]]) : new Map());
+  }, [onSelect, handleInternalSelect]);
 
   return (
     <>
       {anchor}
-      {shouldMountMenu && renderMenu()}
+      {shouldMountMenu && (
+        <ListBoxLazy.ListBoxLazy
+          {...floatingProps}
+          {...propsRest}
+          ref={mergedListBoxRef}
+          size={menuSize}
+          label={label}
+          selected={selectedFromInternalSelected}
+          defaultSelected={defaultSelected}
+          onSelect={handleSelect}
+          onToggle={handleToggle}
+          data-placement={floatingPlacement}
+        />
+      )}
     </>
   );
 };
+

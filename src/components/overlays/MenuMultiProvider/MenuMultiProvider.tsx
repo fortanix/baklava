@@ -7,9 +7,7 @@ import * as React from 'react';
 // Utils
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import { mergeCallbacks, mergeRefs } from '../../../util/reactUtil.ts';
-import {
-  type UseFloatingElementOptions,
-} from '../../util/overlays/floating-ui/useFloatingElement.tsx';
+import { type UseFloatingElementOptions } from '../../util/overlays/floating-ui/useFloatingElement.tsx';
 
 // Components
 import * as ListBoxMulti from '../../forms/controls/ListBoxMulti/ListBoxMulti.tsx';
@@ -24,7 +22,7 @@ import {
   useMenuOpenControl,
   useMenuSelect,
   useMenuToggle,
-} from '../MenuProviderNew/MenuProvider.tsx';
+} from '../MenuProvider/MenuProvider.tsx';
 
 // Styles
 import { MenuProviderClassNames as cl } from '../MenuProvider/MenuProvider.tsx';
@@ -124,7 +122,7 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
   } = props;
 
   const listBoxRef = React.useRef<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>(null);
-  const listBoxId = `listbox-multi-${React.useId()}`;
+  const listBoxId = `listboxmulti-${React.useId()}`;
   const previousActiveElementRef = React.useRef<HTMLElement | null>(null);
    
   const {
