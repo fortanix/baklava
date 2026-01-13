@@ -7,17 +7,14 @@ import * as React from 'react';
 // Utils
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import { mergeCallbacks, mergeRefs } from '../../../util/reactUtil.ts';
-import { useDebounce } from '../../../util/hooks/useDebounce.ts';
 import {
   type UseFloatingElementOptions,
-  UseFloatingElementResult,
-  useFloatingElement,
 } from '../../util/overlays/floating-ui/useFloatingElement.tsx';
 
 // Components
 import * as ListBoxMulti from '../../forms/controls/ListBoxMulti/ListBoxMulti.tsx';
 import {
-  AnchorRenderArgs,
+  BaseAnchorRenderArgs,
   MenuProviderRef,
   useFloatingMenu,
   useMenuAnchor,
@@ -25,6 +22,7 @@ import {
   useMenuKeyboardNavigation,
   useMenuListBoxFocus,
   useMenuOpenControl,
+  useMenuSelect,
   useMenuToggle,
 } from '../MenuProviderNew/MenuProvider.tsx';
 
@@ -37,80 +35,14 @@ export type ItemKey = ListBoxMulti.ItemKey;
 type ListBoxMultiProps = ComponentProps<typeof ListBoxMulti.ListBoxMulti>;
 
 /**
- * MENU SELECT HANDLER
- * ---------------------------------------------------------------------------------------------------------------------
- */
-const getLabel = (
-  selected?: undefined | ListBoxMultiProps['selected'],
-  formatItemLabel?: undefined | ListBoxMultiProps['formatItemLabel'],
-): Map<ListBoxMulti.ItemKey, string> => {
-  if (selected) {
-    return new Map([...selected].map(k => [k, formatItemLabel?.(k) ?? String(k)]));
-  }
-
-  return new Map();
-};
-
-type UseMenuSelectHandlerOptions = {
-  previousActiveElementRef: React.RefObject<HTMLElement | null>,
-  triggerAction?: undefined | UseFloatingElementOptions['triggerAction'];
-  selected?: undefined | ListBoxMultiProps['selected'],
-  defaultSelected?: undefined | ListBoxMultiProps['defaultSelected'],
-  formatItemLabel?: undefined | ListBoxMultiProps['formatItemLabel'],
-  onSelect?: undefined | ListBoxMultiProps['onSelect'];
-};
-export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
-  const {
-    previousActiveElementRef,
-    triggerAction = 'click',
-    selected,
-    defaultSelected,
-    formatItemLabel,
-    onSelect,
-  } = options;
-
-  const [internal, setInternal] = React.useState<Set<ListBoxMulti.ItemKey>>(selected ?? defaultSelected ?? new Set());
-  const selectedLabelRef = React.useRef<Map<ListBoxMulti.ItemKey, string>>(getLabel(internal, formatItemLabel));
-  const isControlled = typeof selected !== 'undefined';
-
-  React.useEffect(() => {
-    if (isControlled) {
-      // In controlled mode, keep internal state in sync with the parent-controlled value
-      setInternal(selected);
-      selectedLabelRef.current = getLabel(selected, formatItemLabel);
-    }
-  }, [isControlled, selected, formatItemLabel]);
-
-  const handleSelect = React.useCallback((
-    _selectedKeys: Set<ListBoxMulti.ItemKey>,
-    itemDetails: Map<ListBoxMulti.ItemKey, ListBoxMulti.ItemDetails>,
-  ) => {
-    const label = new Map([...itemDetails.entries()].map(([itemKey, details]) => [itemKey, details.label]));
-    const itemKeys = new Set(itemDetails.keys());
-    onSelect?.(itemKeys, itemDetails);
-
-    if (!isControlled) {
-      // When not controlled by the parent, update the internal selection state directly
-      setInternal(itemKeys);
-      selectedLabelRef.current = label;
-    }
-  }, [triggerAction, onSelect, previousActiveElementRef, isControlled]);
-
-  return {
-    internalSelected: internal,
-    selectedLabelRef,
-    handleSelect,
-    setInternalSelected: setInternal,
-    isControlled,
-  };
-};
-
-/**
  * MENU PROVIDER
  * Provider for a menu overlay that is triggered by (and positioned relative to) some anchor element.
  * ---------------------------------------------------------------------------------------------------------------------
  */
-export type MenuProviderProps<TSelected> = Omit<ListBoxMultiProps, 'ref' | 'children' | 'label' | 'size'> & {
+type AnchorRenderArgs = BaseAnchorRenderArgs & {
+  selectedOptions: Map<ListBoxMulti.ItemKey, ListBoxMulti.ItemDetails>,
+};
+export type MenuMultiProviderProps = Omit<ListBoxMultiProps, 'ref' | 'children' | 'label' | 'size'> & {
   // Imperative control (TEMP)
   /** A React ref to control the menu provider imperatively. */
   ref?: undefined | React.Ref<null | MenuProviderRef>,
@@ -128,7 +60,7 @@ export type MenuProviderProps<TSelected> = Omit<ListBoxMultiProps, 'ref' | 'chil
   * The content to render, which should contain the anchor. This should be a render prop which takes props to
   * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
   */
-  children?: undefined | ((args: AnchorRenderArgs<TSelected>) => React.ReactNode | React.ReactNode);
+  children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode | React.ReactNode);
 
   /** The menu items. */
   items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode);
@@ -166,9 +98,7 @@ export type MenuProviderProps<TSelected> = Omit<ListBoxMultiProps, 'ref' | 'chil
   /** Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
   enablePreciseTracking?: undefined | UseFloatingElementOptions['enablePreciseTracking'],
 };
-export const MenuMultiProvider = Object.assign((
-  props: MenuProviderProps<Map<ListBoxMulti.ItemKey, ListBoxMulti.ItemDetails>>,
-) => {
+export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) => {
   const {
     label,
     children,
@@ -194,9 +124,9 @@ export const MenuMultiProvider = Object.assign((
   } = props;
 
   const listBoxRef = React.useRef<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>(null);
-  const listBoxId = `listbox-${React.useId()}`;
+  const listBoxId = `listbox-multi-${React.useId()}`;
   const previousActiveElementRef = React.useRef<HTMLElement | null>(null);
-
+   
   const {
     isOpen,
     setIsOpen,
@@ -219,15 +149,19 @@ export const MenuMultiProvider = Object.assign((
   const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, listBoxRef });
   const { handleToggle } = useMenuToggle({ listBoxRef, action, toggleCauseRef, previousActiveElementRef });
   const { listBoxFocusRef } = useMenuListBoxFocus({ setIsOpen });
-  const { internalSelected, selectedLabelRef, handleSelect } = useMenuSelect({
+  const { internalSelected, selectedItemDetailsRef, handleInternalSelect } = useMenuSelect({
     previousActiveElementRef,
+    setIsOpen,
     triggerAction: triggerAction ?? action,
-    onSelect,
     formatItemLabel,
     selected,
     defaultSelected,
-  });
-  const { anchor } = useMenuAnchor<Map<ListBoxMulti.ItemKey, ListBoxMulti.ItemDetails>>({
+    canCloseMenu: false,
+  })
+  const getRenderArgs = React.useCallback((base: BaseAnchorRenderArgs): AnchorRenderArgs => {
+    return { ...base, selectedOptions: selectedItemDetailsRef.current };
+  }, [selectedItemDetailsRef.current]);
+  const { anchor } = useMenuAnchor({
     children,
     isOpen,
     setIsOpen,
@@ -235,7 +169,7 @@ export const MenuMultiProvider = Object.assign((
     getReferenceProps,
     refs,
     onKeyDown: onAnchorKeyDown,
-    selected: new Map([...internalSelected.values()].map(k => [k, { label: selectedLabelRef.current.get(k) ?? k }])),
+    getRenderArgs,
   });
 
   // Use external element as the reference, if provided
@@ -262,6 +196,19 @@ export const MenuMultiProvider = Object.assign((
     floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>,
   );
 
+  const selectedFromInternalSelected = React.useMemo(() => {
+    return new Set(internalSelected.keys()); // 'null' for controlled 'ListBox'
+  }, [internalSelected]);
+
+  const handleSelect = React.useCallback((
+    _selectedKeys: Set<ListBoxMulti.ItemKey>,
+    itemDetails: Map<ListBoxMulti.ItemKey, ListBoxMulti.ItemDetails>,
+  ) => {
+    const itemKeys = new Set(itemDetails.keys());
+    onSelect?.(itemKeys, itemDetails);
+    handleInternalSelect(itemDetails);
+  }, [onSelect, handleInternalSelect]);
+
   return (
     <>
       {anchor}
@@ -272,7 +219,7 @@ export const MenuMultiProvider = Object.assign((
           ref={mergedListBoxRef}
           size={menuSize}
           label={label}
-          selected={internalSelected}
+          selected={selectedFromInternalSelected}
           defaultSelected={defaultSelected}
           onSelect={handleSelect}
           onToggle={handleToggle}

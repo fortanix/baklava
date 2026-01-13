@@ -359,6 +359,7 @@ type UseMenuSelectHandlerOptions = {
   selected?: undefined | Set<string>,
   defaultSelected?: undefined | Set<string>,
   formatItemLabel?: undefined | ListBoxProps['formatItemLabel'],
+  canCloseMenu?: undefined | boolean,
 };
 export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
   const {
@@ -368,6 +369,7 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
     selected,
     defaultSelected,
     formatItemLabel,
+    canCloseMenu = true,
   } = options;
   
   // If the 'selected' prop is provided, the component is treated as controlled.
@@ -409,6 +411,8 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
       setInternalSelected(selectedItemDetails);
     }
 
+    if (!canCloseMenu) { return; }
+
     window.setTimeout(() => {
       const previous = previousActiveElementRef.current;
 
@@ -420,7 +424,14 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
         setIsOpen(false);
       }
     }, 150);
-  }, [triggerAction, setIsOpen, previousActiveElementRef, isControlled, selectedItemDetailsRef]);
+  }, [
+    triggerAction,
+    setIsOpen,
+    previousActiveElementRef,
+    isControlled,
+    selectedItemDetailsRef,
+    canCloseMenu,
+  ]);
 
   return {
     internalSelected,
