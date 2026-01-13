@@ -361,32 +361,32 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
     onSelect,
   } = options;
 
-  const [internal, setInternal] = React.useState<ListBox.ItemKey | null>(selected ?? defaultSelected ?? null);
+  const [internalSelected, setInternalSelected] = React.useState<ListBox.ItemKey | null>(selected ?? defaultSelected ?? null);
   // `selectedLabelsRef` is required because option labels can be provided directly via
   // `MenuProvider.Option` (e.g. `<MenuProvider.Option itemKey="x" label="Label" />`).
   // Consumers may or may not provide `formatItemLabel`, and an explicit `label` on the
   // option can override the value returned by `formatItemLabel`. This ref stores the
   // resolved label so the correct value can be passed to the menu anchor.
-  const selectedLabelRef = React.useRef<string | null>(getLabel(internal, formatItemLabel));
+  const selectedLabelsRef = React.useRef<string | null>(getLabel(internalSelected, formatItemLabel));
   const isControlled = typeof selected !== 'undefined';
 
   React.useEffect(() => {
     if (isControlled) {
       // In controlled mode, keep internal state in sync with the parent-controlled value
-      setInternal(selected);
-      selectedLabelRef.current = getLabel(selected, formatItemLabel);
+      setInternalSelected(selected);
+      selectedLabelsRef.current = getLabel(selected, formatItemLabel);
     }
   }, [isControlled, selected, formatItemLabel]);
 
-  const handleSelect = React.useCallback((_key: ListBox.ItemKey | null, itemDetails: ListBox.ItemDetails | null) => {
+  const handleInternalSelect = React.useCallback((_key: ListBox.ItemKey | null, itemDetails: ListBox.ItemDetails | null) => {
     const label = itemDetails?.label ?? null;
     const itemKey = itemDetails?.itemKey ?? null;
     onSelect?.(itemKey, itemDetails);
 
     if (!isControlled) {
       // When not controlled by the parent, update the internal selection state directly
-      setInternal(itemKey);
-      selectedLabelRef.current = label;
+      setInternalSelected(itemKey);
+      selectedLabelsRef.current = label;
     }
 
     window.setTimeout(() => {
@@ -403,10 +403,10 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
   }, [triggerAction, onSelect, setIsOpen, previousActiveElementRef, isControlled]);
 
   return {
-    internalSelected: internal,
-    selectedLabelRef,
-    handleSelect,
-    setInternalSelected: setInternal,
+    internalSelected,
+    selectedLabelsRef,
+    handleInternalSelect,
+    setInternalSelected,
     isControlled,
   };
 };
@@ -578,7 +578,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps<null | ListB
   const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, listBoxRef });
   const { handleToggle } = useMenuToggle({ listBoxRef, action, toggleCauseRef, previousActiveElementRef });
   const { listBoxFocusRef } = useMenuListBoxFocus({ setIsOpen });
-  const { internalSelected, selectedLabelRef, handleSelect } = useMenuSelect({
+  const { internalSelected, selectedLabelsRef: selectedLabelRef, handleInternalSelect: handleSelect } = useMenuSelect({
     previousActiveElementRef,
     setIsOpen,
     triggerAction: triggerAction ?? action,
