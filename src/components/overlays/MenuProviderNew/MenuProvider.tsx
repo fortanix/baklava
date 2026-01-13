@@ -362,6 +362,11 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
   } = options;
 
   const [internal, setInternal] = React.useState<ListBox.ItemKey | null>(selected ?? defaultSelected ?? null);
+  // `selectedLabelsRef` is required because option labels can be provided directly via
+  // `MenuProvider.Option` (e.g. `<MenuProvider.Option itemKey="x" label="Label" />`).
+  // Consumers may or may not provide `formatItemLabel`, and an explicit `label` on the
+  // option can override the value returned by `formatItemLabel`. This ref stores the
+  // resolved label so the correct value can be passed to the menu anchor.
   const selectedLabelRef = React.useRef<string | null>(getLabel(internal, formatItemLabel));
   const isControlled = typeof selected !== 'undefined';
 
