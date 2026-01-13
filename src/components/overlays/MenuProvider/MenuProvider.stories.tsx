@@ -47,7 +47,7 @@ export default {
     label: 'Test menu provider',
     formatItemLabel: formatFruitLabel,
     children: ({ props, selectedOption }) => (
-      <Button kind="primary" {...props()}>
+      <Button tabIndex={0} kind="primary" {...props()}>
         {typeof selectedOption !== 'undefined' ? `Selected: ${selectedOption?.label ?? 'none'}` : 'Open dropdown'}
       </Button>
     ),
@@ -90,7 +90,7 @@ export const MenuProviderWithPlacement: Story = {
   args: {
     placement: 'right',
     children: ({ props, selectedOption }) => (
-      <Button kind="primary" {...props()}>
+      <Button tabIndex={0} kind="primary" {...props()}>
         {typeof selectedOption !== 'undefined'
           ? `Selected: ${selectedOption?.label ?? 'none'}`
           : 'Open dropdown placed to the right'
@@ -144,7 +144,7 @@ const MenuProviderControlledC = (props: React.ComponentProps<typeof MenuProvider
         selected={selectedOption}
         onSelect={setSelectedOption}
       />
-      <div><Button label="Update state" onPress={() => { setSelectedOption('item-strawberry'); }}/></div>
+      <div><Button tabIndex={0} label="Update state" onPress={() => { setSelectedOption('item-strawberry'); }}/></div>
     </>
   );
 };
