@@ -32,14 +32,14 @@ type InternalItemDetails = Map<string, { label: string }>;
  */ 
 type useFloatingMenuOptions = {
   /** The accessible role of the menu. */
-  role?: undefined | UseFloatingElementOptions['role'];
+  role?: undefined | UseFloatingElementOptions['role'],
   /** The action that should trigger the menu to open. */
-  triggerAction?: undefined | UseFloatingElementOptions['triggerAction'];
+  triggerAction?: undefined | UseFloatingElementOptions['triggerAction'],
   /**
    * Alias for `triggerAction`. Deprecated, use `triggerAction` instead.
    * @deprecated
    */
-  action?: undefined | UseFloatingElementOptions['triggerAction'];
+  action?: undefined | UseFloatingElementOptions['triggerAction'],
   /**
    * The kind of keyboard interactions to include:
    * - 'none': No keyboard interactions set.
@@ -47,15 +47,15 @@ type useFloatingMenuOptions = {
    * - 'default': Acts as a menu button [1] (e.g. Enter will activate the popover).
    *   [1] https://www.w3.org/WAI/ARIA/apg/patterns/menu-button
    */
-  keyboardInteractions?: undefined | UseFloatingElementOptions['keyboardInteractions'];
+  keyboardInteractions?: undefined | UseFloatingElementOptions['keyboardInteractions'],
   /** Override the default placement */
-  placement?: undefined | UseFloatingElementOptions['placement'];
+  placement?: undefined | UseFloatingElementOptions['placement'],
   /** Offset size for the menu relative to the anchor. */
-  offset?: undefined | UseFloatingElementOptions['offset'];
+  offset?: undefined | UseFloatingElementOptions['offset'],
   /** For controlled open state. */
-  open?: undefined | boolean;
+  open?: undefined | boolean,
   /** When controlled, callback to set state. */
-  onOpenChange?: undefined | ((open: boolean) => void);
+  onOpenChange?: undefined | ((open: boolean) => void),
 };
 
 export const useFloatingMenu = (options: useFloatingMenuOptions) => {
@@ -157,25 +157,23 @@ export const useMenuKeyboardNavigation = (props: UseMenuKeyboardNavigationOption
  * MENU ANCHOR RENDERING
  * ---------------------------------------------------------------------------------------------------------------------
  */
-export type AnchorRenderArgs<TSelected> = {
+export type BaseAnchorRenderArgs = {
   props: (userProps?: undefined | React.HTMLProps<Element>) => Record<string, unknown>,
   open: boolean,
-  requestOpen: () => void, // FIXME: better naming
+  requestOpen: () => void,
   close: () => void,
-  selectedOption: TSelected,
-  selectedOptions: TSelected,
 };
-type UseMenuAnchorProps<TSelected> = {
-  children?: React.ReactNode | ((args: AnchorRenderArgs<TSelected>) => React.ReactNode);
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
+type UseMenuAnchorProps<RenderArgs> = {
+  children?: React.ReactNode | ((args: RenderArgs) => React.ReactNode),
+  isOpen: boolean,
+  setIsOpen: (open: boolean) => void,
   listBoxId: string;
-  getReferenceProps: UseFloatingElementResult['getReferenceProps'];
-  refs: UseFloatingElementResult['refs'];
-  onKeyDown: (e: React.KeyboardEvent) => void;
-  selected: TSelected;
+  getReferenceProps: UseFloatingElementResult['getReferenceProps'],
+  refs: UseFloatingElementResult['refs'],
+  onKeyDown: (e: React.KeyboardEvent) => void,
+  getRenderArgs: (args: BaseAnchorRenderArgs) => RenderArgs,
 };
-export const useMenuAnchor = <TSelected extends unknown>(props: UseMenuAnchorProps<TSelected>) => {
+export const useMenuAnchor = <RenderArgs extends BaseAnchorRenderArgs>(props: UseMenuAnchorProps<RenderArgs>) => {
   const {
     children,
     isOpen,
@@ -184,7 +182,7 @@ export const useMenuAnchor = <TSelected extends unknown>(props: UseMenuAnchorPro
     getReferenceProps,
     refs,
     onKeyDown,
-    selected,
+    getRenderArgs,
   } = props;
 
   // Note: memoize this, so that the anchor does not get rerendered every time the floating element position changes
@@ -217,14 +215,14 @@ export const useMenuAnchor = <TSelected extends unknown>(props: UseMenuAnchorPro
     };
 
     if (typeof children === 'function') {
-      return children({
+      const baseArgs: BaseAnchorRenderArgs = {
         props: anchorProps,
         open: isOpen,
         requestOpen: () => setIsOpen(true),
         close: () => setIsOpen(false),
-        selectedOption: selected,
-        selectedOptions: selected,
-      });
+      };
+
+      return children(getRenderArgs(baseArgs));
     }
 
     // If no `children` are defined, the consumer may be using an imperative handler rather than an anchor.
@@ -248,8 +246,8 @@ export const useMenuAnchor = <TSelected extends unknown>(props: UseMenuAnchorPro
     listBoxId,
     onKeyDown,
     refs.setReference,
-    selected,
     setIsOpen,
+    getRenderArgs,
   ]);
   
   return { anchor };
@@ -361,7 +359,6 @@ type UseMenuSelectHandlerOptions = {
   selected?: undefined | Set<string>,
   defaultSelected?: undefined | Set<string>,
   formatItemLabel?: undefined | ListBoxProps['formatItemLabel'],
-  onSelect?: undefined | ListBoxProps['onSelect'];
 };
 export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
   const {
@@ -371,7 +368,6 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
     selected,
     defaultSelected,
     formatItemLabel,
-    onSelect,
   } = options;
   
   // If the 'selected' prop is provided, the component is treated as controlled.
@@ -396,9 +392,12 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
       // In controlled mode, keep internal state in sync with the parent-controlled value
       const itemDetails = buildSelectedItemDetailsMap(selected, formatItemLabel);
       setInternalSelected(itemDetails);
-      selectedItemDetailsRef.current = itemDetails;
+
+      if (formatItemLabel) {
+        selectedItemDetailsRef.current = itemDetails;
+      }
     }
-  }, [isControlled, selected, formatItemLabel]);
+  }, [isControlled, selected, formatItemLabel, selectedItemDetailsRef]);
 
   const handleInternalSelect = React.useCallback((selectedItemDetails: InternalItemDetails) => {
     // NOTE: Important - the label from 'MenuProvider.Option' is captured here so it can
@@ -421,7 +420,7 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
         setIsOpen(false);
       }
     }, 150);
-  }, [triggerAction, onSelect, setIsOpen, previousActiveElementRef, isControlled]);
+  }, [triggerAction, setIsOpen, previousActiveElementRef, isControlled, selectedItemDetailsRef]);
 
   return {
     internalSelected,
@@ -492,7 +491,10 @@ export const useMenuToggle = (options: UseMenuToggleOptions) => {
  * Provider for a menu overlay that is triggered by (and positioned relative to) some anchor element.
  * ---------------------------------------------------------------------------------------------------------------------
  */
-export type MenuProviderProps<TSelected> = Omit<ListBoxProps, 'ref' | 'children' | 'label' | 'size'> & {
+type AnchorRenderArgs = BaseAnchorRenderArgs & {
+  selectedOption: ListBox.ItemDetails | null,
+};
+export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' | 'size'> & {
   // Imperative control (TEMP)
   /** A React ref to control the menu provider imperatively. */
   ref?: undefined | React.Ref<null | MenuProviderRef>,
@@ -510,7 +512,7 @@ export type MenuProviderProps<TSelected> = Omit<ListBoxProps, 'ref' | 'children'
   * The content to render, which should contain the anchor. This should be a render prop which takes props to
   * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
   */
-  children?: undefined | ((args: AnchorRenderArgs<TSelected>) => React.ReactNode | React.ReactNode);
+  children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode | React.ReactNode);
 
   /** The menu items. */
   items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode);
@@ -548,7 +550,7 @@ export type MenuProviderProps<TSelected> = Omit<ListBoxProps, 'ref' | 'children'
   /** Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
   enablePreciseTracking?: undefined | UseFloatingElementOptions['enablePreciseTracking'],
 };
-export const MenuProvider = Object.assign((props: MenuProviderProps<null | ListBox.ItemDetails>) => {
+export const MenuProvider = Object.assign((props: MenuProviderProps) => {
   const {
     label,
     children,
@@ -576,7 +578,14 @@ export const MenuProvider = Object.assign((props: MenuProviderProps<null | ListB
   const listBoxRef = React.useRef<React.ComponentRef<typeof ListBox.ListBox>>(null);
   const listBoxId = `listbox-${React.useId()}`;
   const previousActiveElementRef = React.useRef<HTMLElement | null>(null);
-
+  const selectedSet = React.useMemo(
+    () => (selected != null ? new Set([selected]) : undefined),
+    [selected],
+  );
+  const defaultSelectedSet = React.useMemo(
+    () => (defaultSelected != null ? new Set([defaultSelected]) : undefined),
+    [defaultSelected],
+  ); 
   const {
     isOpen,
     setIsOpen,
@@ -603,12 +612,20 @@ export const MenuProvider = Object.assign((props: MenuProviderProps<null | ListB
     previousActiveElementRef,
     setIsOpen,
     triggerAction: triggerAction ?? action,
-    onSelect,
     formatItemLabel,
-    selected: selected ? new Set([selected]) : undefined,
-    defaultSelected: defaultSelected ? new Set([defaultSelected]) : undefined,
-  });
-  const { anchor } = useMenuAnchor<ListBox.ItemDetails | null>({
+    selected: selectedSet,
+    defaultSelected: defaultSelectedSet,
+  })
+  const getRenderArgs = React.useCallback((base: BaseAnchorRenderArgs): AnchorRenderArgs => {
+    const itemKey = selectedItemDetailsRef.current.keys().next().value;
+    const label = selectedItemDetailsRef.current.values().next().value?.label;
+
+    return {
+      ...base,
+      selectedOption: itemKey ? { itemKey, label: label ?? itemKey } : null,
+    };
+  }, [selectedItemDetailsRef.current]);
+  const { anchor } = useMenuAnchor({
     children,
     isOpen,
     setIsOpen,
@@ -616,9 +633,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps<null | ListB
     getReferenceProps,
     refs,
     onKeyDown: onAnchorKeyDown,
-    selected: internalSelected
-      ? { itemKey: internalSelected, label: selectedItemDetailsRef.current ?? internalSelected }
-      : null,
+    getRenderArgs,
   });
 
   // Use external element as the reference, if provided
@@ -653,9 +668,8 @@ export const MenuProvider = Object.assign((props: MenuProviderProps<null | ListB
     const label = itemDetails?.label ?? null;
     const itemKey = itemDetails?.itemKey ?? null;
     onSelect?.(itemKey, itemKey === null ? null : { itemKey, label: (label ?? itemKey) });
-    handleInternalSelect(itemKey ? new Map([[itemKey, { label }]]) : new Map());
+    handleInternalSelect(itemKey ? new Map([[itemKey, { label: label ?? itemKey }]]) : new Map());
   }, [onSelect, handleInternalSelect]);
-
 
   return (
     <>
