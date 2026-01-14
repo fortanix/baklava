@@ -75,7 +75,9 @@ const preview = {
               'ToastProvider',
               'Tooltip',
               'MenuProvider',
+              'MenuLazyProvider',
               'MenuMultiProvider',
+              'MenuMultiLazyProvider',
             ],
             'lists',
             [
@@ -114,6 +116,7 @@ const preview = {
                 'ListBox',
                 'ListBoxLazy',
                 'ListBoxMulti',
+                'ListBoxMultiLazy',
                 'ComboBox',
                 'Select',
                 'SelectMulti',

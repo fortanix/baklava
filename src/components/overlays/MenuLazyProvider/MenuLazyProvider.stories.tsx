@@ -10,7 +10,7 @@ import { generateData } from '../../tables/util/generateData.ts'; // FIXME: move
 
 import { Button } from '../../actions/Button/Button.tsx';
 
-import { type ItemKey, type VirtualItemKeys, type ItemDetails, MenuLazyProvider } from './MenuLazyProvider.tsx';
+import { type ItemKey, type VirtualItemKeys, MenuLazyProvider } from './MenuLazyProvider.tsx';
 
 
 type MenuLazyProviderArgs = React.ComponentProps<typeof MenuLazyProvider>;
@@ -25,8 +25,6 @@ const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKey
   };
 };
 const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `test-${i}`);
-
-const formatFruitLabel = (item: ItemDetails): string => item.label;
 
 export default {
   component: MenuLazyProvider,
@@ -57,7 +55,7 @@ export const MenuLazyProviderStandard: Story = {};
 
 export const MenuLazyProviderWithDefault: Story = {
   args: {
-    defaultSelected: 'item-3',
+    defaultSelected: 'test-3',
   },
 };
 
@@ -87,13 +85,13 @@ export const MenuLazyProviderWithFocusTrigger: Story = {
   },
 };
 
-export const MenuProviderWithHoverTrigger: Story = {
+export const MenuLazyProviderWithHoverTrigger: Story = {
   args: {
     triggerAction: 'hover',
   },
 };
 
-const MenuProviderControlledC = (props: React.ComponentProps<typeof MenuLazyProvider>) => {
+const MenuLazyProviderControlledC = (props: React.ComponentProps<typeof MenuLazyProvider>) => {
   const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>(props.defaultSelected ?? null);
   const renderItemLabel = (item: string) => `Item ${item.split('-')[1]}`;
   
@@ -105,13 +103,13 @@ const MenuProviderControlledC = (props: React.ComponentProps<typeof MenuLazyProv
         selected={selectedOption}
         onSelect={setSelectedOption}
       />
-      <div><Button label="Update state" onPress={() => { setSelectedOption('item-3'); }}/></div>
+      <div><Button label="Update state" onPress={() => { setSelectedOption('test-3'); }}/></div>
     </>
   );
 };
-export const MenuProviderControlled: Story = {
-  render: args => <MenuProviderControlledC {...args}/>,
+export const MenuLazyProviderControlled: Story = {
+  render: args => <MenuLazyProviderControlledC {...args}/>,
 };
-export const MenuProviderControlledWithDefault: Story = {
-  render: args => <MenuProviderControlledC {...args} defaultSelected="item-3"/>,
+export const MenuLazyProviderControlledWithDefault: Story = {
+  render: args => <MenuLazyProviderControlledC {...args} defaultSelected="test-3"/>,
 };

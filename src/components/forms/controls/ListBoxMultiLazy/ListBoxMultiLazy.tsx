@@ -21,6 +21,7 @@ import {
 } from '../ListBoxMulti/ListBoxStore.tsx';
 import {
   type ListBoxMultiRef,
+  type ItemDetails,
   ListBoxMulti,
   EmptyPlaceholder,
   LoadingSpinner,
@@ -29,8 +30,9 @@ import {
 
 import cl from './ListBoxMultiLazy.module.scss';
 
-export { cl as ListBoxMultiLazyClassNames };
 
+export type { VirtualItem, ItemKey, VirtualItemKeys, ItemDetails, ListBoxMultiRef };
+export { cl as ListBoxMultiLazyClassNames };
 
 type ListItemVirtualProps = {
   ref?: undefined | React.Ref<null | HTMLButtonElement>,
