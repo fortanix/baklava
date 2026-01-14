@@ -38,7 +38,7 @@ export default {
     limit: 5,
     onUpdateLimit: () => {},
     renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
-    renderItemLabel: item => `Item ${item.index + 1}`,
+    renderItemLabel: item => `Item ${item.split('-')[1]}`,
   },
   render: (args) => <ListBoxLazy {...args}/>,
 } satisfies Meta<ListBoxLazyArgs>;
@@ -49,7 +49,7 @@ export const ListBoxLazyStandard: Story = {
     virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(10_000)),
     defaultSelected: 'test-2',
     renderItem: item => `Item ${item.index + 1}`,
-    renderItemLabel: item => `Item ${item.index + 1}`,
+    renderItemLabel: itemKey => `Item ${itemKey.split('-')[1]}`,
   },
 };
 
@@ -109,7 +109,7 @@ const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
       isLoading={isLoading}
       onSelect={() => { console.log('testing'); }}
       renderItem={item => <>Item {item.index + 1}</>}
-      renderItemLabel={item => `Item ${item.index + 1}`}
+      renderItemLabel={itemKey => `Item ${itemKey.split('-')[1]}`}
     />
   );
 };
@@ -129,7 +129,6 @@ const ListBoxLazyWithFilterC = (props: ListBoxLazyArgs) => {
   const [filter, setFilter] = React.useState('');
   
   const hasMoreItems = items.length < maxItems;
-  
   const itemsFiltered = items.filter(item => item.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()));
   
   const updateLimit = React.useCallback((limit: number) => {
@@ -174,7 +173,7 @@ const ListBoxLazyWithFilterC = (props: ListBoxLazyArgs) => {
           hasMoreItems={hasMoreItems}
           isLoading={isLoading}
           renderItem={item => <>{itemsFiltered[item.index]?.name}</>}
-          renderItemLabel={item => itemsFiltered[item.index]?.name ?? 'Unknown'}
+          renderItemLabel={itemKey => itemsFiltered.find(i => i.id === itemKey)?.name ?? 'Unknown'}
           placeholderEmpty={items.length === 0 ? 'No items' : 'No items found'}
         />
       }
@@ -231,7 +230,7 @@ const ListBoxLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxLazyArgs) => {
       virtualItemKeys={virtualItemKeys}
       isLoading={isLoading}
       renderItem={item => <div>Item {item.index + 1}</div>}
-      renderItemLabel={item => `Item ${item.index + 1}`}
+      renderItemLabel={itemKey => `Item ${itemKey.split('-')[1]}`}
       loadMoreItemsTriggerType="custom"
       loadMoreItemsTrigger={renderLoadMoreItemsTrigger()}
     />

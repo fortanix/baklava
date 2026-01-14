@@ -42,7 +42,7 @@ export default {
     limit: 5,
     onUpdateLimit: () => {},
     renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
-    renderItemLabel: item => `Item ${item.index}`,
+    renderItemLabel: item => `Item ${item.split('-')[1]}`,
     children: ({ props, selectedOption }) => (
       <Button tabIndex={0} kind="primary" {...props()}>
         {typeof selectedOption !== 'undefined' ? `Selected: ${selectedOption?.label ?? 'none'}` : 'Open dropdown'}
@@ -95,10 +95,11 @@ export const MenuProviderWithHoverTrigger: Story = {
 
 const MenuProviderControlledC = (props: React.ComponentProps<typeof MenuLazyProvider>) => {
   const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>(props.defaultSelected ?? null);
+  const renderItemLabel = (item: string) => `Item ${item.split('-')[1]}`;
   
   return (
     <>
-      <p>Selected: {selectedOption === null ? '(none)' : 'formatFruitLabel(selectedOption)'}</p>
+      <p>Selected: {selectedOption === null ? '(none)' : renderItemLabel(selectedOption)}</p>
       <MenuLazyProvider
         {...props}
         selected={selectedOption}

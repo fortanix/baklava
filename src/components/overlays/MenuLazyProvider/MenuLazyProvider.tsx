@@ -112,7 +112,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
     keyboardInteractions,
     placement,
     offset,
-    formatItemLabel,
+    renderItemLabel,
 
     ref,
     open,
@@ -133,6 +133,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
     () => (defaultSelected != null ? new Set([defaultSelected]) : undefined),
     [defaultSelected],
   ); 
+
   const {
     isOpen,
     setIsOpen,
@@ -159,7 +160,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
     previousActiveElementRef,
     setIsOpen,
     triggerAction: triggerAction ?? action,
-    formatItemLabel,
+    formatItemLabel: renderItemLabel,
     selected: selectedSet,
     defaultSelected: defaultSelectedSet,
   })
@@ -230,6 +231,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
           label={label}
           selected={selectedFromInternalSelected}
           defaultSelected={defaultSelected}
+          renderItemLabel={renderItemLabel}
           onSelect={handleSelect}
           onToggle={handleToggle}
           data-placement={floatingPlacement}
