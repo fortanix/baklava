@@ -165,7 +165,7 @@ export type BaseAnchorRenderArgs = {
   close: () => void,
 };
 type UseMenuAnchorProps<RenderArgs> = {
-  children?: React.ReactNode | ((args: RenderArgs) => React.ReactNode),
+  children?: undefined | React.ReactNode | ((args: RenderArgs) => React.ReactNode),
   isOpen: boolean,
   setIsOpen: (open: boolean) => void,
   listBoxId: string;
@@ -524,7 +524,7 @@ export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' 
   * The content to render, which should contain the anchor. This should be a render prop which takes props to
   * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
   */
-  children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode | React.ReactNode);
+  children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode;
 
   /** The menu items. */
   items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode);
