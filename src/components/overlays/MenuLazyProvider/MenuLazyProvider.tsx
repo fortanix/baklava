@@ -135,6 +135,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
   ); 
 
   const {
+    isMounted,
     isOpen,
     setIsOpen,
     refs,
@@ -152,7 +153,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
     open,
     onOpenChange,
   });
-  const { shouldMountMenu } = useMenuOpenControl({ isOpen, setIsOpen, open });
+  useMenuOpenControl({ setIsOpen, open });
   const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, listBoxRef });
   const { handleToggle } = useMenuToggle({ listBoxRef, action, toggleCauseRef, previousActiveElementRef });
   const { listBoxFocusRef } = useMenuListBoxFocus({ setIsOpen });
@@ -222,7 +223,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
   return (
     <>
       {anchor}
-      {shouldMountMenu && (
+      {isMounted && (
         <ListBoxLazy.ListBoxLazy
           {...floatingProps}
           {...propsRest}

@@ -127,6 +127,7 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
   const previousActiveElementRef = React.useRef<HTMLElement | null>(null);
    
   const {
+    isMounted,
     isOpen,
     setIsOpen,
     refs,
@@ -144,7 +145,7 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
     open,
     onOpenChange,
   });
-  const { shouldMountMenu } = useMenuOpenControl({ isOpen, setIsOpen, open });
+  useMenuOpenControl({ setIsOpen, open });
   const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, listBoxRef });
   const { handleToggle } = useMenuToggle({ listBoxRef, action, toggleCauseRef, previousActiveElementRef });
   const { listBoxFocusRef } = useMenuListBoxFocus({ setIsOpen });
@@ -211,7 +212,7 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
   return (
     <>
       {anchor}
-      {shouldMountMenu && (
+      {isMounted && (
         <ListBoxMultiLazy.ListBoxMultiLazy
           {...floatingProps}
           {...propsRest}

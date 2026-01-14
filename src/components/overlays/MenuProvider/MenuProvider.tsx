@@ -7,7 +7,6 @@ import * as React from 'react';
 // Utils
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import { mergeCallbacks, mergeRefs } from '../../../util/reactUtil.ts';
-import { useDebounce } from '../../../util/hooks/useDebounce.ts';
 import {
   type UseFloatingElementOptions,
   UseFloatingElementResult,
@@ -92,20 +91,16 @@ export const useFloatingMenu = (options: useFloatingMenuOptions) => {
  * ---------------------------------------------------------------------------------------------------------------------
  */ 
 type UseMenuOpenControlOptions = {
-  isOpen: boolean,
   setIsOpen: (open: boolean) => void,
   open?: undefined | boolean,
 };
 export const useMenuOpenControl = (options: UseMenuOpenControlOptions) => {
-  const {isOpen, setIsOpen, open } = options;
-  const [shouldMountMenu] = useDebounce(isOpen, isOpen ? 0 : 1000);
+  const { setIsOpen, open } = options;
 
   // NOTE: This is temporary. Keep internal state in sync with the controlled prop
   React.useEffect(() => {
     if (typeof open !== 'undefined') { setIsOpen(open); }
   }, [open, setIsOpen]);
-
-  return { shouldMountMenu };
 };
 
 /**
@@ -599,6 +594,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
     [defaultSelected],
   ); 
   const {
+    isMounted,
     isOpen,
     setIsOpen,
     refs,
@@ -616,7 +612,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
     open,
     onOpenChange,
   });
-  const { shouldMountMenu } = useMenuOpenControl({ isOpen, setIsOpen, open });
+  useMenuOpenControl({ setIsOpen, open });
   const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, listBoxRef });
   const { handleToggle } = useMenuToggle({ listBoxRef, action, toggleCauseRef, previousActiveElementRef });
   const { listBoxFocusRef } = useMenuListBoxFocus({ setIsOpen });
@@ -686,7 +682,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
   return (
     <>
       {anchor}
-      {shouldMountMenu && (
+      {isMounted && (
         <ListBox.ListBox
           {...floatingProps}
           {...propsRest}

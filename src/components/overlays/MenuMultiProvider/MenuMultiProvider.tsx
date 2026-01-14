@@ -126,6 +126,7 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
   const previousActiveElementRef = React.useRef<HTMLElement | null>(null);
    
   const {
+    isMounted,
     isOpen,
     setIsOpen,
     refs,
@@ -143,7 +144,7 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
     open,
     onOpenChange,
   });
-  const { shouldMountMenu } = useMenuOpenControl({ isOpen, setIsOpen, open });
+  useMenuOpenControl({ setIsOpen, open });
   const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, listBoxRef });
   const { handleToggle } = useMenuToggle({ listBoxRef, action, toggleCauseRef, previousActiveElementRef });
   const { listBoxFocusRef } = useMenuListBoxFocus({ setIsOpen });
@@ -210,7 +211,7 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
   return (
     <>
       {anchor}
-      {shouldMountMenu && (
+      {isMounted && (
         <ListBoxMulti.ListBoxMulti
           {...floatingProps}
           {...propsRest}
