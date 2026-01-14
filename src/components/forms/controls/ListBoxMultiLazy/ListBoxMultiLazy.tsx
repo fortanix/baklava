@@ -37,7 +37,7 @@ type ListItemVirtualProps = {
   virtualItem: VirtualItem,
   itemsCount: number,
   renderItem: (item: VirtualItem) => React.ReactNode,
-  renderItemLabel: (item: VirtualItem) => string,
+  renderItemLabel: (itemKey: string) => string,
 };
 const ListItemVirtual = ({ ref, virtualItem, itemsCount, renderItem, renderItemLabel }: ListItemVirtualProps) => {
   const styles = React.useMemo(() => ({
@@ -49,7 +49,7 @@ const ListItemVirtual = ({ ref, virtualItem, itemsCount, renderItem, renderItemL
   }), [virtualItem.start]);
   
   const content = renderItem(virtualItem);
-  const label = renderItemLabel(virtualItem);
+  const label = renderItemLabel(String(virtualItem.key));
   
   return (
     <ListBoxMulti.Option
@@ -312,18 +312,6 @@ export const ListBoxMultiLazy = (props: ListBoxMultiLazyProps) => {
     loadMoreItemsTrigger,
   };
   
-  const formatItemLabel = React.useCallback((itemKey: ItemKey) => {
-    const virtualItem: VirtualItem = {
-      key: itemKey,
-      index: 0,
-      start: 0,
-      end: 0,
-      size: 0,
-      lane: 0,
-    };
-    return renderItemLabel(virtualItem);
-  }, [renderItemLabel]);
-  
   return (
     <ListBoxMulti
       {...propsRest}
@@ -334,7 +322,7 @@ export const ListBoxMultiLazy = (props: ListBoxMultiLazyProps) => {
         propsRest.className,
       )}
       virtualItemKeys={virtualItemKeys}
-      formatItemLabel={formatItemLabel}
+      formatItemLabel={renderItemLabel}
       placeholderEmpty={false}
     >
       <ListBoxVirtualList {...propsVirtualList}/>
