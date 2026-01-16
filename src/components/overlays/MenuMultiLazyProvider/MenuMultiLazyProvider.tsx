@@ -50,7 +50,7 @@ export type MenuMultiLazyProviderProps = Omit<ListBoxMultiProps, 'ref' | 'childr
   /** When controlled, callback to set state. */
   onOpenChange?: undefined | ((isOpen: boolean) => void),
   /** (optional) Use an existing DOM node as the positioning anchor. */
-  anchorRef?: undefined | React.RefObject<HTMLElement | null>,
+  anchorRef?: undefined | React.RefObject<null | HTMLElement>,
 
   /** An accessible name for this menu provider. Required. */
   label: string,
@@ -124,7 +124,7 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
 
   const listBoxRef = React.useRef<React.ComponentRef<typeof ListBoxMultiLazy.ListBoxMultiLazy>>(null);
   const listBoxId = React.useId();
-  const previousActiveElementRef = React.useRef<HTMLElement | null>(null);
+  const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
    
   const {
     isMounted,

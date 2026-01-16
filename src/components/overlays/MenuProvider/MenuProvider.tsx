@@ -41,7 +41,7 @@ export { cl as MenuProviderClassNames };
  * ---------------------------------------------------------------------------------------------------------------------
  */
 type AnchorRenderArgs = BaseAnchorRenderArgs & {
-  selectedOption: ListBox.ItemDetails | null,
+  selectedOption: null | ListBox.ItemDetails,
 };
 export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' | 'size'> & {
   // Imperative control (TEMP)
@@ -52,19 +52,19 @@ export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' 
   /** When controlled, callback to set state. */
   onOpenChange?: undefined | ((isOpen: boolean) => void),
   /** (optional) Use an existing DOM node as the positioning anchor. */
-  anchorRef?: undefined | React.RefObject<HTMLElement | null>,
+  anchorRef?: undefined | React.RefObject<null | HTMLElement>,
 
   /** An accessible name for this menu provider. Required. */
-  label: string;
+  label: string,
 
   /**
   * The content to render, which should contain the anchor. This should be a render prop which takes props to
   * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
   */
-  children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode;
+  children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode,
 
   /** The menu items. */
-  items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode);
+  items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode),
 
   /** The accessible role of the menu. */
   role?: undefined | UseFloatingElementOptions['role'],
@@ -126,7 +126,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
 
   const listBoxRef = React.useRef<React.ComponentRef<typeof ListBox.ListBox>>(null);
   const listBoxId = React.useId();
-  const previousActiveElementRef = React.useRef<HTMLElement | null>(null);
+  const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
   const selectedSet = React.useMemo(
     () => (selected != null ? new Set([selected]) : undefined),
     [selected],
@@ -214,7 +214,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
     return internalSelected.keys().next().value ?? null; // 'null' for controlled 'ListBox'
   }, [internalSelected]);
 
-  const handleSelect = React.useCallback((_key: ListBox.ItemKey | null, itemDetails: ListBox.ItemDetails | null) => {
+  const handleSelect = React.useCallback((_key: null | ListBox.ItemKey, itemDetails: null | ListBox.ItemDetails) => {
     const label = itemDetails?.label ?? null;
     const itemKey = itemDetails?.itemKey ?? null;
     onSelect?.(itemKey, itemKey === null ? null : { itemKey, label: (label ?? itemKey) });

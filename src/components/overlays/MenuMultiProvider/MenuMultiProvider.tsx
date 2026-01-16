@@ -108,7 +108,7 @@ export const useMenuOpenControl = (options: UseMenuOpenControlOptions) => {
  */
 type UseMenuKeyboardNavigationOptions = {
   setIsOpen: (open: boolean) => void,
-  listBoxRef: React.RefObject<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti> | null>,
+  listBoxRef: React.RefObject<null | React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>,
 };
 export const useMenuKeyboardNavigation = (props: UseMenuKeyboardNavigationOptions) => {
   const { setIsOpen, listBoxRef } = props;
@@ -340,7 +340,7 @@ const buildSelectedItemDetailsMap = (
 // would unnecessarily invoke 'fn' on each render, even though the ref value itself is preserved.
 // This helper ensures the initializer runs exactly once.
 const useLazyRef = <T,>(initializer: () => T) => {
-  const ref = React.useRef<T | null>(null);
+  const ref = React.useRef<null | T>(null);
 
   if (ref.current === null) { ref.current = initializer(); }
 
@@ -348,7 +348,7 @@ const useLazyRef = <T,>(initializer: () => T) => {
 };
 
 type UseMenuSelectHandlerOptions = {
-  previousActiveElementRef: React.RefObject<HTMLElement | null>,
+  previousActiveElementRef: React.RefObject<null | HTMLElement>,
   setIsOpen: (open: boolean) => void;
   triggerAction?: undefined | UseFloatingElementOptions['triggerAction'];
   selected?: undefined | Set<string>,
@@ -442,10 +442,10 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
  * ---------------------------------------------------------------------------------------------------------------------
  */
 type UseMenuToggleOptions = {
-  listBoxRef: React.RefObject<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti> | null>,
-  previousActiveElementRef: React.RefObject<HTMLElement | null>,
+  listBoxRef: React.RefObject<null | React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>,
+  previousActiveElementRef: React.RefObject<null | HTMLElement>,
   action?: undefined | UseFloatingElementOptions['triggerAction'],
-  toggleCauseRef?: undefined | React.RefObject<'ArrowUp' | 'ArrowDown' | null>,
+  toggleCauseRef?: undefined | React.RefObject<null | 'ArrowUp' | 'ArrowDown'>,
 };
 export const useMenuToggle = (options: UseMenuToggleOptions) => {
   const {
@@ -510,19 +510,19 @@ export type MenuMultiProviderProps = Omit<ListBoxMultiProps, 'ref' | 'children' 
   /** When controlled, callback to set state. */
   onOpenChange?: undefined | ((isOpen: boolean) => void),
   /** (optional) Use an existing DOM node as the positioning anchor. */
-  anchorRef?: undefined | React.RefObject<HTMLElement | null>,
+  anchorRef?: undefined | React.RefObject<null | HTMLElement>,
 
   /** An accessible name for this menu provider. Required. */
-  label: string;
+  label: string,
 
   /**
   * The content to render, which should contain the anchor. This should be a render prop which takes props to
   * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
   */
-  children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode;
+  children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode,
 
   /** The menu items. */
-  items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode);
+  items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode),
 
   /** The accessible role of the menu. */
   role?: undefined | UseFloatingElementOptions['role'],
@@ -584,7 +584,7 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
 
   const listBoxRef = React.useRef<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>(null);
   const listBoxId = React.useId();
-  const previousActiveElementRef = React.useRef<HTMLElement | null>(null);
+  const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
    
   const {
     isMounted,

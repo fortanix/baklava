@@ -39,7 +39,7 @@ type ListBoxLazyProps = ComponentProps<typeof ListBoxLazy.ListBoxLazy>;
  * ---------------------------------------------------------------------------------------------------------------------
  */
 type AnchorRenderArgs = BaseAnchorRenderArgs & {
-  selectedOption: ListBoxLazy.ItemDetails | null,
+  selectedOption: null | ListBoxLazy.ItemDetails,
 };
 export type MenuLazyProviderProps = Omit<ListBoxLazyProps, 'ref' | 'children' | 'label' | 'size'> & {
   // Imperative control (TEMP)
@@ -50,7 +50,7 @@ export type MenuLazyProviderProps = Omit<ListBoxLazyProps, 'ref' | 'children' | 
   /** When controlled, callback to set state. */
   onOpenChange?: undefined | ((isOpen: boolean) => void),
   /** (optional) Use an existing DOM node as the positioning anchor. */
-  anchorRef?: undefined | React.RefObject<HTMLElement | null>,
+  anchorRef?: undefined | React.RefObject<null | HTMLElement>,
 
   /** An accessible name for this menu provider. Required. */
   label: string,
@@ -124,7 +124,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
 
   const listBoxRef = React.useRef<React.ComponentRef<typeof ListBoxLazy.ListBoxLazy>>(null);
   const listBoxId = React.useId();
-  const previousActiveElementRef = React.useRef<HTMLElement | null>(null);
+  const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
   const selectedSet = React.useMemo(
     () => (selected != null ? new Set([selected]) : undefined),
     [selected],
@@ -213,7 +213,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
     return internalSelected.keys().next().value ?? null; // 'null' for controlled 'ListBox'
   }, [internalSelected]);
 
-  const handleSelect = React.useCallback((_key: ListBoxLazy.ItemKey | null, itemDetails: ListBoxLazy.ItemDetails | null) => {
+  const handleSelect = React.useCallback((_key: null | ListBoxLazy.ItemKey, itemDetails: null | ListBoxLazy.ItemDetails) => {
     const label = itemDetails?.label ?? null;
     const itemKey = itemDetails?.itemKey ?? null;
     onSelect?.(itemKey, itemKey === null ? null : { itemKey, label: (label ?? itemKey) });
