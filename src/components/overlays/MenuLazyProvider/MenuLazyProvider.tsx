@@ -22,7 +22,7 @@ import {
   useMenuOpenControl,
   useMenuSelect,
   useMenuToggle,
-} from '../MenuProvider/MenuProvider.tsx';
+} from '../MenuMultiProvider/MenuMultiProvider.tsx';
 
 // Styles
 import { MenuProviderClassNames as cl } from '../MenuProvider/MenuProvider.tsx';
