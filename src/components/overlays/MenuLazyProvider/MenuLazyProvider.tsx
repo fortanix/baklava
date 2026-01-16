@@ -7,12 +7,10 @@ import * as React from 'react';
 // Utils
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import { mergeCallbacks, mergeRefs } from '../../../util/reactUtil.ts';
-import {
-  type UseFloatingElementOptions,
-} from '../../util/overlays/floating-ui/useFloatingElement.tsx';
+import { type UseFloatingElementOptions } from '../../util/overlays/floating-ui/useFloatingElement.tsx';
 
 // Components
-import * as ListBox from '../../forms/controls/ListBox/ListBox.tsx';
+import * as ListBoxLazy from '../../forms/controls/ListBoxLazy/ListBoxLazy.tsx';
 import {
   BaseAnchorRenderArgs,
   MenuProviderRef,
@@ -27,13 +25,13 @@ import {
 } from '../MenuMultiProvider/MenuMultiProvider.tsx';
 
 // Styles
-import cl from './MenuProvider.module.scss';
+import { MenuProviderClassNames as cl } from '../MenuProvider/MenuProvider.tsx';
 
 
-export type ItemDetails = ListBox.ItemDetails;
-export type ItemKey = ListBox.ItemKey;
-type ListBoxProps = ComponentProps<typeof ListBox.ListBox>;
-export { cl as MenuProviderClassNames };
+export type ItemDetails = ListBoxLazy.ItemDetails;
+export type ItemKey = ListBoxLazy.ItemKey;
+export type VirtualItemKeys = ListBoxLazy.VirtualItemKeys;
+type ListBoxLazyProps = ComponentProps<typeof ListBoxLazy.ListBoxLazy>;
 
 /**
  * MENU PROVIDER
@@ -41,9 +39,9 @@ export { cl as MenuProviderClassNames };
  * ---------------------------------------------------------------------------------------------------------------------
  */
 type AnchorRenderArgs = BaseAnchorRenderArgs & {
-  selectedOption: null | ListBox.ItemDetails,
+  selectedOption: null | ListBoxLazy.ItemDetails,
 };
-export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' | 'size'> & {
+export type MenuLazyProviderProps = Omit<ListBoxLazyProps, 'ref' | 'children' | 'label' | 'size'> & {
   // Imperative control (TEMP)
   /** A React ref to control the menu provider imperatively. */
   ref?: undefined | React.Ref<null | MenuProviderRef>,
@@ -79,7 +77,7 @@ export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' 
   action?: undefined | UseFloatingElementOptions['triggerAction'],
   
   /** The (inline) size of the menu. */
-  menuSize?: ListBoxProps['size'],
+  menuSize?: ListBoxLazyProps['size'],
   
   /**
    * The kind of keyboard interactions to include:
@@ -99,7 +97,7 @@ export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' 
   /** Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
   enablePreciseTracking?: undefined | UseFloatingElementOptions['enablePreciseTracking'],
 };
-export const MenuProvider = Object.assign((props: MenuProviderProps) => {
+export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
   const {
     label,
     children,
@@ -114,7 +112,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
     keyboardInteractions,
     placement,
     offset,
-    formatItemLabel,
+    renderItemLabel,
 
     ref,
     open,
@@ -124,7 +122,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
     ...propsRest
   } = props;
 
-  const listBoxRef = React.useRef<React.ComponentRef<typeof ListBox.ListBox>>(null);
+  const listBoxRef = React.useRef<React.ComponentRef<typeof ListBoxLazy.ListBoxLazy>>(null);
   const listBoxId = React.useId();
   const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
   const selectedSet = React.useMemo(
@@ -135,6 +133,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
     () => (defaultSelected != null ? new Set([defaultSelected]) : undefined),
     [defaultSelected],
   ); 
+
   const {
     isMounted,
     isOpen,
@@ -162,7 +161,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
     previousActiveElementRef,
     setIsOpen,
     triggerAction: triggerAction ?? action,
-    formatItemLabel,
+    formatItemLabel: renderItemLabel,
     selected: selectedSet,
     defaultSelected: defaultSelectedSet,
   })
@@ -203,18 +202,18 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
     onKeyDown: mergeCallbacks([propsRest.onKeyDown, onMenuKeyDown]),
   });
 
-  const mergedListBoxRef = mergeRefs<React.ComponentRef<typeof ListBox.ListBox>>(
+  const mergedListBoxRef = mergeRefs<React.ComponentRef<typeof ListBoxLazy.ListBoxLazy>>(
     listBoxRef,
     listBoxFocusRef,
     refs.setFloating,
-    floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBox.ListBox>>,
+    floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBoxLazy.ListBoxLazy>>,
   );
 
   const selectedFromInternalSelected = React.useMemo(() => {
     return internalSelected.keys().next().value ?? null; // 'null' for controlled 'ListBox'
   }, [internalSelected]);
 
-  const handleSelect = React.useCallback((_key: null | ListBox.ItemKey, itemDetails: null | ListBox.ItemDetails) => {
+  const handleSelect = React.useCallback((_key: null | ListBoxLazy.ItemKey, itemDetails: null | ListBoxLazy.ItemDetails) => {
     const label = itemDetails?.label ?? null;
     const itemKey = itemDetails?.itemKey ?? null;
     onSelect?.(itemKey, itemKey === null ? null : { itemKey, label: (label ?? itemKey) });
@@ -225,7 +224,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
     <>
       {anchor}
       {isMounted && (
-        <ListBox.ListBox
+        <ListBoxLazy.ListBoxLazy
           {...floatingProps}
           {...propsRest}
           ref={mergedListBoxRef}
@@ -233,23 +232,13 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
           label={label}
           selected={selectedFromInternalSelected}
           defaultSelected={defaultSelected}
+          renderItemLabel={renderItemLabel}
           onSelect={handleSelect}
           onToggle={handleToggle}
           data-placement={floatingPlacement}
-        >
-          {typeof items === 'function'
-            ? items({ close: () => { setIsOpen(false); } })
-            : items}
-        </ListBox.ListBox>
+        />
       )}
     </>
   );
-}, {
-    Static: ListBox.Static,
-    Option: ListBox.Option,
-    Action: ListBox.Action,
-    Header: ListBox.Header,
-    FooterActions: ListBox.FooterActions,
-  },
-);
+};
 

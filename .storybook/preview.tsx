@@ -75,7 +75,9 @@ const preview = {
               'ToastProvider',
               'Tooltip',
               'MenuProvider',
+              'MenuLazyProvider',
               'MenuMultiProvider',
+              'MenuMultiLazyProvider',
             ],
             'lists',
             [
