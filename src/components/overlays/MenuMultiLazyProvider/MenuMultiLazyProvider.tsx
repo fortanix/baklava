@@ -53,16 +53,16 @@ export type MenuMultiLazyProviderProps = Omit<ListBoxMultiProps, 'ref' | 'childr
   anchorRef?: undefined | React.RefObject<HTMLElement | null>,
 
   /** An accessible name for this menu provider. Required. */
-  label: string;
+  label: string,
 
   /**
   * The content to render, which should contain the anchor. This should be a render prop which takes props to
   * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
   */
-  children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode;
+  children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode,
 
   /** The menu items. */
-  items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode);
+  items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode),
 
   /** The accessible role of the menu. */
   role?: undefined | UseFloatingElementOptions['role'],
@@ -123,7 +123,7 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
   } = props;
 
   const listBoxRef = React.useRef<React.ComponentRef<typeof ListBoxMultiLazy.ListBoxMultiLazy>>(null);
-  const listBoxId = `listboxmulti-${React.useId()}`;
+  const listBoxId = React.useId();
   const previousActiveElementRef = React.useRef<HTMLElement | null>(null);
    
   const {
@@ -197,7 +197,7 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
   );
 
   const selectedFromInternalSelected = React.useMemo(() => {
-    return new Set(internalSelected.keys()); // 'null' for controlled 'ListBox'
+    return new Set(internalSelected.keys());
   }, [internalSelected]);
 
   const handleSelect = React.useCallback((

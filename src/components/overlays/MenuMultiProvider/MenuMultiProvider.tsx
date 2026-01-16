@@ -122,7 +122,7 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
   } = props;
 
   const listBoxRef = React.useRef<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>(null);
-  const listBoxId = `listboxmulti-${React.useId()}`;
+  const listBoxId = React.useId();
   const previousActiveElementRef = React.useRef<HTMLElement | null>(null);
    
   const {

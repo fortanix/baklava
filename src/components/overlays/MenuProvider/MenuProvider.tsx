@@ -583,7 +583,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
   } = props;
 
   const listBoxRef = React.useRef<React.ComponentRef<typeof ListBox.ListBox>>(null);
-  const listBoxId = `listbox-${React.useId()}`;
+  const listBoxId = React.useId();
   const previousActiveElementRef = React.useRef<HTMLElement | null>(null);
   const selectedSet = React.useMemo(
     () => (selected != null ? new Set([selected]) : undefined),

@@ -39,7 +39,7 @@ type ListItemVirtualProps = {
   virtualItem: VirtualItem,
   itemsCount: number,
   renderItem: (item: VirtualItem) => React.ReactNode,
-  renderItemLabel: (itemKey: string) => string,
+  renderItemLabel: (itemKey: ItemKey) => string,
 };
 const ListItemVirtual = ({ ref, virtualItem, itemsCount, renderItem, renderItemLabel }: ListItemVirtualProps) => {
   const styles = React.useMemo(() => ({
