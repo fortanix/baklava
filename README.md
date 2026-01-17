@@ -14,6 +14,7 @@ You can find the latest Storybook documentation [here](https://fortanix.github.i
 Requirements:
 
 - React v19 or higher.
+- Sass (recommended)
 
 Installation:
 
@@ -40,9 +41,9 @@ To import a component:
 import { Button } from '@fortanix/baklava';
 ```
 
-For the styling, add the following import to your main CSS file:
+For the styling, add the following import to your main `.scss` file (assumes you have Sass set up):
 
-```
+```scss
 @use '@fortanix/baklava';
 ```
 

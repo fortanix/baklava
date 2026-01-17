@@ -123,6 +123,7 @@ export * as MultiSearch from '../src/components/tables/MultiSearch/MultiSearch.t
 /**
  * Layouts
  */
+export { ErrorLayout } from '../src/layouts/ErrorLayout/ErrorLayout.tsx';
 
 export { DialogLayout } from '../src/layouts/DialogLayout/DialogLayout.tsx';
 

@@ -44,7 +44,7 @@ export default {
     children: ({ props, selectedOptions }) => {
       const selectedLabels = [...selectedOptions.values()].map(({ label }) => label).join(', ');
       return (
-        <Button tabIndex={0} kind="primary" {...props()}>
+        <Button kind="primary" {...props()}>
           {selectedOptions.size > 0 ? `Selected: ${selectedLabels}` : 'Open dropdown'}
         </Button>
       );
@@ -107,7 +107,7 @@ const MenuMultiLazyProviderControlledC = (props: React.ComponentProps<typeof Men
         onSelect={setSelectedOptions}
       />
       <div>
-        <Button tabIndex={0} label="Update state"
+        <Button label="Update state"
           onPress={() => { setSelectedOptions(new Set(['test-2', 'test-3'])); }}
         />
       </div>

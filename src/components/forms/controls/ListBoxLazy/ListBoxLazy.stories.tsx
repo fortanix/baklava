@@ -107,7 +107,6 @@ const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
       virtualItemKeys={virtualItemKeys}
       hasMoreItems={hasMoreItems}
       isLoading={isLoading}
-      onSelect={() => { console.log('testing'); }}
       renderItem={item => <>Item {item.index + 1}</>}
       renderItemLabel={itemKey => `Item ${itemKey.split('-')[1]}`}
     />
