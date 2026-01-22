@@ -92,7 +92,7 @@ const packageConfig = {
   // Dev dependencies (only needed when building, or making changes to the code)
   devDependencies: {
     // CLI
-    'plop': '^4.0.4',
+    'plop': '^4.0.5',
     'glob': '^13.0.0',
     
     // Build
@@ -107,18 +107,18 @@ const packageConfig = {
     // Static analysis
     'typescript': '^5.9.3',
     '@types/node': '^24.*', // Should match the Node major version in .nvmrc
-    'stylelint': '^16.26.1',
-    'stylelint-config-standard-scss': '^16.0.0',
+    'stylelint': '^17.0.0',
+    'stylelint-config-standard-scss': '^17.0.0',
     'stylelint-use-logical': '^2.1.2',
-    '@biomejs/biome': '^2.3.10',
+    '@biomejs/biome': '^2.3.11',
     
     // Testing
     'jsdom': '^27.4.0',
-    'vitest': '^4.0.16',
-    '@vitest/ui': '^4.0.16',
-    '@vitest/browser-playwright': '^4.0.16',
-    '@vitest/coverage-v8': '^4.0.16',
-    '@testing-library/react': '^16.3.1',
+    'vitest': '^4.0.17',
+    '@vitest/ui': '^4.0.17',
+    '@vitest/browser-playwright': '^4.0.17',
+    '@vitest/coverage-v8': '^4.0.17',
+    '@testing-library/react': '^16.3.2',
     '@testing-library/user-event': '^14.6.1',
     '@testing-library/jest-dom': '^6.9.1',
     '@ngneat/falso': '^8.0.2',
@@ -126,15 +126,15 @@ const packageConfig = {
     'playwright': '^1.57.0',
     
     // Storybook
-    'storybook': '^10.1.11',
-    '@storybook/react-vite': '^10.1.11',
-    '@storybook/addon-a11y': '^10.1.11',
-    '@storybook/addon-designs': '^11.1.0',
-    '@storybook/addon-docs': '^10.1.11',
-    '@storybook/addon-links': '^10.1.11',
-    '@storybook/addon-vitest': '^10.1.11',
-    'chromatic': '^13.1.4',
-    '@chromatic-com/storybook': '^4.1.3', // Chromatic integration for Storybook
+    'storybook': '^10.2.0',
+    '@storybook/react-vite': '^10.2.0',
+    '@storybook/addon-a11y': '^10.2.0',
+    '@storybook/addon-designs': '^11.1.1',
+    '@storybook/addon-docs': '^10.2.0',
+    '@storybook/addon-links': '^10.2.0',
+    '@storybook/addon-vitest': '^10.2.0',
+    'chromatic': '^13.3.5',
+    '@chromatic-com/storybook': '^5.0.0', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     //'@storybook-community/storybook-dark-mode': '^6.0.0',
     //'@percy/cli': '^1.31.2',
@@ -143,10 +143,10 @@ const packageConfig = {
     // Styling
     'typescript-plugin-css-modules': '^5.2.0',
     'sass-embedded': '^1.97.1',
-    'lightningcss': '^1.30.2',
+    'lightningcss': '^1.31.1',
     
     // React
-    '@types/react': '^19.2.7',
+    '@types/react': '^19.2.9',
     '@types/react-dom': '^19.2.3',
     
     // Data table
@@ -162,17 +162,17 @@ const packageConfig = {
     // React
     'react': '^19.2.3',
     'react-dom': '^19.2.3', // Must be in sync with `react`
-    'react-error-boundary': '^6.0.1',
+    'react-error-boundary': '^6.1.0',
     'classnames': '^2.5.1',
-    'zustand': '^5.0.9',
+    'zustand': '^5.0.10',
     
     '@floating-ui/react': '^0.27.16',
     'react-table': '^7.8.0',
     'react-datepicker': '^9.1.0',
     
-    'effect': '^3.19.13',
+    'effect': '^3.19.14',
     'react-hook-form': '^7.69.0',
-    '@tanstack/react-virtual': '^3.13.13',
+    '@tanstack/react-virtual': '^3.13.18',
     
     //'optics-ts': '^2.4.1',
   },
