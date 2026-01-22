@@ -126,6 +126,9 @@
     "react-table": {
       "react": "$react",
       "react-dom": "$react-dom"
+    },
+    "stylelint-use-logical": {
+      "stylelint": "$stylelint"
     }
   }
 }

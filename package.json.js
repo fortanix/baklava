@@ -192,6 +192,10 @@ const packageConfig = {
       'react': '$react',
       'react-dom': '$react-dom',
     },
+    // TODO: remove this after https://github.com/csstools/stylelint-use-logical/issues/38 is resolved
+    'stylelint-use-logical': {
+      'stylelint': '$stylelint',
+    },
   },
 };
 
