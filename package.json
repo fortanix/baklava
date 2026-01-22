@@ -105,6 +105,8 @@
     "message-tag": "^0.10.0",
     "effect": "^3.21.2",
     "avl": "^2.0.0",
+    "@react-aria/interactions": "^3.26.0",
+    "@react-aria/focus": "^3.21.3",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-error-boundary": "^6.1.1",

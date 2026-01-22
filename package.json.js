@@ -160,6 +160,8 @@ const packageConfig = {
     'effect': '^3.21.2',
     //'optics-ts': '^2.4.1',
     'avl': '^2.0.0',
+    '@react-aria/interactions': '^3.26.0',
+    '@react-aria/focus': '^3.21.3',
     
     // React
     'react': '^19.2.6',
