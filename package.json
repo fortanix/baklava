@@ -104,7 +104,8 @@
   "dependencies": {
     "date-fns": "^4.1.0",
     "message-tag": "^0.10.0",
-    "avl": "^2.0.0",
+    "@react-aria/interactions": "^3.26.0",
+    "@react-aria/focus": "^3.21.3",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-error-boundary": "^6.0.0",

@@ -7,12 +7,19 @@ export type ItemKey = string;
 
 const internalKey = Symbol('baklava.CompoundList.internal');
 export type CompoundListContext = {
+  /**
+   * Internal bookkeeping. Updated through mutation to support a large number of items and prevent the cost of
+   * immutable updates to the registry/ordering.
+   */
   [internalKey]: {
     registry: Map<ItemKey, Element>,
-    ordering: Array<ItemKey>,
+    orderingCache: Array<ItemKey>,
+    orderingDirty: boolean, // Whether `ordering` needs to be recomputed
   },
   
+  /** Unique component ID for the current list component. */
   componentId: string,
+  /** Compute the ordered list of item keys, sorted by DOM order. */
   getItemsOrdering: () => Array<ItemKey>,
 };
 export const CompoundListContext = React.createContext<null | CompoundListContext>(null);
@@ -23,14 +30,15 @@ export const useCompoundList = <E extends Element>() => {
   
   const contextInternal = useMemoOnce<CompoundListContext[typeof internalKey]>(() => ({
     registry: new Map(),
-    ordering: [],
+    orderingCache: [],
+    orderingDirty: false,
   }));
   
   const getItemsOrdering = React.useCallback<CompoundListContext['getItemsOrdering']>(() => {
-    const cachedOrdering = contextInternal.ordering;
+    const cachedOrdering = contextInternal.orderingCache;
     const listEl = ref.current;
     
-    if (listEl === null) {
+    if (listEl === null || contextInternal.orderingDirty === false) {
       return cachedOrdering;
     }
     
@@ -43,7 +51,7 @@ export const useCompoundList = <E extends Element>() => {
       });
     
     // Cache the computed ordering
-    contextInternal.ordering = ordering;
+    contextInternal.orderingCache = ordering;
     
     return ordering;
   }, [componentId]);
@@ -69,12 +77,17 @@ export const useCompoundListItem = <E extends Element>({ itemKey }: UseCompoundL
   const context = React.use(CompoundListContext);
   if (context === null) { throw new Error(`Missing CompoundListContext provider`); }
   
-  const { registry } = context[internalKey];
+  const contextInternal = context[internalKey];
   
-  // TEMP
+  // TEMP: debug
   Object.assign(window, { _c: context, _ci: context[internalKey] });
   
   const ref = React.useCallback<React.RefCallback<E>>(el => {
+    const { registry } = contextInternal;
+    
+    // Mark the `ordering` as dirty, since the list may have been changed/reordered
+    contextInternal.orderingDirty = true;
+    
     if (el === null) {
       registry.delete(itemKey);
     } else {
@@ -82,9 +95,12 @@ export const useCompoundListItem = <E extends Element>({ itemKey }: UseCompoundL
     }
     
     return () => {
+      // Mark the `ordering` as dirty, since this item may have been deleted
+      contextInternal.orderingDirty = true;
+      
       registry.delete(itemKey);
     };
-  }, [itemKey, registry]);
+  }, [itemKey, contextInternal]);
   
   return {
     ref,

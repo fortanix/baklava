@@ -1,6 +1,6 @@
 
 import * as React from 'react';
-import { mergeProps } from '../../util/reactUtil.ts';
+import { useMemoOnce, mergeProps } from '../../util/reactUtil.ts';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
@@ -71,4 +71,336 @@ export const CompoundListStandard: Story = {
       </>
     ),
   },
+};
+
+
+
+type ColumnProps = React.ComponentProps<typeof List> & { itemKey: ItemKey };
+const Column = ({ itemKey, ...propsRest }: ColumnProps) => {
+  const itemProps = useCompoundListItem({ itemKey });
+  return (
+    <List {...mergeProps(propsRest, itemProps)}/>
+  );
+};
+type ListTwoColumnsProps = {
+  left: React.ReactNode,
+  right: React.ReactNode,
+};
+const ListTwoColumns = ({ left, right }: ListTwoColumnsProps) => {
+  const { Provider: CompoundListProvider, props } = useCompoundList<HTMLDivElement>();
+  
+  React.useEffect(() => {
+    //...
+  }, []);
+  
+  return (
+    <CompoundListProvider>
+      <div {...props}>
+        <style>{`
+          @scope {
+            display: flex;
+            flex-direction: column;
+          }
+        `}</style>
+        
+        <Column itemKey="left">{left}</Column>
+        <Column itemKey="right">{right}</Column>
+      </div>
+    </CompoundListProvider>
+  );
+};
+
+export const ListWithColumns: Story = {
+  render: () => (
+    <ListTwoColumns
+      left={
+        <>
+          <ListItem itemKey="left-1">Left 1</ListItem>
+          <ListItem itemKey="left-2">Left 2</ListItem>
+        </>
+      }
+      right={
+        <>
+          <ListItem itemKey="right-1">right 1</ListItem>
+          <ListItem itemKey="right-2">right 2</ListItem>
+        </>
+      }
+    />
+  ),
+};
+
+
+
+
+
+
+
+
+import { useFocus } from '@react-aria/interactions';
+import { FocusScope, useFocusManager } from '@react-aria/focus';
+
+type UseToolbarItemResult = {
+  props: React.ComponentProps<'button'>,
+};
+const useToolbarItem = (): UseToolbarItemResult => {
+  const focusManager = useFocusManager();
+  if (!focusManager) { throw new Error(`Missing FocusScope context provider`); }
+  
+  const onKeyDown = (event: React.KeyboardEvent) => {
+    switch (event.key) {
+      case 'ArrowRight':
+        event.preventDefault(); // Prevent keyboard scroll
+        focusManager.focusNext({ wrap: true });
+        break;
+      case 'ArrowLeft':
+        event.preventDefault(); // Prevent keyboard scroll
+        focusManager.focusPrevious({ wrap: true });
+        break;
+      case 'ArrowUp':
+        event.preventDefault(); // Prevent keyboard scroll
+        focusManager.focusFirst();
+        break;
+      case 'ArrowDown':
+        event.preventDefault(); // Prevent keyboard scroll
+        focusManager.focusLast();
+        break;
+    }
+  };
+  
+  return {
+    props: { onKeyDown },
+  };
+};
+
+type ToolbarButtonProps = React.PropsWithChildren<{
+  itemKey: ItemKey,
+  focusedItemKey: ItemKey,
+  updateFocusedItemKey: (itemKey: ItemKey) => void,
+}>;
+const ToolbarButton = ({ children, itemKey, focusedItemKey, updateFocusedItemKey }: ToolbarButtonProps) => {
+  const isFocused = itemKey === focusedItemKey;
+  
+  const { focusProps } = useFocus({
+    onFocusChange: isFocused => {
+      if (isFocused) {
+        updateFocusedItemKey(itemKey);
+      }
+    },
+  });
+  
+  const { props: listBoxItemProps } = useToolbarItem();
+  
+  return (
+    <Button {...mergeProps(focusProps, listBoxItemProps)} tabIndex={isFocused ? 0 : -1}>{children}</Button>
+  );
+};
+
+
+const Toolbar = () => {
+  const [focusedItemKey, setFocusedItemKey] = React.useState('italic');
+  return (
+    <FocusScope>
+      <div role="toolbar" aria-label="Text formatting">
+        <ToolbarButton focusedItemKey={focusedItemKey} updateFocusedItemKey={setFocusedItemKey} itemKey="bold">Bold</ToolbarButton>
+        <ToolbarButton focusedItemKey={focusedItemKey} updateFocusedItemKey={setFocusedItemKey} itemKey="italic">Italic</ToolbarButton>
+        <ToolbarButton focusedItemKey={focusedItemKey} updateFocusedItemKey={setFocusedItemKey} itemKey="underline">Underline</ToolbarButton>
+      </div>
+    </FocusScope>
+  );
+};
+
+export const ReactAriaToolbar = {
+  render: () => (
+    <>
+      <div><Button kind="secondary" label="Before"/></div>
+      <Toolbar/>
+      <div><Button kind="secondary" label="After"/></div>
+    </>
+  ),
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+class ListBoxStore {
+  #focusedItemKey: ItemKey | null = null;
+  #listeners = new Set<() => void>();
+  
+  constructor({ focusedItemKey }: { focusedItemKey: null | ItemKey }) {
+    this.#focusedItemKey = focusedItemKey;
+  }
+  
+  subscribe = (listener: () => void) => {
+    this.#listeners.add(listener);
+    return () => {
+      this.#listeners.delete(listener);
+    };
+  };
+  
+  getSnapshot = () => {
+    return {
+      focusedItemKey: this.#focusedItemKey,
+    };
+  };
+  
+  requestFocus = (itemKey: ItemKey) => {
+    this.#focusedItemKey = itemKey;
+    this.#listeners.forEach(listener => listener());
+  };
+}
+
+/*
+// DOESN'T WORK, since we want to only subscribe to `focusedItemKey`
+type ListBoxContext = {
+  focusedItemKey: null | ItemKey,
+  requestFocus: (itemKey: ItemKey) => void,
+};
+const ListBoxContext = React.createContext<null | ListBoxContext>(null);
+const useListBoxContext = (): ListBoxContext => {
+  const context = React.use(ListBoxContext);
+  if (context === null) { throw new Error(`Missing ListBoxContext`); }
+  return context;
+};
+*/
+
+type ListBoxContext = {
+  store: ListBoxStore,
+};
+const ListBoxContext = React.createContext<null | ListBoxContext>(null);
+const useListBoxContext = (): ListBoxContext => {
+  const context = React.use(ListBoxContext);
+  if (context === null) { throw new Error(`Missing ListBoxContext`); }
+  return context;
+};
+
+type UseListBoxOptionResult = {
+  props: React.ComponentProps<'button'>,
+};
+const useListBoxOption = (): UseListBoxOptionResult => {
+  //const { store } = useListBoxContext();
+  
+  const focusManager = useFocusManager();
+  if (!focusManager) { throw new Error(`Missing FocusScope context provider`); }
+  
+  const onKeyDown = (event: React.KeyboardEvent) => {
+    switch (event.key) {
+      case 'ArrowUp':
+        event.preventDefault(); // Prevent keyboard scroll
+        focusManager.focusPrevious({ wrap: false }); break;
+      case 'ArrowDown':
+        event.preventDefault(); // Prevent keyboard scroll
+        focusManager.focusNext({ wrap: false }); break;
+      case 'Home': // On Mac: Fn + ArrowLeft
+        event.preventDefault(); // Prevent keyboard scroll
+        focusManager.focusFirst(); break;
+      case 'End': // On Mac: Fn + ArrowRight
+        event.preventDefault(); // Prevent keyboard scroll
+        focusManager.focusLast(); break;
+      case 'PageUp': // On Mac: Fn + ArrowUp
+        event.preventDefault(); // Prevent keyboard scroll
+        for (let i = 0; i < 10; i++) {
+          focusManager.focusPrevious({ wrap: false });
+        }
+        break;
+      case 'PageDown': // On Mac: Fn + ArrowDown
+        event.preventDefault(); // Prevent keyboard scroll
+        for (let i = 0; i < 10; i++) {
+          focusManager.focusNext({ wrap: false });
+        }
+        break;
+    }
+  };
+  
+  return {
+    props: { onKeyDown },
+  };
+};
+
+type ListBoxOptionProps = React.PropsWithChildren<{
+  itemKey: ItemKey,
+}>;
+const ListBoxOption = ({ children, itemKey }: ListBoxOptionProps) => {
+  const { store } = useListBoxContext();
+  
+  const focusedItemKey = React.useSyncExternalStore(
+    store.subscribe,
+    () => store.getSnapshot().focusedItemKey,
+    () => store.getSnapshot().focusedItemKey,
+  );
+  
+  const isFocused = itemKey === focusedItemKey;
+  
+  const { focusProps } = useFocus({
+    onFocusChange: isFocused => {
+      if (isFocused) {
+        store.requestFocus(itemKey);
+      }
+    },
+  });
+  
+  const { props: listBoxItemProps } = useListBoxOption();
+  
+  return (
+    <Button {...mergeProps(focusProps, listBoxItemProps)} tabIndex={isFocused ? 0 : -1}>{children}</Button>
+  );
+};
+
+
+type ListBoxProps = React.PropsWithChildren;
+const ListBox = ({ children }: ListBoxProps) => {
+  const context = useMemoOnce<ListBoxContext>(() => ({
+    store: new ListBoxStore({ focusedItemKey: 'option-2' }),
+  }));
+  
+  return (
+    <ListBoxContext value={context}>
+      <div role="listbox">
+        <style>{`
+          @scope {
+            block-size: 200px;
+            overflow-y: auto;
+            
+            display: flex;
+            flex-direction: column;
+            
+            > *:not([hidden]) {
+              content-visibility: auto;
+              --contain-intrinsic-block-size: 2lh;
+              block-size: 2lh;
+              flex-shrink: 0;
+            }
+          }
+        `}</style>
+        <FocusScope contain={false}>
+          {children}
+        </FocusScope>
+      </div>
+    </ListBoxContext>
+  );
+};
+
+export const ReactAriaListBox = {
+  render: () => (
+    <>
+      <div><Button kind="secondary" label="Before"/></div>
+      <ListBox>
+        {/* <ListBoxOption itemKey="option-x">Option X</ListBoxOption> */}
+        {/* <ListBoxOption itemKey="option-y">Option Y</ListBoxOption> */}
+        
+        {Array.from({ length: 1000 }, (_, i) => i).map(index =>
+          <ListBoxOption key={`option-${index}`} itemKey={`option-${index}`}>Option {index}</ListBoxOption>
+        )}
+      </ListBox>
+      <div><Button kind="secondary" label="After"/></div>
+    </>
+  ),
 };
