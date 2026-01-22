@@ -6,7 +6,7 @@ import * as React from 'react';
 
 // Utils
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
-import { mergeCallbacks, mergeRefs } from '../../../util/reactUtil.ts';
+import { mergeCallbacks, mergeRefs, useLazyRef } from '../../../util/reactUtil.ts';
 import {
   type UseFloatingElementOptions,
   UseFloatingElementResult,
@@ -22,8 +22,8 @@ import { MenuProviderClassNames as cl } from '../MenuProvider/MenuProvider.tsx';
 
 export type ItemDetails = ListBoxMulti.ItemDetails;
 export type ItemKey = ListBoxMulti.ItemKey;
+export type InternalItemDetails = Map<ItemKey, ItemDetails>;
 type ListBoxMultiProps = ComponentProps<typeof ListBoxMulti.ListBoxMulti>;
-type InternalItemDetails = Map<string, { label: string }>;
 
 /**
  * FLOATING MENU + CONTROLLED OPTIONS
@@ -326,25 +326,13 @@ export const useMenuListBoxFocus = (options: UseMenuListBoxFocusOptions) => {
  * MENU SELECT HANDLER
  * ---------------------------------------------------------------------------------------------------------------------
  */
-const buildSelectedItemDetailsMap = (
+export const buildSelectedItemDetailsMap = (
   selected?: undefined | Set<string>,
   formatItemLabel?: undefined | ((itemKey: string) => string | undefined),
 ): Map<string, { label: string }> => {
   return selected
     ? new Map([...selected].map(k => [k, { label: formatItemLabel?.(k) ?? String(k) }]))
     : new Map();
-};
-
-// Helper hook 'useLazyRef' lazily initializes a ref value without re-running the initializer
-// on every render. Passing an expression directly to 'React.useRef()' (e.g. 'React.useRef(fn())')
-// would unnecessarily invoke 'fn' on each render, even though the ref value itself is preserved.
-// This helper ensures the initializer runs exactly once.
-const useLazyRef = <T,>(initializer: () => T) => {
-  const ref = React.useRef<null | T>(null);
-
-  if (ref.current === null) { ref.current = initializer(); }
-
-  return ref as React.RefObject<T>;
 };
 
 type UseMenuSelectHandlerOptions = {
@@ -389,10 +377,7 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
       // In controlled mode, keep internal state in sync with the parent-controlled value
       const itemDetails = buildSelectedItemDetailsMap(selected, formatItemLabel);
       setInternalSelected(itemDetails);
-
-      if (formatItemLabel) {
-        selectedItemDetailsRef.current = itemDetails;
-      }
+      selectedItemDetailsRef.current = itemDetails;
     }
   }, [isControlled, selected, formatItemLabel, selectedItemDetailsRef]);
 
@@ -498,7 +483,7 @@ export const useMenuToggle = (options: UseMenuToggleOptions) => {
  * Provider for a menu overlay that is triggered by (and positioned relative to) some anchor element.
  * ---------------------------------------------------------------------------------------------------------------------
  */
-type AnchorRenderArgs = BaseAnchorRenderArgs & {
+export type AnchorRenderArgs = BaseAnchorRenderArgs & {
   selectedOptions: Map<ListBoxMulti.ItemKey, ListBoxMulti.ItemDetails>,
 };
 export type MenuMultiProviderProps = Omit<ListBoxMultiProps, 'ref' | 'children' | 'label' | 'size'> & {

@@ -9,7 +9,6 @@ import { mergeProps } from '../../../../util/reactUtil.ts';
 import { Input as InputDefault } from '../Input/Input.tsx';
 import {
   type ItemKey,
-  type ItemDetails,
   MenuProvider,
 } from '../../../overlays/MenuProvider/MenuProvider.tsx';
 
@@ -17,28 +16,10 @@ import cl from './ComboBox.module.scss';
 
 
 export { cl as ComboBoxClassNames };
-export type { ItemKey, ItemDetails };
+
+
+export type { ItemKey };
 export type ComboBoxInputProps = ComponentProps<typeof InputDefault>;
-
-type UseComboBoxMenuSelectHandlerProps = {
-  value?: undefined | Set<string>,
-};
-export const useComboBoxMenuSelectHandler = (props: UseComboBoxMenuSelectHandlerProps) => {
-  const { value } = props;
-
-  const isControlled = typeof value !== 'undefined';
-  const [internalInputValue, setInternalInputValue] = React.useState<Set<string>>(new Set());
-
-  const handleInternalInputChange = (values: Set<string>) => {
-    setInternalInputValue(values);
-  };
-
-  return {
-    internalInputValue,
-    handleInternalInputChange,
-    isControlled,
-  }
-};
 
 /*
 A `ComboBox` is a text input control combined with a dropdown menu that adapts to the user input, for example for
@@ -85,38 +66,7 @@ export const ComboBox = Object.assign(
       form,
       ...propsRest
     } = props;
-
-    const valueSet = React.useMemo(
-      () => (typeof propsRest.value === 'string' ? new Set([propsRest.value]) : undefined),
-      [propsRest.value],
-    );
-
-    const {
-      internalInputValue,
-      handleInternalInputChange,
-      isControlled,
-    } = useComboBoxMenuSelectHandler({ value: valueSet });
-
-    const handeSelect = (itemKey: null | ItemKey, itemDetails: null | ItemDetails) => {
-      onSelect?.(itemKey, itemDetails);
-
-      if (!isControlled) {
-        handleInternalInputChange(new Set([itemDetails?.label ?? '']));
-      }
-    };
-
-    const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-      propsRest.onChange?.(evt);
-      
-      if (!isControlled) {
-        handleInternalInputChange(new Set([evt.target.value ?? '']));
-      }
-    };
- 
-    const inputValueFromInternalInputValue = React.useMemo(() => {
-      return internalInputValue.keys().next().value ?? '';
-    }, [internalInputValue]);
-   
+    
     return (
       <MenuProvider
         label={label}
@@ -127,7 +77,7 @@ export const ComboBox = Object.assign(
         placement="bottom-start"
         offset={1}
         selected={selected}
-        onSelect={handeSelect}
+        onSelect={onSelect}
         {...dropdownProps}
       >
         {({ props, open, requestOpen, selectedOption }) => {
@@ -144,8 +94,6 @@ export const ComboBox = Object.assign(
               <Input
                 role="combobox"
                 automaticResize
-                value={inputValueFromInternalInputValue}
-                onChange={handleChange}
                 {...mergeProps(
                   anchorProps,
                   propsRest,

@@ -1,0 +1,28 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-combo-box {
+    @include bk.component-base(bk-combo-box);
+    
+    .bk-combo-box__input {
+      min-inline-size: 12ch;
+    }
+    
+    &.bk-combo-box--open { --keep: ; }
+  }
+  
+  .bk-combo-box__tags {
+    display: flex;
+    gap: bk.$spacing-2;
+    flex-wrap: wrap; /* allows expansion to next line */
+    margin-top: bk.$spacing-2;
+
+    .bk-combo-box__btn-clear-all {
+      margin-left: auto;
+    }
+  }
+}
