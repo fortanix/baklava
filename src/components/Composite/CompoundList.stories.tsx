@@ -138,7 +138,7 @@ export const ListWithColumns: Story = {
 
 import { useFocus } from '@react-aria/interactions';
 import { FocusScope, useFocusManager } from '@react-aria/focus';
-import { useTypeAhead } from '../../util/hooks/useTypeAhead.ts';
+import { normalizeQueryString, useTypeAhead } from '../../util/hooks/useTypeAhead.ts';
 
 type UseToolbarItemResult = {
   props: React.ComponentProps<'button'>,
@@ -268,25 +268,49 @@ class ListBoxStore {
   
   requestFocus = (itemKey: null | ItemKey) => {
     this.#focusedItemKey = itemKey;
-    this.#listeners.forEach(listener => { listener(); }); // Publish
     
-    this.#registry.get(itemKey).focus();
-  };
-  
-  searchByPrefix = (query: string): null | ItemKey => {
-    const queryNormalized = query.trim().toLocaleLowerCase();
-    
-    if (queryNormalized === '') { return null; }
-    
-    for (const [itemKey, itemRef] of this.#registry.entries()) {
-      const textContent = itemRef.textContent.trim().replaceAll(/\s+/g, '').toLocaleLowerCase();
-      
-      if (textContent.startsWith(queryNormalized)) {
-        return itemKey;
+    if (itemKey !== null) {
+      const ref = this.#registry.get(itemKey);
+      if (ref instanceof HTMLElement) {
+        ref?.focus();
       }
     }
     
-    return null;
+    this.#listeners.forEach(listener => { listener(); }); // Publish
+  };
+  
+  #elementMatchesQuery = (element: Element, query: string): boolean => {
+    const textContent = normalizeQueryString(element.textContent);
+    return textContent.startsWith(query);
+  };
+  
+  // Note: assumes `query` is already normalized using `normalizeQueryString`
+  searchByPrefix = (query: string): null | ItemKey => {
+    if (query === '') { return null; }
+    
+    // Check if the currently focused item matches the query, if so don't move off of the focused item
+    if (this.#focusedItemKey !== null) {
+      const focusedRef = this.#registry.get(this.#focusedItemKey);
+      
+      if (typeof focusedRef !== 'undefined') {
+        if (this.#elementMatchesQuery(focusedRef, query)) {
+          return this.#focusedItemKey;
+        }
+      }
+    }
+    
+    // Otherwise, return the first candidate we find
+    let candidate = null;
+    for (const [itemKey, itemRef] of this.#registry.entries()) {
+      if (this.#elementMatchesQuery(itemRef, query)) {
+        if (candidate === null) {
+          candidate = itemKey;
+          break;
+        }
+      }
+    }
+    
+    return candidate;
   };
 }
 
@@ -389,21 +413,15 @@ const useListBox = <E extends HTMLElement>(options: UseListBoxOptions = {}): Use
     store: new ListBoxStore({ focusedItemKey: defaultFocusedItemKey }),
   }));
   
-  const typeAhead = useTypeAhead(1000);
-  const typeAheadQuery = typeAhead.sequence.join('');
+  const typeAhead = useTypeAhead(800);
   
   React.useEffect(() => {
-    const itemKeyMatched = context.store.searchByPrefix(typeAheadQuery);
+    const itemKeyMatched = context.store.searchByPrefix(typeAhead.query);
     
     if (itemKeyMatched !== null) {
       context.store.requestFocus(itemKeyMatched);
     }
-  }, [typeAheadQuery]);
-  
-  // const focusedItemKey = React.useSyncExternalStore(
-  //   store.subscribe,
-  //   () => store.getSnapshot().focusedItemKey,
-  // );
+  }, [typeAhead.query]);
   
   return {
     context,
@@ -459,7 +477,7 @@ const ListBox = ({ children }: ListBoxProps) => {
             
             > *:not([hidden]) {
               content-visibility: auto;
-              --contain-intrinsic-block-size: 2lh;
+              contain-intrinsic-block-size: 2lh;
               block-size: 2lh;
               flex-shrink: 0;
             }
@@ -478,8 +496,9 @@ export const ReactAriaListBox = {
     <>
       <div><Button kind="secondary" label="Before"/></div>
       <ListBox>
-        <ListBoxOption key={`option-apple`} itemKey={`option-apple`}>Apple</ListBoxOption>
-        <ListBoxOption key={`option-banana`} itemKey={`option-banana`}>Banana</ListBoxOption>
+        <ListBoxOption key="option-apple" itemKey="option-apple">Apple</ListBoxOption>
+        <ListBoxOption key="option-apricot" itemKey="option-apricot">Apricot</ListBoxOption>
+        <ListBoxOption key="option-banana" itemKey="option-banana">Banana</ListBoxOption>
         {Array.from({ length: 1000 }, (_, i) => i + 1).map(index =>
           <ListBoxOption key={`option-${index}`} itemKey={`option-${index}`}>Option {index}</ListBoxOption>
         )}
