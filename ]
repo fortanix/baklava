@@ -59,51 +59,16 @@ export default {
   render: (args) => <ComboBoxMulti {...args}/>,
 } satisfies Meta<ComboBoxMultiArgs>;
 
-export const ComboBoxMultiStandard: Story = {};
+export const ComboBoxStandard: Story = {};
 
-export const ComboBoxMultiWithCustomInput: Story = {
+export const ComboBoxWithCustomInput: Story = {
   args: {
     Input: InputSearch,
     placeholder: 'Search',
   },
 };
 
-const ComboBoxMultiWithDefaultC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
-  const [value, setValue] = React.useState<undefined | string>();
-  const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set(['item-apple', 'item-durian']));
-      
-  const fruitsFiltered = Object.entries(fruits)
-    .filter(([_key, fruit]) => fruit.toLowerCase().includes((value ?? '').toLowerCase()));
-  
-  return (
-    <>
-      <div>Input: {value ?? '(none)'}</div>
-      <div>Selected: {[...selectedKeys].join(', ')}</div>
-      <ComboBoxMulti
-        label="Test ComboBox"
-        Input={InputSearch}
-        placeholder="Choose your favorite fruits"
-        value={value}
-        onChange={event => { setValue(event.target.value); }}
-        {...props}
-        options={fruitsFiltered.map(([fruitKey, fruitName]) =>
-          <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
-        )}
-        selected={selectedKeys}
-        onSelect={(selectedOptionKeys, selectedOption) => {
-          props.onSelect?.(selectedOptionKeys, selectedOption);
-          setSelectedKeys(selectedOptionKeys);
-        }}
-      />
-    </>
-  );
-};
-export const ComboBoxMultiWithDefault: Story = {
-  render: args => <ComboBoxMultiWithDefaultC {...args}/>,
-  args: {},
-};
-
-const ComboBoxMultiControlledC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
+const ComboBoxControlledC = (props: React.ComponentProps<typeof ComboBoxMulti>) => {
   const [value, setValue] = React.useState<undefined | string>();
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set());
       
@@ -113,7 +78,7 @@ const ComboBoxMultiControlledC = (props: Partial<React.ComponentProps<typeof Com
   return (
     <>
       <div>Input: {value ?? '(none)'}</div>
-      <div>Selected: {[...selectedKeys].join(', ')}</div>
+      <div>Selected: {selectedKeys ?? '(none)'}</div>
       <ComboBoxMulti
         label="Test ComboBox"
         Input={InputSearch}
@@ -133,50 +98,13 @@ const ComboBoxMultiControlledC = (props: Partial<React.ComponentProps<typeof Com
     </>
   );
 };
-export const ComboBoxMultiControlled: Story = {
-  render: args => <ComboBoxMultiControlledC {...args}/>,
+export const ComboBoxControlled: Story = {
+  render: args => <ComboBoxControlledC {...args}/>,
   args: {
   },
 };
 
-const ComboBoxMultiUncontrolledC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
-  const [value, setValue] = React.useState('');
-  const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(() => new Set<string>());
-  
-  const fruitsFiltered = Object.entries(fruits)
-    .filter(([_fruitKey, fruitName]) => fruitName.toLowerCase().includes((value ?? '').toLowerCase()));
-  
-  return (
-    <>
-      <div>Input: {value ?? '(none)'}</div>
-      <div>Selected: {[...selectedKeys].join(', ')}</div>
-      <ComboBoxMulti
-        label="Test ComboBox"
-        Input={InputSearch}
-        placeholder="Choose your favorite fruits"
-        value={value}
-        onChange={event => { setValue(event.target.value); }}
-        {...props}
-        options={fruitsFiltered.map(([fruitKey, fruitName]) =>
-          <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
-        )}
-        onSelect={(selectedOptionKeys, selectedOption) => {
-          props.onSelect?.(selectedOptionKeys, selectedOption);
-          setSelectedKeys(selectedOptionKeys);
-        }}
-      />
-    </>
-  );
-};
-/** Note: when you use the `ComboBoxMulti` for autocomplete, you must also set `aria-autocomplete="true"`.  */
-export const ComboBoxMultiUncontrolled: Story = {
-  render: args => <ComboBoxMultiUncontrolledC {...args}/>,
-  args: {
-    'aria-autocomplete': 'list',
-  },
-};
-
-const ComboBoxMultiInFormC = (props: React.ComponentProps<typeof ComboBoxMulti>) => {
+const ComboBoxInFormC = (props: React.ComponentProps<typeof ComboBoxMulti>) => {
   return (
     <>
       <form
@@ -191,8 +119,8 @@ const ComboBoxMultiInFormC = (props: React.ComponentProps<typeof ComboBoxMulti>)
     </>
   );
 };
-export const ComboBoxMultiInForm: Story = {
-  render: args => <ComboBoxMultiInFormC {...args}/>,
+export const ComboBoxInForm: Story = {
+  render: args => <ComboBoxInFormC {...args}/>,
   args: {
     form: 'story-form',
     name: 'story_component1',
@@ -234,4 +162,36 @@ const InputSearchAutocomplete = (props: React.ComponentProps<typeof InputSearch>
   );
 };
 */
-
+const ComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
+  const [value, setValue] = React.useState('');
+  const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(() => new Set<string>());
+  
+  const fruitsFiltered = Object.entries(fruits)
+    .filter(([_fruitKey, fruitName]) => fruitName.toLowerCase().includes((value ?? '').toLowerCase()));
+  
+  return (
+    <ComboBoxMulti
+      label="Test ComboBox"
+      Input={InputSearch}
+      placeholder="Choose your favorite fruits"
+      value={value}
+      onChange={event => { setValue(event.target.value); }}
+      {...props}
+      options={fruitsFiltered.map(([fruitKey, fruitName]) =>
+        <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+      )}
+      selected={selectedKeys}
+      onSelect={(selectedOptionKeys, selectedOption) => {
+        props.onSelect?.(selectedOptionKeys, selectedOption);
+        setSelectedKeys(selectedOptionKeys);
+      }}
+    />
+  );
+};
+/** Note: when you use the `ComboBoxMulti` for autocomplete, you must also set `aria-autocomplete="true"`.  */
+export const ComboBoxAutocomplete: Story = {
+  render: args => <ComboBoxAutocompleteC {...args}/>,
+  args: {
+    'aria-autocomplete': 'list',
+  },
+};

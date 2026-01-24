@@ -13,6 +13,7 @@ import {
   type ItemKey,
   MenuMultiProvider,
   type AnchorRenderArgs,
+  MenuMultiProviderProps,
 } from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
 
 // Styles
@@ -106,8 +107,6 @@ const ComboBoxMultiInput = (props: ComboBoxMultiInputProps) => {
     },
     [selectedOptions, onSelect],
   );
-
-  console.log(selectedOptions);
 
   return (
     <>
@@ -242,3 +241,4 @@ export const ComboBoxMulti = Object.assign(
     FooterActions: MenuMultiProvider.FooterActions,
   },
 );
+
