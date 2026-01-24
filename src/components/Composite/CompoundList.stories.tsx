@@ -138,6 +138,7 @@ export const ListWithColumns: Story = {
 
 import { useFocus } from '@react-aria/interactions';
 import { FocusScope, useFocusManager } from '@react-aria/focus';
+import { useTypeAhead } from '../../util/hooks/useTypeAhead.ts';
 
 type UseToolbarItemResult = {
   props: React.ComponentProps<'button'>,
@@ -232,10 +233,14 @@ export const ReactAriaToolbar = {
 
 
 class ListBoxStore {
-  #focusedItemKey: ItemKey | null = null;
   #listeners = new Set<() => void>();
   
+  // State
+  #registry: Map<ItemKey, Element>;
+  #focusedItemKey: null | ItemKey = null;
+  
   constructor({ focusedItemKey }: { focusedItemKey: null | ItemKey }) {
+    this.#registry = new Map();
     this.#focusedItemKey = focusedItemKey;
   }
   
@@ -252,9 +257,36 @@ class ListBoxStore {
     };
   };
   
-  requestFocus = (itemKey: ItemKey) => {
+  // Store API
+  
+  register(itemKey: ItemKey, itemRef: Element) {
+    this.#registry.set(itemKey, itemRef);
+    return () => {
+      this.#registry.delete(itemKey);
+    };
+  }
+  
+  requestFocus = (itemKey: null | ItemKey) => {
     this.#focusedItemKey = itemKey;
-    this.#listeners.forEach(listener => listener());
+    this.#listeners.forEach(listener => { listener(); }); // Publish
+    
+    this.#registry.get(itemKey).focus();
+  };
+  
+  searchByPrefix = (query: string): null | ItemKey => {
+    const queryNormalized = query.trim().toLocaleLowerCase();
+    
+    if (queryNormalized === '') { return null; }
+    
+    for (const [itemKey, itemRef] of this.#registry.entries()) {
+      const textContent = itemRef.textContent.trim().replaceAll(/\s+/g, '').toLocaleLowerCase();
+      
+      if (textContent.startsWith(queryNormalized)) {
+        return itemKey;
+      }
+    }
+    
+    return null;
   };
 }
 
@@ -282,15 +314,21 @@ const useListBoxContext = (): ListBoxContext => {
   return context;
 };
 
+type UseListBoxOptionOptions = {
+  itemKey: ItemKey,
+};
 type UseListBoxOptionResult = {
   props: React.ComponentProps<'button'>,
 };
-const useListBoxOption = (): UseListBoxOptionResult => {
-  //const { store } = useListBoxContext();
+const useListBoxOption = (options: UseListBoxOptionOptions): UseListBoxOptionResult => {
+  const { itemKey } = options;
+  
+  const { store } = useListBoxContext();
   
   const focusManager = useFocusManager();
   if (!focusManager) { throw new Error(`Missing FocusScope context provider`); }
   
+  const pageSize = 10;
   const onKeyDown = (event: React.KeyboardEvent) => {
     switch (event.key) {
       case 'ArrowUp':
@@ -307,13 +345,13 @@ const useListBoxOption = (): UseListBoxOptionResult => {
         focusManager.focusLast(); break;
       case 'PageUp': // On Mac: Fn + ArrowUp
         event.preventDefault(); // Prevent keyboard scroll
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < pageSize; i++) {
           focusManager.focusPrevious({ wrap: false });
         }
         break;
       case 'PageDown': // On Mac: Fn + ArrowDown
         event.preventDefault(); // Prevent keyboard scroll
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < pageSize; i++) {
           focusManager.focusNext({ wrap: false });
         }
         break;
@@ -321,7 +359,57 @@ const useListBoxOption = (): UseListBoxOptionResult => {
   };
   
   return {
-    props: { onKeyDown },
+    props: {
+      onKeyDown,
+      ref: el => {
+        if (el === null) {
+          // This should not happen in React 19, given that we return a callback below
+          console.warn('Received a `null` value in a `ref` callback: should not happen');
+          return;
+        }
+        return store.register(itemKey, el);
+      },
+    },
+  };
+};
+
+type UseListBoxOptions = {
+  defaultFocusedItemKey?: undefined | null | ItemKey,
+};
+type UseListBoxResult<E extends HTMLElement> = {
+  context: ListBoxContext,
+  props: React.DetailedHTMLProps<React.HTMLAttributes<E>, E>,
+};
+const useListBox = <E extends HTMLElement>(options: UseListBoxOptions = {}): UseListBoxResult<E> => {
+  const {
+    defaultFocusedItemKey = null,
+  } = options;
+  
+  const context = useMemoOnce<ListBoxContext>(() => ({
+    store: new ListBoxStore({ focusedItemKey: defaultFocusedItemKey }),
+  }));
+  
+  const typeAhead = useTypeAhead(1000);
+  const typeAheadQuery = typeAhead.sequence.join('');
+  
+  React.useEffect(() => {
+    const itemKeyMatched = context.store.searchByPrefix(typeAheadQuery);
+    
+    if (itemKeyMatched !== null) {
+      context.store.requestFocus(itemKeyMatched);
+    }
+  }, [typeAheadQuery]);
+  
+  // const focusedItemKey = React.useSyncExternalStore(
+  //   store.subscribe,
+  //   () => store.getSnapshot().focusedItemKey,
+  // );
+  
+  return {
+    context,
+    props: {
+      onKeyDown: typeAhead.handleKeyDown,
+    },
   };
 };
 
@@ -333,7 +421,6 @@ const ListBoxOption = ({ children, itemKey }: ListBoxOptionProps) => {
   
   const focusedItemKey = React.useSyncExternalStore(
     store.subscribe,
-    () => store.getSnapshot().focusedItemKey,
     () => store.getSnapshot().focusedItemKey,
   );
   
@@ -347,7 +434,7 @@ const ListBoxOption = ({ children, itemKey }: ListBoxOptionProps) => {
     },
   });
   
-  const { props: listBoxItemProps } = useListBoxOption();
+  const { props: listBoxItemProps } = useListBoxOption({ itemKey });
   
   return (
     <Button {...mergeProps(focusProps, listBoxItemProps)} tabIndex={isFocused ? 0 : -1}>{children}</Button>
@@ -357,13 +444,11 @@ const ListBoxOption = ({ children, itemKey }: ListBoxOptionProps) => {
 
 type ListBoxProps = React.PropsWithChildren;
 const ListBox = ({ children }: ListBoxProps) => {
-  const context = useMemoOnce<ListBoxContext>(() => ({
-    store: new ListBoxStore({ focusedItemKey: 'option-2' }),
-  }));
+  const { context, props } = useListBox<HTMLDivElement>({ defaultFocusedItemKey: 'option-2' });
   
   return (
     <ListBoxContext value={context}>
-      <div role="listbox">
+      <div role="listbox" {...props}>
         <style>{`
           @scope {
             block-size: 200px;
@@ -393,10 +478,9 @@ export const ReactAriaListBox = {
     <>
       <div><Button kind="secondary" label="Before"/></div>
       <ListBox>
-        {/* <ListBoxOption itemKey="option-x">Option X</ListBoxOption> */}
-        {/* <ListBoxOption itemKey="option-y">Option Y</ListBoxOption> */}
-        
-        {Array.from({ length: 1000 }, (_, i) => i).map(index =>
+        <ListBoxOption key={`option-apple`} itemKey={`option-apple`}>Apple</ListBoxOption>
+        <ListBoxOption key={`option-banana`} itemKey={`option-banana`}>Banana</ListBoxOption>
+        {Array.from({ length: 1000 }, (_, i) => i + 1).map(index =>
           <ListBoxOption key={`option-${index}`} itemKey={`option-${index}`}>Option {index}</ListBoxOption>
         )}
       </ListBox>
