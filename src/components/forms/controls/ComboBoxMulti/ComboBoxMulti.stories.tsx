@@ -104,6 +104,96 @@ export const ComboBoxMultiWithDefault: Story = {
 };
 
 const ComboBoxMultiControlledC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
+  const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set());
+      
+  return (
+    <>
+      <div>Selected: {[...selectedKeys].join(', ')}</div>
+      <ComboBoxMulti
+        label="Test ComboBox"
+        Input={InputSearch}
+        placeholder="Choose your favorite fruits"
+        {...props}
+        options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
+          <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        )}
+        selected={selectedKeys}
+        onSelect={(selectedOptionKeys, selectedOption) => {
+          props.onSelect?.(selectedOptionKeys, selectedOption);
+          setSelectedKeys(selectedOptionKeys);
+        }}
+      />
+    </>
+  );
+};
+export const ComboBoxMultiControlled: Story = {
+  render: args => <ComboBoxMultiControlledC {...args}/>,
+  args: {
+  },
+};
+
+const ComboBoxMultiFullyControlledC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
+  const [value, setValue] = React.useState<undefined | string>();
+  const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set());
+      
+  return (
+    <>
+      <div>Input: {value ?? '(none)'}</div>
+      <div>Selected: {[...selectedKeys].join(', ')}</div>
+      <ComboBoxMulti
+        label="Test ComboBox"
+        Input={InputSearch}
+        placeholder="Choose your favorite fruits"
+        value={value}
+        onChange={event => { setValue(event.target.value); }}
+        {...props}
+        options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
+          <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        )}
+        selected={selectedKeys}
+        onSelect={(selectedOptionKeys, selectedOption) => {
+          props.onSelect?.(selectedOptionKeys, selectedOption);
+          setSelectedKeys(selectedOptionKeys);
+        }}
+      />
+    </>
+  );
+};
+export const ComboBoxMultiFullyControlled: Story = {
+  render: args => <ComboBoxMultiFullyControlledC {...args}/>,
+  args: {
+  },
+};
+
+const ComboBoxMultiUncontrolledC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
+  const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(() => new Set<string>());
+  
+  return (
+    <>
+      <div>Selected: {[...selectedKeys].join(', ')}</div>
+      <ComboBoxMulti
+        label="Test ComboBox"
+        Input={InputSearch}
+        placeholder="Choose your favorite fruits"
+        {...props}
+        options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
+          <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        )}
+        onSelect={(selectedOptionKeys, selectedOption) => {
+          props.onSelect?.(selectedOptionKeys, selectedOption);
+          setSelectedKeys(selectedOptionKeys);
+        }}
+      />
+    </>
+  );
+};
+export const ComboBoxMultiUncontrolled: Story = {
+  render: args => <ComboBoxMultiUncontrolledC {...args}/>,
+  args: {
+  },
+};
+
+const ComboBoxMultiwithFilterC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
   const [value, setValue] = React.useState<undefined | string>();
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set());
       
@@ -133,46 +223,9 @@ const ComboBoxMultiControlledC = (props: Partial<React.ComponentProps<typeof Com
     </>
   );
 };
-export const ComboBoxMultiControlled: Story = {
-  render: args => <ComboBoxMultiControlledC {...args}/>,
+export const ComboBoxMultiWithFilter: Story = {
+  render: args => <ComboBoxMultiwithFilterC {...args}/>,
   args: {
-  },
-};
-
-const ComboBoxMultiUncontrolledC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
-  const [value, setValue] = React.useState('');
-  const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(() => new Set<string>());
-  
-  const fruitsFiltered = Object.entries(fruits)
-    .filter(([_fruitKey, fruitName]) => fruitName.toLowerCase().includes((value ?? '').toLowerCase()));
-  
-  return (
-    <>
-      <div>Input: {value ?? '(none)'}</div>
-      <div>Selected: {[...selectedKeys].join(', ')}</div>
-      <ComboBoxMulti
-        label="Test ComboBox"
-        Input={InputSearch}
-        placeholder="Choose your favorite fruits"
-        value={value}
-        onChange={event => { setValue(event.target.value); }}
-        {...props}
-        options={fruitsFiltered.map(([fruitKey, fruitName]) =>
-          <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
-        )}
-        onSelect={(selectedOptionKeys, selectedOption) => {
-          props.onSelect?.(selectedOptionKeys, selectedOption);
-          setSelectedKeys(selectedOptionKeys);
-        }}
-      />
-    </>
-  );
-};
-/** Note: when you use the `ComboBoxMulti` for autocomplete, you must also set `aria-autocomplete="true"`.  */
-export const ComboBoxMultiUncontrolled: Story = {
-  render: args => <ComboBoxMultiUncontrolledC {...args}/>,
-  args: {
-    'aria-autocomplete': 'list',
   },
 };
 

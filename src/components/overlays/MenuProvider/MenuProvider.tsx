@@ -15,6 +15,7 @@ import {
 import * as ListBox from '../../forms/controls/ListBox/ListBox.tsx';
 import {
   BaseAnchorRenderArgs,
+  buildItemKeySetFromItemKey,
   MenuProviderRef,
   useFloatingMenu,
   useMenuAnchor,
@@ -40,7 +41,7 @@ export { cl as MenuProviderClassNames };
  * Provider for a menu overlay that is triggered by (and positioned relative to) some anchor element.
  * ---------------------------------------------------------------------------------------------------------------------
  */
-type AnchorRenderArgs = BaseAnchorRenderArgs & {
+export type AnchorRenderArgs = BaseAnchorRenderArgs & {
   selectedOption: null | ListBox.ItemDetails,
 };
 export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' | 'size'> & {
@@ -127,14 +128,8 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
   const listBoxRef = React.useRef<React.ComponentRef<typeof ListBox.ListBox>>(null);
   const listBoxId = React.useId();
   const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
-  const selectedSet = React.useMemo(
-    () => (selected != null ? new Set([selected]) : undefined),
-    [selected],
-  );
-  const defaultSelectedSet = React.useMemo(
-    () => (defaultSelected != null ? new Set([defaultSelected]) : undefined),
-    [defaultSelected],
-  ); 
+  const selectedSet = React.useMemo(() => buildItemKeySetFromItemKey(selected), [selected]);
+  const defaultSelectedSet = React.useMemo(() => buildItemKeySetFromItemKey(defaultSelected), [defaultSelected]); 
   const {
     isMounted,
     isOpen,

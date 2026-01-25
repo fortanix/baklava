@@ -326,6 +326,14 @@ export const useMenuListBoxFocus = (options: UseMenuListBoxFocusOptions) => {
  * MENU SELECT HANDLER
  * ---------------------------------------------------------------------------------------------------------------------
  */
+export const buildItemKeySetFromItemKey = (itemKey: undefined | null | string) => {
+  if (typeof itemKey === 'undefined') { return itemKey; }
+
+  return typeof itemKey === 'string'
+    ? new Set([itemKey])
+    : new Set([]);
+};
+
 export const buildSelectedItemDetailsMap = (
   selected?: undefined | Set<string>,
   formatItemLabel?: undefined | ((itemKey: string) => string | undefined),

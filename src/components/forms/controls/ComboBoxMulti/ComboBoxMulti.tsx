@@ -14,6 +14,8 @@ import {
   MenuMultiProvider,
   type AnchorRenderArgs,
   MenuMultiProviderProps,
+  buildSelectedItemDetailsMap,
+  InternalItemDetails,
 } from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
 
 // Styles
@@ -24,7 +26,7 @@ import { Button } from '../../../actions/Button/Button.tsx';
 
 export { cl as ComboBoxMultiClassNames };
 export type { ItemKey, ItemDetails };
-export type ComboBoxInputProps = ComponentProps<typeof InputDefault>;
+type InputProps = ComponentProps<typeof InputDefault>;
 
 /**
  * Manages the ComboBox menu selection and input value states
@@ -35,51 +37,44 @@ export type ComboBoxInputProps = ComponentProps<typeof InputDefault>;
  */
 type UseComboBoxStateProps = {
   selected?: undefined | Set<ItemKey>,
-  onSelect?: undefined | React.ComponentProps<typeof MenuMultiProvider>['onSelect'],
-  value?: undefined | ComboBoxInputProps['value'],
+  formatItemLabel?: undefined | MenuMultiProviderProps['formatItemLabel'],
 };
 
 export const useComboBoxState = (props: UseComboBoxStateProps) => {
-  const { selected, onSelect, value } = props;
+  const { selected, formatItemLabel } = props;
 
-  const isControlled = typeof selected !== 'undefined';
-  const [inputValue, setInputValue] = React.useState(value ?? '');
-  const [internalSelected, setInternalSelected] = React.useState<Set<ItemKey>>(() => selected ?? new Set());
+  const [internalSelected, setInternalSelected] = React.useState<InternalItemDetails>(() => {
+    return buildSelectedItemDetailsMap(selected, formatItemLabel);
+  });
 
   React.useEffect(
-    () => { setInternalSelected(selected ?? new Set()); },
-    [selected],
+    () => { setInternalSelected(buildSelectedItemDetailsMap(selected, formatItemLabel)); },
+    [selected, formatItemLabel],
   );
   
-  const handleSelect = React.useCallback(
-    (itemKeys: Set<ItemKey>, itemDetails: Map<ItemKey, ItemDetails>) => {
-      if (!isControlled) {
-        setInternalSelected(itemKeys ?? new Set());
-      }
-
-      onSelect?.(itemKeys, itemDetails);
+  const handleInternalSelect = React.useCallback(
+    (itemKeys: Set<ItemKey>) => {
+      setInternalSelected(buildSelectedItemDetailsMap(itemKeys, formatItemLabel));
     },
-    [isControlled, onSelect],
+    [formatItemLabel],
   );
  
   return {
-    inputValue,
-    setInputValue,
     internalSelected,
-    handleSelect,
+    handleInternalSelect,
   };
 };
 
-type ComboBoxMultiInputProps = Omit<ComboBoxInputProps, 'onSelect'> & {
+type ComboBoxMultiInputProps = Omit<InputProps, 'onSelect'> & {
   anchorRenderArgs: AnchorRenderArgs,
   onUpdate?: undefined | React.ComponentProps<typeof MenuMultiProvider>['onSelect'],
-  Input?: undefined | React.ComponentType<ComboBoxInputProps>,
+  Input?: undefined | React.ComponentType<InputProps>,
 };
 
 const ComboBoxMultiInput = (props: ComboBoxMultiInputProps) => {
   const {
     anchorRenderArgs,
-    onUpdate: onSelect,
+    onUpdate,
     Input = InputDefault,
     // Hidden input props
     name,
@@ -103,9 +98,9 @@ const ComboBoxMultiInput = (props: ComboBoxMultiInputProps) => {
     (keysToRemove: Set<ItemKey>) => {
       const filteredItemDetails = new Map([...selectedOptions].filter(([key]) => !keysToRemove.has(key)));
       const filteredItemKeys = new Set(filteredItemDetails.keys());
-      onSelect?.(filteredItemKeys, filteredItemDetails);
+      onUpdate?.(filteredItemKeys, filteredItemDetails);
     },
-    [selectedOptions, onSelect],
+    [selectedOptions, onUpdate],
   );
 
   return (
@@ -161,7 +156,7 @@ References:
 - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
 */
 
-export type ComboBoxMultiProps = Omit<ComboBoxInputProps, 'onSelect'> & {
+export type ComboBoxMultiProps = Omit<InputProps, 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -169,7 +164,7 @@ export type ComboBoxMultiProps = Omit<ComboBoxInputProps, 'onSelect'> & {
   label: string,
   
   /** A custom `Input` component. */
-  Input?: undefined | React.ComponentType<ComboBoxInputProps>,
+  Input?: undefined | React.ComponentType<InputProps>,
   
   /** The options list to be shown in the dropdown menu. */
   options: React.ReactNode,
@@ -180,8 +175,8 @@ export type ComboBoxMultiProps = Omit<ComboBoxInputProps, 'onSelect'> & {
   /** Callback for when an option is selected in the dropdown menu. */
   onSelect?: undefined | React.ComponentProps<typeof MenuMultiProvider>['onSelect'],
   
-  /** Additional props to be passed to the `MenuProvider`. */
-  dropdownProps?: undefined | Partial<React.ComponentProps<typeof MenuMultiProvider>>,
+  /** Additional props to be passed to the `MenuMultiProvider`. */
+  dropdownProps?: undefined | Partial<MenuMultiProviderProps>,
 };
 export const ComboBoxMulti = Object.assign(
   (props: ComboBoxMultiProps) => {
@@ -196,16 +191,28 @@ export const ComboBoxMulti = Object.assign(
       ...propsRest
     } = props;
     
+    const [inputValue, setInputValue] = React.useState(propsRest.value ?? '');
+
     const {
-      inputValue,
-      setInputValue,
       internalSelected,
-      handleSelect,
-    } = useComboBoxState({ selected, onSelect, value: propsRest.value });
+      handleInternalSelect,
+    } = useComboBoxState({
+      selected,
+      formatItemLabel: dropdownProps.formatItemLabel,
+    });
 
     const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(evt.target.value);
     };
+
+    const handleSelect = React.useCallback((itemKeys: Set<ItemKey>, itemDetails: Map<ItemKey, ItemDetails>) => {
+      onSelect?.(itemKeys, itemDetails);
+      handleInternalSelect(itemKeys);
+    }, [onSelect, handleInternalSelect]);
+
+    const selectedFromInternalSelected = React.useMemo(() => {
+      return new Set(internalSelected.keys());
+    }, [internalSelected]);
 
     return (
       <MenuMultiProvider
@@ -216,7 +223,7 @@ export const ComboBoxMulti = Object.assign(
         keyboardInteractions="default" // FIXME
         placement="bottom-start"
         offset={1}
-        selected={internalSelected}
+        selected={selectedFromInternalSelected}
         onSelect={handleSelect}
         {...dropdownProps}
       >

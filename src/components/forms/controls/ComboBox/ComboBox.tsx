@@ -8,18 +8,74 @@ import { mergeProps } from '../../../../util/reactUtil.ts';
 
 import { Input as InputDefault } from '../Input/Input.tsx';
 import {
+  AnchorRenderArgs,
   type ItemKey,
+  type ItemDetails,
   MenuProvider,
+  MenuProviderProps,
 } from '../../../overlays/MenuProvider/MenuProvider.tsx';
+import { useComboBoxState } from '../ComboBoxMulti/ComboBoxMulti.tsx';
+import { buildItemKeySetFromItemKey } from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
 
 import cl from './ComboBox.module.scss';
 
 
 export { cl as ComboBoxClassNames };
-
-
 export type { ItemKey };
-export type ComboBoxInputProps = ComponentProps<typeof InputDefault>;
+type InputProps = ComponentProps<typeof InputDefault>;
+
+type ComboBoxInputProps = Omit<InputProps, 'onSelect'> & {
+  anchorRenderArgs: AnchorRenderArgs,
+  onUpdate?: undefined | MenuProviderProps['onSelect'],
+  Input?: undefined | React.ComponentType<InputProps>,
+};
+const ComboBoxInput = (props: ComboBoxInputProps) => {
+  const {
+    anchorRenderArgs,
+    onUpdate,
+    Input = InputDefault,
+    // Hidden input props
+    name,
+    form,
+    ...propsRest
+  } = props;
+
+  const {
+    props: anchorRenderProps,
+    open,
+    selectedOption,
+  } = anchorRenderArgs;
+   
+  // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
+  const anchorProps = anchorRenderProps({
+    placeholder: 'Select options',
+    className: cx(cl['bk-combo-box'], { [cl['bk-combo-box--open']]: open }),
+  });
+
+  return (
+    <>
+      <Input
+        role="combobox"
+        automaticResize
+        {...mergeProps(anchorProps, propsRest)}
+        inputProps={{
+          ...propsRest.inputProps,
+          className: cx(cl['bk-combo-box__input'], propsRest.inputProps?.className),
+        }}
+      />
+
+      {/* Render a hidden input with the selected option key (rather than the human-readable label). */}
+      {typeof name === 'string' &&
+        <input
+          type="hidden"
+          form={form}
+          name={name}
+          value={selectedOption?.itemKey ?? ''}
+        />
+      }
+    </>
+  );
+};
 
 /*
 A `ComboBox` is a text input control combined with a dropdown menu that adapts to the user input, for example for
@@ -29,7 +85,7 @@ References:
 - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
 */
 
-export type ComboBoxProps = Omit<ComboBoxInputProps, 'onSelect'> & {
+export type ComboBoxProps = Omit<InputProps, 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -37,7 +93,7 @@ export type ComboBoxProps = Omit<ComboBoxInputProps, 'onSelect'> & {
   label: string,
   
   /** A custom `Input` component. */
-  Input?: undefined | React.ComponentType<ComboBoxInputProps>,
+  Input?: undefined | React.ComponentType<InputProps>,
   
   /** The options list to be shown in the dropdown menu. */
   options: React.ReactNode,
@@ -47,9 +103,9 @@ export type ComboBoxProps = Omit<ComboBoxInputProps, 'onSelect'> & {
   
   /** Callback for when an option is selected in the dropdown menu. */
   onSelect?: undefined | React.ComponentProps<typeof MenuProvider>['onSelect'],
-  
+
   /** Additional props to be passed to the `MenuProvider`. */
-  dropdownProps?: undefined | Partial<React.ComponentProps<typeof MenuProvider>>,
+  dropdownProps?: undefined | Partial<MenuProviderProps>,
 };
 export const ComboBox = Object.assign(
   (props: ComboBoxProps) => {
@@ -61,12 +117,50 @@ export const ComboBox = Object.assign(
       selected,
       onSelect,
       dropdownProps = {},
-      // Hidden input props
-      name,
-      form,
       ...propsRest
     } = props;
     
+    const [inputValue, setInputValue] = React.useState(() => {
+      return selected
+        ? dropdownProps.formatItemLabel?.(selected) ?? ''
+        : propsRest.value ?? '';
+    });
+
+    const selectedSet = React.useMemo(() => buildItemKeySetFromItemKey(selected), [selected]);
+    const {
+      internalSelected,
+      handleInternalSelect,
+    } = useComboBoxState({
+      selected: selectedSet,
+      formatItemLabel: dropdownProps.formatItemLabel,
+    });
+    
+    const handleSelect = React.useCallback((_key: null | ItemKey, itemDetails: null | ItemDetails) => {
+      const itemKey = itemDetails?.itemKey ?? null;
+      onSelect?.(itemKey, itemDetails);
+      setInputValue(itemDetails?.label ?? '');
+      handleInternalSelect(itemKey ? new Set([itemKey]) : new Set());
+    }, [onSelect, handleInternalSelect, setInputValue]);
+
+    const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+      const value = evt.target.value;
+      setInputValue(value);
+    };
+
+    const handleInputFocusOut = (evt: React.FocusEvent<HTMLInputElement>) => {
+      const value = evt.target.value;
+
+      if (value === '') {
+        handleSelect(null, null);
+      } else {
+        setInputValue(internalSelected.values().next().value?.label ?? '');
+      }
+    };
+    
+    const selectedFromInternalSelected = React.useMemo(() => {
+      return internalSelected.keys().next().value ?? null;
+    }, [internalSelected]);
+
     return (
       <MenuProvider
         label={label}
@@ -76,40 +170,20 @@ export const ComboBox = Object.assign(
         keyboardInteractions="default" // FIXME
         placement="bottom-start"
         offset={1}
-        selected={selected}
-        onSelect={onSelect}
+        selected={selectedFromInternalSelected}
+        onSelect={handleSelect}
         {...dropdownProps}
       >
-        {({ props, open, requestOpen, selectedOption }) => {
-          // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
-          const anchorProps = props({
-            placeholder: 'Select an option',
-            className: cx(cl['bk-combo-box'], { [cl['bk-combo-box--open']]: open }),
-            //value: selectedOption === null ? '' : selectedOption.label,
-            //onChange: () => {},
-          });
-          
-          return (
-            <>
-              <Input
-                role="combobox"
-                automaticResize
-                {...mergeProps(
-                  anchorProps,
-                  propsRest,
-                )}
-                inputProps={{
-                  ...propsRest.inputProps,
-                  className: cx(cl['bk-combo-box__input'], propsRest.inputProps?.className),
-                }}
-              />
-              {/* Render a hidden input with the selected option key (rather than the human-readable label). */}
-              {typeof name === 'string' &&
-                <input type="hidden" form={form} name={name} value={selectedOption?.itemKey ?? ''}/>
-              }
-            </>
-          );
-        }}
+        {anchorRenderArgs => (
+          <ComboBoxInput
+            anchorRenderArgs={anchorRenderArgs}
+            Input={Input}
+            value={inputValue}
+            onChange={handleInputChange}
+            onBlur={handleInputFocusOut}
+            {...propsRest}
+          />
+        )} 
       </MenuProvider>
     );
   },
