@@ -6,23 +6,12 @@
 
 @layer baklava.components {
   .bk-combo-box {
-    @include bk.component-base(bk-combo-box-multi);
+    @include bk.component-base(bk-combo-box-lazy);
     
     .bk-combo-box__input {
       min-inline-size: 12ch;
     }
     
     &.bk-combo-box--open { --keep: ; }
-  }
-  
-  .bk-combo-box__tags {
-    display: flex;
-    gap: bk.$spacing-2;
-    flex-wrap: wrap; /* allows expansion to next line */
-    margin-top: bk.$spacing-2;
-
-    .bk-combo-box__btn-clear-all {
-      margin-left: auto;
-    }
   }
 }

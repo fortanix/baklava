@@ -118,6 +118,7 @@ const preview = {
                 'ListBoxMulti',
                 'ListBoxMultiLazy',
                 'ComboBox',
+                'ComboBoxLazy',
                 'ComboBoxMulti',
                 'Select',
                 'SelectMulti',

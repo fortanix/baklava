@@ -21,7 +21,7 @@ import cl from './ComboBox.module.scss';
 
 
 export { cl as ComboBoxClassNames };
-export type { ItemKey };
+export type { ItemKey, ItemDetails };
 type InputProps = ComponentProps<typeof InputDefault>;
 
 type ComboBoxInputProps = Omit<InputProps, 'onSelect'> & {
@@ -140,7 +140,7 @@ export const ComboBox = Object.assign(
       onSelect?.(itemKey, itemDetails);
       setInputValue(itemDetails?.label ?? '');
       handleInternalSelect(itemKey ? new Set([itemKey]) : new Set());
-    }, [onSelect, handleInternalSelect, setInputValue]);
+    }, [onSelect, handleInternalSelect]);
 
     const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
       const value = evt.target.value;

@@ -39,9 +39,9 @@ type ListItemVirtualProps = {
   virtualItem: VirtualItem,
   itemsCount: number,
   renderItem: (item: VirtualItem) => React.ReactNode,
-  renderItemLabel: (itemKey: ItemKey) => string,
+  formatItemLabel: (itemKey: ItemKey) => string,
 };
-const ListItemVirtual = ({ ref, virtualItem, itemsCount, renderItem, renderItemLabel }: ListItemVirtualProps) => {
+const ListItemVirtual = ({ ref, virtualItem, itemsCount, renderItem, formatItemLabel }: ListItemVirtualProps) => {
   const styles = React.useMemo(() => ({
     position: 'absolute' as const,
     top: 0,
@@ -51,7 +51,7 @@ const ListItemVirtual = ({ ref, virtualItem, itemsCount, renderItem, renderItemL
   }), [virtualItem.start]);
   
   const content = renderItem(virtualItem);
-  const label = renderItemLabel(String(virtualItem.key));
+  const label = formatItemLabel(String(virtualItem.key));
   
   return (
     <ListBoxMulti.Option
@@ -91,7 +91,7 @@ type ListBoxVirtualListProps = {
   isLoading: boolean,
   placeholderEmpty?: undefined | false | React.ReactNode,
   renderItem: ListItemVirtualProps['renderItem'],
-  renderItemLabel: ListItemVirtualProps['renderItemLabel'],
+  formatItemLabel: ListItemVirtualProps['formatItemLabel'],
   loadMoreItemsTriggerType?: undefined | 'scroll' | 'custom',
   loadMoreItemsTrigger?: undefined | React.ReactNode,
 };
@@ -106,7 +106,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     isLoading,
     placeholderEmpty = 'No items',
     renderItem,
-    renderItemLabel,
+    formatItemLabel,
     loadMoreItemsTriggerType = 'scroll',
     loadMoreItemsTrigger,
   } = props;
@@ -233,7 +233,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
             virtualItem={virtualItem}
             itemsCount={virtualItemKeys.length}
             renderItem={renderItem}
-            renderItemLabel={renderItemLabel}
+            formatItemLabel={formatItemLabel}
           />
         )}
       </div>
@@ -271,7 +271,7 @@ export type ListBoxMultiLazyProps = Omit<ComponentProps<typeof ListBoxMulti>, 'c
   renderItem: ListBoxVirtualListProps['renderItem'],
   
   /** Callback to render the given list item as a human-readable name. */
-  renderItemLabel: ListBoxVirtualListProps['renderItemLabel'],
+  formatItemLabel: ListBoxVirtualListProps['formatItemLabel'],
 
   /** Determines how additional items are loaded: automatically on scroll, or through a custom trigger. */
   loadMoreItemsTriggerType?: undefined | ListBoxVirtualListProps['loadMoreItemsTriggerType'],
@@ -290,7 +290,7 @@ export const ListBoxMultiLazy = (props: ListBoxMultiLazyProps) => {
     isLoading = false,
     placeholderEmpty,
     renderItem,
-    renderItemLabel,
+    formatItemLabel,
     loadMoreItemsTriggerType,
     loadMoreItemsTrigger,
     ...propsRest
@@ -309,7 +309,7 @@ export const ListBoxMultiLazy = (props: ListBoxMultiLazyProps) => {
     isLoading,
     placeholderEmpty,
     renderItem,
-    renderItemLabel,
+    formatItemLabel,
     loadMoreItemsTriggerType,
     loadMoreItemsTrigger,
   };
@@ -324,7 +324,7 @@ export const ListBoxMultiLazy = (props: ListBoxMultiLazyProps) => {
         propsRest.className,
       )}
       virtualItemKeys={virtualItemKeys}
-      formatItemLabel={renderItemLabel}
+      formatItemLabel={formatItemLabel}
       placeholderEmpty={false}
     >
       <ListBoxVirtualList {...propsVirtualList}/>

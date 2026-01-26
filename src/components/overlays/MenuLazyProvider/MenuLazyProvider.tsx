@@ -39,7 +39,7 @@ type ListBoxLazyProps = ComponentProps<typeof ListBoxLazy.ListBoxLazy>;
  * Provider for a menu overlay that is triggered by (and positioned relative to) some anchor element.
  * ---------------------------------------------------------------------------------------------------------------------
  */
-type AnchorRenderArgs = BaseAnchorRenderArgs & {
+export type AnchorRenderArgs = BaseAnchorRenderArgs & {
   selectedOption: null | ListBoxLazy.ItemDetails,
 };
 export type MenuLazyProviderProps = Omit<ListBoxLazyProps, 'ref' | 'children' | 'label' | 'size'> & {
@@ -61,9 +61,6 @@ export type MenuLazyProviderProps = Omit<ListBoxLazyProps, 'ref' | 'children' | 
   * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
   */
   children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode,
-
-  /** The menu items. */
-  items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode),
 
   /** The accessible role of the menu. */
   role?: undefined | UseFloatingElementOptions['role'],
@@ -102,7 +99,6 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
   const {
     label,
     children,
-    items,
     defaultSelected,
     selected,
     onSelect,
@@ -113,7 +109,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
     keyboardInteractions,
     placement,
     offset,
-    renderItemLabel,
+    formatItemLabel,
 
     ref,
     open,
@@ -155,7 +151,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
     previousActiveElementRef,
     setIsOpen,
     triggerAction: triggerAction ?? action,
-    formatItemLabel: renderItemLabel,
+    formatItemLabel: formatItemLabel,
     selected: selectedSet,
     defaultSelected: defaultSelectedSet,
   })
@@ -226,7 +222,7 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
           label={label}
           selected={selectedFromInternalSelected}
           defaultSelected={defaultSelected}
-          renderItemLabel={renderItemLabel}
+          formatItemLabel={formatItemLabel}
           onSelect={handleSelect}
           onToggle={handleToggle}
           data-placement={floatingPlacement}

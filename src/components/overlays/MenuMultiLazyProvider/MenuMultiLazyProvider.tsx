@@ -112,7 +112,7 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
     keyboardInteractions,
     placement,
     offset,
-    renderItemLabel,
+    formatItemLabel,
 
     ref,
     open,
@@ -153,7 +153,7 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
     previousActiveElementRef,
     setIsOpen,
     triggerAction: triggerAction ?? action,
-    formatItemLabel: renderItemLabel,
+    formatItemLabel: formatItemLabel,
     selected,
     defaultSelected,
     canCloseMenu: false,
@@ -221,7 +221,7 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
           label={label}
           selected={selectedFromInternalSelected}
           defaultSelected={defaultSelected}
-          renderItemLabel={renderItemLabel}
+          formatItemLabel={formatItemLabel}
           onSelect={handleSelect}
           onToggle={handleToggle}
           data-placement={floatingPlacement}
