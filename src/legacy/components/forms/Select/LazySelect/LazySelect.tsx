@@ -414,10 +414,12 @@ export const LazySelect = <D extends object, P extends unknown = undefined>(prop
   // due to the lazy loading, handling focus on select item after item is loaded
   React.useEffect(() => {
     if (isActive && items.length > 0) {
+      const { scrollX, scrollY } = window;
       const selectedIndex = optionsRef.current.findIndex(item => item?.getAttribute('aria-selected') === 'true');
       const focusIndex = selectedIndex === -1 ? findFirstFocusableIndex(optionsRef.current) : selectedIndex;
       optionsRef.current[focusIndex]?.focus();
       optionsRef.current[focusIndex]?.scrollIntoView({ block: 'nearest' });
+      window.scrollTo(scrollX, scrollY);
     }
   }, [isActive, items]);
 

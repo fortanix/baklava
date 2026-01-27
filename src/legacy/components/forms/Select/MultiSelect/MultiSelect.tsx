@@ -104,8 +104,10 @@ export const MultiSelect = (props: MultiSelectProps) => {
   // Scroll to selected item when select item is opened
   React.useEffect(() => {
     if (isActive && optionsRef.current.length > 0) {
+      const { scrollX, scrollY } = window;
       const selectedItem = optionsRef.current.find(item => item?.checked);
       selectedItem?.scrollIntoView({ block: 'nearest' });
+      window.scrollTo(scrollX, scrollY);
     }
   }, [optionsRef, isActive]);
   

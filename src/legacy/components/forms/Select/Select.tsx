@@ -100,8 +100,13 @@ export const Select = (props: SelectProps) => {
   // Scroll to selected item when select item is opened
   React.useEffect(() => {
     if (isActive && optionsRef.current.length > 0) {
+      const { scrollX, scrollY } = window;
       const selectedItem = optionsRef.current.find(item => item.getAttribute('aria-selected') === 'true');
       selectedItem?.scrollIntoView({ block: 'nearest' });
+      // If there is a scroll in the page and dropdown is selected, on click of the dropdown the entire page scrolls up.
+      // This is an issue with `scrollIntoView`.
+      // To fix this, we have to retain the initial position of the dropdown and scroll to the same position.
+      window.scrollTo(scrollX, scrollY);
     }
   }, [isActive]);
   
@@ -116,6 +121,7 @@ export const Select = (props: SelectProps) => {
     setIsActive(false);
     setIsOptionSelected(true);
   };
+  
   
   const renderOptions = () => {
     return Object.entries(options).map(([key, { label, disabled: optionDisabled }], index) =>
