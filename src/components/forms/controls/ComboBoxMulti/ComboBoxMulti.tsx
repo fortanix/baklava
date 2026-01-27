@@ -17,11 +17,11 @@ import {
   buildSelectedItemDetailsMap,
   InternalItemDetails,
 } from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
+import { Tag } from '../../../text/Tag/Tag.tsx';
+import { Button } from '../../../actions/Button/Button.tsx';
 
 // Styles
 import cl from './ComboBoxMulti.module.scss';
-import { Tag } from '../../../text/Tag/Tag.tsx';
-import { Button } from '../../../actions/Button/Button.tsx';
 
 
 export { cl as ComboBoxMultiClassNames };

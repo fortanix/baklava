@@ -120,6 +120,7 @@ const preview = {
                 'ComboBox',
                 'ComboBoxLazy',
                 'ComboBoxMulti',
+                'ComboBoxMultiLazy',
                 'Select',
                 'SelectMulti',
                 'datetime',
