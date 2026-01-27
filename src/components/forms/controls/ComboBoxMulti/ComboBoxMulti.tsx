@@ -67,7 +67,7 @@ export const useComboBoxState = (props: UseComboBoxStateProps) => {
 
 type ComboBoxMultiInputProps = Omit<InputProps, 'onSelect'> & {
   anchorRenderArgs: AnchorRenderArgs,
-  onUpdate?: undefined | React.ComponentProps<typeof MenuMultiProvider>['onSelect'],
+  onUpdate?: undefined | MenuMultiProviderProps['onSelect'],
   Input?: undefined | React.ComponentType<InputProps>,
 };
 

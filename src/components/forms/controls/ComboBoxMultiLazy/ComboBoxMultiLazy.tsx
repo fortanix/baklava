@@ -30,7 +30,7 @@ type InputProps = ComponentProps<typeof InputDefault>;
 
 type ComboBoxMultiLazyInputProps = Omit<InputProps, 'onSelect'> & {
   anchorRenderArgs: AnchorRenderArgs,
-  onUpdate?: undefined | React.ComponentProps<typeof MenuMultiLazyProvider>['onSelect'],
+  onUpdate?: undefined | MenuMultiLazyProviderProps['onSelect'],
   Input?: undefined | React.ComponentType<InputProps>,
 };
 
