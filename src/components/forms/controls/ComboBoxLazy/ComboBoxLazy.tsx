@@ -78,7 +78,7 @@ const ComboBoxInput = (props: ComboBoxInputProps) => {
   );
 };
 
-type DropdownProps = Omit<MenuLazyProviderProps, 'label' | 'virtualItemKeys'>;
+type DropdownProps = Omit<MenuLazyProviderProps, 'label'>;
 
 /*
 A `ComboBox` is a text input control combined with a dropdown menu that adapts to the user input, for example for
@@ -95,9 +95,6 @@ export type ComboBoxLazyProps = Omit<InputProps, 'onSelect'> & {
   /** A human-readable name for the combobox. */
   label: string,
 
-  /** The full list of item keys (possibly lazily computed). */
-  virtualItemKeys: MenuLazyProviderProps['virtualItemKeys'],
-  
   /** A custom `Input` component. */
   Input?: undefined | React.ComponentType<InputProps>,
   
@@ -114,7 +111,6 @@ export const ComboBoxLazy = (props: ComboBoxLazyProps) => {
   const {
     unstyled = false,
     label,
-    virtualItemKeys,
     Input = InputDefault,
     selected,
     onSelect,
@@ -166,7 +162,6 @@ export const ComboBoxLazy = (props: ComboBoxLazyProps) => {
   return (
     <MenuLazyProvider
       label={label}
-      virtualItemKeys={virtualItemKeys}
       role="combobox"
       triggerAction="focus-interactive" // Keep the dropdown menu open while the input is focused
       keyboardInteractions="default" // FIXME
