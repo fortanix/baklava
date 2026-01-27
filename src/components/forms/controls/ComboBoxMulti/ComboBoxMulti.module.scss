@@ -19,10 +19,10 @@
     display: flex;
     gap: bk.$spacing-2;
     flex-wrap: wrap; /* allows expansion to next line */
-    margin-top: bk.$spacing-2;
+    margin-block-start: bk.$spacing-2;
 
     .bk-combo-box__btn-clear-all {
-      margin-left: auto;
+      margin-inline-start: auto;
     }
   }
 }
