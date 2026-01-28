@@ -11,6 +11,7 @@ import { classNames as cx, type ComponentProps } from '../../../../util/componen
 import { useOutsideClickHandler } from '../../../../util/hooks/useOutsideClickHandler.ts';
 import { useCombinedRefs } from '../../../../util/hooks/useCombinedRefs.ts';
 import {
+  findFirstFocusableIndex,
   handleOptionKeyDown,
   handleTriggerKeyDown
 } from '../../../../util/keyboardHandlers.tsx';
@@ -104,8 +105,9 @@ export const MultiSelect = (props: MultiSelectProps) => {
   // Scroll to selected item when select item is opened
   React.useEffect(() => {
     if (isActive && optionsRef.current.length > 0) {
-      const selectedItem = optionsRef.current.find(item => item?.checked);
-      selectedItem?.scrollIntoView({ block: 'nearest' });
+      const selectedIndex = optionsRef.current.findIndex(item => item?.getAttribute('aria-selected') === 'true');
+      const focusIndex = selectedIndex === -1 ? findFirstFocusableIndex(optionsRef.current) : selectedIndex;
+      optionsRef.current[focusIndex]?.focus();
     }
   }, [optionsRef, isActive]);
   

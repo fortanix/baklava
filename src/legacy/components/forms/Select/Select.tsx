@@ -10,7 +10,7 @@ import * as PopperJS from '@popperjs/core';
 import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
 import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandler.ts';
 import { useCombinedRefs } from '../../../util/hooks/useCombinedRefs.ts';
-import { handleOptionKeyDown, handleTriggerKeyDown } from '../../../util/keyboardHandlers.tsx';
+import { findFirstFocusableIndex, handleOptionKeyDown, handleTriggerKeyDown } from '../../../util/keyboardHandlers.tsx';
 
 import { useScroller } from '../../util/Scroller.tsx';
 import { Button } from '../../buttons/Button.tsx';
@@ -100,8 +100,9 @@ export const Select = (props: SelectProps) => {
   // Scroll to selected item when select item is opened
   React.useEffect(() => {
     if (isActive && optionsRef.current.length > 0) {
-      const selectedItem = optionsRef.current.find(item => item.getAttribute('aria-selected') === 'true');
-      selectedItem?.scrollIntoView({ block: 'nearest' });
+      const selectedIndex = optionsRef.current.findIndex(item => item?.getAttribute('aria-selected') === 'true');
+      const focusIndex = selectedIndex === -1 ? findFirstFocusableIndex(optionsRef.current) : selectedIndex;
+      optionsRef.current[focusIndex]?.focus();
     }
   }, [isActive]);
   
