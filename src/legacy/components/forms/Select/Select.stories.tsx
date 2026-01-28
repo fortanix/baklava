@@ -53,7 +53,19 @@ export const SelectWithDefault: Story = {
   },
 };
 
-export const SelectWithScroll: Story = {
+export const SelectEmpty: Story = {
+  args: {
+    options: {},
+    placeholder: 'An empty select',
+    defaultOption: { label: 'Select an option' },
+  },
+};
+
+/**
+ * When an option is selected, that option should be scrolled into view. Added some scroll here to test that we do not
+ * accidentally scroll to the top of the page (regression test).
+ */
+export const SelectWithFocusScroll: Story = {
   decorators: [
     Story => (
       <div style={{ paddingTop: 1000 }}>
@@ -65,13 +77,5 @@ export const SelectWithScroll: Story = {
     placeholder: 'Select a fruit',
     value: 'apple',
     options: options1,
-  },
-};
-
-export const SelectEmpty: Story = {
-  args: {
-    options: {},
-    placeholder: 'An empty select',
-    defaultOption: { label: 'Select an option' },
   },
 };
