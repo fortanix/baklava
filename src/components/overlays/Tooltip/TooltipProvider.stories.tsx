@@ -2,17 +2,18 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import type { Meta, StoryObj } from '@storybook/react-vite';
-
 import * as React from 'react';
+
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
 import { Draggable } from '../../../util/drag.ts';
 
-import { TooltipProvider } from './TooltipProvider.tsx';
-import { TooltipIcon, TooltipItem, TooltipTitle } from './Tooltip.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
-import { OverflowTester } from '../../../util/storybook/OverflowTester.tsx';
 import { Card } from '../../containers/Card/Card.tsx';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
+
+import { TooltipIcon, TooltipItem, TooltipTitle } from './Tooltip.tsx';
+import { TooltipProvider } from './TooltipProvider.tsx';
 
 
 type TooltipProviderArgs = React.ComponentProps<typeof TooltipProvider>;
@@ -95,17 +96,19 @@ export const TooltipMedium: Story = {
   args: {
     placement: 'right',
     size: 'medium',
-    tooltip: <>
-      <TooltipTitle>Title</TooltipTitle>
-      <TooltipItem alert={true}>
-        <TooltipIcon icon="status-failed" />
-        Lorem ipsum
-      </TooltipItem>
-      <TooltipItem>
-        <TooltipIcon icon="copy" />
-        Lorem ipsum
-      </TooltipItem>
-    </>,
+    tooltip: (
+      <>
+        <TooltipTitle>Title</TooltipTitle>
+        <TooltipItem alert={true}>
+          <TooltipIcon icon="status-failed" />
+          Lorem ipsum
+        </TooltipItem>
+        <TooltipItem>
+          <TooltipIcon icon="copy" />
+          Lorem ipsum
+        </TooltipItem>
+      </>
+    ),
   },
 };
 
@@ -140,35 +143,28 @@ export const TooltipWithScroll: Story = {
  */
 export const TooltipInCardHeader: Story = {
   render: () => {
-    const tooltipText = `
-      This tooltip appears next to the card header icon and provides additional context or guidance.
-
-      It auto-repositions if it reaches the edge of the viewport (e.g., when scrolling or on small screens).
-
-      This message also includes a very long string with no spaces to test overflow behavior:
-      ThisIsAVeryLongStringWithoutAnySpacesToTestWhetherWeHandleWordBreaksCorrectlyWhenTheTextOverflowsTheContainingElement.
-    `;
+    const tooltipText = (
+      <>
+        <p>This tooltip appears next to the card header icon and provides additional context or guidance.</p>
+        <p>It auto-repositions if it reaches the edge of the viewport (e.g., when scrolling or on small screens).</p>
+        <p>This message also includes a very long string with no spaces to test overflow behavior:
+        ThisIsAVeryLongStringWithoutAnySpacesToTestWhetherWeHandleWordBreaksCorrectlyWhenTheTextOverflowsTheContainingElement.</p>
+      </>
+    );
 
     return (
       <Card>
         <Card.Heading>
+          <style>{`@scope { .icon { margin-inline-start: 0.5ch; } }`}</style>
+          
           Card Header with Tooltip
+          
           <TooltipProvider tooltip={tooltipText}>
-            <Icon icon="info" />
+            {props => <Icon {...props()} icon="info" className="icon"/>}
           </TooltipProvider>
         </Card.Heading>
       </Card>
     );
-  },
-};
-
-/**
- * Tooltips should activate on focus.
- */
-export const TooltipWithFocus: Story = {
-  args: {
-    tooltip: 'Tooltips will open when the anchor element is focused',
-    children: (props) => <Button {...props()} kind="primary" label="Focus me" autoFocus/>,
   },
 };
 
@@ -207,14 +203,21 @@ export const TooltipDraggable: Story = {
   render: () => <TooltipWithDrag/>,
 };
 
-export const TooltipEmpty: Story = {
-  args: {
-    tooltip: '',
-  },
-};
-
+/**
+ * When the tooltip content is `null`, the tooltip should not appear at all. This can be useful to conditionally
+ * disable the tooltip.
+ */
 export const TooltipNull: Story = {
   args: {
     tooltip: null,
+  },
+};
+
+/**
+ * When the tooltip content is an empty string, it should not be rendered either.
+ */
+export const TooltipEmpty: Story = {
+  args: {
+    tooltip: '',
   },
 };

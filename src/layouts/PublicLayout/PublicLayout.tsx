@@ -10,23 +10,26 @@ import { type IconName } from '../../components/graphics/Icon/Icon.tsx';
 //import { FortanixLogo } from '../../fortanix/FortanixLogo/FortanixLogo.tsx';
 import { Card } from '../../components/containers/Card/Card.tsx';
 
-import FortanixLogo from '../../assets/fortanix/fortanix-logo.svg?react';
-import FortanixLogoMono from '../../assets/fortanix/fortanix-logo-mono.svg?react';
+import FortanixLogoImage from '../../assets/fortanix/fortanix-logo.svg?react';
+import FortanixLogoImageMono from '../../assets/fortanix/fortanix-logo-mono.svg?react';
 import cl from './PublicLayout.module.scss';
 
 
 export { cl as PublicLayoutClassNames };
 
-type FortanixArmorLogoProps = ComponentProps<'figure'> & {
+type FortanixLogoProps = ComponentProps<'figure'> & {
   /** Whether to stack the logo and product name. */
   stacked?: undefined | boolean,
   
   /** Whether to use a monochrome logo. */
   monochrome?: undefined | boolean,
+  
+  /** The product name to show beside the logo. */
+  productName?: undefined | string,
 };
-const FortanixArmorLogo = (props: FortanixArmorLogoProps) => {
-  const { stacked = false, monochrome = false, ...propsRest } = props;
-  const LogoC = monochrome ? FortanixLogoMono : FortanixLogo;
+const FortanixLogo = (props: FortanixLogoProps) => {
+  const { stacked = false, monochrome = false, productName, ...propsRest } = props;
+  const LogoC = monochrome ? FortanixLogoImageMono : FortanixLogoImage;
   return (
     <figure
       {...propsRest}
@@ -34,15 +37,21 @@ const FortanixArmorLogo = (props: FortanixArmorLogoProps) => {
         cl['bk-fortanix-armor-logo'],
         { [cl['bk-fortanix-armor-logo--stacked']]: stacked },
         propsRest.className,
-    )}
+      )}
     >
       {/* <FortanixLogo/> FIXME: no way to scale this by font size currently */}
       
       <LogoC role="img" aria-label="Fortanix" className={cl['fortanix-logo-image']} width="180" height="auto"/>
       
-      <span className={cx(cl['product-name'])}>Armor</span>
+      {productName && <span className={cx(cl['product-name'])}>{productName}</span>}
     </figure>
   );
+};
+
+/** Version of `FortanixLogo` with hardcoded Armor product name, kept around for backwards compatibility. */
+type FortanixArmorLogoProps = Omit<FortanixLogoProps, 'productName'>;
+const FortanixArmorLogo = (props: FortanixArmorLogoProps) => {
+  return <FortanixLogo {...props} productName="Armor"/>;
 };
 
 type HeadingProps = ComponentProps<'header'>;
@@ -136,6 +145,7 @@ export const PublicLayout = Object.assign(
     );
   },
   {
+    FortanixLogo,
     FortanixArmorLogo,
     Heading,
     ProductInfoCard,

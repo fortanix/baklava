@@ -3,26 +3,15 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import './preview.scss'; // Note: must be imported before any other CSS for `@layer` to work
-import 'virtual:svg-icons-register';
+import 'virtual:svg-icons/register';
 
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 import { type Preview } from '@storybook/react-vite';
 import { themes } from 'storybook/theming';
-import { addons } from 'storybook/preview-api';
-import { DARK_MODE_EVENT_NAME } from '@storybook-community/storybook-dark-mode';
 import { DocsContainer } from '@storybook/addon-docs/blocks';
 
 import { BaklavaProvider } from '../src/context/BaklavaProvider.tsx';
-
-
-const channel = addons.getChannel();
-
-// Start listening to dark mode events as soon as possible. In Safari it seems the event is emitted *before*
-// the component is first rendered and starts listening to this event.
-// Ticket: https://github.com/hipstersmoothie/@storybook-community/storybook-dark-mode/issues/230
-let isDarkInitial = false;
-channel.on(DARK_MODE_EVENT_NAME, isDark => { isDarkInitial = isDark; });
 
 
 const preview = {
@@ -125,13 +114,18 @@ const preview = {
                 'ListBox',
                 'ListBoxLazy',
                 'ListBoxMulti',
+                'ListBoxMultiLazy',
                 'ComboBox',
                 'Select',
                 'SelectMulti',
-                'DatePicker',
-                'DatePickerRange',
-                'TimePicker',
-                'DateTimePicker',
+                'datetime',
+                [
+                  'DatePicker',
+                  'DateRangePicker',
+                  'DateInput',
+                  'TimeInput',
+                  'DateTimeInput',
+                ],
               ],
               'fields',
               [
@@ -176,101 +170,6 @@ const preview = {
           [
             'FortanixLogo',
           ],
-          'legacy',
-          [
-            'docs',
-            [
-              'Typography',
-            ],
-            'components',
-            [
-              'typography',
-              [
-                'Caption',
-                'Code',
-                'Entity',
-                'Headings',
-              ],
-              'icons',
-              [
-                'Icon',
-              ],
-              'buttons',
-              [
-                'Button',
-              ],
-              'Progress',
-              'containers',
-              [
-                'Tag',
-                'Panel',
-                'PropertyList',
-                'Accordion',
-              ],
-              'overlays',
-              [
-                'Loader',
-                'Tooltip',
-                'Notification',
-                'Modal',
-                'Dropdown',
-              ],
-              'forms',
-              [
-                'Label',
-                'Checkbox',
-                'Radio',
-                'Input',
-                'MaskedInput',
-                'TextArea',
-                'Select',
-                [
-                  'Select',
-                  'MultiSelect',
-                  'LazySelect',
-                ],
-                'DateTime',
-                [
-                  'DatePicker',
-                  'DateTimePicker',
-                  'YearMonthPicker',
-                ],
-                'ColorPicker',
-                'MultiAssigner',
-              ],
-              'tables',
-              [
-                'DataTable',
-              ],
-              'navigation',
-              [
-                'Switcher',
-                'Tabs',
-                'TabEmbedded',
-              ],
-              'layout',
-              [
-                'Breadcrumbs',
-                'headers',
-                [
-                  'HeaderGrid',
-                ],
-                'sidebars',
-                [
-                  'Nav',
-                  'Sidebar',
-                ],
-                'layouts',
-                [
-                  'Layout',
-                ],
-              ],
-              'internal',
-              [
-                'CloseButton',
-              ],
-            ],
-          ],
         ],
       },
     },
@@ -295,18 +194,24 @@ const preview = {
     },
     
     docs: {
-      container: (props) => {
-        // `DocsContainer` does not automatically support light/dark mode switching, need to set the theme manually
-        const [isDark, setDark] = React.useState(isDarkInitial);
+      container: (props: any) => {
+        const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        });
         
-        React.useEffect(() => {
-          channel.on(DARK_MODE_EVENT_NAME, setDark);
-          return () => channel.removeListener(DARK_MODE_EVENT_NAME, setDark);
-        }, [channel, setDark]);
+        useEffect(() => {
+          const controller = new AbortController();
+          
+          const media = window.matchMedia('(prefers-color-scheme: dark)');
+          media.addEventListener('change', event => {
+            setTheme(event.matches ? 'dark' : 'light');
+          }, { signal: controller.signal });
+          
+          return () => { controller.abort(); };
+        }, []);
         
-        const theme = React.useMemo(() => isDark ? themes.dark : themes.light, [isDark]);
         return (
-          <DocsContainer {...props} theme={theme}/>
+          <DocsContainer {...props} theme={themes[theme]}/>
         );
       },
       // page: () => (

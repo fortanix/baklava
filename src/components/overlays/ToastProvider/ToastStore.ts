@@ -11,6 +11,7 @@ import { type BannerVariant } from '../../containers/Banner/Banner.tsx';
 export type ToastId = string;
 export type ToastOptions = {
   autoClose?: undefined | false | number /*ms*/, // Time after which to automatically close the toast
+  dedupeKey?: undefined | string, // Optional unique identifier used to deduplicate notifications
 };
 export type ToastDescriptor = {
   variant: BannerVariant,
@@ -42,6 +43,7 @@ export class ToastStore {
   #idCounter = 0; // Maintain a count for automatic ID generation
   #toasts: ToastStorage = Object.create(null);
   #subscribers: Set<ToastSubscriber> = new Set();
+  #dedupeKeys: Set<string> = new Set(); // Tracks active dedupe keys to prevent showing duplicate notifications.
   
   constructor(options: ToastStoreOptions = {}) {
     this.#options = {
@@ -100,6 +102,30 @@ export class ToastStore {
       [this.keyFromId(toastId)]: { ...toast, metadata: updater(toast.metadata) },
     };
   }
+
+  // Returns true if the toast has a dedupeKey and it already exists in the set,
+  // indicating that a duplicate toast should be suppressed.
+  hasActiveDedupeKey(toast: ToastDescriptor) {
+    return typeof toast.options?.dedupeKey !== 'undefined'
+      ? this.#dedupeKeys.has(toast.options.dedupeKey)
+      : false;
+  }
+
+  addDedupeKey(toast: ToastWithMetadata) {
+    const dedupeKey = toast.descriptor.options?.dedupeKey;
+
+    if (typeof dedupeKey !== 'undefined') {
+      this.#dedupeKeys.add(dedupeKey);
+    }
+  }
+
+  deleteDedupeKey(toast: ToastWithMetadata) {
+    const dedupeKey = toast.descriptor.options?.dedupeKey;
+
+    if (typeof dedupeKey !== 'undefined') {
+      this.#dedupeKeys.delete(dedupeKey);
+    }
+  }
   
   dismissToast(toastId: ToastId) {
     const toastKey = this.keyFromId(toastId);
@@ -116,6 +142,7 @@ export class ToastStore {
     window.setTimeout(() => {
       const toasts = { ...this.#toasts };
       delete toasts[toastKey];
+      this.deleteDedupeKey(toast);
       this.#toasts = toasts;
       this.publish();
     }, this.#options.exitAnimationDelay);
@@ -156,6 +183,7 @@ export class ToastStore {
       descriptor: toast,
     };
     
+    this.addDedupeKey(toasts[toastKey]);
     this.#toasts = toasts;
     this.publish();
   }
@@ -165,8 +193,9 @@ export class ToastStore {
     const toast = this.#toasts[toastKey];
     if (typeof toast === 'undefined') { return; }
     
+    const isDismissed = toast.metadata.dismissed;
     const openedAt: Date = toast.metadata.openedAt;
-    return (Date.now() - openedAt.valueOf()) >= this.#options.entryAnimationDelay;
+    return !isDismissed && (Date.now() - openedAt.valueOf()) >= this.#options.entryAnimationDelay;
   }
   
   pauseAutoClose(toastId: ToastId) {

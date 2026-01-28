@@ -7,9 +7,16 @@
 @mixin dialog-slide-over($entry-dur: 200ms, $exit-dur: 180ms, $size: 0.8, $origin: right) {
   $dir: if($origin==right, 1, -1);
   
-  transition-property: overlay, display, translate;
+  
+  --transition-props: translate;
+  transition-property: overlay, display, var(--transition-props);
   transition-timing-function: ease-out;
   transition-behavior: allow-discrete;
+  
+  // Fallback for older browsers. See: https://codepen.io/maikelkrause/pen/qEZybQX
+  @supports not (overlay: auto) {
+    transition-property: var(--transition-props); // Exclude display/overlay
+  }
   
   // Open state styling
   translate: 0;

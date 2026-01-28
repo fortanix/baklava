@@ -359,9 +359,9 @@ export const DataTableEagerWithPageLayout: Story = {
 
 // Edge cases: table within table and table within modal within table
 
-type LoremIpsum = {
-  lorem: string | LoremIpsum,
-  ipsum: string | LoremIpsum,
+type DataTableEagerEdgeCasesInnerTestData = {
+  lorem: string | DataTableEagerEdgeCasesInnerTestData,
+  ipsum: string | DataTableEagerEdgeCasesInnerTestData,
 };
 const loremIpsumItems = [
   { lorem: 'lorem', ipsum: 'ipsum' },
@@ -371,7 +371,7 @@ const DataTableEagerEdgeCasesInnerTemplate = () => {
   const innerColumns = [
     {
       id: 'lorem',
-      accessor: (data: LoremIpsum) => data.lorem,
+      accessor: (data: DataTableEagerEdgeCasesInnerTestData) => data.lorem,
       Header: 'Lorem',
       Cell: ({ value }: { value: string }) => value,
       disableSortBy: false,
@@ -380,7 +380,7 @@ const DataTableEagerEdgeCasesInnerTemplate = () => {
     },
     {
       id: 'ipsum',
-      accessor: (data: LoremIpsum) => data.ipsum,
+      accessor: (data: DataTableEagerEdgeCasesInnerTestData) => data.ipsum,
       Header: 'Ipsum',
       Cell: ({ value }: { value: string }) => value,
       disableSortBy: false,
@@ -412,11 +412,13 @@ const ModalButton = () => {
     </DialogModal>
   );
 };
-const DataTableEagerEdgeCasesTemplate = (props: DataTableEager.TableProviderEagerProps<LoremIpsum>) => {
+const DataTableEagerEdgeCasesTemplate = (
+  props: DataTableEager.TableProviderEagerProps<DataTableEagerEdgeCasesInnerTestData>,
+) => {
   const columns = [
     {
       id: 'innertable',
-      accessor: (data: LoremIpsum) => data.lorem,
+      accessor: (data: DataTableEagerEdgeCasesInnerTestData) => data.lorem,
       Header: 'Inner table',
       Cell: () => <DataTableEagerEdgeCasesInnerTemplate/>,
       disableSortBy: false,
@@ -425,7 +427,7 @@ const DataTableEagerEdgeCasesTemplate = (props: DataTableEager.TableProviderEage
     },
     {
       id: 'modalbutton',
-      accessor: (data: LoremIpsum) => data.ipsum,
+      accessor: (data: DataTableEagerEdgeCasesInnerTestData) => data.ipsum,
       Header: 'Modal Button',
       Cell: () => <ModalButton/>,
       disableSortBy: false,
@@ -451,11 +453,15 @@ export const DataTableEagerWithPageLayoutEdgeCases: StoryObj<typeof DataTableEag
   args: {
     items: loremIpsumItems,
   },
-  render: (args: DataTableEager.TableProviderEagerProps<LoremIpsum>) => <DataTableEagerEdgeCasesTemplate {...args} />,
+  render: (
+    args: DataTableEager.TableProviderEagerProps<DataTableEagerEdgeCasesInnerTestData>,
+  ) => <DataTableEagerEdgeCasesTemplate {...args} />,
   decorators: [
     Story => (
       <PageLayout>
-        <PageLayout.Header title={<PageLayout.Heading>PageLayout with edgeless parameter - edge cases</PageLayout.Heading>}/>
+        <PageLayout.Header
+          title={<PageLayout.Heading>PageLayout with edgeless parameter - edge cases</PageLayout.Heading>}
+        />
         <PageLayout.Body edgeless={true}>
           <Story/>
         </PageLayout.Body>

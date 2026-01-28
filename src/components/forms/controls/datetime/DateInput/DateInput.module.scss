@@ -1,0 +1,44 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-date-input {
+    @include bk.component-base(bk-date-input);
+    
+    // FIXME: calendar icon is a bit too big (visually) compared to other icons
+    :global(.input-icon) {
+      font-size: 0.8em;
+      margin-inline: calc(bk.$spacing-1 / 2);
+    }
+  }
+  
+  .bk-date-input__picker {
+    // Open state
+    opacity: 1;
+    
+    @media (prefers-reduced-motion: no-preference) {
+      // Note: don't animate `transform` with floating-ui, since it relies on it for positioning
+      --transition-props: opacity;
+      --transition-duration: 120ms;
+      transition: none var(--transition-duration) ease-out allow-discrete;
+      transition-property: display, overlay, var(--transition-props);
+      
+      // Fallback for older browsers. See: https://codepen.io/maikelkrause/pen/qEZybQX
+      @supports not (overlay: auto) {
+        transition-property: var(--transition-props); // Exclude display/overlay
+      }
+      
+      // Exit state
+      &:not(:popover-open) {
+        --transition-duration: 80ms; // Exit transition should be faster
+        opacity: 0;
+      }
+      
+      // Entry state
+      @starting-style { opacity: 0; }
+    }
+  }
+}

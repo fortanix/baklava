@@ -32,6 +32,8 @@ export const useRowSelectColumn = <D extends object>(hooks: ReactTable.Hooks<D>)
                   <Checkbox
                     aria-label="Select all rows"
                     checked={checked}
+                    // Prevent the click event from triggering a click on the parent table header/cell
+                    onClick={event => { event.stopPropagation(); }}
                     onChange={onChange}
                     className={cl['bk-data-table-row-select__checkbox']}
                   />
@@ -52,6 +54,8 @@ export const useRowSelectColumn = <D extends object>(hooks: ReactTable.Hooks<D>)
                 <Checkbox
                   aria-label="Select row"
                   checked={checked}
+                  // Prevent the click event from triggering a click on the parent table header/cell
+                  onClick={event => { event.stopPropagation(); }}
                   onChange={onChange}
                   className={cl['bk-data-table-row-select__checkbox']}
                 />
@@ -93,7 +97,7 @@ export const useRowSelectColumnRadio = <D extends object>(hooks: ReactTable.Hook
 
             const handleRadioChange = () => {
               // deselect all other rows first (mimic radio button behavior)
-              cellProps.rows.forEach(row => row.toggleRowSelected(false));
+              cellProps.rows.forEach(row => { row.toggleRowSelected(false); });
               // then select this row
               onChange?.({ target: { checked: true } } as any);
             };

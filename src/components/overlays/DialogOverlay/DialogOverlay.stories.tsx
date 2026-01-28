@@ -71,7 +71,7 @@ const DialogOverlayControlledWithSubject = (props: React.ComponentProps<typeof D
     </article>
   );
 };
-export const DialogModalWithSubject: Story = {
+export const DialogOverlayWithSubject: Story = {
   args: {
     trigger: undefined,
   },

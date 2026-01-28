@@ -17,6 +17,11 @@
         inset-inline-start: 0;
         inline-size: 100%;
       }
+
+      // Add a separator below the virtual list when it has items and is not the last child.
+      &:not(:empty, :last-child) + .bk-list-box-lazy__item {
+        border-block-start: bk.$size-1 solid bk.$theme-dropdown-menu-menu-border-default;
+      }
     }
   }
 }

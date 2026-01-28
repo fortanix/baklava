@@ -5,7 +5,7 @@
 import * as React from 'react';
 
 import { useDelayedUnmount } from '../../../../util/hooks/useDelayedUnmount.ts';
-import { type PopoverProps, usePopover } from './usePopover.ts';
+import { type UsePopoverResult, usePopover } from './usePopover.ts';
 import { usePopoverTracker } from '../TopLayerManager.tsx';
 
 
@@ -13,6 +13,10 @@ export type PopoverRef = {
   active: boolean,
   activate: () => void,
   deactivate: () => void,
+};
+
+export type PopoverParams<E extends HTMLElement> = UsePopoverResult<E> & {
+  close: () => void,
 };
 
 export const useRef = React.useRef<PopoverRef>;
@@ -24,7 +28,7 @@ export type PopoverProviderProps<E extends HTMLElement> = {
   children?: undefined | ((triggerProps: { active: boolean, activate: () => void }) => React.ReactNode),
   
   /** The popover to be shown in the popover overlay. */
-  popover: (props: PopoverProps<E>) => React.ReactNode,
+  popover: (params: PopoverParams<E>) => React.ReactNode,
   
   /** Whether the popover is active. Use this if you want the popover to be a controlled component. */
   active?: undefined | boolean,
@@ -57,6 +61,7 @@ export const PopoverProvider = Object.assign(
     const [shouldMount, setActiveWithDelay] = useDelayedUnmount(active, setActive, unmountDelay);
     
     const popoverRef = React.useMemo<PopoverRef>(() => ({
+      //source, // TODO: need a reference to the trigger element
       active: active,
       activate: () => { setActiveWithDelay(true); },
       deactivate: () => { setActiveWithDelay(false); },
@@ -64,12 +69,16 @@ export const PopoverProvider = Object.assign(
     
     React.useImperativeHandle(ref, () => popoverRef, [popoverRef]);
     
-    const popoverProps = usePopover<E>(popoverRef);
+    const popoverParams = Object.assign(usePopover<E>(popoverRef), {
+      close: popoverRef.deactivate,
+    });
+    
+    // Track this as part of our top layer elements tracker
     usePopoverTracker(active);
     
     return (
       <>
-        {shouldMount && popover(popoverProps)}
+        {shouldMount && popover(popoverParams)}
         {typeof children === 'function' ? children(popoverRef) : children}
       </>
     );

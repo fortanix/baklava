@@ -1,0 +1,27 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-list-box-multi-lazy {
+    @include bk.component-base(bk-list-box-multi-lazy);
+    
+    .bk-list-box-multi-lazy__scroller {
+      flex-shrink: 0; // Prevent the div from shrinking inside the parent flex box
+      
+      > .bk-list-box-multi-lazy__item {
+        position: absolute;
+        inset-block-start: 0;
+        inset-inline-start: 0;
+        inline-size: 100%;
+      }
+
+      // Add a separator below the virtual list when it has items and is not the last child.
+      &:not(:empty, :last-child) + .bk-list-box-multi-lazy__item {
+        border-block-start: bk.$size-1 solid bk.$theme-dropdown-menu-menu-border-default;
+      }
+    }
+  }
+}

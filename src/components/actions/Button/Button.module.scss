@@ -24,6 +24,7 @@
     color: var(--bk-button-color-text);
     
     &.bk-button--trimmed {
+      @include bk.expand-target-area();
       padding: 0;
       border: none;
     }

@@ -6,6 +6,8 @@
 
 @layer baklava.components {
   .bk-toast {
+    @include bk.component-base(bk-toast);
+    
     cursor: pointer;
     user-select: none; // Text selection does not make sense given that clicking the toast closes it
     touch-action: none;
@@ -15,28 +17,37 @@
     inline-size: 60ch;
     box-shadow: 0.15em 0.15em 0.4em rgb(0 0 0 / 50%);
     
-    transition-duration: 400ms;
-    transition-property: display, translate, opacity;
-    transition-behavior: allow-discrete;
-    transition-timing-function: var(--bk-toast-ease-entry);
     
-    @starting-style {
-      translate: 100%;
-      opacity: 0;
-    }
-    &.bk-toast--skip-entry { // If applied, we skip the entry animation
-      transition-duration: 0ms;
-    }
+    // Open state
+    display: block;
+    opacity: 1;
+    translate: none;
     
-    &[hidden] {
-      transition-duration: 200ms;
-      transition-timing-function: var(--bk-toast-ease-exit);
-      opacity: 0;
-      translate: 100%;
+    @media (prefers-reduced-motion: no-preference) {
+      --transition-duration: 400ms;
+      transition: none var(--transition-duration) var(--bk-toast-ease-entry) allow-discrete;
+      transition-property: display, opacity, translate;
+      
+      &.bk-toast--skip-entry { // If applied, we skip the entry animation
+        --transition-duration: 0ms;
+      }
+      
+      // Exit state
+      &[hidden] {
+        --transition-duration: 200ms; // Entry transition should be faster
+        // transition-timing-function: var(--bk-toast-ease-exit);
+        opacity: 0;
+        translate: 100%;
+      }
+      
+      // Entry state
+      @starting-style { opacity: 0; translate: 100%; }
     }
   }
   
   .bk-toaster {
+    @include bk.component-base(bk-toaster);
+    
     // Source: `--ease-spring-1` from open-props
     --bk-toast-ease-entry: linear(
       0,
@@ -57,8 +68,6 @@
     // Source: `--ease-elastic-out-1` from open-props
     --bk-toast-ease-exit: cubic-bezier(0.5, 0.75, 0.75, 1.25);
     
-    @include bk.component-base(bk-toaster);
-    
     overflow: visible; // Allow overflow, for entry/exit animation overshoot
     
     position: fixed;
@@ -78,11 +87,6 @@
     display: flex;
     flex-direction: column-reverse;
     row-gap: 1lh;
-    
-    @media (prefers-reduced-motion: no-preference) {
-      --transition-duration: 150ms;
-      transition: opacity var(--transition-duration) ease-out;
-    }
     
     @include bk.focus-hidden;
   }

@@ -82,9 +82,9 @@ export const Form = (props: FormProps) => {
           }
         }
       >
-        <FormContext.Provider value={context}>
+        <FormContext value={context}>
           {children}
-        </FormContext.Provider>
+        </FormContext>
       </form>
     );
   };

@@ -10,7 +10,7 @@
     
     display: flex;
     flex-direction: column;
-    gap: bk.$spacing-1;
+    gap: calc(bk.$spacing-1 - 0.2rem); // Adjust by deducting 0.2rem as input has padding to expand the target area
     
     .bk-input-field__label {
       @include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-m);

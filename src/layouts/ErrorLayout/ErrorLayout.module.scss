@@ -1,0 +1,56 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../styling/defs.scss' as bk;
+
+@layer baklava.layouts {
+
+
+  .bk-error-layout {
+    @include bk.component-base(bk-error-layout);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .bk-error-layout__content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .bk-error-icon {
+        color: bk.$color-blackberry-100;
+        font-size: 5rem;
+        padding: bk.$spacing-4;
+      }
+
+      .bk-error-title {
+        padding: bk.$spacing-1;
+      }
+
+      .bk-error-description {
+        @include bk.font-family-body();
+        display: block;
+        justify-content: center;
+        align-items: center;
+        inline-size: 30rem;
+        margin-inline-end: bk.$spacing-4;
+        padding: bk.$spacing-4;
+        flex-shrink: 0;
+
+        a {
+          margin-inline-start: bk.$spacing-1;
+        }
+      }
+    }
+
+    .bk-error-layout__content__actions {
+      display: flex;
+      justify-content: center;
+      gap: bk.$spacing-4;
+
+    }
+  }
+}

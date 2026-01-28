@@ -14,6 +14,7 @@ You can find the latest Storybook documentation [here](https://fortanix.github.i
 Requirements:
 
 - React v19 or higher.
+- Sass (recommended)
 
 Installation:
 
@@ -40,23 +41,23 @@ To import a component:
 import { Button } from '@fortanix/baklava';
 ```
 
-For the styling, add the following import to your main CSS file:
+For the styling, add the following import to your main `.scss` file (assumes you have Sass set up):
 
-```
+```scss
 @use '@fortanix/baklava';
 ```
 
 Icons are loaded through SVG sprites. This requires some additional setup. If you're using vite, install the
-`vite-plugin-svg-icons` plugin:
+`vite-plugin-svg-icons-ng` plugin:
 
 ```console
-npm install --save vite-plugin-svg-icons
+npm install --save vite-plugin-svg-icons-ng
 ```
 
 Then, add the following to the `plugins` array in your vite config:
 
 ```ts
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons';
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons-ng';
 
 export default {
   plugins: [
@@ -73,7 +74,7 @@ export default {
 Additionally, you will need to add the following import in your main entry file:
 
 ```ts
-import 'virtual:svg-icons-register';
+import 'virtual:svg-icons/register';
 ```
 
 Please make sure that Baklava is the first CSS that gets loaded in to your bundle. Baklava relies on CSS

@@ -44,7 +44,7 @@ export const PublicLayoutStandard: Story = {
     heading: (
       <PublicLayout.Heading>
         <H1>Log In</H1>
-        <PublicLayout.FortanixArmorLogo stacked={false}/>
+        <PublicLayout.FortanixLogo stacked={false} productName="Armor"/>
       </PublicLayout.Heading>
     ),
     children: (

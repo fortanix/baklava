@@ -25,7 +25,7 @@ import { Button } from '../../actions/Button/Button.tsx';
 import { Input } from '../../forms/controls/Input/Input.tsx';
 import { CheckboxGroup } from '../../forms/controls/CheckboxGroup/CheckboxGroup.tsx';
 import { MenuProvider, type MenuProviderRef } from '../../overlays/MenuProvider/MenuProvider.tsx';
-import { DateTimePicker } from '../../forms/controls/DateTimePicker/DateTimePicker.tsx';
+import { DateTimeInput } from '../../forms/controls/datetime/DateTimeInput/DateTimeInput.tsx';
 
 import * as FQ from './filterQuery.ts';
 
@@ -341,8 +341,8 @@ export const Filters = (props: FiltersProps) => {
     return filters.length > 0 && (
       <div className={cx(cl['bk-multi-search__filter-actions'])}>
         <span
-          // biome-ignore lint/a11y/useSemanticElements:
-          // span used as clickable wrapper to keep custom layout & avoid button semantics
+          // biome-ignore lint/a11y/useSemanticElements: span used as clickable wrapper to keep custom layout &
+          // avoid button semantics
           role="button"
           tabIndex={0}
           className={cx(cl['clear-all'])}
@@ -466,24 +466,6 @@ export const SearchInput = (props: SearchInputProps) => {
     key = field.suggestedKeys?.[fieldQueryBuffer.key.trim()]?.label ?? fieldQueryBuffer.key.trim();
   }
   
-  const onWrapperClick = (evt: React.MouseEvent) => {
-    evt.preventDefault();
-    
-    if (inputRef?.current) {
-      inputRef.current.click();
-    }
-  };
-  
-  const onWrapperKeyDown = (evt: React.KeyboardEvent) => {
-    if (evt.key === 'Enter') {
-      evt.preventDefault();
-
-      if (inputRef?.current) {
-        inputRef.current.click();
-      }
-    }
-  };
-
   const renderPlaceholder = () => {
     if (field?.type === 'dictionary' && key) {
       return `Enter a value for ${key}`;
@@ -494,13 +476,14 @@ export const SearchInput = (props: SearchInputProps) => {
   
   return (
     <div
-      // biome-ignore lint/a11y/useSemanticElements:
-      // div used as clickable wrapper to keep custom layout & avoid button semantics
-      role="button"
-      tabIndex={0}
-      className={cx(cl['bk-search-input'], className, { [cl['bk-search-input--active']]: isFocused }, { [cl['bk-search-input--invalid']]: !validation.isValid && validation.message})}
-      onClick={onWrapperClick}
-      onKeyDown={onWrapperKeyDown}
+      className={cx(
+        cl['bk-search-input'],
+        className,
+        {
+          [cl['bk-search-input--active']]: isFocused,
+          [cl['bk-search-input--invalid']]: !validation.isValid && validation.message  
+        }
+      )}
     >
       <Icon icon="search" className={cx(cl['bk-search-input__search-icon'])} />
       {field &&
@@ -829,21 +812,29 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
     <>
       <div className={cx(cl['bk-multi-search__date-time-group'])}>
         <div className={cx(cl['bk-multi-search__date-time-label'])}><span>Start Date</span></div>
-        <DateTimePicker
-          date={startDateTime}
-          onChange={(date) => setStartDateTime(initDateTime(date, 'start'))}
-          minDate={minDate ? new Date(minDate) : null}
-          maxDate={maxDate ? new Date(maxDate) : null}
+        <DateTimeInput
+          dateTime={startDateTime}
+          onUpdateDateTime={dateTime => { setStartDateTime(initDateTime(dateTime, 'start')); }}
+          dateInputProps={{
+            datePickerProps: {
+              ...(minDate ? { minDate: new Date(minDate) } : {}),
+              ...(maxDate ? { maxDate: new Date(maxDate) } : {}),
+            },
+          }}
         />
       </div>
 
       <div className={cx(cl['bk-multi-search__date-time-group'])}>
         <div className={cx(cl['bk-multi-search__date-time-label'])}><span>End Date</span></div>
-        <DateTimePicker
-          date={endDateTime}
-          onChange={(date) => setEndDateTime(initDateTime(date, 'end'))}
-          minDate={minDate ? new Date(minDate) : null}
-          maxDate={maxDate ? new Date(maxDate) : null}
+        <DateTimeInput
+          dateTime={endDateTime}
+          onUpdateDateTime={dateTime => { setEndDateTime(initDateTime(dateTime, 'end')); }}
+          dateInputProps={{
+            datePickerProps: {
+              ...(minDate ? { minDate: new Date(minDate) } : {}),
+              ...(maxDate ? { maxDate: new Date(maxDate) } : {}),
+            },
+          }}
         />
       </div>
     
@@ -868,14 +859,18 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
     </>
   );
 
-  const renderDateTimePicker = () => (
+  const renderDateTimeInput = () => (
     <>
       <div className={cx(cl['bk-multi-search__date-time-group'])}>
-        <DateTimePicker
-          date={dateTime}
-          onChange={(date) => setDateTime(initDateTime(date, 'start'))}
-          minDate={minDate ? new Date(minDate) : null}
-          maxDate={maxDate ? new Date(maxDate) : null}
+        <DateTimeInput
+          dateTime={dateTime}
+          onUpdateDateTime={dateTime => { setDateTime(initDateTime(dateTime, 'start')); }}
+          dateInputProps={{
+            datePickerProps: {
+              ...(minDate ? { minDate: new Date(minDate) } : {}),
+              ...(maxDate ? { maxDate: new Date(maxDate) } : {}),
+            },
+          }}
         />
       </div>
 
@@ -898,7 +893,7 @@ const DateTimeDropdown = (props: DateTimeDropdownProps) => {
       active={isActive}
       elementRef={inputRef}
       onOutsideClick={onOutsideClick}
-      items={canSelectDateTimeRange ? renderDateTimeRangePicker() : renderDateTimePicker()}
+      items={canSelectDateTimeRange ? renderDateTimeRangePicker() : renderDateTimeInput()}
     />
   );
 };

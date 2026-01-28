@@ -2,6 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+@use '../variables.scss' as vars;
+
 // stylelint-disable declaration-no-important
 
 @mixin focus-hidden($override-layer: true) {
@@ -65,6 +67,7 @@
 // https://www.w3.org/WAI/tutorials/forms/labels/#note-on-hiding-elements
 @mixin visually-hidden {
   border: 0;
+  /* stylelint-disable-next-line property-no-deprecated */
   clip: rect(1px, 1px, 1px, 1px);
   clip-path: inset(50%);
   block-size: 1px;
@@ -74,6 +77,44 @@
   position: absolute;
   inline-size: 1px;
   white-space: nowrap;
+}
+
+// Expand interactive min target area size to 24px without layout change
+// Use px intentionally to guarantee a minimum 24px physical target size, regardless of zoom.
+// https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html
+@mixin expand-target-area(
+  $base-width: 24px,
+  $base-height: 24px,
+) {
+  position: relative;
+  // Make sure there's no containment or transforms applied, otherwise the absolute positioning won't work
+  contain: initial;
+  transform: initial;
+  translate: initial;
+  rotate: initial;
+  scale: initial;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    // prevent to make it smaller than the actual element size
+    inline-size: max(100%, 24px, $base-width);
+    block-size: max(100%, 24px, $base-height);
+    transform: translate(-50%, -50%);
+  }
+}
+
+// Similar to `expand-target-area` but using relative offset
+@mixin expand-target-area-relative($offset: vars.$sizing-1) {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    inset: calc(-1 * $offset);
+  }
 }
 
 @mixin styles {
@@ -88,7 +129,9 @@
   $elements-with-inset: div, section, dialog;
   $inset-selector: '[tabindex]:is(#{$elements-with-inset})';
   *:is(#{$inset-selector}) {
-    @include focus-inset($override-layer: false);
+    &:not([data-floating-ui-focusable]) { // Note: do not show focus outlines on floating-ui focus guards
+      @include focus-inset($override-layer: false);
+    }
   }
   *:not(#{$inset-selector}) {
     @include focus-outset($override-layer: false);

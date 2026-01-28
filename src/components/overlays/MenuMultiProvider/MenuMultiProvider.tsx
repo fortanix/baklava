@@ -259,9 +259,11 @@ export const MenuMultiProvider = Object.assign(
         }
         
         const props = getReferenceProps(userProps);
+        const ref = mergeRefs(anchorRef, userPropsRef, refs.setReference, props.ref as React.Ref<Element>);
+        
         return {
           ...props,
-          ref: userPropsRef ? mergeRefs(anchorRef, userPropsRef, refs.setReference) : refs.setReference,
+          ref,
           'aria-controls': listBoxId,
           'aria-haspopup': 'listbox',
           'aria-expanded': isOpen,
@@ -337,10 +339,7 @@ export const MenuMultiProvider = Object.assign(
         const previousActiveElement = previousActiveElementRef.current;
         
         if (previousActiveElement && listBoxElement.matches(':focus-within')) {
-          previousActiveElement.focus({
-            // @ts-ignore Supported in some browsers (e.g. Firefox).
-            focusVisible: false,
-          });
+          previousActiveElement.focus({ focusVisible: false });
         }
       }
     }, [action]);

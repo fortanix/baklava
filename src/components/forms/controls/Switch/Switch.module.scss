@@ -27,6 +27,7 @@
     cursor: pointer;
     
     appearance: none;
+    padding-block: 0.95rem; // Expand the target size
     block-size: calc(var(--r) * 2);
     inline-size: calc(var(--w) + 6px); // Add a little bit of extra width so that the thumb overflows the track
     border-radius: var(--r);
