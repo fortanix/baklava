@@ -37,6 +37,14 @@ const options1 = {
   durian: { label: 'Durian' },
 };
 
+export const SelectStandard: Story = {
+  args: {
+    placeholder: 'Select a fruit',
+    defaultOption: { label: 'Fruits' },
+    options: options1,
+  },
+};
+
 export const SelectWithDefault: Story = {
   args: {
     placeholder: 'Select a fruit',
@@ -45,10 +53,17 @@ export const SelectWithDefault: Story = {
   },
 };
 
-export const SelectStandard: Story = {
+export const SelectWithScroll: Story = {
+  decorators: [
+    Story => (
+      <div style={{ paddingTop: 1000 }}>
+        <Story/>
+      </div>
+    ),
+  ],
   args: {
     placeholder: 'Select a fruit',
-    defaultOption: { label: 'Fruits' },
+    value: 'apple',
     options: options1,
   },
 };

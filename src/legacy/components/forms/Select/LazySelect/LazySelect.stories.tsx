@@ -90,6 +90,19 @@ export const LazySelectStandard: Story = {
   },
 };
 
+export const LazySelectWithScroll: Story = {
+  decorators: [
+    (_, { args }) => (
+      <div style={{ paddingTop: 1000 }}>
+        <LazySelectDec {...args}/>
+      </div>
+    ),
+  ],
+  args: {
+    items: generateItems(),
+  },
+};
+
 export const LazySelectEmpty: Story = {
   decorators: [(_, { args }) => <LazySelectDec {...args}/>],
   args: {
