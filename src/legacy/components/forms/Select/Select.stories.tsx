@@ -37,6 +37,14 @@ const options1 = {
   durian: { label: 'Durian' },
 };
 
+export const SelectWithDefault: Story = {
+  args: {
+    placeholder: 'Select a fruit',
+    value: 'apple',
+    options: options1,
+  },
+};
+
 export const SelectStandard: Story = {
   args: {
     placeholder: 'Select a fruit',

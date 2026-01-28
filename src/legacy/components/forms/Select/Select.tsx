@@ -100,9 +100,8 @@ export const Select = (props: SelectProps) => {
   // Scroll to selected item when select item is opened
   React.useEffect(() => {
     if (isActive && optionsRef.current.length > 0) {
-      const selectedIndex = optionsRef.current.findIndex(item => item?.getAttribute('aria-selected') === 'true');
-      const focusIndex = selectedIndex === -1 ? findFirstFocusableIndex(optionsRef.current) : selectedIndex;
-      optionsRef.current[focusIndex]?.focus();
+      const selectedItem = optionsRef.current.find(item => item?.getAttribute('aria-selected') === 'true');
+      setTimeout(() => selectedItem?.scrollIntoView({ block: 'nearest' }), 0);
     }
   }, [isActive]);
   
