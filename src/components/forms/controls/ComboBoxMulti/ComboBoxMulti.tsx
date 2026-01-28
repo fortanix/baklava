@@ -29,6 +29,9 @@ export type { ItemKey, ItemDetails };
 type InputProps = ComponentProps<typeof InputDefault>;
 
 /**
+ * USE COMBO BOX STATE
+ * ---------------------------------------------------------------------------------------------------------------------
+ *
  * Manages the ComboBox menu selection and input value states
  *
  * - A ComboBox selected values can change from two sources:
@@ -64,6 +67,11 @@ export const useComboBoxState = (props: UseComboBoxStateProps) => {
     handleInternalSelect,
   };
 };
+
+/**
+ * COMBO BOX MULTI INPUT
+ * ---------------------------------------------------------------------------------------------------------------------
+ */
 
 type ComboBoxMultiInputProps = Omit<InputProps, 'onSelect'> & {
   anchorRenderArgs: AnchorRenderArgs,
@@ -148,13 +156,16 @@ const ComboBoxMultiInput = (props: ComboBoxMultiInputProps) => {
   );
 };
 
-/*
-A `ComboBox` is a text input control combined with a dropdown menu that adapts to the user input, for example for
-automatic suggestions.
-
-References:
-- [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
-*/
+/**
+ * COMBO BOX MULTI
+ * ---------------------------------------------------------------------------------------------------------------------
+ *
+ * A `ComboBoxMulti` is a text input control combined with a multi-selction dropdown menu that
+ * adapts to the user input, for example for automatic suggestions.
+ * 
+ * References: 
+ * - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
+ */
 
 export type ComboBoxMultiProps = Omit<InputProps, 'onSelect'> & {
   /** Whether this component should be unstyled. */

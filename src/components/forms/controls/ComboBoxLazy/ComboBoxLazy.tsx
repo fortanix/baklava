@@ -25,6 +25,11 @@ export { cl as ComboBoxLazyClassNames };
 export type { ItemKey, ItemDetails, VirtualItemKeys };
 type InputProps = ComponentProps<typeof InputDefault>;
 
+/**
+ * COMBO BOX LAZY INPUT
+ * ---------------------------------------------------------------------------------------------------------------------
+ */
+
 type ComboBoxInputProps = Omit<InputProps, 'onSelect'> & {
   anchorRenderArgs: AnchorRenderArgs,
   onUpdate?: undefined | MenuLazyProviderProps['onSelect'],
@@ -80,13 +85,16 @@ const ComboBoxInput = (props: ComboBoxInputProps) => {
 
 type DropdownProps = Omit<MenuLazyProviderProps, 'label'>;
 
-/*
-A `ComboBox` is a text input control combined with a dropdown menu that adapts to the user input, for example for
-automatic suggestions.
-
-References:
-- [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
-*/
+/**
+ * COMBO BOX LAZY
+ * ---------------------------------------------------------------------------------------------------------------------
+ *
+ * A `ComboBoxLazy` is a text input control combined with a dropdown menu that lazily
+ * loads menu items and adapts to the user input, for example for automatic suggestions.
+ * 
+ * References: 
+ * - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
+ */
 
 export type ComboBoxLazyProps = Omit<InputProps, 'onSelect'> & {
   /** Whether this component should be unstyled. */

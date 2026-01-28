@@ -24,6 +24,11 @@ export { cl as ComboBoxClassNames };
 export type { ItemKey, ItemDetails };
 type InputProps = ComponentProps<typeof InputDefault>;
 
+/**
+ * COMBO BOX INPUT
+ * ---------------------------------------------------------------------------------------------------------------------
+ */
+
 type ComboBoxInputProps = Omit<InputProps, 'onSelect'> & {
   anchorRenderArgs: AnchorRenderArgs,
   onUpdate?: undefined | MenuProviderProps['onSelect'],
@@ -77,13 +82,16 @@ const ComboBoxInput = (props: ComboBoxInputProps) => {
   );
 };
 
-/*
-A `ComboBox` is a text input control combined with a dropdown menu that adapts to the user input, for example for
-automatic suggestions.
-
-References:
-- [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
-*/
+/**
+ * COMBO BOX 
+ * ---------------------------------------------------------------------------------------------------------------------
+ *
+ * A `ComboBox` is a text input control combined with a dropdown menu that adapts
+ * to the user input, for example for automatic suggestions.
+ * 
+ * References: 
+ * - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
+ */
 
 export type ComboBoxProps = Omit<InputProps, 'onSelect'> & {
   /** Whether this component should be unstyled. */
