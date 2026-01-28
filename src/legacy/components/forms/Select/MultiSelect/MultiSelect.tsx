@@ -105,7 +105,12 @@ export const MultiSelect = (props: MultiSelectProps) => {
   React.useEffect(() => {
     if (isActive && optionsRef.current.length > 0) {
       const selectedItem = optionsRef.current.find(item => item?.getAttribute('aria-selected') === 'true');
-      setTimeout(() => selectedItem?.scrollIntoView({ block: 'nearest' }), 0);
+      
+      // Note: we need to make sure that `selectedItem` is rendered in the dropdown popover first, before we scroll
+      // it. If we do it too early, then the browser will scroll to the top of the page.
+      window.setTimeout(() => {
+        selectedItem?.scrollIntoView({ block: 'nearest' });
+      }, 0);
     }
   }, [optionsRef, isActive]);
   
