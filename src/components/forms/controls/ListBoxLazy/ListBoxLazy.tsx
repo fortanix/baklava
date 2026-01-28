@@ -21,6 +21,7 @@ import {
 } from '../ListBox/ListBoxStore.tsx';
 import {
   type ListBoxRef,
+  type ItemDetails,
   ListBox,
   EmptyPlaceholder,
   LoadingSpinner,
@@ -30,6 +31,7 @@ import {
 import cl from './ListBoxLazy.module.scss';
 
 
+export type { VirtualItem, ItemKey, VirtualItemKeys, ItemDetails, ListBoxRef };
 export { cl as ListBoxLazyClassNames };
 
 
@@ -38,7 +40,7 @@ type ListItemVirtualProps = {
   virtualItem: VirtualItem,
   itemsCount: number,
   renderItem: (item: VirtualItem) => React.ReactNode,
-  renderItemLabel: (item: VirtualItem) => string,
+  renderItemLabel: (item: ItemKey) => string,
 };
 const ListItemVirtual = ({ ref, virtualItem, itemsCount, renderItem, renderItemLabel }: ListItemVirtualProps) => {
   const styles = React.useMemo(() => ({
@@ -47,10 +49,10 @@ const ListItemVirtual = ({ ref, virtualItem, itemsCount, renderItem, renderItemL
     left: 0,
     width: '100%',
     transform: `translateY(${virtualItem.start}px)`,
-  }), [virtualItem.size, virtualItem.start]);
+  }), [virtualItem.start]);
   
   const content = renderItem(virtualItem);
-  const label = renderItemLabel(virtualItem);
+  const label = renderItemLabel(String(virtualItem.key));
   
   return (
     <ListBox.Option
@@ -314,18 +316,6 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
     loadMoreItemsTrigger,
   };
   
-  const formatItemLabel = React.useCallback((itemKey: ItemKey) => {
-    const virtualItem: VirtualItem = {
-      key: itemKey,
-      index: 0,
-      start: 0,
-      end: 0,
-      size: 0,
-      lane: 0,
-    };
-    return renderItemLabel(virtualItem);
-  }, [renderItemLabel]);
-  
   return (
     <ListBox
       {...propsRest}
@@ -336,7 +326,7 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
         propsRest.className,
       )}
       virtualItemKeys={virtualItemKeys}
-      formatItemLabel={formatItemLabel}
+      formatItemLabel={renderItemLabel}
       placeholderEmpty={false}
     >
       <ListBoxVirtualList {...propsVirtualList}/>

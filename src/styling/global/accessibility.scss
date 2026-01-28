@@ -94,7 +94,7 @@
   rotate: initial;
   scale: initial;
 
-  &::before {
+  &::after {
     content: '';
     position: absolute;
     inset-block-start: 50%;

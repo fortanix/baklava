@@ -38,7 +38,7 @@ export default {
     limit: 5,
     onUpdateLimit: () => {},
     renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
-    renderItemLabel: item => `Item ${item.index}`,
+    renderItemLabel: item => `Item ${item.split('-')[1]}`,
   },
   render: (args) => <ListBoxMultiLazy {...args}/>,
 } satisfies Meta<ListBoxMultiLazyArgs>;
@@ -49,7 +49,7 @@ export const ListBoxMultiLazyStandard: Story = {
     virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(10_000)),
     defaultSelected: new Set(['test-2', 'test-3']),
     renderItem: item => `Item ${item.index + 1}`,
-    renderItemLabel: item => `Item ${item.index + 1}`,
+    renderItemLabel: item => `Item ${item.split('-')[1]}`,
   },
 };
 
@@ -108,7 +108,7 @@ const ListBoxMultiLazyInfiniteC = (props: ListBoxMultiLazyArgs) => {
       hasMoreItems={hasMoreItems}
       isLoading={isLoading}
       renderItem={item => <>Item {item.index + 1}</>}
-      renderItemLabel={item => `Item ${item.index + 1}`}
+      renderItemLabel={itemKey => `Item ${itemKey.split('-')[1]}`}
     />
   );
 };
@@ -173,7 +173,7 @@ const ListBoxMultiLazyWithFilterC = (props: ListBoxMultiLazyArgs) => {
         hasMoreItems={hasMoreItems}
         isLoading={isLoading}
         renderItem={item => <>{itemsFiltered[item.index]?.name}</>}
-        renderItemLabel={item => itemsFiltered[item.index]?.name ?? 'Unknown'}
+        renderItemLabel={itemKey => itemsFiltered.find(i => i.id === itemKey)?.name ?? 'Unknown'}
         placeholderEmpty={items.length === 0 ? 'No items' : 'No items found'}
       />
       }
@@ -230,7 +230,7 @@ const ListBoxMultiLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxMultiLazy
       virtualItemKeys={virtualItemKeys}
       isLoading={isLoading}
       renderItem={item => <div>Item {item.index + 1}</div>}
-      renderItemLabel={item => `Item ${item.index + 1}`}
+      renderItemLabel={itemKey => `Item ${itemKey.split('-')[1]}`}
       loadMoreItemsTriggerType="custom"
       loadMoreItemsTrigger={renderLoadMoreItemsTrigger()}
     />
