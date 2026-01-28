@@ -11,7 +11,6 @@ import { classNames as cx, type ComponentProps } from '../../../../util/componen
 import { useOutsideClickHandler } from '../../../../util/hooks/useOutsideClickHandler.ts';
 import { useCombinedRefs } from '../../../../util/hooks/useCombinedRefs.ts';
 import {
-  findFirstFocusableIndex,
   handleOptionKeyDown,
   handleTriggerKeyDown
 } from '../../../../util/keyboardHandlers.tsx';

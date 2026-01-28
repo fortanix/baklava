@@ -10,7 +10,7 @@ import * as PopperJS from '@popperjs/core';
 import { classNames as cx, type ComponentProps } from '../../../util/component_util.tsx';
 import { useOutsideClickHandler } from '../../../util/hooks/useOutsideClickHandler.ts';
 import { useCombinedRefs } from '../../../util/hooks/useCombinedRefs.ts';
-import { findFirstFocusableIndex, handleOptionKeyDown, handleTriggerKeyDown } from '../../../util/keyboardHandlers.tsx';
+import { handleOptionKeyDown, handleTriggerKeyDown } from '../../../util/keyboardHandlers.tsx';
 
 import { useScroller } from '../../util/Scroller.tsx';
 import { Button } from '../../buttons/Button.tsx';
