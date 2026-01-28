@@ -419,7 +419,6 @@ export const LazySelect = <D extends object, P extends unknown = undefined>(prop
       const selectedIndex = optionsRef.current.findIndex(item => item?.getAttribute('aria-selected') === 'true');
       const focusIndex = selectedIndex === -1 ? findFirstFocusableIndex(optionsRef.current) : selectedIndex;
       optionsRef.current[focusIndex]?.focus();
-      optionsRef.current[focusIndex]?.scrollIntoView({ block: 'nearest' });
     }
   }, [isActive, items]);
 

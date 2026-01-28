@@ -100,8 +100,13 @@ export const Select = (props: SelectProps) => {
   // Scroll to selected item when select item is opened
   React.useEffect(() => {
     if (isActive && optionsRef.current.length > 0) {
-      const selectedItem = optionsRef.current.find(item => item.getAttribute('aria-selected') === 'true');
-      selectedItem?.scrollIntoView({ block: 'nearest' });
+      const selectedItem = optionsRef.current.find(item => item?.getAttribute('aria-selected') === 'true');
+      
+      // Note: we need to make sure that `selectedItem` is rendered in the dropdown popover first, before we scroll
+      // it. If we do it too early, then the browser will scroll to the top of the page.
+      window.setTimeout(() => {
+        selectedItem?.scrollIntoView({ block: 'nearest' });
+      }, 0);
     }
   }, [isActive]);
   

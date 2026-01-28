@@ -37,3 +37,17 @@ export const MultiSelectStandard: Story = {
     selectedValues: ['banana', 'durian'],
   },
 };
+
+export const MultiSelectWithScroll: Story = {
+  decorators: [
+    Story => (
+      <div style={{ paddingTop: 1000 }}>
+        <Story/>
+      </div>
+    ),
+  ],
+  args: {
+    options: options1,
+    selectedValues: ['banana', 'durian'],
+  },
+};
