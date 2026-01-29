@@ -322,13 +322,19 @@ export const useMenuListBoxFocus = (options: UseMenuListBoxFocusOptions) => {
   return { listBoxFocusRef };
 };
 
-/**
- * MENU SELECT HANDLER
- * ---------------------------------------------------------------------------------------------------------------------
- */
-export const buildItemKeySetFromItemKey = (itemKey: undefined | null | string) => {
-  if (typeof itemKey === 'undefined') { return itemKey; }
 
+// MENU SELECT HANDLER
+// ---------------------------------------------------------------------------------------------------------------------
+
+/**
+ * Convert the given (single) item key to the component state representation, such that:
+ * - `undefined` means uncontrolled component state.
+ * - `null` means controlled component state, but there is no selected value.
+ * - `ItemKey` means a single selected item state.
+ */
+export const selectionStateFromItemKey = (itemKey: undefined | null | ItemKey): undefined | Set<ItemKey> => {
+  if (typeof itemKey === 'undefined') { return undefined; }
+  
   return typeof itemKey === 'string'
     ? new Set([itemKey])
     : new Set([]);

@@ -13,7 +13,7 @@ import { type UseFloatingElementOptions } from '../../util/overlays/floating-ui/
 import * as ListBoxLazy from '../../forms/controls/ListBoxLazy/ListBoxLazy.tsx';
 import {
   BaseAnchorRenderArgs,
-  buildItemKeySetFromItemKey,
+  selectionStateFromItemKey,
   MenuProviderRef,
   useFloatingMenu,
   useMenuAnchor,
@@ -122,8 +122,8 @@ export const MenuLazyProvider = (props: MenuLazyProviderProps) => {
   const listBoxRef = React.useRef<React.ComponentRef<typeof ListBoxLazy.ListBoxLazy>>(null);
   const listBoxId = React.useId();
   const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
-  const selectedSet = React.useMemo(() => buildItemKeySetFromItemKey(selected), [selected]);
-  const defaultSelectedSet = React.useMemo(() => buildItemKeySetFromItemKey(defaultSelected), [defaultSelected]); 
+  const selectedSet = React.useMemo(() => selectionStateFromItemKey(selected), [selected]);
+  const defaultSelectedSet = React.useMemo(() => selectionStateFromItemKey(defaultSelected), [defaultSelected]); 
   const {
     isMounted,
     isOpen,

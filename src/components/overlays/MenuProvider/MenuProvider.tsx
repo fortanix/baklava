@@ -15,7 +15,7 @@ import {
 import * as ListBox from '../../forms/controls/ListBox/ListBox.tsx';
 import {
   BaseAnchorRenderArgs,
-  buildItemKeySetFromItemKey,
+  selectionStateFromItemKey,
   MenuProviderRef,
   useFloatingMenu,
   useMenuAnchor,
@@ -128,8 +128,8 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
   const listBoxRef = React.useRef<React.ComponentRef<typeof ListBox.ListBox>>(null);
   const listBoxId = React.useId();
   const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
-  const selectedSet = React.useMemo(() => buildItemKeySetFromItemKey(selected), [selected]);
-  const defaultSelectedSet = React.useMemo(() => buildItemKeySetFromItemKey(defaultSelected), [defaultSelected]); 
+  const selectedSet = React.useMemo(() => selectionStateFromItemKey(selected), [selected]);
+  const defaultSelectedSet = React.useMemo(() => selectionStateFromItemKey(defaultSelected), [defaultSelected]); 
   const {
     isMounted,
     isOpen,

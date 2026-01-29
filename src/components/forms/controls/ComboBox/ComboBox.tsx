@@ -15,7 +15,7 @@ import {
   MenuProviderProps,
 } from '../../../overlays/MenuProvider/MenuProvider.tsx';
 import { useComboBoxState } from '../ComboBoxMulti/ComboBoxMulti.tsx';
-import { buildItemKeySetFromItemKey } from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
+import { selectionStateFromItemKey } from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
 
 import cl from './ComboBox.module.scss';
 
@@ -50,8 +50,7 @@ const ComboBoxInput = (props: ComboBoxInputProps) => {
     open,
     selectedOption,
   } = anchorRenderArgs;
-   
-  // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
+  
   const anchorProps = anchorRenderProps({
     placeholder: 'Select options',
     className: cx(cl['bk-combo-box'], { [cl['bk-combo-box--open']]: open }),
@@ -134,7 +133,7 @@ export const ComboBox = Object.assign(
         : propsRest.value ?? '';
     });
 
-    const selectedSet = React.useMemo(() => buildItemKeySetFromItemKey(selected), [selected]);
+    const selectedSet = React.useMemo(() => selectionStateFromItemKey(selected), [selected]);
     const {
       internalSelected,
       handleInternalSelect,
@@ -175,7 +174,7 @@ export const ComboBox = Object.assign(
         items={options}
         role="combobox"
         triggerAction="focus-interactive" // Keep the dropdown menu open while the input is focused
-        keyboardInteractions="default" // FIXME
+        keyboardInteractions="form-control" // FIXME
         placement="bottom-start"
         offset={1}
         selected={selectedFromInternalSelected}

@@ -16,7 +16,7 @@ import {
   MenuLazyProviderProps,
 } from '../../../overlays/MenuLazyProvider/MenuLazyProvider.tsx';
 import { useComboBoxState } from '../ComboBoxMulti/ComboBoxMulti.tsx';
-import { buildItemKeySetFromItemKey } from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
+import { selectionStateFromItemKey } from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
 
 import cl from './ComboBoxLazy.module.scss';
 
@@ -132,7 +132,7 @@ export const ComboBoxLazy = (props: ComboBoxLazyProps) => {
       : propsRest.value ?? '';
   });
 
-  const selectedSet = React.useMemo(() => buildItemKeySetFromItemKey(selected), [selected]);
+  const selectedSet = React.useMemo(() => selectionStateFromItemKey(selected), [selected]);
   const {
     internalSelected,
     handleInternalSelect,
