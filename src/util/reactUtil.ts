@@ -146,3 +146,16 @@ export const useEffectAsync = (effect: () => Promise<unknown>, inputs?: undefine
     // biome-ignore lint/correctness/useExhaustiveDependencies: We rely on user deps; adding effect triggers unwanted re-runs
   }, inputs);
 };
+
+// Helper hook 'useLazyRef' lazily initializes a ref value without re-running the initializer
+// on every render. Passing an expression directly to 'React.useRef()' (e.g. 'React.useRef(fn())')
+// would unnecessarily invoke 'fn' on each render, even though the ref value itself is preserved.
+// This helper ensures the initializer runs exactly once.
+export const useLazyRef = <T>(initializer: () => T) => {
+  const ref = React.useRef<null | T>(null);
+
+  if (ref.current === null) { ref.current = initializer(); }
+
+  return ref as React.RefObject<T>;
+};
+
