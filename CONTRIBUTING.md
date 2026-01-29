@@ -152,6 +152,8 @@ If you're making a change to the legacy code (e.g. `src/legacy`), create a PR th
 
 ## Publishing a new release
 
+- Update `package.json.js` with a new version of the form `v1.0.0-legacy-<date>`.
+- Run `npm run install-project` to regenerate `package.json` and install the dependencies.
 - Create a [new GitHub release](https://github.com/mkrause/baklava/releases), with the following parameters:
   - Target branch: `baklava-v1-legacy`
   - Tag: create new tag, name format: `v1.0.0-legacy-<date>`
