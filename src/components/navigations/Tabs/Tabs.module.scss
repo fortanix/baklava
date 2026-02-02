@@ -127,11 +127,11 @@
       margin:var(--negative-margin) var(--negative-margin) 0 var(--negative-margin);
       .bk-tabs__switcher {
         flex-direction: column;
-        width: bk.rem-from-px(216);
+        inline-size: bk.rem-from-px(216);
         gap: bk.$spacing-7;
         padding: bk.$spacing-6 0;
-        border-bottom: 0;
-        border-right: 1px solid bk.$theme-side-nav-menu-background-hover;
+        border-block-end: 0;
+        border-inline-end: 1px solid bk.$theme-side-nav-menu-background-hover;
 
         .bk-tabs__switcher__tab {
             font-weight: bk.$font-weight-regular;
@@ -155,7 +155,7 @@
           }
 
           >* {
-            text-align: left;
+            text-align: start;
           }
 
           &[aria-selected="true"] {
