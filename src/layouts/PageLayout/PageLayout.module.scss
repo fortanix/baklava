@@ -16,7 +16,7 @@
     .bk-page-layout__nav {
       margin-block-start: calc(-1 * (bk.$spacing-7 - bk.$spacing-4));
 
-      ul {
+     >div>ul {
         margin-block-end: calc(-1 * (bk.$spacing-7 - bk.$spacing-2));
       }
     }

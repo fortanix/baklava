@@ -83,6 +83,8 @@
     }
 
     &-secondary:not(.bk-tabs-vertical) {
+      margin-inline: calc(-1 * var(--bk-panel-inset-compensation));
+      
       .bk-tabs__switcher {
         .bk-tabs__switcher__tab {
           @include bk.font(bk.$font-family-body, bk.$font-weight-regular, bk.$font-size-m);
@@ -117,6 +119,9 @@
 
           }
         }
+      }
+      .bk-tabs__tab-content {
+        padding-inline:  var(--bk-panel-inset-compensation);
       }
     }
 
