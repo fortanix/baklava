@@ -201,11 +201,6 @@ export const PageLayoutTabs: Story = {
       </>
     ),
   },
-  play: async () => {
-    // Workaround to manually click on the first tab.
-    // TODO: Remove once https://github.com/fortanix/baklava/issues/261 is fixed
-    (document.querySelector("li[data-tab]") as HTMLElement).click();
-  },
 };
 
 export const PageLayoutSecondarySubTabs: Story = {
@@ -217,11 +212,6 @@ export const PageLayoutSecondarySubTabs: Story = {
       </>
     ),
   },
-  play: async () => {
-    // Workaround to manually click on the first tab.
-    // TODO: Remove once https://github.com/fortanix/baklava/issues/261 is fixed
-    (document.querySelector("li[data-tab]") as HTMLElement).click();
-  },
 };
 
 export const PageLayoutVerticalSubTabs: Story = {
@@ -232,11 +222,6 @@ export const PageLayoutVerticalSubTabs: Story = {
         {verticalSubTabs}
       </>
     ),
-  },
-  play: async () => {
-    // Workaround to manually click on the first tab.
-    // TODO: Remove once https://github.com/fortanix/baklava/issues/261 is fixed
-    (document.querySelector("li[data-tab]") as HTMLElement).click();
   },
 };
 
