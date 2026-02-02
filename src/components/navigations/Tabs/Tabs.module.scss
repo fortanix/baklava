@@ -12,6 +12,7 @@
       display: flex;
       list-style: none;
       border-block-end: 1px solid #{bk.$theme-tab-rule-default};
+      --active-tab-indicator-size: calc(5 * #{bk.$size-hairline});
       
       .bk-tabs__switcher__tab {
         cursor: pointer;
@@ -22,6 +23,7 @@
         
         display: grid;
         grid-template-areas: "stack";
+        
         > * {
           grid-area: stack;
           text-align: center;
@@ -53,7 +55,7 @@
           
           &::after {
             background-color: #{bk.$theme-tab-tabs-hover};
-            block-size: 5px;
+            block-size: var(--active-tab-indicator-size);
           }
         }
         
@@ -62,7 +64,7 @@
           
           &::after {
             background-color: #{bk.$theme-tab-tabs-selected};
-            block-size: 5px;
+            block-size: var(--active-tab-indicator-size);
           }
         }
         
@@ -72,7 +74,7 @@
           &::after {
             cursor: default;
             background-color: #{bk.$theme-tab-tabs-selected};
-            block-size: 5px;
+            block-size: var(--active-tab-indicator-size);
           }
         }
       }
@@ -82,10 +84,12 @@
       padding-block-start: bk.$spacing-7;
     }
 
-    &-secondary:not(.bk-tabs-vertical) {
+    &.bk-tabs--secondary:not(.bk-tabs-vertical) {
       margin-inline: calc(-1 * var(--bk-panel-inset-compensation));
       
       .bk-tabs__switcher {
+        --active-tab-indicator-size: calc(2 * #{bk.$size-hairline});
+
         .bk-tabs__switcher__tab {
           @include bk.font(bk.$font-family-body, bk.$font-weight-regular, bk.$font-size-m);
           text-transform: capitalize;
@@ -96,40 +100,29 @@
 
           &:is(:hover, :global(.pseudo-hover)) {
             font-weight: bk.$font-weight-regular;
-
-            &::after {
-              block-size: 2px;
-            }
           }
 
           &:is(:focus-visible, :global(.pseudo-focus-visible)) {
             font-weight: bk.$font-weight-regular;
-
-            &::after {
-              block-size: 2px;
-            }
           }
 
           &[aria-selected="true"] {
             font-weight: bk.$font-weight-regular;
-
-            &::after {
-              block-size: 2px;
-            }
-
           }
         }
       }
+      
       .bk-tabs__tab-content {
-        padding-inline:  var(--bk-panel-inset-compensation);
+        padding-inline: var(--bk-panel-inset-compensation);
       }
     }
 
-    &-vertical {
+    &.bk-tabs--vertical {
       display: flex;
       // If we are inside of an edgeless panel, stretch tabs to the edges
       --negative-margin: calc(-1 * var(--bk-panel-inset-compensation));
-      margin:var(--negative-margin) var(--negative-margin) 0 var(--negative-margin);
+      margin: var(--negative-margin) var(--negative-margin) 0 var(--negative-margin);
+      
       .bk-tabs__switcher {
         flex-direction: column;
         inline-size: bk.rem-from-px(216);
@@ -139,8 +132,9 @@
         border-inline-end: 1px solid bk.$theme-side-nav-menu-background-hover;
 
         .bk-tabs__switcher__tab {
-            font-weight: bk.$font-weight-regular;
-            text-transform: capitalize;
+          font-weight: bk.$font-weight-regular;
+          text-transform: capitalize;
+
           >.bk-tabs__switcher__tab__hover-placeholder {
             font-weight: bk.$font-weight-regular;
           }

@@ -108,8 +108,8 @@ export const Tabs = (props: TabsProps) => {
       {...propsRest}
       className={cx(
         'bk',
-        [cl[`bk-tabs-${variant}`]],
-        [cl[`bk-tabs-${orientation}`]],
+        [cl[`bk-tabs--${variant}`]],
+        [cl[`bk-tabs--${orientation}`]],
         { [cl['bk-tabs']]: !unstyled },
         propsRest.className,
       )}
