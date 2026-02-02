@@ -38,10 +38,16 @@ type TabElement = React.ReactElement<TabProps, React.FunctionComponent<typeof Ta
 export type TabsProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-  
+
   /** Active key of tab. */
   activeKey?: undefined | string,
-  
+
+   /** The orientation of the tabs, either vertical or horizontal. Default: `"horizontal"`. */
+  orientation?: undefined | 'horizontal' | 'vertical',
+
+  /** Which visual variant to use. Default: 'primary'. */
+  variant?: undefined | 'primary' | 'secondary',
+
   /** Callback executed when active tab is changed. */
   onSwitch: (tabKey: TabKey) => void,
 };
@@ -49,8 +55,16 @@ export type TabsProps = ComponentProps<'div'> & {
  * A tab component
  */
 export const Tabs = (props: TabsProps) => {
-  const { unstyled = false, activeKey, children, onSwitch, ...propsRest } = props;
-  
+  const {
+    unstyled = false,
+    variant = 'primary',
+    orientation = 'horizontal',
+    activeKey,
+    children,
+    onSwitch,
+    ...propsRest
+  } = props;
+
   // Select the activeKey tab among the given list of tabs
   const getActiveTab = (tabs: Array<TabElement>) => {
     const activeTabs = tabs.filter(child => child.props.tabKey === activeKey);
@@ -94,6 +108,8 @@ export const Tabs = (props: TabsProps) => {
       {...propsRest}
       className={cx(
         'bk',
+        [cl[`bk-tabs-${variant}`]],
+        [cl[`bk-tabs-${orientation}`]],
         { [cl['bk-tabs']]: !unstyled },
         propsRest.className,
       )}

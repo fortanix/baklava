@@ -103,6 +103,22 @@ export const TabsWithFocus: StoryWithTrigger = {
   },
 };
 
+export const SecondaryTabs: StoryWithTrigger = {
+  ...BaseStory,
+  args: {
+    ...BaseStory.args,
+    variant: 'secondary',
+  },
+};
+
+export const VerticalTabs: StoryWithTrigger = {
+  ...BaseStory,
+  args: {
+    ...BaseStory.args,
+    orientation: 'vertical',
+  },
+};
+
 /**
  * In the following story, each tab should have a `data-label` attribute on their respective tab panels and buttons.
  */
