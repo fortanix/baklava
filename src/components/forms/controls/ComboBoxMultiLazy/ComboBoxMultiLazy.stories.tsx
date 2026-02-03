@@ -24,7 +24,7 @@ const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKey
     indexOf: (itemKey: ItemKey) => indicesByKey.get(itemKey) ?? -1,
   };
 };
-const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `item-${i}`);
+const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `item-${i + 1}`);
 
 type ComboBoxMultiArgs = React.ComponentProps<typeof ComboBoxMultiLazy>;
 type Story = StoryObj<ComboBoxMultiArgs>;
@@ -182,6 +182,7 @@ const ComboBoxMultiLazyControlledC = (props: React.ComponentProps<typeof ComboBo
           setSelectedKeys(selectedOptions);
         }}
       />
+      <div><Button label="Update state" onPress={() => { setSelectedKeys(new Set(['item-1'])); }}/></div>
     </>
   );
 };
@@ -209,6 +210,7 @@ const ComboBoxMultiLazyFullyControlledC = (props: React.ComponentProps<typeof Co
           setSelectedKeys(selectOptions);
         }}
       />
+      <div><Button label="Update state" onPress={() => { setSelectedKeys(new Set(['item-1'])); }}/></div>
     </>
   );
 };

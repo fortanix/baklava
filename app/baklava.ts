@@ -66,6 +66,7 @@ export { ListBoxMultiLazy } from '../src/components/forms/controls/ListBoxMultiL
 export { ComboBox } from '../src/components/forms/controls/ComboBox/ComboBox.tsx';
 export { ComboBoxLazy } from '../src/components/forms/controls/ComboBoxLazy/ComboBoxLazy.tsx';
 export { ComboBoxMulti } from '../src/components/forms/controls/ComboBoxMulti/ComboBoxMulti.tsx';
+export { ComboBoxMultiLazy } from '../src/components/forms/controls/ComboBoxMultiLazy/ComboBoxMultiLazy.tsx';
 export { Select } from '../src/components/forms/controls/Select/Select.tsx';
 export { SelectMulti } from '../src/components/forms/controls/SelectMulti/SelectMulti.tsx';
 

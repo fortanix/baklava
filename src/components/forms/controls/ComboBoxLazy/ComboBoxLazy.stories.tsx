@@ -23,7 +23,7 @@ const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKey
     indexOf: (itemKey: ItemKey) => indicesByKey.get(itemKey) ?? -1,
   };
 };
-const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `item-${i}`);
+const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `item-${i + 1}`);
 
 type ComboBoxLazyArgs = React.ComponentProps<typeof ComboBoxLazy>;
 type Story = StoryObj<ComboBoxLazyArgs>;
@@ -181,6 +181,7 @@ const ComboBoxLazyControlledC = (props: React.ComponentProps<typeof ComboBoxLazy
           setSelectedKey(selectedOption?.itemKey ?? null);
         }}
       />
+      <div><Button label="Update state" onPress={() => { setSelectedKey('item-1'); }}/></div>
     </>
   );
 };
@@ -194,6 +195,11 @@ const ComboBoxLazyFullyControlledC = (props: React.ComponentProps<typeof ComboBo
   const [value, setValue] = React.useState<string>('');
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
       
+  const onUpdateStatePress = () => {
+    setSelectedKey('item-1');
+    setValue(props.dropdownProps?.formatItemLabel?.('item-1') ?? '');
+  };
+
   return (
     <>
       <div>Input: {value ?? '(none)'}</div>
@@ -220,6 +226,7 @@ const ComboBoxLazyFullyControlledC = (props: React.ComponentProps<typeof ComboBo
           }
         }}
       />
+      <div><Button label="Update state" onPress={onUpdateStatePress}/></div>
     </>
   );
 };

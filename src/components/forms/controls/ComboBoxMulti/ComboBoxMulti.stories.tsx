@@ -10,6 +10,7 @@ import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { InputSearch } from '../Input/InputSearch.tsx';
 
 import { type ItemKey, ComboBoxMulti } from './ComboBoxMulti.tsx';
+import { Button } from '../../../actions/Button/Button.tsx';
 
 
 // Sample options
@@ -123,6 +124,7 @@ const ComboBoxMultiControlledC = (props: Partial<React.ComponentProps<typeof Com
           setSelectedKeys(selectedOptionKeys);
         }}
       />
+      <div><Button label="Update state" onPress={() => { setSelectedKeys(new Set(['item-strawberry'])); }}/></div>
     </>
   );
 };
@@ -156,6 +158,7 @@ const ComboBoxMultiFullyControlledC = (props: Partial<React.ComponentProps<typeo
           setSelectedKeys(selectedOptionKeys);
         }}
       />
+      <div><Button label="Update state" onPress={() => { setSelectedKeys(new Set(['item-strawberry'])); }}/></div>
     </>
   );
 };

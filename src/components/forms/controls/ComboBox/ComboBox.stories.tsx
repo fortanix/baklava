@@ -10,6 +10,7 @@ import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { InputSearch } from '../Input/InputSearch.tsx';
 
 import { type ItemKey, ComboBox } from './ComboBox.tsx';
+import { Button } from '../../../actions/Button/Button.tsx';
 
 // Sample options
 const fruits = {
@@ -112,6 +113,7 @@ const ComboBoxControlledC = (props: React.ComponentProps<typeof ComboBox>) => {
           setSelectedKey(selectedOption?.itemKey ?? null);
         }}
       />
+      <div><Button label="Update state" onPress={() => { setSelectedKey('item-strawberry'); }}/></div>
     </>
   );
 };
@@ -124,7 +126,12 @@ export const ComboBoxControlled: Story = {
 const ComboBoxFullyControlledC = (props: React.ComponentProps<typeof ComboBox>) => {
   const [value, setValue] = React.useState<string>('');
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
-      
+
+  const onUpdateStatePress = () => {
+    setSelectedKey('item-strawberry');
+    setValue(props.dropdownProps?.formatItemLabel?.('item-strawberry') ?? '');
+  };
+
   return (
     <>
       <div>Input: {value ?? '(none)'}</div>
@@ -154,6 +161,7 @@ const ComboBoxFullyControlledC = (props: React.ComponentProps<typeof ComboBox>) 
           }
         }}
       />
+      <div><Button label="Update state" onPress={onUpdateStatePress}/></div>
     </>
   );
 };
