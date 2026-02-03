@@ -242,7 +242,8 @@ const ComboBoxMultiInFormC = (props: React.ComponentProps<typeof ComboBoxMulti>)
         id="story-form"
         onSubmit={event => {
           event.preventDefault();
-          notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || 'none'}`);
+          const selected = new FormData(event.currentTarget).getAll('controlledComboBoxMulti[]');
+          notify.info(`You have chosen: ${selected.join(', ') || 'none'}`);
         }}
       />
       <ComboBoxMulti {...props}/>
@@ -254,7 +255,7 @@ export const ComboBoxMultiInForm: Story = {
   render: args => <ComboBoxMultiInFormC {...args}/>,
   args: {
     form: 'story-form',
-    name: 'story_component1',
+    name: 'controlledComboBoxMulti',
     dropdownProps: { formatItemLabel: (itemKey: string) => `Option ${itemKey.split('-')[1]}` },
     options: (
       <>

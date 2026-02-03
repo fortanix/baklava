@@ -104,13 +104,18 @@ const ComboBoxMultiLazyInput = (props: ComboBoxMultiLazyInputProps) => {
 
       {/* Render a hidden input with the selected option key (rather than the human-readable label). */}
       {typeof name === 'string' &&
-        <input
-          type="hidden"
-          form={form}
-          name={name}
-          value={[...selectedOptions.keys()]}
-        />
-      }
+        <>
+          {[...selectedOptions.keys()].map(selectedItem =>
+            <input
+              key={selectedItem}
+              type="hidden"
+              form={form}
+              name={`${name}[]`}
+              value={selectedItem}
+            />
+          )}
+        </>
+      } 
     </>
   );
 };

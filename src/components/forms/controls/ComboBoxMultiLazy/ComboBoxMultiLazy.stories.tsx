@@ -323,9 +323,9 @@ const ComboBoxMultiLazyInFormC = (props: React.ComponentProps<typeof ComboBoxMul
       <form
         id="story-form"
         onSubmit={event => {
-          console.log(event.currentTarget) 
           event.preventDefault();
-          notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || 'none'}`);
+          const selected = new FormData(event.currentTarget).getAll('controlledComboBoxMultiLazy[]');
+          notify.info(`You have chosen: ${selected.join(', ') || 'none'}`);
         }}
       />
       <ComboBoxMultiLazy {...props}/>
@@ -337,7 +337,7 @@ export const ComboBoxMultiLazyInForm: Story = {
   render: args => <ComboBoxMultiLazyInFormC {...args}/>,
   args: {
     form: 'story-form',
-    name: 'story_component1',
+    name: 'controlledComboBoxMultiLazy',
     dropdownProps: {
       limit: 5,
       renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
