@@ -6,6 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import * as React from 'react';
 
+import { Panel } from '../../containers/Panel/Panel.tsx';
 import { type TabProps, Tabs, Tab } from './Tabs.tsx';
 
 
@@ -113,6 +114,7 @@ export const SecondaryTabs: StoryWithTrigger = {
 
 export const VerticalTabs: StoryWithTrigger = {
   ...BaseStory,
+  decorators: [Story => <Panel><Story /></Panel>],
   args: {
     ...BaseStory.args,
     orientation: 'vertical',
