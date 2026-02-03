@@ -167,6 +167,11 @@ export const ComboBoxMultiLazy = (props: ComboBoxMultiLazyProps) => {
     formatItemLabel: dropdownProps.formatItemLabel,
   });
 
+  const internalSelectedItemKeys: Set<ItemKey> = React.useMemo(
+    () => new Set(internalSelected.keys()),
+    [internalSelected],
+  );
+
   const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(evt.target.value);
   };
@@ -176,10 +181,6 @@ export const ComboBoxMultiLazy = (props: ComboBoxMultiLazyProps) => {
     handleInternalSelect(itemKeys);
   }, [onSelect, handleInternalSelect]);
 
-  const selectedFromInternalSelected = React.useMemo(() => {
-    return new Set(internalSelected.keys());
-  }, [internalSelected]);
-
   return (
     <MenuMultiLazyProvider
       label={label}
@@ -188,7 +189,7 @@ export const ComboBoxMultiLazy = (props: ComboBoxMultiLazyProps) => {
       keyboardInteractions="default" // FIXME
       placement="bottom-start"
       offset={1}
-      selected={selectedFromInternalSelected}
+      selected={internalSelectedItemKeys}
       onSelect={handleSelect}
       {...dropdownProps}
     >

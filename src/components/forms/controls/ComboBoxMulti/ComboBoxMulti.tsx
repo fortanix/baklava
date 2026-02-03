@@ -209,6 +209,11 @@ export const ComboBoxMulti = Object.assign(
       formatItemLabel: dropdownProps.formatItemLabel,
     });
 
+    const internalSelectedItemKeys: Set<ItemKey> = React.useMemo(
+      () => new Set(internalSelected.keys()),
+      [internalSelected],
+    );
+
     const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(evt.target.value);
     };
@@ -217,10 +222,6 @@ export const ComboBoxMulti = Object.assign(
       onSelect?.(itemKeys, itemDetails);
       handleInternalSelect(itemKeys);
     }, [onSelect, handleInternalSelect]);
-
-    const selectedFromInternalSelected = React.useMemo(() => {
-      return new Set(internalSelected.keys());
-    }, [internalSelected]);
 
     return (
       <MenuMultiProvider
@@ -231,7 +232,7 @@ export const ComboBoxMulti = Object.assign(
         keyboardInteractions="default" // FIXME
         placement="bottom-start"
         offset={1}
-        selected={selectedFromInternalSelected}
+        selected={internalSelectedItemKeys}
         onSelect={handleSelect}
         {...dropdownProps}
       >

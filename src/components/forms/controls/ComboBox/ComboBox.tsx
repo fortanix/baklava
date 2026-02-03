@@ -150,7 +150,9 @@ export const ComboBox = Object.assign(
       selected: selectedSet,
       formatItemLabel: dropdownProps.formatItemLabel,
     });
-    
+
+    const internalSelectedItemKey: null | ItemKey = internalSelected.keys().next().value ?? null;
+
     const handleSelect = React.useCallback((_key: null | ItemKey, itemDetails: null | ItemDetails) => {
       const itemKey = itemDetails?.itemKey ?? null;
       onSelect?.(itemKey, itemDetails);
@@ -172,10 +174,6 @@ export const ComboBox = Object.assign(
         setInputValue(internalSelected.values().next().value?.label ?? '');
       }
     };
-    
-    const selectedFromInternalSelected = React.useMemo(() => {
-      return internalSelected.keys().next().value ?? null;
-    }, [internalSelected]);
 
     return (
       <MenuProvider
@@ -186,7 +184,7 @@ export const ComboBox = Object.assign(
         keyboardInteractions="form-control" // FIXME
         placement="bottom-start"
         offset={1}
-        selected={selectedFromInternalSelected}
+        selected={internalSelectedItemKey}
         onSelect={handleSelect}
         {...dropdownProps}
       >

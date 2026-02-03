@@ -149,6 +149,8 @@ export const ComboBoxLazy = (props: ComboBoxLazyProps) => {
     formatItemLabel: dropdownProps.formatItemLabel,
   });
 
+  const internalSelectedItemKey: null | ItemKey = internalSelected.keys().next().value ?? null;
+
   const handleSelect = React.useCallback((_key: null | ItemKey, itemDetails: null | ItemDetails) => {
     const itemKey = itemDetails?.itemKey ?? null;
     onSelect?.(itemKey, itemDetails);
@@ -170,11 +172,7 @@ export const ComboBoxLazy = (props: ComboBoxLazyProps) => {
       setInputValue(internalSelected.values().next().value?.label ?? '');
     }
   };
-
-  const selectedFromInternalSelected = React.useMemo(() => {
-    return internalSelected.keys().next().value ?? null;
-  }, [internalSelected]);
-
+  
   return (
     <MenuLazyProvider
       label={label}
@@ -183,7 +181,7 @@ export const ComboBoxLazy = (props: ComboBoxLazyProps) => {
       keyboardInteractions="default" // FIXME
       placement="bottom-start"
       offset={1}
-      selected={selectedFromInternalSelected}
+      selected={internalSelectedItemKey}
       onSelect={handleSelect}
       {...dropdownProps}
     >
