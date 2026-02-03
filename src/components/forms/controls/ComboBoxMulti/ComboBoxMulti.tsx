@@ -133,6 +133,7 @@ const ComboBoxMultiInput = (props: ComboBoxMultiInputProps) => {
           ))}
 
           <Button
+            trimmed
             className={cl['bk-combo-box__btn-clear-all']}
             onPress={() => { onRemove(new Set(selectedOptions.keys())) }}
           >

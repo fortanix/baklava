@@ -94,6 +94,7 @@ const ComboBoxMultiLazyInput = (props: ComboBoxMultiLazyInputProps) => {
           ))}
 
           <Button
+            trimmed
             className={cl['bk-combo-box__btn-clear-all']}
             onPress={() => { onRemove(new Set(selectedOptions.keys())) }}
           >
