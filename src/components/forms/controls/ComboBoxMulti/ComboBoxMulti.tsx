@@ -220,8 +220,13 @@ export const ComboBoxMulti = Object.assign(
 
     const handleSelect = React.useCallback((itemKeys: Set<ItemKey>, itemDetails: Map<ItemKey, ItemDetails>) => {
       onSelect?.(itemKeys, itemDetails);
+      setInputValue('');
       handleInternalSelect(itemKeys);
     }, [onSelect, handleInternalSelect]);
+
+    const handleInputFocusOut = (_evt: React.FocusEvent<HTMLInputElement>) => {
+      setInputValue('');
+    };
 
     return (
       <MenuMultiProvider
@@ -243,6 +248,7 @@ export const ComboBoxMulti = Object.assign(
             value={inputValue}
             onChange={handleInputChange}
             onUpdate={handleSelect}
+            onBlur={handleInputFocusOut}
             {...propsRest}
           />
         )}

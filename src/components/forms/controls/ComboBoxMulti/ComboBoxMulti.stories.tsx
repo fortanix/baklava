@@ -82,7 +82,6 @@ const ComboBoxMultiWithDefaultC = (props: Partial<React.ComponentProps<typeof Co
       <div>Selected: {[...selectedKeys].join(', ')}</div>
       <ComboBoxMulti
         label="Test ComboBox"
-        Input={InputSearch}
         placeholder="Choose your favorite fruits"
         value={value}
         onChange={event => { setValue(event.target.value); }}
@@ -112,7 +111,6 @@ const ComboBoxMultiControlledC = (props: Partial<React.ComponentProps<typeof Com
       <div>Selected: {[...selectedKeys].join(', ')}</div>
       <ComboBoxMulti
         label="Test ComboBox"
-        Input={InputSearch}
         placeholder="Choose your favorite fruits"
         {...props}
         options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
@@ -137,17 +135,21 @@ export const ComboBoxMultiControlled: Story = {
 const ComboBoxMultiFullyControlledC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
   const [value, setValue] = React.useState<undefined | string>();
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set());
-      
+  
+  const handleInputFocusOut = (_evt: React.FocusEvent<HTMLInputElement>) => {
+    setValue('');
+  };
+
   return (
     <>
       <div>Input: {value ?? '(none)'}</div>
       <div>Selected: {[...selectedKeys].join(', ')}</div>
       <ComboBoxMulti
         label="Test ComboBox"
-        Input={InputSearch}
         placeholder="Choose your favorite fruits"
         value={value}
         onChange={event => { setValue(event.target.value); }}
+        onBlur={handleInputFocusOut}
         {...props}
         options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
           <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
@@ -155,6 +157,7 @@ const ComboBoxMultiFullyControlledC = (props: Partial<React.ComponentProps<typeo
         selected={selectedKeys}
         onSelect={(selectedOptionKeys, selectedOption) => {
           props.onSelect?.(selectedOptionKeys, selectedOption);
+          setValue('');
           setSelectedKeys(selectedOptionKeys);
         }}
       />
@@ -176,7 +179,6 @@ const ComboBoxMultiUncontrolledC = (props: Partial<React.ComponentProps<typeof C
       <div>Selected: {[...selectedKeys].join(', ')}</div>
       <ComboBoxMulti
         label="Test ComboBox"
-        Input={InputSearch}
         placeholder="Choose your favorite fruits"
         {...props}
         options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
@@ -221,6 +223,7 @@ const ComboBoxMultiwithFilterC = (props: Partial<React.ComponentProps<typeof Com
         onSelect={(selectedOptionKeys, selectedOption) => {
           props.onSelect?.(selectedOptionKeys, selectedOption);
           setSelectedKeys(selectedOptionKeys);
+          setValue('');
         }}
       />
     </>

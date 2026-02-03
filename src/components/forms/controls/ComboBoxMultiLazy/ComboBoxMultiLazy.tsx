@@ -178,8 +178,13 @@ export const ComboBoxMultiLazy = (props: ComboBoxMultiLazyProps) => {
 
   const handleSelect = React.useCallback((itemKeys: Set<ItemKey>, itemDetails: Map<ItemKey, ItemDetails>) => {
     onSelect?.(itemKeys, itemDetails);
+    setInputValue('');
     handleInternalSelect(itemKeys);
   }, [onSelect, handleInternalSelect]);
+
+  const handleInputFocusOut = (_evt: React.FocusEvent<HTMLInputElement>) => {
+    setInputValue('');
+  };
 
   return (
     <MenuMultiLazyProvider
@@ -200,6 +205,7 @@ export const ComboBoxMultiLazy = (props: ComboBoxMultiLazyProps) => {
           value={inputValue}
           onChange={handleInputChange}
           onUpdate={handleSelect}
+          onBlur={handleInputFocusOut}
           {...propsRest}
         />
       )}

@@ -196,6 +196,10 @@ const ComboBoxMultiLazyFullyControlledC = (props: React.ComponentProps<typeof Co
   const [value, setValue] = React.useState<string>('');
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set([]));
       
+  const handleInputFocusOut = (_evt: React.FocusEvent<HTMLInputElement>) => {
+    setValue('');
+  };
+
   return (
     <>
       <div>Input: {value ?? '(none)'}</div>
@@ -205,8 +209,10 @@ const ComboBoxMultiLazyFullyControlledC = (props: React.ComponentProps<typeof Co
         placeholder="Choose items"
         value={value}
         onChange={event => { setValue(event.target.value); }}
+        onBlur={handleInputFocusOut}
         selected={selectedKeys}
         onSelect={selectOptions => {
+          setValue('');
           setSelectedKeys(selectOptions);
         }}
       />
@@ -253,7 +259,7 @@ const ComboBoxMultiLazyWithFilterC = () => {
   const [items, setItems] = React.useState<Array<{ id: string, name: string }>>([]);
   
   const hasMoreItems = items.length < maxItems;
-  const itemsFiltered = items.filter(item => item.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()));
+  const itemsFiltered = items.filter(item => item.name.toLowerCase().includes(filter.toLowerCase()));
   
   const updateLimit = React.useCallback((limit: number) => {
     if (hasMoreItems) {
@@ -288,6 +294,7 @@ const ComboBoxMultiLazyWithFilterC = () => {
         selected={selectedKeys}
         onSelect={selectOptions => {
           setSelectedKeys(selectOptions);
+          setFilter('');
         }}
         dropdownProps={{
           onUpdateLimit: updateLimit,
@@ -295,8 +302,8 @@ const ComboBoxMultiLazyWithFilterC = () => {
           pageSize: pageSize,
           hasMoreItems: hasMoreItems,
           isLoading: isLoading,
-          renderItem: item => <>{itemsFiltered[item.index]?.name}</>,
-          formatItemLabel: itemKey => itemsFiltered.find(i => i.id === itemKey)?.name ?? 'Unknown',
+          renderItem: item => <>{items.find(i => i.id === item.key)?.name }</>,
+          formatItemLabel: itemKey => items.find(i => i.id === itemKey)?.name ?? 'Unknown',
           placeholderEmpty: items.length === 0 ? 'No items' : 'No items found',
           virtualItemKeys,
         }}

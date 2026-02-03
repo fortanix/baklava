@@ -130,15 +130,15 @@ export const ComboBoxLazy = (props: ComboBoxLazyProps) => {
   });
   
   React.useEffect(
-      () => {
-        if (typeof propsRest.value === 'undefined' && selected) {
-          // Update Input value state on selection change when menu
-          // selection is controlled input value is uncontrolled
-          setInputValue(dropdownProps.formatItemLabel?.(selected) ?? '');
-        }
-      },
-      [propsRest.value, selected, dropdownProps.formatItemLabel],
-    );
+    () => {
+      if (typeof propsRest.value === 'undefined' && selected) {
+        // Update Input value state on selection change when menu
+        // selection is controlled input value is uncontrolled
+        setInputValue(dropdownProps.formatItemLabel?.(selected) ?? '');
+      }
+    },
+    [propsRest.value, selected, dropdownProps.formatItemLabel],
+  );
 
   const selectedSet = React.useMemo(() => selectionStateFromItemKey(selected), [selected]);
   const {
