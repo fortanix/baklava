@@ -28,10 +28,9 @@ export { cl as ComboBoxMultiLazyClassNames };
 export type { ItemKey, ItemDetails, VirtualItemKeys };
 type InputProps = ComponentProps<typeof InputDefault>;
 
-/**
- * COMBO BOX MULTI LAZY INPUT
- * ---------------------------------------------------------------------------------------------------------------------
- */
+
+// COMBO BOX MULTI LAZY INPUT
+// ---------------------------------------------------------------------------------------------------------------------
 
 type ComboBoxMultiLazyInputProps = Omit<InputProps, 'onSelect'> & {
   anchorRenderArgs: AnchorRenderArgs,
@@ -118,17 +117,16 @@ const ComboBoxMultiLazyInput = (props: ComboBoxMultiLazyInputProps) => {
 
 type DropdownProps = Omit<MenuMultiLazyProviderProps, 'label'>;
 
+// COMBO BOX MULTI LAZY
+// ---------------------------------------------------------------------------------------------------------------------
+
 /**
- * COMBO BOX MULTI LAZY
- * ---------------------------------------------------------------------------------------------------------------------
- *
  * A `ComboBoxMultiLazy` is a text input control combined with a multi-selction dropdown menu that
  * lazily loads menu items and adapts to the user input, for example for automatic suggestions.
  * 
  * References: 
  * - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
  */
-
 export type ComboBoxMultiLazyProps = Omit<InputProps, 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
