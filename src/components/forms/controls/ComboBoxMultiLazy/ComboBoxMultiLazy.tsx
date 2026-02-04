@@ -4,7 +4,6 @@
 
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
-import { mergeProps } from '../../../../util/reactUtil.ts';
 
 // Components
 import { Input as InputDefault } from '../Input/Input.tsx';
