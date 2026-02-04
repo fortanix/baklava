@@ -50,10 +50,12 @@ const ComboBoxInput = (props: ComboBoxInputProps) => {
     selectedOption,
   } = anchorRenderArgs;
    
-  // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
   const anchorProps = anchorRenderProps({
-    placeholder: 'Select options',
-    className: cx(cl['bk-combo-box'], { [cl['bk-combo-box--open']]: open }),
+    className: cx(
+      cl['bk-combo-box'],
+      { [cl['bk-combo-box--open']]: open },
+      propsRest.containerProps?.className,
+    ),
   });
 
   return (
@@ -61,10 +63,15 @@ const ComboBoxInput = (props: ComboBoxInputProps) => {
       <Input
         role="combobox"
         automaticResize
-        {...mergeProps(anchorProps, propsRest)}
+        {...propsRest}
         inputProps={{
+          placeholder: 'Select options',
           ...propsRest.inputProps,
           className: cx(cl['bk-combo-box__input'], propsRest.inputProps?.className),
+        }}
+        containerProps={{
+          ...propsRest.containerProps,
+          ...anchorProps,
         }}
       />
 
