@@ -6,7 +6,7 @@ import * as React from 'react';
 
 // Utils
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
-import { mergeCallbacks, mergeRefs, useLazyRef } from '../../../util/reactUtil.ts';
+import { mergeCallbacks, mergeRefs, useRefWithInitializer } from '../../../util/reactUtil.ts';
 import {
   type UseFloatingElementOptions,
   UseFloatingElementResult,
@@ -382,7 +382,7 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
   // Consumers may or may not provide 'formatItemLabel', and an explicit 'label' on the
   // option can override the value returned by 'formatItemLabel'. This ref stores the
   // resolved label so the correct value can be passed to the menu anchor.
-  const selectedItemDetailsRef = useLazyRef<InternalItemDetails>(() => {
+  const selectedItemDetailsRef = useRefWithInitializer<InternalItemDetails>(() => {
     return buildSelectedItemDetailsMap(selected ?? defaultSelected, formatItemLabel);
   });
 
@@ -393,7 +393,7 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
       setInternalSelected(itemDetails);
       selectedItemDetailsRef.current = itemDetails;
     }
-  }, [isControlled, selected, formatItemLabel, selectedItemDetailsRef]);
+  }, [isControlled, selected, formatItemLabel]);
 
   const handleInternalSelect = React.useCallback((selectedItemDetails: InternalItemDetails) => {
     // NOTE: Important - the label from 'MenuProvider.Option' is captured here so it can
@@ -423,7 +423,6 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
     setIsOpen,
     previousActiveElementRef,
     isControlled,
-    selectedItemDetailsRef,
     canCloseMenu,
   ]);
 

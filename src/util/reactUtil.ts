@@ -151,7 +151,7 @@ export const useEffectAsync = (effect: () => Promise<unknown>, inputs?: undefine
 // on every render. Passing an expression directly to 'React.useRef()' (e.g. 'React.useRef(fn())')
 // would unnecessarily invoke 'fn' on each render, even though the ref value itself is preserved.
 // This helper ensures the initializer runs exactly once.
-export const useLazyRef = <T>(initializer: () => T) => {
+export const useRefWithInitializer = <T>(initializer: () => T) => {
   const ref = React.useRef<null | T>(null);
 
   if (ref.current === null) { ref.current = initializer(); }
