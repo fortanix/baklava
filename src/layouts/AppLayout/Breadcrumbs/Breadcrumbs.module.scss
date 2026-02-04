@@ -18,10 +18,17 @@
       .bk-breadcrumb__item {
         color: bk.$theme-breadcrumb-text-default;
         
-        &:not(:nth-last-child(1 of .bk-breadcrumb__item)) {
-          .bk-breadcrumb__item__link::after {
+        &:not(:first-child) {
+          &::before {
             content: '/' / '';
-            margin-inline-start: bk.$spacing-1;
+            color: bk.$theme-breadcrumb-text-link;
+            margin-inline-end: bk.$spacing-1;
+          }
+        }
+        
+        &:has(.bk-breadcrumb__item__link--disabled) {
+          &::before {
+            color: bk.$theme-text-label-disabled;
           }
         }
         

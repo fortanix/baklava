@@ -7,7 +7,7 @@ import { userEvent, within } from 'storybook/test';
 
 import { delay } from '../../../../util/time.ts';
 import * as React from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
+import { ErrorBoundary, getErrorMessage } from 'react-error-boundary';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Banner } from '../../../containers/Banner/Banner.tsx';
@@ -43,7 +43,7 @@ const StoryMeta = {
             title="Error"
             actions={<Banner.ActionButton label="Reset" onPress={resetErrorBoundary}/>}
           >
-            {error?.message}
+            {getErrorMessage(error)}
           </Banner>
         }
       >
