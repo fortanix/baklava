@@ -331,18 +331,17 @@ export const ComboBoxLazyWithFilter: Story = {
 
 const ComboBoxLazyInFormC = (props: React.ComponentProps<typeof ComboBoxLazy>) => {
   return (
-    <>
-      <form
-        id="story-form"
-        onSubmit={event => {
-          console.log(event.currentTarget) 
-          event.preventDefault();
-          notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || 'none'}`);
-        }}
-      />
+    <form
+      id="story-form"
+      onSubmit={event => {
+        console.log(event.currentTarget) 
+        event.preventDefault();
+        notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || 'none'}`);
+      }}
+    >
       <ComboBoxLazy {...props}/>
       <button type="submit" form="story-form">Submit</button>
-    </>
+    </form>
   );
 };
 export const ComboBoxLazyInForm: Story = {

@@ -234,18 +234,17 @@ export const ComboBoxWithFilter: Story = {
 
 const ComboBoxInFormC = (props: React.ComponentProps<typeof ComboBox>) => {
   return (
-    <>
-      <form
-        id="story-form"
-        onSubmit={event => {
-          console.log(event.currentTarget) 
-          event.preventDefault();
-          notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || 'none'}`);
-        }}
-      />
+    <form
+      id="story-form"
+      onSubmit={event => {
+        console.log(event.currentTarget) 
+        event.preventDefault();
+        notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || 'none'}`);
+      }}
+    >
       <ComboBox {...props}/>
       <button type="submit" form="story-form">Submit</button>
-    </>
+    </form>
   );
 };
 export const ComboBoxInForm: Story = {

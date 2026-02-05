@@ -237,18 +237,17 @@ export const ComboBoxMultiWithFilter: Story = {
 
 const ComboBoxMultiInFormC = (props: React.ComponentProps<typeof ComboBoxMulti>) => {
   return (
-    <>
-      <form
-        id="story-form"
-        onSubmit={event => {
-          event.preventDefault();
-          const selected = new FormData(event.currentTarget).getAll('controlledComboBoxMulti[]');
-          notify.info(`You have chosen: ${selected.join(', ') || 'none'}`);
-        }}
-      />
+    <form
+      id="story-form"
+      onSubmit={event => {
+        event.preventDefault();
+        const selected = new FormData(event.currentTarget).getAll('controlledComboBoxMulti[]');
+        notify.info(`You have chosen: ${selected.join(', ') || 'none'}`);
+      }}
+    >
       <ComboBoxMulti {...props}/>
       <button type="submit" form="story-form">Submit</button>
-    </>
+    </form>
   );
 };
 export const ComboBoxMultiInForm: Story = {

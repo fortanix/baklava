@@ -319,18 +319,17 @@ export const ComboBoxMultiLazyWithFilter: Story = {
 
 const ComboBoxMultiLazyInFormC = (props: React.ComponentProps<typeof ComboBoxMultiLazy>) => {
   return (
-    <>
-      <form
-        id="story-form"
-        onSubmit={event => {
-          event.preventDefault();
-          const selected = new FormData(event.currentTarget).getAll('controlledComboBoxMultiLazy[]');
-          notify.info(`You have chosen: ${selected.join(', ') || 'none'}`);
-        }}
-      />
+    <form
+      id="story-form"
+      onSubmit={event => {
+        event.preventDefault();
+        const selected = new FormData(event.currentTarget).getAll('controlledComboBoxMultiLazy[]');
+        notify.info(`You have chosen: ${selected.join(', ') || 'none'}`);
+      }}
+    >
       <ComboBoxMultiLazy {...props}/>
       <button type="submit" form="story-form">Submit</button>
-    </>
+    </form>
   );
 };
 export const ComboBoxMultiLazyInForm: Story = {
