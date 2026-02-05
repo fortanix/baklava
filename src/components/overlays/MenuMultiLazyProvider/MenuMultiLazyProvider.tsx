@@ -18,7 +18,6 @@ import {
   useMenuAnchor,
   useMenuImperativeRef,
   useMenuKeyboardNavigation,
-  useMenuListBoxFocus,
   useMenuOpenControl,
   useMenuSelect,
   useMenuToggle,
@@ -144,7 +143,6 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
   useMenuOpenControl({ setIsOpen, open });
   const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, listBoxRef });
   const { handleToggle } = useMenuToggle({ listBoxRef, action, toggleCauseRef, previousActiveElementRef });
-  const { listBoxFocusRef } = useMenuListBoxFocus({ setIsOpen });
   const { internalSelected, selectedItemDetailsRef, handleInternalSelect } = useMenuSelect({
     previousActiveElementRef,
     setIsOpen,
@@ -187,7 +185,6 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
 
   const mergedListBoxRef = mergeRefs<React.ComponentRef<typeof ListBoxMultiLazy.ListBoxMultiLazy>>(
     listBoxRef,
-    listBoxFocusRef,
     refs.setFloating,
     floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBoxMultiLazy.ListBoxMultiLazy>>,
   );

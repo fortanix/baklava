@@ -430,7 +430,6 @@ export const ListBox = Object.assign(
       if (typeof selected !== 'undefined') {
         const state = listBox.store.getState();
         state.selectItem(selected);
-        state.focusItem(selected);
       }
     }, [selected, listBox.store]);
     

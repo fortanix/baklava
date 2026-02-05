@@ -21,7 +21,6 @@ import {
   useMenuAnchor,
   useMenuImperativeRef,
   useMenuKeyboardNavigation,
-  useMenuListBoxFocus,
   useMenuOpenControl,
   useMenuSelect,
   useMenuToggle,
@@ -152,7 +151,6 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
   useMenuOpenControl({ setIsOpen, open });
   const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, listBoxRef });
   const { handleToggle } = useMenuToggle({ listBoxRef, action, toggleCauseRef, previousActiveElementRef });
-  const { listBoxFocusRef } = useMenuListBoxFocus({ setIsOpen });
   const { internalSelected, selectedItemDetailsRef, handleInternalSelect } = useMenuSelect({
     previousActiveElementRef,
     setIsOpen,
@@ -200,7 +198,6 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
 
   const mergedListBoxRef = mergeRefs<React.ComponentRef<typeof ListBox.ListBox>>(
     listBoxRef,
-    listBoxFocusRef,
     refs.setFloating,
     floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBox.ListBox>>,
   );

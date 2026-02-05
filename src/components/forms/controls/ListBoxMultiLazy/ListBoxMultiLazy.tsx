@@ -206,13 +206,6 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
 
     return (
       <div
-        // Attribute `data-trigger-type` fixes a Chrome-specific issue:
-        // when the `loadMoreItemsTrigger` is replaced by a loading spinner during
-        // async updates, Chrome drops focus and fires a `focusout` event with
-        // `relatedTarget` as `null`. This focus loss does not represent user intent
-        // to close the listbox. The attribute allows the `focusout` handler in
-        // `MenuMultiProvider` to detect this internal update and keep the listbox open.
-        data-trigger-type="custom"
         className={cx(
           cl['bk-list-box-multi-lazy__item'],
           ListBoxMultiClassNames['bk-list-box-multi__item'],
