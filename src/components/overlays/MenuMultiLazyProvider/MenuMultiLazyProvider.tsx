@@ -149,7 +149,7 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
     previousActiveElementRef,
     setIsOpen,
     triggerAction: triggerAction ?? action,
-    formatItemLabel: formatItemLabel,
+    formatItemLabel,
     selected,
     defaultSelected,
     canCloseMenu: false,

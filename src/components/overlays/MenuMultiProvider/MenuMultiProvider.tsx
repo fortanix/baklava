@@ -306,6 +306,18 @@ export const useMenuListBoxFocus = (options: UseMenuListBoxFocusOptions) => {
         ) {
           return;
         }
+        
+        // Chrome-specific:
+        // When the focused custom trigger (wrapped in data-trigger-type="custom") is replaced
+        // during async loading, Chrome drops focus and fires `focusout` with `relatedTarget` as `null`.
+        // This focus loss is from an internal update, not user intent. So we detect it via ancestor
+        // traversal and avoid closing the listbox.
+        if (
+          event.relatedTarget === null &&
+          (event.target as HTMLElement)?.closest('[data-trigger-type="custom"]')
+        ) {
+          return; // ignore internal focus loss
+        }
 
         const focusTarget = event.relatedTarget;
 
