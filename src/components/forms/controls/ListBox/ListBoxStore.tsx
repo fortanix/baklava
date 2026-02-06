@@ -94,6 +94,9 @@ export type ListBoxStateApi = ListBoxState & {
   
   /** Request the given `itemKey` to be selected. If `null`, unset selection. */
   selectItem: (itemKey: null | ItemKey) => void,
+  
+  /** Sync the store state with the DOM. */
+  syncDomState: (options?: { focusVisible?: undefined | boolean }) => void,
 };
 
 // Ref: https://zustand.docs.pmnd.rs/guides/initialize-state-with-props#wrapping-the-context-provider
@@ -156,6 +159,15 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
       }
     },
     selectItem: itemKey => { set({ selectedItem: itemKey }); },
+    syncDomState({ focusVisible = true } = {}) {
+      const state = get();
+      const focusedItemKey = state.focusedItem;
+      
+      if (focusedItemKey !== null) {
+        const focusedItemRef = state._internalItemsRegistry.get(focusedItemKey)?.itemRef;
+        focusedItemRef?.current?.focus({ focusVisible });
+      }
+    },
   }));
 };
 export type ListBoxStore = ReturnType<typeof createListBoxStore>;
@@ -222,6 +234,7 @@ export const handleKeyboardInteractions = (store: ListBoxStore) => (event: React
       event.stopPropagation(); // Prevent the key event from triggering other behavior at higher levels
       
       state.focusItem(itemTargetKey);
+      state.syncDomState({ focusVisible: true });
     }
   } catch (error) {
     // If an assumption fails, log the error but don't crash
@@ -247,6 +260,7 @@ export const useListBoxTypeAhead = (storeRef: React.RefObject<null | StoreApi<Li
       
       if (elementText !== null && elementTextStripped.startsWith(query)) {
         state.focusItem(itemKey);
+        state.syncDomState({ focusVisible: true });
         break;
       }
     }
