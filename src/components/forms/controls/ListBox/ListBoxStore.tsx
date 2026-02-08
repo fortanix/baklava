@@ -128,11 +128,6 @@ export const createListBoxStore = <E extends HTMLElement>(_ref: React.RefObject<
       }
     },
     focusItem: itemKey => {
-      const state = get();
-      if (state.focusedItem === itemKey) {
-        // Already focused; avoid redundant focus that might re-enter
-        return;
-      }
       set({ focusedItem: itemKey });
       
       if (itemKey !== null) {

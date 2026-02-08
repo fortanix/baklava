@@ -40,7 +40,7 @@ export default {
     limit: 5,
     onUpdateLimit: () => {},
     renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
-    renderItemLabel: item => `Item ${item.split('-')[1]}`,
+    formatItemLabel: item => `Item ${item.split('-')[1]}`,
     children: ({ props, selectedOptions }) => {
       const selectedLabels = [...selectedOptions.values()].map(({ label }) => label).join(', ');
       return (
@@ -96,11 +96,11 @@ export const MenuMultiLazyProviderWithHoverTrigger: Story = {
 
 const MenuMultiLazyProviderControlledC = (props: React.ComponentProps<typeof MenuMultiLazyProvider>) => {
   const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(props.defaultSelected ?? new Set());
-  const renderItemLabel = (item: string) => `Item ${item.split('-')[1]}`;
+  const formatItemLabel = (item: string) => `Item ${item.split('-')[1]}`;
   
   return (
     <>
-      <p>Selected: {[...selectedOptions].map(itemKey => renderItemLabel(itemKey)).join(', ') || '(none)'}</p>
+      <p>Selected: {[...selectedOptions].map(itemKey => formatItemLabel(itemKey)).join(', ') || '(none)'}</p>
       <MenuMultiLazyProvider
         {...props}
         selected={selectedOptions}
