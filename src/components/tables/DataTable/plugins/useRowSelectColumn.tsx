@@ -1,6 +1,7 @@
 /* Copyright (c) Fortanix, Inc.
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
 import * as React from 'react';
 import type * as ReactTable from 'react-table';
 
@@ -8,16 +9,17 @@ import { Checkbox } from '../../../forms/controls/Checkbox/Checkbox.tsx';
 import { Radio } from '../../../forms/controls/Radio/Radio.tsx';
 import cl from './useRowSelectColumn.module.scss';
 
+
 type ColumnWithSelector<D extends object> = ReactTable.ColumnInstance<D> & {
-  __rowSelectorInjected?: boolean;
+  __rowSelectorInjected?: boolean,
 };
 
-function renderElement<P>(
-  renderer: ReactTable.Renderer<P> | undefined,
+const renderElement = <P,>(
+  renderer: undefined | ReactTable.Renderer<P>,
   props: P,
-  fallback?: React.ReactNode,
-): React.ReactNode {
-  if (renderer == null) return fallback ?? null;
+  fallback?: undefined | React.ReactNode,
+): React.ReactNode => {
+  if (renderer == null) { return fallback ?? null; }
 
   if (React.isValidElement(renderer)) {
     return renderer;
@@ -28,7 +30,7 @@ function renderElement<P>(
   }
 
   return renderer;
-}
+};
 
 // `react-table` plugin for row selection column. Note: depends on `react-table`'s `useRowSelect` plugin.
 export const useRowSelectColumn = <D extends object>(hooks: ReactTable.Hooks<D>): void => {
@@ -104,7 +106,7 @@ export const useRowSelectColumnRadio = <D extends object>(hooks: ReactTable.Hook
     const first = columns[0] as ColumnWithSelector<D> | undefined;
 
     if (!first || first.__rowSelectorInjected) return columns;
-    console.log("columns updated");
+    console.log('columns updated');
     first.__rowSelectorInjected = true;
 
     const OriginalCell = first.Cell;
@@ -151,10 +153,10 @@ export const useRowSelectColumnRadio = <D extends object>(hooks: ReactTable.Hook
 export const useRowSelectColumnRadioColumnRefernce = <D extends object>(
   hooks: ReactTable.Hooks<D>
 ): void => {
-  let lastInjectedFrom: ReactTable.ColumnInstance<D>[] | null = null;
+  let lastInjectedFrom: null | Array<ReactTable.ColumnInstance<D>> = null;
 
   hooks.useInstance.push(instance => {
-    if (!instance.isRowSelectDisabled) return;
+    if (!instance.isRowSelectDisabled) { return; }
 
     instance.rows.forEach(row => {
       row.rowSelectDisabled = instance.isRowSelectDisabled?.(row) ?? false;
@@ -171,7 +173,7 @@ export const useRowSelectColumnRadioColumnRefernce = <D extends object>(
     const first = columns[0];
     if (!first) return columns;
     
-    console.log("columns updated");
+    console.log('columns updated');
     
     const OriginalCell = first.Cell;
 
@@ -215,7 +217,7 @@ export const useRowSelectColumnRadioDeprecated = <D extends object>(hooks: React
   hooks.visibleColumns.push(columns =>
     columns.map((col: ReactTable.ColumnInstance<D>, columnIndex: number) => {
       if (columnIndex === 0) {
-        console.log("columns updated");
+        console.log('columns updated');
         return {
           ...col,
           Header: (headerProps: ReactTable.HeaderProps<D>) => {

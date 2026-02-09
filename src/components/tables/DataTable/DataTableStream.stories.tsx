@@ -59,9 +59,7 @@ type DataTableStreamTemplateProps = DataTableStream.TableProviderStreamProps<Use
   items: Array<User>,
   endOfStream: boolean,
   dataTableProps: React.ComponentProps<typeof DataTableStream.DataTableStream>,
-  renderTableActions?: (ctx: {
-    refetch: () => void;
-  }) => React.ReactNode;
+  renderTableActions?: undefined | ((ctx: { refetch: () => void }) => React.ReactNode),
 };
 
 const DataTableStreamTemplate = ({ dataTableProps, children, renderTableActions, ...props }: DataTableStreamTemplateProps) => {
@@ -73,10 +71,10 @@ const DataTableStreamTemplate = ({ dataTableProps, children, renderTableActions,
 
   const query: DataTableStream.DataTableQuery<User, UserPageState | null> = React.useCallback(
     async ({ previousItem, previousPageState, limit, orderings, globalFilter }) => {
-      if (delayQuery === Number.POSITIVE_INFINITY) return new Promise(() => {}); // Infinite delay
-      if (delayQuery === -1) throw new Error('Failed'); // Simulate failure
+      if (delayQuery === Number.POSITIVE_INFINITY) { return new Promise(() => {}); } // Infinite delay
+      if (delayQuery === -1) { throw new Error('Failed'); } // Simulate failure
 
-      if (delayQuery) await delay(delayQuery);
+      if (delayQuery) { await delay(delayQuery); }
       
       let offset = 0;
 
@@ -87,10 +85,10 @@ const DataTableStreamTemplate = ({ dataTableProps, children, renderTableActions,
 
       const filteredItems = items
         .filter((row) => {
-          if (!globalFilter || globalFilter.trim() === '') return true;
+          if (!globalFilter || globalFilter.trim() === '') { return true; }
 
           const columnsFilterable = columns.filter((column) => !column.disableGlobalFilter);
-          if (!columnsFilterable.length) return false;
+          if (!columnsFilterable.length) { return false; }
 
           return columnsFilterable.some((column) => {
             const cell = typeof column.accessor === 'function'
@@ -100,7 +98,7 @@ const DataTableStreamTemplate = ({ dataTableProps, children, renderTableActions,
           });
         })
         .sort((a, b) => {
-          if (!orderings[0]) return 0;
+          if (!orderings[0]) { return 0; }
           const { column, direction } = orderings[0];
           const factor = direction === 'DESC' ? -1 : 1;
 
