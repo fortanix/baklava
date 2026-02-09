@@ -42,7 +42,7 @@ export const generateData = ({ numItems = 10, seed: seedValue }: GenerateDataArg
       name: `${firstName} ${lastName}`,
       email: randEmail({ firstName, lastName }),
       company: randCompanyName(),
-      joinDate: randBetweenDate({ from: new Date('01/01/2020'), to: new Date() }),
+      joinDate: randBetweenDate({ from: new Date('01/01/2016'), to: new Date('01/01/2026') }),
       description: randSentence(),
       dummy_1: `${firstName} ${lastName}`,
       dummy_2: randCompanyName(),

@@ -162,11 +162,11 @@ $navigation-distance: 1.2rem;
 :global(.react-datepicker__day--selected),
 :global(.react-datepicker__day--keyboard-selected) {
   border-radius: bk.$border-radius-circle;
-  color: bk.$theme-date-picker-text-selected;
   background: transparent;
   
   &:global(.react-datepicker__day--selected) {
     background: bk.$theme-date-picker-background-selected;
+    color: bk.$theme-date-picker-text-selected;
   }
   
   &:global(.react-datepicker__day--keyboard-selected) {
