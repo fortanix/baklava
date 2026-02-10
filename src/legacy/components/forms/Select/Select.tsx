@@ -106,7 +106,7 @@ export const Select = (props: SelectProps) => {
       // it. If we do it too early, then the browser will scroll to the top of the page.
       window.setTimeout(() => {
         selectedItem?.scrollIntoView({ block: 'nearest' });
-      }, 0);
+      }, 100);
     }
   }, [isActive]);
   
