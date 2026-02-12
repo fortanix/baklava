@@ -80,7 +80,7 @@
       
       @include bk.focus-outset;
       &:is(:focus-visible, :global(.pseudo-focus-visible)) {
-        isolation: isolate; // Have the focused toggle render over the other toggles so that the focus is fully shown
+        z-index: 1; // Have the focused toggle render over the other toggles so that the focus is fully shown
         border-radius: bk.$radius-1;
       }
       

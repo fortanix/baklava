@@ -26,7 +26,7 @@ export default {
   tags: ['autodocs'],
   argTypes: {
   },
-  render: args => <PageLayout {...args}/>,
+  render: args => <PageLayout {...args} />,
 } satisfies Meta<PageLayoutArgs>;
 
 const title1 = <PageLayout.Heading>Page Title</PageLayout.Heading>;
@@ -38,7 +38,7 @@ const actions1 = (
   </>
 );
 const CustomInput: React.ComponentProps<typeof Select>['Input'] = props => (
-  <Input {...props} icon="bell" iconLabel="Bell"/>
+  <Input {...props} icon="bell" iconLabel="Bell" />
 );
 const projects = {
   p1: 'Connection/Project name',
@@ -47,7 +47,7 @@ const projects = {
 };
 const selectOptions = (
   Object.entries(projects).map(([projectKey, projectName]) =>
-    <Select.Option key={projectKey} itemKey={projectKey} label={projectName}/>
+    <Select.Option key={projectKey} itemKey={projectKey} label={projectName} />
   )
 );
 const title2 = (
@@ -91,7 +91,7 @@ type DefaultTabOption = {
   index: number,
   className?: string,
 };
-const defaultTabOptions: DefaultTabOption[] = [1,2,3,4].map(index => { 
+const defaultTabOptions: DefaultTabOption[] = [1, 2, 3, 4].map(index => {
   return { index };
 });
 
@@ -101,34 +101,62 @@ type TabWithTriggerProps = React.PropsWithChildren<Partial<TabsArgs>> & {
   defaultActiveTabKey?: undefined | string,
 };
 const TabWithTrigger = (props: TabWithTriggerProps) => {
-  const { options = defaultTabOptions, defaultActiveTabKey, ...tabContext } = props;
+  const { options = defaultTabOptions, defaultActiveTabKey, children, ...tabContext } = props;
   
   const [activeTabKey, setActiveTabKey] = React.useState<undefined | string>(defaultActiveTabKey);
   
   return (
-    <PageLayout.Nav>
-      <Tabs onSwitch={setActiveTabKey} activeKey={activeTabKey} {...tabContext}>
-        {options.map(tab => {
-          return (
-            <Tab
-              key={tab.index}
-              data-label={`tab${tab.index}`}
-              tabKey={`tab${tab.index}`}
-              title={`Tab ${tab.index}`}
-              render={() => <PageLayout.Body>Tab {tab.index} contents</PageLayout.Body>}
-              className={tab.className}
-            />
-          )
-        })}
-      </Tabs>
-    </PageLayout.Nav>
+    <Tabs onSwitch={setActiveTabKey} activeKey={activeTabKey} {...tabContext}>
+      {options.map(tab => {
+        return (
+          <Tab
+            key={tab.index}
+            data-label={`tab${tab.index}`}
+            tabKey={`tab${tab.index}`}
+            title={`Tab ${tab.index}`}
+            render={() => children ?? <PageLayout.Body>Tab {tab.index} contents</PageLayout.Body>}
+            className={tab.className}
+          />
+        )
+      })}
+    </Tabs>
   );
 };
 
-// TODO: The defaultActiveTabKey option is not working atm
-// See https://github.com/fortanix/baklava/issues/261
 const tabs1 = (
-  <TabWithTrigger defaultActiveTabKey="1" />
+  <PageLayout.Nav>
+    <TabWithTrigger defaultActiveTabKey="tab1" />
+  </PageLayout.Nav>
+);
+
+const subTabs = (
+  <PageLayout.Nav>
+    <TabWithTrigger defaultActiveTabKey="tab1">
+      <PageLayout.Body edgeless>
+        <TabWithTrigger variant="secondary" defaultActiveTabKey="tab1">
+          This is tab content
+        </TabWithTrigger>
+      </PageLayout.Body>
+    </TabWithTrigger>
+  </PageLayout.Nav>
+);
+
+const verticalSubTabs = (
+  <PageLayout.Nav>
+    <TabWithTrigger defaultActiveTabKey="tab1">
+      <PageLayout.Body edgeless>
+        <TabWithTrigger orientation="vertical" defaultActiveTabKey="tab1">
+          <PageLayout>
+            <PageLayout.Header
+              title={<PageLayout.SubHeading>Sub Page Title</PageLayout.SubHeading>}>
+              <Button kind="primary">Primary Button</Button>
+            </PageLayout.Header>
+            This is tab content
+          </PageLayout>
+        </TabWithTrigger>
+      </PageLayout.Body>
+    </TabWithTrigger>
+  </PageLayout.Nav>
 );
 
 export const PageLayoutStandard: Story = {
@@ -173,9 +201,27 @@ export const PageLayoutTabs: Story = {
       </>
     ),
   },
-  play: async () => {
-    // Workaround to manually click on the first tab.
-    // TODO: Remove once https://github.com/fortanix/baklava/issues/261 is fixed
-    (document.querySelector("li[data-tab]") as HTMLElement).click();
+};
+
+export const PageLayoutSecondarySubTabs: Story = {
+  args: {
+    children: (
+      <>
+        {header1}
+        {subTabs}
+      </>
+    ),
   },
 };
+
+export const PageLayoutVerticalSubTabs: Story = {
+  args: {
+    children: (
+      <>
+        {header1}
+        {verticalSubTabs}
+      </>
+    ),
+  },
+};
+

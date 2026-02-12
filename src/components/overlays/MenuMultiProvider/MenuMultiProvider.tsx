@@ -6,7 +6,7 @@ import * as React from 'react';
 
 // Utils
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
-import { mergeCallbacks, mergeRefs } from '../../../util/reactUtil.ts';
+import { mergeCallbacks, mergeRefs, useRefWithInitializer } from '../../../util/reactUtil.ts';
 import {
   type UseFloatingElementOptions,
   UseFloatingElementResult,
@@ -22,8 +22,8 @@ import { MenuProviderClassNames as cl } from '../MenuProvider/MenuProvider.tsx';
 
 export type ItemDetails = ListBoxMulti.ItemDetails;
 export type ItemKey = ListBoxMulti.ItemKey;
+export type InternalItemDetails = Map<ItemKey, ItemDetails>;
 type ListBoxMultiProps = ComponentProps<typeof ListBoxMulti.ListBoxMulti>;
-type InternalItemDetails = Map<string, { label: string }>;
 
 /**
  * FLOATING MENU + CONTROLLED OPTIONS
@@ -279,72 +279,30 @@ export const useMenuImperativeRef = (options: UseMenuImperativeRefOptions) => {
   }), [isOpen, setIsOpen, floatingRef]);
 };
 
-/**
- * MENU LISTBOX FOCUS
- * ---------------------------------------------------------------------------------------------------------------------
- */
-export type UseMenuListBoxFocusOptions = {
-  setIsOpen: (open: boolean) => void
-};
-
-export const useMenuListBoxFocus = (options: UseMenuListBoxFocusOptions) => {
-  const { setIsOpen } = options;
-
-  const listBoxFocusRef: React.RefCallback<HTMLElement> = React.useCallback((listBoxElement) => {
-    if (!listBoxElement) return;
-
-    const controller = new AbortController();
-
-    listBoxElement.addEventListener(
-      'focusout',
-      (event) => {
-        // Special case: in Firefox triggering a file select causes a `focusout` which we don't want closing the menu
-        if (
-          event.target instanceof HTMLInputElement
-            && event.target.type === 'file'
-            && event.relatedTarget === null
-        ) {
-          return;
-        }
-
-        const focusTarget = event.relatedTarget;
-
-        if (!focusTarget || (focusTarget instanceof Node && !listBoxElement.contains(focusTarget))) {
-          setIsOpen(false);
-        }
-      },
-      { signal: controller.signal }
-    );
-
-    return () => controller.abort();
-  }, [setIsOpen]);
-
-  return { listBoxFocusRef };
-};
+// MENU SELECT HANDLER
+// ---------------------------------------------------------------------------------------------------------------------
 
 /**
- * MENU SELECT HANDLER
- * ---------------------------------------------------------------------------------------------------------------------
+ * Convert the given (single) item key to the component state representation, such that:
+ * - `undefined` means uncontrolled component state.
+ * - `null` means controlled component state, but there is no selected value.
+ * - `ItemKey` means a single selected item state.
  */
-const buildSelectedItemDetailsMap = (
+export const selectionStateFromItemKey = (itemKey: undefined | null | ItemKey): undefined | Set<ItemKey> => {
+  if (typeof itemKey === 'undefined') { return undefined; }
+  
+  return typeof itemKey === 'string'
+    ? new Set([itemKey])
+    : new Set([]);
+};
+
+export const buildSelectedItemDetailsMap = (
   selected?: undefined | Set<string>,
   formatItemLabel?: undefined | ((itemKey: string) => string | undefined),
 ): Map<string, { label: string }> => {
   return selected
     ? new Map([...selected].map(k => [k, { label: formatItemLabel?.(k) ?? String(k) }]))
     : new Map();
-};
-
-// Helper hook 'useLazyRef' lazily initializes a ref value without re-running the initializer
-// on every render. Passing an expression directly to 'React.useRef()' (e.g. 'React.useRef(fn())')
-// would unnecessarily invoke 'fn' on each render, even though the ref value itself is preserved.
-// This helper ensures the initializer runs exactly once.
-const useLazyRef = <T,>(initializer: () => T) => {
-  const ref = React.useRef<null | T>(null);
-
-  if (ref.current === null) { ref.current = initializer(); }
-
-  return ref as React.RefObject<T>;
 };
 
 type UseMenuSelectHandlerOptions = {
@@ -380,7 +338,7 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
   // Consumers may or may not provide 'formatItemLabel', and an explicit 'label' on the
   // option can override the value returned by 'formatItemLabel'. This ref stores the
   // resolved label so the correct value can be passed to the menu anchor.
-  const selectedItemDetailsRef = useLazyRef<InternalItemDetails>(() => {
+  const selectedItemDetailsRef = useRefWithInitializer<InternalItemDetails>(() => {
     return buildSelectedItemDetailsMap(selected ?? defaultSelected, formatItemLabel);
   });
 
@@ -389,12 +347,9 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
       // In controlled mode, keep internal state in sync with the parent-controlled value
       const itemDetails = buildSelectedItemDetailsMap(selected, formatItemLabel);
       setInternalSelected(itemDetails);
-
-      if (formatItemLabel) {
-        selectedItemDetailsRef.current = itemDetails;
-      }
+      selectedItemDetailsRef.current = itemDetails;
     }
-  }, [isControlled, selected, formatItemLabel, selectedItemDetailsRef]);
+  }, [isControlled, selected, formatItemLabel]);
 
   const handleInternalSelect = React.useCallback((selectedItemDetails: InternalItemDetails) => {
     // NOTE: Important - the label from 'MenuProvider.Option' is captured here so it can
@@ -424,7 +379,6 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
     setIsOpen,
     previousActiveElementRef,
     isControlled,
-    selectedItemDetailsRef,
     canCloseMenu,
   ]);
 
@@ -498,7 +452,7 @@ export const useMenuToggle = (options: UseMenuToggleOptions) => {
  * Provider for a menu overlay that is triggered by (and positioned relative to) some anchor element.
  * ---------------------------------------------------------------------------------------------------------------------
  */
-type AnchorRenderArgs = BaseAnchorRenderArgs & {
+export type AnchorRenderArgs = BaseAnchorRenderArgs & {
   selectedOptions: Map<ListBoxMulti.ItemKey, ListBoxMulti.ItemDetails>,
 };
 export type MenuMultiProviderProps = Omit<ListBoxMultiProps, 'ref' | 'children' | 'label' | 'size'> & {
@@ -608,7 +562,6 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
   useMenuOpenControl({ setIsOpen, open });
   const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, listBoxRef });
   const { handleToggle } = useMenuToggle({ listBoxRef, action, toggleCauseRef, previousActiveElementRef });
-  const { listBoxFocusRef } = useMenuListBoxFocus({ setIsOpen });
   const { internalSelected, selectedItemDetailsRef, handleInternalSelect } = useMenuSelect({
     previousActiveElementRef,
     setIsOpen,
@@ -651,7 +604,6 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
 
   const mergedListBoxRef = mergeRefs<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>(
     listBoxRef,
-    listBoxFocusRef,
     refs.setFloating,
     floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>,
   );

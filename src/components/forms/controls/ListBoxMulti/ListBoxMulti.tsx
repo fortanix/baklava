@@ -450,11 +450,6 @@ export const ListBoxMulti = Object.assign(
       if (typeof selected !== 'undefined') {
         const state = listBox.store.getState();
         state.setSelectedItems(selected);
-
-        const firstItemKey = selected.values().next().value;
-        if (typeof firstItemKey !== 'undefined') {
-          state.focusItem(firstItemKey);
-        }
       }
     }, [selectedSerialized, listBox.store]);
 

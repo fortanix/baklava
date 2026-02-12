@@ -42,7 +42,18 @@
     "rules": {
       "recommended": true,
       "correctness": {
-        //"useExhaustiveDependencies": "off",
+        "useExhaustiveDependencies": {
+          "level": "error",
+          "options": {
+            "hooks": [
+              // `useRefWithInitializer` is guaranteed to return a stable result (same value throughout the component lifecycle)
+              {
+                "name": "useRefWithInitializer",
+                "stableResult": true
+              }
+            ]
+          }
+        },
         "useImportExtensions": "error",
         "noUnusedVariables": "off",
         "noUnusedFunctionParameters": "off",

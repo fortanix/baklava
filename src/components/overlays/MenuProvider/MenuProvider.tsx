@@ -15,12 +15,12 @@ import {
 import * as ListBox from '../../forms/controls/ListBox/ListBox.tsx';
 import {
   BaseAnchorRenderArgs,
+  selectionStateFromItemKey,
   MenuProviderRef,
   useFloatingMenu,
   useMenuAnchor,
   useMenuImperativeRef,
   useMenuKeyboardNavigation,
-  useMenuListBoxFocus,
   useMenuOpenControl,
   useMenuSelect,
   useMenuToggle,
@@ -40,7 +40,7 @@ export { cl as MenuProviderClassNames };
  * Provider for a menu overlay that is triggered by (and positioned relative to) some anchor element.
  * ---------------------------------------------------------------------------------------------------------------------
  */
-type AnchorRenderArgs = BaseAnchorRenderArgs & {
+export type AnchorRenderArgs = BaseAnchorRenderArgs & {
   selectedOption: null | ListBox.ItemDetails,
 };
 export type MenuProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' | 'size'> & {
@@ -127,14 +127,8 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
   const listBoxRef = React.useRef<React.ComponentRef<typeof ListBox.ListBox>>(null);
   const listBoxId = React.useId();
   const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
-  const selectedSet = React.useMemo(
-    () => (selected != null ? new Set([selected]) : undefined),
-    [selected],
-  );
-  const defaultSelectedSet = React.useMemo(
-    () => (defaultSelected != null ? new Set([defaultSelected]) : undefined),
-    [defaultSelected],
-  ); 
+  const selectedSet = React.useMemo(() => selectionStateFromItemKey(selected), [selected]);
+  const defaultSelectedSet = React.useMemo(() => selectionStateFromItemKey(defaultSelected), [defaultSelected]); 
   const {
     isMounted,
     isOpen,
@@ -157,7 +151,6 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
   useMenuOpenControl({ setIsOpen, open });
   const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, listBoxRef });
   const { handleToggle } = useMenuToggle({ listBoxRef, action, toggleCauseRef, previousActiveElementRef });
-  const { listBoxFocusRef } = useMenuListBoxFocus({ setIsOpen });
   const { internalSelected, selectedItemDetailsRef, handleInternalSelect } = useMenuSelect({
     previousActiveElementRef,
     setIsOpen,
@@ -205,7 +198,6 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
 
   const mergedListBoxRef = mergeRefs<React.ComponentRef<typeof ListBox.ListBox>>(
     listBoxRef,
-    listBoxFocusRef,
     refs.setFloating,
     floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBox.ListBox>>,
   );

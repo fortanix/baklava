@@ -104,7 +104,7 @@ const fields: Fields = {
     operators: ['$eq', '$ne', '$lt', '$lte', '$gt', '$gte'],
     label: 'Days active',
     placeholder: 'Number of days active',
-    accessor: (item: unknown) => differenceInDays(new Date(), (item as User).joinDate),
+    accessor: (item: unknown) => differenceInDays(new Date('2026-01-01'), (item as User).joinDate),
   },
 };
 
