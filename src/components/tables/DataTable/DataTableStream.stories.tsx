@@ -16,7 +16,12 @@ import { Button } from '../../actions/Button/Button.tsx';
 import { Panel } from '../../containers/Panel/Panel.tsx';
 import { PageLayout } from '../../../layouts/PageLayout/PageLayout.tsx';
 import * as DataTableStream from './DataTableStream.tsx';
-import { useRowSelectColumn, useRowSelectColumnRadio } from './plugins/useRowSelectColumn.tsx';
+import {
+  useRowSelectColumn,
+  useRowSelectColumnRadio,
+  useRowSelectColumnRadioColumnRefernce,
+  useRowSelectColumnRadioDeprecated,
+} from './plugins/useRowSelectColumn.tsx';
 
 
 export default {
@@ -54,8 +59,10 @@ type DataTableStreamTemplateProps = DataTableStream.TableProviderStreamProps<Use
   items: Array<User>,
   endOfStream: boolean,
   dataTableProps: React.ComponentProps<typeof DataTableStream.DataTableStream>,
+  renderTableActions?: undefined | ((ctx: { refetch: () => void }) => React.ReactNode),
 };
-const DataTableStreamTemplate = ({ dataTableProps, children, ...props }: DataTableStreamTemplateProps) => {
+
+const DataTableStreamTemplate = ({ dataTableProps, children, renderTableActions, ...props }: DataTableStreamTemplateProps) => {
   const columns = React.useMemo(() => props.columns, [props.columns]);
   const items = React.useMemo(() => props.items, [props.items]);
   const delayQuery = props.delay ?? null;
@@ -64,10 +71,10 @@ const DataTableStreamTemplate = ({ dataTableProps, children, ...props }: DataTab
 
   const query: DataTableStream.DataTableQuery<User, UserPageState | null> = React.useCallback(
     async ({ previousItem, previousPageState, limit, orderings, globalFilter }) => {
-      if (delayQuery === Number.POSITIVE_INFINITY) return new Promise(() => {}); // Infinite delay
-      if (delayQuery === -1) throw new Error('Failed'); // Simulate failure
+      if (delayQuery === Number.POSITIVE_INFINITY) { return new Promise(() => {}); } // Infinite delay
+      if (delayQuery === -1) { throw new Error('Failed'); } // Simulate failure
 
-      if (delayQuery) await delay(delayQuery);
+      if (delayQuery) { await delay(delayQuery); }
       
       let offset = 0;
 
@@ -78,10 +85,10 @@ const DataTableStreamTemplate = ({ dataTableProps, children, ...props }: DataTab
 
       const filteredItems = items
         .filter((row) => {
-          if (!globalFilter || globalFilter.trim() === '') return true;
+          if (!globalFilter || globalFilter.trim() === '') { return true; }
 
           const columnsFilterable = columns.filter((column) => !column.disableGlobalFilter);
-          if (!columnsFilterable.length) return false;
+          if (!columnsFilterable.length) { return false; }
 
           return columnsFilterable.some((column) => {
             const cell = typeof column.accessor === 'function'
@@ -91,7 +98,7 @@ const DataTableStreamTemplate = ({ dataTableProps, children, ...props }: DataTab
           });
         })
         .sort((a, b) => {
-          if (!orderings[0]) return 0;
+          if (!orderings[0]) { return 0; }
           const { column, direction } = orderings[0];
           const factor = direction === 'DESC' ? -1 : 1;
 
@@ -120,6 +127,9 @@ const DataTableStreamTemplate = ({ dataTableProps, children, ...props }: DataTab
       initialState={{ sortBy: [{ id: 'name', desc: false }] }}
     >
       {children}
+      {renderTableActions?.({
+        refetch: () => setItemsProcessed(prev => [...prev]),
+      })}
       <DataTableStream.Search />
       <DataTableStream.DataTableStream
         placeholderEmpty={
@@ -482,6 +492,57 @@ export const WithScrollAndStickyNameColumnWithRadioSelection: Story = {
     plugins: [useRowSelectColumnRadio]
   },
   render: (args: DataTableStreamTemplateProps) => <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
+  decorators: [Story => <Panel><Story/></Panel>],
+};
+
+export const WithPluginIssueOriginalRerenderExample: Story = {
+  args: {
+    columns: columnDefinitionsMultiple,
+    items: generateData({ numItems: 6 }),
+    stickyColumns: 'first',
+    plugins: [useRowSelectColumnRadioDeprecated],
+    renderTableActions: ({ refetch }) => (
+      <Button onPress={refetch}>
+        Force Re-render
+      </Button>
+    ),
+  },
+  render: (args: DataTableStreamTemplateProps) =>
+    <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
+  decorators: [Story => <Panel><Story/></Panel>],
+};
+
+export const WithPluginIssueResolvedUsingFlagInjection: Story = {
+  args: {
+    columns: columnDefinitionsMultiple,
+    items: generateData({ numItems: 6 }),
+    stickyColumns: 'first',
+    plugins: [useRowSelectColumnRadio],
+    renderTableActions: ({ refetch }) => (
+      <Button onPress={refetch}>
+        Force Re-render
+      </Button>
+    ),
+  },
+  render: (args: DataTableStreamTemplateProps) =>
+    <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
+  decorators: [Story => <Panel><Story/></Panel>],
+};
+
+export const WithPluginIssueResolvedUsingColumnReference: Story = {
+  args: {
+    columns: columnDefinitionsMultiple,
+    items: generateData({ numItems: 6 }),
+    stickyColumns: 'first',
+    plugins: [useRowSelectColumnRadioColumnRefernce],
+    renderTableActions: ({ refetch }) => (
+      <Button onPress={refetch}>
+        Force Re-render
+      </Button>
+    ),
+  },
+  render: (args: DataTableStreamTemplateProps) =>
+    <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
   decorators: [Story => <Panel><Story/></Panel>],
 };
 

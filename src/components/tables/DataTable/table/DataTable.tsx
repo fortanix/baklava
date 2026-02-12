@@ -19,6 +19,7 @@ import type { DataTableStatus } from '../DataTableContext.tsx';
 
 import cl from './DataTable.module.scss';
 
+
 const getFlexValueFromColumn = <D extends object>(col: ReactTable.ColumnInstance<D>) => {
   return (col?.bkColumnWidth?.flex ?? 1); // defaults to 1
 };
