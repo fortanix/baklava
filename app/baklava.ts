@@ -50,6 +50,7 @@ export { Input } from '../src/components/forms/controls/Input/Input.tsx';
 export { InputSearch } from '../src/components/forms/controls/Input/InputSearch.tsx';
 export { InputSensitive } from '../src/components/forms/controls/Input/InputSensitive.tsx';
 export { InputPassword } from '../src/components/forms/controls/Input/InputPassword.tsx';
+export { InputFile } from '../src/components/forms/controls/InputFile/InputFile.tsx';
 export { TextArea } from '../src/components/forms/controls/TextArea/TextArea.tsx';
 export { DatePicker } from '../src/components/forms/controls/datetime/DatePicker/DatePicker.tsx';
 export {

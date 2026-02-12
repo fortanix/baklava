@@ -112,6 +112,7 @@ const preview = {
                   'InputSensitive',
                   'InputPassword',
                 ],
+                'InputFile',
                 'TextArea',
                 'ListBox',
                 'ListBoxLazy',
