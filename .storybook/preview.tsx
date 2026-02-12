@@ -94,6 +94,7 @@ const preview = {
               [
                 'Label',
                 'FieldSet',
+                'FileInfo',
               ],
               'controls',
               [

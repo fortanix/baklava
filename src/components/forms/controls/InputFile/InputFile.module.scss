@@ -6,6 +6,6 @@
 
 @layer baklava.components {
   .bk-input-file {
-    @include bk.component-base(bk-inputfile);
+    @include bk.component-base(bk-input-file);
   }
 }

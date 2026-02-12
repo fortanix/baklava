@@ -37,6 +37,7 @@ export { SubmitButton } from '../src/components/forms/context/SubmitButton/Submi
 // Forms > Common
 export { Label } from '../src/components/forms/common/Label/Label.tsx';
 export { FieldSet } from '../src/components/forms/common/FieldSet/FieldSet.tsx';
+export { FileInfo } from '../src/components/forms/common/FileInfo/FileInfo.tsx';
 
 // Forms > Controls
 export { Checkbox } from '../src/components/forms/controls/Checkbox/Checkbox.tsx';

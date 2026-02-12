@@ -6,7 +6,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import * as React from 'react';
 
-import { InputFile, readFile } from './InputFile';
+import { InputFile, readFile } from './InputFile.tsx';
+
+import { FileInfo } from '../../common/FileInfo/FileInfo.tsx';
 
 
 type InputFileArgs = React.ComponentProps<typeof InputFile>;
@@ -52,7 +54,14 @@ export const InputFileStandard: Story = {
               handleFiles,
             }}
           />
-          <p>File name: {fileName}<br/>File size: {fileSize}</p>
+          <FileInfo
+            fileName={fileName}
+            fileSize={fileSize}
+            onDelete={() => {
+              setFileName('');
+              setFileSize(0);
+            }}
+          />
         </>
       );
     },
