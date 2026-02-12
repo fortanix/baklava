@@ -26,6 +26,10 @@ jobs:
           # Note: npm expects a top-level folder, we cannot have the files immediately as items in the `tar.gz`
           mkdir -p package
           cp -r dist/ src/ app/ package.json README.md LICENSE package/
+          # Update the package.json version to match the release tag name
+          sed -i.bak "s/\"version\": \".*\"/\"version\": \"${{ github.ref_name }}\"/" package/package.json
+          sed -i.bak "s/\"version\": \"v\(.*\)\"/\"version\": \"\1\"/" package/package.json # Remove prefix "v"
+          rm package/package.json.bak
           tar -czf package.tar.gz package/
         
       - name: Upload build files to release
