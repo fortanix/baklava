@@ -136,6 +136,8 @@ export const InputFile = ({
   
   const renderFileInputWithDragAndDrop = () => {
     return (
+      // biome-ignore lint/a11y/noStaticElementInteractions: keyboard users can use the button to upload
+      // biome-ignore lint/a11y/useKeyWithClickEvents: you can activate it with keyboard navigation without issues
       <div
         className={cx({
           [cl['bk-input-file__drag-target']]: true,
