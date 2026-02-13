@@ -30,14 +30,16 @@ export default {
       const [fileName, setFileName] = React.useState('');
       const [fileSize, setFileSize] = React.useState(0);
       const handleFiles = (files: FileList) => {
-        readFile(files?.[0], (result, file, error) => {
-          if (!result || typeof result !== 'string' || error) {
-            console.error('Failed to parse file');
-            return;
-          }
-          setFileName(file.name);
-          setFileSize(file.size);
-        });
+        if (files && files[0]) {
+          readFile(files[0], (result, file, error) => {
+            if (!result || typeof result !== 'string' || error) {
+              console.error('Failed to parse file');
+              return;
+            }
+            setFileName(file.name);
+            setFileSize(file.size);
+          });
+        }
       };
       
       return (
