@@ -7,5 +7,25 @@
 @layer baklava.components {
   .bk-input-file {
     @include bk.component-base(bk-input-file);
+    
+    .bk-input-file__drag-target {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-width: 20rem; // TODO: temp sizes, double check with UX team
+      min-height: 9rem; // TODO: temp sizes, double check with UX team
+      border: bk.$size-2 dashed bk.$theme-button-tertiary-text-default; // TODO: Replace for it's own color token
+      background-color: bk.$theme-card-background-default; // TODO: Replace for it's own color token
+    }
+    
+    .bk-input-file__drag-target--is-dragging {
+      opacity: 0.6;
+    }
+    
+    .bk-input-file__drag-target__button {
+      position: relative;
+      bottom: calc(-1 * bk.$size-hairline);
+      padding: 0 bk.$spacing-1;
+    }
   }
 }

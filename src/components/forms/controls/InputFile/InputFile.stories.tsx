@@ -25,13 +25,7 @@ export default {
   args: {
   },
   decorators: [
-    Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
-  ],
-  render: (args) => <InputFile {...args}/>,
-} satisfies Meta<InputFileArgs>;
-
-export const InputFileStandard: Story = {
-  decorators: [
+    // a simple decorator to be able to see the component see file properties after file selection
     (Story, context) => {
       const [fileName, setFileName] = React.useState('');
       const [fileSize, setFileSize] = React.useState(0);
@@ -66,4 +60,19 @@ export const InputFileStandard: Story = {
       );
     },
   ],
+  render: (args) => <InputFile {...args}/>,
+} satisfies Meta<InputFileArgs>;
+
+export const InputFileStandard: Story = {};
+
+export const InputFileWithDrag: Story = {
+  args: {
+    dragAndDrop: true,
+  },
+};
+
+export const InputFileAcceptTxtOnly: Story = {
+  args: {
+    accept: '.txt',
+  },
 };

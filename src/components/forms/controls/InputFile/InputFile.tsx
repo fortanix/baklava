@@ -5,6 +5,8 @@
 import * as React from 'react';
 import { classNames as cx } from '../../../../util/componentUtil.ts';
 
+import { Button } from '../../../actions/Button/Button.tsx';
+
 import cl from './InputFile.module.scss';
 
 
@@ -51,8 +53,13 @@ export type InputFileProps = React.ComponentPropsWithoutRef<'div'> & {
   /** A function to pass the files to be handled after selection. */
   handleFiles?: undefined | ((files: FileList) => void),
   
-  /** Specify which file extensions are selectable. */
+  /**
+   * Comma separated file extension (e.g. `.txt`), mime type (`application/pdf`) or media (`image/*`, `audio/*` or
+   * `video/*`) that are allowed to be selected.
+   * */
   accept?: undefined | HTMLInputElement['accept'],
+  
+  multiple?: undefined | HTMLInputElement['multiple'],
 };
 export const InputFile = ({
   className,
@@ -62,6 +69,7 @@ export const InputFile = ({
   dragAndDrop = false,
   handleFiles = () => {},
   accept,
+  multiple,
 }: InputFileProps) => {
   const dragCounter = React.useRef(0);
   const fileInput = React.useRef<HTMLInputElement>(null);
@@ -118,17 +126,37 @@ export const InputFile = ({
   };
   
   const renderFileUploadButton = () => (
-    <a
+    <Button
       className={cx(className, 'bk-input-file__btn--no-drag')}
       onClick={onFileUploadClick}
     >
       upload
-    </a>
+    </Button>
   );
   
   const renderFileInputWithDragAndDrop = () => {
     return (
-      <>TODO</>
+      <div
+        className={cx({
+          [cl['bk-input-file__drag-target']]: true,
+          [cl['bk-input-file__drag-target--is-dragging']]: isDragging,
+          className,
+        })}
+        onClick={onFileUploadClick}
+        onDragEnter={onDragIn}
+        onDragLeave={onDragOut}
+        onDragOver={onDrag}
+        onDrop={onDrop}
+      >
+        <span>Drag a file or </span>
+        <Button
+          className={cl['bk-input-file__drag-target__button']}
+          onPress={evt => { evt.preventDefault(); }}
+        >
+          browse
+        </Button>
+        <span> to upload</span>
+      </div>
     );
   };
   
@@ -149,6 +177,7 @@ export const InputFile = ({
         hidden
         className={cx(cl['bk-input-file__input'], inputProps?.className)}
         {...accept && { accept }}
+        {...multiple && { multiple }}
       />
       {dragAndDrop ? renderFileInputWithDragAndDrop() : renderFileUploadButton()}
     </div>

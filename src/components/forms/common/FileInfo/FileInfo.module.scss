@@ -17,7 +17,7 @@
     }
     
     .bk-file-info__delete-icon {
-      color: bk.$theme-button-tertiary-text-default;
+      color: bk.$theme-button-tertiary-text-default; // TODO: Replace for it's own token
       font-size: bk.$font-size-xs;
     }
   }
