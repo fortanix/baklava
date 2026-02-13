@@ -14,7 +14,7 @@ export { cl as InputFileClassNames };
 
 export const readFile = (
   file: File,
-  handleFile: (result: string | ArrayBuffer | null, file: File, error?: Error) => void,
+  handleFile: (result: string | ArrayBuffer | null, file: File, error?: undefined | unknown) => void,
   readAsArrayBuffer?: boolean,
   encoding = 'UTF-8',
 ) => {
@@ -31,7 +31,7 @@ export const readFile = (
       result = fileReader.result;
       handleFile(result, file);
     };
-  } catch (e) {
+  } catch (e: unknown) {
     console.error(e);
     handleFile(result, file, e);
   }
@@ -153,7 +153,7 @@ export const InputFile = ({
         <span>Drag a file or </span>
         <Button
           className={cl['bk-input-file__drag-target__button']}
-          onPress={evt => { evt.preventDefault(); }}
+          onClick={evt => { evt.preventDefault(); }}
         >
           browse
         </Button>
