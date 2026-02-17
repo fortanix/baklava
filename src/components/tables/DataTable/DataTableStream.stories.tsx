@@ -19,8 +19,6 @@ import * as DataTableStream from './DataTableStream.tsx';
 import {
   useRowSelectColumn,
   useRowSelectColumnRadio,
-  useRowSelectColumnRadioColumnRefernce,
-  useRowSelectColumnRadioDeprecated,
 } from './plugins/useRowSelectColumn.tsx';
 
 
@@ -495,46 +493,12 @@ export const WithScrollAndStickyNameColumnWithRadioSelection: Story = {
   decorators: [Story => <Panel><Story/></Panel>],
 };
 
-export const WithPluginIssueOriginalRerenderExample: Story = {
-  args: {
-    columns: columnDefinitionsMultiple,
-    items: generateData({ numItems: 6 }),
-    stickyColumns: 'first',
-    plugins: [useRowSelectColumnRadioDeprecated],
-    renderTableActions: ({ refetch }) => (
-      <Button onPress={refetch}>
-        Force Re-render
-      </Button>
-    ),
-  },
-  render: (args: DataTableStreamTemplateProps) =>
-    <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
-  decorators: [Story => <Panel><Story/></Panel>],
-};
-
 export const WithPluginIssueResolvedUsingFlagInjection: Story = {
   args: {
     columns: columnDefinitionsMultiple,
     items: generateData({ numItems: 6 }),
     stickyColumns: 'first',
     plugins: [useRowSelectColumnRadio],
-    renderTableActions: ({ refetch }) => (
-      <Button onPress={refetch}>
-        Force Re-render
-      </Button>
-    ),
-  },
-  render: (args: DataTableStreamTemplateProps) =>
-    <ScrollWrapper><DataTableStreamTemplate {...args} /></ScrollWrapper>,
-  decorators: [Story => <Panel><Story/></Panel>],
-};
-
-export const WithPluginIssueResolvedUsingColumnReference: Story = {
-  args: {
-    columns: columnDefinitionsMultiple,
-    items: generateData({ numItems: 6 }),
-    stickyColumns: 'first',
-    plugins: [useRowSelectColumnRadioColumnRefernce],
     renderTableActions: ({ refetch }) => (
       <Button onPress={refetch}>
         Force Re-render
