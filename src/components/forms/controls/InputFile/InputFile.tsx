@@ -150,14 +150,13 @@ export const InputFile = ({
         onDragOver={onDrag}
         onDrop={onDrop}
       >
-        <span>Drag a file or </span>
+        <span>Drag &amp; drop {multiple ? 'files' : 'a file'} or </span>
         <Button
           className={cl['bk-input-file__drag-target__button']}
           onClick={evt => { evt.preventDefault(); }}
         >
           browse
         </Button>
-        <span> to upload</span>
       </div>
     );
   };

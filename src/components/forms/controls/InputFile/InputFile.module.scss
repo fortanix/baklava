@@ -12,10 +12,9 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-inline-size: 20rem; // TODO: temp sizes, double check with UX team
-      min-block-size: 9rem; // TODO: temp sizes, double check with UX team
-      border: bk.$size-2 dashed bk.$theme-button-tertiary-text-default; // TODO: Replace for it's own color token
-      background-color: bk.$theme-card-background-default; // TODO: Replace for it's own color token
+      padding: bk.$spacing-9;
+      // TODO: Color provided by UX team has no token and doesn't match any colors_primitive.scss variable
+      border: bk.$size-2 dashed #785EA7;
     }
     
     .bk-input-file__drag-target--is-dragging {
