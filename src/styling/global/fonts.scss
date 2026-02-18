@@ -30,7 +30,7 @@
     font-style: normal;
     font-weight: 400;
     src: local(''), url('@/assets/fonts/open-sans/open-sans-v23-latin-regular.woff2') format('woff2');
-    font-display: block;
+    font-display: swap;
   }
   /* open-sans-600 - latin */
   @font-face {
@@ -38,7 +38,7 @@
     font-style: normal;
     font-weight: 600;
     src: local(''), url('@/assets/fonts/open-sans/open-sans-v23-latin-600.woff2') format('woff2');
-    font-display: block;
+    font-display: swap;
   }
   /* open-sans-700 - latin */
   @font-face {
@@ -46,7 +46,7 @@
     font-style: normal;
     font-weight: 700;
     src: local(''), url('@/assets/fonts/open-sans/open-sans-v23-latin-700.woff2') format('woff2');
-    font-display: block;
+    font-display: swap;
   }
   
   
@@ -61,7 +61,7 @@
     font-style: normal;
     font-weight: 100;
     src: local(''), url('@/assets/fonts/montserrat/montserrat-v25-latin_latin-ext-100.woff2') format('woff2');
-    font-display: block;
+    font-display: swap;
   }
   
   /* montserrat-200 - latin_latin-ext */
@@ -70,7 +70,7 @@
     font-style: normal;
     font-weight: 200;
     src: local(''), url('@/assets/fonts/montserrat/montserrat-v25-latin_latin-ext-200.woff2') format('woff2');
-    font-display: block;
+    font-display: swap;
   }
   
   /* montserrat-300 - latin_latin-ext */
@@ -79,7 +79,7 @@
     font-style: normal;
     font-weight: 300;
     src: local(''), url('@/assets/fonts/montserrat/montserrat-v25-latin_latin-ext-300.woff2') format('woff2');
-    font-display: block;
+    font-display: swap;
   }
   
   /* montserrat-regular - latin_latin-ext */
@@ -88,7 +88,7 @@
     font-style: normal;
     font-weight: 400;
     src: local(''), url('@/assets/fonts/montserrat/montserrat-v25-latin_latin-ext-regular.woff2') format('woff2');
-    font-display: block;
+    font-display: swap;
   }
   
   /* montserrat-500 - latin_latin-ext */
@@ -97,7 +97,7 @@
     font-style: normal;
     font-weight: 500;
     src: local(''), url('@/assets/fonts/montserrat/montserrat-v25-latin_latin-ext-500.woff2') format('woff2');
-    font-display: block;
+    font-display: swap;
   }
   
   /* montserrat-600 - latin_latin-ext */
@@ -106,7 +106,7 @@
     font-style: normal;
     font-weight: 600;
     src: local(''), url('@/assets/fonts/montserrat/montserrat-v25-latin_latin-ext-600.woff2') format('woff2');
-    font-display: block;
+    font-display: swap;
   }
   
   /* montserrat-700 - latin_latin-ext */
@@ -115,7 +115,7 @@
     font-style: normal;
     font-weight: 700;
     src: local(''), url('@/assets/fonts/montserrat/montserrat-v25-latin_latin-ext-700.woff2') format('woff2');
-    font-display: block;
+    font-display: swap;
   }
   
   
@@ -130,7 +130,7 @@
     font-style: normal;
     font-weight: 400;
     src: local(''), url('@/assets/fonts/source-code-pro/source-code-pro-v14-latin-regular.woff2') format('woff2');
-    font-display: block;
+    font-display: swap;
   }
   
   :root {
