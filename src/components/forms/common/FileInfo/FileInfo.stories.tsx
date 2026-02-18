@@ -20,24 +20,32 @@ export default {
   tags: ['autodocs'],
   argTypes: {
   },
-  args: {
-    fileName: 'hello-world.txt',
-  },
+  args: {},
   decorators: [
   ],
   render: (args) => <FileInfo {...args}/>,
 } satisfies Meta<FileInfoArgs>;
 
-export const FileInfoStandard: Story = {};
+export const FileInfoStandard: Story = {
+  args: {
+    fileName: 'hello-world.txt',
+  },
+};
 
 export const FileInfoWithSize: Story = {
   args: {
+    fileName: 'hello-world.txt',
     fileSize: 123456,
   },
 };
 
 export const FileInfoWithDeleteButton: Story = {
   args: {
+    fileName: 'hello-world.txt',
     onDelete: () => {},
   },
+};
+
+export const FileInfoWithNoArgsDisplayNothing: Story = {
+  args: {},
 };
