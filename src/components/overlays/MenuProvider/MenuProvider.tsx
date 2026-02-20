@@ -218,8 +218,8 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
       {anchor}
       {isMounted && (
         <ListBox.ListBox
-          {...floatingProps}
           {...propsRest}
+          {...floatingProps} // Merge order matters: `floatingProps` overrides any conflicting keys in `propsRest`.
           ref={mergedListBoxRef}
           size={menuSize}
           label={label}
