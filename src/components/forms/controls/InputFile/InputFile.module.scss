@@ -10,6 +10,7 @@
     
     .bk-input-file__drag-target {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       padding: bk.$spacing-9;
@@ -19,6 +20,16 @@
     
     .bk-input-file__drag-target--is-dragging {
       opacity: 0.6;
+    }
+    
+    .bk-input-file__drag-target__inner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .bk-input-file__drag-target__accepted-files {
+      font-size: bk.$font-size-s;
     }
     
     .bk-input-file__drag-target__button {
