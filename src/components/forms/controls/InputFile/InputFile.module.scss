@@ -1,0 +1,41 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-input-file {
+    @include bk.component-base(bk-input-file);
+    
+    .bk-input-file__drag-target {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: bk.$spacing-9;
+      // TODO: Color provided by UX team has no token and doesn't match any colors_primitive.scss variable
+      border: bk.$size-2 dashed #785EA7;
+    }
+    
+    .bk-input-file__drag-target--is-dragging {
+      opacity: 0.6;
+    }
+    
+    .bk-input-file__drag-target__inner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .bk-input-file__drag-target__accepted-files {
+      font-size: bk.$font-size-s;
+    }
+    
+    .bk-input-file__drag-target__button {
+      position: relative;
+      inset-block-end: calc(-1 * bk.$size-hairline);
+      padding: 0 bk.$spacing-1;
+    }
+  }
+}

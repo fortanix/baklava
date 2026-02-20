@@ -1,0 +1,24 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-file-info {
+    @include bk.component-base(bk-file-info);
+    
+    display: flex;
+    flex-direction: row;
+    gap: bk.$spacing-2;
+  
+    .bk-file-info__name {
+      @include bk.font($family: bk.$font-family-display, $weight: bk.$font-weight-semibold);
+    }
+    
+    .bk-file-info__delete-icon {
+      color: bk.$theme-button-tertiary-text-default; // TODO: Replace for it's own token
+      font-size: bk.$font-size-xs;
+    }
+  }
+}
