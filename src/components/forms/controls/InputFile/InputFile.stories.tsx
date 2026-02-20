@@ -78,3 +78,39 @@ export const InputFileAcceptTxtOnly: Story = {
     accept: '.txt',
   },
 };
+
+export const InputFileWithDragAcceptPdfOnly: Story = {
+  args: {
+    accept: '.pdf',
+    dragAndDrop: true,
+  },
+};
+
+export const InputFileWithDragAcceptJpgAndPng: Story = {
+  args: {
+    accept: '.jpg,.png',
+    dragAndDrop: true,
+  },
+};
+
+export const InputFileWithDragAcceptImageFormats: Story = {
+  args: {
+    accept: 'image/*',
+    dragAndDrop: true,
+  },
+};
+
+export const InputFileWithDragAcceptMimeTypePdf: Story = {
+  args: {
+    accept: 'application/pdf',
+    dragAndDrop: true,
+  },
+};
+
+export const InputFileWithDragAcceptImageFormatsWithFormatsHidden: Story = {
+  args: {
+    accept: 'image/*',
+    acceptVisible: false,
+    dragAndDrop: true,
+  },
+};
