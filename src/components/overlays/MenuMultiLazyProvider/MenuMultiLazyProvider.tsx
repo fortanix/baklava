@@ -207,8 +207,8 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
       {anchor}
       {isMounted && (
         <ListBoxMultiLazy.ListBoxMultiLazy
-          {...floatingProps}
           {...propsRest}
+          {...floatingProps} // Merge order matters: `floatingProps` overrides any conflicting keys in `propsRest`.
           ref={mergedListBoxRef}
           size={menuSize}
           label={label}
