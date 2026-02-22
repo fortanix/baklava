@@ -12,6 +12,7 @@
 
 // Custom `react-datepicker` styles
 
+@layer reset.lib {
 :global(.react-datepicker__sr-only) {
   position: absolute;
   inline-size: 1px;
@@ -242,4 +243,5 @@ $navigation-distance: 1.2rem;
 
 :global(.react-datepicker__view-calendar-icon input) {
   padding: bk.rem-from-px(6) bk.rem-from-px(10) 0 bk.rem-from-px(25);
+}
 }

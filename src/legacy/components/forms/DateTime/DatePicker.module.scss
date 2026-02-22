@@ -1,0 +1,33 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/util/z-index.scss' as z;
+@use '../../../../styling/lib/react-datepicker.scss';
+
+@layer baklava.legacy {
+  :global(.react-datepicker-popper) {
+    z-index: z.$z-index--date-picker;
+  }
+  
+  .bkl-date-picker {
+    inline-size: 8.6rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
+    .bkl-date-picker__date {
+      text-align: end;
+    }
+    
+    .bkl-date-picker__calendar-icon {
+      position: absolute;
+      inset-inline-start: 0.1rem;
+      inset-block-start: 0.4rem;
+      z-index: 1;
+      margin: 0.7rem;
+      inline-size: 0.9rem;
+      color: var(--bkl-calendar-icon-color);
+    }
+  }
+}

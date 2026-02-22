@@ -12,7 +12,7 @@ import { Select } from '../Select/Select.tsx';
 import { DatePicker } from './DatePicker.tsx';
 import ReactDatePicker from 'react-datepicker';
 
-import './DateTimePicker.scss';
+import cl from './DateTimePicker.module.scss';
 
 
 // Time
@@ -71,7 +71,7 @@ const TimeInput = ({ time, updateTime }: TimeInputProps) => {
   return (
     <Input
       type="text"
-      className="bkl-date-time-picker__time"
+      className={cx(cl['bkl-date-time-picker__time'])}
       placeholder="hh:mm"
       value={timeBuffer}
       onChange={evt => {
@@ -120,7 +120,7 @@ const MeridiemPicker = ({ meridiem, updateMeridiem, dropdownReference }: Meridie
   
   return (
     <Select
-      className="bkl-date-time-picker__meridiem"
+      className={cx(cl['bkl-date-time-picker__meridiem'])}
       options={meridiemOptions}
       value={meridiem}
       dropdownReference={dropdownReference}
@@ -187,7 +187,7 @@ export const DateTimePicker = (props: DateTimePickerProps) => {
   };
   
   return (
-    <div {...propsRest} className={cx('bkl bkl-date-time-picker', propsRest.className)}>
+    <div {...propsRest} className={cx('bkl', cl['bkl-date-time-picker'], propsRest.className)}>
       <DatePicker
         {...datePickerProps}
         date={dateTime}

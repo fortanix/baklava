@@ -8,10 +8,9 @@ import { classNames as cx, type ComponentProps } from '../../../util/component_u
 import { BaklavaIcon } from '../../icons/icon-pack-baklava/BaklavaIcon.tsx';
 
 import ReactDatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 
 import '../Input/Input.scss';
-import './DateTimePicker.scss';
+import cl from './DatePicker.module.scss';
 
 
 type DatePickerProps = Omit<ComponentProps<typeof ReactDatePicker>, 'onChange'> & {
@@ -29,8 +28,8 @@ export const DatePicker = (props: DatePickerProps) => {
   const { date, maxDate, minDate, onChange = () => {}, ...propsRest } = props;
   
   return (
-    <div className="bkl bkl-date-picker bkl-input">
-      <BaklavaIcon icon="calendar" className="bkl-input--calendar__icon"/>
+    <div className={cx('bkl', 'bkl-input', cl['bkl-date-picker'])}>
+      <BaklavaIcon icon="calendar" className={cx(cl['bkl-date-picker__calendar-icon'])}/>
       <ReactDatePicker
         dateFormat="MM/dd/yyyy"
         {...minDate ? { minDate } : {}} // Workaround for `exactOptionalPropertyTypes`
@@ -40,7 +39,7 @@ export const DatePicker = (props: DatePickerProps) => {
         onChange={onChange}
         {...propsRest}
         // Need to cast this to `string` because `ReactDatePicker` doesn't play well with `exactOptionalPropertyTypes`
-        className={cx('bkl-input__input bkl-date-picker__date', propsRest.className) as string}
+        className={cx('bkl-input__input', cl['bkl-date-picker__date'], propsRest.className) as string}
       />
     </div>
   );

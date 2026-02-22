@@ -1,0 +1,35 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../style/variables.scss' as bkl;
+@use '../../../style/mixins.scss' as mixins;
+@use '../../../style/util/z-index.scss' as z;
+
+@use './DatePicker.module.scss'; // Reuse `react-datepicker` styling
+
+@layer baklava.legacy {
+  .bkl-date-time-picker {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    
+    > * {
+      margin-inline-end: 0.4rem;
+    }
+    
+    .bkl-date-time-picker__time {
+      inline-size: 5.7rem;
+      text-align: center;
+      padding-block-end: 0;
+    }
+    
+    .bkl-date-time-picker__meridiem {
+      inline-size: 5rem;
+      text-align: center;
+      font-size: 1rem;
+      @include mixins.font($family: bkl.$font-family-body, $weight: bkl.$font-weight-regular);
+      display: block;
+    }
+  }
+}
