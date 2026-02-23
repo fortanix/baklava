@@ -6,7 +6,7 @@ import * as React from 'react';
 
 // Utils
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
-import { mergeCallbacks, mergeRefs, useRefWithInitializer } from '../../../util/reactUtil.ts';
+import { mergeCallbacks, mergeProps, mergeRefs, useRefWithInitializer } from '../../../util/reactUtil.ts';
 import {
   type UseFloatingElementOptions,
   UseFloatingElementResult,
@@ -597,10 +597,16 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
   const floatingProps = getFloatingProps({
     popover: 'manual',
     style: floatingStyles,
-    ...propsRest,
-    className: cx(cl['bk-menu-provider__list-box'], propsRest.className),
-    onKeyDown: mergeCallbacks([propsRest.onKeyDown, onMenuKeyDown]),
+    className: cx(cl['bk-menu-provider__list-box']),
   });
+
+  const mergedProps = mergeProps(
+    floatingProps,
+    propsRest,
+    {
+      onKeyDown: mergeCallbacks([propsRest.onKeyDown, onMenuKeyDown]),
+    },
+  );
 
   const mergedListBoxRef = mergeRefs<React.ComponentRef<typeof ListBoxMulti.ListBoxMulti>>(
     listBoxRef,
@@ -626,8 +632,7 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
       {anchor}
       {isMounted && (
         <ListBoxMulti.ListBoxMulti
-          {...propsRest}
-          {...floatingProps} // Merge order matters: `floatingProps` overrides any conflicting keys in `propsRest`.
+          {...mergedProps}
           ref={mergedListBoxRef}
           size={menuSize}
           label={label}
