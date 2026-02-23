@@ -14,7 +14,12 @@ import cl from './InputFile.module.scss';
 export { cl as InputFileClassNames };
 
 const handleWrongFileFormat = (fileName: string, fileType: string) => {
-  const friendlyFileType = fileType.replace('/*', '');
+  let friendlyFileType = fileType.replace('/*', '');
+  const fileTypeArray = fileType.split(',');
+  if (fileTypeArray.length > 1) {
+    const last = fileTypeArray.pop();
+    friendlyFileType = `${fileTypeArray.join(', ')} or ${last}`;
+  }
   notify.error(`The supplied file ${fileName} is not accepted, please provide a ${friendlyFileType} file.`);
 };
 
