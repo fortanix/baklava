@@ -6,11 +6,17 @@ import * as React from 'react';
 import { classNames as cx } from '../../../../util/componentUtil.ts';
 
 import { Button } from '../../../actions/Button/Button.tsx';
+import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 
 import cl from './InputFile.module.scss';
 
 
 export { cl as InputFileClassNames };
+
+const handleWrongFileFormat = (fileName: string, fileType: string) => {
+  const friendlyFileType = fileType.replace('/*', '');
+  notify.error(`The supplied file ${fileName} is not accepted, please provide a ${friendlyFileType} file.`);
+};
 
 export const readFile = (
   file: File,
@@ -129,6 +135,11 @@ export const InputFile = ({
     setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const validFiles = Array.from(e.dataTransfer.files).filter(file => isFileAccepted(file, accept));
+      
+      if (accept) {
+        const invalidFiles = Array.from(e.dataTransfer.files).filter(file => !isFileAccepted(file, accept));
+        invalidFiles.forEach(file => handleWrongFileFormat(file.name, accept));
+      }
 
       if (validFiles.length > 0) {
         handleFiles(validFiles as unknown as FileList);
@@ -148,6 +159,10 @@ export const InputFile = ({
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.currentTarget.files && event.currentTarget.files.length > 0) {
       const validFiles = Array.from(event.currentTarget.files).filter(file => isFileAccepted(file, accept));
+      if (accept) {
+        const invalidFiles = Array.from(event.currentTarget.files).filter(file => !isFileAccepted(file, accept));
+        invalidFiles.forEach(file => handleWrongFileFormat(file.name, accept));
+      }
       if (validFiles.length > 0) {
         handleFiles(validFiles as unknown as FileList);
       }
