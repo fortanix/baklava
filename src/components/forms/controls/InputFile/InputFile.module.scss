@@ -34,7 +34,7 @@
     
     .bk-input-file__drag-target__button {
       position: relative;
-      inset-block-end: calc(-1 * bk.$size-hairline);
+      inset-block-end: calc(-1 * bk.$size-2);
       padding: 0 bk.$spacing-1;
     }
   }
