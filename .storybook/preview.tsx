@@ -94,6 +94,7 @@ const preview = {
               [
                 'Label',
                 'FieldSet',
+                'FileInfo',
               ],
               'controls',
               [
@@ -112,6 +113,7 @@ const preview = {
                   'InputSensitive',
                   'InputPassword',
                 ],
+                'InputFile',
                 'TextArea',
                 'ListBox',
                 'ListBoxLazy',
