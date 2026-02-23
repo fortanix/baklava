@@ -67,9 +67,22 @@ export default {
 
 export const InputFileStandard: Story = {};
 
+export const InputFileUnstyled: Story = {
+  args: {
+    unstyled: true,
+  },
+};
+
 export const InputFileWithDrag: Story = {
   args: {
     dragAndDrop: true,
+  },
+};
+
+export const InputFileWithDragUnstyled: Story = {
+  args: {
+    dragAndDrop: true,
+    unstyled: true,
   },
 };
 

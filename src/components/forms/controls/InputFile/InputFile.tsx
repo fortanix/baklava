@@ -181,6 +181,7 @@ export const InputFile = ({
     <Button
       className={cx(className, 'bk-input-file__btn--no-drag')}
       onClick={onFileUploadClick}
+      unstyled={unstyled}
     >
       upload
     </Button>
@@ -210,6 +211,7 @@ export const InputFile = ({
           <Button
             className={cl['bk-input-file__drag-target__button']}
             onClick={evt => { evt.preventDefault(); }}
+            unstyled={unstyled}
           >
             browse
           </Button>
