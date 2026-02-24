@@ -9,17 +9,24 @@
     @include bk.component-base(bk-property-list);
     
     margin: 0;
-    display: flex;
-    flex-flow: row wrap;
+    display: grid;
+    grid-template-columns: repeat(var(--bk-property-columns, 1), minmax(0, 1fr));
     gap: bk.$spacing-4 bk.$spacing-8;
     
     .bk-property-list__property {
-      &.bk-property-list__property--full-width {
-        inline-size: -webkit-fill-available;
-      }
+      display: flex;
+      flex-direction: column;
+      gap: bk.$spacing-2;
       
       dt {
-        font-weight: bk.$font-weight-semibold;
+        font-weight: bk.$font-weight-regular;
+        font-size: bk.$font-size-s;
+        color: bk.$theme-text-small-text-subtle;
+      }
+      dd {
+        font-weight: bk.$font-weight-regular;
+        font-size: bk.$font-size-m;
+        color: bk.$theme-text-body-default;
       }
     }
   }
