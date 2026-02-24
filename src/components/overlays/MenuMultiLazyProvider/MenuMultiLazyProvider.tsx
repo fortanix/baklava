@@ -6,7 +6,7 @@ import * as React from 'react';
 
 // Utils
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
-import { mergeCallbacks, mergeRefs } from '../../../util/reactUtil.ts';
+import { mergeCallbacks, mergeProps, mergeRefs } from '../../../util/reactUtil.ts';
 import { type UseFloatingElementOptions } from '../../util/overlays/floating-ui/useFloatingElement.tsx';
 
 // Components
@@ -178,10 +178,16 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
   const floatingProps = getFloatingProps({
     popover: 'manual',
     style: floatingStyles,
-    ...propsRest,
-    className: cx(cl['bk-menu-provider__list-box'], propsRest.className),
-    onKeyDown: mergeCallbacks([propsRest.onKeyDown, onMenuKeyDown]),
+    className: cx(cl['bk-menu-provider__list-box']),
   });
+
+  const mergedProps = mergeProps(
+    floatingProps,
+    propsRest,
+    {
+      onKeyDown: mergeCallbacks([propsRest.onKeyDown, onMenuKeyDown]),
+    },
+  );
 
   const mergedListBoxRef = mergeRefs<React.ComponentRef<typeof ListBoxMultiLazy.ListBoxMultiLazy>>(
     listBoxRef,
@@ -207,8 +213,7 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
       {anchor}
       {isMounted && (
         <ListBoxMultiLazy.ListBoxMultiLazy
-          {...floatingProps}
-          {...propsRest}
+          {...mergedProps}
           ref={mergedListBoxRef}
           size={menuSize}
           label={label}
