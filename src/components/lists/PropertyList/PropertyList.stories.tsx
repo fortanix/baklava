@@ -8,7 +8,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { PropertyList } from './PropertyList.tsx';
 
-import { loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
+import { loremIpsumParagraph } from '../../../util/storybook/LoremIpsum.tsx';
+
 type PropertyListArgs = React.ComponentProps<typeof PropertyList>;
 type Story = StoryObj<typeof PropertyList>;
 
@@ -68,7 +69,7 @@ export const ThreeColumnsWithPropertySpanSupport: Story = {
     columns: 3,
     children: (
       <>
-      <PropertyList.Property
+        <PropertyList.Property
           fullWidth
           label="Full-width"
           value="Takes 100% width of row"
@@ -102,20 +103,17 @@ export const ThreeColumnsWithPropertySpanSupport: Story = {
           label="Key 5"
           value="Value 5"
         />
-        
-        
       </>
     ),
   },
 };
-
 
 export const ThreeColumnsWithLargePropertySpanSupport: Story = {
   args: {
     columns: 3,
     children: (
       <>
-      <PropertyList.Property
+        <PropertyList.Property
           fullWidth
           label="Full-width"
           value="Takes 100% width of row"
@@ -149,10 +147,27 @@ export const ThreeColumnsWithLargePropertySpanSupport: Story = {
           label="Key 5"
           value="Value 5"
         />
-        
         <PropertyList.Property
           label="View More"
-          value={loremIpsumSentence}
+          value={`${loremIpsumParagraph} ${loremIpsumParagraph}`}
+          span={2}
+          enableClamping
+          clampLines={3}
+        />
+      </>
+    ),
+  },
+};
+
+export const WithViewMore: Story = {
+  args: {
+    children: (
+      <>
+        <PropertyList.Property
+          label="View More"
+          value={`${loremIpsumParagraph} ${loremIpsumParagraph}`}
+          enableClamping
+          clampLines={3}
         />
       </>
     ),

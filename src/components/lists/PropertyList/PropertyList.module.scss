@@ -7,26 +7,36 @@
 @layer baklava.components {
   .bk-property-list {
     @include bk.component-base(bk-property-list);
-    
+
     margin: 0;
     display: grid;
     grid-template-columns: repeat(var(--bk-property-columns, 1), minmax(0, 1fr));
     gap: bk.$spacing-4 bk.$spacing-8;
-    
+
     .bk-property-list__property {
       display: flex;
       flex-direction: column;
       gap: bk.$spacing-2;
-      
+
+      .bk-property-list__property__view-more {
+        font-weight: bk.$font-weight-regular;
+        font-size: bk.$font-size-m;
+        color: bk.$theme-text-link-default;
+      }
+
       dt {
         font-weight: bk.$font-weight-regular;
         font-size: bk.$font-size-s;
         color: bk.$theme-text-small-text-subtle;
       }
+
       dd {
         font-weight: bk.$font-weight-regular;
         font-size: bk.$font-size-m;
         color: bk.$theme-text-body-default;
+        white-space: pre-line;
+        overflow-wrap: anywhere;
+        word-break: normal;
       }
     }
   }
