@@ -44,7 +44,7 @@ type PropertyProps = ComponentProps<'div'> & {
    * Number of visible lines before truncation occurs.
    *
    * Only effective when `enableClamping` is true.
-   * Defaults to 2.
+   * Defaults to 4.
    */
   clampLines?: number;
 };
@@ -57,7 +57,7 @@ export const Property = (props: PropertyProps) => {
     fullWidth = false,
     span,
     enableClamping = false,
-    clampLines = 2,
+    clampLines = 4,
     style,
     ...propsRest
   } = props;
