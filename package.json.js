@@ -93,12 +93,11 @@ const packageConfig = {
   devDependencies: {
     // CLI
     'plop': '^4.0.5',
-    'glob': '^13.0.1',
     
     // Build
     'browserslist': '^4.28.1',
     'vite': '^7.3.0',
-    '@vitejs/plugin-react': '^5.1.3',
+    '@vitejs/plugin-react': '^5.1.4',
     'vite-plugin-dts': '^4.5.4',
     'vite-plugin-lib-inject-css': '^2.2.1',
     'vite-plugin-svgr': '^4.5.0',
@@ -107,13 +106,13 @@ const packageConfig = {
     // Static analysis
     'typescript': '^5.9.3',
     '@types/node': '^24.*', // Should match the Node major version in .nvmrc
-    'stylelint': '^17.1.1',
+    'stylelint': '^17.4.0',
     'stylelint-config-standard-scss': '^17.0.0',
     'stylelint-use-logical': '^2.1.3',
-    '@biomejs/biome': '^2.3.14',
+    '@biomejs/biome': '^2.4.4', // https://biomejs.dev/internals/changelog
     
     // Testing
-    'jsdom': '^28.0.0', // https://github.com/jsdom/jsdom/blob/main/Changelog.md
+    'jsdom': '^28.1.0', // https://github.com/jsdom/jsdom/blob/main/Changelog.md
     'vitest': '^4.0.18',
     '@vitest/ui': '^4.0.18',
     '@vitest/browser-playwright': '^4.0.18',
@@ -126,15 +125,15 @@ const packageConfig = {
     'playwright': '^1.58.2',
     
     // Storybook
-    'storybook': '^10.2.7',
-    '@storybook/react-vite': '^10.2.7',
-    '@storybook/addon-a11y': '^10.2.7',
+    'storybook': '^10.2.13',
+    '@storybook/react-vite': '^10.2.13',
+    '@storybook/addon-a11y': '^10.2.13',
     '@storybook/addon-designs': '^11.1.2',
-    '@storybook/addon-docs': '^10.2.7',
-    '@storybook/addon-links': '^10.2.7',
-    '@storybook/addon-vitest': '^10.2.7',
-    'chromatic': '^15.0.0', // https://github.com/chromaui/chromatic-cli/blob/main/CHANGELOG.md
-    '@chromatic-com/storybook': '^5.0.0', // Chromatic integration for Storybook
+    '@storybook/addon-docs': '^10.2.13',
+    '@storybook/addon-links': '^10.2.13',
+    '@storybook/addon-vitest': '^10.2.13',
+    'chromatic': '^15.2.0', // https://github.com/chromaui/chromatic-cli/blob/main/CHANGELOG.md
+    '@chromatic-com/storybook': '^5.0.1', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     //'@storybook-community/storybook-dark-mode': '^6.0.0',
     //'@percy/cli': '^1.31.2',
@@ -146,7 +145,7 @@ const packageConfig = {
     'lightningcss': '^1.31.1',
     
     // React
-    '@types/react': '^19.2.13',
+    '@types/react': '^19.2.14',
     '@types/react-dom': '^19.2.3',
     
     // Data table
@@ -158,20 +157,20 @@ const packageConfig = {
     // Utilities
     'date-fns': '^4.1.0',
     'message-tag': '^0.10.0',
-    'effect': '^3.19.16',
+    'effect': '^3.19.19',
     //'optics-ts': '^2.4.1',
     
     // React
     'react': '^19.2.4',
     'react-dom': '^19.2.4', // Must be in sync with `react`
-    'react-error-boundary': '^6.1.0',
+    'react-error-boundary': '^6.1.1',
     'classnames': '^2.5.1',
     'zustand': '^5.0.11',
     
     // React UI libraries
-    '@tanstack/react-virtual': '^3.13.18',
-    '@floating-ui/react': '^0.27.17', // https://github.com/floating-ui/floating-ui/blob/master/packages/react/CHANGELOG.md
-    'react-hook-form': '^7.69.0',
+    '@tanstack/react-virtual': '^3.13.19',
+    '@floating-ui/react': '^0.27.18', // https://github.com/floating-ui/floating-ui/blob/master/packages/react/CHANGELOG.md
+    'react-hook-form': '^7.71.2',
     'react-table': '^7.8.0',
     'react-datepicker': '^9.1.0',
   },
