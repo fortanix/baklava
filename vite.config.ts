@@ -3,7 +3,7 @@
 
 import * as path from 'node:path';
 //import * as url from 'node:url';
-//import { glob } from 'glob';
+//import { glob } from 'tinyglobby';
 
 import browserslist from 'browserslist';
 import { defineConfig } from 'vite';
