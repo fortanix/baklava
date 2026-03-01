@@ -18,10 +18,20 @@
       flex-direction: column;
       gap: bk.$spacing-2;
 
+      /**
+      * Toggle button styling
+      */
       .bk-property-list__property__view-more {
+        align-self: flex-start;
         font-weight: bk.$font-weight-regular;
         font-size: bk.$font-size-m;
         color: bk.$theme-text-link-default;
+        // margin-block-start: bk.$spacing-1; // TODO - Check with UX team on gap for this
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
       }
 
       dt {
@@ -31,12 +41,30 @@
       }
 
       dd {
+        display: flex;
+        flex-direction: column;
         font-weight: bk.$font-weight-regular;
         font-size: bk.$font-size-m;
         color: bk.$theme-text-body-default;
+      }
+
+      /**
+      * This wrapper is the ONLY element that gets clamped.
+      * React will dynamically set:
+      * style={{ WebkitLineClamp: clampLines }}
+      */
+      .bk-property-list__property__clamped {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        max-inline-size: 100%;
+        /* Preserve multi-line string formatting */
         white-space: pre-line;
-        overflow-wrap: anywhere;
-        word-break: normal;
+
+        /* Prevent overflow issues */
+        overflow-wrap: break-word; // Prevent long words causing overflow
+        text-wrap: pretty; // Favor better typography for text wrapping (e.g. prevent orphans)
+        hyphens: auto;
       }
     }
   }
