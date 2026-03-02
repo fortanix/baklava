@@ -93,9 +93,11 @@ export const Property = (props: PropertyProps) => {
       <dd>
         {/* Text wrapper (ONLY value gets clamped) */}
         <div
-          className={cx({
-            [cl['bk-property-list__property__clamped']]: enableClamping,
-          })}
+          className={cx(
+            cl['bk-property-list__property__value'],
+            {
+              [cl['bk-property-list__property__clamped']]: enableClamping,
+            })}
           style={
             shouldClamp
               ? { WebkitLineClamp: clampLines }

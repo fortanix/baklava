@@ -48,6 +48,15 @@
         color: bk.$theme-text-body-default;
       }
 
+      .bk-property-list__property__value {
+        /* Preserve multi-line string formatting */
+        white-space: pre-line;
+        /* Prevent overflow issues */
+        overflow-wrap: break-word; // Prevent long words causing overflow
+        text-wrap: pretty; // Favor better typography for text wrapping (e.g. prevent orphans)
+        hyphens: auto;
+      }
+
       /**
       * This wrapper is the ONLY element that gets clamped.
       * React will dynamically set:
@@ -57,14 +66,6 @@
         display: -webkit-box;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        max-inline-size: 100%;
-        /* Preserve multi-line string formatting */
-        white-space: pre-line;
-
-        /* Prevent overflow issues */
-        overflow-wrap: break-word; // Prevent long words causing overflow
-        text-wrap: pretty; // Favor better typography for text wrapping (e.g. prevent orphans)
-        hyphens: auto;
       }
     }
   }
