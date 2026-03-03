@@ -62,11 +62,11 @@ export const Property = (props: PropertyProps) => {
     ...propsRest
   } = props;
 
-  const [expanded, setExpanded] = React.useState(false);
+  const [toggleExpanded, setToggleExpanded] = React.useState(false);
 
   const isStringValue = typeof value === 'string';
 
-  const shouldClamp = enableClamping && isStringValue && !expanded;
+  const shouldClamp = enableClamping && isStringValue && !toggleExpanded;
 
   // Note: HTML allows wrapping dt/dd pairs in a `<div>`:
   // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl#wrapping_name-value_groups_in_div_elements
@@ -110,13 +110,13 @@ export const Property = (props: PropertyProps) => {
         {/* Toggle */}
         {enableClamping && isStringValue && (
           <ButtonAsLink
-            onPress={() => setExpanded((prev) => !prev)}
+            onPress={() => setToggleExpanded((prev) => !prev)}
             className={cx(
               cl['bk-property-list__property__toggle-expand']
             )}
             unstyled
           >
-            {expanded ? 'View less' : 'View more'}
+            {toggleExpanded ? 'View less' : 'View more'}
           </ButtonAsLink>
         )}
       </dd>
