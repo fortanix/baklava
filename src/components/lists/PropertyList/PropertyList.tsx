@@ -5,7 +5,7 @@
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import * as React from 'react';
 
-import { Button } from '../../actions/Button/Button.tsx';
+import { ButtonAsLink } from '../../actions/ButtonAsLink/ButtonAsLink.tsx';
 
 import cl from './PropertyList.module.scss';
 
@@ -17,19 +17,19 @@ type PropertyProps = ComponentProps<'div'> & {
   unstyled?: undefined | boolean,
 
   /** The label of the property */
-  label: React.ReactNode,
+  label: null | React.ReactNode,
 
   /** The value of the property */
-  value: React.ReactNode,
+  value: null | React.ReactNode,
 
   /** Whether this property should take up all available space */
-  fullWidth?: boolean,
+  fullWidth?: undefined | boolean,
 
   /**
    * Number of grid columns this property should span.
    * Only effective when the parent PropertyList has more than 1 column.
    */
-  span?: number;
+  span?: undefined | number,
 
   /**
    * Enables multi-line clamping for string values.
@@ -38,7 +38,7 @@ type PropertyProps = ComponentProps<'div'> & {
    *
    * Only applies when `value` is a string.
    */
-  enableClamping?: boolean;
+  enableClamping?: undefined | boolean,
 
   /**
    * Number of visible lines before truncation occurs.
@@ -46,7 +46,7 @@ type PropertyProps = ComponentProps<'div'> & {
    * Only effective when `enableClamping` is true.
    * Defaults to 4.
    */
-  clampLines?: number;
+  clampLines?: undefined | number,
 };
 
 export const Property = (props: PropertyProps) => {
@@ -77,7 +77,7 @@ export const Property = (props: PropertyProps) => {
         {
           [cl['bk-property-list__property']]: !unstyled,
         },
-        propsRest.className
+        propsRest.className,
       )}
       style={{
         gridColumn: fullWidth
@@ -109,26 +109,32 @@ export const Property = (props: PropertyProps) => {
 
         {/* Toggle */}
         {enableClamping && isStringValue && (
-          <Button
+          <ButtonAsLink
             onPress={() => setExpanded((prev) => !prev)}
             className={cx(
-              cl['bk-property-list__property__view-more']
+              cl['bk-property-list__property__toggle-expand']
             )}
             unstyled
           >
             {expanded ? 'View less' : 'View more'}
-          </Button>
+          </ButtonAsLink>
         )}
       </dd>
     </div>
   );
 };
 
-export type PropertyListProps = React.PropsWithChildren<ComponentProps<'dl'> & {
-  /** Whether this component should be unstyled. */
+export type PropertyListProps = ComponentProps<'dl'> & {
+  /** 
+   * Whether this component should be unstyled.
+   */
   unstyled?: undefined | boolean,
-  columns?: number | string
-}>;
+
+  /**
+   * Number of columns or CSS column value.
+   */
+  columns?: undefined | number | string,
+};
 export const PropertyList = Object.assign(
   ({ unstyled = false, columns = 1, style, ...propsRest }: PropertyListProps) => {
     return (

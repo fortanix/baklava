@@ -84,10 +84,10 @@ export default {
             <PropertyList.Property
               label={label}
               value={value}
-              {...(fullWidth !== undefined && { fullWidth })}
-              {...(span !== undefined && { span })}
-              {...(enableClamping !== undefined && { enableClamping })}
-              {...(clampLines !== undefined && { clampLines })}
+              fullWidth={fullWidth}
+              span={span}
+              enableClamping={enableClamping}
+              clampLines={clampLines}
             />
 
             {/* Static Reference Properties */}

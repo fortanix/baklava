@@ -18,10 +18,8 @@
       flex-direction: column;
       gap: bk.$spacing-2;
 
-      /**
-      * Toggle button styling
-      */
-      .bk-property-list__property__view-more {
+      // Toggle button styling
+      .bk-property-list__property__toggle-expand {
         align-self: flex-start;
         font-weight: bk.$font-weight-regular;
         font-size: bk.$font-size-m;
@@ -51,10 +49,7 @@
       .bk-property-list__property__value {
         /* Preserve multi-line string formatting */
         white-space: pre-line;
-        /* Prevent overflow issues */
-        overflow-wrap: break-word; // Prevent long words causing overflow
-        text-wrap: pretty; // Favor better typography for text wrapping (e.g. prevent orphans)
-        hyphens: auto;
+        @include bk.text-layout;
       }
 
       /**
