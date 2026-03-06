@@ -9,59 +9,104 @@
     @include bk.component-base(bk-property-list);
 
     margin: 0;
-    display: grid;
-    grid-template-columns: repeat(var(--bk-property-columns, 1), minmax(0, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
     gap: bk.$spacing-4 bk.$spacing-8;
 
     .bk-property-list__property {
       display: flex;
       flex-direction: column;
       gap: bk.$spacing-2;
+      justify-content: flex-start;
+    }
 
-      // Toggle button styling
-      .bk-property-list__property__toggle-expand {
-        align-self: flex-start;
-        font-weight: bk.$font-weight-regular;
-        font-size: bk.$font-size-m;
-        color: bk.$theme-text-link-default;
-        // margin-block-start: bk.$spacing-1; // TODO - Check with UX team on gap for this
-        cursor: pointer;
+    // Small
+    .bk-property-list__property--small {
+      flex: 0 0 11ch;
+      max-inline-size: 11ch;
+    }
 
-        &:hover {
-          text-decoration: underline;
-        }
-      }
+    // Medium
+    .bk-property-list__property--medium {
+      flex: 0 0 22ch;
+      max-inline-size: 22ch;
+    }
 
-      dt {
-        font-weight: bk.$font-weight-regular;
-        font-size: bk.$font-size-s;
-        color: bk.$theme-text-small-text-subtle;
-      }
+    // Large
+    .bk-property-list__property--large {
+      flex: 0 0 44ch;
+      max-inline-size: 44ch;
+    }
 
-      dd {
-        display: flex;
-        flex-direction: column;
-        font-weight: bk.$font-weight-regular;
-        font-size: bk.$font-size-m;
-        color: bk.$theme-text-body-default;
-      }
+    // Full size
+    .bk-property-list__property--full-size {
+      flex: 0 0 100%;
+      max-inline-size: 100%;
+    }
 
-      .bk-property-list__property__value {
-        /* Preserve multi-line string formatting */
-        white-space: pre-line;
-        @include bk.text-layout;
-      }
+    dt {
+      font-weight: bk.$font-weight-regular;
+      font-size: bk.$font-size-s;
+      color: bk.$theme-text-small-text-subtle;
+    }
 
-      /**
+    dd {
+      display: flex;
+      flex-direction: column;
+      font-weight: bk.$font-weight-regular;
+      font-size: bk.$font-size-m;
+      color: bk.$theme-text-body-default;
+    }
+
+    .bk-property-list__property__value {
+      // Preserve multi-line string formatting
+      white-space: pre-line;
+      @include bk.text-layout;
+    }
+
+    /**
       * This wrapper is the ONLY element that gets clamped.
       * React will dynamically set:
       * style={{ WebkitLineClamp: clampLines }}
       */
-      .bk-property-list__property__clamped {
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+    .bk-property-list__property__clamped {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .bk-property-list__property__toggle-expand {
+      align-self: flex-start;
+      font-weight: bk.$font-weight-regular;
+      font-size: bk.$font-size-m;
+      color: bk.$theme-button-tertiary-text-default;
+      cursor: pointer;
+      text-decoration: none; // remove default underline
+
+      &:hover {
+        color: bk.$theme-button-tertiary-text-hover;
       }
+    }
+  }
+
+  // Horizontal layout (default)
+  .bk-property-list--horizontal {
+    flex-direction: row;
+  }
+
+  // Horizontal layout
+  .bk-property-list--horizontal {
+    flex-direction: row;
+  }
+
+  // Vertical layout
+  .bk-property-list--vertical {
+    flex-direction: column;
+
+    .bk-property-list__property {
+      flex: 0 0 100%;
+      max-inline-size: 100%;
     }
   }
 }

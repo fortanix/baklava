@@ -12,6 +12,8 @@ import cl from './PropertyList.module.scss';
 
 export { cl as PropertyListClassNames };
 
+type PropertySize = 'small' | 'medium' | 'large' | 'full-size';
+
 type PropertyProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
@@ -22,14 +24,8 @@ type PropertyProps = ComponentProps<'div'> & {
   /** The value of the property */
   value: null | React.ReactNode,
 
-  /** Whether this property should take up all available space */
-  fullWidth?: undefined | boolean,
-
-  /**
-   * Number of grid columns this property should span.
-   * Only effective when the parent PropertyList has more than 1 column.
-   */
-  span?: undefined | number,
+  /** Size of the property */
+  size?: undefined | PropertySize
 
   /**
    * Enables multi-line clamping for string values.
@@ -38,12 +34,11 @@ type PropertyProps = ComponentProps<'div'> & {
    *
    * Only applies when `value` is a string.
    */
-  enableClamping?: undefined | boolean,
-
+  expandable?: undefined | boolean,
   /**
    * Number of visible lines before truncation occurs.
    *
-   * Only effective when `enableClamping` is true.
+   * Only effective when `expandable` is true.
    * Defaults to 4.
    */
   clampLines?: undefined | number,
@@ -54,9 +49,8 @@ export const Property = (props: PropertyProps) => {
     unstyled,
     label,
     value,
-    fullWidth = false,
-    span,
-    enableClamping = false,
+    size = 'medium',
+    expandable = false,
     clampLines = 4,
     style,
     ...propsRest
@@ -66,7 +60,7 @@ export const Property = (props: PropertyProps) => {
 
   const isStringValue = typeof value === 'string';
 
-  const shouldClamp = enableClamping && isStringValue && !toggleExpanded;
+  const shouldClamp = expandable && isStringValue && !toggleExpanded;
 
   // Note: HTML allows wrapping dt/dd pairs in a `<div>`:
   // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl#wrapping_name-value_groups_in_div_elements
@@ -76,15 +70,14 @@ export const Property = (props: PropertyProps) => {
       className={cx(
         {
           [cl['bk-property-list__property']]: !unstyled,
+          [cl['bk-property-list__property--small']]: size === 'small',
+          [cl['bk-property-list__property--medium']]: size === 'medium',
+          [cl['bk-property-list__property--large']]: size === 'large',
+          [cl['bk-property-list__property--full-size']]: size === 'full-size',
         },
         propsRest.className,
       )}
       style={{
-        gridColumn: fullWidth
-          ? '1 / -1'
-          : span
-            ? `span ${span}`
-            : undefined,
         ...style,
       }}
     >
@@ -96,8 +89,9 @@ export const Property = (props: PropertyProps) => {
           className={cx(
             cl['bk-property-list__property__value'],
             {
-              [cl['bk-property-list__property__clamped']]: enableClamping,
-            })}
+              [cl['bk-property-list__property__clamped']]: shouldClamp,
+            },
+          )}
           style={
             shouldClamp
               ? { WebkitLineClamp: clampLines }
@@ -107,14 +101,10 @@ export const Property = (props: PropertyProps) => {
           {value}
         </div>
 
-        {/* Toggle */}
-        {enableClamping && isStringValue && (
+        {expandable && isStringValue && (
           <ButtonAsLink
             onPress={() => setToggleExpanded((prev) => !prev)}
-            className={cx(
-              cl['bk-property-list__property__toggle-expand']
-            )}
-            unstyled
+            className={cl['bk-property-list__property__toggle-expand']}
           >
             {toggleExpanded ? 'View less' : 'View more'}
           </ButtonAsLink>
@@ -129,25 +119,26 @@ export type PropertyListProps = ComponentProps<'dl'> & {
    * Whether this component should be unstyled.
    */
   unstyled?: undefined | boolean,
-
-  /**
-   * Number of columns or CSS column value.
+  /** 
+   * The orientation of the property's, either horizontal or vertical. Default: `"horizontal"`. 
    */
-  columns?: undefined | number | string,
+  orientation?: undefined | 'horizontal' | 'vertical',
 };
+
 export const PropertyList = Object.assign(
-  ({ unstyled = false, columns = 1, style, ...propsRest }: PropertyListProps) => {
+  ({ unstyled = false, orientation = 'horizontal', style, ...propsRest }: PropertyListProps) => {
     return (
       <dl
         {...propsRest}
-        style={{
-          '--bk-property-columns': columns,
-          ...style,
-        }}
-        className={cx({
-          bk: true,
-          [cl['bk-property-list']]: !unstyled,
-        }, propsRest.className)}
+        className={cx(
+          {
+            bk: true,
+            [cl['bk-property-list']]: !unstyled,
+            [cl['bk-property-list--horizontal']]: orientation === 'horizontal',
+            [cl['bk-property-list--vertical']]: orientation === 'vertical',
+          },
+          propsRest.className,
+        )}
       />
     );
   },
