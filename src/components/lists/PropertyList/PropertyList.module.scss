@@ -7,20 +7,106 @@
 @layer baklava.components {
   .bk-property-list {
     @include bk.component-base(bk-property-list);
-    
+
     margin: 0;
     display: flex;
-    flex-flow: row wrap;
+    flex-wrap: wrap;
+    align-items: flex-start;
     gap: bk.$spacing-4 bk.$spacing-8;
-    
+
     .bk-property-list__property {
-      &.bk-property-list__property--full-width {
-        inline-size: -webkit-fill-available;
+      display: flex;
+      flex-direction: column;
+      gap: bk.$spacing-2;
+      justify-content: flex-start;
+    }
+
+    // Small
+    .bk-property-list__property--small {
+      flex: 0 0 11ch;
+      max-inline-size: 11ch;
+    }
+
+    // Medium
+    .bk-property-list__property--medium {
+      flex: 0 0 22ch;
+      max-inline-size: 22ch;
+    }
+
+    // Large
+    .bk-property-list__property--large {
+      flex: 0 0 44ch;
+      max-inline-size: 44ch;
+    }
+
+    // Full size
+    .bk-property-list__property--full-size {
+      flex: 0 0 100%;
+      max-inline-size: 100%;
+    }
+
+    dt {
+      font-weight: bk.$font-weight-regular;
+      font-size: bk.$font-size-s;
+      color: bk.$theme-text-small-text-subtle;
+    }
+
+    dd {
+      display: flex;
+      flex-direction: column;
+      font-weight: bk.$font-weight-regular;
+      font-size: bk.$font-size-m;
+      color: bk.$theme-text-body-default;
+    }
+
+    .bk-property-list__property__value {
+      // Preserve multi-line string formatting
+      white-space: pre-line;
+      @include bk.text-layout;
+    }
+
+    /**
+      * This wrapper is the ONLY element that gets clamped.
+      * React will dynamically set:
+      * style={{ WebkitLineClamp: clampLines }}
+      */
+    .bk-property-list__property__clamped {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .bk-property-list__property__toggle-expand {
+      align-self: flex-start;
+      font-weight: bk.$font-weight-regular;
+      font-size: bk.$font-size-m;
+      color: bk.$theme-button-tertiary-text-default;
+      cursor: pointer;
+      text-decoration: none; // remove default underline
+
+      &:hover {
+        color: bk.$theme-button-tertiary-text-hover;
       }
-      
-      dt {
-        font-weight: bk.$font-weight-semibold;
-      }
+    }
+  }
+
+  // Horizontal layout (default)
+  .bk-property-list--horizontal {
+    flex-direction: row;
+  }
+
+  // Horizontal layout
+  .bk-property-list--horizontal {
+    flex-direction: row;
+  }
+
+  // Vertical layout
+  .bk-property-list--vertical {
+    flex-direction: column;
+
+    .bk-property-list__property {
+      flex: 0 0 100%;
+      max-inline-size: 100%;
     }
   }
 }
