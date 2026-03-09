@@ -81,7 +81,9 @@ const preview = {
             ],
             'lists',
             [
+              'Property',
               'PropertyList',
+              'PropertyGrid',
             ],
             'forms',
             [
