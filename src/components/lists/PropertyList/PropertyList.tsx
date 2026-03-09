@@ -9,9 +9,6 @@ import { ButtonAsLink } from '../../actions/ButtonAsLink/ButtonAsLink.tsx';
 
 import cl from './PropertyList.module.scss';
 
-
-export { cl as PropertyListClassNames };
-
 type PropertySize = 'small' | 'medium' | 'large' | 'full-size';
 
 type PropertyProps = ComponentProps<'div'> & {
@@ -126,7 +123,7 @@ export type PropertyListProps = ComponentProps<'dl'> & {
 };
 
 export const PropertyList = Object.assign(
-  ({ unstyled = false, orientation = 'horizontal', style, ...propsRest }: PropertyListProps) => {
+  ({ unstyled = false, orientation = 'horizontal', ...propsRest }: PropertyListProps) => {
     return (
       <dl
         {...propsRest}
@@ -139,6 +136,7 @@ export const PropertyList = Object.assign(
           },
           propsRest.className,
         )}
+        style={propsRest.style}
       />
     );
   },
