@@ -86,7 +86,7 @@ export const Property = (props: PropertyProps) => {
           className={cx(
             cl['bk-property-list__property__value'],
             {
-              [cl['bk-property-list__property__clamped']]: shouldClamp,
+              [cl['bk-property-list__property__value--clamped']]: shouldClamp,
             },
           )}
           style={
@@ -100,7 +100,7 @@ export const Property = (props: PropertyProps) => {
 
         {expandable && isStringValue && (
           <ButtonAsLink
-            onPress={() => setToggleExpanded((prev) => !prev)}
+            onPress={() => { setToggleExpanded(prev => !prev); }}
             className={cl['bk-property-list__property__toggle-expand']}
           >
             {toggleExpanded ? 'View less' : 'View more'}

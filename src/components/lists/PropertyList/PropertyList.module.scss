@@ -65,12 +65,10 @@
       @include bk.text-layout;
     }
 
-    /**
-      * This wrapper is the ONLY element that gets clamped.
-      * React will dynamically set:
-      * style={{ WebkitLineClamp: clampLines }}
-      */
-    .bk-property-list__property__clamped {
+    // This wrapper is the ONLY element that gets clamped.
+    // React will dynamically set:
+    // style={{ WebkitLineClamp: clampLines }}
+    .bk-property-list__property__value--clamped {
       display: -webkit-box;
       -webkit-box-orient: vertical;
       overflow: hidden;
@@ -78,11 +76,12 @@
 
     .bk-property-list__property__toggle-expand {
       align-self: flex-start;
+      cursor: pointer;
+      
       font-weight: bk.$font-weight-regular;
       font-size: bk.$font-size-m;
       color: bk.$theme-button-tertiary-text-default;
-      cursor: pointer;
-      text-decoration: none; // remove default underline
+      text-decoration: none; // Remove default underline
 
       &:hover {
         color: bk.$theme-button-tertiary-text-hover;

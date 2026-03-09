@@ -5,21 +5,17 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { loremIpsumParagraph } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { PropertyList } from './PropertyList.tsx';
 
-import { loremIpsumParagraph } from '../../../util/storybook/LoremIpsum.tsx';
 
-/**
- * Merge PropertyList + Property props
- * but omit children from auto-control exposure
- */
-type PropertyListArgs =
-  Omit<React.ComponentProps<typeof PropertyList>, 'children'> &
-  React.ComponentProps<typeof PropertyList.Property> & {
-    children?: React.ReactNode;
+// Merge PropertyList + Property props, but omit children from auto-control exposure
+type PropertyListArgs = Omit<React.ComponentProps<typeof PropertyList>, 'children'>
+  & React.ComponentProps<typeof PropertyList.Property> & {
+    children?: React.ReactNode,
   };
-  
+
 const sizes = ['small', 'medium', 'large', 'full-size'] as const;
 
 type Story = StoryObj<PropertyListArgs>;
@@ -55,7 +51,6 @@ export default {
     children: {
       table: { disable: true },
     },
-
   },
 
   args: {
@@ -79,9 +74,7 @@ export default {
 
     return (
       <PropertyList orientation={orientation}>
-        {children ? (
-          children
-        ) : (
+        {children || (
           <>
             <PropertyList.Property
               label={label}
@@ -204,12 +197,12 @@ export const ManyProperties: Story = {
   args: {
     children: (
       <>
-        {Array.from({ length: 12 }).map((_, i) => {
+        {Array.from({ length: 12 }, (_, index) => index + 1).map(index => {
           return (
             <PropertyList.Property
-              key={i}
-              label={`Key ${i + 1}`}
-              value={`Value ${i + 1}`}
+              key={index}
+              label={`Key ${index + 1}`}
+              value={`Value ${index + 1}`}
             />
           );
         })}
@@ -222,14 +215,14 @@ export const ManyPropertiesWithDifferentRandomSizes: Story = {
   args: {
     children: (
       <>
-        {Array.from({ length: 12 }).map((_, i) => {
+        {Array.from({ length: 12 }, (_, index) => index + 1).map(index => {
           const size = sizes[Math.floor(Math.random() * sizes.length)];
 
           return (
             <PropertyList.Property
-              key={i}
-              label={`Key ${i + 1} (${size})`}
-              value={`Value ${i + 1}`}
+              key={index}
+              label={`Key ${index} (${size})`}
+              value={`Value ${index}`}
               size={size}
             />
           );
