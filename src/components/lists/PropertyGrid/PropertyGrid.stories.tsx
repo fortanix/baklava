@@ -7,36 +7,42 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { loremIpsumParagraph, loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
 
-import { PropertyList } from './PropertyList.tsx';
+import { PropertyGrid } from './PropertyGrid.tsx';
 
 // Merge PropertyList + Property props, but omit children from auto-control exposure
-type PropertyListArgs = Omit<React.ComponentProps<typeof PropertyList>, 'children'>
-  & React.ComponentProps<typeof PropertyList.Property> & {
+type PropertyGridArgs = Omit<React.ComponentProps<typeof PropertyGrid>, 'children'>
+  & React.ComponentProps<typeof PropertyGrid.Property> & {
     children?: React.ReactNode,
   };
 
 const sizes = ['small', 'medium', 'large', 'full-size'] as const;
 
-type Story = StoryObj<PropertyListArgs>;
+type Story = StoryObj<PropertyGridArgs>;
 
 export default {
-  component: PropertyList,
+  component: PropertyGrid,
   parameters: {
     layout: 'padded',
     //design: { type: 'figma', url: '' },
   },
   tags: ['autodocs'],
   argTypes: {
-    orientation: {
-      control: 'select',
-      options: ['horizontal', 'vertical'],
-    },
     label: { control: 'text' },
     value: { control: 'text' },
 
     size: {
       control: 'select',
       options: sizes,
+      description: 'Sizes determine how many columns a property spans within the row layout.',
+      table: {
+        type: {
+          summary: `small: span 1 column 
+          | medium: span 2 columns 
+          | large: span 3 columns 
+          | full-size: span all columns
+          `,
+        },
+      },
     },
 
     expandable: { control: 'boolean' },
@@ -46,6 +52,10 @@ export default {
       if: { arg: 'expandable', truthy: true },
     },
 
+    columns: {
+      control: { type: 'number', min: 1, max: 10 },
+    },
+
     // Hide children from controls panel
     children: {
       table: { disable: true },
@@ -53,10 +63,10 @@ export default {
   },
 
   args: {
-    orientation: 'horizontal',
     label: 'Editable Property',
     value: `This is the editable value property from the editor. ${loremIpsumSentence}`,
-    size: 'medium',
+    columns: 4,
+    size: 'small',
     expandable: true,
     clampLines: 3,
     unstyled: false,
@@ -65,95 +75,85 @@ export default {
   render: (args) => {
     const {
       children,
-      orientation,
+      columns,
       label,
       value,
       size,
       expandable,
       clampLines,
-      unstyled,
     } = args;
 
     return (
-      <PropertyList orientation={orientation} unstyled={unstyled}>
+      <PropertyGrid columns={columns}>
         {children || (
           <>
-            <PropertyList.Property
+            <PropertyGrid.Property
               label={label}
               value={value}
               size={size}
               expandable={expandable}
               clampLines={clampLines}
-              unstyled={unstyled}
             />
 
-            <PropertyList.Property
-              label="Large"
-              value={`This is the large value property. ${loremIpsumSentence}`}
+            <PropertyGrid.Property
+              label="Large (Span 3)"
+              value="This is the large value property."
               size="large"
             />
-            <PropertyList.Property
-              label="Medium"
+            <PropertyGrid.Property
+              label="Medium (Span 2)"
               value="This is the medium value property."
               size="medium"
             />
-            <PropertyList.Property
-              label="Small"
+            <PropertyGrid.Property
+              label="Small (Span 1)"
               value="This is the small value property."
               size="small"
             />
-            <PropertyList.Property
-              label="Full Size"
+            <PropertyGrid.Property
+              label="Full Size (Span all)"
               value="This is the full size value property."
               size="full-size"
             />
           </>
         )}
-      </PropertyList>
+      </PropertyGrid>
     );
   },
-} satisfies Meta<PropertyListArgs>;
+} satisfies Meta<PropertyGridArgs>;
 
-export const Default : Story = {};
+export const Playground: Story = {};
 
-export const HorizontalSizes: Story = {
+export const DifferentSizes: Story = {
   args: {
+    columns: 4,
     children: (
       <>
-        <PropertyList.Property
-          label="Large"
+        <PropertyGrid.Property
+          label="Large (Span 3)"
           value="This is the large value property."
           size="large"
         />
-        <PropertyList.Property
-          label="Medium"
-          value="This is the medium value property."
-          size="medium"
-        />
-        <PropertyList.Property
-          label="Small"
+        <PropertyGrid.Property
+          label="Small (Span 1)"
           value="This is the small value property."
           size="small"
         />
-        <PropertyList.Property
-          label="Full Size"
+        <PropertyGrid.Property
+          label="Medium (Span 2)"
+          value="This is the medium value property."
+          size="medium"
+        />
+        <PropertyGrid.Property
+          label="Small (Span 1)"
+          value="This is the small value property."
+          size="small"
+        />
+        <PropertyGrid.Property
+          label="Full Size (Span all)"
           value="This is the full size value property."
           size="full-size"
         />
-      </>
-    ),
-  },
-};
-
-export const VerticalOrientation: Story = {
-  args: {
-    orientation: 'vertical',
-    children: (
-      <>
-        <PropertyList.Property label="Key 1" value="Value 1" />
-        <PropertyList.Property label="Key 2" value="Value 2" />
-        <PropertyList.Property label="Key 3" value="Value 3" />
-        <PropertyList.Property label="Key 4" value="Value 4" />
       </>
     ),
   },
@@ -163,17 +163,17 @@ export const MixedLayout: Story = {
   args: {
     children: (
       <>
-        <PropertyList.Property label="ID (Small)" value="12345" size="small" />
-        <PropertyList.Property label="Owner (Medium)" value="This is the new owner John" size="medium" />
-        <PropertyList.Property label="Status (Small)" value="Active" size="small" />
-        <PropertyList.Property
-          label="Notes (Full-Size)"
+        <PropertyGrid.Property label="ID (Small - span 1)" value="12345" size="small" />
+        <PropertyGrid.Property label="Owner (Medium - span 2)" value="This is the new owner John" size="medium" />
+        <PropertyGrid.Property label="Status (Small - span 1)" value="Active" size="small" />
+        <PropertyGrid.Property
+          label="Notes (Full-Size - span all)"
           value={`${loremIpsumParagraph} ${loremIpsumParagraph}`}
           size="full-size"
           expandable
         />
-        <PropertyList.Property
-          label="Description (Large)"
+        <PropertyGrid.Property
+          label="Description (Large - span 3)"
           value={`${loremIpsumParagraph}`}
           size="large"
         />
@@ -186,9 +186,9 @@ export const LongWord: Story = {
   args: {
     children: (
       <>
-        <PropertyList.Property
-          label="Large"
-          value="ThisIsAVeryVeryVeryVeryVeryLongStringWithoutSpaces."
+        <PropertyGrid.Property
+          label="Large (Span 3)"
+          value="ThisIsAVeryVeryVeryVeryVeryLongStringWithoutSpaces"
           size="large"
         />
       </>
@@ -202,10 +202,10 @@ export const ManyProperties: Story = {
       <>
         {Array.from({ length: 12 }, (_, index) => index + 1).map(index => {
           return (
-            <PropertyList.Property
+            <PropertyGrid.Property
               key={index}
-              label={`Key ${index + 1}`}
-              value={`Value ${index + 1}`}
+              label={`Key ${index}`}
+              value={`Value ${index}`}
             />
           );
         })}
@@ -222,7 +222,7 @@ export const ManyPropertiesWithDifferentRandomSizes: Story = {
           const size = sizes[Math.floor(Math.random() * sizes.length)];
 
           return (
-            <PropertyList.Property
+            <PropertyGrid.Property
               key={index}
               label={`Key ${index} (${size})`}
               value={`Value ${index}`}
@@ -239,9 +239,9 @@ export const WithViewMore: Story = {
   args: {
     children: (
       <>
-        <PropertyList.Property
+        <PropertyGrid.Property
           label="View More"
-          value={`${loremIpsumParagraph}. ${loremIpsumParagraph}`}
+          value={`${loremIpsumParagraph} ${loremIpsumParagraph}`}
           size="full-size"
           expandable
           clampLines={3}

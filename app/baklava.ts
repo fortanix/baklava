@@ -90,7 +90,9 @@ export { TextLine } from '../src/components/text/TextLine/TextLine.tsx';
 export { Tag } from '../src/components/text/Tag/Tag.tsx';
 
 // Lists
+export { Property } from '../src/components/lists/Property/Property.tsx';
 export { PropertyList } from '../src/components/lists/PropertyList/PropertyList.tsx';
+export { PropertyGrid } from '../src/components/lists/PropertyGrid/PropertyGrid.tsx';
 
 // Navigations
 export { Stepper } from '../src/components/navigations/Stepper/Stepper.tsx';

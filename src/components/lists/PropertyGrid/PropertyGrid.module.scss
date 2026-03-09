@@ -1,0 +1,38 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-property-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--bk-property-grid-column), minmax(0, 1fr));
+    gap: bk.$spacing-4 bk.$spacing-8;
+  }
+}
+
+// Use `overrides` layer to make sure we override the `.bk-property` (sizes) styles to span when using grid
+@layer baklava.overrides {
+  .bk-property-grid>.bk-property-grid__property {
+    flex: unset;
+    max-inline-size: unset;
+  }
+
+  .bk-property-grid>.bk-property-grid__property.bk-property-grid__property--small {
+    grid-column: span 1;
+  }
+
+  .bk-property-grid>.bk-property-grid__property.bk-property-grid__property--medium {
+    grid-column: span 2;
+  }
+
+  .bk-property-grid>.bk-property-grid__property.bk-property-grid__property--large {
+    grid-column: span 3;
+  }
+
+  .bk-property-grid>.bk-property-grid__property.bk-property-grid__property--full-size {
+    grid-column: 1 / -1;
+  }
+
+}

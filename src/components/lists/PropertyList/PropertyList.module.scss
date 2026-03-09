@@ -7,20 +7,26 @@
 @layer baklava.components {
   .bk-property-list {
     @include bk.component-base(bk-property-list);
-    
     margin: 0;
     display: flex;
     flex-flow: row wrap;
     gap: bk.$spacing-4 bk.$spacing-8;
-    
-    .bk-property-list__property {
-      &.bk-property-list__property--full-width {
-        inline-size: -webkit-fill-available;
-      }
-      
-      dt {
-        font-weight: bk.$font-weight-semibold;
-      }
-    }
+  }
+
+  // Horizontal layout (default)
+  .bk-property-list--horizontal {
+    flex-direction: row;
+  }
+
+  .bk-property-list--vertical {
+    flex-direction: column;
+  }
+}
+
+// Use `overrides` layer to make sure we override the `.bk-property` styles when vertical orientation
+@layer baklava.overrides {
+  .bk-property-list--vertical>.bk-property-list__property {
+    flex-basis: 100%;
+    max-inline-size: 100%;
   }
 }
