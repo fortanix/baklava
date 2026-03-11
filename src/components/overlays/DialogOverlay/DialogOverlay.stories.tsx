@@ -117,7 +117,7 @@ export const DialogOverlayWithToast: Story = {
 };
 
 const DialogOverlayControlledWithRef = (props: React.ComponentProps<typeof DialogOverlay>) => {
-  const ref = DialogOverlay.usePopoverRef();
+  const ref = DialogOverlay.usePopoverRef(null);
   
   // biome-ignore lint/correctness/useExhaustiveDependencies: want to only trigger this once
   React.useEffect(() => {
