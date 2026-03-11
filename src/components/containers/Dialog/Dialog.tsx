@@ -11,6 +11,7 @@ import { Button } from '../../actions/Button/Button.tsx';
 import { IconButton } from '../../actions/IconButton/IconButton.tsx';
 import { H5 } from '../../../typography/Heading/Heading.tsx';
 import { TooltipProvider } from '../../overlays/Tooltip/TooltipProvider.tsx';
+import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
 
 import cl from './Dialog.module.scss';
 
@@ -103,6 +104,9 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   
   /** Container intended to display an icon on the top left corner, insetting the content and the action buttons. For larger elements, consider using DialogLayout */
   iconAside?: undefined | React.ReactNode,
+  
+  /** To identify modal content state to display a loader in loading state */
+  state?: 'loading' | 'ready',
 };
 /**
  * The Dialog component displays an interaction with the user, for example a confirmation, or a form to be submitted.
@@ -121,6 +125,7 @@ export const Dialog = Object.assign(
       actions,
       autoFocusClose = false,
       iconAside,
+      state = 'ready',
       ...propsRest
     } = props;
     
@@ -156,6 +161,7 @@ export const Dialog = Object.assign(
           className={cx(
             'bk',
             { [cl['bk-dialog']]: !unstyled },
+            { [cl['bk-dialog--loading']]: state === 'loading' },
             { [cl['bk-dialog--flat']]: flat },
             { [cl['bk-dialog--icon-aside']]: iconAside },
             scrollerProps.className,
@@ -180,24 +186,31 @@ export const Dialog = Object.assign(
             </div>
           </header>
           
-          <div className={cl['bk-dialog__content']}>
-            {iconAside && (
-              <aside className={cx(cl['bk-dialog__content__icon-aside'])}>
-                {iconAside}
-              </aside>
+          <div className={cl['bk-dialog__content-wrapper']}>
+            <div className={cl['bk-dialog__content']}>
+              {iconAside && (
+                <aside className={cx(cl['bk-dialog__content__icon-aside'])}>
+                  {iconAside}
+                </aside>
+              )}
+              <section
+                id={`${dialogId}-content`} // Used with `aria-describedby`
+                role="document" // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/document_role
+                // FIXME: make this focusable instead of the <dialog> as per guidelines on MDN?
+                //tabIndex={0}
+                className={cx(cl['bk-dialog__content__body'], 'bk-prose')}
+                inert={typeof children !== 'undefined' && state === 'loading'}
+              >
+                {children}
+              </section>
+            </div>
+            {state === 'loading' && (
+              <div className={cl['bk-dialog__content-wrapper__loader']}>
+                <Spinner size="medium"/>
+              </div>
             )}
-            <section
-              id={`${dialogId}-content`} // Used with `aria-describedby`
-              role="document" // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/document_role
-              // FIXME: make this focusable instead of the <dialog> as per guidelines on MDN?
-              //tabIndex={0}
-              className={cx(cl['bk-dialog__content__body'], 'bk-prose')}
-            >
-              {children}
-            </section>
           </div>
-          
-          
+
           {(showCancelAction || actions) &&
             <footer className={cx(cl['bk-dialog__actions'])}>
               {showCancelAction && <CancelAction/>}

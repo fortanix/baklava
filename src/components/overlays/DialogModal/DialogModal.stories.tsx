@@ -62,6 +62,14 @@ export const DialogModalFullScreen: Story = {
   },
 };
 
+export const DialogModalFullScreenWithLoadingState: Story = {
+  args: {
+    display: 'full-screen',
+    title: 'Full screen modal dialog',
+    state: 'loading',
+  },
+};
+
 export const DialogModalSlideOverRight: Story = {
   args: {
     display: 'slide-over',
