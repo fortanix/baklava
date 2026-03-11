@@ -115,3 +115,28 @@ export const DialogOverlayWithToast: Story = {
     ),
   },
 };
+
+const DialogOverlayControlledWithRef = (props: React.ComponentProps<typeof DialogOverlay>) => {
+  const ref = DialogOverlay.usePopoverRef();
+  
+  // biome-ignore lint/correctness/useExhaustiveDependencies: want to only trigger this once
+  React.useEffect(() => {
+    globalThis.setTimeout(() => {
+      ref.current?.activate();
+    }, 2000);
+  }, []);
+  
+  return <DialogOverlay popoverRef={ref} {...props}/>;
+};
+export const DialogModalWithRef: Story = {
+  args: {
+    trigger: undefined,
+    children: 'This overlay was automatically opened through a ref.',
+  },
+  render: (args) => (
+    <>
+      A modal will automatically open after 2 seconds.
+      <DialogOverlayControlledWithRef {...args}/>
+    </>
+  ),
+};
