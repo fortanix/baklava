@@ -128,7 +128,7 @@ const DialogOverlayControlledWithRef = (props: React.ComponentProps<typeof Dialo
   
   return <DialogOverlay popoverRef={ref} {...props}/>;
 };
-export const DialogModalWithRef: Story = {
+export const DialogOverlayWithRef: Story = {
   args: {
     trigger: undefined,
     children: 'This overlay was automatically opened through a ref.',
