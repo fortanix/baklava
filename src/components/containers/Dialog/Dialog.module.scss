@@ -68,18 +68,23 @@
     }
     
     &.bk-dialog--loading {
+      // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
+      overflow: hidden !important; // prevent override by scroller module
       .bk-dialog__content {
         [inert] > * {
           opacity: 0.5;
         }
       }
+      .bk-dialog__content {
+        min-block-size: bk.$spacing-14;
+      }
       .bk-dialog__content-wrapper {
+        position: relative;
         .bk-dialog__content-wrapper__loader {
           position: fixed;
           inset: 0;
           display: grid;
           place-items: center;
-          z-index: 2;
         }
       }
     }

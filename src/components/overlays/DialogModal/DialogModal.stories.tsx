@@ -51,6 +51,14 @@ export const DialogModalSmall: Story = {
   args: { size: 'small' },
 };
 
+export const DialogModalSmallWithEmptyLoadingState: Story = {
+  args: {
+    size: 'small',
+    state: 'loading',
+    children: null,
+  },
+};
+
 export const DialogModalLarge: Story = {
   args: { size: 'large' },
 };
@@ -62,11 +70,20 @@ export const DialogModalFullScreen: Story = {
   },
 };
 
-export const DialogModalFullScreenWithLoadingState: Story = {
+export const DialogModalFullScreenWithContentLoadingState: Story = {
   args: {
     display: 'full-screen',
     title: 'Full screen modal dialog',
     state: 'loading',
+  },
+};
+
+export const DialogModalFullScreenWithEmptyLoadingState: Story = {
+  args: {
+    display: 'full-screen',
+    title: 'Full screen modal dialog',
+    state: 'loading',
+    children: null,
   },
 };
 
