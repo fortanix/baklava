@@ -15,6 +15,7 @@ import { InputField } from '../../forms/fields/InputField/InputField.tsx';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
 
 import { Dialog } from './Dialog.tsx';
+import { Button } from '../../actions/Button/Button.tsx';
 
 
 type DialogArgs = React.ComponentProps<typeof Dialog>;
@@ -39,6 +40,45 @@ export default {
 
 
 export const DialogStandard: Story = {};
+
+export const DialogWithLoader: Story = {
+  args: {
+    state: 'ready',
+  },
+  render: (args) => {
+    const [state, setState] = React.useState<'ready' | 'loading'>('ready');
+
+    const handleTriggerLoading = () => {
+      setState('loading');
+      setTimeout(() => setState('ready'), 5000);
+    };
+
+    return (
+      <Dialog
+        {...args}
+        state={state}
+      >
+        <div
+          style={{
+            position: 'sticky',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <Button
+            kind="primary"
+            label={state === 'loading' ? 'Loading...' : 'Trigger loading state'}
+            disabled={state === 'loading'}
+            onPress={handleTriggerLoading}
+          />
+        </div>
+        <LoremIpsum paragraphs={15}/>
+      </Dialog>
+    );
+  },
+};
 
 export const DialogWithoutClose: Story = {
   args: {

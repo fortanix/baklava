@@ -105,7 +105,7 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   /** Container intended to display an icon on the top left corner, insetting the content and the action buttons. For larger elements, consider using DialogLayout */
   iconAside?: undefined | React.ReactNode,
   
-  /** To identify modal content state to display a loader in loading state */
+  /** Controls the modal content state to show a loader when in the loading state */
   state?: 'loading' | 'ready',
 };
 /**
@@ -186,30 +186,29 @@ export const Dialog = Object.assign(
             </div>
           </header>
           
-          <div className={cl['bk-dialog__content-wrapper']}>
-            <div className={cl['bk-dialog__content']}>
-              {iconAside && (
-                <aside className={cx(cl['bk-dialog__content__icon-aside'])}>
-                  {iconAside}
-                </aside>
-              )}
-              <section
-                id={`${dialogId}-content`} // Used with `aria-describedby`
-                role="document" // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/document_role
-                // FIXME: make this focusable instead of the <dialog> as per guidelines on MDN?
-                //tabIndex={0}
-                className={cx(cl['bk-dialog__content__body'], 'bk-prose')}
-                inert={typeof children !== 'undefined' && state === 'loading'}
-              >
-                {children}
-              </section>
-            </div>
-            {state === 'loading' && (
-              <div className={cl['bk-dialog__content-wrapper__loader']}>
-                <Spinner size="medium"/>
-              </div>
+          <div className={cl['bk-dialog__content']}>
+            {iconAside && (
+              <aside className={cx(cl['bk-dialog__content__icon-aside'])}>
+                {iconAside}
+              </aside>
             )}
+            <section
+              id={`${dialogId}-content`} // Used with `aria-describedby`
+              role="document" // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/document_role
+              // FIXME: make this focusable instead of the <dialog> as per guidelines on MDN?
+              //tabIndex={0}
+              className={cx(cl['bk-dialog__content__body'], 'bk-prose')}
+              inert={typeof children !== 'undefined' && state === 'loading'}
+            >
+              {children}
+            </section>
           </div>
+
+          {state === 'loading' && (
+            <div className={cl['bk-dialog__loader']}>
+              <Spinner size="medium"/>
+            </div>
+          )}
 
           {(showCancelAction || actions) &&
             <footer className={cx(cl['bk-dialog__actions'])}>

@@ -111,7 +111,7 @@
     
     // Note: we assume that all styling for dialog (including `:modal` and `:backdrop`) has been hard reset.
     // `the-new-css-reset` has an exception for `dialog:modal`, but we don't want this exception, so here we unset all.
-    dialog, dialog:modal, dialog::backdrop {
+    dialog, dialog::backdrop, dialog:where(:modal) {
       all: unset;
       display: revert;
       box-sizing: border-box;

@@ -18,7 +18,6 @@
     
     margin: 0;
     padding: 0; // Do not apply padding on the outermost container (do it on the lower level elements instead)
-    
     border-radius: bk.$radius-3;
     &.bk-dialog--flat {
       border: none;
@@ -68,24 +67,23 @@
     }
     
     &.bk-dialog--loading {
-      // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
-      overflow: hidden !important; // prevent override by scroller module
+      min-block-size: calc(bk.$spacing-14 * 2);
       .bk-dialog__content {
         [inert] > * {
           opacity: 0.5;
         }
       }
-      .bk-dialog__content {
-        min-block-size: bk.$spacing-14;
-      }
-      .bk-dialog__content-wrapper {
-        position: relative;
-        .bk-dialog__content-wrapper__loader {
-          position: fixed;
-          inset: 0;
-          display: grid;
-          place-items: center;
-        }
+      .bk-dialog__loader {
+        block-size: 0;
+        pointer-events: none;
+        overflow: visible;
+        position: sticky;
+        inset-block-start: 50%;
+        inset-block-end: 50%;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
     }
     

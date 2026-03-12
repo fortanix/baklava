@@ -214,6 +214,7 @@ export const DialogModal = Object.assign(
               { [cl['bk-dialog-modal--small']]: size === 'small' },
               { [cl['bk-dialog-modal--medium']]: size === 'medium' },
               { [cl['bk-dialog-modal--large']]: size === 'large' },
+              { [cl['bk-dialog-modal--loading']]: propsRest.state === 'loading' },
               dialogController.dialogProps.className,
               propsRest.className,
             )}
