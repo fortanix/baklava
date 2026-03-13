@@ -41,18 +41,31 @@ export default {
 
 export const DialogStandard: Story = {};
 
-export const DialogWithLoader: Story = {
+export const DialogLoading: Story = {
+  args: {
+    state: 'loading',
+  },
+};
+
+export const DialogLoadingEmpty: Story = {
+  args: {
+    state: 'loading',
+    children: undefined,
+  },
+};
+
+export const DialogWithLoadingTrigger: Story = {
   args: {
     state: 'ready',
   },
   render: (args) => {
     const [state, setState] = React.useState<'ready' | 'loading'>('ready');
-
+    
     const handleTriggerLoading = () => {
       setState('loading');
-      setTimeout(() => setState('ready'), 5000);
+      setTimeout(() => { setState('ready'); }, 5000);
     };
-
+    
     return (
       <Dialog
         {...args}

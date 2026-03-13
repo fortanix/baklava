@@ -67,12 +67,15 @@
     }
     
     &.bk-dialog--loading {
-      min-block-size: calc(bk.$spacing-14 * 2);
+      // Make space in the dialog for the loading spinner
+      min-block-size: calc(var(--bk-dialog-padding-block) + 10lh);
+      
       .bk-dialog__content {
         [inert] > * {
           opacity: 0.5;
         }
       }
+      
       .bk-dialog__loader {
         block-size: 0;
         pointer-events: none;
