@@ -51,6 +51,7 @@ import type {
   UseSortByInstanceProps,
   UseSortByOptions,
   UseSortByState,
+  Row as ReactTableRow,
 } from 'react-table';
 
  import type * as FQ from '../components/tables/MultiSearch/filterQuery.ts';
@@ -68,6 +69,14 @@ interface CustomColumnProps {
 
 interface CustomTableConfig {
   bkStickyColumns?: undefined | 'first' | 'last' | 'both',
+}
+
+interface UseCustomRowSelectInstanceProps<D extends object> {
+  isRowSelectDisabled?: (row: ReactTableRow<D>) => boolean,
+}
+
+interface CustomRowSelectProps {
+  rowSelectDisabled?: boolean,
 }
 
 interface UseCustomFiltersState {
@@ -116,8 +125,9 @@ declare module 'react-table' {
       UseRowSelectInstanceProps<D>,
       UseRowStateInstanceProps<D>,
       UseSortByInstanceProps<D>,
-      CustomTableConfig,
-      UseCustomFiltersInstanceProps {}
+      UseCustomRowSelectInstanceProps<D>,
+      UseCustomFiltersInstanceProps,
+      CustomTableConfig {}
   
   export interface TableState<D extends object = {}>
     extends UseColumnOrderState<D>,
@@ -164,5 +174,6 @@ declare module 'react-table' {
     extends UseExpandedRowProps<D>,
       UseGroupByRowProps<D>,
       UseRowSelectRowProps<D>,
-      UseRowStateRowProps<D> {}
+      UseRowStateRowProps<D>,
+      CustomRowSelectProps {}
 }
