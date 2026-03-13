@@ -94,6 +94,8 @@ export type InputFileProps = React.ComponentPropsWithoutRef<'div'> & {
   acceptVisible?: undefined | boolean,
 
   multiple?: undefined | HTMLInputElement['multiple'],
+  
+  disabled?: undefined | boolean,
 };
 export const InputFile = ({
   className,
@@ -105,6 +107,7 @@ export const InputFile = ({
   accept,
   acceptVisible = true,
   multiple,
+  disabled,
 }: InputFileProps) => {
   const dragCounter = React.useRef(0);
   const fileInput = React.useRef<HTMLInputElement>(null);
@@ -112,11 +115,13 @@ export const InputFile = ({
   const [isDragging, setIsDragging] = React.useState(false);
   
   const onDrag = (e: React.DragEvent) => {
+    if (disabled) return;
     e.preventDefault();
     e.stopPropagation();
   };
   
   const onDragIn = (e: React.DragEvent) => {
+    if (disabled) return;
     e.preventDefault();
     e.stopPropagation();
     dragCounter.current += 1;
@@ -126,6 +131,7 @@ export const InputFile = ({
   };
   
   const onDragOut = (e: React.DragEvent) => {
+    if (disabled) return;
     e.preventDefault();
     e.stopPropagation();
     dragCounter.current -= 1;
@@ -135,6 +141,7 @@ export const InputFile = ({
   };
   
   const onDrop = (e: React.DragEvent) => {
+    if (disabled) return;
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
@@ -182,6 +189,7 @@ export const InputFile = ({
       className={cx(className, 'bk-input-file__btn--no-drag')}
       onClick={onFileUploadClick}
       unstyled={unstyled}
+      disabled={disabled}
     >
       upload
     </Button>
@@ -197,6 +205,7 @@ export const InputFile = ({
           cl['bk-input-file__drag-target'],
           {
             [cl['bk-input-file__drag-target--is-dragging']]: isDragging,
+            [cl['bk-input-file__drag-target--disabled']]: disabled,
           },
           className,
         )}
@@ -212,6 +221,7 @@ export const InputFile = ({
             className={cl['bk-input-file__drag-target__button']}
             onClick={evt => { evt.preventDefault(); }}
             unstyled={unstyled}
+            disabled={disabled}
           >
             browse
           </Button>
@@ -241,6 +251,7 @@ export const InputFile = ({
         ref={fileInput}
         onChange={onFileChange}
         hidden
+        disabled={disabled}
         className={cx(cl['bk-input-file__input'], inputProps?.className)}
         {...accept && { accept }}
         {...multiple && { multiple }}

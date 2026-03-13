@@ -53,6 +53,9 @@ export { InputSensitive } from '../src/components/forms/controls/Input/InputSens
 export { InputPassword } from '../src/components/forms/controls/Input/InputPassword.tsx';
 export { InputFile } from '../src/components/forms/controls/InputFile/InputFile.tsx';
 export { TextArea } from '../src/components/forms/controls/TextArea/TextArea.tsx';
+export {
+  TextAreaWithFileUpload
+} from '../src/components/forms/controls/TextAreaWithFileUpload/TextAreaWithFileUpload.tsx';
 export { DatePicker } from '../src/components/forms/controls/datetime/DatePicker/DatePicker.tsx';
 export {
   type DateRange,
@@ -78,7 +81,9 @@ export { InputField } from '../src/components/forms/fields/InputField/InputField
 export { InputFieldWithTags } from '../src/components/forms/fields/InputFieldWithTags/InputFieldWithTags.tsx';
 export { RadioGroupField } from '../src/components/forms/fields/RadioGroupField/RadioGroupField.tsx';
 export { TextAreaField } from '../src/components/forms/fields/TextAreaField/TextAreaField.tsx';
-
+export {
+  TextAreaWithFileUploadField
+} from '../src/components/forms/fields/TextAreaWithFileUploadField/TextAreaWithFileUploadField.tsx';
 // Graphics
 export { Icon } from '../src/components/graphics/Icon/Icon.tsx';
 export { PlaceholderEmpty } from '../src/components/graphics/PlaceholderEmpty/PlaceholderEmpty.tsx';
