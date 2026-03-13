@@ -51,6 +51,14 @@ export const DialogModalSmall: Story = {
   args: { size: 'small' },
 };
 
+export const DialogModalSmallWithEmptyLoadingState: Story = {
+  args: {
+    size: 'small',
+    state: 'loading',
+    children: null,
+  },
+};
+
 export const DialogModalLarge: Story = {
   args: { size: 'large' },
 };
@@ -59,6 +67,62 @@ export const DialogModalFullScreen: Story = {
   args: {
     display: 'full-screen',
     title: 'Full screen modal dialog',
+  },
+};
+
+const LoadingStateToggleContent = () => {
+  const [state, setState] = React.useState<'ready' | 'loading'>('ready');
+
+  const handleTriggerLoading = () => {
+    setState('loading');
+    setTimeout(() => setState('ready'), 5000);
+  };
+
+  return (
+    <DialogModal
+      display="full-screen"
+      title="Full screen modal dialog"
+      state={state}
+      trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={activate} />}
+    >
+      <LoremIpsum paragraphs={2} />
+      <div
+        style={{
+          position: 'sticky',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <Button
+          kind="primary"
+          label={state === 'loading' ? 'Loading...' : 'Trigger loading state'}
+          disabled={state === 'loading'}
+          onPress={handleTriggerLoading}
+        />
+      </div>
+      <LoremIpsum paragraphs={15} />
+    </DialogModal>
+  );
+};
+
+export const DialogModalFullScreenWithLoadingStateToggle: Story = {
+  render: () => (
+    <>
+      <LoremIpsum paragraphs={2}/>
+      <LoadingStateToggleContent/>
+      <LoremIpsum paragraphs={2}/>
+    </>
+  ),
+};
+
+export const DialogModalFullScreenWithEmptyLoadingState: Story = {
+  args: {
+    display: 'full-screen',
+    title: 'Full screen modal dialog',
+    state: 'loading',
+    children: null,
   },
 };
 
