@@ -106,7 +106,7 @@ export type DialogProps = Omit<ComponentProps<'dialog'>, 'title'> & {
   iconAside?: undefined | React.ReactNode,
   
   /** Controls the modal content state to show a loader when in the loading state */
-  state?: 'loading' | 'ready',
+  state?: undefined | 'loading' | 'ready',
 };
 /**
  * The Dialog component displays an interaction with the user, for example a confirmation, or a form to be submitted.
@@ -198,7 +198,7 @@ export const Dialog = Object.assign(
               // FIXME: make this focusable instead of the <dialog> as per guidelines on MDN?
               //tabIndex={0}
               className={cx(cl['bk-dialog__content__body'], 'bk-prose')}
-              inert={typeof children !== 'undefined' && state === 'loading'}
+              inert={state === 'loading'}
             >
               {children}
             </section>

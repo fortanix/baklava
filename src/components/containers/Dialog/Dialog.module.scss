@@ -71,7 +71,7 @@
       min-block-size: calc(var(--bk-dialog-padding-block) + 10lh);
       
       .bk-dialog__content {
-        [inert] > * {
+        .bk-dialog__content__body[inert] {
           opacity: 0.5;
         }
       }
