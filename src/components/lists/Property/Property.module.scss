@@ -44,12 +44,7 @@
 
       font-weight: bk.$font-weight-regular;
       font-size: bk.$font-size-m;
-      color: bk.$theme-button-tertiary-text-default;
       text-decoration: none; // Remove default underline
-
-      &:hover {
-        color: bk.$theme-button-tertiary-text-hover;
-      }
     }
   }
 

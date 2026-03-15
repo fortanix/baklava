@@ -28,6 +28,10 @@
     &:disabled {
       color: bk.$theme-text-area-text-disabled;
       --bk-text-area-border-color: #{bk.$theme-text-area-border-disabled};
+      
+      &::placeholder {
+        color: bk.$theme-text-area-text-disabled;
+      }
     }
   }
   
