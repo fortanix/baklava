@@ -13,7 +13,7 @@ import cl from './TextAreaWithFileUploadField.module.scss';
 
 export { cl as TextAreaWithFileUploadFieldClassNames };
 
-export type TextAreaWithFileUploadFieldProps = ComponentProps<'textarea'> & {
+export type TextAreaWithFileUploadFieldProps = ComponentProps<typeof TextAreaWithFileUpload> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
@@ -45,7 +45,7 @@ export const TextAreaWithFileUploadField = (props: TextAreaWithFileUploadFieldPr
     containerProps = {},
     optional = false,
     hint = '',
-    ...textareaProps
+    ...textAreaProps
   } = props;
 
   const controlId = React.useId();
@@ -56,7 +56,7 @@ export const TextAreaWithFileUploadField = (props: TextAreaWithFileUploadFieldPr
       {...containerProps}
       className={cx(
         'bk',
-        { [cl['bk-text-area-file-upload-field']]: !unstyled },
+        { [cl['bk-text-area-with-file-upload-field']]: !unstyled },
         containerProps.className,
       )}
     >
@@ -65,24 +65,24 @@ export const TextAreaWithFileUploadField = (props: TextAreaWithFileUploadFieldPr
         <label
           htmlFor={controlId}
           {...labelProps}
-          className={cx(cl['bk-text-area-file-upload-field__label'], labelProps.className)}
+          className={cx(cl['bk-text-area-with-file-upload-field__label'], labelProps.className)}
         >
           {label}
-          {optional && (<span className={cl['bk-text-area-file-upload-field__label__optional']}>(Optional)</span>)}
+          {optional && (<span className={cl['bk-text-area-with-file-upload-field__label__optional']}>(Optional)</span>)}
         </label>
       )}
       <TextAreaWithFileUpload
-        {...textareaProps}
+        {...textAreaProps}
         id={controlId}
         form={formContext.formId}
         className={cx(
-          cl['bk-text-area-file-upload-field__control'],
-          textareaProps.className
+          cl['bk-text-area-with-file-upload-field__control'],
+          textAreaProps.className
         )}
       />
 
       {hint && (
-        <p className={cl['bk-text-area-file-upload-field__hint']}>{hint}</p>
+        <p className={cl['bk-text-area-with-file-upload-field__hint']}>{hint}</p>
       )}
     </div>
   );

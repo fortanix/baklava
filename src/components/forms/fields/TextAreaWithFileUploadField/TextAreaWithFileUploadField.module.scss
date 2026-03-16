@@ -5,28 +5,28 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-text-area-file-upload-field {
-    @include bk.component-base(bk-text-area-file-upload-field);
+  .bk-text-area-with-file-upload-field {
+    @include bk.component-base(bk-text-area-with-file-upload-field);
 
     display: flex;
     flex-direction: column;
     gap: bk.rem-from-px(4);
 
-    .bk-text-area-file-upload-field__label {
+    .bk-text-area-with-file-upload-field__label {
       @include bk.font(bk.$font-family-body, bk.$font-weight-semibold);
       cursor: default;
     }
 
-    .bk-text-area-file-upload-field__label__optional {
+    .bk-text-area-with-file-upload-field__label__optional {
       @include bk.font(bk.$font-family-body, bk.$font-weight-regular, bk.$font-size-xs);
       margin-inline-start: bk.rem-from-px(4);
     }
 
-    .bk-text-area-file-upload-field__control {
+    .bk-text-area-with-file-upload-field__control {
       --empty: ; // Prevent empty class from being removed
     }
 
-    .bk-text-area-file-upload-field__hint {
+    .bk-text-area-with-file-upload-field__hint {
       @include bk.font(bk.$font-family-body, bk.$font-weight-regular, bk.$font-size-xs);
     }
   }

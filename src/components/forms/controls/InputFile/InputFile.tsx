@@ -13,7 +13,7 @@ import cl from './InputFile.module.scss';
 
 export { cl as InputFileClassNames };
 
-const handleWrongFileFormat = (fileName: string, fileType: string) => {
+export const handleWrongFileFormat = (fileName: string, fileType: string) => {
   let friendlyFileType = fileType.replace('/*', '');
   const fileTypeArray = fileType.split(',');
   if (fileTypeArray.length > 1) {
@@ -48,7 +48,7 @@ export const readFile = (
   }
 };
 
-const isFileAccepted = (file: File, accept?: string) => {
+export const isFileAccepted = (file: File, accept?: string) => {
   if (!accept) return true;
 
   const acceptList = accept.split(',').map(type => type.trim());
@@ -190,9 +190,8 @@ export const InputFile = ({
       onClick={onFileUploadClick}
       unstyled={unstyled}
       disabled={disabled}
-    >
-      upload
-    </Button>
+      label='Upload'
+    />
   );
 
   const renderFileInputWithDragAndDrop = () => {
@@ -222,9 +221,8 @@ export const InputFile = ({
             onClick={evt => { evt.preventDefault(); }}
             unstyled={unstyled}
             disabled={disabled}
-          >
-            browse
-          </Button>
+            label='Browse'
+          />
         </div>
         {accept && acceptVisible && (
           <div className={cl['bk-input-file__drag-target__accepted-files']}>

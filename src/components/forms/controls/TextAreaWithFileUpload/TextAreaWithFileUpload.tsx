@@ -4,14 +4,14 @@
 
 import * as React from 'react';
 
-import { TextArea, type TextAreaProps } from '../TextArea/TextArea.tsx';
-import { InputFile, readFile } from '../InputFile/InputFile.tsx';
+import { TextArea } from '../TextArea/TextArea.tsx';
+import { handleWrongFileFormat, InputFile, isFileAccepted, readFile } from '../InputFile/InputFile.tsx';
 
 import { classNames as cx } from '../../../../util/componentUtil.ts';
 
 import cl from './TextAreaWithFileUpload.module.scss';
 
-export type TextAreaWithFileUploadProps = TextAreaProps & {
+export type TextAreaWithFileUploadProps = React.ComponentProps<typeof TextArea> & {
   /**
    * Comma separated file extension (e.g. `.txt`), mime type (`application/pdf`) or media (`image/*`, `audio/*` or
    * `video/*`) that are allowed to be selected.
@@ -26,15 +26,27 @@ export const TextAreaWithFileUpload = ({
   accept,
   unstyled,
   disabled,
-  invalid,
   ...textAreaProps
 }: TextAreaWithFileUploadProps) => {
+  // Track nested dragenter / dragleave events.
+  // Browsers fire these events for every child element the cursor moves over.
+  // Without a counter, moving between children would trigger a dragleave on the
+  // parent and cause the "dragging" state to flicker. We increment on dragenter
+  // and decrement on dragleave, and only reset the dragging state when the
+  // counter reaches 0 (meaning the cursor actually left the component).
+
+  /*
+  References:
+  - https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragenter_event
+  - https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragleave_event
+  - https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
+  */
 
   const dragCounter = React.useRef(0);
   const [isDragging, setIsDragging] = React.useState(false);
 
   const updateTextArea = (text: string) => {
-    if (!onChange) return;
+    if (!onChange) { return };
 
     const event = {
       target: { value: text }
@@ -45,7 +57,7 @@ export const TextAreaWithFileUpload = ({
 
   const handleFiles = (files: FileList) => {
     const file = files[0];
-    if (!file) return;
+    if (!file) { return };
 
     readFile(file, (result) => {
       const text = typeof result === 'string' ? result : '';
@@ -54,7 +66,7 @@ export const TextAreaWithFileUpload = ({
   };
 
   const onDragIn = (e: React.DragEvent) => {
-    if (disabled) return;
+    if (disabled) { return; }
 
     e.preventDefault();
     e.stopPropagation();
@@ -63,7 +75,7 @@ export const TextAreaWithFileUpload = ({
   };
 
   const onDragOut = (e: React.DragEvent) => {
-    if (disabled) return;
+    if (disabled) { return; }
 
     e.preventDefault();
     e.stopPropagation();
@@ -74,20 +86,30 @@ export const TextAreaWithFileUpload = ({
   };
 
   const onDrag = (e: React.DragEvent) => {
-    if (disabled) return;
+    if (disabled) { return; }
 
     e.preventDefault();
     e.stopPropagation();
   };
 
   const onDrop = (e: React.DragEvent) => {
-    if (disabled) return;
+    if (disabled) { return; }
 
     e.preventDefault();
     setIsDragging(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFiles(e.dataTransfer.files);
+      const validFiles = Array.from(e.dataTransfer.files).filter(file => isFileAccepted(file, accept));
+
+      if (accept) {
+        const invalidFiles = Array.from(e.dataTransfer.files).filter(file => !isFileAccepted(file, accept));
+        invalidFiles.forEach(file => handleWrongFileFormat(file.name, accept));
+      }
+
+      if (validFiles.length > 0) {
+        handleFiles(validFiles as unknown as FileList);
+      }
+
       e.dataTransfer.clearData();
     }
 
@@ -123,13 +145,11 @@ export const TextAreaWithFileUpload = ({
           value={value}
           onChange={onChange}
           disabled={disabled}
-          invalid={invalid}
         />
 
         <div className={cx(cl['bk-text-area-upload__footer'],
           {
             [cl['bk-text-area-upload__footer--disabled']]: disabled,
-            [cl['bk-text-area-upload__footer--invalid']]: invalid,
           }
         )}>
           <span>Drop file or </span>

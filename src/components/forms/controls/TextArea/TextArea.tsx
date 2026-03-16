@@ -41,6 +41,9 @@ export const TextArea = ({
         [cl['bk-text-area']]: !unstyled,
         [cl['bk-text-area--automatic-resize']]: automaticResize,
         [cl['bk-text-area--invalid']]: invalid,
+        ...(propsRest.className && {
+          [`${propsRest.className}--invalid`]: invalid,
+        }),
       }, propsRest.className)}
     />
   );

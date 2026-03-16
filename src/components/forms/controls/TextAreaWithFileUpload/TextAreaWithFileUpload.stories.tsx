@@ -22,6 +22,7 @@ export default {
   args: {
     placeholder: 'Example',
     accept: '.txt,.json,.yaml',
+    disabled: false,
   },
   decorators: [
     Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
