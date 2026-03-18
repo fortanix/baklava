@@ -19,11 +19,21 @@ import { Prose } from './Prose.tsx';
 type ProseArgs = React.ComponentProps<typeof Prose>;
 type Story = StoryObj<typeof Prose>;
 
+// Add a subtle outline around the content so we can see the padding
+const Outlined = ({ children, color = 'light-dark(black, white)' }: React.PropsWithChildren<{ color?: string }>) => {
+  return (
+    <div style={{ /*outline: `1px solid color-mix(in oklch, ${color}, 80% transparent)`*/ }}>{children}</div>
+  );
+};
+
 export default {
   component: Prose,
   parameters: {
     layout: 'centered',
   },
+  decorators: [
+    Story => <Outlined><Story/></Outlined>,
+  ],
   tags: ['autodocs'],
   argTypes: {
   },
@@ -33,11 +43,11 @@ export default {
 } satisfies Meta<ProseArgs>;
 
 
-const SampleProse = () => {
-  const id = React.useId();
+const SampleProse = ({ heading }: { heading?: undefined | React.ReactNode }) => {
+  //const id = React.useId();
   return (
     <>
-      <h1>Heading 1</h1>
+      <h1>{heading || 'Heading 1'}</h1>
       <h2>Heading 2</h2>
       <h3>Heading 3</h3>
       <h4>Heading 4</h4>
@@ -49,6 +59,8 @@ const SampleProse = () => {
         {' '}<i>This text is italic.</i>
         {' '}<u>This text is underlined.</u>
       </p>
+      
+      <blockquote>This is a block quote.</blockquote>
       
       <hr/>
       
@@ -96,6 +108,29 @@ const SampleProse = () => {
           </ol>
         </li>
       </ol>
+      
+      <dl>
+        <dt>Term 1</dt>
+        <dd>Details 1</dd>
+        
+        <div>
+          <dt>Term 2 (wrapped in a div)</dt>
+          <dd>Details 2</dd>
+        </div>
+        
+        <dl>
+          <dt>Nested term 1</dt>
+          <dd>Nested details 1</dd>
+          
+          <div>
+            <dt>Nested term 2 (wrapped in a div)</dt>
+            <dd>Nested details 2</dd>
+          </div>
+        </dl>
+        
+        <dt>Term 3</dt>
+        <dd>Details 3</dd>
+      </dl>
       
       <table>
         <thead>
@@ -146,13 +181,56 @@ const SampleProse = () => {
   );
 };
 
-export const Standard: Story = {
+export const ProseStandard: Story = {
+  decorators: [Story => <Outlined><Story/></Outlined>],
   args: {
     children: <SampleProse/>,
   },
 };
 
-export const WithComponents: Story = {
+/** Prose should inherit certain properties, such as color and font size. */
+export const ProseInherit: Story = {
+  decorators: [Story => <div style={{ color: 'light-dark(indigo, fuchsia)', fontSize: '0.8rem' }}><Story/></div>],
+  args: {
+    children: <SampleProse heading="I should be purple and small"/>,
+  },
+};
+
+export const ProseRecursive: Story = {
+  args: {
+    children: (
+      <>
+        <SampleProse/>
+        
+        {/* Prose nested within itself */}
+        <Outlined>
+          <Prose><SampleProse/></Prose>
+        </Outlined>
+      </>
+    ),
+  },
+};
+
+/** Prose element styling should apply not just to descendents, but also to the root element. */
+export const ProseImmediate: Story = {
+  render: () => <h1 className="bk-prose">I should be styled as a header</h1>,
+};
+
+/** Elements with class `.bk` or `.bk-isolate` should be isolated from prose styling. */
+export const ProseIsolation: Story = {
+  render: () => (
+    <h1 className="bk-prose">
+      I should be styled as an h1
+      
+      <h2>I should be styled as an h2</h2>
+      
+      <h2 className="bk">I should not be styled</h2>
+      <h2 className="bk-isolate">I should also not be styled</h2>
+    </h1>
+  ),
+};
+
+export const ProseWithComponents: Story = {
   args: {
     children: (
       <>
@@ -165,7 +243,7 @@ export const WithComponents: Story = {
         <Button kind="primary" label="Button"/>
         
         <Panel>
-          <Panel.Heading>This panel contains a nested a bk-prose</Panel.Heading>
+          <Panel.Heading>This panel contains a nested <code className="bk-prose">.bk-prose</code></Panel.Heading>
           
           <div className="bk-prose">
             <p>The following should be bold and underlined:</p>

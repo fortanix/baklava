@@ -4,31 +4,9 @@
 
 @use '../context/theming.scss' as theming;
 
-@mixin text-defaults {
-  font-family: var(--bk-font-family-body);
-  line-height: 1.6; // https://css-tricks.com/how-to-tame-line-height-in-css
-  //color: ...; // Handled by theming.scss
-}
-
 /*
- * Mixin: isolate.
- * Resets the element with "root" container styling, so that it is not affected by inherited properties of parents. For
- * example, modal `<dialog>` elements should not be affected by the cascade, it should be as though they were located
- * at the root of the document.
- */
-@mixin isolate {
-  // https://web.dev/learn/css/inheritance#which_properties_are_inherited_by_default
-  
-  font: initial;
-  letter-spacing: normal;
-  text-align: initial;
-  text-transform: initial;
-  
-  @include text-defaults;
-}
-
-/*
-Root element styling. Meant to be applied specifically on the document root (i.e. `:root`).
+Root element styling. Meant to be applied specifically on the document root (i.e. `:root`), which is privileged
+over non-root elements in CSS in a few ways, for instance through the "root" units like rem, rlh, etc.
 Note: we want to allow opting out of global styling. In order to do so, we should have all root styling bundled into
 one place, namely this mixin. Any `:root` selectors in the rest of the codebase should be discouraged, except in the
 case where we set CSS variables (using a `--bk-` prefix to minimize conflicts with other libraries).
@@ -46,11 +24,17 @@ case where we set CSS variables (using a `--bk-` prefix to minimize conflicts wi
   text-size-adjust: none;
   
   // Set the base font size (this must be done on the root element, since it determines the `rem` unit)
-  font-size: 0.875rem; // 14px (at default browser font size at 1rem = 16px)
   // https://royalfig.github.io/fluid-typography-calculator
   //font-size: clamp(0.8rem, 0.76rem + 0.19999999999999996vw, 1rem);
   // https://utopia.fyi/type/calculator?c=320,12,1.2,1440,14,1.25,4,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12
-  font-size: round(clamp(0.75rem, 0.7143rem + 0.1786vi, 0.875rem), 1px); // 1rem ~ 14px at 1440px max viewport size
+  font-size: round(clamp(0.75em, 0.7143em + 0.1786vi, 0.875em), 1px); // 1rem ~ 14px at 1440px max viewport size
+  
+  @supports not (font-size: round(1px, 1px)) {
+    font-size: 0.875rem; // 14px, for browsers where 1rem = 16px
+  }
+  
+  // Do not set `line-height`, already set by `text-defaults`
+  //line-height: ;
   
   &:has(:target) {
     // Add enough scroll padding so anchors don't get hidden behind the `AppLayout` header
@@ -61,20 +45,60 @@ case where we set CSS variables (using a `--bk-` prefix to minimize conflicts wi
   }
 }
 
+@mixin text-defaults {
+  font: initial;
+  font-family: var(--bk-font-family-body);
+  font-size: 1rem;
+  
+  // Note: do not use `1rlh`, since we want the line height to be relative to whatever the `font-size` is set to.
+  // E.g. in a component that overrides `font-size` to be smaller, the `line-height` should scale.
+  line-height: 1.4;
+  
+  // FIXME: don't use `initial` here, we'd really want to use the values from `reset.scss`?
+  letter-spacing: normal;
+  word-spacing: initial;
+  text-align: initial;
+  text-transform: initial;
+  white-space: initial;
+  text-indent: initial;
+  
+  //color: ...; // Handled by theming.scss
+}
+
+/*
+ * Mixin: isolate.
+ * Resets the element with "root" container styling, so that it is not affected by inherited properties of parents. For
+ * example, modal `<dialog>` elements should not be affected by the cascade, it should be as though they were located
+ * at the root of the document.
+ */
+@mixin isolate {
+  // https://web.dev/learn/css/inheritance#which_properties_are_inherited_by_default
+  
+  // Note: `cursor` probably *should* be inherited. Though not on modals/popovers (things that "move" to the top layer)
+  &:popover-open, &:is(dialog:modal) {
+    cursor: initial;
+  }
+  
+  @include text-defaults;
+}
+
 @mixin styles {
-  // Isolate mixin as a utility class, for use with `@scope (.x) to (.isolate)`
-  .isolate {
+  // Note: we allow opting out of root styling using `.bk-no-globals`
+  // The `.bk-root` class can be used if you want to apply the root styles on something other than the document root,
+  // but note that this means certain functionality like `rem` units won't work properly.
+  :root:not(.bk-no-globals), .bk-root {
+    @include text-defaults;
+    @include root-styles;
+    @include theming.root-styles;
+  }
+  
+  // Isolate mixin as a utility class, for use with `@scope (.x) to (.bk-isolate)`
+  .bk-isolate, .bk {
     @include isolate;
   }
   
-  // Allow opting out of root styling using `.bk-no-globals`
-  :root:not(.bk-no-globals), .bk-root {
-    @include root-styles;
-    @include theming.root-styles;
-    @include text-defaults;
-  }
-  
-  // Injected by Google Translate on translated content with a right-to-left language
+  // Google Translate injects this class on translated content in a right-to-left language, such that web pages can
+  // choose to opt in to right-to-left styling.
   .translated-rtl {
     direction: rtl;
   }

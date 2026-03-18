@@ -184,7 +184,7 @@ export const DialogModal = Object.assign(
       allowUserClose = true,
       modalRef,
       providerProps,
-      renderMethod = 'portal',
+      renderMethod = 'inline',
       ...propsRest
     } = props;
     

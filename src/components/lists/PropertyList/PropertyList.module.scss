@@ -12,12 +12,12 @@
     flex-flow: row wrap;
     gap: bk.$spacing-4 bk.$spacing-8;
   }
-
+  
   // Horizontal layout (default)
   .bk-property-list--horizontal {
     flex-direction: row;
   }
-
+  
   .bk-property-list--vertical {
     flex-direction: column;
   }
@@ -25,7 +25,7 @@
 
 // Use `overrides` layer to make sure we override the `.bk-property` styles when vertical orientation
 @layer baklava.overrides {
-  .bk-property-list--vertical>.bk-property-list__property {
+  .bk-property-list--vertical > .bk-property-list__property {
     flex-basis: 100%;
     max-inline-size: 100%;
   }
