@@ -82,7 +82,7 @@ export { InputFieldWithTags } from '../src/components/forms/fields/InputFieldWit
 export { RadioGroupField } from '../src/components/forms/fields/RadioGroupField/RadioGroupField.tsx';
 export { TextAreaField } from '../src/components/forms/fields/TextAreaField/TextAreaField.tsx';
 export {
-  TextAreaWithFileUploadField
+  TextAreaWithFileUploadField,
 } from '../src/components/forms/fields/TextAreaWithFileUploadField/TextAreaWithFileUploadField.tsx';
 // Graphics
 export { Icon } from '../src/components/graphics/Icon/Icon.tsx';
@@ -121,7 +121,7 @@ export { TooltipProvider } from '../src/components/overlays/Tooltip/TooltipProvi
 export { useCustomFilters } from '../src/components/tables/DataTable/plugins/useCustomFilters.tsx';
 export {
   useRowSelectColumn,
-  useRowSelectColumnRadio
+  useRowSelectColumnRadio,
 } from '../src/components/tables/DataTable/plugins/useRowSelectColumn.tsx';
 export * as DataTableContext from '../src/components/tables/DataTable/DataTableContext.tsx';
 export * as DataTablePlaceholder from '../src/components/tables/DataTable/table/DataTablePlaceholder.tsx';

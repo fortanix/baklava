@@ -190,7 +190,7 @@ export const InputFile = ({
       onClick={onFileUploadClick}
       unstyled={unstyled}
       disabled={disabled}
-      label='Upload'
+      label="Upload"
     />
   );
 
@@ -221,7 +221,7 @@ export const InputFile = ({
             onClick={evt => { evt.preventDefault(); }}
             unstyled={unstyled}
             disabled={disabled}
-            label='Browse'
+            label="Browse"
           />
         </div>
         {accept && acceptVisible && (
