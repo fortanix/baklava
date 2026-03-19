@@ -13,7 +13,7 @@ import cl from './InputFile.module.scss';
 
 export { cl as InputFileClassNames };
 
-const handleWrongFileFormat = (fileName: string, fileType: string) => {
+export const handleWrongFileFormat = (fileName: string, fileType: string) => {
   let friendlyFileType = fileType.replace('/*', '');
   const fileTypeArray = fileType.split(',');
   if (fileTypeArray.length > 1) {
@@ -48,7 +48,7 @@ export const readFile = (
   }
 };
 
-const isFileAccepted = (file: File, accept?: string) => {
+export const isFileAccepted = (file: File, accept?: string) => {
   if (!accept) return true;
 
   const acceptList = accept.split(',').map(type => type.trim());
@@ -94,6 +94,8 @@ export type InputFileProps = React.ComponentPropsWithoutRef<'div'> & {
   acceptVisible?: undefined | boolean,
 
   multiple?: undefined | HTMLInputElement['multiple'],
+  
+  disabled?: undefined | boolean,
 };
 export const InputFile = ({
   className,
@@ -105,6 +107,7 @@ export const InputFile = ({
   accept,
   acceptVisible = true,
   multiple,
+  disabled,
 }: InputFileProps) => {
   const dragCounter = React.useRef(0);
   const fileInput = React.useRef<HTMLInputElement>(null);
@@ -112,11 +115,13 @@ export const InputFile = ({
   const [isDragging, setIsDragging] = React.useState(false);
   
   const onDrag = (e: React.DragEvent) => {
+    if (disabled) return;
     e.preventDefault();
     e.stopPropagation();
   };
   
   const onDragIn = (e: React.DragEvent) => {
+    if (disabled) return;
     e.preventDefault();
     e.stopPropagation();
     dragCounter.current += 1;
@@ -126,6 +131,7 @@ export const InputFile = ({
   };
   
   const onDragOut = (e: React.DragEvent) => {
+    if (disabled) return;
     e.preventDefault();
     e.stopPropagation();
     dragCounter.current -= 1;
@@ -135,6 +141,7 @@ export const InputFile = ({
   };
   
   const onDrop = (e: React.DragEvent) => {
+    if (disabled) return;
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
@@ -182,9 +189,9 @@ export const InputFile = ({
       className={cx(className, 'bk-input-file__btn--no-drag')}
       onClick={onFileUploadClick}
       unstyled={unstyled}
-    >
-      upload
-    </Button>
+      disabled={disabled}
+      label="Upload"
+    />
   );
 
   const renderFileInputWithDragAndDrop = () => {
@@ -197,6 +204,7 @@ export const InputFile = ({
           cl['bk-input-file__drag-target'],
           {
             [cl['bk-input-file__drag-target--is-dragging']]: isDragging,
+            [cl['bk-input-file__drag-target--disabled']]: disabled,
           },
           className,
         )}
@@ -212,9 +220,9 @@ export const InputFile = ({
             className={cl['bk-input-file__drag-target__button']}
             onClick={evt => { evt.preventDefault(); }}
             unstyled={unstyled}
-          >
-            browse
-          </Button>
+            disabled={disabled}
+            label="Browse"
+          />
         </div>
         {accept && acceptVisible && (
           <div className={cl['bk-input-file__drag-target__accepted-files']}>
@@ -241,6 +249,7 @@ export const InputFile = ({
         ref={fileInput}
         onChange={onFileChange}
         hidden
+        disabled={disabled}
         className={cx(cl['bk-input-file__input'], inputProps?.className)}
         {...accept && { accept }}
         {...multiple && { multiple }}

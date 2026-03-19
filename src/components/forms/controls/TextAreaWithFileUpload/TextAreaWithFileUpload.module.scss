@@ -1,0 +1,102 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-text-area-upload {
+    @include bk.component-base(bk-text-area-upload);
+
+    @include bk.focus-hidden;
+
+    --bk-text-area-border-color: #{bk.$theme-text-area-border-filled};
+    --bk-text-area-with-upload-size : 40ch;
+    
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-inline-size: var(--bk-text-area-with-upload-size);
+
+
+    .bk-text-area-upload__textarea-wrapper {
+      position: relative;
+    }
+
+    .bk-text-area-upload__textarea {
+      display: block;
+      border-end-start-radius: 0;
+      border-end-end-radius: 0;
+      min-inline-size:var(--bk-text-area-with-upload-size);
+    }
+    
+    &:has(.bk-text-area-upload__textarea:placeholder-shown){
+      --bk-text-area-border-color: #{bk.$theme-text-area-border-default};
+    }
+
+    &:has(.bk-text-area-upload__textarea:focus,
+      .bk-text-area-upload__textarea.pseudo-focused,
+      .bk-text-area-upload__textarea--invalid:focus,
+      .bk-text-area-upload__textarea.pseudo-focused,
+      .bk-text-area-upload__textarea--invalid:placeholder-shown:focus,
+      .bk-text-area-upload__textarea--invalid:placeholder-shown.pseudo-focused) {
+      color: bk.$theme-text-area-text-focused;
+      --bk-text-area-border-color: #{bk.$theme-text-area-border-focused};
+    }
+
+    &:has(.bk-text-area-upload__textarea--invalid, .bk-text-area-upload__textarea--invalid:placeholder-shown) {
+      --bk-text-area-border-color: #{bk.$theme-text-area-border-error};
+    }
+
+    .bk-text-area-upload__overlay {
+      position: absolute;
+      inset: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: bk.$font-size-m;
+      font-weight: bk.$font-weight-medium;
+
+      pointer-events: none;
+    }
+
+    .bk-text-area-upload__footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: bk.$spacing-1;
+
+      margin-block-start: -#{bk.$size-1};
+      padding: bk.$spacing-2 bk.$spacing-3;
+
+      font-size: bk.$font-size-m;
+
+      border: bk.rem-from-px(1) solid var(--bk-text-area-border-color);
+      border-end-start-radius: bk.$radius-3;
+      border-end-end-radius: bk.$radius-3;
+    }
+
+    .bk-text-area-upload__footer--disabled {
+      color: bk.$theme-text-area-text-disabled;
+      border-color: bk.$theme-text-area-border-disabled;
+    }
+
+    .bk-text-area-upload__browse {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      font-size: bk.$font-size-m;
+    }
+
+    .bk-text-area-upload--automatic-resize {
+      field-sizing: content;
+    }
+  }
+
+  .bk-text-area-upload--dragging > *:not(.bk-text-area-upload__overlay) {
+    opacity: 0.6;
+  }
+}

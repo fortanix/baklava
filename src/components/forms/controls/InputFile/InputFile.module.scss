@@ -7,7 +7,7 @@
 @layer baklava.components {
   .bk-input-file {
     @include bk.component-base(bk-input-file);
-    
+
     .bk-input-file__drag-target {
       display: flex;
       flex-direction: column;
@@ -17,22 +17,27 @@
       // TODO: Color provided by UX team has no token and doesn't match any colors_primitive.scss variable
       border: bk.$size-2 dashed #785EA7;
     }
-    
+
+    .bk-input-file__drag-target--disabled {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
     .bk-input-file__drag-target--is-dragging {
       opacity: 0.6;
     }
-    
+
     .bk-input-file__drag-target__inner {
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: bk.$font-size-m;
     }
-    
+
     .bk-input-file__drag-target__accepted-files {
       font-size: bk.$font-size-s;
     }
-    
+
     .bk-input-file__drag-target__button {
       padding: 0 bk.$spacing-1;
       font-size: bk.$font-size-m;
