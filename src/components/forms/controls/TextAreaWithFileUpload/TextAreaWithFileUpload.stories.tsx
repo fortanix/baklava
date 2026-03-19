@@ -23,7 +23,7 @@ export default {
     placeholder: 'Example',
     accept: '.txt,.json,.yaml',
     disabled: false,
-    enableDrop: true,
+    enableDragAndDrop: true,
   },
   decorators: [
     Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
@@ -70,7 +70,7 @@ export const Disabled: Story = {
 
 export const DropDisabled: Story = {
   args: {
-    enableDrop: false,
+    enableDragAndDrop: false,
   },
 };
 
