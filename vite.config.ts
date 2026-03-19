@@ -6,7 +6,7 @@ import * as path from 'node:path';
 //import { glob } from 'tinyglobby';
 
 import browserslist from 'browserslist';
-import { defineConfig } from 'vite';
+import { defineConfig, esmExternalRequirePlugin } from 'vite';
 import { Features as LightningCssFeatures, browserslistToTargets } from 'lightningcss';
 
 // Vite plugins
@@ -106,7 +106,12 @@ export default defineConfig({
     },
     rollupOptions: {
       // Do not include React in the output (rely on the consumer to bring their own version)
-      external: ['react', 'react/jsx-runtime'],
+      // external: ['react', 'react/jsx-runtime'],
+      plugins: [
+        esmExternalRequirePlugin({
+          external: ['react', 'react/jsx-runtime'],
+        }),
+      ],
       // input: Object.fromEntries(
       //   glob.sync('src/**/*.{ts,tsx}', {
       //     ignore: ['src/**/*.d.ts'],
