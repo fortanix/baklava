@@ -18,6 +18,19 @@ export type TextAreaWithFileUploadProps = React.ComponentProps<typeof TextArea> 
    * Notice that .webp files are not considered as `image/*`, at least in Chromium v144
    * */
   accept?: undefined | HTMLInputElement['accept'],
+  /**
+   * Enables drag-and-drop file upload on the textarea.
+   *
+   * - When `true`: users can drag and drop files into the textarea.
+   * - When `false` or `undefined`: drag-and-drop is disabled.
+   *
+   * Note:
+   * - File selection via the `Upload` button is still available regardless of this value.
+   * - Drag overlay and drag event listeners are only active when enabled.
+   *
+   * @default false.
+   */
+  enableDragAndDrop?: undefined | boolean;
 };
 
 export const TextAreaWithFileUpload = ({
@@ -26,6 +39,7 @@ export const TextAreaWithFileUpload = ({
   accept,
   unstyled,
   disabled,
+  enableDragAndDrop = false,
   ...textAreaProps
 }: TextAreaWithFileUploadProps) => {
   // Track nested dragenter / dragleave events.
@@ -66,7 +80,7 @@ export const TextAreaWithFileUpload = ({
   };
 
   const onDragIn = (e: React.DragEvent) => {
-    if (disabled) { return; }
+    if (disabled || !enableDragAndDrop) { return; }
 
     e.preventDefault();
     e.stopPropagation();
@@ -75,7 +89,7 @@ export const TextAreaWithFileUpload = ({
   };
 
   const onDragOut = (e: React.DragEvent) => {
-    if (disabled) { return; }
+    if (disabled || !enableDragAndDrop) { return; }
 
     e.preventDefault();
     e.stopPropagation();
@@ -86,14 +100,14 @@ export const TextAreaWithFileUpload = ({
   };
 
   const onDrag = (e: React.DragEvent) => {
-    if (disabled) { return; }
+    if (disabled || !enableDragAndDrop) { return; }
 
     e.preventDefault();
     e.stopPropagation();
   };
 
   const onDrop = (e: React.DragEvent) => {
-    if (disabled) { return; }
+    if (disabled || !enableDragAndDrop) { return; }
 
     e.preventDefault();
     setIsDragging(false);
@@ -123,6 +137,7 @@ export const TextAreaWithFileUpload = ({
         {
           [cl['bk-text-area-upload']]: !unstyled,
           [cl['bk-text-area-upload--dragging']]: isDragging,
+          [cl['bk-text-area-upload--disabled']]: disabled,
         },
         textAreaProps.className,
       )}
@@ -130,10 +145,10 @@ export const TextAreaWithFileUpload = ({
       {/* biome-ignore lint/a11y/noStaticElementInteractions: keyboard users can use the button to upload */}
       <div
         className={cl['bk-text-area-upload__textarea-wrapper']}
-        onDragEnter={onDragIn}
-        onDragLeave={onDragOut}
-        onDragOver={onDrag}
-        onDrop={onDrop}
+        onDragEnter={enableDragAndDrop ? onDragIn : undefined}
+        onDragLeave={enableDragAndDrop ? onDragOut : undefined}
+        onDragOver={enableDragAndDrop ? onDrag : undefined}
+        onDrop={enableDragAndDrop ? onDrop : undefined}
       >
         <TextArea
           {...textAreaProps}
@@ -152,7 +167,7 @@ export const TextAreaWithFileUpload = ({
             [cl['bk-text-area-upload__footer--disabled']]: disabled,
           }
         )}>
-          <span>Drop file or </span>
+          {enableDragAndDrop && <span>Drop file or </span>}
 
           <InputFile
             accept={accept}
@@ -165,7 +180,7 @@ export const TextAreaWithFileUpload = ({
         </div>
       </div>
 
-      {isDragging && (
+      {enableDragAndDrop && isDragging && (
         <div className={cx({
           [cl['bk-text-area-upload__overlay']]: !unstyled,
         })}>

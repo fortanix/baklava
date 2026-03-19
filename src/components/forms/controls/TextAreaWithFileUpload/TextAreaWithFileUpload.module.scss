@@ -79,6 +79,7 @@
     }
 
     .bk-text-area-upload__footer--disabled {
+      cursor: not-allowed;
       color: bk.$theme-text-area-text-disabled;
       border-color: bk.$theme-text-area-border-disabled;
     }
