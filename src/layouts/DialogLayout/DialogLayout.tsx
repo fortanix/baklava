@@ -56,6 +56,7 @@ export const DialogLayout = Object.assign(
         className={cx(
           'bk',
           { [cl['bk-dialog-layout']]: !unstyled },
+          propsRest.className,
         )}
       >
         {title && <H2>{title}</H2>}
