@@ -324,6 +324,15 @@
     }
   }
   
+  // Target Firefox 145 or lower
+  // @supports (-moz-appearance: none) and (color: contrast-color(red)) {
+  //   .bk-prose {
+  //     > p:not(.bk) {
+  //       margin-block: 1em;
+  //     }
+  //   }
+  // }
+  
   /*
   // Workaround for Firefox, which (as of early 2025) does not support `@scope`. Note: it would be better if we could
   // do this with feature testing, but we cannot yet use `@supports (at-rule())` to check for at-rules like `@scope`.

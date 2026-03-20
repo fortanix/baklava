@@ -46,17 +46,24 @@ case where we set CSS variables (using a `--bk-` prefix to minimize conflicts wi
 }
 
 @mixin text-defaults {
+  // Define the default styling for typography, used in "application mode" containers like `:root` or components.
+  // As opposed to "prose mode" which needs to be opted in to through `.bk-prose`.
+  // Note: these will override anything defined in `reset.scss`. In particular, setting something to `initial` here
+  // doesn't mean "use the styling from our reset", so only use this if you *want* to explicitly use the CSS initial
+  // value for a given property.
+  
   font: initial;
   font-family: var(--bk-font-family-body);
   font-size: 1rem;
   
   // Note: do not use `1rlh`, since we want the line height to be relative to whatever the `font-size` is set to.
-  // E.g. in a component that overrides `font-size` to be smaller, the `line-height` should scale.
+  // Using `1rlh` means it will use the line height of the font size set on `:root`. In a component that overrides
+  // `font-size` to be smaller, we want the `line-height` to scale accordingly.
   line-height: 1.4;
   
-  // FIXME: don't use `initial` here, we'd really want to use the values from `reset.scss`?
+  // Make sure we explicitly set any (text-related) properties that are inherited from the parent
   letter-spacing: normal;
-  word-spacing: initial;
+  word-spacing: normal;
   text-align: initial;
   text-transform: initial;
   white-space: initial;
@@ -74,12 +81,23 @@ case where we set CSS variables (using a `--bk-` prefix to minimize conflicts wi
 @mixin isolate {
   // https://web.dev/learn/css/inheritance#which_properties_are_inherited_by_default
   
-  // Note: `cursor` probably *should* be inherited. Though not on modals/popovers (things that "move" to the top layer)
+  @include text-defaults;
+  
+  // Properties that should inherit by default
+  //cursor: inherit;
+  //visibility: inherit;
+  //pointer-events: inherit;
+  
+  // The following should be reset on modal dialogs and popovers only
   &:popover-open, &:is(dialog:modal) {
-    cursor: initial;
+    cursor: initial; // Cursor should be inherited on "local" components, but not modals/popovers which are "separate"
   }
   
-  @include text-defaults;
+  // The following should be reset on modal dialogs only
+  &:is(dialog:modal) {
+    visibility: visible; // Modal dialogs shouldn't inherit the trigger's visibilty (but popovers should)
+    pointer-events: initial;
+  }
 }
 
 @mixin styles {
