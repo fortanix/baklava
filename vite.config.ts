@@ -104,7 +104,7 @@ export default defineConfig({
       //cssFileName: 'baklava',
       formats: ['es'],
     },
-    rollupOptions: {
+    rolldownOptions: {
       // Do not include React in the output (rely on the consumer to bring their own version)
       // external: ['react', 'react/jsx-runtime'],
       plugins: [
