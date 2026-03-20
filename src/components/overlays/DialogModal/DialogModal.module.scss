@@ -113,7 +113,7 @@
 }
 
 @mixin dialog-slide-over($entry-dur: 200ms, $exit-dur: 180ms, $size: 0.8, $origin: right) {
-  $dir: if($origin==right, 1, -1);
+  $dir: if(sass($origin==right): 1; else: -1);
   
   --transition-props: translate;
   transition-property: overlay, display, var(--transition-props);
