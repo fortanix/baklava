@@ -13,8 +13,8 @@ You can find the latest Storybook documentation [here](https://fortanix.github.i
 
 Requirements:
 
-- React v19 or higher.
-- Sass (recommended)
+- React v19+ (we rely on: `ref` as prop, among others)
+- Sass v1.95+ (we rely on: [modern `if()` syntax](https://sass-lang.com/documentation/breaking-changes/if-function))
 
 Installation:
 
