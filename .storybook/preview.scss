@@ -7,12 +7,19 @@
 
 /* Storybook-specific style overrides */
 
-@layer reset {
-  /*
-  Do not apply our aggressive reset to Storybook docs pages. The docs pages rely on some standard user agent styling
-  to be present. For example, lists like `<ol>` will break in docs pages.
-  */
-  @scope (#storybook-docs) to (.sb-story, .sb-unstyled, .bk) {
+/*
+Do not apply our aggressive reset to Storybook docs pages. The docs pages rely on some standard user agent styling
+to be present. For example, in docs pages our reset breaks `<ol>` lists, and radio inputs in the "controls" table.
+*/
+@layer reset.lib {
+  @scope (#storybook-docs) to (.sb-story, .sbdocs-preview) {
+    :scope, :scope * {
+      all: revert-layer;
+    }
+  }
+}
+@layer reset.custom {
+  @scope (#storybook-docs) to (.sb-story, .sbdocs-preview) {
     :scope, :scope * {
       all: revert-layer;
     }
