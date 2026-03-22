@@ -2,6 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+// stylelint-disable selector-not-notation
+
 @use '../../styling/defs.scss' as bk;
 @use '../../styling/features/typography.scss' as typography;
 
@@ -70,7 +72,6 @@
       
       --bk-prose-list-indent: 3ch;
       &:is(ul, ol) { // Lists with markers
-        
         display: block;
         margin-block-start: calc(var(--bk-prose-block-spacing) / 2);
         padding-inline-start: var(--bk-prose-list-indent); // Make space for `::marker`
@@ -206,60 +207,6 @@
           transform 0.1s ease;
       }
       
-      &:is(input:not([type='checkbox'], [type='radio']), select) {
-        display: block;
-      }
-      
-      &:is(input, select, button, textarea) {
-        color: #000000;
-        background-color: #efefef;
-        font-family: inherit;
-        font-size: inherit;
-        margin-inline-end: 6px;
-        margin-block-end: 6px;
-        padding: 10px;
-        border: none;
-        border-radius: 6px;
-        outline: none;
-      }
-      
-      &:is(
-        input:not([type='checkbox']):not([type='radio']),
-        select,
-        button,
-        textarea,
-      ) {
-        -webkit-appearance: none;
-      }
-      
-      &:is(textarea) {
-        margin-inline-end: 0;
-        inline-size: 100%;
-        box-sizing: border-box;
-        resize: vertical;
-      }
-      
-      &:is(button, input[type='submit'], input[type='button']) {
-        padding-inline: 30px;
-      }
-      
-      &:is(button:hover, input[type='submit']:hover, input[type='button']:hover) {
-        background: #dddddd;
-      }
-      
-      &:is(input:disabled, select:disabled, button:disabled, textarea:disabled) {
-        cursor: not-allowed;
-        opacity: .5;
-      }
-      
-      &:is(::-webkit-input-placeholder) {
-        color: #949494;
-      }
-      
-      &:is(::placeholder) {
-        color: #949494;
-      }
-      
       &:is(code, kbd) {
         background: light-dark(#ccc, #333);
         padding: 5px;
@@ -290,6 +237,203 @@
   }
 }
 
+// Fallback styling for browsers that don't support `@scope`
+@mixin prose-element-fallback {
+  @layer prose-base {
+    --bk-prose-base-lh: 1lh;
+    --bk-prose-line-height: 1.6;
+    --bk-prose-block-spacing: calc(var(--bk-prose-base-lh) * 0.8);
+    
+    font-family: var(--bk-font-family-body);
+    font-weight: 400;
+    line-height: var(--bk-prose-line-height);
+    
+    // Allow inheriting the following from the parent
+    font-size: inherit;
+    color: inherit;
+    
+    // The main issue with doing donut scoping without `@scope` is due to how the descendant operator (`.foo .bar`)
+    // works. So instead, we avoid the descendant operator altogether and manually check level by level. This will
+    // only work up until a certain finite depth, but we can make it as a deep as we like.
+    &,
+    & > :not(.bk, .bk-isolate),
+    & > :not(.bk, .bk-isolate) > :not(.bk, .bk-isolate),
+    & > :not(.bk, .bk-isolate) > :not(.bk, .bk-isolate) > :not(.bk, .bk-isolate),
+    & > :not(.bk, .bk-isolate) > :not(.bk, .bk-isolate) > :not(.bk, .bk-isolate) > :not(.bk, .bk-isolate) {
+      line-height: var(--bk-prose-line-height);
+      overflow-wrap: break-word; // Prevent long words causing overflow
+      text-wrap: pretty; // Favor better typography for text wrapping (e.g. prevent orphans)
+      hyphens: auto;
+      
+      // For any elements with `text-decoration-line: underline`, set the default underline styling
+      // This should match the styling of the `typography.link` mixin so that links look natural in prose.
+      text-underline-offset: 0.15em;
+      text-decoration-thickness: from-font;
+      
+      // Note: use `&:is()`, since we want these styles to be applied to the current element
+      
+      &:is(h1) { @include typography.h1; }
+      &:is(h2) { @include typography.h2; }
+      &:is(h3) { @include typography.h3; }
+      &:is(h4) { @include typography.h4; }
+      &:is(h5) { @include typography.h5; }
+      &:is(h6) { @include typography.h6; }
+      
+      &:is(i, em) { font-style: italic; }
+      &:is(b, strong, th) { font-weight: bk.$font-weight-semibold; }
+      &:is(u) { text-decoration-line: underline; }
+      &:is(code) {
+        padding-inline: 0.4ch;
+        background: light-dark(#eee, #333);
+        border-radius: 0.2em;
+        font-family: var(--bk-font-family-code);
+      }
+      
+      &:is(p) {
+        margin-block-start: var(--bk-prose-block-spacing);
+        overflow-wrap: break-word; // Allow breaking mid-word if they would otherwise cause overflow
+      }
+      
+      
+      // Lists
+      
+      --bk-prose-list-indent: 3ch;
+      &:is(ul, ol) { // Lists with markers
+        display: block;
+        margin-block-start: calc(var(--bk-prose-block-spacing) / 2);
+        padding-inline-start: var(--bk-prose-list-indent); // Make space for `::marker`
+        
+        > li:not(.bk, .bk-isolate) {
+          margin-block-start: calc(var(--bk-prose-block-spacing) / 4); // Spacing between items
+          
+          // Nested lists
+          > :is(ul, ol):not(.bk, .bk-isolate) {
+            margin-block-start: calc(var(--bk-prose-block-spacing) / 3);
+          }
+        }
+        
+        &:is(ul) {
+          // Note: do not use list-style: none, this causes accessibility issues:
+          // https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists
+          list-style: disc outside;
+          
+          > li:not(.bk, .bk-isolate)::marker {
+            // Override the marker style so we customize the gap size
+            // https://css-tricks.com/everything-you-need-to-know-about-the-gap-after-the-list-marker
+            content: '\2022\00A0\00A0';
+            margin: 0; // Margin and padding are not supported by `::marker` currently
+            font-size: 1.2em;
+            line-height: 1;
+          }
+        }
+        
+        &:is(ol) {
+          // Note: do not use list-style: none, this causes accessibility issues:
+          // https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists
+          list-style: decimal outside;
+        }
+      }
+      &:is(dl):not(.bk, .bk-isolate) {
+        margin-block-start: calc(var(--bk-prose-block-spacing) / 2);
+        
+        > dt:not(.bk, .bk-isolate) {
+          font-weight: bk.$font-weight-regular;
+          font-size: bk.$font-size-s;
+          color: bk.$theme-text-small-text-subtle;
+        }
+        
+        > dd:not(.bk, .bk-isolate) {
+          display: flex;
+          flex-direction: column;
+          font-weight: bk.$font-weight-regular;
+        }
+        
+        // Space out terms and nested `dl` lists
+        > dt:not(.bk, .bk-isolate):not(:nth-child(1 of dt)), > div, > dl {
+          margin-block-start: 0.4lh;
+        }
+        
+        > dl:not(.bk, .bk-isolate) {
+          margin-inline-start: var(--bk-prose-list-indent);
+        }
+      }
+      
+      &:is(hr) {
+        margin-block: bk.$spacing-4;
+        border: none;
+        border-block-start: bk.rem-from-px(1) solid currentColor;
+      }
+      
+      &:is(blockquote) {
+        border-inline-start: bk.rem-from-px(4) solid currentColor;
+        margin: 1.5em 0;
+        padding: 0.5em 1em;
+        font-style: italic;
+        
+        > :is(footer, cite):not(.bk, .bk-isolate) {
+          font-style: normal;
+        }
+      }
+      
+      &:is(address) {
+        font-style: normal;
+      }
+      
+      &:is(table) {
+        inline-size: 100%;
+        border-collapse: collapse;
+        margin-block-start: var(--bk-prose-block-spacing);
+        table-layout: fixed;
+      }
+      
+      &:is(th) {
+        cursor: default;
+        padding-inline-start: bk.$spacing-2;
+        padding-block-end: bk.$spacing-1;
+        
+        vertical-align: middle;
+        font-size: bk.$font-size-s;
+        color: bk.$theme-table-text-header-default;
+        text-transform: uppercase;
+      }
+      
+      &:is(td) {
+        vertical-align: top;
+        padding: bk.$spacing-3 bk.$spacing-2;
+      }
+      
+      &:is(td, th) {
+        border-block-end: bk.rem-from-px(1) solid bk.$theme-rule-default;
+        overflow: hidden;
+      }
+      
+      // Media
+      
+      &:is(img) {
+        max-inline-size: 100%;
+      }
+      
+      
+      // Interactive elements
+      
+      &:is(a) { @include typography.link; }
+      
+      &:is(label, button, input[type='submit'], input[type='button'], input[type='checkbox']):not(.bk, .bk-isolate) {
+        cursor: pointer;
+      }
+    }
+  }
+  
+  @layer prose-overrides {
+    // Trim the top margin
+    // Note: need to give this higher specificity, otherwise this gets overridden by earlier selectors
+    // In the future, we could replace this with `margin-trim` once that's available in all browsers
+    & > :nth-child(1 of :not([hidden], dialog, [popover])):not(.bk, .bk-isolate) {
+      margin-block-start: 0;
+    }
+  }
+}
+
 @mixin styles {
   @layer prose-base, prose-overrides;
   
@@ -303,38 +447,12 @@
     @include prose-element;
   }
   
-  // Target Firefox 145 or lower
-  // @supports (-moz-appearance: none) and (color: contrast-color(red)) {
-  //   .bk-prose {
-  //     > p:not(.bk) {
-  //       margin-block: 1em;
-  //     }
-  //   }
-  // }
-  
-  /*
-  // Workaround for Firefox, which (as of early 2025) does not support `@scope`. Note: it would be better if we could
-  // do this with feature testing, but we cannot yet use `@supports (at-rule())` to check for at-rules like `@scope`.
-  @supports (-moz-appearance: none) {
+  // Fallback for Firefox 145 or lower. Firefox 146 (December 2025) introduced `@scope` as well as `contrast-color()`.
+  // Note: it would be better if we could do this with `@supports (at-rule(@scope))`, but browsers don't support *that*
+  // yet. `@supports selector(:scope)` doesn't work either since `:scope` has been supported longer than `@scope`.
+  @supports (-moz-appearance: none) /* and (not (color: contrast-color(red))) */ {
     .bk-prose {
-      @include prose-root;
-    }
-    
-    // Shallow implementation (note: this does not work well, breaks with any nested components.
-    //.bk-prose:not(.bk, .bk *) { @include prose; }
-    
-    // The main issue with doing donut scoping without `@scope` is due to how the descendant operator (`.foo .bar`)
-    // works. So instead, we avoid the descendant operator altogether and manually check level by level. This will
-    // only work up until a certain finite depth, but we can make it as a deep as we like.
-    $descendant: '*:not(.bk:not(.bk-prose))';
-    .bk-prose,
-    .bk-prose > # {$descendant},
-    .bk-prose > # {$descendant} > # {$descendant},
-    .bk-prose > # {$descendant} > # {$descendant} > # {$descendant},
-    .bk-prose > # {$descendant} > # {$descendant} > # {$descendant} > # {$descendant},
-    .bk-prose > # {$descendant} > # {$descendant} > # {$descendant} > # {$descendant} > # {$descendant} {
-      @include prose;
+      @include prose-element-fallback;
     }
   }
-  */
 }
