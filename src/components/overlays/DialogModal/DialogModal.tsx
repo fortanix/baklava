@@ -51,7 +51,7 @@ export type DialogModalProps = Omit<React.ComponentProps<typeof Dialog>, 'childr
   /** Any additional props to pass to the modal provider. */
   providerProps?: undefined | Omit<ModalProviderProps, 'children'>,
   
-  /** Whether to render the model inline or with in a portal */
+  /** Whether to render the model inline in the DOM, or in a portal on the `<body>`. Default: `inline`. */
   renderMethod?: undefined | ModalProviderProps['renderMethod'],
 };
 
