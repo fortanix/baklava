@@ -6,58 +6,35 @@
 @use '../../styling/features/typography.scss' as typography;
 
 
-// Root-level prose element styling (e.g. inheritable styles)
-@mixin prose-root {
-  @layer prose-root {
-    // Capture the size of `1lh` at the root level so we can reference it in nested elements even if those elements
-    // have a different font size (and therefore `lh` size).
-    // Note: requires an `@property` so it gets computed correctly (defined in `styles` below)
-    // Reference: https://codepen.io/maikelkrause/pen/PwPRQPK
-    --bk-prose-base-lh: 1lh;
-    --bk-prose-line-height: 1.6; // https://css-tricks.com/how-to-tame-line-height-in-css
-    --bk-prose-block-spacing: calc(var(--bk-prose-base-lh) * 0.8); // How much to space elements in the block direction
-    
-    font-family: var(--bk-font-family-body);
-    font-weight: 400;
-    line-height: var(--bk-prose-line-height);
-    
-    // Allow inheriting the following from the parent
-    font-size: inherit;
-    color: inherit;
-  }
-}
-
 // Styling to be applied to any prose element (either the root or a descendent)
 @mixin prose-element {
   @layer prose-base {
-    // Root-level prose element styling (e.g. inheritable styles)
+    :scope {
+      // Root-level prose element styling (e.g. inheritable styles)
+      
+      // Capture the size of `1lh` at the root level so we can reference it in nested elements even if those elements
+      // have a different font size (and therefore `lh` size).
+      // Note: requires an `@property` so it gets computed correctly (defined in `styles` below)
+      // Reference: https://codepen.io/maikelkrause/pen/PwPRQPK
+      --bk-prose-base-lh: 1lh;
+      --bk-prose-line-height: 1.6; // https://css-tricks.com/how-to-tame-line-height-in-css
+      --bk-prose-block-spacing: calc(var(--bk-prose-base-lh) * 0.8); // How much to space elements in the block dir
+      
+      font-family: var(--bk-font-family-body);
+      font-weight: 400;
+      line-height: var(--bk-prose-line-height);
+      
+      // Allow inheriting the following from the parent
+      font-size: inherit;
+      color: inherit;
+    }
     
-    // Capture the size of `1lh` at the root level so we can reference it in nested elements even if those elements
-    // have a different font size (and therefore `lh` size).
-    // Note: requires an `@property` so it gets computed correctly (defined in `styles` below)
-    // Reference: https://codepen.io/maikelkrause/pen/PwPRQPK
-    --bk-prose-base-lh: 1lh;
-    --bk-prose-line-height: 1.6; // https://css-tricks.com/how-to-tame-line-height-in-css
-    --bk-prose-block-spacing: calc(var(--bk-prose-base-lh) * 0.8); // How much to space elements in the block direction
-
-    font-family: var(--bk-font-family-body);
-    font-weight: 400;
-    line-height: var(--bk-prose-line-height);
-    
-    // Allow inheriting the following from the parent
-    font-size: inherit;
-    color: inherit;
-  
-    // Descendent element styling
-    &, & * {
+    // Style prose content elements (which may also be the prose root element itself)
+    :scope, :scope * {
       line-height: var(--bk-prose-line-height);
       overflow-wrap: break-word; // Prevent long words causing overflow
       text-wrap: pretty; // Favor better typography for text wrapping (e.g. prevent orphans)
       hyphens: auto;
-      
-      //
-      // Content elements
-      //
       
       // Note: use `&:is()`, since we want these styles to be applied to the current element
       
@@ -124,6 +101,8 @@
         }
       }
       &:is(dl) {
+        margin-block-start: calc(var(--bk-prose-block-spacing) / 2);
+        
         dt {
           font-weight: bk.$font-weight-regular;
           font-size: bk.$font-size-s;
@@ -158,7 +137,7 @@
         padding: 0.5em 1em;
         font-style: italic;
         
-        & > footer:not(.bk), & > cite:not(.bk) {
+        footer, cite {
           font-style: normal;
         }
       }
@@ -189,7 +168,7 @@
         vertical-align: top;
         padding: bk.$spacing-3 bk.$spacing-2;
       }
-
+      
       &:is(td, th) {
         border-block-end: bk.rem-from-px(1) solid bk.$theme-rule-default;
         overflow: hidden;
@@ -296,17 +275,18 @@
     }
   }
   
-  // Note: need to give this higher specificity, otherwise this gets overridden by earlier selectors
   @layer prose-overrides {
-    // XXX replace this with `margin-trim` once that's available
-    & > :nth-child(1 of :not(.bk, [hidden], dialog)) {
+    // Trim the top margin
+    // Note: need to give this higher specificity, otherwise this gets overridden by earlier selectors
+    // In the future, we could replace this with `margin-trim` once that's available in all browsers
+    :scope > :nth-child(1 of :not([hidden], dialog, [popover])) {
       margin-block-start: 0;
     }
   }
 }
 
 @mixin styles {
-  @layer prose-root, prose-base, prose-overrides;
+  @layer prose-base, prose-overrides;
   
   @property --bk-prose-base-lh {
     syntax: '<length>';
@@ -315,13 +295,7 @@
   }
   
   @scope (.bk-prose) to (.bk-isolate, .bk) {
-    :scope {
-      @include prose-root;
-    }
-    
-    :scope, :scope * {
-      @include prose-element;
-    }
+    @include prose-element;
   }
   
   // Target Firefox 145 or lower
