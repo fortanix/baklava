@@ -11,7 +11,7 @@
   }
 }
 
-// Use `overrides` layer to make sure we override the `.bk-card` styles
+// Use `overrides` layer to make sure we override the component styles (`.bk-card`, `.bk-button`, `.bk-link`)
 @layer baklava.overrides {
   .bk-card-action {
     @include bk.component-base(bk-card-action);
@@ -46,7 +46,9 @@
     }
     
     .bk-card-action__action {
+      
       // Make sure there's no containment or transforms applied, otherwise the absolute positioning won't work
+      position: static; // Prevent relative/absolute/fixed positioning
       contain: initial;
       transform: initial;
       translate: initial;
@@ -57,6 +59,8 @@
         // Render a pseudo element that covers the entire card. This way, the entire card will "act" like the embedded
         // action button, while still keeping the button/link as the interactive element (necessary for a11y).
         &::after {
+          all: unset; // Override any existing `::after` styles (e.g. `expand-target-area()`)
+          
           content: '';
           display: block;
           cursor: pointer;
