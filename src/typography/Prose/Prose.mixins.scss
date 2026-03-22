@@ -36,6 +36,11 @@
       text-wrap: pretty; // Favor better typography for text wrapping (e.g. prevent orphans)
       hyphens: auto;
       
+      // For any elements with `text-decoration-line: underline`, set the default underline styling
+      // This should match the styling of the `typography.link` mixin so that links look natural in prose.
+      text-underline-offset: 0.15em;
+      text-decoration-thickness: from-font;
+      
       // Note: use `&:is()`, since we want these styles to be applied to the current element
       
       &:is(h1) { @include typography.h1; }
@@ -47,7 +52,7 @@
       
       &:is(i, em) { font-style: italic; }
       &:is(b, strong, th) { font-weight: bk.$font-weight-semibold; }
-      &:is(u) { text-decoration: underline; }
+      &:is(u) { text-decoration-line: underline; }
       &:is(code) {
         padding-inline: 0.4ch;
         background: light-dark(#eee, #333);

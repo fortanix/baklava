@@ -61,8 +61,7 @@ export const Link = (props: LinkProps) => {
       {...propsRest}
       className={cx(
         'bk',
-        cl['bk-link'],
-        { [cl['bk-link--unstyled']]: unstyled },
+        { [cl['bk-link']]: !unstyled },
         { [cl['bk-link--disabled']]: disabled },
         { [cl['bk-link--small']]: size === 'small' },
         props.className,

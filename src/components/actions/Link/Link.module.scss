@@ -7,14 +7,11 @@
 
 @layer baklava.components {
   .bk-link {
-    @include bk.expand-target-area();
-    
     --cursor: pointer; // Useful for descendents in case they want to "unset" their cursor
-
-    &:not(.bk-link--unstyled) {
-      @include bk.component-base(bk-link);
-      
-      @include typography.link;
-    }
+    
+    @include bk.component-base(bk-link);
+    
+    @include bk.expand-target-area();
+    @include typography.link;
   }
 }

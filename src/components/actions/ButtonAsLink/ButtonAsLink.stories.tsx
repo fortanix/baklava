@@ -22,29 +22,28 @@ export default {
   argTypes: {},
   args: {
     unstyled: false,
-    label: 'Button',
+    label: 'ButtonAsLink',
     onPress: () => { notify.success('You pressed the button.'); },
   },
   render: (args) => <ButtonAsLink {...args}/>,
 } satisfies Meta<ButtonAsLinkArgs>;
 
 
-export const Standard: Story = {};
+export const ButtonAsLinkStandard: Story = {};
 
-export const Small: Story = {
+export const ButtonAsLinkSmall: Story = {
   args: {
     size: 'small',
   },
 };
 
-/** ButtonAsLink should have vertical alignment matching other inline text. */
-export const Inline: Story = {
-  args: {
-    label: 'ButtonAsLink',
-  },
-  render: args => (
-    <p style={{ fontSize: '14px', textDecoration: 'underline' }}>
-      Here is some text with a <ButtonAsLink {...args}/> embedded. It should have the matching font size and vertical alignment. The underline should match exactly.
-    </p>
-  )
+/** `ButtonAsLink` should have vertical alignment matching other inline text. */
+export const ButtonAsLinkInProse: Story = {
+  decorators: [
+    Story => (
+      <u className="bk-prose">
+        Here is some text with a <Story/> embedded. It should have the matching font size and vertical alignment. The underline should match exactly.
+      </u>
+    ),
+  ],
 };

@@ -4,10 +4,10 @@
 
 @use '../../../styling/defs.scss' as bk;
 
-@layer baklava.components {
+@layer baklava.overrides {
   .bk-button-as-link {
-    /* appearance: none; */
-    /* -webkit-appearance: none; */
-    vertical-align: bottom; /* Buttons by default seem to have `vertical-align: baseline`, even with reset */
+    contain: style; // Make sure `contain: layout` is disabled, otherwise baseline alignment won't work
+    vertical-align: baseline; // Align to the baseline (e.g. to match the surrounding text in a paragraph)
+    user-select: auto; // Allow text selection (just like with a normal link)
   }
 }
