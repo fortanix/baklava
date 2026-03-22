@@ -450,7 +450,7 @@
   // Fallback for Firefox 145 or lower. Firefox 146 (December 2025) introduced `@scope` as well as `contrast-color()`.
   // Note: it would be better if we could do this with `@supports (at-rule(@scope))`, but browsers don't support *that*
   // yet. `@supports selector(:scope)` doesn't work either since `:scope` has been supported longer than `@scope`.
-  @supports (-moz-appearance: none) /* and (not (color: contrast-color(red))) */ {
+  @supports (-moz-appearance: none) and (not (color: contrast-color(red))) {
     .bk-prose {
       @include prose-element-fallback;
     }

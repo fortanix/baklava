@@ -192,7 +192,7 @@ export const ProseStandard: Story = {
 export const ProseInherit: Story = {
   decorators: [Story => <div style={{ color: 'light-dark(indigo, fuchsia)', fontSize: '0.8rem' }}><Story/></div>],
   args: {
-    children: <SampleProse heading="I should be purple and small"/>,
+    children: <SampleProse heading="This prose block should be purple and small"/>,
   },
 };
 
