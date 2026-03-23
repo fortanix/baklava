@@ -10,8 +10,8 @@
   --bk-focus-color-anim: transparent; // Start transparent for animation purposes
   
   &, &.pseudo-focus-visible {
-    box-shadow: none if($override-layer, !important, null);
-    outline: none if($override-layer, !important, null);
+    box-shadow: none if(sass($override-layer): #{'!important'}; else: null);
+    outline: none if(sass($override-layer): #{'!important'}; else: null);
   }
 }
 
@@ -19,12 +19,12 @@
 @mixin focus-outset($selector: '&:focus-visible, &.pseudo-focus-visible', $override-layer: true) {
   --bk-focus-color-anim: transparent; // Start transparent for animation purposes
   
-  box-shadow: none if($override-layer, !important, null); // Remove focus-inset, if any
-  outline: var(--bk-focus-outline-width) solid var(--bk-focus-color-anim) if($override-layer, !important, null);
+  box-shadow: none if(sass($override-layer): #{'!important'}; else: null); // Remove focus-inset, if any
+  outline: var(--bk-focus-outline-width) solid var(--bk-focus-color-anim) if(sass($override-layer): #{'!important'}; else: null);
   
   // Should add `.pseudo-focus-visible` here for visual testing purposes
   #{$selector} {
-    --bk-focus-color-anim: var(--bk-focus-outline-color) #{if($override-layer, !important, null)};
+    --bk-focus-color-anim: var(--bk-focus-outline-color) #{if(sass($override-layer): #{'!important'}; else: null)};
     @content;
   }
   
@@ -41,14 +41,14 @@
 @mixin focus-inset($selector: '&:focus-visible, &.pseudo-focus-visible', $override-layer: true) {
   --bk-focus-color-anim: transparent; // Start transparent for animation purposes
   
-  outline: none if($override-layer, !important, null); // Remove focus-outset, if any
+  outline: none if(sass($override-layer): #{'!important'}; else: null); // Remove focus-outset, if any
   
   $w: var(--bk-focus-outline-width);
   box-shadow: // Note: add one for each corner so that we get proper inner border radii
     inset $w $w var(--bk-focus-color-anim),
     inset $w calc(-1 * $w) var(--bk-focus-color-anim),
     inset calc(-1 * $w) $w var(--bk-focus-color-anim),
-    inset calc(-1 * $w) calc(-1 * $w) var(--bk-focus-color-anim) if($override-layer, !important, null);
+    inset calc(-1 * $w) calc(-1 * $w) var(--bk-focus-color-anim) if(sass($override-layer): #{'!important'}; else: null);
   
   // Add `.pseudo-focus-visible` for visual testing purposes
   #{$selector} {

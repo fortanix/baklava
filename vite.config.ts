@@ -65,11 +65,7 @@ export default defineConfig({
   css: {
     // Configure preprocessing using Sass
     preprocessorOptions: {
-      scss: {
-        // Cannot yet use the modern `if()` syntax, until VSCode supports it:
-        // https://github.com/microsoft/vscode-css-languageservice/issues/466
-        silenceDeprecations: ['if-function'],
-      },
+      scss: {},
     },
     // Configure postprocessing using lightningcss
     transformer: 'lightningcss',
