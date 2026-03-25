@@ -116,10 +116,12 @@ export const Tabs = (props: TabsProps) => {
         propsRest.className,
       )}
     >
-      <ul className={cx(
-        cl['bk-tabs__switcher'],
-        scrollerProps.className
-      )}
+      <ul
+        {...scrollerProps}
+        className={cx(
+          cl['bk-tabs__switcher'],
+          scrollerProps.className
+        )}
         role="tablist"
       >
         {tabs.map(tab => {
