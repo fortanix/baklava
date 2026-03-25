@@ -4,6 +4,7 @@
 
 import * as React from 'react';
 import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../util/componentUtil.ts';
+import { useScroller } from '../../../layouts/util/Scroller.tsx';
 
 import cl from './Tabs.module.scss';
 
@@ -64,6 +65,7 @@ export const Tabs = (props: TabsProps) => {
     onSwitch,
     ...propsRest
   } = props;
+  const scrollerProps = useScroller();
 
   // Select the activeKey tab among the given list of tabs
   const getActiveTab = (tabs: Array<TabElement>) => {
@@ -114,7 +116,14 @@ export const Tabs = (props: TabsProps) => {
         propsRest.className,
       )}
     >
-      <ul className={cx(cl['bk-tabs__switcher'])} role="tablist">
+      <ul
+        {...scrollerProps}
+        className={cx(
+          cl['bk-tabs__switcher'],
+          scrollerProps.className
+        )}
+        role="tablist"
+      >
         {tabs.map(tab => {
           const { tabKey, hide, tabTriggerProps } = tab.props;
           
