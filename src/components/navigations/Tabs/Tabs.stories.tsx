@@ -24,10 +24,10 @@ export default {
   args: {
     children: 'Example',
   },
-  render: (args) => <Tabs {...args}/>,
+  render: (args) => <Tabs {...args} />,
 } satisfies Meta<TabsArgs>;
 
-const defaultTabOptions: Array<TabProps> = [1,2,3,4].map(index => ({ tabKey: `${index}`, title: `Tab ${index}` }));
+const defaultTabOptions: Array<TabProps> = [1, 2, 3, 4].map(index => ({ tabKey: `${index}`, title: `Tab ${index}` }));
 
 type TabWithTriggerProps = React.PropsWithChildren<Partial<TabsArgs>> & {
   options?: undefined | Array<TabProps>,
@@ -118,6 +118,36 @@ export const VerticalTabs: StoryWithTrigger = {
   args: {
     ...BaseStory.args,
     orientation: 'vertical',
+  },
+};
+
+export const Scrollable: StoryWithTrigger = {
+  ...BaseStory,
+  decorators: [
+    (Story) => (<Panel ><Story /></Panel>),
+  ],
+  args: {
+    ...BaseStory.args,
+    options: Array.from({ length: 12 }).map((_, i) => ({
+      tabKey: `${i + 1}`,
+      title: `Tab ${i + 1}`,
+    })),
+  },
+};
+
+export const VerticalScrollable: StoryWithTrigger = {
+  ...BaseStory,
+  decorators: [
+    (Story) => (<Panel><Story /></Panel>),
+  ],
+  args: {
+    ...BaseStory.args,
+    style: { height: 300 },
+    orientation: 'vertical',
+    options: Array.from({ length: 12 }).map((_, i) => ({
+      tabKey: `${i + 1}`,
+      title: `Tab ${i + 1}`,
+    })),
   },
 };
 
