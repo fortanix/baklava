@@ -128,9 +128,9 @@ export const Scrollable: StoryWithTrigger = {
   ],
   args: {
     ...BaseStory.args,
-    options: Array.from({ length: 12 }).map((_, i) => ({
-      tabKey: `${i + 1}`,
-      title: `Tab ${i + 1}`,
+    options: Array.from({ length: 12 }, (_, i) => i + 1).map((index) => ({
+      tabKey: `${index}`,
+      title: `Tab ${index}`,
     })),
   },
 };
@@ -144,9 +144,9 @@ export const VerticalScrollable: StoryWithTrigger = {
     ...BaseStory.args,
     style: { height: 300 },
     orientation: 'vertical',
-    options: Array.from({ length: 12 }).map((_, i) => ({
-      tabKey: `${i + 1}`,
-      title: `Tab ${i + 1}`,
+    options: Array.from({ length: 12 }, (_, i) => i + 1).map((index) => ({
+      tabKey: `${index}`,
+      title: `Tab ${index}`,
     })),
   },
 };
