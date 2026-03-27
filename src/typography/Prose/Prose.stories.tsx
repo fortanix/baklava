@@ -12,6 +12,7 @@ import { SegmentedControl } from '../../components/forms/controls/SegmentedContr
 import { 
   SegmentedCardActionControl 
 } from '../../components/forms/controls/SegmentedCardActionControl/SegmentedCardActionControl.tsx';
+import { Icon } from '../../components/graphics/Icon/Icon.tsx';
 
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
 
@@ -181,9 +182,9 @@ export const WithComponents: Story = {
           <SegmentedControl.Button buttonKey="test-3" label="Test 3"/>
         </SegmentedControl>
         <SegmentedCardActionControl defaultSelected="test-1" aria-label="Test segmented control">
-          <SegmentedCardActionControl.Card key="eks" icon="account" cardKey="red" title="External Key Source Connection" />
-          <SegmentedCardActionControl.Card key="azure" icon="account" cardKey="aws" title="Amazon Web Services" />
-          <SegmentedCardActionControl.Card key="aws" icon="account" cardKey="blue" title="Azure" />
+          <SegmentedCardActionControl.Card key="eks" icon={<Icon icon="account"/>} cardKey="red" title="External Key Source Connection" />
+          <SegmentedCardActionControl.Card key="azure" icon={<Icon icon="account"/>} cardKey="aws" title="Amazon Web Services" />
+          <SegmentedCardActionControl.Card key="aws" icon={<Icon icon="account"/>} cardKey="blue" title="Azure" />
         </SegmentedCardActionControl>
       </>
     ),

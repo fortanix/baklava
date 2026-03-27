@@ -7,6 +7,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import * as React from 'react';
 
 import { Button } from '../../../actions/Button/Button.tsx';
+import { Icon } from '../../../graphics/Icon/Icon.tsx';
 
 import { CardKey, SegmentedCardActionControl } from './SegmentedCardActionControl.tsx';
 
@@ -29,12 +30,12 @@ export default {
       <>
         <SegmentedCardActionControl.Card
           key="eks"
-          icon="account"
+          icon={<Icon icon="account"/>}
           cardKey="eks"
           title="External Key Source Connection"
         />
-        <SegmentedCardActionControl.Card key="aws" icon="account" cardKey="aws" title="Amazon Web Services" />
-        <SegmentedCardActionControl.Card key="azure" icon="account" cardKey="azure" title="Azure" />
+        <SegmentedCardActionControl.Card key="aws" icon={<Icon icon="account"/>} cardKey="aws" title="Amazon Web Services" />
+        <SegmentedCardActionControl.Card key="azure" icon={<Icon icon="account"/>} cardKey="azure" title="Azure" />
       </>
     ),
   },
@@ -49,14 +50,14 @@ export const SegmentedCardActionControlHover: Story = {
   args: {
     children: (
       <>
-        <SegmentedCardActionControl.Card icon="account" cardKey="red" title="Red" />
+        <SegmentedCardActionControl.Card icon={<Icon icon="account"/>} cardKey="red" title="Red" />
         <SegmentedCardActionControl.Card
-          icon="account"
+          icon={<Icon icon="account"/>}
           cardKey="green"
           title="Green (Hovered)"
           className="pseudo-hover"
         />
-        <SegmentedCardActionControl.Card icon="account" cardKey="blue" title="Blue" />
+        <SegmentedCardActionControl.Card icon={<Icon icon="account"/>} cardKey="blue" title="Blue" />
       </>
     ),
   },
@@ -67,13 +68,13 @@ export const SegmentedCardActionControlFocused: Story = {
     children: (
       <>
         <SegmentedCardActionControl.Card
-          icon="account"
+          icon={<Icon icon="account"/>}
           cardKey="red"
           title="Red (Focused)"
           className="pseudo-focus-visible"
         />
-        <SegmentedCardActionControl.Card icon="account" cardKey="green" title="Green" />
-        <SegmentedCardActionControl.Card icon="account" cardKey="blue" title="Blue" />
+        <SegmentedCardActionControl.Card icon={<Icon icon="account"/>} cardKey="green" title="Green" />
+        <SegmentedCardActionControl.Card icon={<Icon icon="account"/>} cardKey="blue" title="Blue" />
       </>
     ),
   },
@@ -98,9 +99,9 @@ export const SegmentedCardActionControlControlled: Story = {
   args: {
     children: (
       <>
-        <SegmentedCardActionControl.Card icon="account" cardKey="red" title="Red" />
-        <SegmentedCardActionControl.Card icon="account" cardKey="green" title="Green" />
-        <SegmentedCardActionControl.Card icon="account" cardKey="blue" title="Blue" />
+        <SegmentedCardActionControl.Card icon={<Icon icon="account"/>} cardKey="red" title="Red" />
+        <SegmentedCardActionControl.Card icon={<Icon icon="account"/>} cardKey="green" title="Green" />
+        <SegmentedCardActionControl.Card icon={<Icon icon="account"/>} cardKey="blue" title="Blue" />
       </>
     ),
   },
@@ -111,9 +112,9 @@ export const SegmentedCardActionControlControlledWithDefault: Story = {
   args: {
     children: (
       <>
-        <SegmentedCardActionControl.Card icon="account" cardKey="red" title="Red" />
-        <SegmentedCardActionControl.Card icon="account" cardKey="green" title="Green" />
-        <SegmentedCardActionControl.Card icon="account" cardKey="blue" title="Blue" />
+        <SegmentedCardActionControl.Card icon={<Icon icon="account"/>} cardKey="red" title="Red" />
+        <SegmentedCardActionControl.Card icon={<Icon icon="account"/>} cardKey="green" title="Green" />
+        <SegmentedCardActionControl.Card icon={<Icon icon="account"/>} cardKey="blue" title="Blue" />
       </>
     ),
   },

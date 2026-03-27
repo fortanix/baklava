@@ -59,7 +59,7 @@ type SegmentedCardActionControlCardProps = ComponentProps<typeof CardAction> & {
   title: React.ReactNode;
 
   /** The name of the icon to display or customIcon */
-  icon: React.ReactNode | IconName;
+  icon: undefined | React.ReactElement,
 
   /** Escape hatch */
   children?: React.ReactNode;
@@ -87,9 +87,6 @@ const SegmentedCardActionControlCard = (props: SegmentedCardActionControlCardPro
   const context = useSegmentedCardActionControlContext(cardDef);
 
   const isSelected = context.selectedCard === cardKey;
-  const isIconName = (icon: unknown): icon is IconName => typeof icon === 'string';
-
-  const resolvedIcon = isIconName(icon) ? <Icon icon={icon} /> : icon;
 
   return (
     <div
@@ -122,7 +119,10 @@ const SegmentedCardActionControlCard = (props: SegmentedCardActionControlCardPro
           children
         ) : (
           title && (
-            <CardAction.Heading className={cx(cl['bk-segmented-card-action-control__card-action__heading'])} icon={resolvedIcon}>
+            <CardAction.Heading
+              className={cx(cl['bk-segmented-card-action-control__card-action__heading'])}
+              icon={icon}
+            >
               {title}
             </CardAction.Heading>
           )
