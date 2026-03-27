@@ -104,12 +104,12 @@
     color: bk.$theme-text-body-default;
     line-height: bk.$line-height-s;
 
-    > :global(.icon) {
+    > :global(._icon) {
       flex-shrink: 0;
       align-self: flex-start;
     }
 
-    > :global(.content) {
+    > :global(._content) {
       flex: 1;
       min-inline-size: 0;
 
