@@ -30,20 +30,6 @@ export default {
   },
 } satisfies Meta<DialogLayoutArgs>;
 
-const DialogLayoutLogo = (props: React.ComponentProps<typeof FortanixLogo>) => {
-  const { subtitle, subtitleTrademark, ...propsLogo } = props;
-  return (
-    <div>
-      <FortanixLogo {...propsLogo}/>
-      {subtitle &&
-        <span>
-          {subtitle}
-          {subtitleTrademark && <span>&trade;</span>}
-        </span>
-      }
-    </div>
-  );
-};
 export const DialogOnboarding: Story = {
   render: () => {
     return (

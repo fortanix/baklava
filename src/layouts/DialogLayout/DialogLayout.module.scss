@@ -44,14 +44,19 @@
     @include bk.flex($dir: row, $gap: bk.$spacing-1);
     align-items: center;
     
-    .bk-dialog-layout__logo__logo {
+    .bk-dialog-layout__logo-image {
       zoom: 0.8; // Scale the logo down a bit
     }
     
-    .bk-dialog-layout__logo__subtitle {
-      text-transform: uppercase;
-      font-size: bk.rem-from-px(22);
-      font-weight: bk.$font-weight-regular;  
+    .bk-dialog-layout__logo-text {
+      sup {
+        vertical-align: super;
+      }
+      .bk-dialog-layout__logo-subtitle {
+        text-transform: uppercase;
+        font-size: bk.rem-from-px(22);
+        font-weight: bk.$font-weight-regular; 
+      }
     }
   } 
 }
