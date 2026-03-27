@@ -104,11 +104,14 @@
     color: bk.$theme-text-body-default;
     line-height: bk.$line-height-s;
 
+    // TODO check why this linting error is raised
+    // stylelint-disable-next-line selector-class-pattern 
     > :global(._icon) {
       flex-shrink: 0;
       align-self: flex-start;
     }
 
+    // stylelint-disable-next-line selector-class-pattern 
     > :global(._content) {
       flex: 1;
       min-inline-size: 0;
