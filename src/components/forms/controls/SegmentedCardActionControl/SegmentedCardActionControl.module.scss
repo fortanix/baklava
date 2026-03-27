@@ -75,6 +75,7 @@
       &:is(:focus-visible, :global(.pseudo-focus-visible)) {
         z-index: 1; // Have the focused toggle render over the other toggles so that the focus is fully shown
         --bk-segmented-card-action-control-border-color: #{bk.$theme-card-border-selected};
+        --bk-segmented-card-action-control-background-color: #{bk.$theme-card-background-selected};
       }
 
       // State: active
@@ -85,8 +86,6 @@
       @media (prefers-reduced-motion: no-preference) {
         transition: filter 100ms ease-out;
       }
-
-
     }
 
   }

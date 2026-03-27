@@ -8,7 +8,7 @@ import { classNames as cx, type ComponentProps } from '../../../../util/componen
 import { isItemProgrammaticallyFocusable } from '../../../util/composition/compositionUtil.ts';
 
 import { CardAction } from '../../../actions/CardAction/CardAction.tsx';
-import { Icon, IconName } from '../../../graphics/Icon/Icon.tsx';
+import { Icon } from '../../../graphics/Icon/Icon.tsx';
 
 import cl from './SegmentedCardActionControl.module.scss';
 

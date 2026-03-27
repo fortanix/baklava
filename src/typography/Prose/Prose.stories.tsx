@@ -181,10 +181,10 @@ export const WithComponents: Story = {
           <SegmentedControl.Button buttonKey="test-2" label="Test 2"/>
           <SegmentedControl.Button buttonKey="test-3" label="Test 3"/>
         </SegmentedControl>
-        <SegmentedCardActionControl defaultSelected="test-1" aria-label="Test segmented control">
-          <SegmentedCardActionControl.Card key="eks" icon={<Icon icon="account"/>} cardKey="red" title="External Key Source Connection" />
-          <SegmentedCardActionControl.Card key="azure" icon={<Icon icon="account"/>} cardKey="aws" title="Amazon Web Services" />
-          <SegmentedCardActionControl.Card key="aws" icon={<Icon icon="account"/>} cardKey="blue" title="Azure" />
+        <SegmentedCardActionControl defaultSelected="eks" aria-label="Test segmented control">
+          <SegmentedCardActionControl.Card key="eks" icon={<Icon icon="account"/>} cardKey="eks" title="External Key Source Connection" />
+          <SegmentedCardActionControl.Card key="aws" icon={<Icon icon="account"/>} cardKey="aws" title="Amazon Web Services" />
+          <SegmentedCardActionControl.Card key="azure" icon={<Icon icon="account"/>} cardKey="azure" title="Azure" />
         </SegmentedCardActionControl>
       </>
     ),
