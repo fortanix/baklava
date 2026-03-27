@@ -109,6 +109,7 @@ const preview = {
                 'Radio',
                 'RadioGroup',
                 'SegmentedControl',
+                'SegmentedCardActionControl',
                 'Input',
                 [
                   'InputSearch',

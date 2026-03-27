@@ -9,6 +9,10 @@ import { DummyLink } from '../../util/storybook/StorybookLink.tsx';
 
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { SegmentedControl } from '../../components/forms/controls/SegmentedControl/SegmentedControl.tsx';
+import { 
+  SegmentedCardActionControl 
+} from '../../components/forms/controls/SegmentedCardActionControl/SegmentedCardActionControl.tsx';
+
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
 
 import { Prose } from './Prose.tsx';
@@ -176,6 +180,11 @@ export const WithComponents: Story = {
           <SegmentedControl.Button buttonKey="test-2" label="Test 2"/>
           <SegmentedControl.Button buttonKey="test-3" label="Test 3"/>
         </SegmentedControl>
+        <SegmentedCardActionControl defaultSelected="test-1" aria-label="Test segmented control">
+          <SegmentedCardActionControl.Card key="eks" icon="account" cardKey="red" title="External Key Source Connection" />
+          <SegmentedCardActionControl.Card key="azure" icon="account" cardKey="aws" title="Amazon Web Services" />
+          <SegmentedCardActionControl.Card key="aws" icon="account" cardKey="blue" title="Azure" />
+        </SegmentedCardActionControl>
       </>
     ),
   },
