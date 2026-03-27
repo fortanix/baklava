@@ -3,7 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { classNames as cx, type ComponentProps } from '../../util/componentUtil.ts';
+import { ClassNameArgument, classNames as cx, type ComponentProps } from '../../util/componentUtil.ts';
 
 import { H2 } from '../../typography/Heading/Heading.tsx';
 
@@ -22,15 +22,21 @@ const DialogLayoutHint = (props: React.ComponentProps<'p'>) => (
 const DialogLayoutIcon = (props: IconProps) => (
   <Icon {...props} className={cl['bk-dialog-layout__content__aside__hint__icon']}/>
 );
-const DialogLayoutLogo = (props: React.ComponentProps<typeof FortanixLogo>) => {
-  const { subtitle, subtitleTrademark, ...propsLogo } = props;
+
+type DialogLayoutLogoProps = React.ComponentProps<typeof FortanixLogo> & {
+  /** Class name to apply to subtitle */
+  subtitleClassName?: undefined | ClassNameArgument,
+}
+
+const DialogLayoutLogo = (props: DialogLayoutLogoProps) => {
+  const { subtitle, subtitleTrademark, subtitleClassName, ...propsLogo } = props;
   return (
     <div className={cl['bk-dialog-layout__logo']}>
-      <FortanixLogo className={cl['bk-dialog-layout__logo__logo']}/>
+      <FortanixLogo className={cl['bk-dialog-layout__logo-image']} {...propsLogo}/>
       {subtitle &&
-        <span>
-          {subtitle && <span className={cl['bk-dialog-layout__logo__subtitle']}>{subtitle}</span>}
-          {subtitleTrademark && <span>&trade;</span>}
+        <span className={cl['bk-dialog-layout__logo-text']}>
+          {subtitle && <span className={cx(cl['bk-dialog-layout__logo-subtitle'], subtitleClassName)}>{subtitle}</span>}
+          {subtitleTrademark && <sup>&trade;</sup>}
         </span>
       }
     </div>
