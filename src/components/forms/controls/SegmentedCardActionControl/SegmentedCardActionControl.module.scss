@@ -93,7 +93,7 @@
 }
 
 @layer baklava.overrides {
-  .bk-segmented-card-action-control__card-action>.bk-segmented-card-action-control__card-action__heading {
+  .bk-segmented-card-action-control__card-action > .bk-segmented-card-action-control__card-action__heading {
     display: flex;
     align-items: flex-start;
     gap: bk.$spacing-2;
@@ -104,12 +104,12 @@
     color: bk.$theme-text-body-default;
     line-height: bk.$line-height-s;
 
-    > :global(._icon) {
+    > :global(.icon) {
       flex-shrink: 0;
       align-self: flex-start;
     }
 
-    > :global(._content) {
+    > :global(.content) {
       flex: 1;
       min-inline-size: 0;
 
