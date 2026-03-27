@@ -87,7 +87,9 @@ const SegmentedCardActionControlCard = (props: SegmentedCardActionControlCardPro
   const context = useSegmentedCardActionControlContext(cardDef);
 
   const isSelected = context.selectedCard === cardKey;
-  const resolvedIcon = typeof icon === 'string' ? <Icon icon={icon} /> : icon;
+  const isIconName = (icon: unknown): icon is IconName => typeof icon === 'string';
+
+  const resolvedIcon = isIconName(icon) ? <Icon icon={icon} /> : icon;
 
   return (
     <div
