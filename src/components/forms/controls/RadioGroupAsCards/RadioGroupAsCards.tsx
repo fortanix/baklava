@@ -9,7 +9,7 @@ import { isItemProgrammaticallyFocusable } from '../../../util/composition/compo
 
 import { CardAction } from '../../../actions/CardAction/CardAction.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
-import { Button } from '../../../actions/Button/Button.tsx';
+import { Card } from '../../../containers/Card/Card.tsx';
 
 import cl from './RadioGroupAsCards.module.scss';
 
@@ -88,10 +88,8 @@ const RadioGroupCard = (props: RadioGroupCardProps) => {
   const context = useRadioGroupAsCardsContext(cardDef);
 
   const isSelected = context.selectedCard === cardKey;
-
   return (
-    <Button
-      unstyled
+    <div
       className={cx(
         cl['bk-radio-group-as-cards__card-wrapper'],
         { [cl['bk-radio-group-as-cards__card-wrapper--selected']]: isSelected },
@@ -102,35 +100,28 @@ const RadioGroupCard = (props: RadioGroupCardProps) => {
           <Icon icon="check" />
         </div>
       )}
-      <CardAction
+      <Card
         {...propsRest}
         ref={mergeRefs(cardRef, propsRest.ref)}
         role="radio"
         aria-checked={isSelected}
+        aria-labelledby={`${cardKey}-label`}
         tabIndex={isSelected ? 0 : -1}
-        selected={isSelected}
         onClick={() => {
           context.selectCard(cardKey);
         }}
         className={cx(
           propsRest.className,
-          cl['bk-radio-group-as-cards__card-action'],
+          cl['bk-radio-group-as-cards__card'],
+          { [cl['bk-radio-group-as-cards__card--selected']]: isSelected },
         )}
       >
-        {children ? (
-          children
-        ) : (
-          title && (
-            <CardAction.Heading
-              className={cx(cl['bk-radio-group-as-cards__card-action__heading'])}
-              icon={icon}
-            >
-              {title}
-            </CardAction.Heading>
-          )
-        )}
-      </CardAction>
-    </Button>
+        <span id={`${cardKey}-label`} className={cx(cl['bk-radio-group-as-cards__card__heading'])}>
+          {icon && <span className={cl['bk-radio-group-as-cards__icon']}>{icon}</span>}
+          {title}
+        </span>
+      </Card>
+    </div>
   );
 };
 

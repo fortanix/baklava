@@ -47,7 +47,7 @@
       background-color: bk.$theme-icon-informational;
     }
 
-    .bk-radio-group-as-cards__card-action {
+    .bk-radio-group-as-cards__card {
       inline-size: bk.rem-from-px(190);
       block-size: bk.rem-from-px(90);
       flex-grow: 0 0 auto;
@@ -88,38 +88,16 @@
         transition: filter 100ms ease-out;
       }
     }
+
+    .bk-radio-group-as-cards__card__heading {
+      display: flex;
+      align-items: flex-start;
+      gap: bk.$spacing-2
+    }
   }
-}
 
-@layer baklava.overrides {
-  .bk-radio-group-as-cards__card-action > .bk-radio-group-as-cards__card-action__heading {
-    display: flex;
-    align-items: flex-start;
-    gap: bk.$spacing-2;
-    @include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-m);
-    padding: 0;
-    border-block-end: none;
-    min-inline-size: 0;
-    color: bk.$theme-text-body-default;
-    line-height: bk.$line-height-s;
-
-    // TODO check why this linting error is raised
-    // stylelint-disable-next-line selector-class-pattern 
-    > :global(._icon) {
-      flex-shrink: 0;
-      align-self: flex-start;
-    }
-
-    // stylelint-disable-next-line selector-class-pattern 
-    > :global(._content) {
-      flex: 1;
-      min-inline-size: 0;
-
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-
-      overflow: hidden;
-    }
+  // Selected wrapper state
+  .bk-radio-group-as-cards__card--selected {
+    border-color: bk.$theme-card-border-selected;
   }
 }
