@@ -28,6 +28,7 @@
       position: relative;
       flex: 0 0 auto;
       cursor: pointer;
+      border-radius: bk.$radius-3;
     }
 
     // Selected wrapper state
@@ -87,7 +88,6 @@
         transition: filter 100ms ease-out;
       }
     }
-
   }
 }
 
