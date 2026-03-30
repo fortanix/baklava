@@ -25,9 +25,15 @@ export default {
   args: {
     'aria-label': 'Choose a color',
     onUpdate: selected => { console.log('update', selected); },
-    defaultSelected: 'eks',
+    defaultSelected: 'red',
     children: (
       <>
+       <SegmentedCardActionControl.Card
+          key="red"
+          icon={<Icon icon="account"/>}
+          cardKey="red"
+          title="On Prem"
+        />
         <SegmentedCardActionControl.Card
           key="eks"
           icon={<Icon icon="account"/>}

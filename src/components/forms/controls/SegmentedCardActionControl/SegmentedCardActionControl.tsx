@@ -9,6 +9,7 @@ import { isItemProgrammaticallyFocusable } from '../../../util/composition/compo
 
 import { CardAction } from '../../../actions/CardAction/CardAction.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
+import { Button } from '../../../actions/Button/Button.tsx';
 
 import cl from './SegmentedCardActionControl.module.scss';
 
@@ -53,16 +54,16 @@ type SegmentedCardActionControlCardProps = ComponentProps<typeof CardAction> & {
   unstyled?: undefined | boolean,
 
   /** The unique key of this card within the segmented control. */
-  cardKey: CardKey;
+  cardKey: CardKey,
 
   /** The title of the card, to be displayed in the under the segmented control. */
-  title: React.ReactNode;
+  title: React.ReactNode,
 
   /** The name of the icon to display or customIcon */
   icon: undefined | React.ReactElement,
 
   /** Escape hatch */
-  children?: React.ReactNode;
+  children?: React.ReactNode,
 };
 
 const SegmentedCardActionControlCard = (props: SegmentedCardActionControlCardProps) => {
@@ -89,7 +90,8 @@ const SegmentedCardActionControlCard = (props: SegmentedCardActionControlCardPro
   const isSelected = context.selectedCard === cardKey;
 
   return (
-    <div
+    <Button
+      unstyled
       className={cx(
         cl['bk-segmented-card-action-control__card-wrapper'],
         { [cl['bk-segmented-card-action-control__card-wrapper--selected']]: isSelected },
@@ -128,7 +130,7 @@ const SegmentedCardActionControlCard = (props: SegmentedCardActionControlCardPro
           )
         )}
       </CardAction>
-    </div>
+    </Button>
   );
 };
 
