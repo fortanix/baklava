@@ -5,12 +5,12 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-segmented-card-action-control {
-    @include bk.component-base(bk-segmented-card-action-control);
+  .bk-radio-group-as-cards {
+    @include bk.component-base(bk-radio-group-as-cards);
 
-    --bk-segmented-card-action-control-background-color: #{bk.$theme-segmented-control-background-default};
-    --bk-segmented-card-action-control-border-color: #{bk.$theme-segmented-control-border-unselected};
-    --bk-segmented-card-action-control-text-color: #{bk.$theme-segmented-control-text-unselected};
+    --bk-radio-group-as-cards-background-color: #{bk.$theme-segmented-control-background-default};
+    --bk-radio-group-as-cards-border-color: #{bk.$theme-segmented-control-border-unselected};
+    --bk-radio-group-as-cards-text-color: #{bk.$theme-segmented-control-text-unselected};
 
     //overflow: hidden; // Note: cannot hide overflow, would truncate focus outlines
     inline-size: fit-content; // Do not stretch in a block context
@@ -24,20 +24,20 @@
     //flex-wrap: wrap;
     // Note: may want to implement https://heydonworks.com/article/the-flexbox-holy-albatross-reincarnated
 
-    .bk-segmented-card-action-control__card-wrapper {
+    .bk-radio-group-as-cards__card-wrapper {
       position: relative;
       flex: 0 0 auto;
       cursor: pointer;
     }
 
     // Selected wrapper state
-    .bk-segmented-card-action-control__card-wrapper--selected {
-      --bk-segmented-card-action-control-border-color: #{bk.$theme-card-border-selected};
-      --bk-segmented-card-action-control-background-color: #{bk.$theme-card-background-selected};
+    .bk-radio-group-as-cards__card-wrapper--selected {
+      --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
+      --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
     }
 
     // Indicator overlay
-    .bk-segmented-card-action-control__indicator {
+    .bk-radio-group-as-cards__indicator {
       position: absolute;
       inset-block-start: -0.51rem;
       inset-inline-end: -0.51rem;
@@ -46,36 +46,36 @@
       background-color: bk.$theme-icon-informational;
     }
 
-    .bk-segmented-card-action-control__card-action {
+    .bk-radio-group-as-cards__card-action {
       inline-size: bk.rem-from-px(190);
       block-size: bk.rem-from-px(90);
       flex-grow: 0 0 auto;
       user-select: none;
       cursor: pointer;
       padding: bk.$spacing-4;
-      background-color: var(--bk-segmented-card-action-control-background-color);
-      color: var(--bk-segmented-card-action-control-text-color);
+      background-color: var(--bk-radio-group-as-cards-background-color);
+      color: var(--bk-radio-group-as-cards-text-color);
       @include bk.font($family: bk.$font-family-body, $weight: bk.$font-weight-semibold);
 
       // Selected card
       &[aria-checked="true"] {
-        --bk-segmented-card-action-control-border-color: #{bk.$theme-card-border-selected};
-        --bk-segmented-card-action-control-background-color: #{bk.$theme-card-background-selected};
-        --bk-segmented-card-action-control-text-color: #{bk.$theme-segmented-control-text-default};
+        --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
+        --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
+        --bk-radio-group-as-cards-text-color: #{bk.$theme-segmented-control-text-default};
       }
 
       // State: hover (only for non-selected cards)
       &:is(:hover, :global(.pseudo-hover)):not([aria-checked="true"]) {
-        --bk-segmented-card-action-control-border-color: #{bk.$theme-card-border-selected};
-        --bk-segmented-card-action-control-background-color: #{bk.$theme-card-background-selected};
+        --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
+        --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
       }
 
       @include bk.focus-outset;
 
       &:is(:focus-visible, :global(.pseudo-focus-visible)) {
         z-index: 1; // Have the focused toggle render over the other toggles so that the focus is fully shown
-        --bk-segmented-card-action-control-border-color: #{bk.$theme-card-border-selected};
-        --bk-segmented-card-action-control-background-color: #{bk.$theme-card-background-selected};
+        --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
+        --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
       }
 
       // State: active
@@ -92,7 +92,7 @@
 }
 
 @layer baklava.overrides {
-  .bk-segmented-card-action-control__card-action > .bk-segmented-card-action-control__card-action__heading {
+  .bk-radio-group-as-cards__card-action > .bk-radio-group-as-cards__card-action__heading {
     display: flex;
     align-items: flex-start;
     gap: bk.$spacing-2;

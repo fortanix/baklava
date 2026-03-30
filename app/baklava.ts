@@ -48,8 +48,8 @@ export { Radio } from '../src/components/forms/controls/Radio/Radio.tsx';
 export { RadioGroup } from '../src/components/forms/controls/RadioGroup/RadioGroup.tsx';
 export { SegmentedControl } from '../src/components/forms/controls/SegmentedControl/SegmentedControl.tsx';
 export { 
-  SegmentedCardActionControl 
-} from '../src/components/forms/controls/SegmentedCardActionControl/SegmentedCardActionControl.tsx';
+  RadioGroupAsCards 
+} from '../src/components/forms/controls/RadioGroupAsCards/RadioGroupAsCards.tsx';
 export { Input } from '../src/components/forms/controls/Input/Input.tsx';
 export { InputSearch } from '../src/components/forms/controls/Input/InputSearch.tsx';
 export { InputSensitive } from '../src/components/forms/controls/Input/InputSensitive.tsx';

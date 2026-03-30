@@ -11,7 +11,7 @@ import { CardAction } from '../../../actions/CardAction/CardAction.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
-import cl from './SegmentedCardActionControl.module.scss';
+import cl from './RadioGroupAsCards.module.scss';
 
 
 /*
@@ -22,7 +22,7 @@ References:
 - https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/radiogroup_role
 */
 
-export { cl as SegmentedCardActionControlClassNames };
+export { cl as RadioGroupAsCardsClassNames };
 
 
 export type CardKey = string;
@@ -31,15 +31,15 @@ export type CardDef = {
   cardRef: React.RefObject<null | React.ComponentRef<typeof CardAction>>,
 };
 
-export type SegmentedCardActionControlContext = {
+export type RadioGroupAsCardsContext = {
   register: (cardDef: CardDef) => () => void,
   selectedCard: undefined | CardKey,
   selectCard: (cardKey: CardKey) => void,
 };
-export const SegmentedCardActionControlContext = React.createContext<null | SegmentedCardActionControlContext>(null);
-export const useSegmentedCardActionControlContext = (cardDef: CardDef) => {
-  const context = React.use(SegmentedCardActionControlContext);
-  if (context === null) { throw new Error(`Missing SegmentedCardActionControlContext provider`); }
+export const RadioGroupAsCardsContext = React.createContext<null | RadioGroupAsCardsContext>(null);
+export const useRadioGroupAsCardsContext = (cardDef: CardDef) => {
+  const context = React.use(RadioGroupAsCardsContext);
+  if (context === null) { throw new Error(`Missing RadioGroupAsCardsContext provider`); }
 
   React.useEffect(() => {
     return context.register(cardDef);
@@ -49,7 +49,7 @@ export const useSegmentedCardActionControlContext = (cardDef: CardDef) => {
 };
 
 
-type SegmentedCardActionControlCardProps = ComponentProps<typeof CardAction> & {
+type RadioGroupCardProps = ComponentProps<typeof CardAction> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
@@ -66,7 +66,7 @@ type SegmentedCardActionControlCardProps = ComponentProps<typeof CardAction> & {
   children?: React.ReactNode,
 };
 
-const SegmentedCardActionControlCard = (props: SegmentedCardActionControlCardProps) => {
+const RadioGroupCard = (props: RadioGroupCardProps) => {
   const {
     cardKey,
     title,
@@ -85,7 +85,7 @@ const SegmentedCardActionControlCard = (props: SegmentedCardActionControlCardPro
     [cardKey]
   );
 
-  const context = useSegmentedCardActionControlContext(cardDef);
+  const context = useRadioGroupAsCardsContext(cardDef);
 
   const isSelected = context.selectedCard === cardKey;
 
@@ -93,12 +93,12 @@ const SegmentedCardActionControlCard = (props: SegmentedCardActionControlCardPro
     <Button
       unstyled
       className={cx(
-        cl['bk-segmented-card-action-control__card-wrapper'],
-        { [cl['bk-segmented-card-action-control__card-wrapper--selected']]: isSelected },
+        cl['bk-radio-group-as-cards__card-wrapper'],
+        { [cl['bk-radio-group-as-cards__card-wrapper--selected']]: isSelected },
       )}
     >
       {isSelected && (
-        <div className={cx(cl['bk-segmented-card-action-control__indicator'])}>
+        <div className={cx(cl['bk-radio-group-as-cards__indicator'])}>
           <Icon icon="check" />
         </div>
       )}
@@ -114,7 +114,7 @@ const SegmentedCardActionControlCard = (props: SegmentedCardActionControlCardPro
         }}
         className={cx(
           propsRest.className,
-          cl['bk-segmented-card-action-control__card-action'],
+          cl['bk-radio-group-as-cards__card-action'],
         )}
       >
         {children ? (
@@ -122,7 +122,7 @@ const SegmentedCardActionControlCard = (props: SegmentedCardActionControlCardPro
         ) : (
           title && (
             <CardAction.Heading
-              className={cx(cl['bk-segmented-card-action-control__card-action__heading'])}
+              className={cx(cl['bk-radio-group-as-cards__card-action__heading'])}
               icon={icon}
             >
               {title}
@@ -134,7 +134,7 @@ const SegmentedCardActionControlCard = (props: SegmentedCardActionControlCardPro
   );
 };
 
-export type SegmentedCardActionControlProps = ComponentProps<'div'> & {
+export type RadioGroupAsCardsProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
@@ -156,8 +156,8 @@ export type SegmentedCardActionControlProps = ComponentProps<'div'> & {
 /**
  * A segmented control is a set of mutually exclusive cards that can be switched between.
  */
-export const SegmentedCardActionControl = Object.assign(
-  (props: SegmentedCardActionControlProps) => {
+export const RadioGroupAsCards = Object.assign(
+  (props: RadioGroupAsCardsProps) => {
     const {
       children,
       unstyled = false,
@@ -170,7 +170,7 @@ export const SegmentedCardActionControl = Object.assign(
     } = props;
 
     if (typeof selected !== 'undefined' && !onUpdate) {
-      console.warn(`Using SegmentedCardActionControl as uncontrolled component, but missing 'onChange' callback.`);
+      console.warn(`Using RadioGroupAsCards as uncontrolled component, but missing 'onChange' callback.`);
     }
 
     const cardDefsRef = React.useRef<Map<CardKey, CardDef>>(new Map());
@@ -232,7 +232,7 @@ export const SegmentedCardActionControl = Object.assign(
       }
     });
 
-    const context = React.useMemo<SegmentedCardActionControlContext>(() => ({
+    const context = React.useMemo<RadioGroupAsCardsContext>(() => ({
       register,
       selectedCard,
       selectCard,
@@ -290,7 +290,7 @@ export const SegmentedCardActionControl = Object.assign(
     }, [context]);
 
     return (
-      <SegmentedCardActionControlContext value={context}>
+      <RadioGroupAsCardsContext value={context}>
         <div
           role="radiogroup"
           aria-required
@@ -298,8 +298,8 @@ export const SegmentedCardActionControl = Object.assign(
           {...propsRest}
           className={cx(
             'bk',
-            { [cl['bk-segmented-card-action-control']]: !unstyled },
-            { [cl['bk-segmented-card-action-control--disabled']]: disabled },
+            { [cl['bk-radio-group-as-cards']]: !unstyled },
+            { [cl['bk-radio-group-as-cards--disabled']]: disabled },
             propsRest.className,
           )}
           onKeyDown={handleKeyDown}
@@ -309,10 +309,10 @@ export const SegmentedCardActionControl = Object.assign(
 
           {children}
         </div>
-      </SegmentedCardActionControlContext>
+      </RadioGroupAsCardsContext>
     );
   },
   {
-    Card: SegmentedCardActionControlCard,
+    Card: RadioGroupCard,
   },
 );
