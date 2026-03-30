@@ -7,9 +7,9 @@ import { mergeRefs, useEffectOnce, usePrevious } from '../../../../util/reactUti
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import { isItemProgrammaticallyFocusable } from '../../../util/composition/compositionUtil.ts';
 
-import { CardAction } from '../../../actions/CardAction/CardAction.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Card } from '../../../containers/Card/Card.tsx';
+import { H5 } from '../../../../typography/Heading/Heading.tsx';
 
 import cl from './RadioGroupAsCards.module.scss';
 
@@ -28,7 +28,7 @@ export { cl as RadioGroupAsCardsClassNames };
 export type CardKey = string;
 export type CardDef = {
   cardKey: CardKey,
-  cardRef: React.RefObject<null | React.ComponentRef<typeof CardAction>>,
+  cardRef: React.RefObject<null | HTMLDivElement>,
 };
 
 export type RadioGroupAsCardsContext = {
@@ -49,7 +49,7 @@ export const useRadioGroupAsCardsContext = (cardDef: CardDef) => {
 };
 
 
-type RadioGroupCardProps = ComponentProps<typeof CardAction> & {
+type RadioGroupCardProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
@@ -75,7 +75,7 @@ const RadioGroupCard = (props: RadioGroupCardProps) => {
     ...propsRest
   } = props;
 
-  const cardRef = React.useRef<React.ComponentRef<typeof CardAction>>(null);
+  const cardRef = React.useRef<HTMLDivElement>(null);
 
   const cardDef = React.useMemo(
     () => ({
@@ -100,27 +100,43 @@ const RadioGroupCard = (props: RadioGroupCardProps) => {
           <Icon icon="check" />
         </div>
       )}
-      <Card
+      
+      {/* biome-ignore lint/a11y/useSemanticElements: custom radio card UI requires ARIA role */}
+      <div
         {...propsRest}
         ref={mergeRefs(cardRef, propsRest.ref)}
         role="radio"
         aria-checked={isSelected}
         aria-labelledby={`${cardKey}-label`}
         tabIndex={isSelected ? 0 : -1}
-        onClick={() => {
-          context.selectCard(cardKey);
+        onClick={() => context.selectCard(cardKey)}
+        onKeyDown={(e) => {
+          if (e.code === 'Space' || e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation();
+            context.selectCard(cardKey);
+          }
         }}
-        className={cx(
-          propsRest.className,
-          cl['bk-radio-group-as-cards__card'],
-          { [cl['bk-radio-group-as-cards__card--selected']]: isSelected },
-        )}
+        className={cx(cl['bk-radio-group-as-cards__interaction-layer'])}
       >
-        <span id={`${cardKey}-label`} className={cx(cl['bk-radio-group-as-cards__card__heading'])}>
-          {icon && <span className={cl['bk-radio-group-as-cards__icon']}>{icon}</span>}
-          {title}
-        </span>
-      </Card>
+        <Card
+          className={cx(
+            propsRest.className,
+            cl['bk-radio-group-as-cards__card'],
+            { [cl['bk-radio-group-as-cards__card--selected']]: isSelected },
+          )}
+        >
+          <H5 id={`${cardKey}-label`} className={cl['bk-radio-group-as-cards__card__heading']}>
+            {icon && (
+              <>
+                <span className={cx('_icon', cl['bk-radio-group-as-cards__icon'])}>{icon}</span>
+                <span className={cx('_content', cl['bk-radio-group-as-cards__content'])}>{title}</span>
+              </>
+            )}
+            {!icon && title}
+          </H5>
+        </Card>
+      </div>
     </div>
   );
 };

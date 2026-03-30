@@ -21,6 +21,10 @@ export default {
   },
   tags: ['autodocs'],
   argTypes: {
+    disabled: {
+      table: { disable: true },
+      control: false,
+    },
   },
   args: {
     'aria-label': 'Choose a color',
@@ -28,20 +32,20 @@ export default {
     defaultSelected: 'red',
     children: (
       <>
-       <RadioGroupAsCards.Card
+        <RadioGroupAsCards.Card
           key="red"
-          icon={<Icon icon="account"/>}
+          icon={<Icon icon="account" />}
           cardKey="red"
           title="On Prem"
         />
         <RadioGroupAsCards.Card
           key="eks"
-          icon={<Icon icon="account"/>}
+          icon={<Icon icon="account" />}
           cardKey="eks"
           title="External Key Source Connection"
         />
-        <RadioGroupAsCards.Card key="aws" icon={<Icon icon="account"/>} cardKey="aws" title="Amazon Web Services" />
-        <RadioGroupAsCards.Card key="azure" icon={<Icon icon="account"/>} cardKey="azure" title="Azure" />
+        <RadioGroupAsCards.Card key="aws" icon={<Icon icon="account" />} cardKey="aws" title="Amazon Web Services" />
+        <RadioGroupAsCards.Card key="azure" icon={<Icon icon="account" />} cardKey="azure" title="Azure" />
       </>
     ),
   },
@@ -56,14 +60,14 @@ export const RadioGroupAsCardsHover: Story = {
   args: {
     children: (
       <>
-        <RadioGroupAsCards.Card icon={<Icon icon="account"/>} cardKey="red" title="Red" />
+        <RadioGroupAsCards.Card icon={<Icon icon="account" />} cardKey="red" title="Red" />
         <RadioGroupAsCards.Card
-          icon={<Icon icon="account"/>}
+          icon={<Icon icon="account" />}
           cardKey="green"
           title="Green (Hovered)"
           className="pseudo-hover"
         />
-        <RadioGroupAsCards.Card icon={<Icon icon="account"/>} cardKey="blue" title="Blue" />
+        <RadioGroupAsCards.Card icon={<Icon icon="account" />} cardKey="blue" title="Blue" />
       </>
     ),
   },
@@ -74,13 +78,13 @@ export const RadioGroupAsCardsFocused: Story = {
     children: (
       <>
         <RadioGroupAsCards.Card
-          icon={<Icon icon="account"/>}
+          icon={<Icon icon="account" />}
           cardKey="red"
           title="Red (Focused)"
           className="pseudo-focus-visible"
         />
-        <RadioGroupAsCards.Card icon={<Icon icon="account"/>} cardKey="green" title="Green" />
-        <RadioGroupAsCards.Card icon={<Icon icon="account"/>} cardKey="blue" title="Blue" />
+        <RadioGroupAsCards.Card icon={<Icon icon="account" />} cardKey="green" title="Green" />
+        <RadioGroupAsCards.Card icon={<Icon icon="account" />} cardKey="blue" title="Blue" />
       </>
     ),
   },
@@ -105,9 +109,9 @@ export const RadioGroupAsCardsControlled: Story = {
   args: {
     children: (
       <>
-        <RadioGroupAsCards.Card icon={<Icon icon="account"/>} cardKey="red" title="Red" />
-        <RadioGroupAsCards.Card icon={<Icon icon="account"/>} cardKey="green" title="Green" />
-        <RadioGroupAsCards.Card icon={<Icon icon="account"/>} cardKey="blue" title="Blue" />
+        <RadioGroupAsCards.Card icon={<Icon icon="account" />} cardKey="red" title="Red" />
+        <RadioGroupAsCards.Card icon={<Icon icon="account" />} cardKey="green" title="Green" />
+        <RadioGroupAsCards.Card icon={<Icon icon="account" />} cardKey="blue" title="Blue" />
       </>
     ),
   },
@@ -118,9 +122,9 @@ export const RadioGroupAsCardsControlledWithDefault: Story = {
   args: {
     children: (
       <>
-        <RadioGroupAsCards.Card icon={<Icon icon="account"/>} cardKey="red" title="Red" />
-        <RadioGroupAsCards.Card icon={<Icon icon="account"/>} cardKey="green" title="Green" />
-        <RadioGroupAsCards.Card icon={<Icon icon="account"/>} cardKey="blue" title="Blue" />
+        <RadioGroupAsCards.Card icon={<Icon icon="account" />} cardKey="red" title="Red" />
+        <RadioGroupAsCards.Card icon={<Icon icon="account" />} cardKey="green" title="Green" />
+        <RadioGroupAsCards.Card icon={<Icon icon="account" />} cardKey="blue" title="Blue" />
       </>
     ),
   },

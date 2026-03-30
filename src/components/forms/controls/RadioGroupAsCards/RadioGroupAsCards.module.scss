@@ -31,6 +31,21 @@
       border-radius: bk.$radius-3;
     }
 
+    .bk-radio-group-as-cards__interaction-layer {
+      @include bk.focus-outset;
+      border-radius: bk.$radius-3;
+      
+      &:is(:focus-visible, :global(.pseudo-focus-visible)) {
+        z-index: 1; // Have the focused toggle render over the other toggles so that the focus is fully shown
+        --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
+        --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
+      }
+      
+      @media (prefers-reduced-motion: no-preference) {
+        transition: filter 100ms ease-out;
+      }
+    }
+
     // Selected wrapper state
     .bk-radio-group-as-cards__card-wrapper--selected {
       --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
@@ -71,28 +86,43 @@
         --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
       }
 
-      @include bk.focus-outset;
 
-      &:is(:focus-visible, :global(.pseudo-focus-visible)) {
-        z-index: 1; // Have the focused toggle render over the other toggles so that the focus is fully shown
-        --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
-        --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
-      }
+      
 
       // State: active
       &:not(:disabled):active {
         filter: brightness(90%);
-      }
-
-      @media (prefers-reduced-motion: no-preference) {
-        transition: filter 100ms ease-out;
       }
     }
 
     .bk-radio-group-as-cards__card__heading {
       display: flex;
       align-items: flex-start;
-      gap: bk.$spacing-2
+      gap: bk.$spacing-2;
+      @include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-m);
+      padding: 0;
+      border-block-end: none;
+      min-inline-size: 0;
+      color: bk.$theme-text-body-default;
+      line-height: bk.$line-height-s;
+
+      // stylelint-disable-next-line selector-class-pattern 
+      > :global(._icon) {
+        flex-shrink: 0;
+        align-self: flex-start;
+      }
+
+      // stylelint-disable-next-line selector-class-pattern 
+      > :global(._content) {
+        flex: 1;
+        min-inline-size: 0;
+
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+
+        overflow: hidden;
+      }
     }
   }
 
