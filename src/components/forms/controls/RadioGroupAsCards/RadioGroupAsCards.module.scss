@@ -31,20 +31,6 @@
       border-radius: bk.$radius-3;
     }
 
-    .bk-radio-group-as-cards__interaction-layer {
-      @include bk.focus-outset;
-      border-radius: bk.$radius-3;
-      
-      &:is(:focus-visible, :global(.pseudo-focus-visible)) {
-        z-index: 1; // Have the focused toggle render over the other toggles so that the focus is fully shown
-        --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
-        --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
-      }
-      
-      @media (prefers-reduced-motion: no-preference) {
-        transition: filter 100ms ease-out;
-      }
-    }
 
     // Selected wrapper state
     .bk-radio-group-as-cards__card-wrapper--selected {
@@ -63,6 +49,8 @@
     }
 
     .bk-radio-group-as-cards__card {
+      overflow: visible;
+      contain: none;
       inline-size: bk.rem-from-px(190);
       block-size: bk.rem-from-px(90);
       flex-grow: 0 0 auto;
@@ -80,14 +68,23 @@
         --bk-radio-group-as-cards-text-color: #{bk.$theme-segmented-control-text-default};
       }
 
+      // NOTE:
+      // The actual focus is on inner span (role="radio"), not on the card.
+      // So :focus-visible on card won't work. We rely on :focus-within instead.
+      // Apply focus styles when any child (span) is focused
+      @include bk.focus-outset($selector: '&:focus-visible, &:focus-within, &.pseudo-focus-visible');
+
+      &:is(:focus-visible, :global(.pseudo-focus-visible), :focus-within) {
+        z-index: 1; // Have the focused toggle render over the other toggles so that the focus is fully shown
+        --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
+        --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
+      }
+
       // State: hover (only for non-selected cards)
       &:is(:hover, :global(.pseudo-hover)):not([aria-checked="true"]) {
         --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
         --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
       }
-
-
-      
 
       // State: active
       &:not(:disabled):active {
@@ -122,7 +119,10 @@
         -webkit-box-orient: vertical;
 
         overflow: hidden;
+        @include bk.focus-hidden;
       }
+
+      transition: border 150ms ease-in-out;
     }
   }
 

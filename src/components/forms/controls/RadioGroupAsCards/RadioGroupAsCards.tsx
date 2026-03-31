@@ -8,7 +8,7 @@ import { classNames as cx, type ComponentProps } from '../../../../util/componen
 import { isItemProgrammaticallyFocusable } from '../../../util/composition/compositionUtil.ts';
 
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
-import { Card } from '../../../containers/Card/Card.tsx';
+import { CardAction } from '../../../actions/CardAction/CardAction.tsx';
 import { H5 } from '../../../../typography/Heading/Heading.tsx';
 
 import cl from './RadioGroupAsCards.module.scss';
@@ -60,7 +60,7 @@ type RadioGroupCardProps = ComponentProps<'div'> & {
   title: React.ReactNode,
 
   /** The name of the icon to display or customIcon */
-  icon: undefined | React.ReactElement,
+  icon?: undefined | React.ReactElement,
 
   /** Escape hatch */
   children?: React.ReactNode,
@@ -95,48 +95,35 @@ const RadioGroupCard = (props: RadioGroupCardProps) => {
         { [cl['bk-radio-group-as-cards__card-wrapper--selected']]: isSelected },
       )}
     >
-      {isSelected && (
-        <div className={cx(cl['bk-radio-group-as-cards__indicator'])}>
-          <Icon icon="check" />
-        </div>
-      )}
-      
-      {/* biome-ignore lint/a11y/useSemanticElements: custom radio card UI requires ARIA role */}
-      <div
+      <CardAction
         {...propsRest}
-        ref={mergeRefs(cardRef, propsRest.ref)}
-        role="radio"
-        aria-checked={isSelected}
-        aria-labelledby={`${cardKey}-label`}
-        tabIndex={isSelected ? 0 : -1}
+        className={cx(
+          propsRest.className,
+          cl['bk-radio-group-as-cards__card'],
+          { [cl['bk-radio-group-as-cards__card--selected']]: isSelected },
+        )}
+        selected={isSelected}
         onClick={() => context.selectCard(cardKey)}
-        onKeyDown={(e) => {
-          if (e.code === 'Space' || e.key === 'Enter') {
-            e.preventDefault();
-            e.stopPropagation();
-            context.selectCard(cardKey);
-          }
-        }}
-        className={cx(cl['bk-radio-group-as-cards__interaction-layer'])}
       >
-        <Card
-          className={cx(
-            propsRest.className,
-            cl['bk-radio-group-as-cards__card'],
-            { [cl['bk-radio-group-as-cards__card--selected']]: isSelected },
-          )}
-        >
-          <H5 id={`${cardKey}-label`} className={cl['bk-radio-group-as-cards__card__heading']}>
-            {icon && (
-              <>
-                <span className={cx('_icon', cl['bk-radio-group-as-cards__icon'])}>{icon}</span>
-                <span className={cx('_content', cl['bk-radio-group-as-cards__content'])}>{title}</span>
-              </>
-            )}
-            {!icon && title}
-          </H5>
-        </Card>
-      </div>
+        {isSelected && (
+          <div className={cx(cl['bk-radio-group-as-cards__indicator'])}>
+            <Icon icon="check" />
+          </div>
+        )}
+        <H5 id={`${cardKey}-label`} className={cl['bk-radio-group-as-cards__card__heading']}>
+          {icon && (<span className={cx('_icon', cl['bk-radio-group-as-cards__icon'])}>{icon}</span>)}
+          {/* biome-ignore lint/a11y/useSemanticElements: custom radio on span requires ARIA role */}
+          <span
+            ref={mergeRefs(cardRef, propsRest.ref)}
+            role="radio"
+            aria-checked={isSelected}
+            aria-labelledby={`${cardKey}-label`}
+            tabIndex={isSelected ? 0 : -1}
+            className={cx('_content', cl['bk-radio-group-as-cards__content'])}>
+            {title}
+          </span>
+        </H5>
+      </CardAction>
     </div>
   );
 };

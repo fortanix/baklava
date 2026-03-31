@@ -55,6 +55,20 @@ export default {
 
 export const RadioGroupAsCardsStandard: Story = {};
 
+export const RadioGroupAsCardsWithoutIcon: Story = {
+  args: {
+    children: (
+      <>
+        <RadioGroupAsCards.Card
+          cardKey="red"
+          title="Red"
+        />
+        <RadioGroupAsCards.Card cardKey="green" title="Green" />
+        <RadioGroupAsCards.Card cardKey="blue" title="Blue" />
+      </>
+    ),
+  },
+};
 
 export const RadioGroupAsCardsHover: Story = {
   args: {
