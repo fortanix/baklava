@@ -24,20 +24,6 @@
     //flex-wrap: wrap;
     // Note: may want to implement https://heydonworks.com/article/the-flexbox-holy-albatross-reincarnated
 
-    .bk-radio-group-as-cards__card-wrapper {
-      position: relative;
-      flex: 0 0 auto;
-      cursor: pointer;
-      border-radius: bk.$radius-3;
-    }
-
-
-    // Selected wrapper state
-    .bk-radio-group-as-cards__card-wrapper--selected {
-      --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
-      --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
-    }
-
     // Indicator overlay
     .bk-radio-group-as-cards__indicator {
       position: absolute;
@@ -49,6 +35,8 @@
     }
 
     .bk-radio-group-as-cards__card {
+      position: relative;
+      flex: 0 0 auto;
       overflow: visible;
       contain: none;
       inline-size: bk.rem-from-px(190);
@@ -134,5 +122,7 @@
   // Selected wrapper state
   .bk-radio-group-as-cards__card--selected {
     border-color: bk.$theme-card-border-selected;
+    --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
+    --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
   }
 }
