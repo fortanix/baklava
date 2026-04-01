@@ -57,8 +57,8 @@ export const SegmentedControlWithIconOnly: Story = {
     defaultSelected: 'edit',
     children: (
       <>
-        <SegmentedControl.Button buttonKey="edit" aria-label='edit' icon="edit"/>
-        <SegmentedControl.Button buttonKey="delete" aria-label='delete' icon="delete"/>
+        <SegmentedControl.Button buttonKey="edit" aria-label="edit" icon="edit"/>
+        <SegmentedControl.Button buttonKey="delete" aria-label="delete" icon="delete"/>
       </>
     ),
   },
