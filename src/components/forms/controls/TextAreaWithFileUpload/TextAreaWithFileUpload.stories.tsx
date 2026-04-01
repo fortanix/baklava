@@ -21,9 +21,11 @@ export default {
   },
   args: {
     placeholder: 'Example',
-    accept: '.txt,.json,.yaml',
+    accept: '.txt,.json,.yaml,.pdf,.png',
     disabled: false,
     enableDragAndDrop: true,
+    maxSize: 2,
+    style: { blockSize: 110 },
   },
   decorators: [
     Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,

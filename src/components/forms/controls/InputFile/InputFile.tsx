@@ -96,6 +96,8 @@ export type InputFileProps = React.ComponentPropsWithoutRef<'div'> & {
   multiple?: undefined | HTMLInputElement['multiple'],
   
   disabled?: undefined | boolean,
+  
+  label?: undefined | string,
 };
 export const InputFile = ({
   className,
@@ -108,6 +110,7 @@ export const InputFile = ({
   acceptVisible = true,
   multiple,
   disabled,
+  label = 'Upload',
 }: InputFileProps) => {
   const dragCounter = React.useRef(0);
   const fileInput = React.useRef<HTMLInputElement>(null);
@@ -190,7 +193,7 @@ export const InputFile = ({
       onClick={onFileUploadClick}
       unstyled={unstyled}
       disabled={disabled}
-      label="Upload"
+      label={label}
     />
   );
 
