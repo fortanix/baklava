@@ -6,6 +6,9 @@ import * as React from 'react';
 
 import { TextArea } from '../TextArea/TextArea.tsx';
 import { handleWrongFileFormat, InputFile, isFileAccepted, readFile } from '../InputFile/InputFile.tsx';
+import { Button } from '../../../actions/Button/Button.tsx';
+import { H6 } from '../../../../typography/Heading/Heading.tsx';
+import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 
 import { classNames as cx } from '../../../../util/componentUtil.ts';
 
@@ -16,7 +19,7 @@ export type TextAreaWithFileUploadProps = React.ComponentProps<typeof TextArea> 
    * Comma separated file extension (e.g. `.txt`), mime type (`application/pdf`) or media (`image/*`, `audio/*` or
    * `video/*`) that are allowed to be selected.
    * Notice that .webp files are not considered as `image/*`, at least in Chromium v144
-   * */
+   */
   accept?: undefined | HTMLInputElement['accept'],
   /**
    * Enables drag-and-drop file upload on the textarea.
@@ -31,8 +34,41 @@ export type TextAreaWithFileUploadProps = React.ComponentProps<typeof TextArea> 
    * @default false.
    */
   enableDragAndDrop?: undefined | boolean;
+
+  /**
+   * Maximum allowed file size in megabytes (MB).
+   *
+   * Example:
+   * - 1 → 1 MB
+   * - 5 → 5 MB
+   *
+   * If not provided, no file size limit is enforced.
+   */
+  maxSize?: undefined | number;
 };
 
+const formatAcceptText = (accept?: string) => {
+  if (!accept) return '';
+
+  const parts = accept.split(',').map(p => p.trim()).filter(Boolean);
+
+  if (parts.length <= 1) return parts[0] || '';
+
+  return parts.slice(0, -1).join(', ') + ' or ' + parts.at(-1);
+};
+
+const isFileValid = (file: File, accept?: string, maxSize?: number) => {
+  const isValidType = isFileAccepted(file, accept);
+
+  const isValidSize =
+    !maxSize || file.size <= maxSize * 1024 * 1024;
+
+  return {
+    isValid: isValidType && isValidSize,
+    isValidType,
+    isValidSize,
+  };
+};
 export const TextAreaWithFileUpload = ({
   value,
   onChange,
@@ -40,6 +76,7 @@ export const TextAreaWithFileUpload = ({
   unstyled,
   disabled,
   enableDragAndDrop = false,
+  maxSize,
   ...textAreaProps
 }: TextAreaWithFileUploadProps) => {
   // Track nested dragenter / dragleave events.
@@ -58,6 +95,8 @@ export const TextAreaWithFileUpload = ({
 
   const dragCounter = React.useRef(0);
   const [isDragging, setIsDragging] = React.useState(false);
+  const formattedAccept = formatAcceptText(accept);
+  const isTextEmpty = !(value && String(value).trim());
 
   const updateTextArea = (text: string) => {
     if (!onChange) { return };
@@ -72,6 +111,19 @@ export const TextAreaWithFileUpload = ({
   const handleFiles = (files: FileList) => {
     const file = files[0];
     if (!file) { return };
+
+    const { isValid, isValidSize } =
+      isFileValid(file, accept, maxSize);
+
+    if (!isValid) {
+      if (!isValidSize) {
+        notify.error(
+          `The file ${file.name} exceeds the maximum size of ${maxSize} MB.`
+        );
+      }
+
+      return;
+    }
 
     readFile(file, (result) => {
       const text = typeof result === 'string' ? result : '';
@@ -144,7 +196,11 @@ export const TextAreaWithFileUpload = ({
     >
       {/* biome-ignore lint/a11y/noStaticElementInteractions: keyboard users can use the button to upload */}
       <div
-        className={cl['bk-text-area-upload__textarea-wrapper']}
+        className={cx(cl['bk-text-area-upload__textarea-wrapper'],
+          {
+            [cl['bk-text-area-upload__textarea-wrapper--disabled']]: disabled,
+          }
+        )}
         onDragEnter={enableDragAndDrop ? onDragIn : undefined}
         onDragLeave={enableDragAndDrop ? onDragOut : undefined}
         onDragOver={enableDragAndDrop ? onDrag : undefined}
@@ -161,30 +217,54 @@ export const TextAreaWithFileUpload = ({
           onChange={onChange}
           disabled={disabled}
         />
-
-        <div className={cx(cl['bk-text-area-upload__footer'],
-          {
-            [cl['bk-text-area-upload__footer--disabled']]: disabled,
-          }
-        )}>
-          {enableDragAndDrop && <span>Drop file or </span>}
+        <hr />
+        <div className={cl['bk-text-area-upload__footer']}>
 
           <InputFile
             accept={accept}
             handleFiles={handleFiles}
-            disabled={disabled}
+            disabled={disabled || !isTextEmpty}
             unstyled={unstyled}
+            label="Upload File"
             className={cl['bk-text-area-upload__browse']}
             inputProps={{ className: cl['bk-text-area-upload__input'] }}
           />
+          {!isTextEmpty &&
+            <>
+              <hr />
+              <Button
+                className={cl['bk-text-area-upload__clear']}
+                label='Clear'
+                onPress={() => {
+                  updateTextArea('')
+                }}
+              />
+            </>
+          }
         </div>
       </div>
 
       {enableDragAndDrop && isDragging && (
-        <div className={cx({
-          [cl['bk-text-area-upload__overlay']]: !unstyled,
-        })}>
-          Drop file here
+        <div
+          className={cx(
+            cl['bk-text-area-upload__overlay'],
+            {
+              [cl['bk-text-area-upload__overlay--disabled']]: disabled,
+            }
+          )}
+        >
+          <div className={cl['bk-text-area-upload__overlay-content']}>
+            <H6 className={cl['bk-text-area-upload__overlay-title']}>
+              Drag & drop files
+            </H6>
+
+            {formattedAccept && (
+              <span className={cl['bk-text-area-upload__overlay-info']}>
+                Only {formattedAccept} file.
+                {maxSize && <> {maxSize}MB max file size</>}
+              </span>
+            )}
+          </div>
         </div>
       )}
     </div>
