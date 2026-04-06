@@ -41,6 +41,7 @@
       overflow: visible;
       contain: none;
       inline-size: bk.rem-from-px(200);
+      block-size: bk.rem-from-px(100);
       flex-grow: 0 0 auto;
       user-select: none;
       cursor: pointer;
