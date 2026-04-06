@@ -8,15 +8,14 @@
 @use '../../styling/features/typography.scss' as typography;
 
 
-// Styling to be applied to any prose element (either the root or a descendent)
 @mixin prose-element {
   @layer prose-base {
     :scope {
       // Root-level prose element styling (e.g. inheritable styles)
       
-      // Capture the size of `1lh` at the root level so we can reference it in nested elements even if those elements
-      // have a different font size (and therefore `lh` size).
-      // Note: requires an `@property` so it gets computed correctly (defined in `styles` below)
+      // Capture the absolute size of `1lh` at the root level so we can reference it in nested elements even if those
+      // elements have a different font size (and therefore `lh` size).
+      // Note: requires an `@property` so it gets computed correctly (defined in `@mixin styles` below).
       // Reference: https://codepen.io/maikelkrause/pen/PwPRQPK
       --bk-prose-base-lh: 1lh;
       --bk-prose-line-height: 1.6; // https://css-tricks.com/how-to-tame-line-height-in-css
@@ -38,7 +37,7 @@
       text-wrap: pretty; // Favor better typography for text wrapping (e.g. prevent orphans)
       hyphens: auto;
       
-      // For any elements with `text-decoration-line: underline`, set the default underline styling
+      // For any elements with `text-decoration-line: underline`, set the default underline styling.
       // This should match the styling of the `typography.link` mixin so that links look natural in prose.
       text-underline-offset: 0.15em;
       text-decoration-thickness: from-font;
@@ -53,11 +52,12 @@
       &:is(h6) { @include typography.h6; }
       
       &:is(i, em) { font-style: italic; }
-      &:is(b, strong, th) { font-weight: bk.$font-weight-semibold; }
+      &:is(b, strong) { font-weight: bk.$font-weight-semibold; }
       &:is(u) { text-decoration-line: underline; }
+      
       &:is(code) {
         padding-inline: 0.4ch;
-        background: light-dark(#eee, #333);
+        background: light-dark(#eee, #333); // FIXME: tokens?
         border-radius: 0.2em;
         font-family: var(--bk-font-family-code);
       }
@@ -139,13 +139,21 @@
       
       &:is(blockquote) {
         border-inline-start: bk.rem-from-px(4) solid currentColor;
-        margin: 1.5em 0;
-        padding: 0.5em 1em;
+        margin-block: var(--bk-prose-block-spacing);
+        padding-block: 0.4lh;
+        padding-inline: 1.5ch;
         font-style: italic;
         
         footer, cite {
           font-style: normal;
         }
+      }
+      
+      &:is(pre) {
+        white-space: pre-line;
+        margin-block-start: var(--bk-prose-block-spacing);
+        overflow-wrap: break-word; // Allow breaking mid-word if they would otherwise cause overflow
+        font-family: var(--bk-font-family-code);
       }
       
       &:is(address) {
@@ -166,6 +174,7 @@
         
         vertical-align: middle;
         font-size: bk.$font-size-s;
+        font-weight: bk.$font-weight-semibold;
         color: bk.$theme-table-text-header-default;
         text-transform: uppercase;
       }
@@ -206,31 +215,14 @@
           box-shadow 0.1s linear,
           transform 0.1s ease;
       }
-      
-      &:is(code, kbd) {
-        background: light-dark(#ccc, #333);
-        padding: 5px;
-        border-radius: 3px;
-        font-family: var(--bk-font-family-code, monospace);
-      }
-      
-      &:is(pre) {
-        > code:not(.bk) {
-          padding: 10px;
-          display: block;
-          // Note: we don't control the code here, so can't use `useScroller()`. Consumer needs to add the tabindex.
-          // stylelint-disable-next-line declaration-property-value-disallowed-list
-          overflow-x: auto;
-        }
-      }
       */
     }
   }
   
   @layer prose-overrides {
-    // Trim the top margin
+    // Trim the top margin.
     // Note: need to give this higher specificity, otherwise this gets overridden by earlier selectors
-    // In the future, we could replace this with `margin-trim` once that's available in all browsers
+    // In the future, we could replace this with `margin-trim` once that's available in all browsers.
     :scope > :nth-child(1 of :not([hidden], dialog, [popover])) {
       margin-block-start: 0;
     }
@@ -256,10 +248,10 @@
     // works. So instead, we avoid the descendant operator altogether and manually check level by level. This will
     // only work up until a certain finite depth, but we can make it as a deep as we like.
     &,
-    & > :not(.bk, .bk-isolate),
-    & > :not(.bk, .bk-isolate) > :not(.bk, .bk-isolate),
-    & > :not(.bk, .bk-isolate) > :not(.bk, .bk-isolate) > :not(.bk, .bk-isolate),
-    & > :not(.bk, .bk-isolate) > :not(.bk, .bk-isolate) > :not(.bk, .bk-isolate) > :not(.bk, .bk-isolate) {
+    & > :not(.bk-isolate, .bk),
+    & > :not(.bk-isolate, .bk) > :not(.bk-isolate, .bk),
+    & > :not(.bk-isolate, .bk) > :not(.bk-isolate, .bk) > :not(.bk-isolate, .bk),
+    & > :not(.bk-isolate, .bk) > :not(.bk-isolate, .bk) > :not(.bk-isolate, .bk) > :not(.bk-isolate, .bk) {
       line-height: var(--bk-prose-line-height);
       overflow-wrap: break-word; // Prevent long words causing overflow
       text-wrap: pretty; // Favor better typography for text wrapping (e.g. prevent orphans)
@@ -280,7 +272,7 @@
       &:is(h6) { @include typography.h6; }
       
       &:is(i, em) { font-style: italic; }
-      &:is(b, strong, th) { font-weight: bk.$font-weight-semibold; }
+      &:is(b, strong) { font-weight: bk.$font-weight-semibold; }
       &:is(u) { text-decoration-line: underline; }
       &:is(code) {
         padding-inline: 0.4ch;
@@ -303,11 +295,11 @@
         margin-block-start: calc(var(--bk-prose-block-spacing) / 2);
         padding-inline-start: var(--bk-prose-list-indent); // Make space for `::marker`
         
-        > li:not(.bk, .bk-isolate) {
+        > li:not(.bk-isolate, .bk) {
           margin-block-start: calc(var(--bk-prose-block-spacing) / 4); // Spacing between items
           
           // Nested lists
-          > :is(ul, ol):not(.bk, .bk-isolate) {
+          > :is(ul, ol):not(.bk-isolate, .bk) {
             margin-block-start: calc(var(--bk-prose-block-spacing) / 3);
           }
         }
@@ -317,7 +309,7 @@
           // https://css-tricks.com/newer-things-to-know-about-good-ol-html-lists/#aa-newer-accessibility-concerns-with-lists
           list-style: disc outside;
           
-          > li:not(.bk, .bk-isolate)::marker {
+          > li:not(.bk-isolate, .bk)::marker {
             // Override the marker style so we customize the gap size
             // https://css-tricks.com/everything-you-need-to-know-about-the-gap-after-the-list-marker
             content: '\2022\00A0\00A0';
@@ -333,27 +325,27 @@
           list-style: decimal outside;
         }
       }
-      &:is(dl):not(.bk, .bk-isolate) {
+      &:is(dl) {
         margin-block-start: calc(var(--bk-prose-block-spacing) / 2);
         
-        > dt:not(.bk, .bk-isolate) {
+        > dt:not(.bk-isolate, .bk) {
           font-weight: bk.$font-weight-regular;
           font-size: bk.$font-size-s;
           color: bk.$theme-text-small-text-subtle;
         }
         
-        > dd:not(.bk, .bk-isolate) {
+        > dd:not(.bk-isolate, .bk) {
           display: flex;
           flex-direction: column;
           font-weight: bk.$font-weight-regular;
         }
         
         // Space out terms and nested `dl` lists
-        > dt:not(.bk, .bk-isolate):not(:nth-child(1 of dt)), > div, > dl {
+        > dt:not(.bk-isolate, .bk):not(:nth-child(1 of dt)), > div, > dl {
           margin-block-start: 0.4lh;
         }
         
-        > dl:not(.bk, .bk-isolate) {
+        > dl:not(.bk-isolate, .bk) {
           margin-inline-start: var(--bk-prose-list-indent);
         }
       }
@@ -366,13 +358,21 @@
       
       &:is(blockquote) {
         border-inline-start: bk.rem-from-px(4) solid currentColor;
-        margin: 1.5em 0;
-        padding: 0.5em 1em;
+        margin-block: var(--bk-prose-block-spacing);
+        padding-block: 0.4lh;
+        padding-inline: 1.5ch;
         font-style: italic;
         
-        > :is(footer, cite):not(.bk, .bk-isolate) {
+        > :is(footer, cite):not(.bk-isolate, .bk) {
           font-style: normal;
         }
+      }
+      
+      &:is(pre) {
+        white-space: pre-line;
+        margin-block-start: var(--bk-prose-block-spacing);
+        overflow-wrap: break-word; // Allow breaking mid-word if they would otherwise cause overflow
+        font-family: var(--bk-font-family-code);
       }
       
       &:is(address) {
@@ -393,6 +393,7 @@
         
         vertical-align: middle;
         font-size: bk.$font-size-s;
+        font-weight: bk.$font-weight-semibold;
         color: bk.$theme-table-text-header-default;
         text-transform: uppercase;
       }
@@ -418,7 +419,7 @@
       
       &:is(a) { @include typography.link; }
       
-      &:is(label, button, input[type='submit'], input[type='button'], input[type='checkbox']):not(.bk, .bk-isolate) {
+      &:is(label, button, input[type='submit'], input[type='button'], input[type='checkbox']):not(.bk-isolate, .bk) {
         cursor: pointer;
       }
     }
@@ -428,7 +429,7 @@
     // Trim the top margin
     // Note: need to give this higher specificity, otherwise this gets overridden by earlier selectors
     // In the future, we could replace this with `margin-trim` once that's available in all browsers
-    & > :nth-child(1 of :not([hidden], dialog, [popover])):not(.bk, .bk-isolate) {
+    & > :nth-child(1 of :not([hidden], dialog, [popover])):not(.bk-isolate, .bk) {
       margin-block-start: 0;
     }
   }
@@ -447,10 +448,13 @@
     @include prose-element;
   }
   
-  // Fallback for Firefox 145 or lower. Firefox 146 (December 2025) introduced `@scope` as well as `contrast-color()`.
-  // Note: it would be better if we could do this with `@supports (at-rule(@scope))`, but browsers don't support *that*
-  // yet. `@supports selector(:scope)` doesn't work either since `:scope` has been supported longer than `@scope`.
-  @supports (-moz-appearance: none) and (not (color: contrast-color(red))) {
+  // Fallback for older browsers, in particular Firefox 145 and lower.
+  // - Note: it would be better if we could do this with `@supports (at-rule(@scope))`, but browsers don't support
+  //   *that* yet. `@supports selector(:scope)` doesn't work either since `:scope` has been supported longer than
+  //   `@scope`.
+  // - Alternatively, could do the following. Firefox 146 (Dec 2025) introduced `@scope` as well as `contrast-color()`.
+  //   @supports (-moz-appearance: none) and (not (color: contrast-color(red))) { ... }
+  :root.bk-supports-no-scope { // This class is set by `BaklavaProvider`
     .bk-prose {
       @include prose-element-fallback;
     }
