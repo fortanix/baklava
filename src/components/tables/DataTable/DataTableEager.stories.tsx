@@ -4,6 +4,7 @@
 
 import { differenceInDays } from 'date-fns';
 import * as React from 'react';
+import type * as ReactTable from 'react-table';
 
 import type { StoryObj } from '@storybook/react-vite';
 import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
@@ -25,8 +26,7 @@ import * as DataTableEager from './DataTableEager.tsx';
 
 import './DataTableEager_stories.scss';
 
-
-const columns = [
+const columns: Array<ReactTable.Column<User>> = [
   {
     id: 'name',
     accessor: (user: User) => user.name,
@@ -66,7 +66,7 @@ const columns = [
   {
     id: 'comments',
     // Simulate a mix of small height and long height cells
-    accessor: (_user: User, index: number) => index % 2 === 0 ? <LoremIpsum short/> : null,
+    accessor: (_user: User, index: number) => index % 2 === 0 ? <LoremIpsum short /> : null,
     Header: 'Comments',
     disableSortBy: true,
     disableGlobalFilter: true,
@@ -144,18 +144,18 @@ const DataTableEagerWithFilterTemplate = (props: DataTableEagerTemplateProps) =>
   const memoizedColumns = React.useMemo(() => props.columns, [props.columns]);
 
   const [filters, setFilters] = React.useState<FilterQuery>([]);
-  const [filteredItems, setFilteredItems] = React.useState<User[]>(props.items as User[]);
+  const [filteredItems, setFilteredItems] = React.useState<Array<User>>(props.items as Array<User>);
 
   // Convert items array into a record
   const itemsAsRecord = React.useMemo(() => {
     return Object.fromEntries(props.items.map(item => [item.id, item])) as Record<string, User>;
   }, [props.items]);
-  
+
   React.useEffect(() => {
     const filtered = Filtering.filterByQuery(fields, itemsAsRecord, filters);
     setFilteredItems(Object.values(filtered) as User[]);
   }, [filters, itemsAsRecord]);
-  
+
   const query = React.useCallback((filters: FilterQuery) => { setFilters(filters); }, []);
 
   return (
@@ -166,7 +166,7 @@ const DataTableEagerWithFilterTemplate = (props: DataTableEagerTemplateProps) =>
       getRowId={(item: User) => item.id}
       plugins={[DataTablePlugins.useRowSelectColumn]}
     >
-      <MultiSearch.MultiSearch query={query} fields={fields} filters={filters}/>
+      <MultiSearch.MultiSearch query={query} fields={fields} filters={filters} />
       <DataTableEager.DataTableEager />
     </DataTableEager.TableProviderEager>
   );
@@ -187,7 +187,7 @@ export const Empty: Story = {
     items: generateData({ numItems: 0 }),
   },
   render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
-  decorators: [Story => <Panel><Story/></Panel>],
+  decorators: [Story => <Panel><Story /></Panel>],
 };
 
 export const SinglePage: Story = {
@@ -196,7 +196,7 @@ export const SinglePage: Story = {
     items: generateData({ numItems: 5 }),
   },
   render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
-  decorators: [Story => <Panel><Story/></Panel>],
+  decorators: [Story => <Panel><Story /></Panel>],
 };
 
 export const MultiplePagesSmall: Story = {
@@ -205,7 +205,7 @@ export const MultiplePagesSmall: Story = {
     items: generateData({ numItems: 45 }),
   },
   render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
-  decorators: [Story => <Panel><Story/></Panel>],
+  decorators: [Story => <Panel><Story /></Panel>],
 };
 
 export const MultiplePagesLarge: Story = {
@@ -214,7 +214,7 @@ export const MultiplePagesLarge: Story = {
     items: generateData({ numItems: 1000 }),
   },
   render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
-  decorators: [Story => <Panel><Story/></Panel>],
+  decorators: [Story => <Panel><Story /></Panel>],
 };
 
 export const AsyncInitialization: Story = {
@@ -225,7 +225,7 @@ export const AsyncInitialization: Story = {
     isReady: false,
   },
   render: (args: DataTableEagerTemplateProps) => <DataTableEagerTemplate {...args} />,
-  decorators: [Story => <Panel><Story/></Panel>],
+  decorators: [Story => <Panel><Story /></Panel>],
 };
 
 export const WithFilter: Story = {
@@ -234,7 +234,113 @@ export const WithFilter: Story = {
     items: generateData({ numItems: 45 }),
   },
   render: (args: DataTableEagerTemplateProps) => <DataTableEagerWithFilterTemplate {...args} />,
-  decorators: [Story => <Panel><Story/></Panel>],
+  decorators: [Story => <Panel><Story /></Panel>],
+};
+
+export const WithExpandableRows: Story = {
+  args: {
+    columns,
+    items: generateData({ numItems: 12 }),
+  },
+  render: (args: DataTableEagerTemplateProps) => {
+    return (
+      <DataTableEager.TableProviderEager
+        columns={columns}
+        items={args.items}
+        getRowId={(item: User) => item.id}
+        plugins={[DataTablePlugins.useRowSelectColumn]}
+      >
+        <DataTableEager.Search />
+        <DataTableEager.DataTableEager
+          expandableRow={{
+            render: (row: ReactTable.Row<User>) => {
+              return (
+                <div>
+                  <p><strong>{row.original.name}</strong></p>
+                  <p>{row.original.email}</p>
+                  <p>{row.original.company}</p>
+                </div>
+              );
+            },
+          }}
+        />
+      </DataTableEager.TableProviderEager>
+    );
+  },
+  decorators: [Story => <Panel><Story /></Panel>],
+};
+
+const ExpandableUserDetails = (props: { row: ReactTable.Row<User> }) => {
+  const { row } = props;
+
+  return (
+    <div>
+      <p><strong>{row.original.name}</strong></p>
+      <p>{row.original.email}</p>
+      <p>{row.original.company}</p>
+    </div>
+  );
+};
+
+export const WithExpandableRowsMultiple: Story = {
+  args: {
+    columns,
+    items: generateData({ numItems: 12 }),
+  },
+  render: (args: DataTableEagerTemplateProps) => {
+    return (
+      <DataTableEager.TableProviderEager
+        columns={columns}
+        items={args.items}
+        getRowId={(item: User) => item.id}
+      >
+        <DataTableEager.Search />
+        <DataTableEager.DataTableEager
+          expandableRow={{
+            allowMultiple: true,
+            render: (row: ReactTable.Row<User>) => <ExpandableUserDetails row={row} />,
+          }}
+        />
+      </DataTableEager.TableProviderEager>
+    );
+  },
+  decorators: [Story => <Panel><Story /></Panel>],
+};
+
+export const WithExpandableRowsControlled: Story = {
+  args: {
+    columns,
+    items: generateData({ numItems: 6 }),
+  },
+  render: (args: DataTableEagerTemplateProps) => {
+    const ExpandableStory = () => {
+      const items = args.items as Array<User>;
+      const [controlledExpandedRowIds, setControlledExpandedRowIds] = React.useState<Array<string>>([
+        items[0]?.id ?? '',
+      ].filter(Boolean));
+
+      return (
+        <DataTableEager.TableProviderEager
+          columns={columns}
+          items={items}
+          getRowId={(item: User) => item.id}
+        >
+          <DataTableEager.Search />
+          <DataTableEager.DataTableEager
+            expandableRow={{
+              allowMultiple: true,
+              expandedRowIds: controlledExpandedRowIds,
+              onExpandedRowIdsChange: setControlledExpandedRowIds,
+              render: (row: ReactTable.Row<User>) => <ExpandableUserDetails row={row} />,
+            }}
+          />
+        </DataTableEager.TableProviderEager>
+      );
+    };
+
+    return <ExpandableStory />;
+  },
+  decorators: [Story => <Panel><Story /></Panel>],
 };
 
 // const moreColumns = [
@@ -348,9 +454,9 @@ export const DataTableEagerWithPageLayout: Story = {
   decorators: [
     Story => (
       <PageLayout>
-        <PageLayout.Header title={<PageLayout.Heading>PageLayout with edgeless parameter</PageLayout.Heading>}/>
+        <PageLayout.Header title={<PageLayout.Heading>PageLayout with edgeless parameter</PageLayout.Heading>} />
         <PageLayout.Body edgeless={true}>
-          <Story/>
+          <Story />
         </PageLayout.Body>
       </PageLayout>
     ),
@@ -404,7 +510,7 @@ const ModalButton = () => {
   return (
     <DialogModal
       title="Modal with renderMethod inline"
-      trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={activate}/>}
+      trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={activate} />}
       renderMethod="inline"
       size="small"
     >
@@ -420,7 +526,7 @@ const DataTableEagerEdgeCasesTemplate = (
       id: 'innertable',
       accessor: (data: DataTableEagerEdgeCasesInnerTestData) => data.lorem,
       Header: 'Inner table',
-      Cell: () => <DataTableEagerEdgeCasesInnerTemplate/>,
+      Cell: () => <DataTableEagerEdgeCasesInnerTemplate />,
       disableSortBy: false,
       disableGlobalFilter: false,
       className: 'user-table__column',
@@ -429,7 +535,7 @@ const DataTableEagerEdgeCasesTemplate = (
       id: 'modalbutton',
       accessor: (data: DataTableEagerEdgeCasesInnerTestData) => data.ipsum,
       Header: 'Modal Button',
-      Cell: () => <ModalButton/>,
+      Cell: () => <ModalButton />,
       disableSortBy: false,
       disableGlobalFilter: false,
       className: 'user-table__column',
@@ -463,7 +569,7 @@ export const DataTableEagerWithPageLayoutEdgeCases: StoryObj<typeof DataTableEag
           title={<PageLayout.Heading>PageLayout with edgeless parameter - edge cases</PageLayout.Heading>}
         />
         <PageLayout.Body edgeless={true}>
-          <Story/>
+          <Story />
         </PageLayout.Body>
       </PageLayout>
     ),

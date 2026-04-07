@@ -133,14 +133,209 @@ const getCommonClassNamesForColumn = <D extends object>(
 };
 
 // Note: `placeholder` is included in `table` props as part of "Standard HTML Attributes", but it's not actually a
+type ExpandableRowBaseProps<D extends object> = {
+  render: (row: ReactTable.Row<D>) => React.ReactNode,
+  allowMultiple?: boolean,
+};
+
+type ExpandableRowUncontrolledProps<D extends object> = ExpandableRowBaseProps<D> & {
+  expandedRowIds?: never,
+  onExpandedRowIdsChange?: never,
+};
+
+type ExpandableRowControlledProps<D extends object> = ExpandableRowBaseProps<D> & {
+  expandedRowIds: Array<string>,
+  onExpandedRowIdsChange: (expandedRowIds: Array<string>) => void,
+};
+
+type ExpandableRowProps<D extends object> =
+  | ExpandableRowUncontrolledProps<D>
+  | ExpandableRowControlledProps<D>;
+
 // valid `<table>` attribute, so we can safely override it.
-type DataTableProps<D extends object> = Omit<ComponentProps<'table'>, 'placeholder'> & {
+export type DataTableProps<D extends object> = Omit<ComponentProps<'table'>, 'placeholder'> & {
   table: ReactTable.TableInstance<D>,
   columnGroups?: React.ReactNode,
   footer?: React.ReactNode,
   placeholder?: React.ReactNode,
   endOfTablePlaceholder?: React.ReactNode,
+  expandableRow?: ExpandableRowProps<D>,
   children?: React.ReactNode,
+};
+
+type DataTableRowProps<D extends object> = {
+  row: ReactTable.Row<D>,
+  table: ReactTable.TableInstance<D>,
+  expandableRowContent?: React.ReactNode,
+  isExpanded: boolean,
+  onToggleExpandedRow?: () => void,
+};
+
+const BLOCK_SIZE_COLLAPSED = '0px';
+const BLOCK_SIZE_AUTO = 'auto';
+
+const getMeasuredBlockSize = (element: HTMLDivElement) => `${element.scrollHeight}px`;
+
+const DataTableRow = <D extends object>(props: DataTableRowProps<D>) => {
+  const {
+    row,
+    table,
+    expandableRowContent,
+    isExpanded,
+    onToggleExpandedRow,
+  } = props;
+  const { key: rowKey, ...rowProps } = row.getRowProps();
+  const hasExpandableRowContent =
+    typeof expandableRowContent !== 'undefined' && expandableRowContent !== null;
+  const canToggleExpandedRow = hasExpandableRowContent && typeof onToggleExpandedRow === 'function';
+  const [isExpandedContentMounted, setIsExpandedContentMounted] = React.useState(
+    isExpanded && hasExpandableRowContent,
+  );
+  const [expandedContentBlockSize, setExpandedContentBlockSize] = React.useState<string>(
+    isExpanded && hasExpandableRowContent ? BLOCK_SIZE_AUTO : BLOCK_SIZE_COLLAPSED,
+  );
+  const expandedRowContentRef = React.useRef<HTMLDivElement>(null);
+  const expandedContentBlockSizeRef = React.useRef(expandedContentBlockSize);
+
+  expandedContentBlockSizeRef.current = expandedContentBlockSize;
+
+  React.useEffect(() => {
+    if (isExpanded && hasExpandableRowContent) {
+      setIsExpandedContentMounted(true);
+    }
+  }, [hasExpandableRowContent, isExpanded]);
+
+  React.useLayoutEffect(() => {
+    if (!isExpandedContentMounted || !hasExpandableRowContent) {
+      return;
+    }
+
+    const contentElement = expandedRowContentRef.current;
+    if (!contentElement) {
+      return;
+    }
+
+    const measuredBlockSize = getMeasuredBlockSize(contentElement);
+    let frameId = 0;
+
+    if (isExpanded) {
+      // Start collapsed, then expand on the next frame so the browser has a real size transition to animate.
+      if (expandedContentBlockSizeRef.current !== BLOCK_SIZE_COLLAPSED) {
+        setExpandedContentBlockSize(BLOCK_SIZE_COLLAPSED);
+      }
+
+      frameId = requestAnimationFrame(() => {
+        setExpandedContentBlockSize(measuredBlockSize);
+      });
+    } else if (expandedContentBlockSizeRef.current === BLOCK_SIZE_AUTO) {
+      // When closing from `auto`, freeze the current height first, then collapse on the next frame.
+      setExpandedContentBlockSize(measuredBlockSize);
+      frameId = requestAnimationFrame(() => {
+        setExpandedContentBlockSize(BLOCK_SIZE_COLLAPSED);
+      });
+    } else {
+      setExpandedContentBlockSize(BLOCK_SIZE_COLLAPSED);
+    }
+
+    return () => {
+      cancelAnimationFrame(frameId);
+    };
+  }, [hasExpandableRowContent, isExpanded, isExpandedContentMounted]);
+
+  const handleExpandedRowTransitionEnd = (event: React.TransitionEvent<HTMLDivElement>) => {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
+    if (event.propertyName !== 'height' && event.propertyName !== 'block-size') {
+      return;
+    }
+
+    if (isExpanded) {
+      // Once open, switch back to `auto` so the content can resize naturally without fighting the animation.
+      setExpandedContentBlockSize(BLOCK_SIZE_AUTO);
+      return;
+    }
+
+    // Keep the detail row mounted until the closing transition finishes.
+    setIsExpandedContentMounted(false);
+  };
+
+  const handleCaretPress = () => {
+    if (!canToggleExpandedRow || !onToggleExpandedRow) {
+      return;
+    }
+
+    onToggleExpandedRow();
+  };
+
+  return (
+    <React.Fragment key={rowKey}>
+      <tr
+        {...rowProps}
+        className={cx(
+          rowProps.className,
+          { [cl['selected']]: row.isSelected },
+          { [cl['bk-data-table__row--expandable-open']]: isExpandedContentMounted },
+        )}
+      >
+        {/*<td className="bk-table__row__select">
+          <input type="checkbox"
+            checked={row.isSelected}
+            onChange={() => { row.toggleRowSelected(); }}
+          />
+        </td>*/}
+        {row.cells.map(cell => {
+          const { key: cellKey, ...cellProps } = cell.getCellProps();
+          const useExtraColSpan = requireNewCol(cell.column);
+          const isFirstCell = row.cells[0]?.column.id === cell.column.id;
+
+          return (
+            <td {...cellProps} key={cellKey} {...useExtraColSpan ? { colSpan: 2 } : {}}
+              className={cx(cellProps.className, getCommonClassNamesForColumn(cell.column, table))}
+            >
+              <div className={cx(
+                cl['bk-data-table__text-cell'],
+                { [cl['bk-data-table__text-cell--expandable-toggle']]: hasExpandableRowContent && isFirstCell },
+              )}>
+                {hasExpandableRowContent && isFirstCell &&
+                  <IconButton
+                    unstyled
+                    trimmed
+                    label={isExpanded ? 'Collapse row' : 'Expand row'}
+                    icon={isExpanded ? 'caret-up' : 'caret-down'}
+                    className={cx(cl['bk-data-table__expandable-row-toggle'])}
+                    iconClassName={cx(cl['bk-data-table__expandable-row-toggle-icon'])}
+                    onPress={handleCaretPress}
+                  />
+                }
+                {cell.render('Cell')}
+              </div>
+            </td>
+          );
+        })}
+      </tr>
+      {isExpandedContentMounted && hasExpandableRowContent &&
+        <tr className={cx(cl['bk-data-table__expandable-row'])}>
+          <td colSpan={getTotalColSpan(table.visibleColumns)}>
+            <div
+              ref={expandedRowContentRef}
+              className={cx(
+                cl['bk-data-table__expandable-row-content'],
+                { [cl['bk-data-table__expandable-row-content--open']]: isExpanded },
+              )}
+              style={{ blockSize: expandedContentBlockSize }}
+              onTransitionEnd={handleExpandedRowTransitionEnd}
+            >
+              <div className={cx(cl['bk-data-table__expandable-row-content-inner'])}>
+                {expandableRowContent}
+              </div>
+            </div>
+          </td>
+        </tr>
+      }
+    </React.Fragment>
+  );
 };
 export const DataTable = <D extends object>(props: DataTableProps<D>) => {
   const {
@@ -149,9 +344,34 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
     footer,
     placeholder,
     endOfTablePlaceholder,
+    expandableRow,
     children,
     ...propsRest
   } = props;
+  const [expandedRowIdsInternal, setExpandedRowIdsInternal] = React.useState<Array<string>>([]);
+  const expandedRowIds = expandableRow?.expandedRowIds ?? expandedRowIdsInternal;
+  const allowMultipleExpandedRows = expandableRow?.allowMultiple ?? false;
+
+  const setExpandedRowIds = React.useCallback((nextExpandedRowIds: Array<string>) => {
+    expandableRow?.onExpandedRowIdsChange?.(nextExpandedRowIds);
+
+    if (typeof expandableRow?.expandedRowIds === 'undefined') {
+      setExpandedRowIdsInternal(nextExpandedRowIds);
+    }
+  }, [expandableRow]);
+
+  const toggleExpandedRow = React.useCallback((rowId: string) => {
+    const isExpanded = expandedRowIds.includes(rowId);
+
+    if (allowMultipleExpandedRows) {
+      setExpandedRowIds(isExpanded
+        ? expandedRowIds.filter(expandedRowId => expandedRowId !== rowId)
+        : [...expandedRowIds, rowId]);
+      return;
+    }
+
+    setExpandedRowIds(isExpanded ? [] : [rowId]);
+  }, [allowMultipleExpandedRows, expandedRowIds, setExpandedRowIds]);
 
   const scrollWrapperRef = React.useRef<HTMLDivElement>(null);
   const [overflowPosition, setOverflowPosition] = React.useState<'left' | 'right' | 'center' | null>(null);
@@ -297,30 +517,25 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
             }
             {typeof placeholder === 'undefined' && table.page.map(row => {
               table.prepareRow(row);
-              const { key: rowKey, ...rowProps } = row.getRowProps();
+              const expandableRowContent = expandableRow?.render(row);
+              const hasExpandableRowContent =
+                typeof expandableRowContent !== 'undefined' && expandableRowContent !== null;
+
               return (
-                <tr {...rowProps} key={rowKey} className={cx(rowProps.className, { [cl['selected']]: row.isSelected })}>
-                  {/*<td className="bk-table__row__select">
-                    <input type="checkbox"
-                      checked={row.isSelected}
-                      onChange={() => { row.toggleRowSelected(); }}
-                    />
-                  </td>*/}
-                  {row.cells.map(cell => {
-                    const { key: cellKey, ...cellProps } = cell.getCellProps();
-                    const useExtraColSpan = requireNewCol(cell.column);
-                  
-                    return (
-                      <td {...cellProps} key={cellKey} {...useExtraColSpan ? { colSpan: 2 } : {}} 
-                        className={cx(cellProps.className, getCommonClassNamesForColumn(cell.column, table))}
-                      >
-                        <div className={cx(cl['bk-data-table__text-cell'])}>
-                          {cell.render('Cell')}
-                        </div>
-                      </td>
-                    );
-                  })}
-                </tr>
+                <DataTableRow
+                  key={row.id}
+                  row={row}
+                  table={table}
+                  expandableRowContent={expandableRowContent}
+                  isExpanded={hasExpandableRowContent && expandedRowIds.includes(row.id)}
+                  {...(hasExpandableRowContent
+                    ? {
+                      onToggleExpandedRow: () => {
+                        toggleExpandedRow(row.id);
+                      },
+                    }
+                    : {})}
+                />
               );
             })}
             {typeof endOfTablePlaceholder !== 'undefined' &&
@@ -344,7 +559,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
 };
 
 
-type DataTableSyncProps<D extends object> = DataTableProps<D> & {
+export type DataTableSyncProps<D extends object> = DataTableProps<D> & {
   classNameTable?: ClassNameArgument,
   placeholderEmpty?: React.ReactNode,
   placeholderSkeleton?: React.ReactNode,
