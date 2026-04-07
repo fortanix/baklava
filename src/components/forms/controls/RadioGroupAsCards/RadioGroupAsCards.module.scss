@@ -42,6 +42,7 @@
       contain: none;
       inline-size: bk.rem-from-px(200);
       block-size: bk.rem-from-px(100);
+      justify-content: center;
       flex-grow: 0 0 auto;
       user-select: none;
       cursor: pointer;
@@ -100,7 +101,7 @@
       // stylelint-disable-next-line selector-class-pattern 
       > :global(._icon) {
         flex-shrink: 0;
-        align-self: flex-start;
+        align-self: center;
       }
 
       // stylelint-disable-next-line selector-class-pattern 
