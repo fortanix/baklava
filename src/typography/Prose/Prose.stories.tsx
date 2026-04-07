@@ -9,9 +9,6 @@ import { DummyLink } from '../../util/storybook/StorybookLink.tsx';
 
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { SegmentedControl } from '../../components/forms/controls/SegmentedControl/SegmentedControl.tsx';
-import { 
-  RadioGroupAsCards 
-} from '../../components/forms/controls/RadioGroupAsCards/RadioGroupAsCards.tsx';
 import { Icon } from '../../components/graphics/Icon/Icon.tsx';
 
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
@@ -181,11 +178,6 @@ export const WithComponents: Story = {
           <SegmentedControl.Button buttonKey="test-2" label="Test 2"/>
           <SegmentedControl.Button buttonKey="test-3" label="Test 3"/>
         </SegmentedControl>
-        <RadioGroupAsCards defaultSelected="eks" aria-label="Test segmented control">
-          <RadioGroupAsCards.Card key="eks" icon={<Icon icon="account"/>} cardKey="eks" title="External Key Source Connection" />
-          <RadioGroupAsCards.Card key="aws" icon={<Icon icon="account"/>} cardKey="aws" title="Amazon Web Services" />
-          <RadioGroupAsCards.Card key="azure" icon={<Icon icon="account"/>} cardKey="azure" title="Azure" />
-        </RadioGroupAsCards>
       </>
     ),
   },
