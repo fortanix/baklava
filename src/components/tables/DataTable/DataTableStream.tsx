@@ -13,7 +13,7 @@ import { type DataTableStatus, type TableContextState, createTableContext, useTa
 import { PaginationStream } from './pagination/PaginationStream.tsx';
 import { DataTablePlaceholderError } from './table/DataTablePlaceholder.tsx';
 
-import { DataTableAsync } from './table/DataTable.tsx';
+import { DataTableAsync, type DataTableAsyncProps } from './table/DataTable.tsx';
 
 import type { FilterQuery } from '../MultiSearch/filterQuery.ts';
 
@@ -474,14 +474,14 @@ export const TableProviderStream = <D extends object, P = undefined>(
 };
 TableProviderStream.displayName = 'TableProviderStream';
 
-type DataTableStreamProps = Omit<React.ComponentProps<typeof DataTableAsync>, 'table' | 'status'>;
-export const DataTableStream = ({
+type DataTableStreamProps<D extends object> = Omit<DataTableAsyncProps<D>, 'table' | 'status'>;
+export const DataTableStream = <D extends object>({
   className,
   footer,
   placeholderEndOfTable,
   ...propsRest
-}: DataTableStreamProps) => {
-  const { status, table, reload } = useTable();
+}: DataTableStreamProps<D>) => {
+  const { status, table, reload } = useTable<D>();
   
   const isLoading = status.loading;
   const isEmpty = status.ready && table.rows.length === 0;

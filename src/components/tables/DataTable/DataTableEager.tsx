@@ -10,7 +10,7 @@ import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 import { type TableContextState, createTableContext, useTable } from './DataTableContext.tsx';
 import { Pagination } from './pagination/Pagination.tsx';
 import { MultiSearch as MultiSearchInput } from '../MultiSearch/MultiSearch.tsx';
-import { DataTableSync } from './table/DataTable.tsx';
+import { DataTableSync, type DataTableSyncProps } from './table/DataTable.tsx';
 
 import cl from './DataTableEager.module.scss';
 
@@ -145,13 +145,18 @@ export const MultiSearch = (props: React.ComponentPropsWithoutRef<typeof MultiSe
 };
 MultiSearch.displayName = 'MultiSearch';
 
-export type DataTableEagerProps = Omit<React.ComponentProps<typeof DataTableSync>, 'table' | 'status'> & {
+export type DataTableEagerProps<D extends object> = Omit<DataTableSyncProps<D>, 'table' | 'status'> & {
   children?: React.ReactNode,
   className?: ClassNameArgument,
   footer?: React.ReactNode,
 };
-export const DataTableEager = ({ children, className, footer, ...propsRest }: DataTableEagerProps) => {
-  const { table, status } = useTable();
+export const DataTableEager = <D extends object>({
+  children,
+  className,
+  footer,
+  ...propsRest
+}: DataTableEagerProps<D>) => {
+  const { table, status } = useTable<D>();
   
   React.useEffect(() => {
     if (table.page.length === 0 && table.state.pageIndex > 0 && table.canPreviousPage) {
