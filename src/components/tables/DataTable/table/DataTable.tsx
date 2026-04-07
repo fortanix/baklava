@@ -41,7 +41,7 @@ const calculateFlexPercentage = <D extends object>(
   targetColumn: ReactTable.ColumnInstance<D>
 ) => {
   if (!isFlexColumn(targetColumn)) {
-    return 0;    
+    return 0;
   }
 
   const targetColumnFlex = getFlexValueFromColumn(targetColumn);
@@ -132,7 +132,6 @@ const getCommonClassNamesForColumn = <D extends object>(
   });
 };
 
-// Note: `placeholder` is included in `table` props as part of "Standard HTML Attributes", but it's not actually a
 type ExpandableRowBaseProps<D extends object> = {
   render: (row: ReactTable.Row<D>) => React.ReactNode,
   allowMultiple?: boolean,
@@ -152,11 +151,12 @@ type ExpandableRowProps<D extends object> =
   | ExpandableRowUncontrolledProps<D>
   | ExpandableRowControlledProps<D>;
 
-// valid `<table>` attribute, so we can safely override it.
 export type DataTableProps<D extends object> = Omit<ComponentProps<'table'>, 'placeholder'> & {
   table: ReactTable.TableInstance<D>,
   columnGroups?: React.ReactNode,
   footer?: React.ReactNode,
+  // Note: `placeholder` is included in `table` props as part of "Standard HTML Attributes", but it's not actually a
+  // valid `<table>` attribute, so we can safely override it.
   placeholder?: React.ReactNode,
   endOfTablePlaceholder?: React.ReactNode,
   expandableRow?: ExpandableRowProps<D>,
@@ -171,7 +171,7 @@ type DataTableRowProps<D extends object> = {
   onToggleExpandedRow?: () => void,
 };
 
-const BLOCK_SIZE_COLLAPSED = '0px';
+const BLOCK_SIZE_COLLAPSED = '0';
 const BLOCK_SIZE_AUTO = 'auto';
 
 const getMeasuredBlockSize = (element: HTMLDivElement) => `${element.scrollHeight}px`;
@@ -279,12 +279,6 @@ const DataTableRow = <D extends object>(props: DataTableRowProps<D>) => {
           { [cl['bk-data-table__row--expandable-open']]: isExpandedContentMounted },
         )}
       >
-        {/*<td className="bk-table__row__select">
-          <input type="checkbox"
-            checked={row.isSelected}
-            onChange={() => { row.toggleRowSelected(); }}
-          />
-        </td>*/}
         {row.cells.map(cell => {
           const { key: cellKey, ...cellProps } = cell.getCellProps();
           const useExtraColSpan = requireNewCol(cell.column);
@@ -433,11 +427,11 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
         {...scrollProps}
         ref={scrollWrapperRef}
         className={cx(cl['bk-data-table-container'], {
-            [cl['bk-data-table-container--scrolled-left']]: overflowPosition === 'left'
-              || overflowPosition === 'center',
-            [cl['bk-data-table-container--scrolled-right']]: overflowPosition === 'right'
-              || overflowPosition === 'center',
-          },
+          [cl['bk-data-table-container--scrolled-left']]: overflowPosition === 'left'
+            || overflowPosition === 'center',
+          [cl['bk-data-table-container--scrolled-right']]: overflowPosition === 'right'
+            || overflowPosition === 'center',
+        },
           scrollProps.className
         )}
       >
@@ -490,7 +484,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                         : column.render('Header')
                       }
                       {column.canSort &&
-                        <IconButton 
+                        <IconButton
                           icon="caret-down"
                           label={getSortIconLabel()}
                           className={cx(
@@ -548,7 +542,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
           </tbody>
         </table>
       </div>
-        
+      
       {footer &&
         <div className={cx(cl['bk-data-table__footer'])}>
           {footer}
@@ -590,7 +584,7 @@ export const DataTableSync = <D extends object>(props: DataTableSyncProps<D>) =>
   // Note: the wrapper div isn't really necessary, but we include it for structural consistency with `DataTableAsync`
   return (
     <div
-      className={cx(cl['bk-data-table'], cl['bk-data-table--sync'], className )}
+      className={cx(cl['bk-data-table'], cl['bk-data-table--sync'], className)}
     >
       <DataTable
         {...propsRest}
@@ -646,7 +640,7 @@ export const DataTableAsync = <D extends object>(props: DataTableAsyncProps<D>) 
   
   return (
     <div
-      className={cx(cl['bk-data-table'], cl['bk-data-table--async'], props.className )}
+      className={cx(cl['bk-data-table'], cl['bk-data-table--async'], props.className)}
     >
       {children}
       
