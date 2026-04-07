@@ -8,6 +8,7 @@ import * as React from 'react';
 
 import { Button } from '../../../actions/Button/Button.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
+import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 
 import { CardKey, RadioGroupAsCards } from './RadioGroupAsCards.tsx';
 
@@ -139,6 +140,50 @@ export const RadioGroupAsCardsControlledWithDefault: Story = {
         <RadioGroupAsCards.Card icon={<Icon icon="account" />} cardKey="red" title="Red" />
         <RadioGroupAsCards.Card icon={<Icon icon="account" />} cardKey="green" title="Green" />
         <RadioGroupAsCards.Card icon={<Icon icon="account" />} cardKey="blue" title="Blue" />
+      </>
+    ),
+  },
+};
+
+export const RadioGroupAsCardsInForm: Story = {
+  decorators: [
+    Story => (
+      <>
+        <form
+          id="story-form"
+          onSubmit={event => {
+            event.preventDefault();
+            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || 'none'}`);
+          }}
+        />
+        <Story />
+        <button type="submit" form="story-form">Submit</button>
+      </>
+    ),
+  ],
+
+  args: {
+    inputProps: {
+      form: 'story-form',
+      name: 'story_component1', 
+    },
+    children: (
+      <>
+        <RadioGroupAsCards.Card
+          icon={<Icon icon="account" />}
+          cardKey="red"
+          title="Red"
+        />
+        <RadioGroupAsCards.Card
+          icon={<Icon icon="account" />}
+          cardKey="green"
+          title="Green"
+        />
+        <RadioGroupAsCards.Card
+          icon={<Icon icon="account" />}
+          cardKey="blue"
+          title="Blue"
+        />
       </>
     ),
   },
