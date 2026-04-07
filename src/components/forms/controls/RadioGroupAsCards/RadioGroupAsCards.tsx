@@ -28,7 +28,7 @@ export { cl as RadioGroupAsCardsClassNames };
 export type CardKey = string;
 export type CardDef = {
   cardKey: CardKey,
-  cardRef: React.RefObject<null | HTMLDivElement>,
+  radioRef: React.RefObject<null | React.ComponentRef<typeof CardAction>>,
 };
 
 export type RadioGroupAsCardsContext = {
@@ -49,7 +49,7 @@ export const useRadioGroupAsCardsContext = (cardDef: CardDef) => {
 };
 
 
-type RadioGroupCardProps = ComponentProps<'div'> & {
+type RadioGroupCardProps = ComponentProps<typeof CardAction> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
@@ -63,7 +63,7 @@ type RadioGroupCardProps = ComponentProps<'div'> & {
   icon?: undefined | React.ReactElement,
 
   /** Escape hatch */
-  children?: React.ReactNode,
+  children?: undefined | React.ReactNode,
 };
 
 const RadioGroupCard = (props: RadioGroupCardProps) => {
@@ -75,15 +75,8 @@ const RadioGroupCard = (props: RadioGroupCardProps) => {
     ...propsRest
   } = props;
 
-  const cardRef = React.useRef<HTMLDivElement>(null);
-
-  const cardDef = React.useMemo(
-    () => ({
-      cardKey: cardKey,
-      cardRef: cardRef, // matches Card ref shape
-    }),
-    [cardKey]
-  );
+  const radioRef = React.useRef<React.ComponentRef<typeof CardAction>>(null);
+  const cardDef = React.useMemo<CardDef>(() => ({ cardKey, radioRef }), [cardKey]);
 
   const context = useRadioGroupAsCardsContext(cardDef);
 
@@ -109,7 +102,7 @@ const RadioGroupCard = (props: RadioGroupCardProps) => {
         {icon && (<span className={cx('_icon', cl['bk-radio-group-as-cards__icon'])}>{icon}</span>)}
         {/* biome-ignore lint/a11y/useSemanticElements: custom radio on span requires ARIA role */}
         <span
-          ref={mergeRefs(cardRef, propsRest.ref)}
+          ref={radioRef}
           role="radio"
           aria-checked={isSelected}
           aria-labelledby={`${cardKey}-label`}
@@ -171,6 +164,7 @@ export const RadioGroupAsCards = Object.assign(
       }
     }, [selected]);
 
+    //TODO: this register callback won't work if two already-rendered items are swapped.
     const register = React.useCallback((cardDef: CardDef) => {
       const cardDefs = cardDefsRef.current;
       if (cardDefs.has(cardDef.cardKey)) {
@@ -187,7 +181,7 @@ export const RadioGroupAsCards = Object.assign(
     const selectCard = React.useCallback((cardKey: CardKey) => {
       setSelectedCard(selectedCard => {
         if (cardKey !== selectedCard) {
-          cardDefsRef.current.get(cardKey)?.cardRef.current?.focus();
+          cardDefsRef.current.get(cardKey)?.radioRef.current?.focus();
           return cardKey;
         } else {
           return selectedCard;
@@ -213,9 +207,9 @@ export const RadioGroupAsCards = Object.assign(
       if (typeof defaultSelected === 'undefined') { return; }
 
       const cardDef: undefined | CardDef = cardDefsRef.current.get(defaultSelected);
-      if (typeof cardDef === 'undefined' || cardDef.cardRef.current === null) {
+      if (typeof cardDef === 'undefined' || cardDef.radioRef.current === null) {
         console.error(`Unable to find a card matching the specified defaultSelected: ${defaultSelected}`);
-      } else if (!disabled && !isItemProgrammaticallyFocusable(cardDef.cardRef.current)) {
+      } else if (!disabled && !isItemProgrammaticallyFocusable(cardDef.radioRef.current)) {
         console.error(`Default card is not focusable: ${defaultSelected}`);
       }
     });
@@ -234,7 +228,7 @@ export const RadioGroupAsCards = Object.assign(
       // Get the list of card keys, ideally in the order that they are displayed to the user.
       // Filter only the cards that are (programmatically) focusable.
       const cardKeys: Array<CardKey> = [...cardDefsRef.current.entries()]
-        .filter(([_, { cardRef }]) => cardRef.current && isItemProgrammaticallyFocusable(cardRef.current))
+        .filter(([_, { radioRef }]) => radioRef.current && isItemProgrammaticallyFocusable(radioRef.current))
         .map(([cardKey]) => cardKey);
 
       const cardIndex: number = cardKeys.indexOf(selectedCard);
