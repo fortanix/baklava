@@ -9,6 +9,8 @@ import { DummyLink } from '../../util/storybook/StorybookLink.tsx';
 
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { SegmentedControl } from '../../components/forms/controls/SegmentedControl/SegmentedControl.tsx';
+import { Icon } from '../../components/graphics/Icon/Icon.tsx';
+
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
 
 import { Prose } from './Prose.tsx';

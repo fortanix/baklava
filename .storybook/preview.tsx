@@ -108,6 +108,7 @@ const preview = {
                 'Switch',
                 'Radio',
                 'RadioGroup',
+                'RadioGroupAsCards',
                 'SegmentedControl',
                 'Input',
                 [

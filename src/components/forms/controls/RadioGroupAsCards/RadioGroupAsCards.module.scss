@@ -1,0 +1,130 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-radio-group-as-cards {
+    @include bk.component-base(bk-radio-group-as-cards);
+
+    --bk-radio-group-as-cards-background-color: #{bk.$theme-segmented-control-background-default};
+    --bk-radio-group-as-cards-border-color: #{bk.$theme-segmented-control-border-unselected};
+    --bk-radio-group-as-cards-text-color: #{bk.$theme-segmented-control-text-unselected};
+
+    //overflow: hidden; // Note: cannot hide overflow, would truncate focus outlines
+    inline-size: fit-content; // Do not stretch in a block context
+    align-self: center; // Do not stretch along cross axis in flex context
+    flex: none; // Do not shrink/grow in a flex context
+    display: flex;
+    flex-direction: row;
+    gap: bk.rem-from-px(16);
+    flex-wrap: wrap;
+
+    // Set this to allow wrapping:
+    //flex-wrap: wrap;
+    // Note: may want to implement https://heydonworks.com/article/the-flexbox-holy-albatross-reincarnated
+
+    // Indicator overlay
+    .bk-radio-group-as-cards__indicator {
+      position: absolute;
+      inset-block-start: -0.51rem;
+      inset-inline-end: -0.51rem;
+      z-index: 10;
+      @include bk.circle($size: bk.$spacing-6);
+      background-color: bk.$theme-icon-informational;
+    }
+
+    .bk-radio-group-as-cards__card {
+      position: relative;
+      flex: 0 0 auto;
+      overflow: visible;
+      contain: none;
+      inline-size: bk.rem-from-px(200);
+      block-size: bk.rem-from-px(100);
+      justify-content: center;
+      flex-grow: 0 0 auto;
+      user-select: none;
+      cursor: pointer;
+      padding: bk.$spacing-4;
+      background-color: var(--bk-radio-group-as-cards-background-color);
+      color: var(--bk-radio-group-as-cards-text-color);
+      @include bk.font($family: bk.$font-family-body, $weight: bk.$font-weight-semibold);
+
+      // Selected card
+      &[aria-checked="true"] {
+        --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
+        --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
+        --bk-radio-group-as-cards-text-color: #{bk.$theme-segmented-control-text-default};
+      }
+
+      // NOTE:
+      // The actual focus is on inner span (role="radio"), not on the card.
+      // So :focus-visible on card won't work. We rely on :focus-within instead.
+      // Apply focus styles when any child (span) is focused
+      @include bk.focus-outset($selector: '&:focus-visible, &:has(:focus-visible), &.pseudo-focus-visible');
+
+
+      &:has(:focus-visible, :global(.pseudo-focus-visible)) {
+        z-index: 1; // Have the focused toggle render over the other toggles so that the focus is fully shown
+        --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
+        --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
+      }
+
+      // State: hover (only for non-selected cards)
+      &:is(:hover, :global(.pseudo-hover)):not([aria-checked="true"]) {
+        --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
+        --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
+      }
+
+      // State: active
+      &:not(:disabled):active {
+        filter: brightness(90%);
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        transition: filter 100ms ease-out;
+      }
+    }
+
+    .bk-radio-group-as-cards__card__heading {
+      display: flex;
+      align-items: flex-start;
+      gap: bk.$spacing-2;
+      @include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-m);
+      padding: 0;
+      border-block-end: none;
+      min-inline-size: 0;
+      color: bk.$theme-text-body-default;
+      line-height: bk.$line-height-s;
+
+      // stylelint-disable-next-line selector-class-pattern 
+      > :global(._icon) {
+        flex-shrink: 0;
+        align-self: center;
+      }
+
+      // stylelint-disable-next-line selector-class-pattern 
+      > :global(._content) {
+        flex: 1;
+        min-inline-size: 0;
+
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+
+        overflow: hidden;
+        @include bk.focus-hidden;
+      }
+
+      transition: border 150ms ease-in-out;
+    }
+  }
+
+  // Selected wrapper state
+  .bk-radio-group-as-cards__card--selected {
+    border-color: bk.$theme-card-border-selected;
+    --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
+    --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
+  }
+}
