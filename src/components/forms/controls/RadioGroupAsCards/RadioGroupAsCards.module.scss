@@ -89,7 +89,7 @@
 
     .bk-radio-group-as-cards__card__heading {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: bk.$spacing-2;
       @include bk.font(bk.$font-family-body, bk.$font-weight-semibold, bk.$font-size-m);
       padding: 0;
