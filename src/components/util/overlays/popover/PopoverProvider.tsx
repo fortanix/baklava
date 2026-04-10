@@ -13,6 +13,7 @@ export type PopoverRef = {
   active: boolean,
   activate: () => void,
   deactivate: () => void,
+  onlyDeactivate: () => void,
 };
 
 export type PopoverParams<E extends HTMLElement> = UsePopoverResult<E> & {
@@ -41,6 +42,9 @@ export type PopoverProviderProps<E extends HTMLElement> = {
   
   /** How long to keep the popover in the DOM for exit animation purposes. Default: 3 seconds. */
   unmountDelay?: undefined | number,
+  
+  /** A callback function that is executed when the PopoverOverlay children (i.e. DialogOverlay) is closing. */
+  onRequestClose?: undefined | (() => void | Promise<void>),
 };
 /**
  * Provider around a trigger (e.g. button) to display a popover overlay on trigger activation.
@@ -64,13 +68,16 @@ export const PopoverProvider = Object.assign(
       //source, // TODO: need a reference to the trigger element
       active: active,
       activate: () => { setActiveWithDelay(true); },
-      deactivate: () => { setActiveWithDelay(false); },
+      // we don't want to call props.onRequestClose() when we're closing on our end (X button or Cancel)
+      // otherwise it will fire twice
+      onlyDeactivate: () => { setActiveWithDelay(false); },
+      deactivate: () => { setActiveWithDelay(false); props.onRequestClose?.(); },
     }), [active, setActiveWithDelay]);
     
     React.useImperativeHandle(ref, () => popoverRef, [popoverRef]);
     
     const popoverParams = Object.assign(usePopover<E>(popoverRef), {
-      close: popoverRef.deactivate,
+      close: popoverRef.onlyDeactivate,
     });
     
     // Track this as part of our top layer elements tracker

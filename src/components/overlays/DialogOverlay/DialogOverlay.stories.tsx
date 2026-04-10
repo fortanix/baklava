@@ -115,3 +115,11 @@ export const DialogOverlayWithToast: Story = {
     ),
   },
 };
+
+export const DialogOverlayProviderPropsOnRequestClose: Story = {
+  args: {
+    providerProps: {
+      onRequestClose: () => { notify.info('providerProps onRequestClose'); },
+    },
+  },  
+};

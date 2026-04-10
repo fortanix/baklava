@@ -49,7 +49,7 @@ export type DialogOverlayProps = Omit<React.ComponentProps<typeof Dialog>, 'chil
   popoverRef?: undefined | React.Ref<React.ComponentRef<typeof PopoverProvider>>,
   
   /** Any additional props to pass to the popover provider. */
-  providerProps?: undefined | Omit<PopoverProviderPropsDialog, 'children'>,
+  providerProps?: undefined | Omit<PopoverProviderPropsDialog, 'children' | 'popover'>,
 };
 
 export type OverlayWithSubject<S> = {
