@@ -6,7 +6,7 @@ import type { NonUndefined } from '../../../util/types.ts';
 
 import * as React from 'react';
 import { flushSync } from 'react-dom';
-import { mergeCallbacks, mergeRefs } from '../../../util/reactUtil.ts';
+import { mergeCallbacks, mergeRefs, mergeProps } from '../../../util/reactUtil.ts';
 import { classNames as cx } from '../../../util/componentUtil.ts';
 
 import { Dialog } from '../../containers/Dialog/Dialog.tsx';
@@ -174,6 +174,7 @@ export const DialogModal = Object.assign(
   (props: DialogModalProps) => {
     const {
       children,
+      title,
       unstyled = false,
       activeDefault = false,
       display = 'center',
@@ -187,6 +188,9 @@ export const DialogModal = Object.assign(
       ...propsRest
     } = props;
     
+    // Need to omit `title` from the merged props since it's incompatible between `HTMLDialogElement` and `DialogModal`
+    type DialogPropsMerged = Array<Omit<React.ComponentProps<typeof Dialog>, 'title'>>;
+    
     return (
       <ModalProvider
         activeDefault={activeDefault}
@@ -196,12 +200,12 @@ export const DialogModal = Object.assign(
         dialog={dialogController =>
           <Dialog
             aria-modal="true"
+            title={title}
             flat={['slide-over'].includes(display)}
-            {...dialogController.dialogProps}
             showCloseIcon={allowUserClose}
             autoFocusClose={allowUserClose}
             showCancelAction={allowUserClose}
-            {...propsRest}
+            {...mergeProps<DialogPropsMerged>(dialogController.dialogProps, propsRest)}
             onRequestClose={dialogController.close}
             className={cx(
               'bk',
