@@ -17,6 +17,7 @@ import * as Filtering from './filtering/Filtering.ts';
 import type { Fields, FilterQuery } from '../MultiSearch/filterQuery.ts';
 
 import { Button } from '../../actions/Button/Button.tsx';
+import { IconButton } from '../../actions/IconButton/IconButton.tsx';
 import { DialogModal } from '../../overlays/DialogModal/DialogModal.tsx';
 import { PageLayout } from '../../../layouts/PageLayout/PageLayout.tsx';
 import { Panel } from '../../containers/Panel/Panel.tsx';
@@ -574,4 +575,75 @@ export const DataTableEagerWithPageLayoutEdgeCases: StoryObj<typeof DataTableEag
       </PageLayout>
     ),
   ],
+};
+
+const useTableModal = () => {
+  const modal = DialogModal.useModalRef();
+
+  return {
+    activate() {
+      modal.current?.activate();
+    },
+    render() {
+      return (
+        <DialogModal
+          modalRef={modal}
+          title="Modal Edit"
+          size="large"
+        >
+          <Panel>
+            <DataTableEager.TableProviderEager
+              columns={columns}
+              items={generateData({ numItems: 2 })}
+              getRowId={(item: User) => item.id}
+              plugins={[DataTablePlugins.useRowSelectColumn]}
+            >
+              <DataTableEager.DataTableEager />
+            </DataTableEager.TableProviderEager>
+          </Panel>
+        </DialogModal>
+      );
+    },
+  };
+};
+
+export const DataTableEagerWithEdit: Story = {
+  render: () => {
+
+    const data = generateData({ numItems: 7 });
+    const dataTableModal = useTableModal();
+
+    const tableCol = [
+      ...columns,
+      {
+        id: 'actions',
+        Header: 'Actions',
+        disableSortBy: true,
+        Cell: () => (
+          <>
+            {dataTableModal.render()}
+            <IconButton
+              icon="edit"
+              label="edit"
+              onPress={() => {
+                dataTableModal.activate();
+              }}
+            />
+          </>)
+      },
+    ];
+
+    return (
+      <Panel>
+        <DataTableEager.TableProviderEager
+          columns={tableCol}
+          items={data}
+          getRowId={(row: User) => row.id}
+          plugins={[DataTablePlugins.useRowSelectColumn]}
+        >
+          <DataTableEager.DataTableEager />
+        </DataTableEager.TableProviderEager>
+      </Panel>
+    );
+  },
 };

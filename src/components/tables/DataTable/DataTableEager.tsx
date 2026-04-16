@@ -82,7 +82,7 @@ export const TableProviderEager = <D extends object>(props: TableProviderEagerPr
       },
       
       // useGlobalFilter
-      manualGlobalFilter: false,
+      manualGlobalFilter: true,
       
       // useSortBy
       disableSortRemove: true,
