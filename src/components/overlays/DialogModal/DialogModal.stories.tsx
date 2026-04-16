@@ -143,6 +143,13 @@ export const DialogModalSlideOverLeft: Story = {
   },
 };
 
+export const DialogWithOnClose: Story = {
+  args: {
+    title: 'Modal with a close handler',
+    onClose: () => { notify.info('The DialogModal was closed'); },
+  },
+};
+
 export const DialogModalNested: Story = {
   args: {
     title: 'Modal with a submodal',

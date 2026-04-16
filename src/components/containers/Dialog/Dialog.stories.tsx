@@ -7,6 +7,8 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 import { loremIpsum, LoremIpsum, loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
+
+import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
 import { Form } from '../../forms/context/Form/Form.tsx';
 import { FormLayout } from '../../../layouts/FormLayout/FormLayout.tsx';
 import { RadioGroup } from '../../forms/controls/RadioGroup/RadioGroup.tsx';
@@ -114,6 +116,24 @@ export const DialogWithTitleOverflow: Story = {
 export const DialogFlat: Story = {
   args: {
     flat: true,
+  },
+};
+
+/**
+ * When the user clicks on either the "Close" or "Submit" action, or the "X" close button, the `onRequestClose`
+ * callback should get triggered. The "Test" action here should not trigger `onRequestClose`.
+ */
+export const DialogWithOnRequestClose: Story = {
+  args: {
+    onRequestClose: () => { notify.info('User requested close'); },
+    showCancelAction: false,
+    actions: (
+      <>
+        <Dialog.CancelAction/>
+        <Dialog.SubmitAction/>
+        <Dialog.Action label="Test"/>
+      </>
+    ),
   },
 };
 

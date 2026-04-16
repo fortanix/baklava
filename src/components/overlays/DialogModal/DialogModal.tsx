@@ -17,7 +17,7 @@ import cl from './DialogModal.module.scss';
 
 export { cl as DialogModalClassNames };
 
-export type DialogModalProps = Omit<React.ComponentProps<typeof Dialog>, 'children'> & {
+export type DialogModalProps = Omit<React.ComponentProps<typeof Dialog>, 'children' | 'onRequestClose'> & {
   /** Content of the modal. If a function, will be passed a dialog controller. */
   children?: React.ReactNode | ModalProviderProps['dialog'],
   
@@ -201,8 +201,8 @@ export const DialogModal = Object.assign(
             showCloseIcon={allowUserClose}
             autoFocusClose={allowUserClose}
             showCancelAction={allowUserClose}
-            onRequestClose={dialogController.close}
             {...propsRest}
+            onRequestClose={dialogController.close}
             className={cx(
               'bk',
               { [cl['bk-dialog-modal']]: !unstyled },
