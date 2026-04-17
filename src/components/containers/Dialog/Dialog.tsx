@@ -138,7 +138,7 @@ export const Dialog = Object.assign(
     }
     
     const dialogContext = React.useMemo<DialogContext>(() => ({
-      close: onRequestClose ?? (() => { console.warn('Missing `onRequestClose` callback.'); })
+      close: onRequestClose ?? (() => { console.warn('Missing `onRequestClose` callback.'); }),
     }), [onRequestClose]);
     
     const handleClose = React.useCallback((event: React.SyntheticEvent<HTMLDialogElement>) => {

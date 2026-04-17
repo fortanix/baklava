@@ -10,6 +10,7 @@ import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 import { notify } from '../ToastProvider/ToastProvider.tsx';
 import { DialogModal } from '../DialogModal/DialogModal.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
+import { Prose } from '../../../typography/Prose/Prose.tsx';
 import { TooltipProvider } from '../Tooltip/TooltipProvider.tsx';
 
 import { DialogOverlay } from './DialogOverlay.tsx';
@@ -113,5 +114,29 @@ export const DialogOverlayWithToast: Story = {
         onPress={() => notify.info('This notification should be above the overlay.', { autoClose: false })}
       />
     ),
+  },
+};
+
+export const DialogOverlayWithOnToggle: Story = {
+  args: {
+    title: 'Overlay with a toggle handler',
+    children: (
+      <Prose>
+        <p>Notice that the DialogOverlay uses a <code>popover</code>, not a <code>dialog</code>.</p>
+        <p>
+          Thus, if you want to listen to changes in <code>popover</code> state, use <code>onToggle</code>.
+          You can use <code>event.newState</code> to check the new state of the popover,
+          either <code>open</code> or <code>closed</code>.
+        </p>
+      </Prose>
+    ),
+    onToggle: (event) => {
+      if (event.newState === 'closed') {
+        notify.info('DialogOverlay closed');
+      }
+      if (event.newState === 'open') {
+        notify.info('DialogOverlay opened');
+      }
+    },
   },
 };

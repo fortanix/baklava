@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { flushSync } from 'react-dom';
-import { mergeRefs } from '../../../util/reactUtil.ts';
+import { mergeProps, mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx } from '../../../util/componentUtil.ts';
 
 import { Dialog } from '../../containers/Dialog/Dialog.tsx';
@@ -17,7 +17,9 @@ export { cl as DialogOverlayClassNames };
 
 type PopoverProviderPropsDialog = PopoverProviderProps<HTMLDialogElement>;
 
-export type DialogOverlayProps = Omit<React.ComponentProps<typeof Dialog>, 'children'> & {
+// Need to omit `onClose` because `popover` only supports `onToggle`
+// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/toggle_event
+export type DialogOverlayProps = Omit<React.ComponentProps<typeof Dialog>, 'children' | 'onClose'> & {
   /** Content of the overlay. If a function, will be passed a dialog controller. */
   children?: React.ReactNode | PopoverProviderPropsDialog['popover'],
   
@@ -91,6 +93,7 @@ export const DialogOverlay = Object.assign(
   (props: DialogOverlayProps) => {
     const {
       children,
+      title,
       unstyled = false,
       activeDefault = false,
       display = 'slide-over',
@@ -103,19 +106,23 @@ export const DialogOverlay = Object.assign(
       ...propsRest
     } = props;
     
+    // Need to omit `title` from the merged props since it's incompatible between `HTMLDialogElement` and `DialogModal`
+    type DialogPropsMerged = Array<Omit<React.ComponentProps<typeof Dialog>, 'title'>>;
+    
     return (
       <PopoverProvider<HTMLDialogElement>
         activeDefault={activeDefault}
-        popover={popoverController =>
+        popover={popoverController => (
           <Dialog
+            title={title}
             open={false} // Make sure `open` is not set to avoid https://issues.chromium.org/issues/388538944
             flat={['slide-over'].includes(display)}
-            {...popoverController.popoverProps}
             showCloseIcon={allowUserClose}
             autoFocusClose={allowUserClose}
             showCancelAction={allowUserClose}
+            {...mergeProps<DialogPropsMerged>(popoverController.popoverProps, propsRest)}
             onRequestClose={popoverController.close}
-            {...propsRest}
+            onClose={undefined}
             className={cx(
               'bk',
               { [cl['bk-dialog-overlay']]: !unstyled },
@@ -131,7 +138,7 @@ export const DialogOverlay = Object.assign(
           >
             {typeof children === 'function' ? children(popoverController) : children}
           </Dialog>
-        }
+        )}
         {...providerProps}
         ref={mergeRefs(popoverRef, providerProps?.ref)}
       >

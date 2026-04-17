@@ -29,7 +29,7 @@ export type UseModalDialogOptions = {
 export type ModalDialogProps = {
   internalDialogRef: React.RefObject<null | HTMLDialogElement>,
   close: () => void,
-  dialogProps: React.ComponentProps<'dialog'>,
+  dialogProps: Omit<React.ComponentProps<'dialog'>, 'title'>,
 };
 
 /*
