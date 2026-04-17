@@ -6,7 +6,7 @@ import type { NonUndefined } from '../../../util/types.ts';
 
 import * as React from 'react';
 import { flushSync } from 'react-dom';
-import { mergeCallbacks, mergeRefs, mergeProps } from '../../../util/reactUtil.ts';
+import { mergeCallbacks, mergeProps, mergeRefs } from '../../../util/reactUtil.ts';
 import { classNames as cx } from '../../../util/componentUtil.ts';
 
 import { Dialog } from '../../containers/Dialog/Dialog.tsx';

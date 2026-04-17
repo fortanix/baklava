@@ -143,7 +143,7 @@ export const DialogModalSlideOverLeft: Story = {
   },
 };
 
-export const DialogWithOnClose: Story = {
+export const DialogModalWithOnClose: Story = {
   args: {
     title: 'Modal with a close handler',
     onClose: () => { notify.info('The DialogModal was closed'); },
