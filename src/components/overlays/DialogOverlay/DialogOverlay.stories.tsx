@@ -124,9 +124,9 @@ export const DialogOverlayWithOnToggle: Story = {
       <Prose>
         <p>Notice that the DialogOverlay uses a <code>popover</code>, not a <code>dialog</code>.</p>
         <p>
-          Thus it doesn't have <code>onClose</code> and <code>onOpen</code>, only <code>onToggle</code>,
-          and you need to control the state you want to react to, by looking at <code>event.newState</code> if
-          it's <code>open</code> or <code>closed</code>.
+          Thus, if you want to listen to changes in <code>popover</code> state, use <code>onToggle</code>.
+          You can use <code>event.newState</code> to check the new state of the popover,
+          either <code>open</code> or <code>closed</code>.
         </p>
       </Prose>
     ),
