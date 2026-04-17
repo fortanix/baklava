@@ -17,7 +17,9 @@ export { cl as DialogOverlayClassNames };
 
 type PopoverProviderPropsDialog = PopoverProviderProps<HTMLDialogElement>;
 
-export type DialogOverlayProps = Omit<React.ComponentProps<typeof Dialog>, 'children'> & {
+// Need to omit `onClose` because `popover` only supports `onToggle`
+// https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/toggle_event
+export type DialogOverlayProps = Omit<React.ComponentProps<typeof Dialog>, 'children' | 'onClose'> & {
   /** Content of the overlay. If a function, will be passed a dialog controller. */
   children?: React.ReactNode | PopoverProviderPropsDialog['popover'],
   
@@ -105,9 +107,7 @@ export const DialogOverlay = Object.assign(
     } = props;
     
     // Need to omit `title` from the merged props since it's incompatible between `HTMLDialogElement` and `DialogModal`
-    // We also omit `onClose` because `popover` only supports `onToggle`
-    // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/toggle_event
-    type DialogPropsMerged = Array<Omit<React.ComponentProps<typeof Dialog>, 'title' | 'onClose'>>;
+    type DialogPropsMerged = Array<Omit<React.ComponentProps<typeof Dialog>, 'title'>>;
     
     return (
       <PopoverProvider<HTMLDialogElement>
