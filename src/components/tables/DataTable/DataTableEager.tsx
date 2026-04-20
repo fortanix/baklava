@@ -55,7 +55,11 @@ export const TableProviderEager = <D extends object>(props: TableProviderEagerPr
     ...(stickyColumns ? { bkStickyColumns: stickyColumns } : {}),
     ...(isRowSelectDisabled ? { isRowSelectDisabled } : {}),
   };
-
+  
+  const hasFilterableColumn = React.useMemo(() => {
+    return columns.some(col => col.disableGlobalFilter === false);
+  }, [columns]);
+  
   const table = ReactTable.useTable(
     {
       ...tableOptions,
@@ -81,8 +85,8 @@ export const TableProviderEager = <D extends object>(props: TableProviderEagerPr
         ...initialState,
       },
       
-      // useGlobalFilter
-      manualGlobalFilter: true,
+      // useGlobalFilter only enable filtering when columns are available to filter
+      manualGlobalFilter: !hasFilterableColumn,
       
       // useSortBy
       disableSortRemove: true,

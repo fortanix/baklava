@@ -579,7 +579,9 @@ export const DataTableEagerWithPageLayoutEdgeCases: StoryObj<typeof DataTableEag
 
 const useTableModal = () => {
   const modal = DialogModal.useModalRef();
-
+  const childTableColumns = [
+    ...columns.map(({ disableGlobalFilter, ...rest }) => rest), // remove the key disableGlobalFilter & append columns
+  ]
   return {
     activate() {
       modal.current?.activate();
@@ -593,7 +595,7 @@ const useTableModal = () => {
         >
           <Panel>
             <DataTableEager.TableProviderEager
-              columns={columns}
+              columns={childTableColumns}
               items={generateData({ numItems: 2 })}
               getRowId={(item: User) => item.id}
               plugins={[DataTablePlugins.useRowSelectColumn]}
@@ -618,10 +620,8 @@ export const DataTableEagerWithEdit: Story = {
       {
         id: 'actions',
         Header: 'Actions',
-        disableSortBy: true,
         Cell: () => (
           <>
-            {dataTableModal.render()}
             <IconButton
               icon="edit"
               label="edit"
@@ -635,12 +635,14 @@ export const DataTableEagerWithEdit: Story = {
 
     return (
       <Panel>
+        {dataTableModal.render()}
         <DataTableEager.TableProviderEager
           columns={tableCol}
           items={data}
           getRowId={(row: User) => row.id}
           plugins={[DataTablePlugins.useRowSelectColumn]}
         >
+          <DataTableEager.Search />
           <DataTableEager.DataTableEager />
         </DataTableEager.TableProviderEager>
       </Panel>
