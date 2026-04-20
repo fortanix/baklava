@@ -221,7 +221,7 @@
 
           .bk-data-table__expandable-row-content-inner {
             padding-block-end: bk.$spacing-4;
-            padding-inline-start: calc(bk.$spacing-4 + bk.$spacing-4);
+            padding-inline-start: calc(bk.$spacing-9 + bk.$spacing-1);
           }
         }
 
@@ -233,10 +233,15 @@
 
         .bk-data-table__expandable-row-toggle {
           flex: none;
+          align-self: stretch;
+          margin-block: calc(-1 * bk.$spacing-3);
+          margin-inline-start: calc(-1 * (bk.$spacing-2 + var(--bk-panel-inset-compensation)));
+          padding: bk.$spacing-3;
         }
 
         .bk-data-table__text-cell--expandable-toggle {
-          column-gap: bk.$spacing-4;
+          column-gap: bk.$spacing-3;
+          overflow: visible;
         }
       }
       
