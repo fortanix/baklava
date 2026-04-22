@@ -29,9 +29,9 @@ export { DataTablePlaceholderEmpty, DataTablePlaceholderError } from './table/Da
  */
 const customGlobalFilter = <D extends object>(): ReactTable.FilterType<D> => {
   return (
-    rows: ReactTable.Row<D>[], // All rows before filtering
+    rows: Array<ReactTable.Row<D>>, // All rows before filtering
     columnIds: string[], // IDs of columns allowed for global filtering
-    filterValue: ReactTable.Row<D>[], // Value from global search input
+    filterValue: Array<ReactTable.Row<D>>, // Value from global search input
   ) => {
     // Normalize the search input:
     // - Convert to string
@@ -41,12 +41,16 @@ const customGlobalFilter = <D extends object>(): ReactTable.FilterType<D> => {
 
     // If search is empty → do not filter, return all rows
     // Prevents "empty table on initial load" issue
-    if (!search) return rows;
+    if (!search) {
+      return rows;
+    }
 
     // If no columns are filterable → skip filtering
     // Prevents react-table from returning empty results
     // when all columns have `disableGlobalFilter: true`
-    if (!columnIds.length) return rows;
+    if (!columnIds.length) {
+      return rows;
+    }
 
     // Filter rows:
     // Include a row if ANY filterable column matches the search value
