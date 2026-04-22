@@ -11,6 +11,7 @@ import { type TableContextState, createTableContext, useTable } from './DataTabl
 import { Pagination } from './pagination/Pagination.tsx';
 import { MultiSearch as MultiSearchInput } from '../MultiSearch/MultiSearch.tsx';
 import { DataTableSync, type DataTableSyncProps } from './table/DataTable.tsx';
+import { removeCombiningCharacters } from '../../../util/formatting.ts';
 
 import cl from './DataTableEager.module.scss';
 
@@ -18,6 +19,55 @@ export * from './DataTableContext.tsx';
 export { Pagination };
 export { DataTablePlaceholderEmpty, DataTablePlaceholderError } from './table/DataTablePlaceholder.tsx';
 
+/**
+ * Custom global filter for react-table.
+ *
+ * Handles:
+ * - Empty search (returns all rows)
+ * - No filterable columns (returns all rows)
+ * - Safe comparison for null/undefined/non-string values
+ * - Case-insensitive partial matching across all columns
+ */
+const customGlobalFilter = <D extends object>(): ReactTable.FilterType<D> => {
+  return (
+    rows: Array<ReactTable.Row<D>>, // All rows before filtering
+    columnIds: string[], // IDs of columns allowed for global filtering
+    filterValue: Array<ReactTable.Row<D>>, // Value from global search input
+  ) => {
+    // Normalize the search input:
+    // - Convert to string
+    // - Handle null/undefined safely
+    // - Make it case-insensitive
+    const search = removeCombiningCharacters(String(filterValue ?? '')).toLowerCase();
+
+    // If search is empty → do not filter, return all rows
+    // Prevents "empty table on initial load" issue
+    if (!search) {
+      return rows;
+    }
+
+    // If no columns are filterable → skip filtering
+    // Prevents react-table from returning empty results
+    // when all columns have `disableGlobalFilter: true`
+    if (!columnIds.length) {
+      return rows;
+    }
+
+    // Filter rows:
+    // Include a row if ANY filterable column matches the search value
+    return rows.filter(row =>
+      columnIds.some(id => {
+        const value = row.values[id]; // Get the cell value for the column
+        // Convert value safely to string and compare
+        // - Handles null/undefined
+        // - Supports numbers, booleans, etc.
+        return removeCombiningCharacters(String(value ?? ''))
+          .toLowerCase()
+          .includes(search); // Partial match
+      })
+    );
+  }
+};
 
 interface ReactTableOptions<D extends object> extends ReactTable.TableOptions<D> {
   // Add custom properties here
@@ -55,7 +105,7 @@ export const TableProviderEager = <D extends object>(props: TableProviderEagerPr
     ...(stickyColumns ? { bkStickyColumns: stickyColumns } : {}),
     ...(isRowSelectDisabled ? { isRowSelectDisabled } : {}),
   };
-
+  
   const table = ReactTable.useTable(
     {
       ...tableOptions,
@@ -82,7 +132,7 @@ export const TableProviderEager = <D extends object>(props: TableProviderEagerPr
       },
       
       // useGlobalFilter
-      manualGlobalFilter: false,
+      globalFilter: customGlobalFilter<D>(),
       
       // useSortBy
       disableSortRemove: true,
