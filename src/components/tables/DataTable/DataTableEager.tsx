@@ -11,6 +11,7 @@ import { type TableContextState, createTableContext, useTable } from './DataTabl
 import { Pagination } from './pagination/Pagination.tsx';
 import { MultiSearch as MultiSearchInput } from '../MultiSearch/MultiSearch.tsx';
 import { DataTableSync, type DataTableSyncProps } from './table/DataTable.tsx';
+import { removeCombiningCharacters } from '../../../util/formatting.ts';
 
 import cl from './DataTableEager.module.scss';
 
@@ -37,7 +38,7 @@ const customGlobalFilter = <D extends object>(): ReactTable.FilterType<D> => {
     // - Convert to string
     // - Handle null/undefined safely
     // - Make it case-insensitive
-    const search = String(filterValue ?? '').toLowerCase();
+    const search = removeCombiningCharacters(String(filterValue ?? '')).toLowerCase();
 
     // If search is empty → do not filter, return all rows
     // Prevents "empty table on initial load" issue
@@ -60,7 +61,7 @@ const customGlobalFilter = <D extends object>(): ReactTable.FilterType<D> => {
         // Convert value safely to string and compare
         // - Handles null/undefined
         // - Supports numbers, booleans, etc.
-        return String(value ?? '')
+        return removeCombiningCharacters(String(value ?? ''))
           .toLowerCase()
           .includes(search); // Partial match
       })
