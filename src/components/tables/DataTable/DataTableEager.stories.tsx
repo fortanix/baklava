@@ -665,7 +665,7 @@ export const DataTableEagerWithEdit: Story = {
       {
         id: 'actions',
         Header: 'Actions',
-        Cell: ({ row }: { row: User }) => {
+        Cell: ({ row }: ReactTable.CellProps<User>) => {
           return (
             <IconButton
               icon="edit"
@@ -675,7 +675,7 @@ export const DataTableEagerWithEdit: Story = {
                 setHighlightedRow(row.id);
               }}
             />
-          )
+          );
         }
       },
     ];
@@ -714,7 +714,7 @@ export const DataTableEagerWithEditOverlay: Story = {
       {
         id: 'actions',
         Header: 'Actions',
-        Cell: ({ row }: { row: User }) => {
+        Cell: ({ row }: ReactTable.CellProps<User>) => {
           return (
             <IconButton
               icon="edit"
@@ -724,7 +724,7 @@ export const DataTableEagerWithEditOverlay: Story = {
                 setHighlightedRow(row.id);
               }}
             />
-          )
+          );
         }
       },
     ];
