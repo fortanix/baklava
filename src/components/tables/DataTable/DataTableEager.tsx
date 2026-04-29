@@ -140,6 +140,7 @@ export const TableProviderEager = <D extends object>(props: TableProviderEagerPr
       // usePagination
       manualPagination: false,
       autoResetPage: false, // Do not automatically reset to first page if the data changes
+      autoResetSelectedRows: false, // Do not automatically reset the selection if the row is highlighted
     },
     ReactTable.useGlobalFilter,
     ReactTable.useFilters,
