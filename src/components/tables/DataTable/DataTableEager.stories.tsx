@@ -24,6 +24,7 @@ import { Panel } from '../../containers/Panel/Panel.tsx';
 import * as MultiSearch from '../MultiSearch/MultiSearch.tsx';
 import * as DataTablePlugins from './plugins/useRowSelectColumn.tsx';
 import * as DataTableEager from './DataTableEager.tsx';
+import { DialogOverlay } from '../../overlays/DialogOverlay/DialogOverlay.tsx';
 
 import './DataTableEager_stories.scss';
 
@@ -586,12 +587,15 @@ const useTableModal = () => {
     activate() {
       modal.current?.activate();
     },
-    render() {
+    render({ onClose }: { onClose: () => void }) {
       return (
         <DialogModal
           modalRef={modal}
           title="Modal Edit"
           size="large"
+          onClose={() => {
+            onClose?.()
+          }}
         >
           <Panel>
             <DataTableEager.TableProviderEager
@@ -609,38 +613,136 @@ const useTableModal = () => {
   };
 };
 
+const useTableOverlay = () => {
+  const overlay = DialogOverlay.usePopoverRef(null);
+
+  const childTableColumns = [
+    ...columns.map(({ disableGlobalFilter, ...rest }) => rest),
+  ];
+
+  return {
+    activate() {
+      overlay.current?.activate();
+    },
+
+    render({ onClose }: { onClose?: () => void }) {
+      return (
+        <DialogOverlay
+          popoverRef={overlay}
+          title="Overlay Edit"
+          display="slide-over"
+          size="medium"
+          onToggle={(event) => {
+            if (event.newState === 'closed') {
+              onClose?.()
+            }
+          }}
+        >
+          <Panel>
+            <DataTableEager.TableProviderEager
+              columns={childTableColumns}
+              items={generateData({ numItems: 2 })}
+              getRowId={(item: User) => item.id}
+              plugins={[DataTablePlugins.useRowSelectColumn]}
+            >
+              <DataTableEager.DataTableEager />
+            </DataTableEager.TableProviderEager>
+          </Panel>
+        </DialogOverlay>
+      );
+    },
+  };
+};
+
 export const DataTableEagerWithEdit: Story = {
   render: () => {
 
     const data = generateData({ numItems: 7 });
     const dataTableModal = useTableModal();
-
+    const [highlightedRow, setHighlightedRow] = React.useState<string | null>(null);
     const tableCol = [
       ...columns,
       {
         id: 'actions',
         Header: 'Actions',
-        Cell: () => (
-          <>
+        Cell: ({ row }: { row: User }) => {
+          return (
             <IconButton
               icon="edit"
               label="edit"
               onPress={() => {
                 dataTableModal.activate();
+                setHighlightedRow(row.id);
               }}
             />
-          </>)
+          )
+        }
       },
     ];
 
     return (
       <Panel>
-        {dataTableModal.render()}
+        {dataTableModal.render({
+          onClose: () => {
+            if (highlightedRow) {
+              setHighlightedRow(null);
+            }
+          },
+        })}
         <DataTableEager.TableProviderEager
           columns={tableCol}
           items={data}
           getRowId={(row: User) => row.id}
-          plugins={[DataTablePlugins.useRowSelectColumn]}
+          plugins={[DataTablePlugins.useRowSelectColumn, DataTablePlugins.useRowHighlight(highlightedRow)]}
+        >
+          <DataTableEager.Search />
+          <DataTableEager.DataTableEager />
+        </DataTableEager.TableProviderEager>
+      </Panel>
+    );
+  },
+};
+
+export const DataTableEagerWithEditOverlay: Story = {
+  render: () => {
+
+    const data = generateData({ numItems: 7 });
+    const dataTableModal = useTableOverlay();
+    const [highlightedRow, setHighlightedRow] = React.useState<string | null>(null);
+    const tableCol = [
+      ...columns,
+      {
+        id: 'actions',
+        Header: 'Actions',
+        Cell: ({ row }: { row: User }) => {
+          return (
+            <IconButton
+              icon="edit"
+              label="edit"
+              onPress={() => {
+                dataTableModal.activate();
+                setHighlightedRow(row.id);
+              }}
+            />
+          )
+        }
+      },
+    ];
+
+    return (
+      <Panel>
+        {dataTableModal.render({
+          onClose: () => {
+            if (highlightedRow) {
+              setHighlightedRow(null);
+            }
+          },
+        })}
+        <DataTableEager.TableProviderEager
+          columns={tableCol}
+          items={data}
+          getRowId={(row: User) => row.id}
+          plugins={[DataTablePlugins.useRowSelectColumn, DataTablePlugins.useRowHighlight(highlightedRow)]}
         >
           <DataTableEager.Search />
           <DataTableEager.DataTableEager />
