@@ -179,7 +179,9 @@ export const useRowHighlight = <D extends object>(
 
       // If no row is highlighted, return existing props as-is
       // Avoids unnecessary class computation
-      if (!highlightedRowId) return props;
+      if (!highlightedRowId) {
+        return props;
+      }
 
       return {
         ...props, // preserve existing props added by react-table or other plugins
