@@ -7,7 +7,7 @@ import type * as ReactTable from 'react-table';
 
 import { Checkbox } from '../../../forms/controls/Checkbox/Checkbox.tsx';
 import { Radio } from '../../../forms/controls/Radio/Radio.tsx';
-import { classNames as cx } from '../../../../util/componentUtil.ts';
+
 import cl from './useRowSelectColumn.module.scss';
 
 
@@ -164,37 +164,38 @@ export const useRowSelectColumnRadio = <D extends object>(hooks: ReactTable.Hook
   });
 };
 
-// Plugin to visually highlight a row based on an external rowId
-// NOTE: This does NOT use react-table's selection state (row.isSelected)
-// It purely adds a CSS class for UI highlighting
-export const useRowHighlight = <D extends object>(
-  highlightedRowId: string | null
-): ReactTable.PluginHook<D> => {
-  // react-table calls this plugin during table setup
-  return (hooks: ReactTable.Hooks<D>) => {
-
-    // getRowProps is a hook that lets us extend <tr> props
-    // We push a function that will run for EVERY row
-    hooks.getRowProps.push((props, { row }) => {
-
-      // If no row is highlighted, return existing props as-is
-      // Avoids unnecessary class computation
-      if (!highlightedRowId) {
-        return props;
-      }
-
-      return {
-        ...props, // preserve existing props added by react-table or other plugins
-
-        // Merge existing className with our highlight class
-        className: cx(
-          props.className,
-
-          // Only apply highlight class if this row matches the target id
-          // Using `&&` avoids "undefined" class issues
-          row.id === highlightedRowId && cl['bk-data-table-row-highlighted']
-        ),
-      };
-    });
-  };
-};
+// Note: Revisit this to convert it to a modal trigger plugin with highlight row support
+// // Plugin to visually highlight a row based on an external rowId
+// // NOTE: This does NOT use react-table's selection state (row.isSelected)
+// // It purely adds a CSS class for UI highlighting
+// export const useRowHighlight = <D extends object>(
+//   highlightedRowId: string | null
+// ): ReactTable.PluginHook<D> => {
+//   // react-table calls this plugin during table setup
+//   return (hooks: ReactTable.Hooks<D>) => {
+// 
+//     // getRowProps is a hook that lets us extend <tr> props
+//     // We push a function that will run for EVERY row
+//     hooks.getRowProps.push((props, { row }) => {
+// 
+//       // If no row is highlighted, return existing props as-is
+//       // Avoids unnecessary class computation
+//       if (!highlightedRowId) {
+//         return props;
+//       }
+// 
+//       return {
+//         ...props, // preserve existing props added by react-table or other plugins
+// 
+//         // Merge existing className with our highlight class
+//         className: cx(
+//           props.className,
+// 
+//           // Only apply highlight class if this row matches the target id
+//           // Using `&&` avoids "undefined" class issues
+//           row.id === highlightedRowId && cl['bk-data-table-row-highlighted']
+//         ),
+//       };
+//     });
+//   };
+// };

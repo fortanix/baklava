@@ -11,10 +11,6 @@
     inline-size: 8ch;
   }
   
-  tr.bk-data-table-row-highlighted {
-    background-color: bk.$theme-table-background-hover;
-  }
-  
   th, td {
     .bk-data-table-row-select__checkbox, .bk-data-table-row-select__radio {
       margin-inline-end: bk.$spacing-3;

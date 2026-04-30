@@ -659,7 +659,7 @@ export const DataTableEagerWithEdit: Story = {
 
     const data = generateData({ numItems: 7 });
     const dataTableModal = useTableModal();
-    const [highlightedRow, setHighlightedRow] = React.useState<string | null>(null);
+    const [highlightedRowId, setHighlightedRowId] = React.useState<string | null>(null);
     const tableCol = [
       ...columns,
       {
@@ -672,7 +672,7 @@ export const DataTableEagerWithEdit: Story = {
               label="edit"
               onPress={() => {
                 dataTableModal.activate();
-                setHighlightedRow(row.id);
+                setHighlightedRowId(row.id);
               }}
             />
           );
@@ -684,8 +684,8 @@ export const DataTableEagerWithEdit: Story = {
       <Panel>
         {dataTableModal.render({
           onClose: () => {
-            if (highlightedRow) {
-              setHighlightedRow(null);
+            if (highlightedRowId) {
+              setHighlightedRowId(null);
             }
           },
         })}
@@ -693,10 +693,10 @@ export const DataTableEagerWithEdit: Story = {
           columns={tableCol}
           items={data}
           getRowId={(row: User) => row.id}
-          plugins={[DataTablePlugins.useRowSelectColumn, DataTablePlugins.useRowHighlight(highlightedRow)]}
+          plugins={[DataTablePlugins.useRowSelectColumn]}
         >
           <DataTableEager.Search />
-          <DataTableEager.DataTableEager />
+          <DataTableEager.DataTableEager highlightedRowId={highlightedRowId}/>
         </DataTableEager.TableProviderEager>
       </Panel>
     );
@@ -708,7 +708,7 @@ export const DataTableEagerWithEditOverlay: Story = {
 
     const data = generateData({ numItems: 7 });
     const dataTableModal = useTableOverlay();
-    const [highlightedRow, setHighlightedRow] = React.useState<string | null>(null);
+    const [highlightedRowId, setHighlightedRowId] = React.useState<string | null>(null);
     const tableCol = [
       ...columns,
       {
@@ -721,7 +721,7 @@ export const DataTableEagerWithEditOverlay: Story = {
               label="edit"
               onPress={() => {
                 dataTableModal.activate();
-                setHighlightedRow(row.id);
+                setHighlightedRowId(row.id);
               }}
             />
           );
@@ -733,8 +733,8 @@ export const DataTableEagerWithEditOverlay: Story = {
       <Panel>
         {dataTableModal.render({
           onClose: () => {
-            if (highlightedRow) {
-              setHighlightedRow(null);
+            if (highlightedRowId) {
+              setHighlightedRowId(null);
             }
           },
         })}
@@ -742,10 +742,10 @@ export const DataTableEagerWithEditOverlay: Story = {
           columns={tableCol}
           items={data}
           getRowId={(row: User) => row.id}
-          plugins={[DataTablePlugins.useRowSelectColumn, DataTablePlugins.useRowHighlight(highlightedRow)]}
+          plugins={[DataTablePlugins.useRowSelectColumn]}
         >
           <DataTableEager.Search />
-          <DataTableEager.DataTableEager />
+          <DataTableEager.DataTableEager highlightedRowId={highlightedRowId}/>
         </DataTableEager.TableProviderEager>
       </Panel>
     );
