@@ -594,7 +594,7 @@ const useTableModal = () => {
           title="Modal Edit"
           size="large"
           onClose={() => {
-            onClose?.()
+            onClose?.();
           }}
         >
           <Panel>
@@ -634,7 +634,7 @@ const useTableOverlay = () => {
           size="medium"
           onToggle={(event) => {
             if (event.newState === 'closed') {
-              onClose?.()
+              onClose?.();
             }
           }}
         >
@@ -676,7 +676,7 @@ export const DataTableEagerWithEdit: Story = {
               }}
             />
           );
-        }
+        },
       },
     ];
 
@@ -696,7 +696,7 @@ export const DataTableEagerWithEdit: Story = {
           plugins={[DataTablePlugins.useRowSelectColumn]}
         >
           <DataTableEager.Search />
-          <DataTableEager.DataTableEager highlightedRowId={highlightedRowId}/>
+          <DataTableEager.DataTableEager highlightedRowId={highlightedRowId ?? undefined}/>
         </DataTableEager.TableProviderEager>
       </Panel>
     );
@@ -725,7 +725,7 @@ export const DataTableEagerWithEditOverlay: Story = {
               }}
             />
           );
-        }
+        },
       },
     ];
 
@@ -745,7 +745,7 @@ export const DataTableEagerWithEditOverlay: Story = {
           plugins={[DataTablePlugins.useRowSelectColumn]}
         >
           <DataTableEager.Search />
-          <DataTableEager.DataTableEager highlightedRowId={highlightedRowId}/>
+          <DataTableEager.DataTableEager highlightedRowId={highlightedRowId ?? undefined}/>
         </DataTableEager.TableProviderEager>
       </Panel>
     );
