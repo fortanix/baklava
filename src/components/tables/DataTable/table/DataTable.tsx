@@ -160,7 +160,7 @@ export type DataTableProps<D extends object> = Omit<ComponentProps<'table'>, 'pl
   placeholder?: React.ReactNode,
   endOfTablePlaceholder?: React.ReactNode,
   expandableRow?: ExpandableRowProps<D>,
-  highlightedRowId?: string | null,
+  highlightedRowId?: string | undefined,
   children?: React.ReactNode,
 };
 
@@ -169,7 +169,7 @@ type DataTableRowProps<D extends object> = {
   table: ReactTable.TableInstance<D>,
   expandableRowContent?: React.ReactNode,
   isExpanded: boolean,
-  highlightedRowId: string | null,
+  highlightedRowId: string | undefined,
   onToggleExpandedRow?: () => void,
 };
 
