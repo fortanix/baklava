@@ -226,10 +226,53 @@ export const GlobalTables: Story = {
 export const GlobalPopovers: Story = {
   args: {
     children: (
-      <>
+      <div>
+        <style>{`@scope {
+          p { margin-block: 1em; }
+          
+          [popover] { padding: 1em; background: contrast-color(currentColor); border: 3px solid currentColor; }
+        }`}</style>
         <div id="story-popover-1" popover="auto">This is a popover</div>
         <button type="button" commandFor="story-popover-1" command="toggle-popover">Toggle popover</button>
-      </>
+      </div>
+    ),
+  },
+};
+
+export const GlobalModals: Story = {
+  args: {
+    children: (
+      <div>
+        <style>{`@scope {
+          section { margin-block: 1em; }
+          
+          dialog { padding: 1em; background: contrast-color(currentColor); border: 3px solid currentColor; }
+        }`}</style>
+        
+        <dialog id="story-dialog-1" closedBy="any">This is a modal dialog</dialog>
+        
+        <section>
+          <button type="button" commandFor="story-dialog-1" command="show-modal">Show modal</button>
+        </section>
+        <section style={{ userSelect: 'none' }}>
+          <dialog id="story-dialog-2" closedBy="any">This text should be selectable</dialog>
+          Text is not selectable here, but should still be selectable in the following dialog:
+          <br/>
+          <button type="button" commandFor="story-dialog-2" command="show-modal">Show modal</button>
+        </section>
+        
+        <section style={{ cursor: 'not-allowed', pointerEvents: 'none' }}>
+          <dialog id="story-dialog-3" closedBy="any">
+            This dialog should have the default cursor, and should allow pointer events on the following:
+            {' '}
+            <button type="button" commandFor="story-dialog-3" command="request-close">Click me to close</button>
+          </dialog>
+          
+          Use the keyboard to open the following and test that it did not inherit the properties from this paragraph:
+          <br/>
+          <button type="button" commandFor="story-dialog-3" command="show-modal">Show modal</button>
+        </section>
+      </div>
     ),
   },
 };

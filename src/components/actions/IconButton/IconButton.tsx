@@ -36,7 +36,7 @@ export type IconButtonProps = React.PropsWithChildren<ComponentProps<typeof Butt
  * A button where the label is just an icon.
  */
 export const IconButton = (props: IconButtonProps) => {
-  const { unstyled = false, className, iconClassName, label, icon, iconProps = {}, ...propsRest } = props;
+  const { unstyled = false, className, iconClassName, label, icon, iconProps = {}, inline, ...propsRest } = props;
   
   return (
     <Button
@@ -46,6 +46,7 @@ export const IconButton = (props: IconButtonProps) => {
       {...propsRest}
       className={cx(
         'bk',
+        { 'bk-inherit': inline },
         { [cl['bk-icon-button']]: !unstyled },
         className,
       )}
@@ -53,7 +54,7 @@ export const IconButton = (props: IconButtonProps) => {
       <Icon
         {...iconProps}
         icon={icon}
-        className={[{ 'bk-inherit': false }, iconClassName]} // Do not inherit styling
+        className={[{ 'bk-inherit': inline }, iconClassName]} // Do not inherit styling
       />
     </Button>
   );

@@ -54,10 +54,12 @@ export const IconButtonInline: Story = {
           {' '}
           <Story/>
           {' '}
-          It should have the default color and normal font size.
+          It should have the same color and font size as the rest of the paragraph.
         </p>
         <p className="bk-prose" style={{ fontSize: '2em', color: 'purple', lineHeight: 2 }}>
           Here is an <code>IconButton</code> within prose: <Story/>.
+          {' '}
+          It should have the same color and font size as the rest of the paragraph.
         </p>
       </>
     ),

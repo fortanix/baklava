@@ -3,23 +3,12 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 @use '../context/theming.scss' as theming;
-@use './reset.scss' as reset;
 
 
 @mixin typographic-defaults {
   // Define the default styling for typography, used in "application mode" containers like `:root` or components.
   // As opposed to "prose mode" which needs to be opted in to through `.bk-prose`.
-  // Note:
-  // - Do not use `revert`/`revert-layer` here, since that will just result in inherited properties becoming inherited
-  //   from the parent. We need to override with a concrete value.
-  // - Using `initial` will skip over UA styling as well as our reset defaults (can be an issue, e.g. `color` in
-  //   Firefox won't respect dark mode theming when using `initial`).
   
-  // FIXME: this currently breaks cases where `.bk`/`.bk-isolate` is applied on an element and we want that element to
-  // get the defaults from `reset.scss`. For example:
-  //   `<ul className="bk"></ul>` <- this won't get the `list-style` defined in `reset.scss` because we override it
-  
-  font: initial; // Explicitly revert to the initial font values so nothing gets inherited
   font-family: var(--bk-font-family-body);
   font-size: 1rem;
   
@@ -29,54 +18,11 @@
   // `font-size` to be smaller, we want the `line-height` to scale accordingly.
   line-height: 1.4;
   
-  // Make sure we explicitly set any (text-related) properties that are inherited from the parent
-  letter-spacing: initial; // Uses the default for the current font
-  word-spacing: initial; // Uses the default for the current font
-  text-align: initial; // Uses the default for the current `direction`
-  text-transform: initial; // No transformation
-  list-style: ''; // No visible list marker, but (unlike `none`) keeps the "list" role in Safari
-  text-indent: initial;
-  
-  white-space: initial; // Shorthand for `white-space-collapse` and `text-wrap-mode`
-  text-wrap: initial; // Default `wrap` algorithm
   overflow-wrap: break-word; // Prevent long words causing overflow
   hyphens: auto; // Allow browsers to pick hyphenation points
-  //hyphenate-limit-chars: initial;
-  //hyphenate-character: initial;
   
   // Note: do not include theming-related properties here, this should be handled by `theming.scss`
   //color: ...;
-}
-
-/*
- * Mixin: isolate.
- * Resets the element with "root" container styling, so that it is not affected by inherited properties of parents. For
- * example, modal `<dialog>` elements should not be affected by the cascade, it should be as though they were located
- * at the root of the document.
- */
-@mixin isolate {
-  // https://web.dev/learn/css/inheritance#which_properties_are_inherited_by_default
-  
-  // The following properties should inherit by default, even into components
-  cursor: inherit; // Cursor (e.g. `cursor: not-allowed`) on a visual "block" should also affect nested components
-  visibility: inherit; // Visibly hiding a visual "block" should also affect nested components
-  pointer-events: inherit; // Things like `pointer-events: none` should also affect nested components
-  
-  @include reset.reset-element;
-  
-  @include typographic-defaults;
-  @include theming.theme-init; // FIXME: double check this
-  
-  // The following should be reset on modal dialogs and popovers only
-  &:popover-open, &:is(dialog:modal) {
-    cursor: initial; // Cursor should be inherited on "local" components, but not modals/popovers which are "separate"
-  }
-  
-  // The following should be reset on modal dialogs only
-  &:is(dialog:modal) {
-    visibility: visible; // Modal dialogs shouldn't inherit the trigger's visibilty (but popovers should)
-    pointer-events: initial;
-  }
 }
 
 /*
@@ -137,22 +83,16 @@ case where we set CSS variables (using a `--bk-` prefix to minimize conflicts wi
   // The `.bk-root` class can be used if you want to apply the root styles on something other than the document root,
   // but note that this means certain document root-only functionality like `rem` units won't work properly.
   :root:where(:not(.bk-no-globals)), .bk-root {
-    @include reset.reset-element;
+    //@include reset.reset-element;
     @include typographic-defaults;
     @include root-styles; // Note: should override `typographic-defaults` since this defines things like `rem`
     @include theming.root-styles;
   }
   
-  // Utility classes for isolation. `bk-isolate` can be applied on any element as needed if you want it isolated,
-  // whereas `bk` is meant for Baklava components. Baklava components can choose to apply `bk-inherit` if they want
-  // the component to inherit CSS properties like font/color.
-  // 
-  // On the other hand, if you're writing styling and you want it to not leak into isolated components, we recommend
-  // using `@scope` with a scope limit as follows: `@scope to (.bk-isolate, .bk) {}`.
-  // Note: do not include `:not(.bk-inherit)` in the scope limit, all `.bk` elements should be exempt from the scoped
-  // rules, whether they inherit or not.
+  // Builds upon the same selector in `reset.scss` to add Baklava-specific defaults for isolated components
   .bk-isolate, .bk:where(:not(.bk-inherit)) {
-    @include isolate;
+    @include typographic-defaults;
+    @include theming.theme-init;
   }
   
   // Google Translate injects this class on translated content in a right-to-left language, such that web pages can

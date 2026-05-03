@@ -32,3 +32,19 @@ type TogglePopoverOptions = {
 interface HTMLElement {
   togglePopover(options?: undefined | TogglePopoverOptions ): boolean,
 }
+
+
+import 'react';
+
+declare module "react" {
+  // Remove this once React adds support: https://github.com/facebook/react/issues/32478
+  interface ButtonHTMLAttributes<T> extends HTMLAttributes<T> {
+    command?: undefined | string,
+    commandFor?: undefined | string,
+  }
+  
+  // Remove this once React adds support
+  interface DialogHTMLAttributes<T> extends HTMLAttributes<T> {
+    closedBy?: undefined | string,
+  }
+}
