@@ -58,6 +58,7 @@ export const Icon = Object.assign(
         {...props}
         className={cx(
           'bk',
+          'bk-inherit', // Inherit styling from context
           'icon', // Global class name (for generic targeting in CSS)
           { [cl['bk-icon']]: !unstyled },
           { [cl['bk-icon--background-circle']]: decoration?.type === 'background-circle' },

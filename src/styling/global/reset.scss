@@ -2,26 +2,23 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@use 'sass:meta';
+// stylelint-disable property-no-vendor-prefix
 
-@mixin styles {
-  // Sublayers within `@layer reset` for more fine-grained control
-  // Note: if you make a change here also sync it with `preview.scss`
-  @layer lib, custom;
-  
-  @layer lib {
-    // Note: any top-level `&` in the CSS will be transpiled to `:scope`. Sass assumes that the CSS we load is
-    // top-level CSS, where `&` does indeed mean `:scope`. So any `:root`/`html` selectors will need to be done in Sass.
-    // See `global.scss` for these `:root` styles.
-    @include meta.load-css('../lib/reset.css');
-  }
-  
-  // Custom reset overrides
-  // References:
-  // - [1] https://www.youtube.com/watch?v=cCAtD_BAHNw ("Under the radar CSS features for your CSS reset")
-  @layer custom {
-    //* { min-inline-size: 0; } // Reset flexbox item min-width? https://github.com/elad2412/the-new-css-reset/issues/45
-    
+/*
+References:
+  - https://github.com/fortanix/baklava/issues/641 (research)
+  - https://github.com/elad2412/the-new-css-reset (example of a hard reset, used as a base for ours)
+  - https://frontendmasters.com/blog/the-coyier-css-starter
+
+User agent stylesheets:
+  - https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css
+  - https://github.com/WebKit/WebKit/blob/main/Source/WebCore/css/html.css
+  - https://github.com/mozilla-firefox/firefox/blob/main/layout/style/res/html.css
+*/
+
+@mixin reset-element {
+  // Apply to self or descendants
+  :where(&, & *) {
     // :focus-visible {
     //   /* outline: calc(bk.$size-1 / 2) solid color-contrast(var(--bk-page-color-background) vs white, black); */
     //   /*
@@ -35,26 +32,145 @@
     //   /* border-radius: 3px; */
     // }
     
-    @media (prefers-reduced-motion: no-preference) {
-      // Source: [1]
-      :has(:target) {
-        scroll-behavior: smooth;
-        scroll-padding-top: 1.5lh;
+    &:is(pre) {
+      white-space: pre-wrap;
+    }
+    
+    /* Reapply the default `cursor: pointer` for certain interactive elements. */
+    &:is(a:any-link, button, label, summary) {
+      cursor: pointer;
+    }
+    
+    /* Don't exceed the container dimensions for large images/videos. */
+    &:is(img, video) {
+      max-inline-size: 100%;
+      block-size: auto;
+    }
+    
+    
+    /* Lists */
+    
+    /*
+    Remove list styles (bullets/numbers).
+    Note: do not use `list-style: none`, because this causes accessibility issues in Safari where the list will no
+    longer be announced as a list. Instead, just set it to use an empty marker.
+    */
+    &:is(ol, ul, menu, summary) {
+      list-style: '';
+    }
+    &:is(ol) {
+      /* Retain the proper `counter-reset` behavior for nested lists. */
+      counter-reset: revert;
+    }
+    
+    
+    /* Tables */
+    
+    &:is(table) {
+      /* Remove spacing between cells in tables */
+      border-collapse: collapse;
+    }
+    
+    
+    /* Forms */
+    
+    ::placeholder {
+      opacity: 1;
+      color: color-mix(in oklab, currentColor, transparent 30%);
+    }
+    &:is(button, input, textarea, select) {
+      /* Allow form controls to inherit fonts */
+      font: inherit;
+    }
+    &:is(input, textarea) {
+      /* Safari: solve issue where using `user-select: none` on the <body> causes text inputs not to work */
+      -webkit-user-select: auto;
+      user-select: auto;
+    }
+    &:is(textarea) {
+      /* Revert the `white-space` property for `textarea` elements on Safari */
+      white-space: revert;
+    }
+    
+    /* https://codepen.io/maikelkrause/pen/qEqWbaL?editors=1100 */
+    meter {
+      --background: #dadada;
+      --optimum: forestgreen;
+      --sub-optimum: gold;
+      --sub-sub-optimum: crimson;
+      
+      cursor: initial;
+      
+      /* The background in Gecko-based browsers */
+      background: var(--background);
+      display: block;
+      inline-size: 100%;
+      
+      /* The background in WebKit-based browsers */
+      &::-webkit-meter-bar {
+        background: var(--background);
+        grid-row-start: start;
+        grid-row-end: end;
+      }
+      
+      /* The green (optimum) bar in Gecko-based browsers */
+      &:-moz-meter-optimum::-moz-meter-bar { background: var(--optimum); }
+      
+      /* The green (optimum) bar in WebKit-based browsers */
+      &::-webkit-meter-optimum-value { background: var(--optimum); }
+      
+      /* The yellow (sub-optimum) bar in Gecko-based browsers */
+      &:-moz-meter-sub-optimum::-moz-meter-bar { background: var(--sub-optimum); }
+      
+      /* The yellow (sub-optimum) bar in WebKit-based browsers */
+      &::-webkit-meter-suboptimum-value { background: var(--sub-optimum); }
+      
+      /* The red (even less good) bar in Gecko-based browsers */
+      &:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--sub-sub-optimum); }
+      
+      /* The red (even less good) bar in WebKit-based browsers */
+      &::-webkit-meter-even-less-good-value { background: var(--sub-sub-optimum); }
+    }
+    
+    /* In the future (once supported in browsers), we can do:
+    &:is(button, input, textarea, select) {
+      appearance: base;
+      
+      &::picker(select) {
+        appearance: base;
+      }
+    }
+    */
+    
+    &:is([contenteditable]:where(:not([contenteditable="false" i]))) {
+      overflow-wrap: break-word;
+      -webkit-line-break: after-white-space;
+      
+      /* Safari: solve issue where using `user-select: none` on the `<body>` causes contenteditable not to work */
+      -webkit-user-select: auto;
+      user-select: auto;
+    }
+    
+    
+    /* Details */
+    
+    &:is(details) {
+      /* Remove details summary marker (in WebKit-based browsers) */
+      summary::-webkit-details-marker {
+        display: none;
       }
     }
     
-    [hidden] {
-      // The `reset.css` lib does this already but without the `!important`, which means it will get overridden easily
-      // if a `display` is set in a higher layer. There should be no reason to override `display: none` on `[hidden]`.
-      // stylelint-disable-next-line declaration-no-important
-      display: none !important;
-    }
     
-    p {
+    
+    
+    
+    
+    &:is(p) {
       overflow-wrap: break-word; // Prevent long words causing overflow
     }
     
-    button {
+    &:is(button) {
       cursor: pointer;
       user-select: none;
       
@@ -63,13 +179,13 @@
       }
     }
     
-    label {
+    &:is(label) {
       cursor: pointer;
       user-select: none;
     }
     
     /*
-    input, select, textarea {
+    &:is(input, select, textarea) {
       -webkit-appearance: revert;
       appearance: revert;
     }
@@ -82,7 +198,7 @@
     - https://thatemil.com/blog/2015/01/03/reset-your-fieldset/ (2015, most of this is outdated/no longer necessary)
     - https://stackoverflow.com/a/20705034/233884 (solution with only `float`, seems to work fine in modern browsers)
     */
-    fieldset {
+    &:is(fieldset) {
       legend {
         float: inline-start;
         inline-size: 100%;
@@ -98,12 +214,12 @@
     // Top layer (overlays)
     //
     
-    [popover]:not(dialog) {
+    &:is([popover]:not(dialog)) {
       inset: auto; // Note: future versions of Chrome should have this by default
       position: fixed;
       
       // Use a variable (`--display`) to allow higher level styling to override the visible display type (e.g. to use
-      // `flex` instead of `block`), without having to reimplement all the `display: none` logic.
+      // `flex` instead of `block`), without having to reimplement all the `display: none` conditional logic.
       display: var(--display, block);
       
       &:not(:popover-open) {
@@ -113,7 +229,7 @@
     
     // Note: we assume that all styling for dialog (including `:modal` and `:backdrop`) has been hard reset.
     // `the-new-css-reset` has an exception for `dialog:modal`, but we don't want this exception, so here we unset all.
-    dialog, dialog::backdrop, dialog:where(:modal) {
+    &:is(dialog, dialog::backdrop, dialog:where(:modal)) {
       all: unset;
       display: revert;
       box-sizing: border-box;
@@ -121,7 +237,7 @@
     
     // Re-apply a few sensible defaults for dialogs. For reference, see the default user agent styling rules here:
     // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css
-    dialog {
+    &:is(dialog) {
       // Issue: if the parent has `user-select: none` (e.g. button), then the dialog will inherit this by default.
       // In the future, if `contain: user-select` is implemented, we could use that instead.
       &::backdrop {
@@ -173,7 +289,7 @@
     - https://github.com/whatwg/html/pull/9387#issuecomment-1599722425
     - https://issues.chromium.org/issues/40270744 - `:-internal-dialog-in-top-layer`
     */
-    dialog[aria-modal='true'], dialog:modal {
+    &:is(dialog[aria-modal="true"], dialog:modal) {
       position: fixed;
       inset: 0;
       
@@ -186,6 +302,90 @@
         inset: 0;
         background: rgb(0 0 0 / 20%);
       }
+    }
+  }
+}
+
+/*
+Hard reset styles: a default stylesheet that the rest of the design system builds upon. Specifically, we do this in a
+way that minimizes all unnecessary default styling rules, such that most styles become opt-in rather than opt-out.
+
+Notes:
+  - Avoid styling the root `html` element here, that is done in `global.scss` instead.
+  - Avoid setting default inherited properties on elements here, this is done through `reset-element` instead.
+  - Avoid "opiniated" Baklava-specific styling here, this file should be considered a generic UA stylesheet replacement.
+*/
+@mixin styles {
+  /*
+  Hard reset of all user agent stylesheet rules on all elements (excluding pseudo-elements), with a few exceptions:
+    1. Do not revert styling on `html` element (which contains a lot of global defaults that we should be careful with).
+    2. Do not revert styling on graphical/replaced elements.
+    3. Do not revert styling on `svg` elements (reverting `all` can cause some issues, e.g. with symbols)
+    4. Keep UA `display`: each element type should keep its default.
+    5. Keep some UA-internal properties like `-webkit-user-modify`.
+    - Do not revert styling on graphical/replaced elements.
+  
+  Some specific discussions:
+    - Hyphenation issue in Chrome (when reverting `html`): https://github.com/elad2412/the-new-css-reset/issues/36
+  
+  Note: needs a `:where()` to keep specificity low, because we always want other rules in this layer to override this.
+  */
+  :where(:not(/* 1 */ html, head, /* 2 */ iframe, object, embed, canvas, img, video, audio, /* 3 */ svg, svg *)) {
+    all: unset;
+    
+    /* Bring back fundamental UA style rules */
+    display: revert; /* 4 */
+    
+    /* 5 */
+    
+    /* Needed for `[contenteditable]`, in order to make editing work */
+    /* stylelint-disable property-no-deprecated */
+    -moz-user-modify: revert;
+    -webkit-user-modify: revert-layer; /* `revert` doesn't work in Chromium? Possibly a bug? */
+    /* stylelint-enable property-no-deprecated */
+    
+    /* Needed for `[draggable]` */
+    -webkit-user-drag: revert;
+  }
+  
+  /* Enforce the `hidden` attribute. */
+  [hidden]:where(:not([hidden="until-found"])) {
+    /*
+    Without the `!important`, it will get overridden easily if a `display` is set in a higher layer. There should
+    be no reason to override `display: none` on `[hidden]`.
+    */
+    /* stylelint-disable-next-line declaration-no-important */
+    display: none !important;
+  }
+  
+  /*
+  Preferred box-sizing value.
+    - https://piccalil.li/blog/international-box-sizing-awareness-day/
+    - https://www.oddbird.net/2025/09/04/box-model/
+  */
+  *, ::before, ::after, ::backdrop, ::file-selector-button {
+    box-sizing: border-box;
+  }
+  /* For graphical/replaced elements, use `content-box` such that padding/borders won't "shrink" the content */
+  iframe, object, embed, canvas, img, video, audio, svg {
+    box-sizing: content-box;
+    display: block; /* https://github.com/jensimmons/cssremedy/issues/14 */
+  }
+  
+  /*
+  Override the `min-inline-size` to prevent common gotchas with (for instance) flex items.
+    - https://github.com/elad2412/the-new-css-reset/issues/45
+  */
+  *, ::before, ::after {
+    min-inline-size: 0;
+  }
+  
+  /* Smooth scrolling for anchor links. See also: https://www.youtube.com/watch?v=cCAtD_BAHNw */
+  :has(:target) {
+    scroll-padding-top: 1.5rlh;
+    
+    @media (prefers-reduced-motion: no-preference) {
+      scroll-behavior: smooth;
     }
   }
 }

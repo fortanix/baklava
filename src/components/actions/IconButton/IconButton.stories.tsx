@@ -30,3 +30,39 @@ export default {
 
 
 export const IconButtonStandard: Story = {};
+
+export const IconButtonIsolation: Story = {
+  decorators: [
+    Story => (
+      <p className="bk-prosex" style={{ fontSize: '2em', color: 'red', lineHeight: 2 }}>
+        The following <code>IconButton</code> should NOT be styled:
+        {' '}
+        <Story/>
+        {' '}
+        It should have the default color and normal font size.
+      </p>
+    ),
+  ],
+};
+
+export const IconButtonInline: Story = {
+  decorators: [
+    Story => (
+      <>
+        <p style={{ fontSize: '2em', color: 'red', lineHeight: 2 }}>
+          The following <code className="bk-prose">IconButton</code> SHOULD be styled:
+          {' '}
+          <Story/>
+          {' '}
+          It should have the default color and normal font size.
+        </p>
+        <p className="bk-prose" style={{ fontSize: '2em', color: 'purple', lineHeight: 2 }}>
+          Here is an <code>IconButton</code> within prose: <Story/>.
+        </p>
+      </>
+    ),
+  ],
+  args: {
+    inline: true,
+  },
+};

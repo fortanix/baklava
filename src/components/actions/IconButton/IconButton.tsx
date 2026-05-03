@@ -53,7 +53,7 @@ export const IconButton = (props: IconButtonProps) => {
       <Icon
         {...iconProps}
         icon={icon}
-        className={cx(iconClassName)}
+        className={[{ 'bk-inherit': false }, iconClassName]} // Do not inherit styling
       />
     </Button>
   );

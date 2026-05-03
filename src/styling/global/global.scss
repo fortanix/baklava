@@ -3,73 +3,49 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 @use '../context/theming.scss' as theming;
+@use './reset.scss' as reset;
 
-/*
-Root element styling. Meant to be applied specifically on the document root (i.e. `:root`), which is privileged
-over non-root elements in CSS in a few ways, for instance through the "root" units like rem, rlh, etc.
-Note: we want to allow opting out of global styling. In order to do so, we should have all root styling bundled into
-one place, namely this mixin. Any `:root` selectors in the rest of the codebase should be discouraged, except in the
-case where we set CSS variables (using a `--bk-` prefix to minimize conflicts with other libraries).
-*/
-@mixin root-styles {
-  interpolate-size: allow-keywords; // Allow transitioning width/height to `auto`
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  
-  // Disable text size adjustments on mobile devices (e.g. iOS Safari in landscape mode)
-  // stylelint-disable property-no-vendor-prefix
-  -moz-text-size-adjust: none;
-  -webkit-text-size-adjust: none;
-  // stylelint-enable property-no-vendor-prefix
-  text-size-adjust: none;
-  
-  // Set the base font size (this must be done on the root element, since it determines the `rem` unit)
-  // https://royalfig.github.io/fluid-typography-calculator
-  //font-size: clamp(0.8rem, 0.76rem + 0.19999999999999996vw, 1rem);
-  // https://utopia.fyi/type/calculator?c=320,12,1.2,1440,14,1.25,4,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12
-  font-size: round(clamp(0.75em, 0.7143em + 0.1786vi, 0.875em), 1px); // 1rem ~ 14px at 1440px max viewport size
-  
-  @supports not (font-size: round(1px, 1px)) {
-    font-size: 0.875rem; // 14px, for browsers where 1rem = 16px
-  }
-  
-  // Do not set `line-height`, already set by `text-defaults`
-  //line-height: ;
-  
-  &:has(:target) {
-    // Add enough scroll padding so anchors don't get hidden behind the `AppLayout` header
-    scroll-padding-top: calc(var(--bk-app-layout-header-height) + 0.5lh);
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    scroll-behavior: smooth;
-  }
-}
 
-@mixin text-defaults {
+@mixin typographic-defaults {
   // Define the default styling for typography, used in "application mode" containers like `:root` or components.
   // As opposed to "prose mode" which needs to be opted in to through `.bk-prose`.
-  // Note: these will override anything defined in `reset.scss`. In particular, setting something to `initial` here
-  // doesn't mean "use the styling from our reset", so only use this if you *want* to explicitly use the CSS initial
-  // value for a given property.
+  // Note:
+  // - Do not use `revert`/`revert-layer` here, since that will just result in inherited properties becoming inherited
+  //   from the parent. We need to override with a concrete value.
+  // - Using `initial` will skip over UA styling as well as our reset defaults (can be an issue, e.g. `color` in
+  //   Firefox won't respect dark mode theming when using `initial`).
   
-  font: initial;
+  // FIXME: this currently breaks cases where `.bk`/`.bk-isolate` is applied on an element and we want that element to
+  // get the defaults from `reset.scss`. For example:
+  //   `<ul className="bk"></ul>` <- this won't get the `list-style` defined in `reset.scss` because we override it
+  
+  font: initial; // Explicitly revert to the initial font values so nothing gets inherited
   font-family: var(--bk-font-family-body);
   font-size: 1rem;
   
+  // Relatively narrow `line-height` for application mode, so we don't have to compensate in padding.
   // Note: do not use `1rlh`, since we want the line height to be relative to whatever the `font-size` is set to.
   // Using `1rlh` means it will use the line height of the font size set on `:root`. In a component that overrides
   // `font-size` to be smaller, we want the `line-height` to scale accordingly.
   line-height: 1.4;
   
   // Make sure we explicitly set any (text-related) properties that are inherited from the parent
-  letter-spacing: normal;
-  word-spacing: normal;
-  text-align: initial;
-  text-transform: initial;
-  white-space: initial;
+  letter-spacing: initial; // Uses the default for the current font
+  word-spacing: initial; // Uses the default for the current font
+  text-align: initial; // Uses the default for the current `direction`
+  text-transform: initial; // No transformation
+  list-style: ''; // No visible list marker, but (unlike `none`) keeps the "list" role in Safari
   text-indent: initial;
   
-  //color: ...; // Handled by theming.scss
+  white-space: initial; // Shorthand for `white-space-collapse` and `text-wrap-mode`
+  text-wrap: initial; // Default `wrap` algorithm
+  overflow-wrap: break-word; // Prevent long words causing overflow
+  hyphens: auto; // Allow browsers to pick hyphenation points
+  //hyphenate-limit-chars: initial;
+  //hyphenate-character: initial;
+  
+  // Note: do not include theming-related properties here, this should be handled by `theming.scss`
+  //color: ...;
 }
 
 /*
@@ -81,12 +57,15 @@ case where we set CSS variables (using a `--bk-` prefix to minimize conflicts wi
 @mixin isolate {
   // https://web.dev/learn/css/inheritance#which_properties_are_inherited_by_default
   
-  @include text-defaults;
+  // The following properties should inherit by default, even into components
+  cursor: inherit; // Cursor (e.g. `cursor: not-allowed`) on a visual "block" should also affect nested components
+  visibility: inherit; // Visibly hiding a visual "block" should also affect nested components
+  pointer-events: inherit; // Things like `pointer-events: none` should also affect nested components
   
-  // Properties that should inherit by default
-  //cursor: inherit;
-  //visibility: inherit;
-  //pointer-events: inherit;
+  @include reset.reset-element;
+  
+  @include typographic-defaults;
+  @include theming.theme-init; // FIXME: double check this
   
   // The following should be reset on modal dialogs and popovers only
   &:popover-open, &:is(dialog:modal) {
@@ -100,18 +79,79 @@ case where we set CSS variables (using a `--bk-` prefix to minimize conflicts wi
   }
 }
 
+/*
+Root element styling. Meant to be applied specifically on the document root (i.e. `:root`), which is privileged
+over non-root elements in CSS in a few ways, for instance through the "root" units like rem, rlh, etc.
+Note: we want to allow opting out of global styling. In order to do so, we should have all root styling bundled into
+one place, namely this mixin. Any `:root` selectors in the rest of the codebase should be discouraged, except in the
+case where we set CSS variables (using a `--bk-` prefix to minimize conflicts with other libraries).
+*/
+@mixin root-styles {
+  interpolate-size: allow-keywords; // Allow transitioning width/height to `auto`
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  
+  // Reference: https://kilianvalkhof.com/2022/css-html/your-css-reset-needs-text-size-adjust-probably
+  // Disable text size adjustments on mobile devices (e.g. iOS Safari in landscape mode)
+  // stylelint-disable property-no-vendor-prefix
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  // stylelint-enable property-no-vendor-prefix
+  text-size-adjust: none;
+  
+  // Disable tap highlights on iOS
+  -webkit-tap-highlight-color: transparent;
+  
+  // Use a tab size of 4 rather than the default 8
+  tab-size: 4;
+  
+  // Set the base font size (this must be done on the root element, since it determines the `rem` unit)
+  // https://royalfig.github.io/fluid-typography-calculator
+  //font-size: clamp(0.8rem, 0.76rem + 0.19999999999999996vw, 1rem);
+  // https://utopia.fyi/type/calculator?c=320,12,1.2,1440,14,1.25,4,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12
+  font-size: round(clamp(0.75em, 0.7143em + 0.1786vi, 0.875em), 1px); // 1rem ~ 14px at 1440px max viewport size
+  
+  @supports not (font-size: round(1px, 1px)) {
+    font-size: 0.875rem; // 14px, for browsers where 1rem = 16px
+  }
+  
+  // Do not set `line-height`, already set by `typographic-defaults`
+  //line-height: ...;
+  
+  &:has(:target) {
+    // Add enough scroll padding so anchors don't get hidden behind the `AppLayout` header
+    scroll-padding-top: calc(var(--bk-app-layout-header-height, 0) + 0.5lh);
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    scroll-behavior: smooth;
+    
+    @view-transition {
+      navigation: auto;
+    }
+  }
+}
+
 @mixin styles {
-  // Note: we allow opting out of root styling using `.bk-no-globals`
+  // Apply global styling to the root. This will be the document root, unless opted out using `.bk-no-globals`.
   // The `.bk-root` class can be used if you want to apply the root styles on something other than the document root,
-  // but note that this means certain functionality like `rem` units won't work properly.
-  :root:not(.bk-no-globals), .bk-root {
-    @include text-defaults;
-    @include root-styles;
+  // but note that this means certain document root-only functionality like `rem` units won't work properly.
+  :root:where(:not(.bk-no-globals)), .bk-root {
+    @include reset.reset-element;
+    @include typographic-defaults;
+    @include root-styles; // Note: should override `typographic-defaults` since this defines things like `rem`
     @include theming.root-styles;
   }
   
-  // Isolate mixin as a utility class, for use with `@scope (.x) to (.bk-isolate)`
-  .bk-isolate, .bk {
+  // Utility classes for isolation. `bk-isolate` can be applied on any element as needed if you want it isolated,
+  // whereas `bk` is meant for Baklava components. Baklava components can choose to apply `bk-inherit` if they want
+  // the component to inherit CSS properties like font/color.
+  // 
+  // On the other hand, if you're writing styling and you want it to not leak into isolated components, we recommend
+  // using `@scope` with a scope limit as follows: `@scope to (.bk-isolate, .bk) {}`.
+  // Note: do not include `:not(.bk-inherit)` in the scope limit, all `.bk` elements should be exempt from the scoped
+  // rules, whether they inherit or not.
+  .bk-isolate, .bk:where(:not(.bk-inherit)) {
     @include isolate;
   }
   

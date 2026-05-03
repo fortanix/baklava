@@ -6,8 +6,9 @@
 @use '../variables.scss' as bk;
 
 /*
-Note: `light-dark()` is not dynamic, it is computed once at the definition site. That means that we cannot capture
-a `light-dark()` expression in a variable and reuse that in a different theme. Mixins are needed for that purpose.
+Note: `light-dark()` is eagerly evaluated, it is computed immediately at the use site. That means that we cannot capture
+a `light-dark()` expression in a variable and reuse that in a different selector. Maybe in the future we could use
+CSS custom functions for this, but for now we need to inline every `light-dark()` locally using Sass variables.
 - Ref: https://github.com/web-platform-tests/wpt/blob/master/css/css-color/light-dark-inheritance.html
 */
 
