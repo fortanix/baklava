@@ -4,6 +4,7 @@
 
 import * as React from 'react';
 import type { StoryObj } from '@storybook/react-vite';
+import type * as ReactTable from 'react-table';
 
 import { delay } from '../util/async_util.ts';
 import { type User, generateData } from '../util/generateData.ts';
@@ -12,6 +13,8 @@ import { sortDateTime } from '../util/sorting_util.ts';
 import { Button } from '../../actions/Button/Button.tsx';
 import { PageLayout } from '../../../layouts/PageLayout/PageLayout.tsx';
 import { Panel } from '../../containers/Panel/Panel.tsx';
+import { IconButton } from '../../actions/IconButton/IconButton.tsx';
+import { DialogOverlay } from '../../overlays/DialogOverlay/DialogOverlay.tsx';
 import * as DataTableLazy from './DataTableLazy.tsx';
 
 export default {
@@ -25,6 +28,7 @@ export default {
 type DataTableLazyTemplateProps = DataTableLazy.TableProviderLazyProps<User> & {
   delay: number,
   storyItems: Array<User>,
+  highlightedRowId?: string | undefined,
 };
 const DataTableLazyTemplate = (props: DataTableLazyTemplateProps) => {
   const columns = React.useMemo(() => props.columns, [props.columns]);
@@ -77,6 +81,7 @@ const DataTableLazyTemplate = (props: DataTableLazyTemplateProps) => {
             }
           />
         }
+        highlightedRowId={props.highlightedRowId}
       />
     </DataTableLazy.TableProviderLazy>
   );
@@ -202,4 +207,88 @@ export const DataTableLazyWithPageLayout: Story = {
       </PageLayout>
     ),
   ],
+};
+
+const useTableOverlay = ( args : DataTableLazyTemplateProps) => {
+  const overlay = DialogOverlay.usePopoverRef(null);
+
+  const childTableColumns = [
+    ...columns.map(({ disableGlobalFilter, ...rest }) => rest),
+  ];
+
+  return {
+    activate() {
+      overlay.current?.activate();
+    },
+
+    render({ onClose }: { onClose?: () => void }) {
+      return (
+        <DialogOverlay
+          popoverRef={overlay}
+          title="Overlay Edit"
+          display="slide-over"
+          size="medium"
+          onToggle={(event) => {
+            if (event.newState === 'closed') {
+              onClose?.();
+            }
+          }}
+        >
+          <Panel>
+            <DataTableLazyTemplate
+              {...args}
+              columns={childTableColumns}
+            />
+          </Panel>
+        </DialogOverlay>
+      );
+    },
+  };
+};
+
+export const DataTableLazyWithEditOverlay: Story = {
+  args: {
+    storyItems: generateData({ numItems: 45 }),
+  },
+  render: (args: DataTableLazyTemplateProps) => {
+    const dataTableModal = useTableOverlay({...args});
+    const [highlightedRowId, setHighlightedRowId] = React.useState<string | null>(null);
+
+    const tableCol = [
+      ...columns,
+      {
+        id: 'actions',
+        Header: 'Actions',
+        Cell: ({ row }: ReactTable.CellProps<User>) => {
+          return (
+            <IconButton
+              icon="edit"
+              label="edit"
+              onPress={() => {
+                dataTableModal.activate();
+                setHighlightedRowId(row.id);
+              }}
+            />
+          );
+        },
+      },
+    ];
+
+    return (
+      <Panel>
+        {dataTableModal.render({
+          onClose: () => {
+            if (highlightedRowId) {
+              setHighlightedRowId(null);
+            }
+          },
+        })}
+        <DataTableLazyTemplate
+          {...args}
+          columns={tableCol}
+          highlightedRowId={highlightedRowId ?? undefined}
+        />
+      </Panel>
+    );
+  },
 };
