@@ -74,6 +74,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
           
           <span className="visually-hidden">Current page:</span>
           <Input
+            unstyled
             type="number"
             automaticResize
             className={cx(cl['pagination__page-input'])}
