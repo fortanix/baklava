@@ -31,40 +31,58 @@ export default {
 
 export const IconButtonStandard: Story = {};
 
-export const IconButtonIsolation: Story = {
-  decorators: [
-    Story => (
-      <p className="bk-prosex" style={{ fontSize: '2em', color: 'red', lineHeight: 2 }}>
-        The following <code>IconButton</code> should NOT be styled:
-        {' '}
-        <Story/>
-        {' '}
-        It should have the default color and normal font size.
-      </p>
-    ),
-  ],
-};
-
 export const IconButtonInline: Story = {
   decorators: [
     Story => (
-      <>
-        <p style={{ fontSize: '2em', color: 'red', lineHeight: 2 }}>
-          The following <code className="bk-prose">IconButton</code> SHOULD be styled:
+      <article
+        className="bk-prose"
+        style={{
+          maxWidth: '60ch',
+          fontSize: '1.6rem',
+          textAlign: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.6lh',
+        }}
+      >
+        <p style={{ color: 'light-dark(#645EC3, #BDB9F3)' }}>
+          By default, <code>IconButton</code> elements are rendered inline.
           {' '}
           <Story/>
           {' '}
           It should have the same color and font size as the rest of the paragraph.
         </p>
-        <p className="bk-prose" style={{ fontSize: '2em', color: 'purple', lineHeight: 2 }}>
-          Here is an <code>IconButton</code> within prose: <Story/>.
+      </article>
+    ),
+  ],
+};
+
+export const IconButtonIsolated: Story = {
+  decorators: [
+    Story => (
+      <article
+        className="bk-prose"
+        style={{
+          maxWidth: '60ch',
+          fontSize: '1.6rem',
+          textAlign: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.6lh',
+        }}
+      >
+        <p style={{ color: 'light-dark(#645EC3, #BDB9F3)' }}>
+          When <code>inline="false"</code>, <code>IconButton</code> is displayed as an isolated, block-level element:
           {' '}
-          It should have the same color and font size as the rest of the paragraph.
+          <Story/>
+          {' '}
+          It should have the default color and normal font size, and be rendered as a block-level element, even inside
+          of a paragraph with custom styling.
         </p>
-      </>
+      </article>
     ),
   ],
   args: {
-    inline: true,
+    inline: false,
   },
 };

@@ -29,33 +29,39 @@ export type IconButtonProps = React.PropsWithChildren<ComponentProps<typeof Butt
   /** Any additional props to apply to the inner `Icon`. */
   iconProps?: undefined | Omit<ComponentProps<typeof Icon>, 'icon'>,
   
-  /** Whether the component should be displayed as an inline element. Default: false. */
+  /** Whether the component should be displayed as an inline element. Default: `true`. */
   inline?: undefined | boolean,
 }>;
+
 /**
  * A button where the label is just an icon.
  */
 export const IconButton = (props: IconButtonProps) => {
-  const { unstyled = false, className, iconClassName, label, icon, iconProps = {}, inline, ...propsRest } = props;
+  const {
+    unstyled = false,
+    className,
+    iconClassName,
+    label,
+    icon,
+    iconProps = {},
+    inline = true,
+    ...propsRest
+  } = props;
   
   return (
     <Button
       unstyled
-      trimmed
       aria-label={label}
       {...propsRest}
       className={cx(
         'bk',
         { 'bk-inherit': inline },
         { [cl['bk-icon-button']]: !unstyled },
+        { [cl['bk-icon-button--inline']]: inline },
         className,
       )}
     >
-      <Icon
-        {...iconProps}
-        icon={icon}
-        className={[{ 'bk-inherit': inline }, iconClassName]} // Do not inherit styling
-      />
+      <Icon {...iconProps} icon={icon} className={iconClassName}/>
     </Button>
   );
 };

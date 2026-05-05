@@ -254,7 +254,7 @@ export const GlobalModals: Story = {
         <section>
           <button type="button" commandFor="story-dialog-1" command="show-modal">Show modal</button>
         </section>
-        <section style={{ userSelect: 'none' }}>
+        <section style={{ webkitUserSelect: 'none', userSelect: 'none' }}>
           <dialog id="story-dialog-2" closedBy="any">This text should be selectable</dialog>
           Text is not selectable here, but should still be selectable in the following dialog:
           <br/>

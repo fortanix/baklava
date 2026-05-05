@@ -21,35 +21,53 @@ export type Decoration = (
   | { type: 'background-circle' }
 );
 
-type EventProps = {
-  event: 'warning',
-};
-const Event = (props: EventProps) => {
-  if (props.event !== 'warning') {
-    return null;
-  }
-  const icon: IconName = props.event === 'warning' ? 'warning-filled' : props.event;
-  return (
-    <Icon icon={icon} className={cl[`bk-icon-event--${icon}`]} />
-  );
-};
-
 export type IconProps = React.PropsWithChildren<ComponentProps<'svg'> & {
   /** Whether this component should be unstyled. */
   unstyled?: boolean,
   
-  /** The name of the icon to display */
+  /** The name of the icon to display. */
   icon: IconName,
   
-  /** The color to apply to the icon */
+  /**
+   * The color to apply to the icon. Note: this should rarely be needed, icons will already adapt to the current color
+   * when declared through CSS.
+   */
   color?: undefined | string,
   
-  /** Visual decoration to apply */
+  /**
+   * Whether the icon should be displayed inline. When true, the icon will adapt to its surrounding text.
+   * Default: `true`.
+   */
+  inline?: undefined | boolean,
+  
+  /** Visual decoration to apply. */
   decoration?: undefined | Decoration,
 }>;
+
+type IconEventProps = Omit<IconProps, 'icon'> & {
+  event: 'warning', // TODO: add other event types such as: success, error
+};
+/**
+ * A variant of `Icon` for common "event" types like warning/success. Comes with predefined colors based on the event
+ * type (e.g. green for success, orange for warning).
+ */
+const Event = ({ event, ...propsRest }: IconEventProps) => {
+  // FIXME: currently `warning` is hardcoded to refer to `warning-filled`
+  const icon = event === 'warning' ? 'warning-filled' : event;
+  
+  return (
+    <Icon {...propsRest} className={cx(cl[`bk-icon-event--${event}`], propsRest.className)} icon={icon}/>
+  );
+};
+
 export const Icon = Object.assign(
-  ({ unstyled, icon, color = 'currentColor', decoration, ...props }: IconProps) => {
+  ({ unstyled, icon, color = 'currentColor', inline = true, decoration, ...props }: IconProps) => {
     const symbolId = `#baklava-icon-${icon}`;
+    
+    if (!iconNames.has(icon)) {
+      console.error(`Icon: no such icon "${icon}"`);
+      return null;
+    }
     
     return (
       <svg
@@ -58,9 +76,10 @@ export const Icon = Object.assign(
         {...props}
         className={cx(
           'bk',
-          'bk-inherit', // Inherit styling from context
+          { 'bk-inherit': inline }, // When displayed inline, inherit styling from context
           'icon', // Global class name (for generic targeting in CSS)
           { [cl['bk-icon']]: !unstyled },
+          { [cl['bk-icon--inline']]: inline },
           { [cl['bk-icon--background-circle']]: decoration?.type === 'background-circle' },
           props.className,
         )}

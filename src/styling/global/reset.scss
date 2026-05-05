@@ -31,21 +31,20 @@ Notes:
     1. Do not revert styling on `html` element (which contains a lot of global defaults that we should be careful with).
     2. Do not revert styling on graphical/replaced elements.
     3. Do not revert styling on `svg` elements (reverting `all` can cause some issues, e.g. with `<symbol>`)
-    4. Keep UA `display`: each element type should keep its default.
+    4. Keep UA `display`: each element type should keep its default value.
     5. Keep some UA-internal properties like `-webkit-user-modify`.
-    - Do not revert styling on graphical/replaced elements.
   
-  Some specific discussions:
+  Discussions:
     - Hyphenation issue in Chrome (when reverting `html`): https://github.com/elad2412/the-new-css-reset/issues/36
   
   Note: needs a `:where()` to keep specificity low, because we always want other rules in this layer to override this.
   */
-  :where(:not(/* 1 */ html, head, /* 2 */ iframe, object, embed, canvas, img, video, audio, /* 3 */ svg, svg *, symbol *)) {
+  :where(:not(/*1*/ html, head, /*2*/ iframe, object, embed, canvas, img, video, audio, /*3*/ svg, svg *, symbol *)) {
     all: unset; /* Reset everything to `initial` by default, or `inherit` for inheritable properties */
     
     /*
-    Utility classes for isolation. `bk-isolate` can be applied on any element as needed if you want it isolated,
-    whereas `bk` is meant for Baklava components. Baklava components can choose to apply `bk-inherit` if they want
+    Utility classes for isolation. `.bk-isolate` can be applied on any element as needed if you want it isolated,
+    whereas `.bk` is meant for Baklava components. Baklava components can choose to apply `.bk-inherit` if they want
     the component to inherit CSS properties like font/color.
     
     On the other hand, if you're writing styling and you want it to not leak into isolated components, we recommend
@@ -56,19 +55,26 @@ Notes:
     &:where(.bk-isolate, .bk:not(.bk-inherit)) {
       all: initial;
       
-      /* The following properties should inherit by default, even into components */
-      color-scheme: inherit;
-      cursor: inherit; /* Rules like `cursor: not-allowed` on a visual "block" should also affect nested components */
-      visibility: inherit; /* Hiding a visual "block" should also affect nested components */
-      pointer-events: inherit; /* Rules like `pointer-events: none` should also affect nested components */
-      interpolate-size: inherit;
-      text-rendering: inherit;
-      -webkit-font-smoothing: inherit;
-      -moz-text-size-adjust: inherit;
-      -webkit-text-size-adjust: inherit;
-      text-size-adjust: inherit;
-      -webkit-tap-highlight-color: inherit;
-      tab-size: inherit;
+      /*
+      The following properties should be inherited by default, even into isolated components. Many of these are to keep
+      the component consistent with its visual context. For example, setting `visibility: hidden` on a parent block
+      should apply to all components too by default. Others we want to inherit because they are global "settings" that
+      we want to apply once on a global context (e.g. document root) and they should apply everywhere.
+      */
+      color-scheme: inherit; /* Visual consistency */
+      cursor: inherit; /* Visual consistency */
+      visibility: inherit; /* Visual consistency */
+      pointer-events: inherit; /* Visual consistency */
+      -webkit-user-select: inherit; /* Visual consistency */
+      user-select: inherit; /* Visual consistency */
+      interpolate-size: inherit; /* Inherit from global context */
+      text-rendering: inherit; /* Inherit from global context */
+      -webkit-font-smoothing: inherit; /* Inherit from global context */
+      -moz-text-size-adjust: inherit; /* Inherit from global context */
+      -webkit-text-size-adjust: inherit; /* Inherit from global context */
+      text-size-adjust: inherit; /* Inherit from global context */
+      -webkit-tap-highlight-color: inherit; /* Inherit from global context */
+      tab-size: inherit; /* Inherit from global context */
     }
     
     /* Bring back fundamental UA style rules */
@@ -137,18 +143,19 @@ Notes:
   Elements
   */
   
-  // :focus-visible {
-  //   /* outline: calc(bk.$size-1 / 2) solid color-contrast(var(--bk-page-color-background) vs white, black); */
-  //   /*
-  //   Note:
-  //     - The following should be overridable by components (e.g. `outline-offset` might not always look good)
-  //     - Focusable elements should never use `outline` for any other purpose than focus outline
-  //     - Use `px` rather than `rem` because these should not scale dynamically
-  //   */
-  //   /* outline: 3px solid var(--bk-focus-outline-color); */
-  //   /* outline-offset: 3px; */
-  //   /* border-radius: 3px; */
-  // }
+  /* FIXME
+  :focus-visible {
+    //outline: calc(bk.$size-1 / 2) solid color-contrast(var(--bk-page-color-background) vs white, black);
+    
+    // Note:
+    //   - The following should be overridable by components (e.g. `outline-offset` might not always look good)
+    //   - Focusable elements should never use `outline` for any other purpose than focus outline
+    //   - Use `px` rather than `rem` because these should not scale dynamically
+    //outline: 3px solid var(--bk-focus-outline-color);
+    //outline-offset: 3px;
+    //border-radius: 3px;
+  }
+  */
   
   p {
     overflow-wrap: break-word; // Prevent long words causing overflow
@@ -164,6 +171,7 @@ Notes:
   }
   
   button {
+    -webkit-user-select: none;
     user-select: none;
     
     &:disabled {
@@ -218,13 +226,14 @@ Notes:
       float: inline-start;
       inline-size: 100%;
       
-      // Clear the `float`
+      /* Clear the `float` */
       + * {
         clear: both;
       }
     }
   }
   label {
+    -webkit-user-select: none;
     user-select: none;
   }
   ::placeholder {
@@ -247,42 +256,42 @@ Notes:
   
   /* https://codepen.io/maikelkrause/pen/qEqWbaL?editors=1100 */
   meter {
-    --background: #dadada;
-    --optimum: forestgreen;
-    --sub-optimum: gold;
-    --sub-sub-optimum: crimson;
+    --meter-background: #dadada;
+    --meter-optimum: forestgreen;
+    --meter-sub-optimum: gold;
+    --meter-sub-sub-optimum: crimson;
     
     cursor: initial;
     
     /* The background in Gecko-based browsers */
-    background: var(--background);
+    background: var(--meter-background);
     display: block;
     inline-size: 100%;
     
     /* The background in WebKit-based browsers */
     &::-webkit-meter-bar {
-      background: var(--background);
+      background: var(--meter-background);
       grid-row-start: start;
       grid-row-end: end;
     }
     
     /* The green (optimum) bar in Gecko-based browsers */
-    &:-moz-meter-optimum::-moz-meter-bar { background: var(--optimum); }
+    &:-moz-meter-optimum::-moz-meter-bar { background: var(--meter-optimum); }
     
     /* The green (optimum) bar in WebKit-based browsers */
-    &::-webkit-meter-optimum-value { background: var(--optimum); }
+    &::-webkit-meter-optimum-value { background: var(--meter-optimum); }
     
     /* The yellow (sub-optimum) bar in Gecko-based browsers */
-    &:-moz-meter-sub-optimum::-moz-meter-bar { background: var(--sub-optimum); }
+    &:-moz-meter-sub-optimum::-moz-meter-bar { background: var(--meter-sub-optimum); }
     
     /* The yellow (sub-optimum) bar in WebKit-based browsers */
-    &::-webkit-meter-suboptimum-value { background: var(--sub-optimum); }
+    &::-webkit-meter-suboptimum-value { background: var(--meter-sub-optimum); }
     
-    /* The red (even less good) bar in Gecko-based browsers */
-    &:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--sub-sub-optimum); }
+    /* The red (sub-sub-optimum) bar in Gecko-based browsers */
+    &:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter-sub-sub-optimum); }
     
-    /* The red (even less good) bar in WebKit-based browsers */
-    &::-webkit-meter-even-less-good-value { background: var(--sub-sub-optimum); }
+    /* The red (sub-sub-optimum) bar in WebKit-based browsers */
+    &::-webkit-meter-even-less-good-value { background: var(--meter-sub-sub-optimum); }
   }
   
   /* In the future (once supported in browsers), we can do:
@@ -324,6 +333,7 @@ Notes:
       
       /* Issue: if the parent has `user-select: none` (e.g. button), then the dialog will inherit this by default.
          In the future, if `contain: user-select` is implemented, we could use that instead. */
+      -webkit-user-select: none;
       user-select: none; /* Without this, clicking on the backdrop selects the dialog text in Firefox */
     }
     
@@ -331,6 +341,7 @@ Notes:
        `flex` instead of `block`), without having to reimplement all the `display: none` conditional logic. */
     display: var(--display, block);
     
+    -webkit-user-select: text;
     user-select: text;
   }
   
@@ -392,6 +403,9 @@ Notes:
   - https://issues.chromium.org/issues/40270744 - `:-internal-dialog-in-top-layer`
   */
   dialog[aria-modal="true" i], dialog:modal {
+    /* For modal dialogs, use the root theme, not the local component one. */
+    color-scheme: var(--bk-root-theme, inherit);
+    
     position: fixed;
     inset: 0;
     

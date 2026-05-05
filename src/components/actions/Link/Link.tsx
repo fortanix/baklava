@@ -61,6 +61,7 @@ export const Link = (props: LinkProps) => {
       {...propsRest}
       className={cx(
         'bk',
+        'bk-inherit',
         { [cl['bk-link']]: !unstyled },
         { [cl['bk-link--disabled']]: disabled },
         { [cl['bk-link--small']]: size === 'small' },

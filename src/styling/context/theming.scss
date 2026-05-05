@@ -66,9 +66,14 @@ CSS custom functions for this, but for now we need to inline every `light-dark()
 
 // Styles to be applied specifically on the `:root` element (see `global.scss`)
 @mixin root-styles {
-  @include theme('light dark'); // Indicates that we support light and dark themes (in no particular order)
+  // Store the root theme as a variable so it can be reused by other components, for example modals such that they
+  // can revert to the same theme used by the application root
+  --bk-root-theme: light dark; // Indicates that we support light and dark themes (in no particular order)
+  
+  @include theme(var(--bk-root-theme));
   
   @media print {
+    // In print media, we always want to use light theme (dark theme doesn't make sense in the case of ink on paper)
     color-scheme: only light;
   }
   
