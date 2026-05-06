@@ -173,7 +173,11 @@ export const BannerWithThemedContent: Story = {
         <div style={{ display: 'flex', gap: '2ch', marginTop: '0.5lh' }}>
           <Button kind="tertiary" label="Tertiary button"/>
           <Button kind="tertiary" nonactive label="Tertiary button (nonactive)"/>
+          {/*
+          FIXME: in the future when `TooltipProvider` doesn't use a portal anymore:
           <TooltipProvider tooltip="I should be in the local banner theme (light)">
+          */}
+          <TooltipProvider tooltip="I should be in the global theme">
             {props => <Button {...props()} kind="secondary" label="Hover over me"/>}
           </TooltipProvider>
         </div>

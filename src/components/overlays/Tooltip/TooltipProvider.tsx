@@ -209,7 +209,9 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
   return (
     <>
       {renderAnchor()}
-      {renderTooltip()}
+      
+      {/* Use a portal to prevent CSS rules from the parent from being inherited into the Tooltip */}
+      {createPortal(renderTooltip(), document.body)} 
     </>
   );
 };
