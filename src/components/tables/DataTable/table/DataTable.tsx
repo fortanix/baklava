@@ -160,6 +160,7 @@ export type DataTableProps<D extends object> = Omit<ComponentProps<'table'>, 'pl
   placeholder?: React.ReactNode,
   endOfTablePlaceholder?: React.ReactNode,
   expandableRow?: ExpandableRowProps<D>,
+  highlightedRowId?: string | undefined,
   children?: React.ReactNode,
 };
 
@@ -168,6 +169,7 @@ type DataTableRowProps<D extends object> = {
   table: ReactTable.TableInstance<D>,
   expandableRowContent?: React.ReactNode,
   isExpanded: boolean,
+  highlightedRowId: string | undefined,
   onToggleExpandedRow?: () => void,
 };
 
@@ -182,6 +184,7 @@ const DataTableRow = <D extends object>(props: DataTableRowProps<D>) => {
     table,
     expandableRowContent,
     isExpanded,
+    highlightedRowId,
     onToggleExpandedRow,
   } = props;
   const { key: rowKey, ...rowProps } = row.getRowProps();
@@ -277,6 +280,7 @@ const DataTableRow = <D extends object>(props: DataTableRowProps<D>) => {
           rowProps.className,
           { [cl['selected']]: row.isSelected },
           { [cl['bk-data-table__row--expandable-open']]: isExpandedContentMounted },
+          { [cl['bk-data-table__row--highlighted']]: row.id === highlightedRowId },
         )}
       >
         {row.cells.map(cell => {
@@ -340,6 +344,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
     endOfTablePlaceholder,
     expandableRow,
     children,
+    highlightedRowId,
     ...propsRest
   } = props;
   const [expandedRowIdsInternal, setExpandedRowIdsInternal] = React.useState<Array<string>>([]);
@@ -522,6 +527,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
                   table={table}
                   expandableRowContent={expandableRowContent}
                   isExpanded={hasExpandableRowContent && expandedRowIds.includes(row.id)}
+                  highlightedRowId={highlightedRowId}
                   {...(hasExpandableRowContent
                     ? {
                       onToggleExpandedRow: () => {

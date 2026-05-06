@@ -183,6 +183,10 @@
             background-color: bk.$theme-table-background-hover;
           }
         }
+        
+        tr.bk-data-table__row--highlighted{
+          background-color: bk.$theme-table-background-hover;
+        }
 
         tr.bk-data-table__row--expandable-open {
           border-block-end: none;
