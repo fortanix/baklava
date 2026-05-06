@@ -31,30 +31,19 @@ CSS custom functions for this, but for now we need to inline every `light-dark()
   @include theme-init; // Recompute theme values after `color-scheme` change
 }
 
-@mixin theme-invert($selector: &) {
-  // Fallback: if no `bk-theme` class is applied, invert based on the user's preferred scheme.
-  // Note: this should have lower precedence than the rules below
-  @media (prefers-color-scheme: light) {
-    @at-root #{$selector} {
-      @include theme('only dark');
-    }
-  }
-  @media (prefers-color-scheme: dark) {
-    @at-root #{$selector} {
-      @include theme('only light');
-    }
-  }
-  
+@mixin theme-invert() {
   // Invert if overridden by a `bk-theme` class
-  // NOTE: this will not work for additional `bk-theme-invert` mixins deeper inside the current, because this mixin does
-  // not produce a `bk-theme` class.
-  @at-root .bk-theme--dark #{$selector} {
+  // NOTE: this will not work for additional nested inversions. `@scope` won't help there, we'd need support for `if`.
+  @scope (.bk-theme--dark) {
     @include theme('only light');
   }
-  @at-root .bk-theme--light #{$selector} {
+  @scope (.bk-theme--light) {
     @include theme('only dark');
   }
-  // Once `@scope` is available, convert the above selectors to use `@scope` to prevent the second overring the first
+  
+  // In the future, we could do the following
+  // See: https://www.bram.us/2025/09/30/css-custom-light-dark
+  //color-scheme: if(color-scheme(light): dark; else: light);
   
   /*
   // Possible solution using `--color-scheme` variables rather than `bk-theme` classes. Downside: this will not allow

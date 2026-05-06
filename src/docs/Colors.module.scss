@@ -54,6 +54,6 @@
   }
   
   .theme-demo {
-    @include theming.theme-invert;
+    --keep: ;
   }
 }
