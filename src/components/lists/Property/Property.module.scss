@@ -10,13 +10,13 @@
     flex-direction: column;
     gap: bk.$spacing-2;
     justify-content: flex-start;
-
+    
     dt {
       font-weight: bk.$font-weight-regular;
       font-size: bk.$font-size-s;
       color: bk.$theme-text-small-text-subtle;
     }
-
+    
     dd {
       display: flex;
       flex-direction: column;
@@ -24,11 +24,11 @@
       font-size: bk.$font-size-m;
       color: bk.$theme-text-body-default;
     }
-
+    
     .bk-property__value {
       @include bk.text-layout;
     }
-
+    
     // This wrapper is the ONLY element that gets clamped.
     // React will dynamically set:
     // style={{ WebkitLineClamp: clampLines }}
@@ -37,39 +37,38 @@
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-
+    
     .bk-property__toggle-expand {
       align-self: flex-start;
       cursor: pointer;
-
+      
       font-weight: bk.$font-weight-regular;
       font-size: bk.$font-size-m;
       text-decoration: none; // Remove default underline
     }
   }
-
+  
   // Small
   .bk-property--small {
     flex: 0 0 11ch;
     max-inline-size: 11ch;
   }
-
+  
   // Medium
   .bk-property--medium {
     flex: 0 0 22ch;
     max-inline-size: 22ch;
   }
-
+  
   // Large
   .bk-property--large {
     flex: 0 0 44ch;
     max-inline-size: 44ch;
   }
-
+  
   // Full size
   .bk-property--full-size {
     flex: 0 0 100%;
     max-inline-size: 100%;
   }
-
 }

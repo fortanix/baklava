@@ -12,8 +12,9 @@
     cursor: pointer;
     display: flex;
     
-    &.inline {
+    &.bk-icon-button--inline {
       display: inline-flex;
+      vertical-align: -15%; // In inline flow, position the icon on the baseline, shifted downwards a little bit
     }
     
     &:not(:disabled):active {

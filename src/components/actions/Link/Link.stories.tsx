@@ -59,3 +59,14 @@ export const LinkWithScroll: Story = {
     </>
   ),
 };
+
+/** `Link` should have vertical alignment matching other inline text. */
+export const LinkInProse: Story = {
+  decorators: [
+    Story => (
+      <u className="bk-prose">
+        Here is some text with a <Story/> embedded. It should have the matching font size and vertical alignment. The underline should match exactly.
+      </u>
+    ),
+  ],
+};

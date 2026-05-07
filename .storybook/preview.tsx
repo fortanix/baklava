@@ -32,6 +32,7 @@ const preview = {
           ],
           'typography',
           [
+            'Global',
             'Heading',
             'Prose',
           ],

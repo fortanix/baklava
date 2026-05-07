@@ -109,11 +109,21 @@ Baklava supports both light and dark themes. By default, the user's preferred co
           This is a panel in light theme: <code className="bk-prose">.bk-theme--light</code>
         </Panel.Heading>
         
-        {/* XXX this doesn't work without `@scope`, light wins over dark due to the order in which they were defined
         <Panel className="bk-theme--invert">
-          <Panel.Heading>This panel inverts the theme of the parent.</Panel.Heading>
+          <Panel.Heading>
+            This panel inverts the theme of the parent (should be dark):
+            <code className="bk-prose">.bk-theme--invert</code>
+          </Panel.Heading>
+          
+          {/*
+          <Panel className="bk-theme--invert">
+            <Panel.Heading>
+              This panel inverts the inversion:
+              <code className="bk-prose">.bk-theme--invert</code>
+            </Panel.Heading>
+          </Panel>
+          */}
         </Panel>
-        */}
       </Panel>
     </Panel>
   </div>

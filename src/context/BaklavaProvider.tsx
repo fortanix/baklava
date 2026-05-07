@@ -6,6 +6,7 @@ import * as React from 'react';
 
 import { TopLayerManager } from '../components/util/overlays/TopLayerManager.tsx';
 import { ToastProvider } from '../components/overlays/ToastProvider/ToastProvider.tsx';
+import { useEffectOnce } from '../util/reactUtil.ts';
 
 
 /*
@@ -49,8 +50,22 @@ const useDevicePixelRatioTracker = () => {
   }, [devicePixelRatio]);
 };
 
+/**
+ * Determine whether the current user agent supports CSS `@scope`. If not, mark it using a class name.
+ * Note: this currently has to be done in JS, because we cannot detect it using CSS `@supports`. Once browsers support
+ * `@supports at-rule()`, then we could drop this in favor of `@supports at-rule(@scope)`.
+ */
+const useCssScopeSupportTracker = () => {
+  useEffectOnce(() => {
+    if (!('CSSScopeRule' in window)) {
+      document.documentElement.classList.add('bk-supports-no-scope');
+    }
+  });
+};
+
 export const BaklavaProvider = (props: React.PropsWithChildren) => {
   useDevicePixelRatioTracker();
+  useCssScopeSupportTracker();
   
   return (
     <TopLayerManager>

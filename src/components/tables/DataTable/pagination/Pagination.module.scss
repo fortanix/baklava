@@ -30,27 +30,29 @@
           cursor: pointer;
         }
         &:global(.nonactive) {
-          opacity: 0.34;
+          color: color-mix(in oklch, currentColor, 70% transparent);
         }
       }
     }
     .pagination__page-input {
+      padding-block: 0.1lh;
       border: bk.$size-1 solid bk.$theme-pagination-border-default;
       border-radius: bk.$size-2;
       text-align: center;
+      font-size: inherit;
       
       .pagination__page-input__input {
         padding-inline: 1ch;
         
         @supports (field-sizing: content) {
           field-sizing: content;
-          min-inline-size: 5ch;
+          min-inline-size: 4ch;
         }
         @supports not (field-sizing: content) {
           inline-size: 5ch;
         }
         
-        &[type="number"] {
+        &[type="number" i] {
           // Try to hide the number spin controls
           // https://stackoverflow.com/questions/3790935/can-i-hide-the-html5-number-input-s-spin-box
           // stylelint-disable-next-line property-no-vendor-prefix

@@ -14,15 +14,14 @@
     
     box-sizing: content-box; // Use content-box so that we can set a padding on an icon without it shrinking the width
     
-    vertical-align: -15%; // In inline flow, position the icon on the baseline, shifted downwards a little bit
     align-self: center;
     flex: none; // Prevent icons from shrinking or growing in flexbox
     
-    display: inline-flex;
+    &.bk-icon--inline {
+      display: inline-flex;
+      vertical-align: -15%; // In inline flow, position the icon on the baseline, shifted downwards a little bit
+    }
     
-    inline-size: var(--bk-icon-size);
-    // https://github.com/stylelint-scss/stylelint-scss/issues/1080
-    /* stylelint-disable-next-line scss/no-global-function-names */
     inline-size: round(var(--bk-icon-size), 1px);
     
     aspect-ratio: 1; // Baklava icon pack all have square aspect ratio
@@ -46,8 +45,7 @@
       justify-content: center;
     }
   }
-
-  .bk-icon-event--warning-filled {
-    color: bk.$theme-icon-warning;
-  }
+  
+  .bk-icon-event--warning { color: bk.$theme-icon-warning; }
+  .bk-icon-event--warning-filled { color: bk.$theme-icon-warning; }
 }

@@ -12,9 +12,10 @@ import { loremIpsum, LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { SegmentedControl } from '../../forms/controls/SegmentedControl/SegmentedControl.tsx';
+import { TooltipProvider } from '../../overlays/Tooltip/TooltipProvider.tsx';
+import { DialogModal } from '../../overlays/DialogModal/DialogModal.tsx';
 
 import { Banner } from './Banner.tsx';
-import { DialogModal } from '../../overlays/DialogModal/DialogModal.tsx';
 
 
 type BannerArgs = React.ComponentProps<typeof Banner>;
@@ -159,7 +160,7 @@ export const BannerWithThemedContent: Story = {
     children: (
       <article className="bk-prose">
         <p>
-          The following components should always have a light theme, even in dark mode:
+          The following components should always have a light theme, even when the "root" is in dark mode:
         </p>
         <div style={{ display: 'flex', gap: '2ch', marginTop: '1lh' }}>
           <Button nonactive kind="primary" onPress={() => { notify.info('Clicked'); }}>Button</Button>
@@ -170,13 +171,22 @@ export const BannerWithThemedContent: Story = {
           </SegmentedControl>
         </div>
         <div style={{ display: 'flex', gap: '2ch', marginTop: '0.5lh' }}>
-          <Button kind="tertiary">Tertiary button</Button>
-          <Button kind="tertiary" nonactive>Tertiary button (nonactive)</Button>
+          <Button kind="tertiary" label="Tertiary button"/>
+          <Button kind="tertiary" nonactive label="Tertiary button (nonactive)"/>
+          {/*
+          FIXME: in the future when `TooltipProvider` doesn't use a portal anymore:
+          <TooltipProvider tooltip="I should be in the local banner theme (light)">
+          */}
+          <TooltipProvider tooltip="I should be in the global theme">
+            {props => <Button {...props()} kind="secondary" label="Hover over me"/>}
+          </TooltipProvider>
         </div>
+        
+        <p>The following modal dialog should be in the "root" theme, not necessarily the same as the banner.</p>
         
         <div style={{ display: 'flex', gap: '2ch', marginTop: '0.5lh' }}>
           <DialogModal
-            trigger={({ activate }) => <Button kind="primary" label="Open submodal" onPress={activate}/>}
+            trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={activate}/>}
             title="Test modal"
           >
             Content

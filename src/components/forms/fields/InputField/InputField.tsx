@@ -97,7 +97,7 @@ export const InputField = (props: InputFieldProps) => {
         className={cx(cl['bk-input-field__control'], inputProps.className)}
       />
       {description &&
-        <div className={cl['bk-input-field__description']}>{description}</div>
+        <div className={cx('bk-prose', cl['bk-input-field__description'])}>{description}</div>
       }
     </div>
   );

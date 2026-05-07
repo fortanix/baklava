@@ -18,9 +18,18 @@
 // Configure an element with a focus outline outset from the element.
 @mixin focus-outset($selector: '&:focus-visible, &.pseudo-focus-visible', $override-layer: true) {
   --bk-focus-color-anim: transparent; // Start transparent for animation purposes
+  --bk-focus-outset-width: var(--bk-focus-outline-width);
   
   box-shadow: none if(sass($override-layer): #{'!important'}; else: null); // Remove focus-inset, if any
-  outline: var(--bk-focus-outline-width) solid var(--bk-focus-color-anim) if(sass($override-layer): #{'!important'}; else: null);
+  outline: var(--bk-focus-outset-width) solid var(--bk-focus-color-anim)
+    if(sass($override-layer): #{'!important'}; else: null);
+  
+  @media (forced-colors: active) {
+    --bk-focus-outset-width: 0;
+    #{$selector} {
+      --bk-focus-outset-width: var(--bk-focus-outline-width);
+    }
+  }
   
   // Should add `.pseudo-focus-visible` here for visual testing purposes
   #{$selector} {

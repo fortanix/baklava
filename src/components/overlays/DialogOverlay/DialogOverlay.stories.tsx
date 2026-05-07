@@ -85,7 +85,6 @@ export const DialogOverlayWithNestedModal: Story = {
     children: (
       <DialogModal
         title="Modal"
-        renderMethod="inline"
         trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={activate}/>}
       >
         Modal nested inside a popover.

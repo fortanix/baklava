@@ -150,6 +150,29 @@ export const DialogModalWithOnClose: Story = {
   },
 };
 
+export const DialogModalIsolation: Story = {
+  decorators: [Story => <div style={{ color: 'red', cursor: 'not-allowed', textAlign: 'center' }}><Story/></div>],
+  args: {
+    title: 'Modal with a submodal',
+    className: 'outer',
+    children: (
+      <>
+        <p>This text should not be red.</p>
+        <p>The cursor should be the default.</p>
+        <p>The text should not be center aligned.</p>
+        
+        <DialogModal
+          className="inner"
+          title="Submodal"
+          trigger={({ activate }) => <Button kind="primary" label="Open submodal" onPress={activate}/>}
+        >
+          This is a submodal.
+        </DialogModal>
+      </>
+    ),
+  },
+};
+
 export const DialogModalNested: Story = {
   args: {
     title: 'Modal with a submodal',

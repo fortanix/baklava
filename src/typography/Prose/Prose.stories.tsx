@@ -19,11 +19,21 @@ import { Prose } from './Prose.tsx';
 type ProseArgs = React.ComponentProps<typeof Prose>;
 type Story = StoryObj<typeof Prose>;
 
+// Add a subtle outline around the content so we can see the padding
+const Outlined = ({ children, color = 'light-dark(black, white)' }: React.PropsWithChildren<{ color?: string }>) => {
+  return (
+    <div style={{ /*outline: `1px solid color-mix(in oklch, ${color}, 80% transparent)`*/ }}>{children}</div>
+  );
+};
+
 export default {
   component: Prose,
   parameters: {
     layout: 'centered',
   },
+  decorators: [
+    Story => <Outlined><Story/></Outlined>,
+  ],
   tags: ['autodocs'],
   argTypes: {
   },
@@ -33,11 +43,11 @@ export default {
 } satisfies Meta<ProseArgs>;
 
 
-const SampleProse = () => {
-  const id = React.useId();
+const SampleProse = ({ heading }: { heading?: undefined | React.ReactNode }) => {
+  //const id = React.useId();
   return (
     <>
-      <h1>Heading 1</h1>
+      <h1>{heading || 'Heading 1'}</h1>
       <h2>Heading 2</h2>
       <h3>Heading 3</h3>
       <h4>Heading 4</h4>
@@ -49,14 +59,27 @@ const SampleProse = () => {
         {' '}<i>This text is italic.</i>
         {' '}<u>This text is underlined.</u>
       </p>
+      <p>
+        Here is some inline code: <code>{'<Prose>code</Prose>'}</code>.
+      </p>
+      <pre>{`
+        This is a <pre> block.
+        Here is another line.
+      `.trim()}</pre>
       
       <hr/>
       
       <p>
         Lorem ipsum dolor sit amet, <DummyLink>consectetur</DummyLink> adipiscing elit. Pellentesque eget sem ut neque lobortis pharetra nec vel quam. Etiam sem neque, gravida sed pharetra ut, vehicula quis lectus. Donec ac rhoncus purus. Proin ultricies augue vitae purus feugiat, in ultrices lorem aliquet. Donec eleifend ac dolor a auctor. Cras ac suscipit nibh. Fusce tincidunt iaculis dapibus. Vivamus sit amet neque eu velit tincidunt semper. Donec at magna aliquam mi consectetur imperdiet. Donec pretium placerat quam, in sodales purus porta vitae. Phasellus nisl justo, luctus vel mi vel, sollicitudin euismod neque.
       </p>
+      
+      <blockquote>This is a block quote.</blockquote>
+      
       <p>
-        Duis mollis, justo vel pretium luctus, risus sem eleifend lectus, ac convallis dolor nibh id sapien. Donec vestibulum tellus non rutrum convallis. Aenean venenatis enim in egestas lobortis. Donec mollis elit in turpis imperdiet congue vel at magna. Vestibulum bibendum, ipsum quis lobortis lobortis, lorem libero mollis sapien, sed tempus lacus nibh a nunc. Vivamus sed sem eleifend, rutrum erat eget, ultricies neque. Morbi condimentum dolor vel ipsum consectetur iaculis. Donec ornare diam at orci luctus, sed placerat quam dictum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Curabitur condimentum molestie augue. Ut vel nisl a augue ornare volutpat. Phasellus et enim in mi maximus ultricies. Integer dignissim ipsum mauris, id bibendum eros euismod et.
+        Duis mollis, justo vel pretium luctus, risus sem eleifend lectus, ac convallis dolor nibh id sapien. Donec vestibulum tellus non rutrum convallis. Aenean venenatis enim in egestas lobortis. Donec mollis elit in turpis imperdiet congue vel at magna. Vestibulum bibendum, ipsum quis lobortis lobortis, lorem libero mollis sapien, sed tempus lacus nibh a nunc. Vivamus sed sem eleifend, rutrum erat eget, ultricies neque.
+      </p>
+      <p>
+        Morbi condimentum dolor vel ipsum consectetur iaculis. Donec ornare diam at orci luctus, sed placerat quam dictum. Interdum et malesuada fames ac ante ipsum primis in faucibus. Curabitur condimentum molestie augue. Ut vel nisl a augue ornare volutpat. Phasellus et enim in mi maximus ultricies. Integer dignissim ipsum mauris, id bibendum eros euismod et.
       </p>
       <p>An unordered list:</p>
       <ul>
@@ -96,6 +119,29 @@ const SampleProse = () => {
           </ol>
         </li>
       </ol>
+      
+      <dl>
+        <dt>Term 1</dt>
+        <dd>Details 1</dd>
+        
+        <div>
+          <dt>Term 2 (wrapped in a div)</dt>
+          <dd>Details 2</dd>
+        </div>
+        
+        <dl>
+          <dt>Nested term 1</dt>
+          <dd>Nested details 1</dd>
+          
+          <div>
+            <dt>Nested term 2 (wrapped in a div)</dt>
+            <dd>Nested details 2</dd>
+          </div>
+        </dl>
+        
+        <dt>Term 3</dt>
+        <dd>Details 3</dd>
+      </dl>
       
       <table>
         <thead>
@@ -146,13 +192,56 @@ const SampleProse = () => {
   );
 };
 
-export const Standard: Story = {
+export const ProseStandard: Story = {
+  decorators: [Story => <Outlined><Story/></Outlined>],
   args: {
     children: <SampleProse/>,
   },
 };
 
-export const WithComponents: Story = {
+/** Prose should inherit certain properties, such as color and font size. */
+export const ProseInherit: Story = {
+  decorators: [Story => <div style={{ color: 'light-dark(indigo, fuchsia)', fontSize: '0.8rem' }}><Story/></div>],
+  args: {
+    children: <SampleProse heading="This prose block should be purple and small"/>,
+  },
+};
+
+export const ProseRecursive: Story = {
+  args: {
+    children: (
+      <>
+        <SampleProse/>
+        
+        {/* Prose nested within itself */}
+        <Outlined>
+          <Prose><SampleProse/></Prose>
+        </Outlined>
+      </>
+    ),
+  },
+};
+
+/** Prose element styling should apply not just to descendents, but also to the root element. */
+export const ProseImmediate: Story = {
+  render: () => <h1 className="bk-prose">I should be styled as a header</h1>,
+};
+
+/** Elements with class `.bk` or `.bk-isolate` should be isolated from prose styling. */
+export const ProseIsolation: Story = {
+  render: () => (
+    <strong className="bk-prose">
+      I should be bold.<br/>
+      
+      <em>I should be bold + italic</em><br/>
+      
+      <em className="bk">I have <code>className="bk"</code>, and should have default styling</em><br/>
+      <em className="bk-isolate">I have <code>className="bk-isolate"</code>, and should have default styling</em><br/>
+    </strong>
+  ),
+};
+
+export const ProseWithComponents: Story = {
   args: {
     children: (
       <>
@@ -165,7 +254,7 @@ export const WithComponents: Story = {
         <Button kind="primary" label="Button"/>
         
         <Panel>
-          <Panel.Heading>This panel contains a nested a bk-prose</Panel.Heading>
+          <Panel.Heading>This panel contains a nested <code className="bk-prose">.bk-prose</code></Panel.Heading>
           
           <div className="bk-prose">
             <p>The following should be bold and underlined:</p>

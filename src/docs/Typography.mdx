@@ -1,6 +1,5 @@
 
 import { Meta, Unstyled } from '@storybook/addon-docs/blocks';
-import { linkTo } from '@storybook/addon-links';
 
 import { fontSizes } from '../styling/variables.ts';
 
@@ -106,4 +105,12 @@ width of the viewport: on smaller devices (e.g. mobile), font sizes will be smal
 
 ## See also
 
-- <ButtonAsLink onPress={linkTo(`typography/Prose`)}>Prose</ButtonAsLink>
+{/*
+//import LinkTo from '@storybook/addon-links/react';
+Note: for linking to other pages, there's `addon-links`, but it doesn't allow linking to a docs page. Instead:
+  - Use `../?path=` to escape the `iframe.html`
+  - Use `#storybook-docs` to fix the scroll restoration issue
+https://github.com/storybookjs/storybook/issues/8618
+*/}
+
+- [Prose](../?path=/docs/typography-prose--docs#storybook-docs)

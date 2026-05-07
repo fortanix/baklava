@@ -511,10 +511,9 @@ const DataTableEagerEdgeCasesInnerTemplate = () => {
 const ModalButton = () => {
   return (
     <DialogModal
-      title="Modal with renderMethod inline"
-      trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={activate} />}
-      renderMethod="inline"
       size="small"
+      title="Modal"
+      trigger={({ activate }) => <Button kind="primary" label="Open modal" onPress={activate}/>}
     >
       <DataTableEagerEdgeCasesInnerTemplate />
     </DialogModal>

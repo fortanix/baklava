@@ -16,16 +16,16 @@
   
   .bk-spinner {
     @include bk.component-base(bk-spinner);
-
+    
     --bk-spinner-large-size: 88px;
     --bk-spinner-large-thickness: 6px;
-
+    
     --bk-spinner-medium-size: 55px;
     --bk-spinner-medium-thickness: 4px;
-
+    
     --bk-spinner-small-size: 18px;
     --bk-spinner-small-thickness: 2px;
-
+    
     --antialias: 1px;
     --progress: 0.6turn;
     
@@ -35,19 +35,19 @@
     
     // Note: for spinners the animation should be included even if `prefers-reduced-motion` is set
     animation: spin 1s linear infinite;
-
+    
     &.bk-spinner--large {
       inline-size: var(--bk-spinner-large-size);
       --mask-radius: calc(70% - calc(var(--bk-spinner-large-thickness)*1.5) / 100 * 70);
       mask-image: radial-gradient(transparent 0 var(--mask-radius), black calc(var(--mask-radius) + var(--antialias)));
     }
-
+    
     &.bk-spinner--medium {
       inline-size: var(--bk-spinner-medium-size);
       --mask-radius: calc(70% - calc(var(--bk-spinner-medium-thickness)*1.5) / 100 * 70);
       mask-image: radial-gradient(transparent 0 var(--mask-radius), black calc(var(--mask-radius) + var(--antialias)));
     }
-
+    
     &.bk-spinner--small {
       inline-size: var(--bk-spinner-small-size);
       --mask-radius: calc(70% - calc(var(--bk-spinner-small-thickness)*2) / 100 * 70);

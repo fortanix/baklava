@@ -3,6 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { type NonUndefined } from '../../../util/types.ts';
+import { classNames as cx } from '../../../util/componentUtil.ts';
 
 import * as React from 'react';
 
@@ -65,7 +66,7 @@ type CustomButtonProps = React.ComponentProps<NonUndefined<React.ComponentProps<
   customLabel: string,
 };
 const CustomButton = ({ className, customLabel, ...props }: CustomButtonProps) =>
-  <Button unstyled className={className}>{customLabel}</Button>;
+  <Button unstyled className={cx('bk-inherit', className)}>{customLabel}</Button>;
 
 export const BreadcrumbsWithCustomLink: Story = {
   args: {

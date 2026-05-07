@@ -38,6 +38,7 @@ export const TextLine = (props: TextLineProps) => {
       {...propsRest}
       className={cx(
         'bk',
+        'bk-inherit',
         cl['bk-text-line'],
         propsRest.className,
       )}

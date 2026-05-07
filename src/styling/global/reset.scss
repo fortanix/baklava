@@ -2,188 +2,426 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-@use 'sass:meta';
+// stylelint-disable property-no-vendor-prefix
 
+/*
+References:
+  - https://github.com/fortanix/baklava/issues/641 (research)
+  - https://github.com/elad2412/the-new-css-reset (example of a hard reset, used as a base for ours)
+  - https://frontendmasters.com/blog/the-coyier-css-starter
+
+User agent stylesheets:
+  - https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css
+  - https://github.com/WebKit/WebKit/blob/main/Source/WebCore/css/html.css
+  - https://github.com/mozilla-firefox/firefox/blob/main/layout/style/res/html.css
+*/
+
+/*
+Hard reset styles: a default stylesheet that the rest of the design system builds upon. Specifically, we do this in a
+way that minimizes all unnecessary default styling rules, such that most styles become opt-in rather than opt-out.
+
+Notes:
+  - Avoid styling the root `html` element here, that is done in `global.scss` instead.
+  - Avoid setting default inherited properties on elements here, this is done through `reset-element` instead.
+  - Avoid "opiniated" Baklava-specific styling here, this file should be considered a generic UA stylesheet replacement.
+*/
 @mixin styles {
-  @layer lib, custom; // Sublayers within `@layer reset` for more fine-grained control
+  /*
+  Hard reset of all user agent stylesheet rules on all elements (excluding pseudo-elements), with a few exceptions:
+    1. Do not revert styling on `html` element (which contains a lot of global defaults that we should be careful with).
+    2. Do not revert styling on graphical/replaced elements.
+    3. Do not revert styling on `svg` elements (reverting `all` can cause some issues, e.g. with `<symbol>`)
+    4. Keep UA `display`: each element type should keep its default value.
+    5. Keep some UA-internal properties like `-webkit-user-modify`.
   
-  @layer lib {
-    // Note: any top-level `&` in the CSS will be transpiled to `:scope`. Sass assumes that the CSS we load is
-    // top-level CSS, where `&` does indeed mean `:scope`. So any `:root`/`html` selectors will need to be done in Sass.
-    // See `global.scss` for these `:root` styles.
-    @include meta.load-css('../lib/reset.css');
+  Discussions:
+    - Hyphenation issue in Chrome (when reverting `html`): https://github.com/elad2412/the-new-css-reset/issues/36
+  
+  Note: needs a `:where()` to keep specificity low, because we always want other rules in this layer to override this.
+  */
+  :where(:not(/*1*/ html, head, /*2*/ iframe, object, embed, canvas, img, video, audio, /*3*/ svg, svg *, symbol *)) {
+    all: unset; /* Reset everything to `initial` by default, or `inherit` for inheritable properties */
+    
+    /*
+    Utility classes for isolation. `.bk-isolate` can be applied on any element as needed if you want it isolated,
+    whereas `.bk` is meant for Baklava components. Baklava components can choose to apply `.bk-inherit` if they want
+    the component to inherit CSS properties like font/color.
+    
+    On the other hand, if you're writing styling and you want it to not leak into isolated components, we recommend
+    using `@scope` with a scope limit as follows: `@scope to (.bk-isolate, .bk) {}`.
+    Note: do not include `:not(.bk-inherit)` in the scope limit, all `.bk` elements should be exempt from the scoped
+    rules, whether they inherit or not.
+    */
+    &:where(.bk-isolate, .bk:not(.bk-inherit)) {
+      all: initial;
+      
+      /*
+      The following properties should be inherited by default, even into isolated components. Many of these are to keep
+      the component consistent with its visual context. For example, setting `visibility: hidden` on a parent block
+      should apply to all components too by default. Others we want to inherit because they are global "settings" that
+      we want to apply once on a global context (e.g. document root) and they should apply everywhere.
+      */
+      color-scheme: inherit; /* Visual consistency */
+      cursor: inherit; /* Visual consistency */
+      visibility: inherit; /* Visual consistency */
+      pointer-events: inherit; /* Visual consistency */
+      -webkit-user-select: inherit; /* Visual consistency */
+      user-select: inherit; /* Visual consistency */
+      interpolate-size: inherit; /* Inherit from global context */
+      text-rendering: inherit; /* Inherit from global context */
+      -webkit-font-smoothing: inherit; /* Inherit from global context */
+      -moz-text-size-adjust: inherit; /* Inherit from global context */
+      -webkit-text-size-adjust: inherit; /* Inherit from global context */
+      text-size-adjust: inherit; /* Inherit from global context */
+      -webkit-tap-highlight-color: inherit; /* Inherit from global context */
+      tab-size: inherit; /* Inherit from global context */
+    }
+    
+    /* Bring back fundamental UA style rules */
+    display: revert; /* 4 */
+    
+    /* 5 */
+    
+    /* Needed for `[contenteditable]`, in order to make editing work */
+    /* stylelint-disable property-no-deprecated */
+    -moz-user-modify: revert;
+    -webkit-user-modify: revert-layer; /* `revert` doesn't work in Chromium? Possibly a bug? */
+    /* stylelint-enable property-no-deprecated */
+    
+    /* Needed for `[draggable]` */
+    -webkit-user-drag: revert;
   }
   
-  // Custom reset overrides
-  // References:
-  // - [1] https://www.youtube.com/watch?v=cCAtD_BAHNw ("Under the radar CSS features for your CSS reset")
-  @layer custom {
-    //* { min-inline-size: 0; } // Reset flexbox item min-width? https://github.com/elad2412/the-new-css-reset/issues/45
-    
-    // :focus-visible {
-    //   /* outline: calc(bk.$size-1 / 2) solid color-contrast(var(--bk-page-color-background) vs white, black); */
-    //   /*
-    //   Note:
-    //     - The following should be overridable by components (e.g. `outline-offset` might not always look good)
-    //     - Focusable elements should never use `outline` for any other purpose than focus outline
-    //     - Use `px` rather than `rem` because these should not scale dynamically
-    //   */
-    //   /* outline: 3px solid var(--bk-focus-outline-color); */
-    //   /* outline-offset: 3px; */
-    //   /* border-radius: 3px; */
-    // }
+  /* Enforce the `hidden` attribute. */
+  [hidden]:where(:not([hidden="until-found" i])) {
+    /*
+    Without the `!important`, it will get overridden easily if a `display` is set in a higher layer. There should
+    be no reason to override `display: none` on `[hidden]`.
+    */
+    /* stylelint-disable-next-line declaration-no-important */
+    display: none !important;
+  }
+  
+  /*
+  Preferred box-sizing value.
+    - https://piccalil.li/blog/international-box-sizing-awareness-day/
+    - https://www.oddbird.net/2025/09/04/box-model/
+  */
+  *, ::before, ::after, ::file-selector-button {
+    box-sizing: border-box;
+  }
+  /* For graphical/replaced elements, use `content-box` such that padding/borders won't "shrink" the content */
+  iframe, object, embed, canvas, img, video, audio, svg {
+    box-sizing: content-box;
+    display: block; /* https://github.com/jensimmons/cssremedy/issues/14 */
+  }
+  
+  /*
+  Override the `min-inline-size` to prevent common gotchas with (for instance) flex items.
+    - https://github.com/elad2412/the-new-css-reset/issues/45
+  */
+  /*
+  *, ::before, ::after {
+    // FIXME: this causes some issues, see for instance the icon in the "Card with Heading and Icon" story. This can be
+    // fixed by properly applying `flex-shrink: 0` to relevant elements, but we'll need to careful in how we roll this
+    // out so as not to cause regressions in consuming applications.
+    min-inline-size: 0;
+  }
+  */
+  
+  /* Smooth scrolling for anchor links. See also: https://www.youtube.com/watch?v=cCAtD_BAHNw */
+  :has(:target) {
+    scroll-padding-top: 1.5rlh;
     
     @media (prefers-reduced-motion: no-preference) {
-      // Source: [1]
-      :has(:target) {
-        scroll-behavior: smooth;
-        scroll-padding-top: 1.5lh;
-      }
+      scroll-behavior: smooth;
     }
+  }
+  
+  
+  /*
+  Elements
+  */
+  
+  /* FIXME
+  :focus-visible {
+    //outline: calc(bk.$size-1 / 2) solid color-contrast(var(--bk-page-color-background) vs white, black);
     
-    [hidden] {
-      // The `reset.css` lib does this already but without the `!important`, which means it will get overridden easily
-      // if a `display` is set in a higher layer. There should be no reason to override `display: none` on `[hidden]`.
-      // stylelint-disable-next-line declaration-no-important
-      display: none !important;
+    // Note:
+    //   - The following should be overridable by components (e.g. `outline-offset` might not always look good)
+    //   - Focusable elements should never use `outline` for any other purpose than focus outline
+    //   - Use `px` rather than `rem` because these should not scale dynamically
+    //outline: 3px solid var(--bk-focus-outline-color);
+    //outline-offset: 3px;
+    //border-radius: 3px;
+  }
+  */
+  
+  p {
+    overflow-wrap: break-word; // Prevent long words causing overflow
+  }
+  
+  pre {
+    white-space: pre-wrap;
+  }
+  
+  /* Reapply the default `cursor: pointer` for certain interactive elements. */
+  a:any-link, button, label, summary {
+    cursor: pointer;
+  }
+  
+  button {
+    -webkit-user-select: none;
+    user-select: none;
+    
+    &:disabled {
+      cursor: not-allowed;
     }
-    
-    p {
-      overflow-wrap: break-word; // Prevent long words causing overflow
-    }
-    
-    button {
-      cursor: pointer;
-      user-select: none;
-      
-      &:disabled {
-        cursor: not-allowed;
-      }
-    }
-    
-    label {
-      cursor: pointer;
-      user-select: none;
-    }
-    
-    /*
-    input, select, textarea {
-      -webkit-appearance: revert;
-      appearance: revert;
-    }
-    */
-    
-    /*
-    By default, `<fieldset>` elements have some peculiar default browser styling. In particular, `<legend>` within a
-    `<fieldset>` is styled on top of the border. Unsetting this default styling is not super trivial, see references:
+  }
+  
+  /* Don't exceed the container dimensions for large images/videos. */
+  img, video {
+    max-inline-size: 100%;
+    block-size: auto;
+  }
+  
+  
+  /* Lists */
+  
+  /*
+  Remove list styles (bullets/numbers).
+  Note: do not use `list-style: none`, because this causes accessibility issues in Safari where the list will no
+  longer be announced as a list. Instead, just set it to use an empty marker.
+  */
+  ol, ul, menu, summary {
+    list-style: '';
+  }
+  ol {
+    /* Retain the proper `counter-reset` behavior for nested lists. */
+    counter-reset: revert;
+  }
+  
+  
+  /* Tables */
+  
+  table {
+    /* Remove spacing between cells in tables */
+    border-collapse: collapse;
+  }
+  
+  
+  /* Forms */
+  
+  /*
+  By default, `<fieldset>` elements have some peculiar default browser styling. In particular, `<legend>` within a
+  `<fieldset>` is styled on top of the border. Unsetting this default styling is not trivial, see references:
     - https://github.com/whatwg/html/issues/3912
     - https://thatemil.com/blog/2015/01/03/reset-your-fieldset/ (2015, most of this is outdated/no longer necessary)
     - https://stackoverflow.com/a/20705034/233884 (solution with only `float`, seems to work fine in modern browsers)
-    */
-    fieldset {
-      legend {
-        float: inline-start;
-        inline-size: 100%;
-        
-        // Clear the `float`
-        + * {
-          clear: both;
-        }
+  */
+  fieldset {
+    /* In the future, we can use `appearance: base` instead: https://github.com/w3c/csswg-drafts/issues/11983 */
+    
+    legend {
+      float: inline-start;
+      inline-size: 100%;
+      
+      /* Clear the `float` */
+      + * {
+        clear: both;
       }
     }
+  }
+  label {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  ::placeholder {
+    opacity: 1;
+    color: color-mix(in oklab, currentColor, transparent 30%);
+  }
+  button, input, textarea, select {
+    /* Allow form controls to inherit fonts */
+    font: inherit;
+  }
+  input, textarea {
+    /* Safari: solve issue where using `user-select: none` on the <body> causes text inputs not to work */
+    -webkit-user-select: auto;
+    user-select: auto;
+  }
+  textarea {
+    /* Revert the `white-space` property for `textarea` elements on Safari */
+    white-space: revert;
+  }
+  
+  /* https://codepen.io/maikelkrause/pen/qEqWbaL?editors=1100 */
+  meter {
+    --meter-background: #dadada;
+    --meter-optimum: forestgreen;
+    --meter-sub-optimum: gold;
+    --meter-sub-sub-optimum: crimson;
     
-    //
-    // Top layer (overlays)
-    //
+    cursor: initial;
     
-    [popover]:not(dialog) {
-      inset: auto; // Note: future versions of Chrome should have this by default
-      position: fixed;
+    /* The background in Gecko-based browsers */
+    background: var(--meter-background);
+    display: block;
+    inline-size: 100%;
+    
+    /* The background in WebKit-based browsers */
+    &::-webkit-meter-bar {
+      background: var(--meter-background);
+      grid-row-start: start;
+      grid-row-end: end;
+    }
+    
+    /* The green (optimum) bar in Gecko-based browsers */
+    &:-moz-meter-optimum::-moz-meter-bar { background: var(--meter-optimum); }
+    
+    /* The green (optimum) bar in WebKit-based browsers */
+    &::-webkit-meter-optimum-value { background: var(--meter-optimum); }
+    
+    /* The yellow (sub-optimum) bar in Gecko-based browsers */
+    &:-moz-meter-sub-optimum::-moz-meter-bar { background: var(--meter-sub-optimum); }
+    
+    /* The yellow (sub-optimum) bar in WebKit-based browsers */
+    &::-webkit-meter-suboptimum-value { background: var(--meter-sub-optimum); }
+    
+    /* The red (sub-sub-optimum) bar in Gecko-based browsers */
+    &:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--meter-sub-sub-optimum); }
+    
+    /* The red (sub-sub-optimum) bar in WebKit-based browsers */
+    &::-webkit-meter-even-less-good-value { background: var(--meter-sub-sub-optimum); }
+  }
+  
+  /* In the future (once supported in browsers), we can do:
+  button, input, textarea, select {
+    appearance: base;
+    
+    &::picker(select) {
+      appearance: base;
+    }
+  }
+  */
+  
+  [contenteditable]:where(:not([contenteditable="false" i])) {
+    overflow-wrap: break-word;
+    -webkit-line-break: after-white-space;
+    
+    /* Safari: solve issue where using `user-select: none` on the `<body>` causes contenteditable not to work */
+    -webkit-user-select: auto;
+    user-select: auto;
+  }
+  
+  
+  /* Details */
+  
+  details {
+    /* Remove details summary marker (in WebKit-based browsers) */
+    summary::-webkit-details-marker {
+      display: none;
+    }
+  }
+  
+  /* Top layer (overlays) */
+  
+  dialog, [popover] {
+    &::backdrop {
+      all: unset;
+      display: revert;
+      box-sizing: content-box;
       
-      // Use a variable (`--display`) to allow higher level styling to override the visible display type (e.g. to use
-      // `flex` instead of `block`), without having to reimplement all the `display: none` logic.
-      display: var(--display, block);
-      
-      &:not(:popover-open) {
+      /* Issue: if the parent has `user-select: none` (e.g. button), then the dialog will inherit this by default.
+         In the future, if `contain: user-select` is implemented, we could use that instead. */
+      -webkit-user-select: none;
+      user-select: none; /* Without this, clicking on the backdrop selects the dialog text in Firefox */
+    }
+    
+    /* Use a variable (`--display`) to allow higher level styling to override the visible display type (e.g. to use
+       `flex` instead of `block`), without having to reimplement all the `display: none` conditional logic. */
+    display: var(--display, block);
+    
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  
+  [popover]:not(dialog) {
+    inset: auto; /* Note: future versions of Chrome should have this by default */
+    position: fixed;
+    position-anchor: none;
+    
+    /* Do not inherit the following */
+    cursor: initial;
+    
+    &:not(:popover-open) {
+      display: none;
+    }
+  }
+  
+  /*
+  Re-apply a few sensible defaults for dialogs. For reference, see the default user agent styling rules here:
+  https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css
+  */
+  dialog {
+    /* Do not position absolutely by default (make that an opt in for modal dialogs only) */
+    position: static;
+    
+    &:not([popover]) {
+      &:not([open]) { /* Once supported, use `:open` for this instead of `[open]` */
         display: none;
       }
     }
     
-    // Note: we assume that all styling for dialog (including `:modal` and `:backdrop`) has been hard reset.
-    // `the-new-css-reset` has an exception for `dialog:modal`, but we don't want this exception, so here we unset all.
-    dialog, dialog::backdrop, dialog:where(:modal) {
-      all: unset;
-      display: revert;
-      box-sizing: border-box;
-    }
-    
-    // Re-apply a few sensible defaults for dialogs. For reference, see the default user agent styling rules here:
-    // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css
-    dialog {
-      // Issue: if the parent has `user-select: none` (e.g. button), then the dialog will inherit this by default.
-      // In the future, if `contain: user-select` is implemented, we could use that instead.
-      &::backdrop {
-        user-select: none; // Without this, clicking on the backdrop selects the dialog text in Firefox
-      }
-      // Note: doing this on the parent `dialog` doesn't seem to work in Chrome, the `::backdrop` takes precedence
-      > * {
-        user-select: text;
-      }
-      
-      // Do not position absolutely by default (make that an opt in for modal dialogs only)
-      position: static;
-      
-      // Use a variable (`--display`) to allow higher level styling to override the visible display type (e.g. to use
-      // `flex` instead of `block`), without having to reimplement all the `display: none` logic.
-      display: var(--display, block);
-      
-      &:not([popover]) {
-        &:not([open]) { // Once supported, use `:open` for this instead of `[open]`
-          display: none;
-        }
-      }
-      
-      // Take note of this Chromium issue: https://issues.chromium.org/issues/388538944
-      // In summary, `<dialog open popover>` is buggy in Chromium when setting `open` manually or using `show()` rather
-      // than `showModal()`. If we want to use a `<dialog>` as a popover, make sure to use `showModal()` only.
-      
-      &[popover] {
-        &:not(:popover-open) {
-          display: none;
-        }
-      }
-    }
     /*
-    Note: the `:modal` pseudo-class applies when the modal is in the top layer *and* currently open. That means that it
-    stops applying during an exit transition, which will break the styling. The upcoming `:open` pseudo-class doesn't
-    resolve this either. Chrome internally has an `:-internal-dialog-in-top-layer` pseudo-class for this, but it's not
-    exposed.
-    
-    We can work around this by applying the modal styling on `dialog` regardless of `:modal`. However, that breaks
-    regular (non-modal) styling. It is essentially impossible to generically style dialog elements without knowing
-    whether it's going to be used as a modal or not, if we also want exit transitions.
-    
-    This reset assumes you do *not* apply an exit transition, by default. If you do want an exit transition, you can
-    set `aria-model="true"` to opt in. Or, you can manually apply the `position: fixed` (etc.) styling on the base
-    `dialog` yourself.
-    
-    - https://github.com/w3c/csswg-drafts/issues/9912 - "User-agent styles for top layer transitions"
-    - https://github.com/whatwg/html/pull/9387#issuecomment-1599722425
-    - https://issues.chromium.org/issues/40270744 - `:-internal-dialog-in-top-layer`
+    Take note of this Chromium issue: https://issues.chromium.org/issues/388538944
+    In summary, `<dialog open popover>` is buggy in Chromium when setting `open` manually or using `show()` rather
+    than `showModal()`. If we want to use a `<dialog>` as a popover, make sure to use `showModal()` only.
     */
-    dialog[aria-modal='true'], dialog:modal {
+    
+    &[popover] {
+      &:not(:popover-open) {
+        display: none;
+      }
+    }
+  }
+  /*
+  Note: the `:modal` pseudo-class applies when the modal is in the top layer *and* currently open. That means that it
+  stops applying during an exit transition, which will break the styling. The upcoming `:open` pseudo-class doesn't
+  resolve this either. Chrome internally has an `:-internal-dialog-in-top-layer` pseudo-class for this, but it's not
+  exposed.
+  
+  We can work around this by applying the modal styling on `dialog` regardless of `:modal`. However, that breaks
+  regular (non-modal) styling. It is essentially impossible to generically style dialog elements without knowing
+  whether it's going to be used as a modal or not, if we also want exit transitions.
+  
+  This reset assumes you do *not* apply an exit transition, by default. If you do want an exit transition, you can
+  set `aria-model="true"` to opt in. Or, you can manually apply the `position: fixed` (etc.) styling on the base
+  `dialog` yourself.
+  
+  - https://github.com/w3c/csswg-drafts/issues/9912 - "User-agent styles for top layer transitions"
+  - https://github.com/whatwg/html/pull/9387#issuecomment-1599722425
+  - https://issues.chromium.org/issues/40270744 - `:-internal-dialog-in-top-layer`
+  */
+  dialog[aria-modal="true" i], dialog:modal {
+    /* For modal dialogs, use the root theme, not the local component one. */
+    color-scheme: var(--bk-root-theme, inherit);
+    
+    position: fixed;
+    inset: 0;
+    
+    margin: auto; /* In the future, could use `place-self: center` instead: https://caniuse.com/mdn-css_properties_place-self_position_absolute_context */
+    inline-size: fit-content;
+    block-size: fit-content;
+    
+    /* Since modal dialogs are (almost always) "disconnected" from their parent, we want to block certain inheritance */
+    cursor: initial;
+    visibility: visible;
+    pointer-events: initial;
+    
+    &::backdrop {
       position: fixed;
       inset: 0;
-      
-      margin: auto; // In the future, could use `place-self: center` instead
-      inline-size: fit-content;
-      block-size: fit-content;
-      
-      &::backdrop {
-        position: fixed;
-        inset: 0;
-        background: rgb(0 0 0 / 20%);
-      }
+      background: rgb(0 0 0 / 20%);
     }
   }
 }

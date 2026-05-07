@@ -88,6 +88,14 @@ export const CheckboxFocusedDisabledChecked: Story = {
   },
 };
 
+export const CheckboxInline: Story = {
+  decorators: [
+    Story => (
+      <p>Here is a checkbox: <Story/>. It should be inline, and not cause layout shifts when checked/unchecked.</p>
+    ),
+  ],
+};
+
 
 const CheckboxControlled = (args: CheckboxArgs) => {
   const [checked, setChecked] = React.useState<CheckboxArgs['checked']>(args.defaultChecked ?? false);

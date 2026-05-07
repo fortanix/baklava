@@ -160,6 +160,16 @@ export const ButtonWithIcon: Story = {
   },
 };
 
+/** The `line-height` should be reasonable for multi-line content. */
+export const ButtonWithWrap: Story = {
+  ...PrimaryStory,
+  args: {
+    label: 'This label wraps to the next line',
+    icon: 'bell',
+    style: { inlineSize: '15ch' },
+  },
+};
+
 export const AsyncButton: Story = {
   ...PrimaryStory,
   args: {

@@ -28,12 +28,14 @@
           flex-direction: column;
           justify-content: end;
           
-          color: black;
-          /* color: color-contrast(var(--color) vs #171717, #e5e5e5); // Insufficient browser support */
-          /* color: white; mix-blend-mode: difference; // Works but results in some ugly colors */
-          color: lch(from var(--color) calc((49.44 - l) * infinity) 0 0deg); // https://codepen.io/devongovett/pen/QwLbRrW
-          
           font-size: 0.8rem;
+          color: contrast-color(var(--color));
+          
+          // Fallbacks for non-supporting browsers
+          @supports not (color: contrast-color(currentColor)) {
+            color: black;
+            color: lch(from var(--color) calc((49.44 - l) * infinity) 0 0deg); // https://codepen.io/devongovett/pen/QwLbRrW
+          }
           
           dt, dd {
             all: unset;
@@ -52,6 +54,6 @@
   }
   
   .theme-demo {
-    @include theming.theme-invert;
+    --keep: ;
   }
 }
