@@ -95,45 +95,45 @@ const packageConfig = {
     'plop': '^4.0.5',
     
     // Build
-    'browserslist': '^4.28.1',
-    'vite': '^8.0.0',
+    'browserslist': '^4.28.2',
+    'vite': '^8.0.11',
     '@vitejs/plugin-react': '^6.0.1',
     'vite-plugin-dts': '^4.5.4',
     'vite-plugin-lib-inject-css': '^2.2.1',
     'vite-plugin-svgr': '^4.5.0',
-    'vite-plugin-svg-icons-ng': '^1.5.2',
+    'vite-plugin-svg-icons-ng': '^1.9.0',
     
     // Static analysis
     'typescript': '^5.9.3',
     '@types/node': '^24.*', // Should match the Node major version in .nvmrc
-    'stylelint': '^17.4.0',
+    'stylelint': '^17.11.0',
     'stylelint-config-standard-scss': '^17.0.0',
     'stylelint-use-logical': '^2.1.3',
-    '@biomejs/biome': '^2.4.7', // https://biomejs.dev/internals/changelog
+    '@biomejs/biome': '^2.4.14', // https://biomejs.dev/internals/changelog
     
     // Testing
-    'jsdom': '^29.0.0', // https://github.com/jsdom/jsdom/releases
-    'vitest': '^4.1.0',
-    '@vitest/ui': '^4.1.0',
-    '@vitest/browser-playwright': '^4.1.0',
-    '@vitest/coverage-v8': '^4.1.0',
+    'jsdom': '^29.1.1', // https://github.com/jsdom/jsdom/releases
+    'vitest': '^4.1.5',
+    '@vitest/ui': '^4.1.5',
+    '@vitest/browser-playwright': '^4.1.5',
+    '@vitest/coverage-v8': '^4.1.5',
     '@testing-library/react': '^16.3.2',
     '@testing-library/user-event': '^14.6.1',
     '@testing-library/jest-dom': '^6.9.1',
     '@ngneat/falso': '^8.0.2',
     'mockdate': '^3.0.5',
-    'playwright': '^1.58.2',
+    'playwright': '^1.59.1',
     
     // Storybook
-    'storybook': '^10.2.19',
-    '@storybook/react-vite': '^10.2.19',
-    '@storybook/addon-a11y': '^10.2.19',
-    '@storybook/addon-designs': '^11.1.2',
-    '@storybook/addon-docs': '^10.2.19',
-    '@storybook/addon-links': '^10.2.19',
-    '@storybook/addon-vitest': '^10.2.19',
-    'chromatic': '^15.2.0', // https://github.com/chromaui/chromatic-cli/blob/main/CHANGELOG.md
-    '@chromatic-com/storybook': '^5.0.1', // Chromatic integration for Storybook
+    'storybook': '^10.3.6',
+    '@storybook/react-vite': '^10.3.6',
+    '@storybook/addon-a11y': '^10.3.6',
+    '@storybook/addon-designs': '^11.1.3',
+    '@storybook/addon-docs': '^10.3.6',
+    '@storybook/addon-links': '^10.3.6',
+    '@storybook/addon-vitest': '^10.3.6',
+    'chromatic': '^16.9.1', // https://github.com/chromaui/chromatic-cli/blob/main/CHANGELOG.md
+    '@chromatic-com/storybook': '^5.1.2', // Chromatic integration for Storybook
     //'storybook-addon-pseudo-states': '^3.1.1',
     //'@storybook-community/storybook-dark-mode': '^6.0.0',
     //'@percy/cli': '^1.31.2',
@@ -141,7 +141,7 @@ const packageConfig = {
     
     // Styling
     'typescript-plugin-css-modules': '^5.2.0',
-    'sass-embedded': '^1.98.0',
+    'sass-embedded': '^1.99.0', // https://github.com/sass/dart-sass/blob/main/CHANGELOG.md
     'lightningcss': '^1.31.1',
     
     // React
@@ -157,20 +157,20 @@ const packageConfig = {
     // Utilities
     'date-fns': '^4.1.0',
     'message-tag': '^0.10.0',
-    'effect': '^3.19.19',
+    'effect': '^3.21.2',
     //'optics-ts': '^2.4.1',
     
     // React
-    'react': '^19.2.4',
-    'react-dom': '^19.2.4', // Must be in sync with `react`
+    'react': '^19.2.6',
+    'react-dom': '^19.2.6', // Must be in sync with `react`
     'react-error-boundary': '^6.1.1',
     'classnames': '^2.5.1',
-    'zustand': '^5.0.11',
+    'zustand': '^5.0.13',
     
     // React UI libraries
-    '@tanstack/react-virtual': '^3.13.22',
+    '@tanstack/react-virtual': '^3.13.24',
     '@floating-ui/react': '^0.27.18', // https://github.com/floating-ui/floating-ui/blob/master/packages/react/CHANGELOG.md
-    'react-hook-form': '^7.71.2',
+    'react-hook-form': '^7.75.0',
     'react-table': '^7.8.0',
     'react-datepicker': '^9.1.0',
   },
