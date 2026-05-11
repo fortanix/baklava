@@ -5,6 +5,7 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { colorBright } from '../../util/storybook/StorybookUtils.tsx';
 import { DummyLink } from '../../util/storybook/StorybookLink.tsx';
 
 
@@ -62,8 +63,8 @@ across two lines.
 export const GlobalInheritance: Story = {
   args: {
     children: (
-      <p style={{ color: 'red' }}>
-        This paragraph is red, and that color should be inherited by
+      <p style={{ color: colorBright }}>
+        This paragraph is colored, and that color should be inherited by
         {' '}
         <span style={{ textDecoration: 'underline' }}>this nested span</span>.
       </p>
@@ -74,7 +75,7 @@ export const GlobalInheritance: Story = {
 export const GlobalComponentIsolation: Story = {
   args: {
     children: (
-      <div style={{ color: 'red', textTransform: 'uppercase', fontWeight: 'bold' }}>
+      <div style={{ color: colorBright, textTransform: 'uppercase', fontWeight: 'bold' }}>
         This element has custom styling applied, which should not "leak" into the following element:
         
         <div className="bk-isolate">

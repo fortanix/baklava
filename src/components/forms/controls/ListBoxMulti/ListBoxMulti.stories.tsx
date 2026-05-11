@@ -4,8 +4,9 @@
 
 import * as React from 'react';
 
-import { loremIpsum } from '../../../../util/storybook/LoremIpsum.tsx';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { colorBright } from '../../../../util/storybook/StorybookUtils.tsx';
+import { loremIpsum } from '../../../../util/storybook/LoremIpsum.tsx';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
@@ -153,7 +154,7 @@ export const ListBoxMultiWithHighlightedIcon: Story = {
 const CustomIcon = (props: React.ComponentProps<typeof Icon>) =>
   <Icon
     {...props}
-    style={{ color: 'light-dark(brown, orange)', ...props.style }}
+    style={{ color: colorBright, ...props.style }}
   />;
 export const ListBoxMultiWithCustomIcon: Story = {
   args: {

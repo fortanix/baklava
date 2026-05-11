@@ -5,6 +5,7 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { colorBright } from '../../../util/storybook/StorybookUtils.tsx';
 
 import { Icon } from './Icon.tsx';
 
@@ -46,7 +47,7 @@ export const IconInline: Story = {
         gap: '0.6lh',
       }}
     >
-      <p style={{ color: 'light-dark(#645EC3, #BDB9F3)' }}>
+      <p style={{ color: colorBright }}>
         Icons <Icon {...args} icon="badge-assessment"/> are inline by default, they automatically adjust to the font size and color of the text. The alignment of an icon <Icon {...args} icon="settings"/> should be such
         that it fits naturally in the paragraph.
       </p>
@@ -80,7 +81,7 @@ export const IconIsolated: Story = {
         gap: '0.6lh',
       }}
     >
-      <p className="bk-prose" style={{ color: 'light-dark(#645EC3, #BDB9F3)' }}>
+      <p className="bk-prose" style={{ color: colorBright }}>
         When <code>inline="false"</code> is set on the icon, it will be isolated from its context:
         <Icon {...args} icon="solutions"/>
         This icon should have default color and font size, and it should be rendered as a block-level element.

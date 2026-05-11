@@ -4,8 +4,10 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import * as Heading from './Heading.tsx';
+import { colorBright } from '../../util/storybook/StorybookUtils.tsx';
 import { LoremIpsum } from '../../util/storybook/LoremIpsum.tsx';
+
+import * as Heading from './Heading.tsx';
 
 
 export default {
@@ -94,12 +96,15 @@ export const H6WithTextWrap: StoryObj<typeof Heading.H6> = {
   args: { children: `Some really long text to demonstrate text wrapping over multiple lines. Some really long text to demonstrate text wrapping over multiple lines. Some really long text to demonstrate text wrapping over multiple lines.` },
 };
 
-export const HeadingWithTextAlignment: StoryObj<typeof Heading.H3> = {
+/**
+ * Headings are text-level elements and should inherit properties like color, font, and alignment.
+ */
+export const HeadingInheritance: StoryObj<typeof Heading.H3> = {
   render: (args) => <Heading.H3 {...args}/>,
-  name: 'Heading with text alignment',
+  name: 'Heading inheritance',
   decorators: [
     Story => (
-      <div style={{ inlineSize: '100ch', textAlign: 'right' }}>
+      <div style={{ inlineSize: 'min(95cqi, 100ch)', color: colorBright, textAlign: 'right' }}>
         <LoremIpsum/>
         <Story/>
         <LoremIpsum/>
