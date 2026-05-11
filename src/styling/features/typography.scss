@@ -16,6 +16,8 @@ Note: these mixins are used as part of `.bk-prose`. In order to not break the wo
 */
 
 @mixin heading {
+  text-align: inherit;
+  
   @include text.font(vars.$font-family-display);
   text-wrap: balance;
   line-height: 1.6;

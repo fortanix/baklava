@@ -5,15 +5,16 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { colorBright } from '../../../util/storybook/StorybookUtils.tsx';
 import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { notify } from '../ToastProvider/ToastProvider.tsx';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
-import { AccountSelector } from '../../../layouts/AppLayout/Header/AccountSelector.tsx';
 import { TooltipProvider } from '../Tooltip/TooltipProvider.tsx';
+import { AccountSelector } from '../../../layouts/AppLayout/Header/AccountSelector.tsx';
 
 import { DialogModal } from './DialogModal.tsx';
-import { Icon } from '../../graphics/Icon/Icon.tsx';
 
 
 type DialogModalArgs = React.ComponentProps<typeof DialogModal>;
@@ -151,7 +152,7 @@ export const DialogModalWithOnClose: Story = {
 };
 
 export const DialogModalIsolation: Story = {
-  decorators: [Story => <div style={{ color: 'red', cursor: 'not-allowed', textAlign: 'center' }}><Story/></div>],
+  decorators: [Story => <div style={{ color: colorBright, cursor: 'not-allowed', textAlign: 'center' }}><Story/></div>],
   args: {
     title: 'Modal with a submodal',
     className: 'outer',

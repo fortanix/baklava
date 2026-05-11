@@ -5,12 +5,11 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { colorBright } from '../../util/storybook/StorybookUtils.tsx';
 import { DummyLink } from '../../util/storybook/StorybookLink.tsx';
 
 import { Button } from '../../components/actions/Button/Button.tsx';
 import { SegmentedControl } from '../../components/forms/controls/SegmentedControl/SegmentedControl.tsx';
-import { Icon } from '../../components/graphics/Icon/Icon.tsx';
-
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
 
 import { Prose } from './Prose.tsx';
@@ -201,9 +200,9 @@ export const ProseStandard: Story = {
 
 /** Prose should inherit certain properties, such as color and font size. */
 export const ProseInherit: Story = {
-  decorators: [Story => <div style={{ color: 'light-dark(indigo, fuchsia)', fontSize: '0.8rem' }}><Story/></div>],
+  decorators: [Story => <div style={{ color: colorBright, fontSize: '0.8rem' }}><Story/></div>],
   args: {
-    children: <SampleProse heading="This prose block should be purple and small"/>,
+    children: <SampleProse heading="This prose block should be colored and small"/>,
   },
 };
 

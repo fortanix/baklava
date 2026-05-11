@@ -5,8 +5,10 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { colorBright } from '../../../util/storybook/StorybookUtils.tsx';
 
 import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
+
 import { IconButton } from './IconButton.tsx';
 
 
@@ -45,7 +47,7 @@ export const IconButtonInline: Story = {
           gap: '0.6lh',
         }}
       >
-        <p style={{ color: 'light-dark(#645EC3, #BDB9F3)' }}>
+        <p style={{ color: colorBright }}>
           By default, <code>IconButton</code> elements are rendered inline.
           {' '}
           <Story/>
@@ -71,7 +73,7 @@ export const IconButtonIsolated: Story = {
           gap: '0.6lh',
         }}
       >
-        <p style={{ color: 'light-dark(#645EC3, #BDB9F3)' }}>
+        <p style={{ color: colorBright }}>
           When <code>inline="false"</code>, <code>IconButton</code> is displayed as an isolated, block-level element:
           {' '}
           <Story/>
