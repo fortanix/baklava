@@ -122,6 +122,7 @@ export const Dialog = Object.assign(
       showCancelAction = true,
       onClose,
       onRequestClose,
+      onToggle,
       actions,
       autoFocusClose = false,
       iconAside,
@@ -148,6 +149,15 @@ export const Dialog = Object.assign(
       onClose?.(event);
     }, [onClose]);
     
+    const handleToggle = React.useCallback((event: React.ToggleEvent<HTMLDialogElement>) => {
+      // Workaround for a bug in React where the toggle event will bubble up to parent components,
+      // even though native toggle events do not bubble.
+      // Ensure only handling the event when this specific dialog is toggled, ignoring bubbling events from children
+      if (event.target === event.currentTarget) {
+        onToggle?.(event);
+      }
+    }, [onToggle]);
+    
     return (
       <DialogContext value={dialogContext}>
         <dialog
@@ -168,6 +178,7 @@ export const Dialog = Object.assign(
             propsRest.className,
           )}
           onClose={handleClose}
+          onToggle={handleToggle}
         >
           <header className={cx(cl['bk-dialog__header'])}>
             <H5 id={`${dialogId}-title`} className={cx(cl['bk-dialog__header__title'])}>{title}</H5>
