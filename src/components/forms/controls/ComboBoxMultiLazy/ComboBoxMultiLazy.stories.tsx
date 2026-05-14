@@ -294,7 +294,6 @@ const ComboBoxMultiLazyWithFilterC = () => {
         selected={selectedKeys}
         onSelect={selectOptions => {
           setSelectedKeys(selectOptions);
-          setFilter('');
         }}
         dropdownProps={{
           onUpdateLimit: updateLimit,
