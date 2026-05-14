@@ -302,7 +302,7 @@ const useComboBoxInteraction = (
     [enabled, anchorEl, onOpenChange]
   );
 
-  // Handle click outside (unchanged)
+  // Handle click outside
   React.useEffect(() => {
     if (!enabled) return;
 
