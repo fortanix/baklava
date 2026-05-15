@@ -89,7 +89,7 @@ Notes:
     /* stylelint-enable property-no-deprecated */
     
     /* Needed for `[draggable]` */
-    -webkit-user-drag: revert;
+    -webkit-user-drag: revert-layer; /* `revert` doesn't work in Chromium? Possibly a bug? */
   }
   
   /* Enforce the `hidden` attribute. */
