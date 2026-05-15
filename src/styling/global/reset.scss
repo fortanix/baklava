@@ -194,7 +194,8 @@ Notes:
   longer be announced as a list. Instead, just set it to use an empty marker.
   */
   ol, ul, menu, summary {
-    list-style: '';
+    /*list-style: ''; FIXME: causes an issue in Safari where the `::marker` takes up space, e.g. sidebar items */
+    list-style: none;
   }
   ol {
     /* Retain the proper `counter-reset` behavior for nested lists. */
