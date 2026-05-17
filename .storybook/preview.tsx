@@ -5,58 +5,21 @@
 import './preview.scss'; // Note: must be imported before any other CSS for `@layer` to work
 import 'virtual:svg-icons/register';
 
+import { useState, useEffect } from 'react';
+
 import { type Preview } from '@storybook/react-vite';
 import { themes } from 'storybook/theming';
-import { withThemeByClassName } from '@storybook/addon-themes';
 import { DocsContainer } from '@storybook/addon-docs/blocks';
 
 import { BaklavaProvider } from '../src/context/BaklavaProvider.tsx';
 
 
 const preview = {
-  globalTypes: {
-    theme: {
-      description: 'Global theme for components',
-
-      toolbar: {
-        title: 'Theme',
-
-        icon: 'mirror',
-
-        items: [
-          { value: 'light', title: 'Theme Light', icon: 'sun'},
-          { value: 'dark', title: 'Theme Dark', icon: 'moon' },
-        ],
-        dynamicTitle: true,
-      },
-    },
-  },
-  initialGlobals: {
-    theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light', 
-  },
   decorators: [
-    withThemeByClassName({
-      themes: {
-        light: 'bk-theme--light',
-        dark: 'bk-theme--dark',
-      },
-      defaultTheme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
-      parentSelector: 'html',
-    }),
-
-
-    (Story, context) => {
-      const selectedTheme = context.globals.theme || 'light';
-      document.documentElement.dataset.theme = selectedTheme;
-
-      return (<BaklavaProvider><Story /></BaklavaProvider>);
-    },
+    Story => <BaklavaProvider><Story/></BaklavaProvider>,
   ],
   
   parameters: {
-    // Disable specific default tools
-    backgrounds: { disable: true },
-    themes: { disable: true },
     options: {
       storySort: {
         order: [
@@ -245,10 +208,23 @@ const preview = {
     
     docs: {
       container: (props: any) => {
-        const isDark = document.documentElement.dataset.theme === 'dark';
+        const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        });
+        
+        useEffect(() => {
+          const controller = new AbortController();
+          
+          const media = window.matchMedia('(prefers-color-scheme: dark)');
+          media.addEventListener('change', event => {
+            setTheme(event.matches ? 'dark' : 'light');
+          }, { signal: controller.signal });
+          
+          return () => { controller.abort(); };
+        }, []);
         
         return (
-          <DocsContainer {...props} theme={isDark ? themes.dark : themes.light}/>
+          <DocsContainer {...props} theme={themes[theme]}/>
         );
       },
       // page: () => (
@@ -262,6 +238,13 @@ const preview = {
       //   </>
       // ),
       codePanel: true,
+    },
+    
+    darkMode: {
+      lightClass: 'bk-theme--light',
+      darkClass: 'bk-theme--dark',
+      classTarget: 'html',
+      stylePreview: true,
     },
     
     // https://storybook.js.org/docs/8.5/writing-tests/accessibility-testing
