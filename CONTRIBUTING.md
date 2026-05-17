@@ -34,17 +34,23 @@ To create a new release:
 # Note: this should be the version number without any prefix, for example: "VERSION=1.0.0"
 VERSION=x.y.z
 
-# Bump the version and create a PR
-if [ -z "$VERSION" ] || [ "$VERSION" = "x.y.z" ]; then echo "\n\nDid you forget to change the VERSION?"; else
-git checkout -b release/v${VERSION}
-sed -i.bak "s/version: '.*'/version: '${VERSION}'/" package.json.js
-rm package.json.js.bak
-npm run install-project
-git add package.json.js package.json package-lock.json
-git commit -m "Release v${VERSION}"
-git push -u origin HEAD
-npm run automate github:create-release-pr
-fi
+baklava_release_branch() {
+  if [ -z "$VERSION" ] || [ "$VERSION" = "x.y.z" ]; then
+    echo "\n\nDid you forget to change the VERSION?"
+    return 1
+  fi
+  
+  # Bump the version and create a PR
+  git checkout -b release/v${VERSION} || return 1
+  sed -i.bak "s/version: '.*'/version: '${VERSION}'/" package.json.js || return 1
+  rm package.json.js.bak || return 1
+  npm run install-project || return 1
+  git add package.json.js package.json package-lock.json || return 1
+  git commit -m "Release v${VERSION}" || return 1
+  git push -u origin HEAD || return 1
+}
+
+baklava_release_branch && npm run automate github:create-release-pr
 # Follow instructions from above command
 ```
 
