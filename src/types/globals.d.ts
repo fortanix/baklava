@@ -32,3 +32,24 @@ type TogglePopoverOptions = {
 interface HTMLElement {
   togglePopover(options?: undefined | TogglePopoverOptions ): boolean,
 }
+
+interface CloseWatcher extends EventTarget {
+  requestClose(): void;
+  destroy(): void;
+  close(): void;
+  onclose: ((this: CloseWatcher, e: CustomEvent) => void) | null;
+  oncancel: ((this: CloseWatcher, e: CustomEvent) => void) | null;
+}
+
+interface CloseWatcherOptions {
+  signal?: AbortSignal;
+}
+
+declare var CloseWatcher: {
+  prototype: CloseWatcher;
+  new (options?: CloseWatcherOptions): CloseWatcher;
+};
+
+interface Window {
+  CloseWatcher: typeof CloseWatcher;
+}

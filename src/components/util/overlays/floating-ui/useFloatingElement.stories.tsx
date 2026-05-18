@@ -229,3 +229,91 @@ export const FloatingElementWithSVGAnchor: Story = {
 export const FloatingElementWithPopoverAuto: Story = {
   args: { renderAnchor: buttonAnchor('Click me'), options: { popoverBehavior: 'auto' } },
 };
+
+export const FloatingElementWithTriggerCombobox: Story = {
+  decorators: [
+    Story => (
+      <div>
+        <style>{`@scope { text-align: center; }`}</style>
+        <Story/>
+        <p><Button label="Focus target (should close active popover)"/></p>
+      </div>
+    ),
+  ],
+  args: {
+    renderAnchor: buttonAnchor('Click me'),
+    popoverContent: (
+      <>
+        <p>Clicking this static text will lose focus, but it should not close the popover.</p>
+        <p><Button kind="primary" label="This button should be next in the tab order"/></p>
+        <p><Input defaultValue="Focusing elements within the popover should not cause it to close"/></p>
+        <p>Clicking outside the anchor/popover should trigger a close.</p>
+        <p>Tabbing beyond the popover should also trigger a close.</p>
+      </>
+    ),
+    options: { triggerAction: 'combobox' },
+  },
+};
+
+type FloatingElementWithManualTriggerProps = {
+  renderAnchor: (props: Record<string, unknown>) => React.ReactNode,
+  popoverContent?: undefined | React.ReactNode,
+  options: UseFloatingElementOptions,
+};
+const FloatingElementWithManualTriggerC = (props: FloatingElementWithManualTriggerProps) => {
+  const {
+    context,
+    isOpen,
+    setIsOpen,
+    isMounted,
+    refs,
+    placement,
+    floatingStyles,
+    getReferenceProps,
+    getFloatingProps,
+    getItemProps,
+  } = useFloatingElement(props.options);
+  
+  // Merge everything into one props object for reference/floating
+  const referenceProps = getReferenceProps();
+  // @ts-ignore
+  referenceProps.ref = mergeRefs(referenceProps.ref, refs.setReference);
+  const floatingProps = getFloatingProps();
+  // @ts-ignore
+  floatingProps.ref = mergeRefs(floatingProps.ref, refs.setFloating);
+  floatingProps.style = { ...floatingStyles, ...(floatingProps.style ?? {}) };
+
+  const onTogglePopover = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.stopPropagation();
+    setIsOpen(!isOpen);
+  };
+  
+  return (
+    <>
+      <style>{`@scope { text-align: center; }`}</style>
+      {props.renderAnchor(referenceProps)}
+      {isMounted &&
+        <div {...floatingProps}>{props.popoverContent ?? 'This is a popover'}</div>
+      }
+      <p><Button label="Toggle popover" onPointerDown={onTogglePopover}/></p>
+    </>
+  );
+};
+
+export const FloatingElementWithManualTrigger: Story = {
+  render: (args) => <FloatingElementWithManualTriggerC {...args}/>,
+  args: {
+    renderAnchor: buttonAnchor('Focus me'),
+    popoverContent: (
+      <>
+        <p>Clicking this static text will lose focus, but it should not close the popover.</p>
+        <p><Button kind="primary" label="This button should be next in the tab order"/></p>
+        <p><Input defaultValue="Focusing elements within the popover should not cause it to close"/></p>
+        <p>Clicking outside the anchor/popover should trigger a close.</p>
+        <p>Tabbing beyond the popover should also trigger a close.</p>
+      </>
+    ),
+    options: { triggerAction: 'focus-interactive' },
+  },
+};
+

@@ -36,6 +36,7 @@ import {
   useTransitionStatus,
 } from '@floating-ui/react';
 import { usePopover } from '../popover/usePopover.ts';
+import { CustomCloseWatcher } from '../../../../util/CloseWatcher.ts';
 
 
 export type { Placement };
@@ -215,6 +216,19 @@ const useComboBoxInteraction = (
 
   const anchorEl = elements.reference;
   const popoverEl = elements.floating;
+
+  React.useEffect(() => {
+  if (!context.open) return;
+  const watcher = new CustomCloseWatcher();
+
+  watcher.onclose = event => {
+    onOpenChange(false, event, 'escape-key');
+  };
+
+  return () => {
+    watcher.destroy();
+  };
+}, [context.open, onOpenChange]);
 
   // Focus should NOT open menu anymore
   const handleReferenceFocus = React.useCallback(() => {
