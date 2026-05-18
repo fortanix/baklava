@@ -218,17 +218,17 @@ const useComboBoxInteraction = (
   const popoverEl = elements.floating;
 
   React.useEffect(() => {
-  if (!context.open) return;
-  const watcher = new CustomCloseWatcher();
+    if (!context.open) return;
+    const watcher = new CustomCloseWatcher();
 
-  watcher.onclose = event => {
-    onOpenChange(false, event, 'escape-key');
-  };
+    watcher.onclose = event => {
+      onOpenChange(false, event, 'escape-key');
+    };
 
-  return () => {
-    watcher.destroy();
-  };
-}, [context.open, onOpenChange]);
+    return () => {
+      watcher.destroy();
+    };
+  }, [context.open, onOpenChange]);
 
   // Focus should NOT open menu anymore
   const handleReferenceFocus = React.useCallback(() => {
@@ -251,6 +251,7 @@ const useComboBoxInteraction = (
       if (!enabled) return;
 
       if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
         onOpenChange(true, event.nativeEvent, 'list-navigation');
       }
     },
