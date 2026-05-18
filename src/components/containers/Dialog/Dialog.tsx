@@ -29,6 +29,20 @@ export const useDialogContext = () => {
   return context;
 };
 
+// Workaround for a bug in React where the event will bubble up to parent components,
+// even though native events do not bubble.
+// Ensure only handling the event from this specific dialog, ignoring bubbling events from children
+const preventBubbling = <E extends React.SyntheticEvent<HTMLDialogElement>>(
+  callback?: (event: E) => void
+) => {
+  if (!callback) return () => {}; 
+
+  return (event: E) => {
+    if (event.target === event.currentTarget) {
+      callback(event);
+    }
+  };
+};
 
 type ActionProps = React.ComponentProps<typeof Button> & {
   /** Optional tooltip text. */
@@ -122,6 +136,9 @@ export const Dialog = Object.assign(
       showCancelAction = true,
       onClose,
       onRequestClose,
+      onToggle,
+      onBeforeToggle,
+      onCancel,
       actions,
       autoFocusClose = false,
       iconAside,
@@ -141,12 +158,10 @@ export const Dialog = Object.assign(
       close: onRequestClose ?? (() => { console.warn('Missing `onRequestClose` callback.'); }),
     }), [onRequestClose]);
     
-    const handleClose = React.useCallback((event: React.SyntheticEvent<HTMLDialogElement>) => {
-      // Workaround for a bug in React where the close event will bubble up to parent components, even though native
-      // close events do not bubble.
-      event.stopPropagation();
-      onClose?.(event);
-    }, [onClose]);
+    const handleClose = React.useCallback(preventBubbling(onClose), [onClose]);
+    const handleToggle = React.useCallback(preventBubbling(onToggle), [onToggle]);
+    const handleBeforeToggle = React.useCallback(preventBubbling(onBeforeToggle), [onBeforeToggle]);
+    const handleCancel = React.useCallback(preventBubbling(onCancel), [onCancel]);
     
     return (
       <DialogContext value={dialogContext}>
@@ -168,6 +183,9 @@ export const Dialog = Object.assign(
             propsRest.className,
           )}
           onClose={handleClose}
+          onToggle={handleToggle}
+          onBeforeToggle={handleBeforeToggle}
+          onCancel={handleCancel}
         >
           <header className={cx(cl['bk-dialog__header'])}>
             <H5 id={`${dialogId}-title`} className={cx(cl['bk-dialog__header__title'])}>{title}</H5>
