@@ -277,3 +277,21 @@ export const GlobalModals: Story = {
     ),
   },
 };
+
+export const GlobalDraggable = () => {
+  return (
+    <button
+      type="button"
+      draggable
+      onDragStart={(event) => {
+        console.log('Drag start', event);
+      }}
+      style={{
+        padding: 20,
+        border: '1px solid red',
+      }}
+    >
+      Drag Me
+    </button>
+  );
+};
