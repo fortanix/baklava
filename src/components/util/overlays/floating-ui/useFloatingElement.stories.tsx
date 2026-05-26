@@ -172,6 +172,30 @@ export const FloatingElementWithTriggerFocusInteractive: Story = {
   },
 };
 
+export const FloatingElementWithTriggerCombobox: Story = {
+  decorators: [
+    Story => (
+      <div>
+        <style>{`@scope { text-align: center; }`}</style>
+        <Story/>
+        <p><Button label="Focus target (should close active popover)"/></p>
+      </div>
+    ),
+  ],
+  args: {
+    renderAnchor: buttonAnchor('Click me'),
+    popoverContent: (
+      <>
+        <p>Clicking this static text will lose focus, but it should not close the popover.</p>
+        <p><Button kind="primary" label="This button should be next in the tab order"/></p>
+        <p><Input defaultValue="Focusing elements within the popover should not cause it to close"/></p>
+        <p>Clicking outside the anchor/popover should trigger a close.</p>
+        <p>Tabbing beyond the popover should also trigger a close.</p>
+      </>
+    ),
+    options: { triggerAction: 'combobox' },
+  },
+};
 
 /**
  * Consumers should avoid using non-interactive (non-focusable) elements as anchors, because:
@@ -230,36 +254,12 @@ export const FloatingElementWithPopoverAuto: Story = {
   args: { renderAnchor: buttonAnchor('Click me'), options: { popoverBehavior: 'auto' } },
 };
 
-export const FloatingElementWithTriggerCombobox: Story = {
-  decorators: [
-    Story => (
-      <div>
-        <style>{`@scope { text-align: center; }`}</style>
-        <Story/>
-        <p><Button label="Focus target (should close active popover)"/></p>
-      </div>
-    ),
-  ],
-  args: {
-    renderAnchor: buttonAnchor('Click me'),
-    popoverContent: (
-      <>
-        <p>Clicking this static text will lose focus, but it should not close the popover.</p>
-        <p><Button kind="primary" label="This button should be next in the tab order"/></p>
-        <p><Input defaultValue="Focusing elements within the popover should not cause it to close"/></p>
-        <p>Clicking outside the anchor/popover should trigger a close.</p>
-        <p>Tabbing beyond the popover should also trigger a close.</p>
-      </>
-    ),
-    options: { triggerAction: 'combobox' },
-  },
-};
-
 type FloatingElementWithManualTriggerProps = {
   renderAnchor: (props: Record<string, unknown>) => React.ReactNode,
   popoverContent?: undefined | React.ReactNode,
   options: UseFloatingElementOptions,
 };
+
 const FloatingElementWithManualTriggerC = (props: FloatingElementWithManualTriggerProps) => {
   const {
     context,
@@ -290,7 +290,44 @@ const FloatingElementWithManualTriggerC = (props: FloatingElementWithManualTrigg
   
   return (
     <>
-      <style>{`@scope { text-align: center; }`}</style>
+     <style>{`
+        @scope {
+          [popover] {
+            padding: 1em;
+            background: light-dark(#ddd, #555);
+            text-align: center;
+            border-radius: 3px;
+            
+            p:not(:first-child) {
+              margin-top: 0.6lh;
+            }
+            
+            /* Entry/exit animations */
+            @media (prefers-reduced-motion: no-preference) {
+              --transition-props: opacity;
+              transition: none 100ms ease-in allow-discrete;
+              transition-property: display, overlay, var(--transition-props);
+              &:not(:popover-open) { opacity: 0; }
+              
+              /*
+              Safari (at least v26.0) supports 'transition-property: display allow-discrete', but it does not support
+              the 'overlay' property. This means that our exit animations are broken in this browser, because during the
+              exit animation the popover will no longer be in the top layer ("overlay"). Note: we cannot feature detect
+              support for discrete 'display', so we will instead feature detect support for 'overlay'.
+              See: https://codepen.io/maikelkrause/pen/qEZybQX
+              */
+              @supports not (overlay: auto) {
+                transition-property: var(--transition-props); /* Exclude 'display' and 'overlay' */
+              }
+              
+              @starting-style { opacity: 0; }
+            }
+          }
+          
+          text-align: center;
+        }
+      `}</style> 
+
       {props.renderAnchor(referenceProps)}
       {isMounted &&
         <div {...floatingProps}>{props.popoverContent ?? 'This is a popover'}</div>
@@ -300,6 +337,12 @@ const FloatingElementWithManualTriggerC = (props: FloatingElementWithManualTrigg
   );
 };
 
+/**
+ * This story shows how to control the visibility of the floating element 
+ * externally from outside the anchor and popover.
+ *  - Clicking the external "Toggle Popover" button explicitly toggles the open/closed state.
+ *  - If the popover is already opened via the anchor element, triggering the external manual toggle will close it.
+ */
 export const FloatingElementWithManualTrigger: Story = {
   render: (args) => <FloatingElementWithManualTriggerC {...args}/>,
   args: {

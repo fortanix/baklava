@@ -208,7 +208,7 @@ type UseComboBoxOptions = {
 
 const useComboBoxInteraction = (
   context: FloatingContext,
-  options: UseComboBoxOptions = {}
+  options: UseComboBoxOptions = {},
 ): ElementProps => {
   const { elements, onOpenChange } = context;
 
@@ -218,7 +218,7 @@ const useComboBoxInteraction = (
   const popoverEl = elements.floating;
 
   React.useEffect(() => {
-    if (!context.open) return;
+    if (!context.open) { return; }
     const watcher = new CustomCloseWatcher();
 
     watcher.onclose = event => {
@@ -230,25 +230,25 @@ const useComboBoxInteraction = (
     };
   }, [context.open, onOpenChange]);
 
-  // Focus should NOT open menu anymore
+  // Focus should not open floating element
   const handleReferenceFocus = React.useCallback(() => {
-    if (!enabled) return;
+    if (!enabled) { return; }
     // no-op
   }, [enabled]);
 
-  // Click → open menu
+  // Click → open floating element
   const handleReferenceClick = React.useCallback(
     (event: React.MouseEvent) => {
-      if (!enabled) return;
+      if (!enabled) { return; }
       onOpenChange(true, event.nativeEvent, 'click');
     },
     [enabled, onOpenChange]
   );
 
-  // Arrow keys → open menu
+  // Arrow keys → open floating element
   const handleReferenceKeyDown = React.useCallback(
     (event: React.KeyboardEvent) => {
-      if (!enabled) return;
+      if (!enabled) { return; }
 
       if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
         event.preventDefault();
@@ -258,10 +258,10 @@ const useComboBoxInteraction = (
     [enabled, onOpenChange]
   );
 
-  // On change event -> open menu
+  // On change event -> open floating element
   const handleReferenceChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (!enabled) return;
+      if (!enabled) { return; }
 
       onOpenChange(true, event.nativeEvent, 'reference-press');
     },
@@ -270,7 +270,7 @@ const useComboBoxInteraction = (
 
   const handleReferenceBlur = React.useCallback(
     (event: React.FocusEvent) => {
-      if (!enabled) return;
+      if (!enabled) { return; }
 
       const anchorEl = event.currentTarget;
 
@@ -290,7 +290,7 @@ const useComboBoxInteraction = (
 
   const handleFloatingBlur = React.useCallback(
     (event: React.FocusEvent) => {
-      if (!enabled) return;
+      if (!enabled) { return; }
 
       const popoverEl = event.currentTarget;
 
@@ -301,7 +301,7 @@ const useComboBoxInteraction = (
 
       if (!isInside) {
         window.setTimeout(() => {
-          if (!popoverEl.isConnected) return;
+          if (!popoverEl.isConnected) { return; }
 
           const isInside =
             document.activeElement instanceof Node &&
@@ -319,14 +319,14 @@ const useComboBoxInteraction = (
 
   // Handle click outside
   React.useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) { return; }
 
     const controller = new AbortController();
 
     document.addEventListener(
       'pointerdown',
       (event) => {
-        if (!anchorEl || !(anchorEl instanceof Node)) return;
+        if (!anchorEl || !(anchorEl instanceof Node)) { return; }
 
         const isInside =
           event.target instanceof Node &&

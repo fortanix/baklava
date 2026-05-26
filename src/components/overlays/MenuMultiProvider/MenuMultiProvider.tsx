@@ -206,7 +206,6 @@ export const useMenuAnchor = <RenderArgs extends BaseAnchorRenderArgs>(props: Us
         'aria-expanded': isOpen,
         // biome-ignore lint/suspicious/noExplicitAny: `onKeyDown` should be a function here
         onKeyDown: mergeCallbacks([props.onKeyDown as any, onKeyDown]),
-        onBlur: props.onBlur,
       };
     };
 
@@ -368,13 +367,12 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
       const previous = previousActiveElementRef.current;
 
       if (previous) {
-        const el = previous as HTMLElement;
-        el.focus({ focusVisible: false });
+        previous.focus({ focusVisible: false });
 
-        if (el instanceof HTMLInputElement) {
+        if (previous instanceof HTMLInputElement) {
           // Move cursor to end
-          const length = el.value.length;
-          el.setSelectionRange(length, length);
+          const length = previous.value.length;
+          previous.setSelectionRange(length, length);
         }
       }
 
