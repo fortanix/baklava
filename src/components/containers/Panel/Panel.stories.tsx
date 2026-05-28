@@ -56,3 +56,23 @@ export const PanelWithScroll: Story = {
     style: { maxHeight: '8lh' },
   },
 };
+
+export const PanelLoading: Story = {
+  args: {
+    loading: true,
+  },
+};
+
+export const PanelLoadingMedium: Story = {
+  args: {
+    loading: true,
+    loadingSize: 'medium',
+  },
+};
+
+export const PanelLoadingSmall: Story = {
+  args: {
+    loading: true,
+    loadingSize: 'small',
+  },
+};

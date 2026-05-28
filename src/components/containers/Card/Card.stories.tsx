@@ -171,3 +171,23 @@ export const CardNested: Story = {
     ),
   },
 };
+
+export const CardLoading: Story = {
+  args: {
+    loading: true,
+  },
+};
+
+export const CardLoadingMedium: Story = {
+  args: {
+    loading: true,
+    loadingSize: 'medium',
+  },
+};
+
+export const CardLoadingSmall: Story = {
+  args: {
+    loading: true,
+    loadingSize: 'small',
+  },
+};

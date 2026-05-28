@@ -35,6 +35,18 @@
       --bk-panel-inset-compensation: var(--bk-panel-inset);
     }
     
+    &.bk-panel--loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    // arbitrary size in pixels, as Spinner also uses sizes in px,
+    // otherwise a scrollbar keeps flashing due to spinner rotation. curiously doesn't happen on other sizes
+    // eventually we could import the Spinner variable and reuse it here?
+    &.bk-panel--loading--large {
+      min-height: calc(100px + (2 * var(--bk-panel-inset))); 
+    }
+    
     .bk-panel__heading {
       margin-block-end: bk.$spacing-7;
       text-wrap: nowrap;

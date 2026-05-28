@@ -7,6 +7,7 @@ import { classNames as cx, type ComponentProps } from '../../../util/componentUt
 import { useScroller } from '../../../layouts/util/Scroller.tsx';
 
 import { H4 } from '../../../typography/Heading/Heading.tsx';
+import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
 
 import cl from './Panel.module.scss';
 
@@ -25,13 +26,26 @@ export type PanelProps = React.PropsWithChildren<ComponentProps<'section'> & {
   
   /** Whether the panel should be edgeless. */
   edgeless?: undefined | boolean,
+  
+  /** Whether the panel display a loading indicator, instead of it's children */
+  loading?: undefined | boolean,
+  
+  /** Spinner loading size, defaults to large. */
+  loadingSize?: undefined | 'small' | 'medium' | 'large',
 }>;
 /**
  * Panel component.
  */
 export const Panel = Object.assign(
   (props: PanelProps) => {
-    const { children, unstyled = false, edgeless = false, ...propsRest } = props;
+    const {
+      children,
+      unstyled = false,
+      edgeless = false,
+      loading = false,
+      loadingSize = 'large',
+      ...propsRest
+    } = props;
     const scrollerProps = useScroller();
     
     return (
@@ -42,11 +56,13 @@ export const Panel = Object.assign(
           'bk',
           { [cl['bk-panel']]: !unstyled },
           { [cl['bk-panel--edgeless']]: !!edgeless },
+          { [cl['bk-panel--loading']]: loading },
+          { [cl[`bk-panel--loading--${loadingSize}`]]: loadingSize === 'large' },
           scrollerProps.className,
           propsRest.className,
         )}
       >
-        {children}
+        {loading ? <Spinner size={loadingSize}/> : children}
       </section>
     );
   },
