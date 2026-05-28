@@ -194,10 +194,24 @@ export const ComboBoxLazyControlled: Story = {
 const ComboBoxLazyFullyControlledC = (props: React.ComponentProps<typeof ComboBoxLazy>) => {
   const [value, setValue] = React.useState<string>('');
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
       
   const onUpdateStatePress = () => {
     setSelectedKey('item-1');
     setValue(props.dropdownProps?.formatItemLabel?.('item-1') ?? '');
+  };
+
+  const onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    setIsDropdownOpen(true);
+    const newValue = evt.target.value;
+    if (newValue === '') { setSelectedKey(null); }
+    setValue(newValue);
+  };
+
+  const onBlur = () => {
+    if (selectedKey) {
+      setValue(props.dropdownProps.formatItemLabel(selectedKey) ?? '');
+    }
   };
 
   return (
@@ -208,22 +222,21 @@ const ComboBoxLazyFullyControlledC = (props: React.ComponentProps<typeof ComboBo
         {...props}
         placeholder="Choose an item"
         value={value}
-        onChange={event => { setValue(event.target.value); }}
-        onBlur={(evt: React.FocusEvent<HTMLInputElement>) => {
-          const value = evt.target.value;
-
-          if (value === '') {
-            setSelectedKey(null);
-          } else if (selectedKey) {
-            setValue(props.dropdownProps.formatItemLabel(selectedKey) ?? '');
-          }
-        }}
+        onChange={onChange}
+        onBlur={onBlur}
         selected={selectedKey}
         onSelect={(_key, selectedOption) => {
           setSelectedKey(selectedOption?.itemKey ?? null);
           if (selectedOption !== null) {
             setValue(selectedOption.label);
           }
+          setIsDropdownOpen(false);
+        }}
+        dropdownProps={{
+          ...props.dropdownProps,
+          open: isDropdownOpen,
+          onOpenChange: setIsDropdownOpen,
+          onBlur,
         }}
       />
       <div><Button label="Update state" onPress={onUpdateStatePress}/></div>
@@ -267,6 +280,7 @@ const ComboBoxLazyWithFilterC = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [limit, setLimit] = React.useState(pageSize);
   const [items, setItems] = React.useState<Array<{ id: string, name: string }>>([]);
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
   
   const hasMoreItems = items.length < maxItems;
   const itemsFiltered = items.filter(item => item.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()));
@@ -277,7 +291,22 @@ const ComboBoxLazyWithFilterC = () => {
       setIsLoading(true); // Immediately set `isLoading` so we can skip a render cycle (before the effect kicks in)
     }
   }, [hasMoreItems]);
+
+  const onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    setIsDropdownOpen(true);
+    const newValue = evt.target.value;
+    if (newValue === '') { setSelectedKey(null); }
+    setFilter(newValue);
+  };
+
+  const formatItemLabel = (itemKey: string) => itemsFiltered.find(i => i.id === itemKey)?.name ?? 'Unknown';
   
+  const onBlur = () => {
+    if (selectedKey) {
+      setFilter(formatItemLabel(selectedKey) ?? '');
+    }
+  };
+
   React.useEffect(() => {
     setIsLoading(false);
     
@@ -300,14 +329,16 @@ const ComboBoxLazyWithFilterC = () => {
         label="Test combobox"
         placeholder="Choose an item"
         value={filter}
-        onChange={event => { setFilter(event.target.value); }}
+        onChange={onChange}
         selected={selectedKey}
         onSelect={(_key, selectedOption) => {
           setSelectedKey(selectedOption?.itemKey ?? null);
           if (selectedOption !== null) {
             setFilter(selectedOption.label);
           }
+          setIsDropdownOpen(false);
         }}
+        onBlur={onBlur}
         dropdownProps={{
           onUpdateLimit: updateLimit,
           limit: limit,
@@ -315,9 +346,12 @@ const ComboBoxLazyWithFilterC = () => {
           hasMoreItems: hasMoreItems,
           isLoading: isLoading,
           renderItem: item => <>{itemsFiltered[item.index]?.name}</>,
-          formatItemLabel: itemKey => itemsFiltered.find(i => i.id === itemKey)?.name ?? 'Unknown',
+          formatItemLabel,
           placeholderEmpty: items.length === 0 ? 'No items' : 'No items found',
           virtualItemKeys,
+          open: isDropdownOpen,
+          onOpenChange: setIsDropdownOpen,
+          onBlur,
         }}
       />
     </>

@@ -206,6 +206,8 @@ export const useMenuAnchor = <RenderArgs extends BaseAnchorRenderArgs>(props: Us
         'aria-expanded': isOpen,
         // biome-ignore lint/suspicious/noExplicitAny: `onKeyDown` should be a function here
         onKeyDown: mergeCallbacks([props.onKeyDown as any, onKeyDown]),
+        // biome-ignore lint/suspicious/noExplicitAny: `onBlur` should be a function here
+        onBlur: mergeCallbacks([userProps?.onBlur, props.onBlur as any]),
       };
     };
 
@@ -368,6 +370,12 @@ export const useMenuSelect = (options: UseMenuSelectHandlerOptions) => {
 
       if (previous) {
         previous.focus({ focusVisible: false });
+
+        if (previous instanceof HTMLInputElement) {
+          // Move cursor to end
+          const length = previous.value.length;
+          previous.setSelectionRange(length, length);
+        }
       }
 
       if (triggerAction !== 'focus') {

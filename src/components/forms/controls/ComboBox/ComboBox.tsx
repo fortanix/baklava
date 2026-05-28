@@ -5,6 +5,10 @@
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 
+// Utils
+import { mergeRefs } from '../../../../util/reactUtil.ts';
+
+// Components
 import { Input as InputDefault } from '../Input/Input.tsx';
 import {
   AnchorRenderArgs,
@@ -14,8 +18,9 @@ import {
   MenuProviderProps,
 } from '../../../overlays/MenuProvider/MenuProvider.tsx';
 import { useComboBoxState } from '../ComboBoxMulti/ComboBoxMulti.tsx';
-import { selectionStateFromItemKey } from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
+import { MenuProviderRef, selectionStateFromItemKey } from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
 
+// Styles
 import cl from './ComboBox.module.scss';
 
 
@@ -34,6 +39,7 @@ type ComboBoxInputProps = Omit<InputProps, 'onSelect'> & {
 };
 const ComboBoxInput = (props: ComboBoxInputProps) => {
   const {
+    ref,
     anchorRenderArgs,
     onUpdate,
     Input = InputDefault,
@@ -50,11 +56,13 @@ const ComboBoxInput = (props: ComboBoxInputProps) => {
   } = anchorRenderArgs;
   
   const anchorProps = anchorRenderProps({
+    ref,
     className: cx(
       cl['bk-combo-box'],
       { [cl['bk-combo-box--open']]: open },
       propsRest.containerProps?.className,
     ),
+    onBlur: propsRest.onBlur,
   });
 
   return (
@@ -63,15 +71,13 @@ const ComboBoxInput = (props: ComboBoxInputProps) => {
         role="combobox"
         automaticResize
         {...propsRest}
+        {...anchorProps}
         inputProps={{
           placeholder: 'Select options',
           ...propsRest.inputProps,
           className: cx(cl['bk-combo-box__input'], propsRest.inputProps?.className),
         }}
-        containerProps={{
-          ...propsRest.containerProps,
-          ...anchorProps,
-        }}
+        containerProps={propsRest.containerProps ?? {}}
       />
 
       {/* Render a hidden input with the selected option key (rather than the human-readable label). */}
@@ -122,31 +128,55 @@ export type ComboBoxProps = Omit<InputProps, 'onSelect'> & {
 export const ComboBox = Object.assign(
   (props: ComboBoxProps) => {
     const {
+      ref,
       unstyled = false,
       label,
+      value,
       Input = InputDefault,
       options,
       selected,
       onSelect,
+      onChange,
+      onBlur,
       dropdownProps = {},
       ...propsRest
     } = props;
     
+    const {
+      formatItemLabel,
+      ref: dropdownPropsRef,
+      onBlur: onDropdownBlur,
+      ...dropdownPropsRest
+    } = dropdownProps;
+
+    const dropdownRef = React.useRef<MenuProviderRef | null>(null);
+    const mergedDropdownRef = mergeRefs(dropdownPropsRef, dropdownRef);
+
+    const inputRef = React.useRef<HTMLInputElement | null>(null);
+    const mergedInputRef = mergeRefs(ref, inputRef);
+
     const [inputValue, setInputValue] = React.useState(() => {
       return selected
-        ? dropdownProps.formatItemLabel?.(selected) ?? ''
-        : propsRest.value ?? '';
+        ? formatItemLabel?.(selected) ?? ''
+        : value ?? '';
     });
+
+    const updateInputValue = React.useCallback((updatedValue: string) => {
+      if (typeof value === 'undefined') {
+        // Update only when input value is uncontrolled
+        setInputValue(updatedValue);
+      }
+    }, [value]);
 
     React.useEffect(
       () => {
-        if (typeof propsRest.value === 'undefined' && selected) {
+        if (selected) {
           // Update Input value state on selection change when menu
           // selection is controlled input value is uncontrolled
-          setInputValue(dropdownProps.formatItemLabel?.(selected) ?? '');
+          updateInputValue(formatItemLabel?.(selected) ?? '');
         }
       },
-      [propsRest.value, selected, dropdownProps.formatItemLabel],
+      [selected, formatItemLabel, updateInputValue],
     );
 
     const selectedSet = React.useMemo(() => selectionStateFromItemKey(selected), [selected]);
@@ -155,31 +185,50 @@ export const ComboBox = Object.assign(
       handleInternalSelect,
     } = useComboBoxState({
       selected: selectedSet,
-      formatItemLabel: dropdownProps.formatItemLabel,
+      formatItemLabel,
     });
+
+    const updateInternalSelected = React.useCallback((updatedInternalSelected: Set<ItemKey>) => {
+      if (typeof selected === 'undefined') {
+        // Update only when menu selection is uncontrolled
+        handleInternalSelect(updatedInternalSelected);
+      }
+    }, [selected, handleInternalSelect]);
 
     const internalSelectedItemKey: null | ItemKey = internalSelected.keys().next().value ?? null;
 
     const handleSelect = React.useCallback((_key: null | ItemKey, itemDetails: null | ItemDetails) => {
       const itemKey = itemDetails?.itemKey ?? null;
+      updateInputValue(itemDetails?.label ?? '');
+      updateInternalSelected(itemKey ? new Set([itemKey]) : new Set());
       onSelect?.(itemKey, itemDetails);
-      setInputValue(itemDetails?.label ?? '');
-      handleInternalSelect(itemKey ? new Set([itemKey]) : new Set());
-    }, [onSelect, handleInternalSelect]);
+    }, [onSelect, updateInputValue, updateInternalSelected]);
 
     const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-      const value = evt.target.value;
-      setInputValue(value);
+      const newValue = evt.target.value;
+
+      if (typeof selected === 'undefined' && newValue === '') {
+        handleSelect(null, null);
+      }
+
+      updateInputValue(newValue);
+      onChange?.(evt);
     };
 
     const handleInputFocusOut = (evt: React.FocusEvent<HTMLInputElement>) => {
-      const value = evt.target.value;
+      const floatingEl = dropdownRef.current?.floatingEl;
+      if (floatingEl?.contains(evt.relatedTarget as Node)) { return; }
+      updateInputValue(internalSelected.values().next().value?.label ?? '');
+      onBlur?.(evt);
+    };
 
-      if (value === '') {
-        handleSelect(null, null);
-      } else {
-        setInputValue(internalSelected.values().next().value?.label ?? '');
-      }
+    const handleDropdownFocusOut = (evt: React.FocusEvent<HTMLDivElement>) => {
+      const inputEl = inputRef.current;
+      if (inputEl?.contains(evt.relatedTarget as Node)) { return; }
+      const floatingEl = dropdownRef.current?.floatingEl;
+      if (floatingEl?.contains(evt.relatedTarget as Node)) { return; }
+      updateInputValue(internalSelected.values().next().value?.label ?? '');
+      onDropdownBlur?.(evt);
     };
 
     return (
@@ -187,22 +236,26 @@ export const ComboBox = Object.assign(
         label={label}
         items={options}
         role="combobox"
-        triggerAction="focus-interactive" // Keep the dropdown menu open while the input is focused
+        triggerAction="combobox"
         keyboardInteractions="form-control" // FIXME
         placement="bottom-start"
         offset={1}
         selected={internalSelectedItemKey}
         onSelect={handleSelect}
-        {...dropdownProps}
+        onBlur={handleDropdownFocusOut}
+        formatItemLabel={formatItemLabel}
+        {...dropdownPropsRest}
+        ref={mergedDropdownRef}
       >
         {anchorRenderArgs => (
           <ComboBoxInput
             anchorRenderArgs={anchorRenderArgs}
             Input={Input}
-            value={inputValue}
+            value={typeof value !== 'undefined' ? value : inputValue}
             onChange={handleInputChange}
             onBlur={handleInputFocusOut}
             {...propsRest}
+            ref={mergedInputRef}
           />
         )} 
       </MenuProvider>
