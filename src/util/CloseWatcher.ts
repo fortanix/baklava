@@ -34,7 +34,7 @@ export class CustomCloseWatcher {
       return;
     }
 
-    // Safari fallback
+    // Fallback for non-supporting browsers
     this.abortController = new AbortController();
 
     document.addEventListener('keydown', event => {

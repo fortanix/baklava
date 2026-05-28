@@ -47,7 +47,7 @@ interface CloseWatcherOptions {
 
 declare var CloseWatcher: {
   prototype: CloseWatcher;
-  new (options?: CloseWatcherOptions): CloseWatcher;
+  new (options?: undefined | CloseWatcherOptions): CloseWatcher;
 };
 
 interface Window {

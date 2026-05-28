@@ -396,7 +396,7 @@ export type UseFloatingElementOptions = {
    *   also not close it, light dismiss will only occur when clicking outside of the floating/reference element.
    * - `combobox`: The floating element will be open when the reference element is clicked, or when arrow keys are
    *   pressed. Clicking inside the floating element (thus losing focus) will not close it, light dismiss will 
-   *   only occur when clicking outside of the floating/reference element.
+   *   happen when clicking outside OR when a browser close event happens (e.g. Escape).
    */
   triggerAction?: undefined | 'none' | 'click' | 'hover' | 'focus' | 'focus-interactive' | 'combobox',
   
