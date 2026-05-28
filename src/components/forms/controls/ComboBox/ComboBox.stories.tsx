@@ -126,10 +126,24 @@ export const ComboBoxControlled: Story = {
 const ComboBoxFullyControlledC = (props: React.ComponentProps<typeof ComboBox>) => {
   const [value, setValue] = React.useState<string>('');
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
 
   const onUpdateStatePress = () => {
     setSelectedKey('item-strawberry');
     setValue(props.dropdownProps?.formatItemLabel?.('item-strawberry') ?? '');
+  };
+
+  const onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    setIsDropdownOpen(true);
+    const newValue = evt.target.value;
+    if (newValue === '') { setSelectedKey(null); }
+    setValue(newValue);
+  };
+
+  const onBlur = () => {
+    if (selectedKey) {
+      setValue(fruits[selectedKey as FruitKey] ?? '');
+    }
   };
 
   return (
@@ -140,16 +154,8 @@ const ComboBoxFullyControlledC = (props: React.ComponentProps<typeof ComboBox>) 
         {...props}
         placeholder="Choose a fruit"
         value={value}
-        onChange={event => { setValue(event.target.value); }}
-        onBlur={(evt: React.FocusEvent<HTMLInputElement>) => {
-          const value = evt.target.value;
-
-          if (value === '') {
-            setSelectedKey(null);
-          } else if (selectedKey) {
-            setValue(fruits[selectedKey as FruitKey] ?? '');
-          }
-        }}
+        onChange={onChange}
+        onBlur={onBlur}
         options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
           <ComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
@@ -159,6 +165,13 @@ const ComboBoxFullyControlledC = (props: React.ComponentProps<typeof ComboBox>) 
           if (selectedOption !== null) {
             setValue(selectedOption.label);
           }
+          setIsDropdownOpen(false);
+        }}
+        dropdownProps={{
+          ...props.dropdownProps,
+          open: isDropdownOpen,
+          onOpenChange: setIsDropdownOpen,
+          onBlur,
         }}
       />
       <div><Button label="Update state" onPress={onUpdateStatePress}/></div>
@@ -199,10 +212,24 @@ export const ComboBoxUncontrolled: Story = {
 const ComboBoxWithFilterC = (props: React.ComponentProps<typeof ComboBox>) => {
   const [value, setValue] = React.useState<undefined | string>();
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
       
   const fruitsFiltered = Object.entries(fruits)
     .filter(([_key, fruit]) => fruit.toLowerCase().includes((value ?? '').toLowerCase()));
+
+  const onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    setIsDropdownOpen(true);
+    const newValue = evt.target.value;
+    if (newValue === '') { setSelectedKey(null); }
+    setValue(newValue);
+  };
   
+  const onBlur = () => {
+    if (selectedKey) {
+      setValue(fruits[selectedKey as FruitKey] ?? '');
+    }
+  };
+
   return (
     <>
       <div>Input: {value ?? '(none)'}</div>
@@ -211,7 +238,8 @@ const ComboBoxWithFilterC = (props: React.ComponentProps<typeof ComboBox>) => {
         {...props}
         placeholder="Choose a fruit"
         value={value}
-        onChange={event => { setValue(event.target.value); }}
+        onChange={onChange}
+        onBlur={onBlur}
         options={fruitsFiltered.map(([fruitKey, fruitName]) =>
           <ComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
@@ -221,6 +249,13 @@ const ComboBoxWithFilterC = (props: React.ComponentProps<typeof ComboBox>) => {
           if (selectedOption !== null) {
             setValue(selectedOption.label);
           }
+          setIsDropdownOpen(false);
+        }}
+        dropdownProps={{
+          ...props.dropdownProps,
+          open: isDropdownOpen,
+          onOpenChange: setIsDropdownOpen,
+          onBlur,
         }}
       />
     </>

@@ -136,7 +136,12 @@ const ComboBoxMultiFullyControlledC = (props: Partial<React.ComponentProps<typeo
   const [value, setValue] = React.useState<undefined | string>();
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set());
   
-  const handleInputFocusOut = (_evt: React.FocusEvent<HTMLInputElement>) => {
+  const onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = evt.target.value;
+    setValue(newValue);
+  };
+
+  const onBlur = () => {
     setValue('');
   };
 
@@ -148,8 +153,8 @@ const ComboBoxMultiFullyControlledC = (props: Partial<React.ComponentProps<typeo
         label="Test ComboBox"
         placeholder="Choose your favorite fruits"
         value={value}
-        onChange={event => { setValue(event.target.value); }}
-        onBlur={handleInputFocusOut}
+        onChange={onChange}
+        onBlur={onBlur}
         {...props}
         options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
           <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
@@ -159,6 +164,10 @@ const ComboBoxMultiFullyControlledC = (props: Partial<React.ComponentProps<typeo
           props.onSelect?.(selectedOptionKeys, selectedOption);
           setValue('');
           setSelectedKeys(selectedOptionKeys);
+        }}
+        dropdownProps={{
+          ...props.dropdownProps,
+          onBlur,
         }}
       />
       <div><Button label="Update state" onPress={() => { setSelectedKeys(new Set(['item-strawberry'])); }}/></div>
@@ -201,10 +210,21 @@ export const ComboBoxMultiUncontrolled: Story = {
 const ComboBoxMultiwithFilterC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
   const [value, setValue] = React.useState<undefined | string>();
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set());
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
       
   const fruitsFiltered = Object.entries(fruits)
     .filter(([_key, fruit]) => fruit.toLowerCase().includes((value ?? '').toLowerCase()));
   
+  const onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    setIsDropdownOpen(true);
+    const newValue = evt.target.value;
+    setValue(newValue); 
+  };
+
+  const onBlur = () => {
+    setValue('');
+  };
+
   return (
     <>
       <div>Input: {value ?? '(none)'}</div>
@@ -214,7 +234,8 @@ const ComboBoxMultiwithFilterC = (props: Partial<React.ComponentProps<typeof Com
         Input={InputSearch}
         placeholder="Choose your favorite fruits"
         value={value}
-        onChange={event => { setValue(event.target.value); }}
+        onChange={onChange}
+        onBlur={onBlur}
         {...props}
         options={fruitsFiltered.map(([fruitKey, fruitName]) =>
           <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
@@ -223,7 +244,12 @@ const ComboBoxMultiwithFilterC = (props: Partial<React.ComponentProps<typeof Com
         onSelect={(selectedOptionKeys, selectedOption) => {
           props.onSelect?.(selectedOptionKeys, selectedOption);
           setSelectedKeys(selectedOptionKeys);
-          setValue('');
+        }}
+        dropdownProps={{
+          ...props.dropdownProps,
+          open: isDropdownOpen,
+          onOpenChange: setIsDropdownOpen,
+          onBlur,
         }}
       />
     </>

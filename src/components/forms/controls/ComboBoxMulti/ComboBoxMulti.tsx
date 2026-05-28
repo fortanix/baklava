@@ -82,6 +82,7 @@ type ComboBoxMultiInputProps = Omit<InputProps, 'onSelect'> & {
 
 const ComboBoxMultiInput = (props: ComboBoxMultiInputProps) => {
   const {
+    ref,
     anchorRenderArgs,
     onUpdate,
     Input = InputDefault,
@@ -98,11 +99,13 @@ const ComboBoxMultiInput = (props: ComboBoxMultiInputProps) => {
   } = anchorRenderArgs;
     
   const anchorProps = anchorRenderProps({
+    ref,
     className: cx(
       cl['bk-combo-box'],
       { [cl['bk-combo-box--open']]: open },
       propsRest.containerProps?.className,
     ),
+    onBlur: propsRest.onBlur,
   });
 
   const onRemove = React.useCallback(
@@ -120,15 +123,13 @@ const ComboBoxMultiInput = (props: ComboBoxMultiInputProps) => {
         role="combobox"
         automaticResize
         {...propsRest}
+        {...anchorProps}
         inputProps={{
           placeholder: 'Select options',
           ...propsRest.inputProps,
           className: cx(cl['bk-combo-box__input'], propsRest.inputProps?.className),
         }}
-        containerProps={{
-          ...propsRest.containerProps,
-          ...anchorProps,
-        }}
+        containerProps={propsRest.containerProps ?? {}}
       />
       
       {selectedOptions.size > 0 && (
@@ -205,6 +206,7 @@ export type ComboBoxMultiProps = Omit<InputProps, 'onSelect'> & {
 export const ComboBoxMulti = Object.assign(
   (props: ComboBoxMultiProps) => {
     const {
+      ref,
       unstyled = false,
       label,
       value,
@@ -218,10 +220,18 @@ export const ComboBoxMulti = Object.assign(
       ...propsRest
     } = props;
     
-    const { formatItemLabel, ref } = dropdownProps;
-
+    const {
+      formatItemLabel,
+      ref: dropdownPropsRef,
+      onBlur: onDropdownBlur,
+      ...dropdownPropsRest
+    } = dropdownProps;
+    
     const dropdownRef = React.useRef<MenuProviderRef | null>(null);
-    const mergedDropdownRef = mergeRefs(ref, dropdownRef);
+    const mergedDropdownRef = mergeRefs(dropdownPropsRef, dropdownRef);
+
+    const inputRef = React.useRef<HTMLInputElement | null>(null);
+    const mergedInputRef = mergeRefs(ref, inputRef);
 
     const [inputValue, setInputValue] = React.useState(value ?? '');
 
@@ -268,6 +278,14 @@ export const ComboBoxMulti = Object.assign(
       onBlur?.(evt);
     };
 
+    const handleDropdownFocusOut = (evt: React.FocusEvent<HTMLDivElement>) => {
+      const inputEl = inputRef.current;
+      if (inputEl?.contains(evt.relatedTarget as Node)) { return; }
+      const floatingEl = dropdownRef.current?.floatingEl;
+      if (floatingEl?.contains(evt.relatedTarget as Node)) { return; }
+      onDropdownBlur?.(evt);
+    };
+
     return (
       <MenuMultiProvider
         label={label}
@@ -279,7 +297,9 @@ export const ComboBoxMulti = Object.assign(
         offset={1}
         selected={internalSelectedItemKeys}
         onSelect={handleSelect}
-        {...dropdownProps}
+        onBlur={handleDropdownFocusOut}
+        formatItemLabel={formatItemLabel}
+        {...dropdownPropsRest}
         ref={mergedDropdownRef}
       >
         {anchorRenderArgs => (
@@ -291,6 +311,7 @@ export const ComboBoxMulti = Object.assign(
             onUpdate={handleSelect}
             onBlur={handleInputFocusOut}
             {...propsRest}
+            ref={mergedInputRef}
           />
         )}
       </MenuMultiProvider>

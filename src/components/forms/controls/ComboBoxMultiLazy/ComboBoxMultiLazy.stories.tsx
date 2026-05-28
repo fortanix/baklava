@@ -196,10 +196,15 @@ const ComboBoxMultiLazyFullyControlledC = (props: React.ComponentProps<typeof Co
   const [value, setValue] = React.useState<string>('');
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set([]));
       
-  const handleInputFocusOut = (_evt: React.FocusEvent<HTMLInputElement>) => {
-    setValue('');
+  const onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = evt.target.value;
+    setValue(newValue);
   };
 
+  const onBlur = () => {
+    setValue('');
+  };
+  
   return (
     <>
       <div>Input: {value ?? '(none)'}</div>
@@ -208,12 +213,16 @@ const ComboBoxMultiLazyFullyControlledC = (props: React.ComponentProps<typeof Co
         {...props}
         placeholder="Choose items"
         value={value}
-        onChange={event => { setValue(event.target.value); }}
-        onBlur={handleInputFocusOut}
+        onChange={onChange}
+        onBlur={onBlur}
         selected={selectedKeys}
         onSelect={selectOptions => {
           setValue('');
           setSelectedKeys(selectOptions);
+        }}
+        dropdownProps={{
+          ...props.dropdownProps,
+          onBlur,
         }}
       />
       <div><Button label="Update state" onPress={() => { setSelectedKeys(new Set(['item-1'])); }}/></div>
@@ -257,6 +266,7 @@ const ComboBoxMultiLazyWithFilterC = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [limit, setLimit] = React.useState(pageSize);
   const [items, setItems] = React.useState<Array<{ id: string, name: string }>>([]);
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
   
   const hasMoreItems = items.length < maxItems;
   const itemsFiltered = items.filter(item => item.name.toLowerCase().includes(filter.toLowerCase()));
@@ -267,7 +277,19 @@ const ComboBoxMultiLazyWithFilterC = () => {
       setIsLoading(true); // Immediately set `isLoading` so we can skip a render cycle (before the effect kicks in)
     }
   }, [hasMoreItems]);
-  
+   
+  const onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    setIsDropdownOpen(true);
+    const newValue = evt.target.value;
+    setFilter(newValue);
+  };
+
+  const formatItemLabel = (itemKey: string) => items.find(i => i.id === itemKey)?.name ?? 'Unknown';
+
+  const onBlur = () => {
+    setFilter('');
+  };
+
   React.useEffect(() => {
     setIsLoading(false);
     
@@ -290,8 +312,9 @@ const ComboBoxMultiLazyWithFilterC = () => {
         label="Test combobox"
         placeholder="Choose items"
         value={filter}
-        onChange={event => { setFilter(event.target.value); }}
+        onChange={onChange}
         selected={selectedKeys}
+        onBlur={onBlur}
         onSelect={selectOptions => {
           setSelectedKeys(selectOptions);
         }}
@@ -302,9 +325,12 @@ const ComboBoxMultiLazyWithFilterC = () => {
           hasMoreItems: hasMoreItems,
           isLoading: isLoading,
           renderItem: item => <>{items.find(i => i.id === item.key)?.name }</>,
-          formatItemLabel: itemKey => items.find(i => i.id === itemKey)?.name ?? 'Unknown',
+          formatItemLabel,
           placeholderEmpty: items.length === 0 ? 'No items' : 'No items found',
           virtualItemKeys,
+          open: isDropdownOpen,
+          onOpenChange: setIsDropdownOpen,
+          onBlur,
         }}
       />
     </>

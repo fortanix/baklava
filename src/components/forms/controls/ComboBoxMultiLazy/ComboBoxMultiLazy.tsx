@@ -43,6 +43,7 @@ type ComboBoxMultiLazyInputProps = Omit<InputProps, 'onSelect'> & {
 
 const ComboBoxMultiLazyInput = (props: ComboBoxMultiLazyInputProps) => {
   const {
+    ref,
     anchorRenderArgs,
     onUpdate,
     Input = InputDefault,
@@ -59,11 +60,13 @@ const ComboBoxMultiLazyInput = (props: ComboBoxMultiLazyInputProps) => {
   } = anchorRenderArgs;
     
   const anchorProps = anchorRenderProps({
+    ref,
     className: cx(
       cl['bk-combo-box'],
       { [cl['bk-combo-box--open']]: open },
       propsRest.containerProps?.className,
     ),
+    onBlur: propsRest.onBlur,
   });
 
   const onRemove = React.useCallback(
@@ -81,15 +84,13 @@ const ComboBoxMultiLazyInput = (props: ComboBoxMultiLazyInputProps) => {
         role="combobox"
         automaticResize
         {...propsRest}
+        {...anchorProps}
         inputProps={{
           placeholder: 'Select options',
           ...propsRest.inputProps,
           className: cx(cl['bk-combo-box__input'], propsRest.inputProps?.className),
         }}
-        containerProps={{
-          ...propsRest.containerProps,
-          ...anchorProps,
-        }}
+        containerProps={propsRest.containerProps ?? {}}
       />
       
       {selectedOptions.size > 0 && (
@@ -164,6 +165,7 @@ export type ComboBoxMultiLazyProps = Omit<InputProps, 'onSelect'> & {
 };
 export const ComboBoxMultiLazy = (props: ComboBoxMultiLazyProps) => {
   const {
+    ref,
     unstyled = false,
     label,
     value,
@@ -176,10 +178,18 @@ export const ComboBoxMultiLazy = (props: ComboBoxMultiLazyProps) => {
     ...propsRest
   } = props;
 
-  const { formatItemLabel, ref } = dropdownProps;
-
+  const {
+    formatItemLabel,
+    ref: dropdownPropsRef,
+    onBlur: onDropdownBlur,
+    ...dropdownPropsRest
+  } = dropdownProps;
+  
   const dropdownRef = React.useRef<MenuProviderRef | null>(null);
-  const mergedDropdownRef = mergeRefs(ref, dropdownRef);
+  const mergedDropdownRef = mergeRefs(dropdownPropsRef, dropdownRef);
+
+  const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const mergedInputRef = mergeRefs(ref, inputRef);
 
   const [inputValue, setInputValue] = React.useState(value ?? '');
 
@@ -226,6 +236,14 @@ export const ComboBoxMultiLazy = (props: ComboBoxMultiLazyProps) => {
     onBlur?.(evt);
   };
 
+  const handleDropdownFocusOut = (evt: React.FocusEvent<HTMLDivElement>) => {
+    const inputEl = inputRef.current;
+    if (inputEl?.contains(evt.relatedTarget as Node)) { return; }
+    const floatingEl = dropdownRef.current?.floatingEl;
+    if (floatingEl?.contains(evt.relatedTarget as Node)) { return; }
+    onDropdownBlur?.(evt);
+  };
+
   return (
     <MenuMultiLazyProvider
       label={label}
@@ -236,7 +254,9 @@ export const ComboBoxMultiLazy = (props: ComboBoxMultiLazyProps) => {
       offset={1}
       selected={internalSelectedItemKeys}
       onSelect={handleSelect}
-      {...dropdownProps}
+      onBlur={handleDropdownFocusOut}
+      formatItemLabel={formatItemLabel}
+      {...dropdownPropsRest}
       ref={mergedDropdownRef}
     >
       {anchorRenderArgs => (
@@ -248,6 +268,7 @@ export const ComboBoxMultiLazy = (props: ComboBoxMultiLazyProps) => {
           onUpdate={handleSelect}
           onBlur={handleInputFocusOut}
           {...propsRest}
+          ref={mergedInputRef}
         />
       )}
     </MenuMultiLazyProvider>

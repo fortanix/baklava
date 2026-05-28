@@ -258,16 +258,6 @@ const useComboBoxInteraction = (
     [enabled, onOpenChange]
   );
 
-  // On change event -> open floating element
-  const handleReferenceChange = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (!enabled) { return; }
-
-      onOpenChange(true, event.nativeEvent, 'reference-press');
-    },
-    [enabled, onOpenChange]
-  );
-
   const handleReferenceBlur = React.useCallback(
     (event: React.FocusEvent) => {
       if (!enabled) { return; }
@@ -281,8 +271,6 @@ const useComboBoxInteraction = (
 
       if (!isInside) {
         onOpenChange(false, event.nativeEvent, 'focus-out');
-      } else {
-        event.preventDefault();
       }
     },
     [enabled, popoverEl, onOpenChange]
@@ -360,14 +348,12 @@ const useComboBoxInteraction = (
       onBlur: handleReferenceBlur,
       onClick: handleReferenceClick,
       onKeyDown: handleReferenceKeyDown,
-      onChange: handleReferenceChange,
     }),
     [
       handleReferenceFocus,
       handleReferenceBlur,
       handleReferenceClick,
       handleReferenceKeyDown,
-      handleReferenceChange,
     ]
   );
 
