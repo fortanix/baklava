@@ -44,7 +44,7 @@
     // otherwise a scrollbar keeps flashing due to spinner rotation. curiously doesn't happen on other sizes
     // eventually we could import the Spinner variable and reuse it here?
     &.bk-panel--loading--large {
-      min-height: calc(100px + (2 * var(--bk-panel-inset))); 
+      min-block-size: calc(100px + (2 * var(--bk-panel-inset))); 
     }
     
     .bk-panel__heading {
