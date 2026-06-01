@@ -198,3 +198,10 @@ export const CardLoadingTinyContent: Story = {
     children: 'lorem',
   },
 };
+
+export const CardLoadingResizable: Story = {
+  args: {
+    status: 'loading',
+  },
+  decorators: [Story => <LayoutDecorator size="small" resize="both"><Story/></LayoutDecorator>],
+};

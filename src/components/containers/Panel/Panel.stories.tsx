@@ -6,6 +6,7 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
+import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 
 import { Banner } from '../Banner/Banner.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
@@ -84,4 +85,11 @@ export const PanelLoadingTinyContent: Story = {
     status: 'loading',
     children: 'lorem',
   },
+};
+
+export const PanelLoadingResizable: Story = {
+  args: {
+    status: 'loading',
+  },
+  decorators: [Story => <LayoutDecorator size="small" resize="both"><Story/></LayoutDecorator>],
 };
