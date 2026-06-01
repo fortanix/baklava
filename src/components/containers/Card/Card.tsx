@@ -80,6 +80,7 @@ export const Card = Object.assign(
           { [cl['bk-card--empty']]: !children },
           propsRest.className,
         )}
+        inert={status === 'loading'}
       >
         {status === 'loading' && (
           <div className={cl['bk-card__loading']}>
