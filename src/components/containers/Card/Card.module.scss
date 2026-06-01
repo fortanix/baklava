@@ -4,6 +4,7 @@
 
 @use '../../../styling/defs.scss' as bk;
 @use '../../../typography/Heading/Heading.mixins.scss' as heading;
+@use '../../graphics/Spinner/Spinner.module.scss' as spinner;
 
 @mixin bk-card($name: bk-card) {
   --bk-card-background-color: #{bk.$theme-card-background-default};
@@ -67,6 +68,47 @@
 @layer baklava.components {
   .bk-card {
     @include bk.component-base(bk-card);
+    // Do not set contain: layout (included in bk.component-base mixin)
+    // because it breaks the variable --card used for anchor positioning
     @include bk-card;
+    
+    contain: style;
+    anchor-name: --card;
+    anchor-scope: --card;
+    
+    .bk-card__loading {
+      container-type: size;
+
+      position: absolute;
+      position-anchor: --card;
+      position-area: center;
+      place-self: stretch;
+
+      display: grid;
+      place-content: center;
+      
+      background: color-mix(in oklch, black, 80% transparent);
+      
+      .bk-card__loading__spinner {
+        @include spinner.spinner-medium;
+        inline-size: min(20cqmin, 5rem);
+        aspect-ratio: 1;
+      }
+    }
+    
+    // add backdrop only if there's content
+    &:not(.bk-card--empty) .bk-card__loading {
+      background: color-mix(in oklch, black, 80% transparent);
+    }
+    
+    // Use a small spinner when there's no content
+    // TODO: Fix it when there's content, but it's tiny (i.e. one line of text)
+    &.bk-card--empty {
+      .bk-card__loading {
+        .bk-card__loading__spinner {
+          @include spinner.spinner-small;
+        }
+      }
+    }
   }
 }
