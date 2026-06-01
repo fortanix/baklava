@@ -4,6 +4,7 @@
 
 @use '../../../styling/defs.scss' as bk;
 @use '../../../typography/Heading/Heading.mixins.scss' as heading;
+@use '../../graphics/Spinner/Spinner.module.scss' as spinner;
 
 @mixin bk-card($name: bk-card) {
   --bk-card-background-color: #{bk.$theme-card-background-default};
@@ -20,12 +21,6 @@
     background: var(--bk-card-background-color);
     border: bk.$size-1 solid var(--bk-card-border-color);
     border-radius: bk.$radius-3;
-  }
-  
-  &.#{$name}--loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
   
   @include bk.flex-column;
@@ -73,6 +68,38 @@
 @layer baklava.components {
   .bk-card {
     @include bk.component-base(bk-card);
+    // Do not set contain: layout (included in bk.component-base mixin)
+    // because it breaks the variable --card used for anchor positioning
     @include bk-card;
+    
+    contain: style;
+    anchor-name: --card;
+    anchor-scope: --card;
+    
+    .bk-card__loading {
+      container-type: size;
+
+      position: absolute;
+      position-anchor: --card;
+      position-area: center;
+      place-self: stretch;
+
+      display: grid;
+      place-content: center;
+      
+      background: color-mix(in oklch, black, 80% transparent);
+      
+      .bk-card__loading__spinner {
+        @include spinner.spinner-medium;
+        inline-size: min(20cqmin, 5rem);
+        aspect-ratio: 1;
+      }
+    }
+    // TODO: Fix is properly when there's content, but it's tiny (i.e. one line of text)
+    &.bk-card--loading--empty .bk-card__loading {
+      .bk-card__loading__spinner {
+        @include spinner.spinner-small;
+      }
+    }
   }
 }

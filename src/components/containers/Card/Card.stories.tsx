@@ -174,20 +174,27 @@ export const CardNested: Story = {
 
 export const CardLoading: Story = {
   args: {
-    loading: true,
+    status: 'loading',
   },
 };
 
-export const CardLoadingMedium: Story = {
+export const CardLoadingBig: Story = {
   args: {
-    loading: true,
-    loadingSize: 'medium',
+    status: 'loading',
+    children: <><LoremIpsum/><LoremIpsum/><LoremIpsum/><LoremIpsum/><LoremIpsum/></>
+  }
+}
+
+export const CardLoadingWithoutContent: Story = {
+  args: {
+    status: 'loading',
+    children: undefined,
   },
 };
 
-export const CardLoadingSmall: Story = {
+export const CardLoadingTinyContent: Story = {
   args: {
-    loading: true,
-    loadingSize: 'small',
+    status: 'loading',
+    children: 'lorem',
   },
 };

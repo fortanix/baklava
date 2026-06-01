@@ -35,13 +35,7 @@ export type PanelProps = React.PropsWithChildren<ComponentProps<'section'> & {
  */
 export const Panel = Object.assign(
   (props: PanelProps) => {
-    const {
-      children,
-      unstyled = false,
-      edgeless = false,
-      status = 'ready',
-      ...propsRest
-    } = props;
+    const { children, unstyled = false, edgeless = false, status = 'ready', ...propsRest } = props;
     const scrollerProps = useScroller();
     
     return (

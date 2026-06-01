@@ -61,17 +61,14 @@ export type CardProps = ComponentProps<'section'> & {
   flat?: undefined | boolean,
   
   /** Whether the panel display a loading indicator, instead of it's children */
-  loading?: undefined | boolean,
-  
-  /** Spinner loading size, defaults to large. */
-  loadingSize?: undefined | 'small' | 'medium' | 'large',
+  status?: undefined | 'ready' | 'loading',
 };
 /**
  * Card component, a container similar to a panel but smaller and usually used in a list or grid.
  */
 export const Card = Object.assign(
   (props: CardProps) => {
-    const { children, unstyled = false, flat = false, loading = false, loadingSize = 'large', ...propsRest } = props;
+    const { children, unstyled = false, flat = false, status = 'ready', ...propsRest } = props;
     
     return (
       <article
@@ -80,11 +77,16 @@ export const Card = Object.assign(
           'bk',
           { [cl['bk-card']]: !unstyled },
           { [cl['bk-card--flat']]: flat },
-          { [cl['bk-card--loading']]: loading },
+          { [cl['bk-card--loading--empty']]: status === 'loading' && !children },
           propsRest.className,
         )}
       >
-        {loading ? <Spinner size={loadingSize}/> : children}
+        {status === 'loading' && (
+          <div className={cl['bk-card__loading']}>
+            <Spinner className={cl['bk-card__loading__spinner']}/>
+          </div>
+        )}
+        {children}
       </article>
     );
   },
