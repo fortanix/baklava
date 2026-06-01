@@ -77,7 +77,7 @@ export const Card = Object.assign(
           'bk',
           { [cl['bk-card']]: !unstyled },
           { [cl['bk-card--flat']]: flat },
-          { [cl['bk-card--loading--empty']]: status === 'loading' && !children },
+          { [cl['bk-card--empty']]: !children },
           propsRest.className,
         )}
       >

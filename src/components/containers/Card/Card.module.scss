@@ -95,10 +95,19 @@
         aspect-ratio: 1;
       }
     }
-    // TODO: Fix is properly when there's content, but it's tiny (i.e. one line of text)
-    &.bk-card--loading--empty .bk-card__loading {
-      .bk-card__loading__spinner {
-        @include spinner.spinner-small;
+    
+    // add backdrop only if there's content
+    &:not(.bk-card--empty) .bk-card__loading {
+      background: color-mix(in oklch, black, 80% transparent);
+    }
+    
+    // Use a small spinner when there's no content
+    // TODO: Fix it when there's content, but it's tiny (i.e. one line of text)
+    &.bk-card--empty {
+      .bk-card__loading {
+        .bk-card__loading__spinner {
+          @include spinner.spinner-small;
+        }
       }
     }
   }

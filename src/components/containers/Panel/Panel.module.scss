@@ -52,18 +52,25 @@
       display: grid;
       place-content: center;
       
-      background: color-mix(in oklch, black, 80% transparent);
-      
       .bk-panel__loading__spinner {
         @include spinner.spinner-medium;
         inline-size: min(20cqmin, 5rem);
         aspect-ratio: 1;
       }
     }
-    // TODO: Fix is properly when there's content, but it's tiny (i.e. one line of text)
-    &.bk-panel--loading--empty .bk-panel__loading {
-      .bk-panel__loading__spinner {
-        @include spinner.spinner-small;
+    
+    // add backdrop only if there's content
+    &:not(.bk-panel--empty) .bk-panel__loading {
+      background: color-mix(in oklch, black, 80% transparent);
+    }
+    
+    // Use a small spinner when there's no content
+    // TODO: Fix it when there's content, but it's tiny (i.e. one line of text)
+    &.bk-panel--empty {
+      .bk-panel__loading {
+        .bk-panel__loading__spinner {
+          @include spinner.spinner-small;
+        }
       }
     }
     

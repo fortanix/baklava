@@ -46,7 +46,7 @@ export const Panel = Object.assign(
           'bk',
           { [cl['bk-panel']]: !unstyled },
           { [cl['bk-panel--edgeless']]: !!edgeless },
-          { [cl['bk-panel--loading--empty']]: status === 'loading' && !children },
+          { [cl['bk-panel--empty']]: !children },
           scrollerProps.className,
           propsRest.className,
         )}
