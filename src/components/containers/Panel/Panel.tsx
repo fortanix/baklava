@@ -28,10 +28,7 @@ export type PanelProps = React.PropsWithChildren<ComponentProps<'section'> & {
   edgeless?: undefined | boolean,
   
   /** Whether the panel display a loading indicator, instead of it's children */
-  loading?: undefined | boolean,
-  
-  /** Spinner loading size, defaults to large. */
-  loadingSize?: undefined | 'small' | 'medium' | 'large',
+  status?: undefined | 'ready' | 'loading',
 }>;
 /**
  * Panel component.
@@ -42,8 +39,7 @@ export const Panel = Object.assign(
       children,
       unstyled = false,
       edgeless = false,
-      loading = false,
-      loadingSize = 'large',
+      status = 'ready',
       ...propsRest
     } = props;
     const scrollerProps = useScroller();
@@ -56,13 +52,18 @@ export const Panel = Object.assign(
           'bk',
           { [cl['bk-panel']]: !unstyled },
           { [cl['bk-panel--edgeless']]: !!edgeless },
-          { [cl['bk-panel--loading']]: loading },
-          { [cl[`bk-panel--loading--${loadingSize}`]]: loadingSize === 'large' },
+          { [cl['bk-panel--loading--empty']]: status === 'loading' && !children },
           scrollerProps.className,
           propsRest.className,
         )}
+        inert={status === 'loading'}
       >
-        {loading ? <Spinner size={loadingSize}/> : children}
+        {status === 'loading' && (
+          <div className={cl['bk-panel__loading']}>
+            <Spinner className={cl['bk-panel__loading__spinner']}/>
+          </div>
+        )}
+        {children}
       </section>
     );
   },

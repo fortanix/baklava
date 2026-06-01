@@ -3,6 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 @use '../../../styling/defs.scss' as bk;
+@use '../../graphics/Spinner/Spinner.module.scss' as Spinner;
 
 @property --bk-panel-inset-compensation {
   syntax: '<length>';
@@ -17,7 +18,7 @@
   
   overflow: hidden;
   
-  min-block-size: 4rem;
+  min-block-size: 6rem;
   padding: var(--bk-panel-inset);
   background: var(--bk-panel-background-color);
   border: bk.rem-from-px(1) solid var(--bk-panel-border-color);
@@ -29,22 +30,56 @@
   .bk-panel {
     @include bk.component-base(bk-panel);
     @include panel;
+    anchor-name: --card;
+    anchor-scope: --card;
     
     &.bk-panel--edgeless {
       // Communicate the current panel inset to any children who might want to compensate for it (e.g. edgeless layouts)
       --bk-panel-inset-compensation: var(--bk-panel-inset);
     }
     
-    &.bk-panel--loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    // arbitrary size in pixels, as Spinner also uses sizes in px,
-    // otherwise a scrollbar keeps flashing due to spinner rotation. curiously doesn't happen on other sizes
-    // eventually we could import the Spinner variable and reuse it here?
-    &.bk-panel--loading--large {
-      min-block-size: calc(100px + (2 * var(--bk-panel-inset))); 
+    .bk-panel__loading {
+      // block-size: 0;
+      // pointer-events: none;
+      // overflow: visible;
+      // position: sticky;
+      // inset-block-start: 50%;
+      // inset-block-end: 50%;
+      // z-index: 1;
+      // display: flex;
+      // align-items: center;
+      // justify-content: center;
+      
+      container-type: size;
+
+      position: absolute;
+      position-anchor: --card;
+      position-area: center;
+      place-self: stretch;
+
+      display: grid;
+      place-content: center;
+      
+      background: color-mix(in oklch, black, 80% transparent);
+      
+      .bk-panel__loading__spinner {
+        inline-size: min(20cqmin, 5rem);
+        aspect-ratio: 1;
+        @include Spinner.spinner-medium;
+      }
+
+//       // TODO: Find a solution to display a small spinner when the content is small (i.e. circa one line)
+//       &:not(.bk-panel--loading--empty) .bk-panel__loading {
+//         .bk-panel__loading__spinner {
+//           @include Spinner.spinner-medium;
+//         }
+//       }
+// 
+//       &.bk-panel--loading--empty .bk-panel__loading {
+//         .bk-panel__loading__spinner {
+//           @include Spinner.spinner-small;
+//         }
+//       }
     }
     
     .bk-panel__heading {

@@ -8,6 +8,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { Banner } from '../Banner/Banner.tsx';
+import { Button } from '../../actions/Button/Button.tsx';
 
 import { Panel } from './Panel.tsx';
 
@@ -29,6 +30,7 @@ export default {
       <>
         <Panel.Heading>Panel</Panel.Heading>
         <LoremIpsum paragraphs={3}/>
+        <Button kind="primary">button inside panel</Button>
       </>
     ),
   },
@@ -59,20 +61,27 @@ export const PanelWithScroll: Story = {
 
 export const PanelLoading: Story = {
   args: {
-    loading: true,
+    status: 'loading',
   },
 };
 
-export const PanelLoadingMedium: Story = {
+export const PanelLoadingWithScroll: Story = {
   args: {
-    loading: true,
-    loadingSize: 'medium',
+    status: 'loading',
+    style: { maxHeight: '8lh' },
   },
 };
 
-export const PanelLoadingSmall: Story = {
+export const PanelLoadingWithoutContent: Story = {
   args: {
-    loading: true,
-    loadingSize: 'small',
+    status: 'loading',
+    children: undefined,
+  },
+};
+
+export const PanelLoadingTinyContent: Story = {
+  args: {
+    status: 'loading',
+    children: 'lorem',
   },
 };
