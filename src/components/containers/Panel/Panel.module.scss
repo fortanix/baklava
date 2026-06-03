@@ -29,12 +29,13 @@
 @layer baklava.components {
   .bk-panel {
     @include bk.component-base(bk-panel);
-    // Do not set contain: layout (included in bk.component-base mixin)
-    // because it breaks the variable --panel down below used for anchor positioning
-    contain: style;
     @include panel;
-    anchor-name: --panel;
-    anchor-scope: --panel;
+    
+    // Do not set contain: layout (included in bk.component-base mixin)
+    // because it breaks the variable --bk-panel down below used for anchor positioning
+    contain: style;
+    anchor-name: --bk-panel;
+    anchor-scope: --bk-panel;
     
     &.bk-panel--edgeless {
       // Communicate the current panel inset to any children who might want to compensate for it (e.g. edgeless layouts)
@@ -45,16 +46,17 @@
       container-type: size;
 
       position: absolute;
-      position-anchor: --panel;
+      position-anchor: --bk-panel;
       position-area: center;
       place-self: stretch;
 
       display: grid;
       place-content: center;
+      z-index: 1;
       
       .bk-panel__loading__spinner {
         @include spinner.spinner-medium;
-        inline-size: min(20cqmin, 5rem);
+        inline-size: min(35cqmin, 5rem);
         aspect-ratio: 1;
       }
     }

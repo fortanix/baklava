@@ -82,12 +82,12 @@ export const Card = Object.assign(
         )}
         inert={status === 'loading'}
       >
+        {children}
         {status === 'loading' && (
           <div className={cl['bk-card__loading']}>
             <Spinner className={cl['bk-card__loading__spinner']}/>
           </div>
         )}
-        {children}
       </article>
     );
   },

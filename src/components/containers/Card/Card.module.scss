@@ -68,30 +68,31 @@
 @layer baklava.components {
   .bk-card {
     @include bk.component-base(bk-card);
-    // Do not set contain: layout (included in bk.component-base mixin)
-    // because it breaks the variable --card used for anchor positioning
     @include bk-card;
     
+    // Do not set contain: layout (included in bk.component-base mixin)
+    // because it breaks the variable --bk-card used for anchor positioning
     contain: style;
-    anchor-name: --card;
-    anchor-scope: --card;
+    anchor-name: --bk-card;
+    anchor-scope: --bk-card;
     
     .bk-card__loading {
       container-type: size;
 
       position: absolute;
-      position-anchor: --card;
+      position-anchor: --bk-card;
       position-area: center;
       place-self: stretch;
 
       display: grid;
       place-content: center;
+      z-index: 1;
       
       background: color-mix(in oklch, black, 80% transparent);
       
       .bk-card__loading__spinner {
         @include spinner.spinner-medium;
-        inline-size: min(20cqmin, 5rem);
+        inline-size: min(35cqmin, 5rem);
         aspect-ratio: 1;
       }
     }

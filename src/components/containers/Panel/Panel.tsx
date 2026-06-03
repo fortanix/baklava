@@ -52,12 +52,12 @@ export const Panel = Object.assign(
         )}
         inert={status === 'loading'}
       >
+        {children}
         {status === 'loading' && (
           <div className={cl['bk-panel__loading']}>
             <Spinner className={cl['bk-panel__loading__spinner']}/>
           </div>
         )}
-        {children}
       </section>
     );
   },

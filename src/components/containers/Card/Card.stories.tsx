@@ -187,9 +187,9 @@ export const CardLoading: Story = {
 export const CardLoadingBig: Story = {
   args: {
     status: 'loading',
-    children: <><LoremIpsum/><LoremIpsum/><LoremIpsum/><LoremIpsum/><LoremIpsum/></>
-  }
-}
+    children: <LoremIpsum paragraphs={5}/>,
+  },
+};
 
 export const CardLoadingWithoutContent: Story = {
   args: {
