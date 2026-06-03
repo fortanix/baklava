@@ -6,6 +6,7 @@ import { classNames as cx, type ComponentProps } from '../../../util/componentUt
 
 import { H5 } from '../../../typography/Heading/Heading.tsx';
 import { Link as LinkDefault } from '../../actions/Link/Link.tsx';
+import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
 
 import cl from './Card.module.scss';
 
@@ -58,13 +59,16 @@ export type CardProps = ComponentProps<'section'> & {
   
   /** If enabled, removes the outside border/padding. For use in nested contexts. Default: false. */
   flat?: undefined | boolean,
+  
+  /** Whether the panel display a loading indicator, instead of it's children */
+  status?: undefined | 'ready' | 'loading',
 };
 /**
  * Card component, a container similar to a panel but smaller and usually used in a list or grid.
  */
 export const Card = Object.assign(
   (props: CardProps) => {
-    const { children, unstyled = false, flat = false, ...propsRest } = props;
+    const { children, unstyled = false, flat = false, status = 'ready', ...propsRest } = props;
     
     return (
       <article
@@ -73,10 +77,17 @@ export const Card = Object.assign(
           'bk',
           { [cl['bk-card']]: !unstyled },
           { [cl['bk-card--flat']]: flat },
+          { [cl['bk-card--empty']]: !children },
           propsRest.className,
         )}
+        inert={status === 'loading'}
       >
         {children}
+        {status === 'loading' && (
+          <div className={cl['bk-card__loading']}>
+            <Spinner className={cl['bk-card__loading__spinner']}/>
+          </div>
+        )}
       </article>
     );
   },

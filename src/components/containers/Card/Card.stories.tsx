@@ -9,8 +9,9 @@ import { DummyBkLinkWithNotify } from '../../../util/storybook/StorybookLink.tsx
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Banner } from '../Banner/Banner.tsx';
+import { Button } from '../../actions/Button/Button.tsx';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
 
 import { Card } from './Card.tsx';
 
@@ -28,7 +29,12 @@ export default {
   argTypes: {},
   args: {
     unstyled: false,
-    children: <LoremIpsum/>,
+    children: (
+      <>
+        <LoremIpsum/>
+        <Button kind="primary">button inside card</Button>
+      </>
+    ),
   },
   render: (args) => <Card {...args}/>,
 } satisfies Meta<CardArgs>;
@@ -170,4 +176,38 @@ export const CardNested: Story = {
       </>
     ),
   },
+};
+
+export const CardLoading: Story = {
+  args: {
+    status: 'loading',
+  },
+};
+
+export const CardLoadingBig: Story = {
+  args: {
+    status: 'loading',
+    children: <LoremIpsum paragraphs={5}/>,
+  },
+};
+
+export const CardLoadingWithoutContent: Story = {
+  args: {
+    status: 'loading',
+    children: undefined,
+  },
+};
+
+export const CardLoadingTinyContent: Story = {
+  args: {
+    status: 'loading',
+    children: 'lorem',
+  },
+};
+
+export const CardLoadingResizable: Story = {
+  args: {
+    status: 'loading',
+  },
+  decorators: [Story => <LayoutDecorator size="small" resize="both"><Story/></LayoutDecorator>],
 };

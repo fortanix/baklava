@@ -3,6 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 @use '../../../styling/defs.scss' as bk;
+@use '../../graphics/Spinner/Spinner.module.scss' as spinner;
 
 @property --bk-panel-inset-compensation {
   syntax: '<length>';
@@ -30,9 +31,49 @@
     @include bk.component-base(bk-panel);
     @include panel;
     
+    // Do not set contain: layout (included in bk.component-base mixin)
+    // because it breaks the variable --bk-panel down below used for anchor positioning
+    contain: style;
+    anchor-name: --bk-panel;
+    anchor-scope: --bk-panel;
+    
     &.bk-panel--edgeless {
       // Communicate the current panel inset to any children who might want to compensate for it (e.g. edgeless layouts)
       --bk-panel-inset-compensation: var(--bk-panel-inset);
+    }
+    
+    .bk-panel__loading {
+      container-type: size;
+
+      position: absolute;
+      position-anchor: --bk-panel;
+      position-area: center;
+      place-self: stretch;
+
+      display: grid;
+      place-content: center;
+      z-index: 1;
+      
+      .bk-panel__loading__spinner {
+        @include spinner.spinner-medium;
+        inline-size: min(35cqmin, 5rem);
+        aspect-ratio: 1;
+      }
+    }
+    
+    // add backdrop only if there's content
+    &:not(.bk-panel--empty) .bk-panel__loading {
+      background: color-mix(in oklch, black, 80% transparent);
+    }
+    
+    // Use a small spinner when there's no content
+    // TODO: Fix it when there's content, but it's tiny (i.e. one line of text)
+    &.bk-panel--empty {
+      .bk-panel__loading {
+        .bk-panel__loading__spinner {
+          @include spinner.spinner-small;
+        }
+      }
     }
     
     .bk-panel__heading {
