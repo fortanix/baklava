@@ -9,7 +9,7 @@ import * as React from 'react';
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { InputSearch } from '../Input/InputSearch.tsx';
 
-import { type ItemKey, ComboBox } from './ComboBox.tsx';
+import { type ItemKey, SelectComboBox } from './SelectComboBox.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
 // Sample options
@@ -33,11 +33,11 @@ type FruitKey = keyof typeof fruits;
 const formatFruitLabel = (itemKey: ItemKey): string => fruits[itemKey as FruitKey] ?? 'UNKNOWN';
 
 
-type ComboBoxArgs = React.ComponentProps<typeof ComboBox>;
+type ComboBoxArgs = React.ComponentProps<typeof SelectComboBox>;
 type Story = StoryObj<ComboBoxArgs>;
 
 export default {
-  component: ComboBox,
+  component: SelectComboBox,
   parameters: {
     layout: 'centered',
   },
@@ -46,18 +46,16 @@ export default {
   },
   args: {
     label: 'Test combobox',
-    dropdownProps: {
-      formatItemLabel: formatFruitLabel,
-    },
+    formatItemLabel: formatFruitLabel,
     options: (
       <>
         {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+          <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
       </>
     ),
   },
-  render: (args) => <ComboBox {...args}/>,
+  render: (args) => <SelectComboBox {...args}/>,
 } satisfies Meta<ComboBoxArgs>;
 
 export const ComboBoxStandard: Story = {};
@@ -69,17 +67,17 @@ export const ComboBoxWithCustomInput: Story = {
   },
 };
 
-const ComboBoxWithDefaultC = (props: React.ComponentProps<typeof ComboBox>) => {
+const ComboBoxWithDefaultC = (props: React.ComponentProps<typeof SelectComboBox>) => {
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>('item-durian');
   
   return (
     <>
       <div>Selected: {selectedKey ?? '(none)'}</div>
-      <ComboBox
+      <SelectComboBox
         {...props}
         placeholder="Choose a fruit"
         options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+          <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         selected={selectedKey}
         onSelect={(_key, selectedOption) => {
@@ -96,17 +94,17 @@ export const ComboBoxWithDefault: Story = {
 };
 
 
-const ComboBoxControlledC = (props: React.ComponentProps<typeof ComboBox>) => {
+const ComboBoxControlledC = (props: React.ComponentProps<typeof SelectComboBox>) => {
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
   
   return (
     <>
       <div>Selected: {selectedKey ?? '(none)'}</div>
-      <ComboBox
+      <SelectComboBox
         {...props}
         placeholder="Choose a fruit"
         options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+          <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         selected={selectedKey}
         onSelect={(_key, selectedOption) => {
@@ -123,7 +121,7 @@ export const ComboBoxControlled: Story = {
   },
 };
 
-const ComboBoxFullyControlledC = (props: React.ComponentProps<typeof ComboBox>) => {
+const ComboBoxFullyControlledC = (props: React.ComponentProps<typeof SelectComboBox>) => {
   const [value, setValue] = React.useState<string>('');
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
@@ -150,14 +148,14 @@ const ComboBoxFullyControlledC = (props: React.ComponentProps<typeof ComboBox>) 
     <>
       <div>Input: {value ?? '(none)'}</div>
       <div>Selected: {selectedKey ?? '(none)'}</div>
-      <ComboBox
+      <SelectComboBox
         {...props}
         placeholder="Choose a fruit"
         value={value}
         onChange={onChange}
         onBlur={onBlur}
         options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+          <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         selected={selectedKey}
         onSelect={(_key, selectedOption) => {
@@ -184,17 +182,17 @@ export const ComboBoxFullyControlled: Story = {
   },
 };
 
-const ComboBoxUncontrolledC = (props: React.ComponentProps<typeof ComboBox>) => {
+const ComboBoxUncontrolledC = (props: React.ComponentProps<typeof SelectComboBox>) => {
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
       
   return (
     <>
       <div>Selected: {selectedKey ?? '(none)'}</div>
-      <ComboBox
+      <SelectComboBox
         {...props}
         placeholder="Choose a fruit"
         options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+          <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         onSelect={(_key, selectedOption) => {
           setSelectedKey(selectedOption?.itemKey ?? null);
@@ -209,7 +207,7 @@ export const ComboBoxUncontrolled: Story = {
   },
 };
 
-const ComboBoxWithFilterC = (props: React.ComponentProps<typeof ComboBox>) => {
+const ComboBoxWithFilterC = (props: React.ComponentProps<typeof SelectComboBox>) => {
   const [value, setValue] = React.useState<undefined | string>();
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
@@ -234,14 +232,14 @@ const ComboBoxWithFilterC = (props: React.ComponentProps<typeof ComboBox>) => {
     <>
       <div>Input: {value ?? '(none)'}</div>
       <div>Selected: {selectedKey ?? '(none)'}</div>
-      <ComboBox
+      <SelectComboBox
         {...props}
         placeholder="Choose a fruit"
         value={value}
         onChange={onChange}
         onBlur={onBlur}
         options={fruitsFiltered.map(([fruitKey, fruitName]) =>
-          <ComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+          <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         selected={selectedKey}
         onSelect={(_key, selectedOption) => {
@@ -267,7 +265,7 @@ export const ComboBoxWithFilter: Story = {
   },
 };
 
-const ComboBoxInFormC = (props: React.ComponentProps<typeof ComboBox>) => {
+const ComboBoxInFormC = (props: React.ComponentProps<typeof SelectComboBox>) => {
   return (
     <form
       id="story-form"
@@ -277,7 +275,7 @@ const ComboBoxInFormC = (props: React.ComponentProps<typeof ComboBox>) => {
         notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || 'none'}`);
       }}
     >
-      <ComboBox {...props}/>
+      <SelectComboBox {...props}/>
       <button type="submit" form="story-form">Submit</button>
     </form>
   );
@@ -293,7 +291,7 @@ export const ComboBoxInForm: Story = {
     options: (
       <>
         {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+          <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
       </>
     ),
@@ -327,7 +325,7 @@ const InputSearchAutocomplete = (props: React.ComponentProps<typeof InputSearch>
   );
 };
 */
-const ComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof ComboBox>>) => {
+const ComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof SelectComboBox>>) => {
   const [value, setValue] = React.useState('');
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
   const [blocks, setBlocks] = React.useState<Array<string>>([]);
@@ -339,7 +337,7 @@ const ComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof ComboB
   
   
   return (
-    <ComboBox
+    <SelectComboBox
       label="Test ComboBox"
       Input={InputSearch}
       placeholder="Choose your favorite fruits"
@@ -348,7 +346,7 @@ const ComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof ComboB
       prefix={blocks.join(', ')}
       {...props}
       options={fruitsFiltered.map(([fruitKey, fruitName]) =>
-        <ComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
       )}
       selected={selectedKey}
       onSelect={(selectedOptionKey, selectedOption) => {

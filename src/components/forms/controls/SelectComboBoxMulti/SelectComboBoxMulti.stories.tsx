@@ -9,7 +9,7 @@ import * as React from 'react';
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { InputSearch } from '../Input/InputSearch.tsx';
 
-import { type ItemKey, ComboBoxMulti } from './ComboBoxMulti.tsx';
+import { type ItemKey, SelectComboBoxMulti } from './SelectComboBoxMulti.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
 
@@ -33,11 +33,11 @@ const fruits = {
 type FruitKey = keyof typeof fruits;
 const formatFruitLabel = (itemKey: ItemKey): string => fruits[itemKey as FruitKey] ?? 'UNKNOWN';
 
-type ComboBoxMultiArgs = React.ComponentProps<typeof ComboBoxMulti>;
+type ComboBoxMultiArgs = React.ComponentProps<typeof SelectComboBoxMulti>;
 type Story = StoryObj<ComboBoxMultiArgs>;
 
 export default {
-  component: ComboBoxMulti,
+  component: SelectComboBoxMulti,
   parameters: {
     layout: 'centered',
   },
@@ -46,18 +46,16 @@ export default {
   },
   args: {
     label: 'Test combobox',
-    dropdownProps: {
-      formatItemLabel: formatFruitLabel,
-    },
+    formatItemLabel: formatFruitLabel,
     options: (
       <>
         {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+          <SelectComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
       </>
     ),
   },
-  render: (args) => <ComboBoxMulti {...args}/>,
+  render: (args) => <SelectComboBoxMulti {...args}/>,
 } satisfies Meta<ComboBoxMultiArgs>;
 
 export const ComboBoxMultiStandard: Story = {};
@@ -69,7 +67,7 @@ export const ComboBoxMultiWithCustomInput: Story = {
   },
 };
 
-const ComboBoxMultiWithDefaultC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
+const ComboBoxMultiWithDefaultC = (props: Partial<React.ComponentProps<typeof SelectComboBoxMulti>>) => {
   const [value, setValue] = React.useState<undefined | string>();
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set(['item-apple', 'item-durian']));
       
@@ -80,14 +78,14 @@ const ComboBoxMultiWithDefaultC = (props: Partial<React.ComponentProps<typeof Co
     <>
       <div>Input: {value ?? '(none)'}</div>
       <div>Selected: {[...selectedKeys].join(', ')}</div>
-      <ComboBoxMulti
+      <SelectComboBoxMulti
         label="Test ComboBox"
         placeholder="Choose your favorite fruits"
         value={value}
         onChange={event => { setValue(event.target.value); }}
         {...props}
         options={fruitsFiltered.map(([fruitKey, fruitName]) =>
-          <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+          <SelectComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         selected={selectedKeys}
         onSelect={(selectedOptionKeys, selectedOption) => {
@@ -103,18 +101,18 @@ export const ComboBoxMultiWithDefault: Story = {
   args: {},
 };
 
-const ComboBoxMultiControlledC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
+const ComboBoxMultiControlledC = (props: Partial<React.ComponentProps<typeof SelectComboBoxMulti>>) => {
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set());
       
   return (
     <>
       <div>Selected: {[...selectedKeys].join(', ')}</div>
-      <ComboBoxMulti
+      <SelectComboBoxMulti
         label="Test ComboBox"
         placeholder="Choose your favorite fruits"
         {...props}
         options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+          <SelectComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         selected={selectedKeys}
         onSelect={(selectedOptionKeys, selectedOption) => {
@@ -132,7 +130,7 @@ export const ComboBoxMultiControlled: Story = {
   },
 };
 
-const ComboBoxMultiFullyControlledC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
+const ComboBoxMultiFullyControlledC = (props: Partial<React.ComponentProps<typeof SelectComboBoxMulti>>) => {
   const [value, setValue] = React.useState<undefined | string>();
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set());
   
@@ -149,7 +147,7 @@ const ComboBoxMultiFullyControlledC = (props: Partial<React.ComponentProps<typeo
     <>
       <div>Input: {value ?? '(none)'}</div>
       <div>Selected: {[...selectedKeys].join(', ')}</div>
-      <ComboBoxMulti
+      <SelectComboBoxMulti
         label="Test ComboBox"
         placeholder="Choose your favorite fruits"
         value={value}
@@ -157,7 +155,7 @@ const ComboBoxMultiFullyControlledC = (props: Partial<React.ComponentProps<typeo
         onBlur={onBlur}
         {...props}
         options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+          <SelectComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         selected={selectedKeys}
         onSelect={(selectedOptionKeys, selectedOption) => {
@@ -180,18 +178,18 @@ export const ComboBoxMultiFullyControlled: Story = {
   },
 };
 
-const ComboBoxMultiUncontrolledC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
+const ComboBoxMultiUncontrolledC = (props: Partial<React.ComponentProps<typeof SelectComboBoxMulti>>) => {
   const [selectedKeys, setSelectedKeys] = React.useState<Set<string>>(() => new Set<string>());
   
   return (
     <>
       <div>Selected: {[...selectedKeys].join(', ')}</div>
-      <ComboBoxMulti
+      <SelectComboBoxMulti
         label="Test ComboBox"
         placeholder="Choose your favorite fruits"
         {...props}
         options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+          <SelectComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         onSelect={(selectedOptionKeys, selectedOption) => {
           props.onSelect?.(selectedOptionKeys, selectedOption);
@@ -207,7 +205,7 @@ export const ComboBoxMultiUncontrolled: Story = {
   },
 };
 
-const ComboBoxMultiwithFilterC = (props: Partial<React.ComponentProps<typeof ComboBoxMulti>>) => {
+const ComboBoxMultiwithFilterC = (props: Partial<React.ComponentProps<typeof SelectComboBoxMulti>>) => {
   const [value, setValue] = React.useState<undefined | string>();
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set());
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
@@ -229,7 +227,7 @@ const ComboBoxMultiwithFilterC = (props: Partial<React.ComponentProps<typeof Com
     <>
       <div>Input: {value ?? '(none)'}</div>
       <div>Selected: {[...selectedKeys].join(', ')}</div>
-      <ComboBoxMulti
+      <SelectComboBoxMulti
         label="Test ComboBox"
         Input={InputSearch}
         placeholder="Choose your favorite fruits"
@@ -238,7 +236,7 @@ const ComboBoxMultiwithFilterC = (props: Partial<React.ComponentProps<typeof Com
         onBlur={onBlur}
         {...props}
         options={fruitsFiltered.map(([fruitKey, fruitName]) =>
-          <ComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+          <SelectComboBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         selected={selectedKeys}
         onSelect={(selectedOptionKeys, selectedOption) => {
@@ -261,7 +259,7 @@ export const ComboBoxMultiWithFilter: Story = {
   },
 };
 
-const ComboBoxMultiInFormC = (props: React.ComponentProps<typeof ComboBoxMulti>) => {
+const ComboBoxMultiInFormC = (props: React.ComponentProps<typeof SelectComboBoxMulti>) => {
   return (
     <form
       id="story-form"
@@ -271,7 +269,7 @@ const ComboBoxMultiInFormC = (props: React.ComponentProps<typeof ComboBoxMulti>)
         notify.info(`You have chosen: ${selected.join(', ') || 'none'}`);
       }}
     >
-      <ComboBoxMulti {...props}/>
+      <SelectComboBoxMulti {...props}/>
       <button type="submit" form="story-form">Submit</button>
     </form>
   );
@@ -285,7 +283,7 @@ export const ComboBoxMultiInForm: Story = {
     options: (
       <>
         {Array.from({ length: 8 }, (_, i) => i + 1).map(index =>
-          <ComboBoxMulti.Option key={`option-${index}`} itemKey={`option-${index}`} label={`Option ${index}`}/>
+          <SelectComboBoxMulti.Option key={`option-${index}`} itemKey={`option-${index}`} label={`Option ${index}`}/>
         )}
       </>
     ),

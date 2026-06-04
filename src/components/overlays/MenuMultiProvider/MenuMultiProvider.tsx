@@ -69,7 +69,7 @@ export const useFloatingMenu = (options: useFloatingMenuOptions) => {
     onOpenChange,
   } = options;
 
-  return useFloatingElement({
+  const useFloatingElementResult = useFloatingElement({
     role,
     triggerAction: triggerAction ?? action ?? 'click',
     keyboardInteractions,
@@ -83,6 +83,14 @@ export const useFloatingMenu = (options: useFloatingMenuOptions) => {
         ? { open, ...(onOpenChange ? { onOpenChange } : {}) }
         : undefined,
   });
+
+  return {
+    ...useFloatingElementResult,
+    // Use `useFloatingElementResult.isOpen` to update the internal state only when `open` is uncontrolled.
+    // Otherwise, popover open state is fully managed by the parent.
+    isOpen: open ?? useFloatingElementResult.isOpen,
+    setIsOpen: onOpenChange ?? useFloatingElementResult.setIsOpen,
+  };
 };
 
 /**

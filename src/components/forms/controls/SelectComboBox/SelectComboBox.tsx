@@ -17,32 +17,33 @@ import {
   MenuProvider,
   MenuProviderProps,
 } from '../../../overlays/MenuProvider/MenuProvider.tsx';
-import { useComboBoxState } from '../ComboBoxMulti/ComboBoxMulti.tsx';
+import { useSelectComboBoxState } from '../SelectComboBoxMulti/SelectComboBoxMulti.tsx';
 import { MenuProviderRef, selectionStateFromItemKey } from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
 
 // Styles
-import cl from './ComboBox.module.scss';
+import cl from './SelectComboBox.module.scss';
 
 
-export { cl as ComboBoxClassNames };
+export { cl as SelectComboBoxClassNames };
 export type { ItemKey, ItemDetails };
 type InputProps = ComponentProps<typeof InputDefault>;
 
 
-// COMBO BOX INPUT
+// SELECT COMBO BOX INPUT
 // ---------------------------------------------------------------------------------------------------------------------
 
-type ComboBoxInputProps = Omit<InputProps, 'onSelect'> & {
+type SelectComboBoxInputProps = Omit<InputProps, 'onSelect'> & {
   anchorRenderArgs: AnchorRenderArgs,
   onUpdate?: undefined | MenuProviderProps['onSelect'],
   Input?: undefined | React.ComponentType<InputProps>,
 };
-const ComboBoxInput = (props: ComboBoxInputProps) => {
+const SelectComboBoxInput = (props: SelectComboBoxInputProps) => {
   const {
     ref,
     anchorRenderArgs,
     onUpdate,
     Input = InputDefault,
+    automaticResize,
     // Hidden input props
     name,
     form,
@@ -60,16 +61,18 @@ const ComboBoxInput = (props: ComboBoxInputProps) => {
     className: cx(
       cl['bk-combo-box'],
       { [cl['bk-combo-box--open']]: open },
+      propsRest.className,
       propsRest.containerProps?.className,
     ),
     onBlur: propsRest.onBlur,
+    onKeyDown: propsRest.onKeyDown,
   });
 
   return (
     <>
       <Input
         role="combobox"
-        automaticResize
+        automaticResize={automaticResize}
         {...propsRest}
         {...anchorProps}
         inputProps={{
@@ -93,28 +96,36 @@ const ComboBoxInput = (props: ComboBoxInputProps) => {
   );
 };
 
-// COMBO BOX
+// SELECT COMBO BOX
 // ---------------------------------------------------------------------------------------------------------------------
 
 /**
- * A `ComboBox` is a text input control combined with a dropdown menu that adapts
+ * A `SelectComboBox` is a text input control combined with a dropdown menu that adapts
  * to the user input, for example for automatic suggestions.
  * 
  * References: 
  * - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
  */
-export type ComboBoxProps = Omit<InputProps, 'onSelect'> & {
+export type SelectComboBoxProps = Omit<InputProps, 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
   /** A human-readable name for the combobox. */
   label: string,
   
-  /** A custom `Input` component. */
-  Input?: undefined | React.ComponentType<InputProps>,
+  /** Render the given item key as a string label. */
+  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
   
   /** The options list to be shown in the dropdown menu. */
-  options: React.ReactNode,
+  options: React.ComponentProps<typeof MenuProvider>['items'],
+  
+  /** A custom `Input` component. */
+  Input?: undefined | React.ComponentType<InputProps> & {
+    Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
+  },
+    
+  /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
+  defaultSelected?: undefined | null | ItemKey,
   
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */
   selected?: undefined | null | ItemKey,
@@ -125,8 +136,8 @@ export type ComboBoxProps = Omit<InputProps, 'onSelect'> & {
   /** Additional props to be passed to the `MenuProvider`. */
   dropdownProps?: undefined | Partial<MenuProviderProps>,
 };
-export const ComboBox = Object.assign(
-  (props: ComboBoxProps) => {
+export const SelectComboBox = Object.assign(
+  (props: SelectComboBoxProps) => {
     const {
       ref,
       unstyled = false,
@@ -139,11 +150,13 @@ export const ComboBox = Object.assign(
       onChange,
       onBlur,
       dropdownProps = {},
+      defaultSelected,
+      formatItemLabel,
       ...propsRest
     } = props;
     
     const {
-      formatItemLabel,
+      formatItemLabel: _, // Ignore
       ref: dropdownPropsRef,
       onBlur: onDropdownBlur,
       ...dropdownPropsRest
@@ -156,8 +169,10 @@ export const ComboBox = Object.assign(
     const mergedInputRef = mergeRefs(ref, inputRef);
 
     const [inputValue, setInputValue] = React.useState(() => {
-      return selected
-        ? formatItemLabel?.(selected) ?? ''
+      const initialSelected = selected ?? defaultSelected;
+
+      return initialSelected
+        ? formatItemLabel?.(initialSelected) ?? ''
         : value ?? '';
     });
 
@@ -172,7 +187,7 @@ export const ComboBox = Object.assign(
       () => {
         if (selected) {
           // Update Input value state on selection change when menu
-          // selection is controlled input value is uncontrolled
+          // selection is controlled and input value is uncontrolled
           updateInputValue(formatItemLabel?.(selected) ?? '');
         }
       },
@@ -180,11 +195,12 @@ export const ComboBox = Object.assign(
     );
 
     const selectedSet = React.useMemo(() => selectionStateFromItemKey(selected), [selected]);
+    const defaultSelectedSet = React.useMemo(() => selectionStateFromItemKey(defaultSelected), [defaultSelected]);
     const {
       internalSelected,
       handleInternalSelect,
-    } = useComboBoxState({
-      selected: selectedSet,
+    } = useSelectComboBoxState({
+      selected: typeof selected !== 'undefined' ? selectedSet : defaultSelectedSet,
       formatItemLabel,
     });
 
@@ -235,7 +251,7 @@ export const ComboBox = Object.assign(
       <MenuProvider
         label={label}
         items={options}
-        role="combobox"
+        role="listbox"
         triggerAction="combobox"
         keyboardInteractions="form-control" // FIXME
         placement="bottom-start"
@@ -244,11 +260,12 @@ export const ComboBox = Object.assign(
         onSelect={handleSelect}
         onBlur={handleDropdownFocusOut}
         formatItemLabel={formatItemLabel}
+        defaultSelected={defaultSelected}
         {...dropdownPropsRest}
         ref={mergedDropdownRef}
       >
         {anchorRenderArgs => (
-          <ComboBoxInput
+          <SelectComboBoxInput
             anchorRenderArgs={anchorRenderArgs}
             Input={Input}
             value={typeof value !== 'undefined' ? value : inputValue}

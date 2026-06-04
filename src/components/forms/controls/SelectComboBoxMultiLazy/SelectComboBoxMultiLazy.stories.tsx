@@ -10,7 +10,7 @@ import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { InputSearch } from '../Input/InputSearch.tsx';
 import { generateData } from '../../../tables/util/generateData.ts'; // FIXME: move to a common location
 
-import { type ItemKey, type VirtualItemKeys, ComboBoxMultiLazy } from './ComboBoxMultiLazy.tsx';
+import { type ItemKey, type VirtualItemKeys, SelectComboBoxMultiLazy } from './SelectComboBoxMultiLazy.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
 
@@ -26,11 +26,11 @@ const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKey
 };
 const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `item-${i + 1}`);
 
-type ComboBoxMultiArgs = React.ComponentProps<typeof ComboBoxMultiLazy>;
+type ComboBoxMultiArgs = React.ComponentProps<typeof SelectComboBoxMultiLazy>;
 type Story = StoryObj<ComboBoxMultiArgs>;
 
 export default {
-  component: ComboBoxMultiLazy,
+  component: SelectComboBoxMultiLazy,
   parameters: {
     layout: 'centered',
   },
@@ -39,14 +39,14 @@ export default {
   },
   args: {
     label: 'Test combobox lazy',
-   dropdownProps: {
+    formatItemLabel: item => `Item ${item.split('-')[1]}`,
+    dropdownProps: {
       limit: 5,
       renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
-      formatItemLabel: item => `Item ${item.split('-')[1]}`,
       virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(100)),
     },
   },
-  render: (args) => <ComboBoxMultiLazy {...args}/>,
+  render: (args) => <SelectComboBoxMultiLazy {...args}/>,
 } satisfies Meta<ComboBoxMultiArgs>;
 
 export const ComboBoxMultiLazyStandard: Story = {};
@@ -60,11 +60,11 @@ export const ComboBoxMultiLazyWithCustomInput: Story = {
 
 export const ComboBoxMultiLazyWithPlacement: Story = {
   args: {
+    formatItemLabel: item => `Item ${item.split('-')[1]}`,
     dropdownProps: {
       placement: 'right',
       limit: 5,
       renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
-      formatItemLabel: item => `Item ${item.split('-')[1]}`,
       virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(5)),
     },
   },
@@ -72,11 +72,11 @@ export const ComboBoxMultiLazyWithPlacement: Story = {
 
 export const ComboBoxMultiLazyLoading: Story = {
   args: {
+    formatItemLabel: item => `Item ${item.split('-')[1]}`,
     dropdownProps: {
       isLoading: true,
       limit: 5,
       renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
-      formatItemLabel: item => `Item ${item.split('-')[1]}`,
       virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(5)),
     },
   },
@@ -117,13 +117,14 @@ const ComboBoxMultiLazyInfiniteC = () => {
   return (
     <>
       <div>Selected: {[...selectedKeys].join(', ') ?? '(none)'}</div>
-      <ComboBoxMultiLazy
+      <SelectComboBoxMultiLazy
         label="Test combobox"
         placeholder="Choose items"
         selected={selectedKeys}
         onSelect={selectedOptionKeys => {
           setSelectedKeys(selectedOptionKeys);
         }}
+        formatItemLabel={itemKey => items.find(i => i.id === itemKey)?.name ?? 'Unknown'}
         dropdownProps={{
           onUpdateLimit: updateLimit,
           limit,
@@ -131,7 +132,6 @@ const ComboBoxMultiLazyInfiniteC = () => {
           hasMoreItems: hasMoreItems,
           isLoading: isLoading,
           renderItem: item => <>{items[item.index]?.name}</>,
-          formatItemLabel: itemKey => items.find(i => i.id === itemKey)?.name ?? 'Unknown',
           placeholderEmpty: items.length === 0 ? 'No items' : 'No items found',
           virtualItemKeys,
         }}
@@ -145,36 +145,19 @@ export const ComboBoxMultiLazyInfinte: Story = {
   },
 };
 
-const ComboBoxMultiLazyWithDefaultC = (props: React.ComponentProps<typeof ComboBoxMultiLazy>) => {
-  const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set(['item-3', 'item-4']));
-  
-  return (
-    <>
-      <div>Selected: {[...selectedKeys].join(', ') ?? '(none)'}</div>
-      <ComboBoxMultiLazy
-        {...props}
-        placeholder="Choose items"
-        selected={selectedKeys}
-        onSelect={selectedOptions => {
-          setSelectedKeys(selectedOptions);
-        }}
-      />
-    </>
-  );
-};
 export const ComboBoxMultiLazyWithDefault: Story = {
-  render: args => <ComboBoxMultiLazyWithDefaultC {...args}/>,
   args: {
+    defaultSelected: new Set(['item-3', 'item-4']),
   },
 };
 
-const ComboBoxMultiLazyControlledC = (props: React.ComponentProps<typeof ComboBoxMultiLazy>) => {
+const ComboBoxMultiLazyControlledC = (props: React.ComponentProps<typeof SelectComboBoxMultiLazy>) => {
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set([]));
   
   return (
     <>
       <div>Selected: {[...selectedKeys].join(', ') ?? '(none)'}</div>
-      <ComboBoxMultiLazy
+      <SelectComboBoxMultiLazy
         {...props}
         placeholder="Choose items"
         selected={selectedKeys}
@@ -192,7 +175,7 @@ export const ComboBoxMultiLazyControlled: Story = {
   },
 };
 
-const ComboBoxMultiLazyFullyControlledC = (props: React.ComponentProps<typeof ComboBoxMultiLazy>) => {
+const ComboBoxMultiLazyFullyControlledC = (props: React.ComponentProps<typeof SelectComboBoxMultiLazy>) => {
   const [value, setValue] = React.useState<string>('');
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set([]));
       
@@ -209,7 +192,7 @@ const ComboBoxMultiLazyFullyControlledC = (props: React.ComponentProps<typeof Co
     <>
       <div>Input: {value ?? '(none)'}</div>
       <div>Selected: {[...selectedKeys].join(', ') ?? '(none)'}</div>
-      <ComboBoxMultiLazy
+      <SelectComboBoxMultiLazy
         {...props}
         placeholder="Choose items"
         value={value}
@@ -235,13 +218,13 @@ export const ComboBoxMultiLazyFullyControlled: Story = {
   },
 };
 
-const ComboBoxMultiLazyUncontrolledC = (props: React.ComponentProps<typeof ComboBoxMultiLazy>) => {
+const ComboBoxMultiLazyUncontrolledC = (props: React.ComponentProps<typeof SelectComboBoxMultiLazy>) => {
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set([]));
       
   return (
     <>
       <div>Selected: {[...selectedKeys].join(', ') ?? '(none)'}</div>
-      <ComboBoxMultiLazy
+      <SelectComboBoxMultiLazy
         {...props}
         placeholder="Choose items"
         onSelect={selectOptions => {
@@ -308,7 +291,7 @@ const ComboBoxMultiLazyWithFilterC = () => {
     <>
       <div>Input: {filter ?? '(none)'}</div>
       <div>Selected: {[...selectedKeys].join(', ') ?? '(none)'}</div>
-      <ComboBoxMultiLazy
+      <SelectComboBoxMultiLazy
         label="Test combobox"
         placeholder="Choose items"
         value={filter}
@@ -318,6 +301,7 @@ const ComboBoxMultiLazyWithFilterC = () => {
         onSelect={selectOptions => {
           setSelectedKeys(selectOptions);
         }}
+        formatItemLabel={formatItemLabel}
         dropdownProps={{
           onUpdateLimit: updateLimit,
           limit: limit,
@@ -325,7 +309,6 @@ const ComboBoxMultiLazyWithFilterC = () => {
           hasMoreItems: hasMoreItems,
           isLoading: isLoading,
           renderItem: item => <>{items.find(i => i.id === item.key)?.name }</>,
-          formatItemLabel,
           placeholderEmpty: items.length === 0 ? 'No items' : 'No items found',
           virtualItemKeys,
           open: isDropdownOpen,
@@ -342,7 +325,7 @@ export const ComboBoxMultiLazyWithFilter: Story = {
   },
 };
 
-const ComboBoxMultiLazyInFormC = (props: React.ComponentProps<typeof ComboBoxMultiLazy>) => {
+const ComboBoxMultiLazyInFormC = (props: React.ComponentProps<typeof SelectComboBoxMultiLazy>) => {
   return (
     <form
       id="story-form"
@@ -352,7 +335,7 @@ const ComboBoxMultiLazyInFormC = (props: React.ComponentProps<typeof ComboBoxMul
         notify.info(`You have chosen: ${selected.join(', ') || 'none'}`);
       }}
     >
-      <ComboBoxMultiLazy {...props}/>
+      <SelectComboBoxMultiLazy {...props}/>
       <button type="submit" form="story-form">Submit</button>
     </form>
   );
@@ -362,17 +345,17 @@ export const ComboBoxMultiLazyInForm: Story = {
   args: {
     form: 'story-form',
     name: 'controlledComboBoxMultiLazy',
+    formatItemLabel: item => `Item ${item.split('-')[1]}`,
     dropdownProps: {
       limit: 5,
       renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
-      formatItemLabel: item => `Item ${item.split('-')[1]}`,
       virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(100)),
     },
   },
 };
 
 
-const ComboBoxMultiLazyWithLoadMoreItemsTriggerC = (props: Partial<React.ComponentProps<typeof ComboBoxMultiLazy>>) => {
+const ComboBoxMultiLazyWithLoadMoreItemsTriggerC = (props: Partial<React.ComponentProps<typeof SelectComboBoxMultiLazy>>) => {
   const pageSize = 20;
   const maxItems = 90;
 
@@ -414,7 +397,7 @@ const ComboBoxMultiLazyWithLoadMoreItemsTriggerC = (props: Partial<React.Compone
   };
 
   return (
-    <ComboBoxMultiLazy
+    <SelectComboBoxMultiLazy
       label="Test ComboBox"
       Input={InputSearch}
       placeholder="Choose your options"
@@ -428,13 +411,13 @@ const ComboBoxMultiLazyWithLoadMoreItemsTriggerC = (props: Partial<React.Compone
       onKeyDown={event => {
         props.onKeyDown?.(event);
       }}
+      formatItemLabel={itemKey => itemsFiltered.find(i => i.id === itemKey)?.name ?? 'Unknown'}
       dropdownProps={{
         limit: limit,
         pageSize: pageSize,
         hasMoreItems: hasMoreItems,
         isLoading: isLoading,
         renderItem: item => <>{itemsFiltered[item.index]?.name}</>,
-        formatItemLabel: itemKey => itemsFiltered.find(i => i.id === itemKey)?.name ?? 'Unknown',
         placeholderEmpty: items.length === 0 ? 'No items' : 'No items found',
         loadMoreItemsTriggerType: 'custom',
         loadMoreItemsTrigger: renderLoadMoreItemsTrigger(),

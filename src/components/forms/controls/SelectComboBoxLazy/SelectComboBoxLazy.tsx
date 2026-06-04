@@ -18,31 +18,32 @@ import {
   MenuLazyProvider,
   MenuLazyProviderProps,
 } from '../../../overlays/MenuLazyProvider/MenuLazyProvider.tsx';
-import { useComboBoxState } from '../ComboBoxMulti/ComboBoxMulti.tsx';
+import { useSelectComboBoxState } from '../SelectComboBoxMulti/SelectComboBoxMulti.tsx';
 import { MenuProviderRef, selectionStateFromItemKey } from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
 
 // Styles
-import cl from './ComboBoxLazy.module.scss';
+import cl from './SelectComboBoxLazy.module.scss';
 
 
-export { cl as ComboBoxLazyClassNames };
+export { cl as SelectComboBoxLazyClassNames };
 export type { ItemKey, ItemDetails, VirtualItemKeys };
 type InputProps = ComponentProps<typeof InputDefault>;
 
-// COMBO BOX LAZY INPUT
+// SELECT COMBO BOX LAZY INPUT
 // ---------------------------------------------------------------------------------------------------------------------
 
-type ComboBoxInputProps = Omit<InputProps, 'onSelect'> & {
+type SelectComboBoxInputProps = Omit<InputProps, 'onSelect'> & {
   anchorRenderArgs: AnchorRenderArgs,
   onUpdate?: undefined | MenuLazyProviderProps['onSelect'],
   Input?: undefined | React.ComponentType<InputProps>,
 };
-const ComboBoxInput = (props: ComboBoxInputProps) => {
+const SelectComboBoxInput = (props: SelectComboBoxInputProps) => {
   const {
     ref,
     anchorRenderArgs,
     onUpdate,
     Input = InputDefault,
+    automaticResize,
     // Hidden input props
     name,
     form,
@@ -60,16 +61,18 @@ const ComboBoxInput = (props: ComboBoxInputProps) => {
     className: cx(
       cl['bk-combo-box'],
       { [cl['bk-combo-box--open']]: open },
+      propsRest.className,
       propsRest.containerProps?.className,
     ),
     onBlur: propsRest.onBlur,
+    onKeyDown: propsRest.onKeyDown,
   });
 
   return (
     <>
       <Input
         role="combobox"
-        automaticResize
+        automaticResize={automaticResize}
         {...propsRest}
         {...anchorProps}
         inputProps={{
@@ -93,27 +96,33 @@ const ComboBoxInput = (props: ComboBoxInputProps) => {
   );
 };
 
-type DropdownProps = Omit<MenuLazyProviderProps, 'label'>;
-
-// COMBO BOX LAZY
+// SELECT COMBO BOX LAZY
 // ---------------------------------------------------------------------------------------------------------------------
 
 /**
- * A `ComboBoxLazy` is a text input control combined with a dropdown menu that lazily
+ * A `SelectComboBoxLazy` is a text input control combined with a dropdown menu that lazily
  * loads menu items and adapts to the user input, for example for automatic suggestions.
  * 
  * References: 
  * - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
  */
-export type ComboBoxLazyProps = Omit<InputProps, 'onSelect'> & {
+export type SelectComboBoxLazyProps = Omit<InputProps, 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
   /** A human-readable name for the combobox. */
   label: string,
 
+  /** Render the given item key as a string label. */
+  formatItemLabel: ((itemKey: ItemKey) => string),
+  
   /** A custom `Input` component. */
-  Input?: undefined | React.ComponentType<InputProps>,
+  Input?: undefined | React.ComponentType<InputProps> & {
+    Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
+  },
+    
+  /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
+  defaultSelected?: undefined | null | ItemKey,
   
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */
   selected?: undefined | null | ItemKey,
@@ -122,9 +131,9 @@ export type ComboBoxLazyProps = Omit<InputProps, 'onSelect'> & {
   onSelect?: undefined | MenuLazyProviderProps['onSelect'],
 
   /** Additional props to be passed to the `MenuLazyProvider`. */
-  dropdownProps: DropdownProps,
+  dropdownProps: Omit<MenuLazyProviderProps, 'label' | 'formatItemLabel'>,
 };
-export const ComboBoxLazy = (props: ComboBoxLazyProps) => {
+export const SelectComboBoxLazy = (props: SelectComboBoxLazyProps) => {
   const {
     ref,
     unstyled = false,
@@ -136,11 +145,12 @@ export const ComboBoxLazy = (props: ComboBoxLazyProps) => {
     onChange,
     onBlur,
     dropdownProps,
+    defaultSelected,
+    formatItemLabel,
     ...propsRest
   } = props;
 
   const {
-    formatItemLabel,
     ref: dropdownPropsRef,
     onBlur: onDropdownBlur,
     ...dropdownPropsRest
@@ -153,8 +163,10 @@ export const ComboBoxLazy = (props: ComboBoxLazyProps) => {
   const mergedInputRef = mergeRefs(ref, inputRef);
  
   const [inputValue, setInputValue] = React.useState(() => {
-    return selected
-      ? formatItemLabel?.(selected) ?? ''
+    const initialSelected = selected ?? defaultSelected;
+
+    return initialSelected
+      ? formatItemLabel?.(initialSelected) ?? ''
       : value ?? '';
   });
 
@@ -169,7 +181,7 @@ export const ComboBoxLazy = (props: ComboBoxLazyProps) => {
     () => {
       if (selected) {
         // Update Input value state on selection change when menu
-        // selection is controlled input value is uncontrolled
+        // selection is controlled and input value is uncontrolled
         updateInputValue(formatItemLabel?.(selected) ?? '');
       }
     },
@@ -177,11 +189,12 @@ export const ComboBoxLazy = (props: ComboBoxLazyProps) => {
   );
 
   const selectedSet = React.useMemo(() => selectionStateFromItemKey(selected), [selected]);
+  const defaultSelectedSet = React.useMemo(() => selectionStateFromItemKey(defaultSelected), [defaultSelected]);
   const {
     internalSelected,
     handleInternalSelect,
-  } = useComboBoxState({
-    selected: selectedSet,
+  } = useSelectComboBoxState({
+    selected: typeof selected !== 'undefined' ? selectedSet : defaultSelectedSet,
     formatItemLabel,
   });
 
@@ -231,7 +244,7 @@ export const ComboBoxLazy = (props: ComboBoxLazyProps) => {
   return (
     <MenuLazyProvider
       label={label}
-      role="combobox"
+      role="listbox"
       triggerAction="combobox"
       keyboardInteractions="default" // FIXME
       placement="bottom-start"
@@ -240,11 +253,12 @@ export const ComboBoxLazy = (props: ComboBoxLazyProps) => {
       onSelect={handleSelect}
       onBlur={handleDropdownFocusOut}
       formatItemLabel={formatItemLabel}
+      defaultSelected={defaultSelected}
       {...dropdownPropsRest}
       ref={mergedDropdownRef}
     >
       {anchorRenderArgs => (
-        <ComboBoxInput
+        <SelectComboBoxInput
           anchorRenderArgs={anchorRenderArgs}
           Input={Input}
           value={typeof value !== 'undefined' ? value : inputValue}

@@ -10,7 +10,7 @@ import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { InputSearch } from '../Input/InputSearch.tsx';
 
 import { generateData } from '../../../tables/util/generateData.ts'; // FIXME: move to a common location
-import { type ItemKey, type VirtualItemKeys, ComboBoxLazy } from './ComboBoxLazy.tsx';
+import { type ItemKey, type VirtualItemKeys, SelectComboBoxLazy } from './SelectComboBoxLazy.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
 // Sample options
@@ -25,11 +25,11 @@ const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKey
 };
 const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `item-${i + 1}`);
 
-type ComboBoxLazyArgs = React.ComponentProps<typeof ComboBoxLazy>;
+type ComboBoxLazyArgs = React.ComponentProps<typeof SelectComboBoxLazy>;
 type Story = StoryObj<ComboBoxLazyArgs>;
 
 export default {
-  component: ComboBoxLazy,
+  component: SelectComboBoxLazy,
   parameters: {
     layout: 'centered',
   },
@@ -38,14 +38,14 @@ export default {
   },
   args: {
     label: 'Test combobox',
+    formatItemLabel: item => `Item ${item.split('-')[1]}`,
     dropdownProps: {
       limit: 5,
       renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
-      formatItemLabel: item => `Item ${item.split('-')[1]}`,
       virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(100)),
     },
   },
-  render: (args) => <ComboBoxLazy {...args}/>,
+  render: (args) => <SelectComboBoxLazy {...args}/>,
 } satisfies Meta<ComboBoxLazyArgs>;
 
 export const ComboBoxLazyStandard: Story = {};
@@ -59,11 +59,11 @@ export const ComboBoxLazyWithCustomInput: Story = {
 
 export const ComboBoxLazyWithPlacement: Story = {
   args: {
+    formatItemLabel: item => `Item ${item.split('-')[1]}`,
     dropdownProps: {
       placement: 'right',
       limit: 5,
       renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
-      formatItemLabel: item => `Item ${item.split('-')[1]}`,
       virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(5)),
     },
   },
@@ -71,11 +71,11 @@ export const ComboBoxLazyWithPlacement: Story = {
 
 export const ComboBoxLazyLoading: Story = {
   args: {
+    formatItemLabel: item => `Item ${item.split('-')[1]}`,
     dropdownProps: {
       isLoading: true,
       limit: 5,
       renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
-      formatItemLabel: item => `Item ${item.split('-')[1]}`,
       virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(5)),
     },
   },
@@ -116,13 +116,14 @@ const ComboBoxLazyInfiniteC = () => {
   return (
     <>
       <div>Selected: {selectedKey ?? '(none)'}</div>
-      <ComboBoxLazy
+      <SelectComboBoxLazy
         label="Test combobox"
         placeholder="Choose an item"
         selected={selectedKey}
         onSelect={(_key, selectedOption) => {
           setSelectedKey(selectedOption?.itemKey ?? null);
         }}
+        formatItemLabel={itemKey => items.find(i => i.id === itemKey)?.name ?? 'Unknown'}
         dropdownProps={{
           onUpdateLimit: updateLimit,
           limit,
@@ -130,7 +131,6 @@ const ComboBoxLazyInfiniteC = () => {
           hasMoreItems: hasMoreItems,
           isLoading: isLoading,
           renderItem: item => <>{items[item.index]?.name}</>,
-          formatItemLabel: itemKey => items.find(i => i.id === itemKey)?.name ?? 'Unknown',
           placeholderEmpty: items.length === 0 ? 'No items' : 'No items found',
           virtualItemKeys,
         }}
@@ -144,36 +144,19 @@ export const ComboBoxLazyInfinte: Story = {
   },
 };
 
-const ComboBoxLazyWithDefaultC = (props: React.ComponentProps<typeof ComboBoxLazy>) => {
-  const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>('test-3');
-  
-  return (
-    <>
-      <div>Selected: {selectedKey ?? '(none)'}</div>
-      <ComboBoxLazy
-        {...props}
-        placeholder="Choose an item"
-        selected={selectedKey}
-        onSelect={(_key, selectedOption) => {
-          setSelectedKey(selectedOption?.itemKey ?? null);
-        }}
-      />
-    </>
-  );
-};
 export const ComboBoxLazyWithDefault: Story = {
-  render: args => <ComboBoxLazyWithDefaultC {...args}/>,
   args: {
+    defaultSelected: 'item-3',
   },
 };
 
-const ComboBoxLazyControlledC = (props: React.ComponentProps<typeof ComboBoxLazy>) => {
+const ComboBoxLazyControlledC = (props: React.ComponentProps<typeof SelectComboBoxLazy>) => {
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
   
   return (
     <>
       <div>Selected: {selectedKey ?? '(none)'}</div>
-      <ComboBoxLazy
+      <SelectComboBoxLazy
         {...props}
         placeholder="Choose an item"
         selected={selectedKey}
@@ -191,14 +174,14 @@ export const ComboBoxLazyControlled: Story = {
   },
 };
 
-const ComboBoxLazyFullyControlledC = (props: React.ComponentProps<typeof ComboBoxLazy>) => {
+const ComboBoxLazyFullyControlledC = (props: React.ComponentProps<typeof SelectComboBoxLazy>) => {
   const [value, setValue] = React.useState<string>('');
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
       
   const onUpdateStatePress = () => {
     setSelectedKey('item-1');
-    setValue(props.dropdownProps?.formatItemLabel?.('item-1') ?? '');
+    setValue(props.formatItemLabel?.('item-1') ?? '');
   };
 
   const onChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -210,7 +193,7 @@ const ComboBoxLazyFullyControlledC = (props: React.ComponentProps<typeof ComboBo
 
   const onBlur = () => {
     if (selectedKey) {
-      setValue(props.dropdownProps.formatItemLabel(selectedKey) ?? '');
+      setValue(props.formatItemLabel(selectedKey) ?? '');
     }
   };
 
@@ -218,7 +201,7 @@ const ComboBoxLazyFullyControlledC = (props: React.ComponentProps<typeof ComboBo
     <>
       <div>Input: {value ?? '(none)'}</div>
       <div>Selected: {selectedKey ?? '(none)'}</div>
-      <ComboBoxLazy
+      <SelectComboBoxLazy
         {...props}
         placeholder="Choose an item"
         value={value}
@@ -249,13 +232,13 @@ export const ComboBoxLazyFullyControlled: Story = {
   },
 };
 
-const ComboBoxLazyUncontrolledC = (props: React.ComponentProps<typeof ComboBoxLazy>) => {
+const ComboBoxLazyUncontrolledC = (props: React.ComponentProps<typeof SelectComboBoxLazy>) => {
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
       
   return (
     <>
       <div>Selected: {selectedKey ?? '(none)'}</div>
-      <ComboBoxLazy
+      <SelectComboBoxLazy
         {...props}
         placeholder="Choose an item"
         onSelect={(_key, selectedOption) => {
@@ -325,7 +308,7 @@ const ComboBoxLazyWithFilterC = () => {
     <>
       <div>Input: {filter ?? '(none)'}</div>
       <div>Selected: {selectedKey ?? '(none)'}</div>
-      <ComboBoxLazy
+      <SelectComboBoxLazy
         label="Test combobox"
         placeholder="Choose an item"
         value={filter}
@@ -339,6 +322,7 @@ const ComboBoxLazyWithFilterC = () => {
           setIsDropdownOpen(false);
         }}
         onBlur={onBlur}
+        formatItemLabel={formatItemLabel}
         dropdownProps={{
           onUpdateLimit: updateLimit,
           limit: limit,
@@ -346,7 +330,6 @@ const ComboBoxLazyWithFilterC = () => {
           hasMoreItems: hasMoreItems,
           isLoading: isLoading,
           renderItem: item => <>{itemsFiltered[item.index]?.name}</>,
-          formatItemLabel,
           placeholderEmpty: items.length === 0 ? 'No items' : 'No items found',
           virtualItemKeys,
           open: isDropdownOpen,
@@ -363,7 +346,7 @@ export const ComboBoxLazyWithFilter: Story = {
   },
 };
 
-const ComboBoxLazyInFormC = (props: React.ComponentProps<typeof ComboBoxLazy>) => {
+const ComboBoxLazyInFormC = (props: React.ComponentProps<typeof SelectComboBoxLazy>) => {
   return (
     <form
       id="story-form"
@@ -373,7 +356,7 @@ const ComboBoxLazyInFormC = (props: React.ComponentProps<typeof ComboBoxLazy>) =
         notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || 'none'}`);
       }}
     >
-      <ComboBoxLazy {...props}/>
+      <SelectComboBoxLazy {...props}/>
       <button type="submit" form="story-form">Submit</button>
     </form>
   );
@@ -383,16 +366,16 @@ export const ComboBoxLazyInForm: Story = {
   args: {
     form: 'story-form',
     name: 'story_component1',
+    formatItemLabel: item => `Item ${item.split('-')[1]}`,
     dropdownProps: {
       limit: 5,
       renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
-      formatItemLabel: item => `Item ${item.split('-')[1]}`,
       virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(100)),
     },
   },
 };
 
-const ComboBoxLazyAutocompleteC = (props: Partial<React.ComponentProps<typeof ComboBoxLazy>>) => {
+const ComboBoxLazyAutocompleteC = (props: Partial<React.ComponentProps<typeof SelectComboBoxLazy>>) => {
   const pageSize = 20;
   const maxItems = 90;
 
@@ -429,7 +412,7 @@ const ComboBoxLazyAutocompleteC = (props: Partial<React.ComponentProps<typeof Co
   const virtualItemKeys = itemsFiltered.map(item => item.id);
      
   return (
-    <ComboBoxLazy
+    <SelectComboBoxLazy
       label="Test ComboBox"
       Input={InputSearch}
       placeholder="Choose your options"
@@ -461,6 +444,7 @@ const ComboBoxLazyAutocompleteC = (props: Partial<React.ComponentProps<typeof Co
           popBlock();
         }
       }}
+      formatItemLabel={itemKey => itemsFiltered.find(i => i.id === itemKey)?.name ?? 'Unknown'}
       dropdownProps={{
         onUpdateLimit: updateLimit,
         limit: limit,
@@ -468,7 +452,6 @@ const ComboBoxLazyAutocompleteC = (props: Partial<React.ComponentProps<typeof Co
         hasMoreItems: hasMoreItems,
         isLoading: isLoading,
         renderItem: item => <>{itemsFiltered[item.index]?.name}</>,
-        formatItemLabel: itemKey => itemsFiltered.find(i => i.id === itemKey)?.name ?? 'Unknown',
         placeholderEmpty: items.length === 0 ? 'No items' : 'No items found',
         virtualItemKeys,
       }}
@@ -483,7 +466,7 @@ export const ComboBoxLazyAutocomplete: Story = {
   },
 };
 
-const ComboBoxLazyWithLoadMoreItemsTriggerC = (props: Partial<React.ComponentProps<typeof ComboBoxLazy>>) => {
+const ComboBoxLazyWithLoadMoreItemsTriggerC = (props: Partial<React.ComponentProps<typeof SelectComboBoxLazy>>) => {
   const pageSize = 20;
   const maxItems = 90;
 
@@ -528,7 +511,7 @@ const ComboBoxLazyWithLoadMoreItemsTriggerC = (props: Partial<React.ComponentPro
   };
 
   return (
-    <ComboBoxLazy
+    <SelectComboBoxLazy
       label="Test ComboBox"
       Input={InputSearch}
       placeholder="Choose your options"
@@ -560,13 +543,13 @@ const ComboBoxLazyWithLoadMoreItemsTriggerC = (props: Partial<React.ComponentPro
           popBlock();
         }
       }}
+      formatItemLabel={itemKey => itemsFiltered.find(i => i.id === itemKey)?.name ?? 'Unknown'}
       dropdownProps={{
         limit: limit,
         pageSize: pageSize,
         hasMoreItems: hasMoreItems,
         isLoading: isLoading,
         renderItem: item => <>{itemsFiltered[item.index]?.name}</>,
-        formatItemLabel: itemKey => itemsFiltered.find(i => i.id === itemKey)?.name ?? 'Unknown',
         placeholderEmpty: items.length === 0 ? 'No items' : 'No items found',
         loadMoreItemsTriggerType: 'custom',
         loadMoreItemsTrigger: renderLoadMoreItemsTrigger(),
