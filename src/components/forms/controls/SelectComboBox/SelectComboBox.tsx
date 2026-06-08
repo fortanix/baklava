@@ -251,7 +251,7 @@ export const SelectComboBox = Object.assign(
       <MenuProvider
         label={label}
         items={options}
-        role="listbox"
+        role="combobox"
         triggerAction="combobox"
         keyboardInteractions="form-control" // FIXME
         placement="bottom-start"

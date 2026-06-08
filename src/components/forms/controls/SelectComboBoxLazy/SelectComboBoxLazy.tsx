@@ -244,7 +244,7 @@ export const SelectComboBoxLazy = (props: SelectComboBoxLazyProps) => {
   return (
     <MenuLazyProvider
       label={label}
-      role="listbox"
+      role="combobox"
       triggerAction="combobox"
       keyboardInteractions="default" // FIXME
       placement="bottom-start"

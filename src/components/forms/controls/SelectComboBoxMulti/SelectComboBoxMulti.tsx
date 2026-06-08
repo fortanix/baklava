@@ -303,7 +303,7 @@ export const SelectComboBoxMulti = Object.assign(
       <MenuMultiProvider
         label={label}
         items={options}
-        role="listbox"
+        role="combobox"
         triggerAction="combobox"
         keyboardInteractions="default" // FIXME
         placement="bottom-start"

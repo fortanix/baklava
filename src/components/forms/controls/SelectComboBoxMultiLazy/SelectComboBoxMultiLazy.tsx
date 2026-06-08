@@ -258,7 +258,7 @@ export const SelectComboBoxMultiLazy = (props: SelectComboBoxMultiLazyProps) => 
   return (
     <MenuMultiLazyProvider
       label={label}
-      role="listbox"
+      role="combobox"
       triggerAction="combobox"
       keyboardInteractions="default" // FIXME
       placement="bottom-start"
