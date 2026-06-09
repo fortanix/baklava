@@ -2,8 +2,6 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { mergeProps } from '../../../../util/reactUtil.ts';
-
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 
@@ -15,6 +13,7 @@ import {
 } from '../../../overlays/MenuProvider/MenuProvider.tsx';
 
 import cl from './Select.module.scss';
+import { SelectComboBox } from '../SelectComboBox/SelectComboBox.tsx';
 
 
 export { cl as SelectClassNames };
@@ -62,91 +61,54 @@ export type SelectProps = Omit<SelectInputProps, 'onSelect'> & {
 export const Select = Object.assign(
   (props: SelectProps) => {
     const {
-      unstyled = false,
       label,
-      formatItemLabel,
       options,
-      automaticResize,
-      Input = InputDefault,
       // Dropdown props
-      defaultSelected,
-      selected,
-      onSelect,
       dropdownProps = {},
-      // Hidden input props
-      name,
-      form,
+      Input = InputDefault,
+      automaticResize = false,
       ...propsRest
     } = props;
     
     const InputAction = Input.Action ?? InputDefault.Action;
-    
+    const [open, onOpenChange] = React.useState(dropdownProps.open ?? false);
+
     return (
-      <MenuProvider
+      <SelectComboBox
         label={label}
-        formatItemLabel={formatItemLabel}
-        items={options}
-        role="listbox"
-        keyboardInteractions="form-control"
-        placement="bottom-start"
-        offset={0} // Make the dropdown flush with the select element
-        defaultSelected={defaultSelected}
-        selected={selected}
-        onSelect={onSelect}
-        {...dropdownProps}
-      >
-        {({ props, open, requestOpen, selectedOption }) => {
-          // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
-          const { ref: anchorRef, ...anchorProps } = props({
-            placeholder: 'Select an option',
-            'aria-disabled': true,
-            readOnly: true, // Make the input non-editable, but still focusable
-            ...propsRest,
-            className: cx(cl['bk-select'], { [cl['bk-select--open']]: open }, propsRest.className),
-            value: selectedOption === null ? '' : selectedOption.label,
-            onChange: () => {},
-          });
-          
-          const propsMerged = mergeProps(
-            propsRest,
-            anchorProps,
-          );
-          
-          return (
-            <>
-              <Input
-                role="combobox"
-                automaticResize={automaticResize}
-                actions={
-                  <InputAction
-                    // Note: the toggle button should not be focusable, according to:
-                    // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/combobox_role
-                    tabIndex={-1}
-                    icon="caret-down"
-                    className={cx(cl['bk-select__arrow'])}
-                    label={open ? 'Close dropdown' : 'Open dropdown'}
-                    onPress={() => {}}
-                  />
-                }
-                {...propsMerged}
-                inputProps={{
-                  ...propsMerged.inputProps,
-                  className: cx(cl['bk-select__input'], propsMerged.inputProps?.className),
-                }}
-                containerProps={{
-                  ...propsMerged.containerProps,
-                  // Anchor the dropdown to the container, not the inner input
-                  ref: anchorRef as React.Ref<HTMLDivElement>,
-                }}
-              />
-              {/* Render a hidden input with the selected option key (rather than the human-readable label). */}
-              {typeof name === 'string' &&
-                <input type="hidden" form={form} name={name} value={selectedOption?.itemKey ?? ''}/>
-              }
-            </>
-          );
+        options={options}
+        dropdownProps={{
+          offset: 0, // Make the dropdown flush with the select element
+          open,
+          onOpenChange,
+          ...dropdownProps
         }}
-      </MenuProvider>
+        placeholder="Select an option"
+        Input={Input}
+        automaticResize={automaticResize}
+        {...propsRest}
+        aria-disabled={true}
+        readOnly={true}
+        inputProps={{
+          ...propsRest.inputProps,
+          className: cx(cl['bk-select__input'], propsRest.inputProps?.className),
+        }}
+        containerProps={{
+          ...propsRest.containerProps,
+          className: cx(cl['bk-select'], { [cl['bk-select--open']]: open }, propsRest.containerProps?.className),
+        }}
+        actions={
+          <InputAction
+            // Note: the toggle button should not be focusable, according to:
+            // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/combobox_role
+            tabIndex={-1}
+            icon="caret-down"
+            className={cx(cl['bk-select__arrow'])}
+            label={open ? 'Close dropdown' : 'Open dropdown'}
+            onPress={() => {}}
+          /> 
+        }
+      />
     );
   },
   {
