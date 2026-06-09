@@ -66,6 +66,7 @@ export const Select = Object.assign(
       // Dropdown props
       dropdownProps = {},
       Input = InputDefault,
+      automaticResize = false,
       ...propsRest
     } = props;
     
@@ -84,6 +85,7 @@ export const Select = Object.assign(
         }}
         placeholder="Select an option"
         Input={Input}
+        automaticResize={automaticResize}
         {...propsRest}
         aria-disabled={true}
         readOnly={true}
