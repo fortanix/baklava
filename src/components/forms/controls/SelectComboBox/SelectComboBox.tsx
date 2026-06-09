@@ -43,7 +43,7 @@ const SelectComboBoxInput = (props: SelectComboBoxInputProps) => {
     anchorRenderArgs,
     onUpdate,
     Input = InputDefault,
-    automaticResize,
+    automaticResize = true,
     // Hidden input props
     name,
     form,
@@ -251,7 +251,7 @@ export const SelectComboBox = Object.assign(
       <MenuProvider
         label={label}
         items={options}
-        role="listbox"
+        role="combobox"
         triggerAction="combobox"
         keyboardInteractions="form-control" // FIXME
         placement="bottom-start"

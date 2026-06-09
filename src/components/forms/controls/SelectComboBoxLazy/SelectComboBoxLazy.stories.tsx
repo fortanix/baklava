@@ -25,8 +25,8 @@ const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKey
 };
 const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `item-${i + 1}`);
 
-type ComboBoxLazyArgs = React.ComponentProps<typeof SelectComboBoxLazy>;
-type Story = StoryObj<ComboBoxLazyArgs>;
+type SelectComboBoxLazyArgs = React.ComponentProps<typeof SelectComboBoxLazy>;
+type Story = StoryObj<SelectComboBoxLazyArgs>;
 
 export default {
   component: SelectComboBoxLazy,
@@ -46,18 +46,18 @@ export default {
     },
   },
   render: (args) => <SelectComboBoxLazy {...args}/>,
-} satisfies Meta<ComboBoxLazyArgs>;
+} satisfies Meta<SelectComboBoxLazyArgs>;
 
-export const ComboBoxLazyStandard: Story = {};
+export const SelectComboBoxLazyStandard: Story = {};
 
-export const ComboBoxLazyWithCustomInput: Story = {
+export const SelectComboBoxLazyWithCustomInput: Story = {
   args: {
     Input: InputSearch,
     placeholder: 'Search',
   },
 };
 
-export const ComboBoxLazyWithPlacement: Story = {
+export const SelectComboBoxLazyWithPlacement: Story = {
   args: {
     formatItemLabel: item => `Item ${item.split('-')[1]}`,
     dropdownProps: {
@@ -69,7 +69,7 @@ export const ComboBoxLazyWithPlacement: Story = {
   },
 };
 
-export const ComboBoxLazyLoading: Story = {
+export const SelectComboBoxLazyLoading: Story = {
   args: {
     formatItemLabel: item => `Item ${item.split('-')[1]}`,
     dropdownProps: {
@@ -81,7 +81,7 @@ export const ComboBoxLazyLoading: Story = {
   },
 };
 
-const ComboBoxLazyInfiniteC = () => {
+const SelectComboBoxLazyInfiniteC = () => {
   const pageSize = 20;
   const maxItems = 90;
 
@@ -138,19 +138,19 @@ const ComboBoxLazyInfiniteC = () => {
     </>
   );
 };
-export const ComboBoxLazyInfinte: Story = {
-  render: args => <ComboBoxLazyInfiniteC {...args}/>,
+export const SelectComboBoxLazyInfinite: Story = {
+  render: args => <SelectComboBoxLazyInfiniteC {...args}/>,
   args: {
   },
 };
 
-export const ComboBoxLazyWithDefault: Story = {
+export const SelectComboBoxLazyWithDefault: Story = {
   args: {
     defaultSelected: 'item-3',
   },
 };
 
-const ComboBoxLazyControlledC = (props: React.ComponentProps<typeof SelectComboBoxLazy>) => {
+const SelectComboBoxLazyControlledC = (props: React.ComponentProps<typeof SelectComboBoxLazy>) => {
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
   
   return (
@@ -168,13 +168,13 @@ const ComboBoxLazyControlledC = (props: React.ComponentProps<typeof SelectComboB
     </>
   );
 };
-export const ComboBoxLazyControlled: Story = {
-  render: args => <ComboBoxLazyControlledC {...args}/>,
+export const SelectComboBoxLazyControlled: Story = {
+  render: args => <SelectComboBoxLazyControlledC {...args}/>,
   args: {
   },
 };
 
-const ComboBoxLazyFullyControlledC = (props: React.ComponentProps<typeof SelectComboBoxLazy>) => {
+const SelectComboBoxLazyFullyControlledC = (props: React.ComponentProps<typeof SelectComboBoxLazy>) => {
   const [value, setValue] = React.useState<string>('');
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
@@ -226,13 +226,13 @@ const ComboBoxLazyFullyControlledC = (props: React.ComponentProps<typeof SelectC
     </>
   );
 };
-export const ComboBoxLazyFullyControlled: Story = {
-  render: args => <ComboBoxLazyFullyControlledC {...args}/>,
+export const SelectComboBoxLazyFullyControlled: Story = {
+  render: args => <SelectComboBoxLazyFullyControlledC {...args}/>,
   args: {
   },
 };
 
-const ComboBoxLazyUncontrolledC = (props: React.ComponentProps<typeof SelectComboBoxLazy>) => {
+const SelectComboBoxLazyUncontrolledC = (props: React.ComponentProps<typeof SelectComboBoxLazy>) => {
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
       
   return (
@@ -248,13 +248,13 @@ const ComboBoxLazyUncontrolledC = (props: React.ComponentProps<typeof SelectComb
     </>
   );
 };
-export const ComboBoxLazyUncontrolled: Story = {
-  render: args => <ComboBoxLazyUncontrolledC {...args}/>,
+export const SelectComboBoxLazyUncontrolled: Story = {
+  render: args => <SelectComboBoxLazyUncontrolledC {...args}/>,
   args: {
   },
 };
 
-const ComboBoxLazyWithFilterC = () => {
+const SelectComboBoxLazyWithFilterC = () => {
   const pageSize = 20;
   const maxItems = 90;
 
@@ -340,13 +340,13 @@ const ComboBoxLazyWithFilterC = () => {
     </>
   );
 };
-export const ComboBoxLazyWithFilter: Story = {
-  render: args => <ComboBoxLazyWithFilterC {...args}/>,
+export const SelectComboBoxLazyWithFilter: Story = {
+  render: args => <SelectComboBoxLazyWithFilterC {...args}/>,
   args: {
   },
 };
 
-const ComboBoxLazyInFormC = (props: React.ComponentProps<typeof SelectComboBoxLazy>) => {
+const SelectComboBoxLazyInFormC = (props: React.ComponentProps<typeof SelectComboBoxLazy>) => {
   return (
     <form
       id="story-form"
@@ -361,8 +361,8 @@ const ComboBoxLazyInFormC = (props: React.ComponentProps<typeof SelectComboBoxLa
     </form>
   );
 };
-export const ComboBoxLazyInForm: Story = {
-  render: args => <ComboBoxLazyInFormC {...args}/>,
+export const SelectComboBoxLazyInForm: Story = {
+  render: args => <SelectComboBoxLazyInFormC {...args}/>,
   args: {
     form: 'story-form',
     name: 'story_component1',
@@ -375,7 +375,7 @@ export const ComboBoxLazyInForm: Story = {
   },
 };
 
-const ComboBoxLazyAutocompleteC = (props: Partial<React.ComponentProps<typeof SelectComboBoxLazy>>) => {
+const SelectComboBoxLazyAutocompleteC = (props: Partial<React.ComponentProps<typeof SelectComboBoxLazy>>) => {
   const pageSize = 20;
   const maxItems = 90;
 
@@ -413,7 +413,7 @@ const ComboBoxLazyAutocompleteC = (props: Partial<React.ComponentProps<typeof Se
      
   return (
     <SelectComboBoxLazy
-      label="Test ComboBox"
+      label="Test SelectComboBox"
       Input={InputSearch}
       placeholder="Choose your options"
       value={filter}
@@ -459,14 +459,14 @@ const ComboBoxLazyAutocompleteC = (props: Partial<React.ComponentProps<typeof Se
   );
 };
 /** Note: when you use the `ComboBox` for autocomplete, you must also set `aria-autocomplete="true"`.  */
-export const ComboBoxLazyAutocomplete: Story = {
-  render: args => <ComboBoxLazyAutocompleteC {...args}/>,
+export const SelectComboBoxLazyAutocomplete: Story = {
+  render: args => <SelectComboBoxLazyAutocompleteC {...args}/>,
   args: {
     'aria-autocomplete': 'list',
   },
 };
 
-const ComboBoxLazyWithLoadMoreItemsTriggerC = (props: Partial<React.ComponentProps<typeof SelectComboBoxLazy>>) => {
+const SelectComboBoxLazyWithLoadMoreItemsTriggerC = (props: Partial<React.ComponentProps<typeof SelectComboBoxLazy>>) => {
   const pageSize = 20;
   const maxItems = 90;
 
@@ -512,7 +512,7 @@ const ComboBoxLazyWithLoadMoreItemsTriggerC = (props: Partial<React.ComponentPro
 
   return (
     <SelectComboBoxLazy
-      label="Test ComboBox"
+      label="Test SelectComboBox"
       Input={InputSearch}
       placeholder="Choose your options"
       value={filter}
@@ -559,8 +559,8 @@ const ComboBoxLazyWithLoadMoreItemsTriggerC = (props: Partial<React.ComponentPro
   );
 };
 /** Note: when you use the `ComboBox` for autocomplete, you must also set `aria-autocomplete="true"`.  */
-export const ComboBoxLazyWithLoadMoreItemsTrigger: Story = {
-  render: args => <ComboBoxLazyWithLoadMoreItemsTriggerC {...args}/>,
+export const SelectComboBoxLazyWithLoadMoreItemsTrigger: Story = {
+  render: args => <SelectComboBoxLazyWithLoadMoreItemsTriggerC {...args}/>,
   args: {
     'aria-autocomplete': 'list',
   },

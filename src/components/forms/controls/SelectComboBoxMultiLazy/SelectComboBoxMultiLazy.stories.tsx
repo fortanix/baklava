@@ -26,8 +26,8 @@ const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKey
 };
 const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `item-${i + 1}`);
 
-type ComboBoxMultiArgs = React.ComponentProps<typeof SelectComboBoxMultiLazy>;
-type Story = StoryObj<ComboBoxMultiArgs>;
+type SelectComboBoxMultiArgs = React.ComponentProps<typeof SelectComboBoxMultiLazy>;
+type Story = StoryObj<SelectComboBoxMultiArgs>;
 
 export default {
   component: SelectComboBoxMultiLazy,
@@ -47,18 +47,18 @@ export default {
     },
   },
   render: (args) => <SelectComboBoxMultiLazy {...args}/>,
-} satisfies Meta<ComboBoxMultiArgs>;
+} satisfies Meta<SelectComboBoxMultiArgs>;
 
-export const ComboBoxMultiLazyStandard: Story = {};
+export const SelectComboBoxMultiLazyStandard: Story = {};
 
-export const ComboBoxMultiLazyWithCustomInput: Story = {
+export const SelectComboBoxMultiLazyWithCustomInput: Story = {
   args: {
     Input: InputSearch,
     placeholder: 'Search',
   },
 };
 
-export const ComboBoxMultiLazyWithPlacement: Story = {
+export const SelectComboBoxMultiLazyWithPlacement: Story = {
   args: {
     formatItemLabel: item => `Item ${item.split('-')[1]}`,
     dropdownProps: {
@@ -70,7 +70,7 @@ export const ComboBoxMultiLazyWithPlacement: Story = {
   },
 };
 
-export const ComboBoxMultiLazyLoading: Story = {
+export const SelectComboBoxMultiLazyLoading: Story = {
   args: {
     formatItemLabel: item => `Item ${item.split('-')[1]}`,
     dropdownProps: {
@@ -82,7 +82,7 @@ export const ComboBoxMultiLazyLoading: Story = {
   },
 };
 
-const ComboBoxMultiLazyInfiniteC = () => {
+const SelectComboBoxMultiLazyInfiniteC = () => {
   const pageSize = 20;
   const maxItems = 90;
 
@@ -139,19 +139,19 @@ const ComboBoxMultiLazyInfiniteC = () => {
     </>
   );
 };
-export const ComboBoxMultiLazyInfinte: Story = {
-  render: args => <ComboBoxMultiLazyInfiniteC {...args}/>,
+export const SelectComboBoxMultiLazyInfinite: Story = {
+  render: args => <SelectComboBoxMultiLazyInfiniteC {...args}/>,
   args: {
   },
 };
 
-export const ComboBoxMultiLazyWithDefault: Story = {
+export const SelectComboBoxMultiLazyWithDefault: Story = {
   args: {
     defaultSelected: new Set(['item-3', 'item-4']),
   },
 };
 
-const ComboBoxMultiLazyControlledC = (props: React.ComponentProps<typeof SelectComboBoxMultiLazy>) => {
+const SelectComboBoxMultiLazyControlledC = (props: React.ComponentProps<typeof SelectComboBoxMultiLazy>) => {
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set([]));
   
   return (
@@ -169,13 +169,13 @@ const ComboBoxMultiLazyControlledC = (props: React.ComponentProps<typeof SelectC
     </>
   );
 };
-export const ComboBoxMultiLazyControlled: Story = {
-  render: args => <ComboBoxMultiLazyControlledC {...args}/>,
+export const SelectComboBoxMultiLazyControlled: Story = {
+  render: args => <SelectComboBoxMultiLazyControlledC {...args}/>,
   args: {
   },
 };
 
-const ComboBoxMultiLazyFullyControlledC = (props: React.ComponentProps<typeof SelectComboBoxMultiLazy>) => {
+const SelectComboBoxMultiLazyFullyControlledC = (props: React.ComponentProps<typeof SelectComboBoxMultiLazy>) => {
   const [value, setValue] = React.useState<string>('');
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set([]));
       
@@ -212,13 +212,13 @@ const ComboBoxMultiLazyFullyControlledC = (props: React.ComponentProps<typeof Se
     </>
   );
 };
-export const ComboBoxMultiLazyFullyControlled: Story = {
-  render: args => <ComboBoxMultiLazyFullyControlledC {...args}/>,
+export const SelectComboBoxMultiLazyFullyControlled: Story = {
+  render: args => <SelectComboBoxMultiLazyFullyControlledC {...args}/>,
   args: {
   },
 };
 
-const ComboBoxMultiLazyUncontrolledC = (props: React.ComponentProps<typeof SelectComboBoxMultiLazy>) => {
+const SelectComboBoxMultiLazyUncontrolledC = (props: React.ComponentProps<typeof SelectComboBoxMultiLazy>) => {
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set([]));
       
   return (
@@ -234,13 +234,13 @@ const ComboBoxMultiLazyUncontrolledC = (props: React.ComponentProps<typeof Selec
     </>
   );
 };
-export const ComboBoxMultiLazyUncontrolled: Story = {
-  render: args => <ComboBoxMultiLazyUncontrolledC {...args}/>,
+export const SelectComboBoxMultiLazyUncontrolled: Story = {
+  render: args => <SelectComboBoxMultiLazyUncontrolledC {...args}/>,
   args: {
   },
 };
 
-const ComboBoxMultiLazyWithFilterC = () => {
+const SelectComboBoxMultiLazyWithFilterC = () => {
   const pageSize = 20;
   const maxItems = 90;
 
@@ -319,13 +319,13 @@ const ComboBoxMultiLazyWithFilterC = () => {
     </>
   );
 };
-export const ComboBoxMultiLazyWithFilter: Story = {
-  render: args => <ComboBoxMultiLazyWithFilterC {...args}/>,
+export const SelectComboBoxMultiLazyWithFilter: Story = {
+  render: args => <SelectComboBoxMultiLazyWithFilterC {...args}/>,
   args: {
   },
 };
 
-const ComboBoxMultiLazyInFormC = (props: React.ComponentProps<typeof SelectComboBoxMultiLazy>) => {
+const SelectComboBoxMultiLazyInFormC = (props: React.ComponentProps<typeof SelectComboBoxMultiLazy>) => {
   return (
     <form
       id="story-form"
@@ -340,8 +340,8 @@ const ComboBoxMultiLazyInFormC = (props: React.ComponentProps<typeof SelectCombo
     </form>
   );
 };
-export const ComboBoxMultiLazyInForm: Story = {
-  render: args => <ComboBoxMultiLazyInFormC {...args}/>,
+export const SelectComboBoxMultiLazyInForm: Story = {
+  render: args => <SelectComboBoxMultiLazyInFormC {...args}/>,
   args: {
     form: 'story-form',
     name: 'controlledComboBoxMultiLazy',
@@ -355,7 +355,7 @@ export const ComboBoxMultiLazyInForm: Story = {
 };
 
 
-const ComboBoxMultiLazyWithLoadMoreItemsTriggerC = (props: Partial<React.ComponentProps<typeof SelectComboBoxMultiLazy>>) => {
+const SelectComboBoxMultiLazyWithLoadMoreItemsTriggerC = (props: Partial<React.ComponentProps<typeof SelectComboBoxMultiLazy>>) => {
   const pageSize = 20;
   const maxItems = 90;
 
@@ -398,7 +398,7 @@ const ComboBoxMultiLazyWithLoadMoreItemsTriggerC = (props: Partial<React.Compone
 
   return (
     <SelectComboBoxMultiLazy
-      label="Test ComboBox"
+      label="Test SelectComboBox"
       Input={InputSearch}
       placeholder="Choose your options"
       value={filter}
@@ -427,8 +427,8 @@ const ComboBoxMultiLazyWithLoadMoreItemsTriggerC = (props: Partial<React.Compone
   );
 };
 /** Note: when you use the `ComboBox` for autocomplete, you must also set `aria-autocomplete="true"`.  */
-export const ComboBoxMultiLazyWithLoadMoreItemsTrigger: Story = {
-  render: args => <ComboBoxMultiLazyWithLoadMoreItemsTriggerC {...args}/>,
+export const SelectComboBoxMultiLazyWithLoadMoreItemsTrigger: Story = {
+  render: args => <SelectComboBoxMultiLazyWithLoadMoreItemsTriggerC {...args}/>,
   args: {
     'aria-autocomplete': 'list',
   },

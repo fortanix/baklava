@@ -33,8 +33,8 @@ type FruitKey = keyof typeof fruits;
 const formatFruitLabel = (itemKey: ItemKey): string => fruits[itemKey as FruitKey] ?? 'UNKNOWN';
 
 
-type ComboBoxArgs = React.ComponentProps<typeof SelectComboBox>;
-type Story = StoryObj<ComboBoxArgs>;
+type SelectComboBoxArgs = React.ComponentProps<typeof SelectComboBox>;
+type Story = StoryObj<SelectComboBoxArgs>;
 
 export default {
   component: SelectComboBox,
@@ -56,18 +56,18 @@ export default {
     ),
   },
   render: (args) => <SelectComboBox {...args}/>,
-} satisfies Meta<ComboBoxArgs>;
+} satisfies Meta<SelectComboBoxArgs>;
 
-export const ComboBoxStandard: Story = {};
+export const SelectComboBoxStandard: Story = {};
 
-export const ComboBoxWithCustomInput: Story = {
+export const SelectComboBoxWithCustomInput: Story = {
   args: {
     Input: InputSearch,
     placeholder: 'Search',
   },
 };
 
-const ComboBoxWithDefaultC = (props: React.ComponentProps<typeof SelectComboBox>) => {
+const SelectComboBoxWithDefaultC = (props: React.ComponentProps<typeof SelectComboBox>) => {
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>('item-durian');
   
   return (
@@ -87,14 +87,14 @@ const ComboBoxWithDefaultC = (props: React.ComponentProps<typeof SelectComboBox>
     </>
   );
 };
-export const ComboBoxWithDefault: Story = {
-  render: args => <ComboBoxWithDefaultC {...args}/>,
+export const SelectComboBoxWithDefault: Story = {
+  render: args => <SelectComboBoxWithDefaultC {...args}/>,
   args: {
   },
 };
 
 
-const ComboBoxControlledC = (props: React.ComponentProps<typeof SelectComboBox>) => {
+const SelectComboBoxControlledC = (props: React.ComponentProps<typeof SelectComboBox>) => {
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
   
   return (
@@ -115,13 +115,13 @@ const ComboBoxControlledC = (props: React.ComponentProps<typeof SelectComboBox>)
     </>
   );
 };
-export const ComboBoxControlled: Story = {
-  render: args => <ComboBoxControlledC {...args}/>,
+export const SelectComboBoxControlled: Story = {
+  render: args => <SelectComboBoxControlledC {...args}/>,
   args: {
   },
 };
 
-const ComboBoxFullyControlledC = (props: React.ComponentProps<typeof SelectComboBox>) => {
+const SelectComboBoxFullyControlledC = (props: React.ComponentProps<typeof SelectComboBox>) => {
   const [value, setValue] = React.useState<string>('');
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
@@ -176,13 +176,13 @@ const ComboBoxFullyControlledC = (props: React.ComponentProps<typeof SelectCombo
     </>
   );
 };
-export const ComboBoxFullyControlled: Story = {
-  render: args => <ComboBoxFullyControlledC {...args}/>,
+export const SelectComboBoxFullyControlled: Story = {
+  render: args => <SelectComboBoxFullyControlledC {...args}/>,
   args: {
   },
 };
 
-const ComboBoxUncontrolledC = (props: React.ComponentProps<typeof SelectComboBox>) => {
+const SelectComboBoxUncontrolledC = (props: React.ComponentProps<typeof SelectComboBox>) => {
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
       
   return (
@@ -201,13 +201,13 @@ const ComboBoxUncontrolledC = (props: React.ComponentProps<typeof SelectComboBox
     </>
   );
 };
-export const ComboBoxUncontrolled: Story = {
-  render: args => <ComboBoxUncontrolledC {...args}/>,
+export const SelectComboBoxUncontrolled: Story = {
+  render: args => <SelectComboBoxUncontrolledC {...args}/>,
   args: {
   },
 };
 
-const ComboBoxWithFilterC = (props: React.ComponentProps<typeof SelectComboBox>) => {
+const SelectComboBoxWithFilterC = (props: React.ComponentProps<typeof SelectComboBox>) => {
   const [value, setValue] = React.useState<undefined | string>();
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
@@ -259,13 +259,13 @@ const ComboBoxWithFilterC = (props: React.ComponentProps<typeof SelectComboBox>)
     </>
   );
 };
-export const ComboBoxWithFilter: Story = {
-  render: args => <ComboBoxWithFilterC {...args}/>,
+export const SelectComboBoxWithFilter: Story = {
+  render: args => <SelectComboBoxWithFilterC {...args}/>,
   args: {
   },
 };
 
-const ComboBoxInFormC = (props: React.ComponentProps<typeof SelectComboBox>) => {
+const SelectComboBoxInFormC = (props: React.ComponentProps<typeof SelectComboBox>) => {
   return (
     <form
       id="story-form"
@@ -280,8 +280,8 @@ const ComboBoxInFormC = (props: React.ComponentProps<typeof SelectComboBox>) => 
     </form>
   );
 };
-export const ComboBoxInForm: Story = {
-  render: args => <ComboBoxInFormC {...args}/>,
+export const SelectComboBoxInForm: Story = {
+  render: args => <SelectComboBoxInFormC {...args}/>,
   args: {
     form: 'story-form',
     name: 'story_component1',
@@ -325,7 +325,7 @@ const InputSearchAutocomplete = (props: React.ComponentProps<typeof InputSearch>
   );
 };
 */
-const ComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof SelectComboBox>>) => {
+const SelectComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof SelectComboBox>>) => {
   const [value, setValue] = React.useState('');
   const [selectedKey, setSelectedKey] = React.useState<null | ItemKey>(null);
   const [blocks, setBlocks] = React.useState<Array<string>>([]);
@@ -338,7 +338,7 @@ const ComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof Select
   
   return (
     <SelectComboBox
-      label="Test ComboBox"
+      label="Test SelectComboBox"
       Input={InputSearch}
       placeholder="Choose your favorite fruits"
       value={value}
@@ -377,8 +377,8 @@ const ComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof Select
   );
 };
 /** Note: when you use the `ComboBox` for autocomplete, you must also set `aria-autocomplete="true"`.  */
-export const ComboBoxAutocomplete: Story = {
-  render: args => <ComboBoxAutocompleteC {...args}/>,
+export const SelectComboBoxAutocomplete: Story = {
+  render: args => <SelectComboBoxAutocompleteC {...args}/>,
   args: {
     'aria-autocomplete': 'list',
   },

@@ -47,7 +47,7 @@ const SelectComboBoxMultiLazyInput = (props: SelectComboBoxMultiLazyInputProps) 
     anchorRenderArgs,
     onUpdate,
     Input = InputDefault,
-    automaticResize,
+    automaticResize = true,
     // Hidden input props
     name,
     form,
@@ -258,7 +258,7 @@ export const SelectComboBoxMultiLazy = (props: SelectComboBoxMultiLazyProps) => 
   return (
     <MenuMultiLazyProvider
       label={label}
-      role="listbox"
+      role="combobox"
       triggerAction="combobox"
       keyboardInteractions="default" // FIXME
       placement="bottom-start"

@@ -86,7 +86,7 @@ const SelectComboBoxMultiInput = (props: SelectComboBoxMultiInputProps) => {
     anchorRenderArgs,
     onUpdate,
     Input = InputDefault,
-    automaticResize,
+    automaticResize = true,
     // Hidden input props
     name,
     form,
@@ -303,7 +303,7 @@ export const SelectComboBoxMulti = Object.assign(
       <MenuMultiProvider
         label={label}
         items={options}
-        role="listbox"
+        role="combobox"
         triggerAction="combobox"
         keyboardInteractions="default" // FIXME
         placement="bottom-start"
