@@ -139,7 +139,7 @@ const SelectComboBoxMultiLazyInfiniteC = () => {
     </>
   );
 };
-export const SelectComboBoxMultiLazyInfinte: Story = {
+export const SelectComboBoxMultiLazyInfinite: Story = {
   render: args => <SelectComboBoxMultiLazyInfiniteC {...args}/>,
   args: {
   },

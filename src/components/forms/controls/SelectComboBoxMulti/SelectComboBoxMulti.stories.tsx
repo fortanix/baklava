@@ -205,7 +205,7 @@ export const SelectComboBoxMultiUncontrolled: Story = {
   },
 };
 
-const SelectComboBoxMultiwithFilterC = (props: Partial<React.ComponentProps<typeof SelectComboBoxMulti>>) => {
+const SelectComboBoxMultiWithFilterC = (props: Partial<React.ComponentProps<typeof SelectComboBoxMulti>>) => {
   const [value, setValue] = React.useState<undefined | string>();
   const [selectedKeys, setSelectedKeys] = React.useState<Set<ItemKey>>(new Set());
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
@@ -254,7 +254,7 @@ const SelectComboBoxMultiwithFilterC = (props: Partial<React.ComponentProps<type
   );
 };
 export const SelectComboBoxMultiWithFilter: Story = {
-  render: args => <SelectComboBoxMultiwithFilterC {...args}/>,
+  render: args => <SelectComboBoxMultiWithFilterC {...args}/>,
   args: {
   },
 };

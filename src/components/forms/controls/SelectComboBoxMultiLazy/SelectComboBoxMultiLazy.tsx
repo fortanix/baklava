@@ -47,7 +47,7 @@ const SelectComboBoxMultiLazyInput = (props: SelectComboBoxMultiLazyInputProps) 
     anchorRenderArgs,
     onUpdate,
     Input = InputDefault,
-    automaticResize,
+    automaticResize = true,
     // Hidden input props
     name,
     form,
