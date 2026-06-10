@@ -95,7 +95,11 @@ export const Button = (props: ButtonProps) => {
     // button focus.
     if (onPressResult instanceof Promise) {
       startPressTransition(async () => {
-        await Promise.race([onPressResult, timeout(asyncTimeout)]);
+        await Promise.race([
+          onPressResult,
+          // If asyncTimeout is Infinity, we don't want to trigger the timeout.
+          ...(asyncTimeout !== Infinity ? [timeout(asyncTimeout)] : []),
+        ]);
       });
     }
   }, [onPress, asyncTimeout]);

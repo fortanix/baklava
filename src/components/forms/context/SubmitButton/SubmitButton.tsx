@@ -43,13 +43,16 @@ export const SubmitButton = (props: SubmitButtonProps) => {
   const isPending = isPressPending || formStatus.pending;
   const isInteractive = !propsButton.disabled && !propsButton.nonactive && !isPending;
   const isDisabled = !isInteractive;
-  const isNonactive = propsButton.nonactive || isPending;
   
   const handlePress = React.useCallback(() => {
     if (typeof onPress !== 'function') { return; }
     
     startPressTransition(async () => {
-      await Promise.race([onPress(), timeout(asyncTimeout)]);
+      await Promise.race([
+        onPress(),
+        // If asyncTimeout is Infinity, we don't want to trigger the timeout.
+        ...(asyncTimeout !== Infinity ? [timeout(asyncTimeout)] : []),
+      ]);
     });
   }, [onPress, asyncTimeout]);
   
