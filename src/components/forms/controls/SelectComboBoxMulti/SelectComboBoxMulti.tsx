@@ -5,13 +5,17 @@
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 
+// Utils
+import { mergeRefs } from '../../../../util/reactUtil.ts';
+
 // Components
 import { Input as InputDefault } from '../Input/Input.tsx';
 import {
   type ItemDetails,
   type ItemKey,
-  MenuMultiProvider,
   type AnchorRenderArgs,
+  type MenuProviderRef,
+  MenuMultiProvider,
   MenuMultiProviderProps,
   buildSelectedItemDetailsMap,
   InternalItemDetails,
@@ -20,14 +24,14 @@ import { Tag } from '../../../text/Tag/Tag.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
 // Styles
-import cl from './ComboBoxMulti.module.scss';
+import cl from './SelectComboBoxMulti.module.scss';
 
 
-export { cl as ComboBoxMultiClassNames };
+export { cl as SelectComboBoxMultiClassNames };
 export type { ItemKey, ItemDetails };
 type InputProps = ComponentProps<typeof InputDefault>;
 
-// USE COMBO BOX STATE
+// USE SELECT COMBO BOX STATE
 // ---------------------------------------------------------------------------------------------------------------------
 
 /**
@@ -37,12 +41,12 @@ type InputProps = ComponentProps<typeof InputDefault>;
  *   1. Selecting an option from the dropdown
  *   2. Removing the selected option from the selected items list
  */
-type UseComboBoxStateProps = {
+type UseSelectComboBoxStateProps = {
   selected?: undefined | Set<ItemKey>,
   formatItemLabel?: undefined | MenuMultiProviderProps['formatItemLabel'],
 };
 
-export const useComboBoxState = (props: UseComboBoxStateProps) => {
+export const useSelectComboBoxState = (props: UseSelectComboBoxStateProps) => {
   const { selected, formatItemLabel } = props;
 
   const [internalSelected, setInternalSelected] = React.useState<InternalItemDetails>(() => {
@@ -67,20 +71,22 @@ export const useComboBoxState = (props: UseComboBoxStateProps) => {
   };
 };
 
-// COMBO BOX MULTI INPUT
+// SELECT COMBO BOX MULTI INPUT
 // ---------------------------------------------------------------------------------------------------------------------
 
-type ComboBoxMultiInputProps = Omit<InputProps, 'onSelect'> & {
+type SelectComboBoxMultiInputProps = Omit<InputProps, 'onSelect'> & {
   anchorRenderArgs: AnchorRenderArgs,
   onUpdate?: undefined | MenuMultiProviderProps['onSelect'],
   Input?: undefined | React.ComponentType<InputProps>,
 };
 
-const ComboBoxMultiInput = (props: ComboBoxMultiInputProps) => {
+const SelectComboBoxMultiInput = (props: SelectComboBoxMultiInputProps) => {
   const {
+    ref,
     anchorRenderArgs,
     onUpdate,
     Input = InputDefault,
+    automaticResize = true,
     // Hidden input props
     name,
     form,
@@ -94,11 +100,15 @@ const ComboBoxMultiInput = (props: ComboBoxMultiInputProps) => {
   } = anchorRenderArgs;
     
   const anchorProps = anchorRenderProps({
+    ref,
     className: cx(
       cl['bk-combo-box'],
       { [cl['bk-combo-box--open']]: open },
+      propsRest.className,
       propsRest.containerProps?.className,
     ),
+    onBlur: propsRest.onBlur,
+    onKeyDown: propsRest.onKeyDown,
   });
 
   const onRemove = React.useCallback(
@@ -114,17 +124,15 @@ const ComboBoxMultiInput = (props: ComboBoxMultiInputProps) => {
     <>
       <Input
         role="combobox"
-        automaticResize
+        automaticResize={automaticResize}
         {...propsRest}
+        {...anchorProps}
         inputProps={{
           placeholder: 'Select options',
           ...propsRest.inputProps,
           className: cx(cl['bk-combo-box__input'], propsRest.inputProps?.className),
         }}
-        containerProps={{
-          ...propsRest.containerProps,
-          ...anchorProps,
-        }}
+        containerProps={propsRest.containerProps ?? {}}
       />
       
       {selectedOptions.size > 0 && (
@@ -166,28 +174,36 @@ const ComboBoxMultiInput = (props: ComboBoxMultiInputProps) => {
   );
 };
 
-// COMBO BOX MULTI
+// SELECT COMBO BOX MULTI
 // ---------------------------------------------------------------------------------------------------------------------
 
 /**
- * A `ComboBoxMulti` is a text input control combined with a multi-selction dropdown menu that
+ * A `SelectComboBoxMulti` is a text input control combined with a multi-selction dropdown menu that
  * adapts to the user input, for example for automatic suggestions.
  * 
  * References: 
  * - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
  */
-export type ComboBoxMultiProps = Omit<InputProps, 'onSelect'> & {
+export type SelectComboBoxMultiProps = Omit<InputProps, 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
   /** A human-readable name for the combobox. */
   label: string,
   
-  /** A custom `Input` component. */
-  Input?: undefined | React.ComponentType<InputProps>,
-  
+  /** Render the given item key as a string label. */
+  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
+
   /** The options list to be shown in the dropdown menu. */
-  options: React.ReactNode,
+  options: React.ComponentProps<typeof MenuMultiProvider>['items'],
+  
+  /** A custom `Input` component. */
+  Input?: undefined | React.ComponentType<InputProps> & {
+    Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
+  },
+  
+  /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
+  defaultSelected?: undefined | Set<ItemKey>,
   
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */
   selected?: undefined | Set<ItemKey>,
@@ -198,28 +214,61 @@ export type ComboBoxMultiProps = Omit<InputProps, 'onSelect'> & {
   /** Additional props to be passed to the `MenuMultiProvider`. */
   dropdownProps?: undefined | Partial<MenuMultiProviderProps>,
 };
-export const ComboBoxMulti = Object.assign(
-  (props: ComboBoxMultiProps) => {
+export const SelectComboBoxMulti = Object.assign(
+  (props: SelectComboBoxMultiProps) => {
     const {
+      ref,
       unstyled = false,
       label,
+      value,
       Input = InputDefault,
       options,
       selected,
       onSelect,
+      onChange,
+      onBlur,
       dropdownProps = {},
+      defaultSelected,
+      formatItemLabel,
       ...propsRest
     } = props;
     
-    const [inputValue, setInputValue] = React.useState(propsRest.value ?? '');
+    const {
+      formatItemLabel: _, // Ignore
+      ref: dropdownPropsRef,
+      onBlur: onDropdownBlur,
+      ...dropdownPropsRest
+    } = dropdownProps;
+    
+    const dropdownRef = React.useRef<MenuProviderRef | null>(null);
+    const mergedDropdownRef = mergeRefs(dropdownPropsRef, dropdownRef);
+
+    const inputRef = React.useRef<HTMLInputElement | null>(null);
+    const mergedInputRef = mergeRefs(ref, inputRef);
+
+    const [inputValue, setInputValue] = React.useState(value ?? '');
+
+    const updateInputValue = React.useCallback((updatedValue: string) => {
+      if (typeof value === 'undefined') {
+        // Update only when input value is uncontrolled
+        setInputValue(updatedValue);
+      }
+    }, [value]);
 
     const {
       internalSelected,
       handleInternalSelect,
-    } = useComboBoxState({
-      selected,
-      formatItemLabel: dropdownProps.formatItemLabel,
+    } = useSelectComboBoxState({
+      selected: typeof selected !== 'undefined' ? selected : defaultSelected,
+      formatItemLabel,
     });
+
+    const updateInternalSelected = React.useCallback((updatedInternalSelected: Set<ItemKey>) => {
+      if (typeof selected === 'undefined') {
+        // Update only when menu selection is uncontrolled
+        handleInternalSelect(updatedInternalSelected);
+      }
+    }, [selected, handleInternalSelect]);
 
     const internalSelectedItemKeys: Set<ItemKey> = React.useMemo(
       () => new Set(internalSelected.keys()),
@@ -227,17 +276,27 @@ export const ComboBoxMulti = Object.assign(
     );
 
     const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-      setInputValue(evt.target.value);
+      updateInputValue(evt.target.value);
+      onChange?.(evt);
     };
 
     const handleSelect = React.useCallback((itemKeys: Set<ItemKey>, itemDetails: Map<ItemKey, ItemDetails>) => {
+      updateInternalSelected(itemKeys);
       onSelect?.(itemKeys, itemDetails);
-      setInputValue('');
-      handleInternalSelect(itemKeys);
-    }, [onSelect, handleInternalSelect]);
+    }, [onSelect, updateInternalSelected]);
 
-    const handleInputFocusOut = (_evt: React.FocusEvent<HTMLInputElement>) => {
-      setInputValue('');
+    const handleInputFocusOut = (evt: React.FocusEvent<HTMLInputElement>) => {
+      const floatingEl = dropdownRef.current?.floatingEl;
+      if (floatingEl?.contains(evt.relatedTarget as Node)) { return; }
+      onBlur?.(evt);
+    };
+
+    const handleDropdownFocusOut = (evt: React.FocusEvent<HTMLDivElement>) => {
+      const inputEl = inputRef.current;
+      if (inputEl?.contains(evt.relatedTarget as Node)) { return; }
+      const floatingEl = dropdownRef.current?.floatingEl;
+      if (floatingEl?.contains(evt.relatedTarget as Node)) { return; }
+      onDropdownBlur?.(evt);
     };
 
     return (
@@ -245,23 +304,28 @@ export const ComboBoxMulti = Object.assign(
         label={label}
         items={options}
         role="combobox"
-        triggerAction="focus-interactive" // Keep the dropdown menu open while the input is focused
+        triggerAction="combobox"
         keyboardInteractions="default" // FIXME
         placement="bottom-start"
         offset={1}
         selected={internalSelectedItemKeys}
         onSelect={handleSelect}
-        {...dropdownProps}
+        onBlur={handleDropdownFocusOut}
+        formatItemLabel={formatItemLabel}
+        defaultSelected={defaultSelected}
+        {...dropdownPropsRest}
+        ref={mergedDropdownRef}
       >
         {anchorRenderArgs => (
-          <ComboBoxMultiInput
+          <SelectComboBoxMultiInput
             anchorRenderArgs={anchorRenderArgs}
             Input={Input}
-            value={inputValue}
+            value={typeof value !== 'undefined' ? value : inputValue}
             onChange={handleInputChange}
             onUpdate={handleSelect}
             onBlur={handleInputFocusOut}
             {...propsRest}
+            ref={mergedInputRef}
           />
         )}
       </MenuMultiProvider>

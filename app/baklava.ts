@@ -71,10 +71,10 @@ export { ListBox } from '../src/components/forms/controls/ListBox/ListBox.tsx';
 export { ListBoxLazy } from '../src/components/forms/controls/ListBoxLazy/ListBoxLazy.tsx';
 export { ListBoxMulti } from '../src/components/forms/controls/ListBoxMulti/ListBoxMulti.tsx';
 export { ListBoxMultiLazy } from '../src/components/forms/controls/ListBoxMultiLazy/ListBoxMultiLazy.tsx';
-export { ComboBox } from '../src/components/forms/controls/ComboBox/ComboBox.tsx';
-export { ComboBoxLazy } from '../src/components/forms/controls/ComboBoxLazy/ComboBoxLazy.tsx';
-export { ComboBoxMulti } from '../src/components/forms/controls/ComboBoxMulti/ComboBoxMulti.tsx';
-export { ComboBoxMultiLazy } from '../src/components/forms/controls/ComboBoxMultiLazy/ComboBoxMultiLazy.tsx';
+export { SelectComboBox } from '../src/components/forms/controls/SelectComboBox/SelectComboBox.tsx';
+export { SelectComboBoxLazy } from '../src/components/forms/controls/SelectComboBoxLazy/SelectComboBoxLazy.tsx';
+export { SelectComboBoxMulti } from '../src/components/forms/controls/SelectComboBoxMulti/SelectComboBoxMulti.tsx';
+export { SelectComboBoxMultiLazy } from '../src/components/forms/controls/SelectComboBoxMultiLazy/SelectComboBoxMultiLazy.tsx';
 export { Select } from '../src/components/forms/controls/Select/Select.tsx';
 export { SelectMulti } from '../src/components/forms/controls/SelectMulti/SelectMulti.tsx';
 
