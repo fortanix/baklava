@@ -1,0 +1,36 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-list {
+    @include bk.component-base(bk-composite);
+    
+    // stylelint-disable-next-line declaration-property-value-disallowed-list
+    overflow-block: auto;
+    
+    min-inline-size: 18ch;
+    max-block-size: 10lh;
+    background: bk.$theme-dropdown-menu-menu-background-default;
+    
+    display: flex;
+    flex-direction: column;
+    
+    .bk-list-item {
+      flex: none;
+      
+      --block-size: 40px;
+      block-size: var(--block-size);
+      padding: 0.4em 1.2em;
+      
+      content-visibility: auto;
+      contain-intrinsic-block-size: var(--block-size);
+      
+      &:not(:nth-child(1 of .bk-list-item)) {
+        border-block-start: bk.$size-hairline solid bk.$theme-rule-default;
+      }
+    }
+  }
+}
