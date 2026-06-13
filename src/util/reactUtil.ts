@@ -120,8 +120,17 @@ export const mergeProps = <T extends Array<PropsArg>>(...args: T): UnionToInters
 };
 
 
+/**
+ * Similar to `useMemo(fn, [])` but with the guarantee to only run the initializer once.
+ * @see {@link https://tkdodo.eu/blog/use-state-for-one-time-initializations}
+ */
+export const useMemoOnce = <T>(initialize: () => T) => {
+  const [state] = React.useState(initialize);
+  return state;
+};
+
 export const usePrevious = <T>(value: T) => {
-  const ref: React.RefObject<null | T> = React.useRef(null);
+  const ref: React.RefObject<undefined | T> = React.useRef(undefined);
   React.useEffect(() => {
     ref.current = value;
   });
@@ -153,9 +162,9 @@ export const useEffectAsync = (effect: () => Promise<unknown>, inputs?: undefine
 // This helper ensures the initializer runs exactly once.
 export const useRefWithInitializer = <T>(initializer: () => T) => {
   const ref = React.useRef<null | T>(null);
-
+  
   if (ref.current === null) { ref.current = initializer(); }
-
+  
   return ref as React.RefObject<T>;
 };
 

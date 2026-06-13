@@ -43,7 +43,7 @@
       border: none;
       background-color: var(--bk-segmented-control-background-color);
       
-      @include bk.text-one-line($include-padding: false);
+      @include bk.text-one-line();
       color: var(--bk-segmented-control-text-color);
       @include bk.font($family: bk.$font-family-body, $weight: bk.$font-weight-semibold);
       text-transform: uppercase;
