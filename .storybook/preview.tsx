@@ -66,6 +66,8 @@ const preview = {
               'Button',
               'ButtonAsLink',
               'IconButton',
+              'ToggleButton',
+              'SegmentedControl',
               'CardAction',
             ],
             'overlays',
@@ -182,6 +184,10 @@ const preview = {
           'fortanix',
           [
             'FortanixLogo',
+          ],
+          'util',
+          [
+            'Collection',
           ],
         ],
       },

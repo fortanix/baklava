@@ -87,7 +87,7 @@
       font-size: bk.$font-size-m;
       
       > .bk-list-box__item__label {
-        @include bk.text-one-line($include-padding: false);
+        @include bk.text-one-line();
       }
       
       > .bk-list-box__item__icon {

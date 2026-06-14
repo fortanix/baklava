@@ -1,0 +1,47 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-segmented-control {
+    @include bk.component-base(bk-segmented-control);
+    
+    --bk-segmented-control-background-color: #{bk.$theme-segmented-control-background-default};
+    --bk-segmented-control-border-color: #{bk.$theme-segmented-control-border-unselected};
+    --bk-segmented-control-text-color: #{bk.$theme-segmented-control-text-unselected};
+    
+    //overflow: hidden; // Note: cannot hide overflow, would truncate focus outlines
+    inline-size: fit-content; // Do not stretch in a block context
+    align-self: center; // Do not stretch along cross axis in flex context
+    flex: none; // Do not shrink/grow in a flex context
+    
+    border: bk.$size-hairline solid var(--bk-segmented-control-border-color);
+    border-radius: bk.$radius-1;
+    background: var(--bk-segmented-control-border-color);
+    
+    display: flex;
+    flex-direction: row;
+    gap: bk.$size-hairline;
+    
+    // Set this to allow wrapping:
+    //flex-wrap: wrap;
+    // Note: may want to implement https://heydonworks.com/article/the-flexbox-holy-albatross-reincarnated
+    
+    // State: disabled (entire control)
+    &.bk-segmented-control--disabled {
+      --bk-segmented-control-background-color: #{bk.$theme-segmented-control-background-disabled-2};
+      --bk-segmented-control-border-color: #{bk.$theme-segmented-control-border-disabled};
+      --bk-segmented-control-text-color: #{bk.$theme-segmented-control-text-unselected-2};
+      
+      cursor: not-allowed;
+    }
+    
+    &.bk-segmented-control--small {
+      .bk-toggle-button {
+        font-size: bk.$font-size-xs;
+      }
+    }
+  }
+}

@@ -145,7 +145,7 @@ export const Button = (props: ButtonProps) => {
   
   return (
     <button
-      aria-label={label}
+      aria-label={label} // Set an explicit `aria-label` to prevent the `text-transform` from all-uppercasing
       aria-disabled={isInteractive ? undefined : true}
       disabled={disabled}
       {...propsRest}
