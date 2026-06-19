@@ -7,8 +7,10 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { FocusGroup } from '../FocusGroup/FocusGroup.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 
-import { type ItemKey, useCollectionItem, useCollection } from './Collection.tsx';
+import { type ItemKey, useCollectionItem, useCollection } from './CollectionStore.tsx';
 
+
+const generateRandomId = () => Math.random().toString(36).slice(-6);
 
 // An example `Collection` component
 type CollectionItemProps = React.ComponentProps<typeof Button> & { itemKey: ItemKey };
@@ -20,7 +22,7 @@ const CollectionItem = ({ itemKey, ...propsRest }: CollectionItemProps) => {
 };
 const Collection = Object.assign(
   (props: React.ComponentProps<typeof FocusGroup>) => {
-    const coll = useCollection<React.ComponentRef<typeof FocusGroup>>();
+    const coll = useCollection();
     return (
       <coll.Provider>
         <FocusGroup {...mergeProps(props, coll.props)} role="listbox" focusGroup="listbox">
@@ -145,7 +147,7 @@ type CollectionTwoColumnsProps = {
   right: React.ReactNode,
 };
 const CollectionTwoColumns = ({ left, right }: CollectionTwoColumnsProps) => {
-  const { Provider: CollectionProvider, props } = useCollection<HTMLDivElement>();
+  const { Provider: CollectionProvider, props } = useCollection();
   
   React.useEffect(() => {
     //...
@@ -233,7 +235,7 @@ const CollectionWithControlsC = (args: CollectionArgs) => {
     if (!newItem) { throw new Error(`Should not happen`); }
     
     setItems(items => {
-      const newItemKey = `${newItem}-${Object.keys(items).length}`;
+      const newItemKey = `${newItem}-${generateRandomId()}`;
       return { ...items, [newItemKey]: { itemKey: newItemKey, children: newItemKey } };
     });
   }, []);
@@ -243,7 +245,7 @@ const CollectionWithControlsC = (args: CollectionArgs) => {
     if (!newItem) { throw new Error(`Should not happen`); }
     
     setItems(items => {
-      const newItemKey = `${newItem}-${Object.keys(items).length}`;
+      const newItemKey = `${newItem}-${generateRandomId()}`;
       return { [newItemKey]: { itemKey: newItemKey, children: newItemKey }, ...items };
     });
   }, []);

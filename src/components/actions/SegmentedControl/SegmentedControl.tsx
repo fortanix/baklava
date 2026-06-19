@@ -5,8 +5,9 @@
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import { mergeCallbacks, mergeProps } from '../../../util/reactUtil.ts';
+import { useStore } from 'zustand';
 
-import { type ItemKey, useCollection, useCollectionItem } from '../../util/Collection/Collection.tsx';
+import { type ItemKey, useRadioGroup, useRadioGroupItem } from '../../util/Collection/RadioGroupStore.tsx';
 import { FocusGroup } from '../../util/FocusGroup/FocusGroup.tsx';
 import { ToggleButton } from '../ToggleButton/ToggleButton.tsx';
 
@@ -22,17 +23,17 @@ type SegmentedControlButtonProps = ComponentProps<typeof ToggleButton> & {
 export const SegmentedControlButton = (props: SegmentedControlButtonProps) => {
   const { buttonKey, ...propsRest } = props;
   
-  const [isActive, setIsActive] = React.useState(false);
+  const { store, itemProps } = useRadioGroupItem({ itemKey: buttonKey });
+  if (store === null) { throw new Error(`[SegmentedControlButton] Missing 'RadioGroupContext' provider`); }
   
-  const itemProps = useCollectionItem({ itemKey: buttonKey });
+  const isSelected = useStore(store, store => buttonKey === store.selectedItemKey);
+  const selectItem = useStore(store, store => store.selectItem);
   
   const isInteractive = true; // FIXME
   const handlePress = React.useCallback(() => {
-    setIsActive(active => {
-      if (!isInteractive) { return active; }
-      return !active;
-    });
-  }, [isInteractive]);
+    if (!isInteractive) { return; }
+    selectItem(buttonKey);
+  }, [isInteractive, selectItem, buttonKey]);
   
   return (
     <ToggleButton
@@ -44,7 +45,7 @@ export const SegmentedControlButton = (props: SegmentedControlButtonProps) => {
       embedded
       // biome-ignore lint/a11y/useValidAriaValues: Intentionally unsetting `aria-pressed`
       aria-pressed={undefined}
-      aria-checked={isActive}
+      aria-checked={isSelected}
       onPress={mergeCallbacks([propsRest.onPress, handlePress])}
       // disabled={disabled}
       // nonactive={nonactive}
@@ -52,7 +53,7 @@ export const SegmentedControlButton = (props: SegmentedControlButtonProps) => {
   );
 };
 
-export type SegmentedControlProps = Omit<ComponentProps<typeof FocusGroup>, 'focusGroup'> & {
+export type SegmentedControlProps = Omit<ComponentProps<typeof FocusGroup>, 'focusGroup' | 'defaultChecked'> & {
   /** Focus group behavior. */
   focusGroup?: React.ComponentProps<typeof FocusGroup>['focusGroup'],
   
@@ -75,34 +76,36 @@ export type SegmentedControlProps = Omit<ComponentProps<typeof FocusGroup>, 'foc
   
   /** Whether the segmented control is disabled or not. Default: false. */
   disabled?: undefined | boolean,
-  
-  /** Any additional props to apply to the internal `<input type="hidden"/>`. */
-  inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
 };
 export const SegmentedControl = Object.assign(
   (props: SegmentedControlProps) => {
-    const { unstyled = false, ...propsRest } = props;
+    const { unstyled = false, size, defaultSelected, selected, onUpdate, disabled, ...propsRest } = props;
     
-    const { Provider: CollectionProvider, props: collectionProps } = useCollection();
+    const { Provider: RadioGroupProvider, props: radioGroupProps } = useRadioGroup({
+      selectedItemKey: defaultSelected ?? null,
+    });
+    
+    // FIXME: controlled usage (sync with store)
     
     return (
-      <CollectionProvider>
+      <RadioGroupProvider>
         <FocusGroup
           role="radiogroup" // Needed for the polyfill, remove this once all browsers support `focusgroup`
           focusGroup="radiogroup nowrap"
           {...mergeProps(
             propsRest,
-            collectionProps,
+            radioGroupProps,
             {
               className: cx(
                 'bk',
                 { [cl['bk-segmented-control']]: !unstyled },
+                { [cl['bk-segmented-control--small']]: size === 'small' },
                 propsRest.className,
               ),
             },
           )}
         />
-      </CollectionProvider>
+      </RadioGroupProvider>
     );
   },
   {

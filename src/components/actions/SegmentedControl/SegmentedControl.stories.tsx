@@ -27,6 +27,7 @@ export default {
 export const SegmentedControlStandard: Story = {
   args: {
     'aria-label': 'Color',
+    defaultSelected: 'blue',
     children: (
       <>
         <SegmentedControl.Button buttonKey="red" label="Red"/>

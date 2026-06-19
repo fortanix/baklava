@@ -14,7 +14,8 @@ import cl from './ToggleButton.module.scss';
 export { cl as ToggleButtonClassNames };
 
 
-type ToggleButtonProps = Omit<ComponentProps<typeof Button>, 'kind' | 'trimmed' | 'asyncTimeout'> & {
+type ButtonPropsIrrelevant = 'kind' | 'trimmed' | 'asyncTimeout';
+type ToggleButtonProps = Omit<ComponentProps<typeof Button>, ButtonPropsIrrelevant> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
