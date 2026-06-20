@@ -4,25 +4,28 @@
 
 @use '../../../styling/defs.scss' as bk;
 
-@layer baklava.components {
+@layer baklava.overrides { // Override the `Button` component styling
   .bk-toggle-button {
     @include bk.component-base(bk-toggle-button);
-    @include bk.expand-target-area();
+    overflow: hidden;
     
-    --bk-toggle-button-background-color: #{bk.$theme-segmented-control-background-default};
+    // Opt out of some `Button` styles
+    scale: initial;
+    
+    --bk-toggle-button-border-width: #{bk.$size-hairline};
     --bk-toggle-button-border-color: #{bk.$theme-segmented-control-border-unselected};
+    --bk-toggle-button-background-color: #{bk.$theme-segmented-control-background-default};
     --bk-toggle-button-text-color: #{bk.$theme-segmented-control-text-unselected};
     
     // For the inner radius, subtract the border width
-    --inner-radius: #{calc(bk.$radius-1 - bk.$size-hairline)};
-    
-    flex-grow: 1; // Fill full width in case `flex-wrap` is enabled
+    --bk-toggle-button-inner-radius: calc(#{bk.$radius-1} - var(--bk-toggle-button-border-width));
     
     padding: bk.$spacing-1 bk.$spacing-3;
     background-color: var(--bk-toggle-button-background-color);
     
+    // When in embedded mode, don't decorate the border
     &:not(.bk-toggle-button--embedded) {
-      border: bk.$size-hairline solid var(--bk-toggle-button-border-color);
+      border: var(--bk-toggle-button-border-width) solid var(--bk-toggle-button-border-color);
       border-radius: bk.$radius-1;
     }
     
@@ -31,13 +34,18 @@
     color: var(--bk-toggle-button-text-color);
     text-transform: uppercase;
     
+    &.bk-toggle-button--small {
+      @include bk.expand-target-area();
+      font-size: bk.$font-size-xs;
+    }
+    
     // &:first-of-type {
-    //   border-start-start-radius: var(--inner-radius);
-    //   border-end-start-radius: var(--inner-radius);
+    //   border-start-start-radius: var(--bk-toggle-button-inner-radius);
+    //   border-end-start-radius: var(--bk-toggle-button-inner-radius);
     // }
     // &:last-of-type {
-    //   border-start-end-radius: var(--inner-radius);
-    //   border-end-end-radius: var(--inner-radius);
+    //   border-start-end-radius: var(--bk-toggle-button-inner-radius);
+    //   border-end-end-radius: var(--bk-toggle-button-inner-radius);
     // }
     
     display: flex;
@@ -58,32 +66,44 @@
     
     // State: hover (only for non-selected buttons)
     &:is(:hover, :global(.pseudo-hover)):not(:is([aria-pressed="true" i], [aria-checked="true" i])) {
-      --bk-toggle-button-background-color: #{bk.$theme-segmented-control-background-hover};
+      &:not(:disabled, .bk-toggle-button--nonactive) {
+        --bk-toggle-button-background-color: #{bk.$theme-segmented-control-background-hover};
+      }
     }
     
     @include bk.focus-outset;
     &:is(:focus-visible, :global(.pseudo-focus-visible)) {
       z-index: 1; // Have the focused toggle render over the other toggles so that the focus is fully shown
-      border-radius: bk.$radius-1;
     }
     
     // State: active
-    &:not(:disabled):active {
+    &:not(:disabled, .bk-toggle-button--nonactive):active {
       filter: brightness(90%);
     }
     @media (prefers-reduced-motion: no-preference) {
       transition: filter 100ms ease-out;
     }
     
-    // State: disabled (single button)
+    // State: disabled
     &.bk-toggle-button:disabled {
       --bk-toggle-button-background-color: #{bk.$theme-segmented-control-background-disabled-2};
+      --bk-toggle-button-border-color: #{bk.$theme-segmented-control-border-disabled};
       --bk-toggle-button-text-color: #{bk.$theme-segmented-control-text-unselected-2};
       
       cursor: not-allowed;
       
       &:is([aria-pressed="true" i], [aria-checked="true" i]) {
         --bk-toggle-button-background-color: #{bk.$theme-segmented-control-background-disabled};
+      }
+    }
+    // State: nonactive
+    &.bk-toggle-button--nonactive {
+      --bk-toggle-button-border-color: #{bk.$theme-segmented-control-border-disabled};
+      
+      cursor: not-allowed;
+      
+      &:is([aria-pressed="true" i], [aria-checked="true" i]) {
+        --bk-toggle-button-background-color: #{bk.$theme-button-primary-background-non-active};
       }
     }
   }

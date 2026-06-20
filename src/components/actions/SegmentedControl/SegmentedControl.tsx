@@ -7,7 +7,7 @@ import { classNames as cx, type ComponentProps } from '../../../util/componentUt
 import { mergeCallbacks, mergeProps } from '../../../util/reactUtil.ts';
 import { useStore } from 'zustand';
 
-import { type ItemKey, useRadioGroup, useRadioGroupItem } from '../../util/Collection/RadioGroupStore.tsx';
+import { type ItemKey, useRadioGroup, useRadioGroupItem } from '../../util/collections/RadioGroupStore.tsx';
 import { FocusGroup } from '../../util/FocusGroup/FocusGroup.tsx';
 import { ToggleButton } from '../ToggleButton/ToggleButton.tsx';
 
