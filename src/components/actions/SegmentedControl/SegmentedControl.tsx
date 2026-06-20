@@ -29,12 +29,6 @@ export const SegmentedControlButton = (props: SegmentedControlButtonProps) => {
   const isSelected = useStore(store, store => buttonKey === store.selectedItemKey);
   const selectItem = useStore(store, store => store.selectItem);
   
-  const isInteractive = true; // FIXME
-  const handlePress = React.useCallback(() => {
-    if (!isInteractive) { return; }
-    selectItem(buttonKey);
-  }, [isInteractive, selectItem, buttonKey]);
-  
   return (
     <ToggleButton
       {...mergeProps(
@@ -43,12 +37,13 @@ export const SegmentedControlButton = (props: SegmentedControlButtonProps) => {
         { className: cl['bk-segmented-control__button'] },
       )}
       embedded
-      // biome-ignore lint/a11y/useValidAriaValues: Intentionally unsetting `aria-pressed`
-      aria-pressed={undefined}
-      aria-checked={isSelected}
-      onPress={mergeCallbacks([propsRest.onPress, handlePress])}
-      // disabled={disabled}
-      // nonactive={nonactive}
+      // Note: the role will already be set implicitly through `focusgroup`, but we want to set it explicitly so that
+      // the right `aria` attributes are set (`aria-checked` rather than `aria-pressed`).
+      role="radio"
+      toggled={isSelected}
+      onToggledChange={toggled => { if (toggled) { selectItem(buttonKey); } }}
+      // @ts-ignore
+      focusgroupstart={isSelected ? '' : undefined} // Once React supports this, remove the string conversion
     />
   );
 };
@@ -91,7 +86,7 @@ export const SegmentedControl = Object.assign(
       <RadioGroupProvider>
         <FocusGroup
           role="radiogroup" // Needed for the polyfill, remove this once all browsers support `focusgroup`
-          focusGroup="radiogroup nowrap"
+          focusGroup="radiogroup nowrap nomemory"
           {...mergeProps(
             propsRest,
             radioGroupProps,

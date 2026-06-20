@@ -2,8 +2,6 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { assertUnreachable } from '../../../util/types.ts';
-
 import * as React from 'react';
 import { createPortal } from 'react-dom';
 import { classNames as cx, type ClassNameArgument } from '../../../util/componentUtil.ts';
@@ -155,7 +153,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
         case 'right': return cx(TooltipClassNames['bk-tooltip--arrow'], TooltipClassNames['bk-tooltip--arrow-left']);
         case 'bottom': return cx(TooltipClassNames['bk-tooltip--arrow'], TooltipClassNames['bk-tooltip--arrow-top']);
         case 'left': return cx(TooltipClassNames['bk-tooltip--arrow'], TooltipClassNames['bk-tooltip--arrow-right']);
-        default: return assertUnreachable(placement);
+        default: throw new Error(`Unexpected placement type '${placement satisfies never}'`);
       }
     })();
     
@@ -169,8 +167,7 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
         case 'right':
         case 'left':
           return arrow?.arrowY ?? '50%';
-        default:
-          return assertUnreachable(placement);
+        default: throw new Error(`Unexpected placement type '${placement satisfies never}'`);
       }
     })();
     

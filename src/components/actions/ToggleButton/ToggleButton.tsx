@@ -2,8 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import * as React from 'react';
-import { usePrevious } from '../../../util/reactUtil.ts';
+import { mergeCallbacks, useControllableState } from '../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
 import { Button } from '../Button/Button.tsx';
@@ -12,6 +11,7 @@ import cl from './ToggleButton.module.scss';
 
 
 export { cl as ToggleButtonClassNames };
+
 
 type ButtonPropsIrrelevant = 'unstyled' | 'trimmed' | 'kind' | 'variant' | 'asyncTimeout';
 type ToggleButtonProps = Omit<ComponentProps<typeof Button>, ButtonPropsIrrelevant> & {
@@ -32,7 +32,7 @@ type ToggleButtonProps = Omit<ComponentProps<typeof Button>, ButtonPropsIrreleva
   /** When uncontrolled, specifies the default toggled state. Default: `false`. */
   toggledDefault?: undefined | boolean,
   
-  /** Callback that is called when the toggled state changes. */
+  /** Callback that is called when the toggled state changes. If `toggled` is controlled, should not be `undefined`. */
   onToggledChange?: undefined | ((toggled: boolean) => void),
 };
 export const ToggleButton = (props: ToggleButtonProps) => {
@@ -41,44 +41,28 @@ export const ToggleButton = (props: ToggleButtonProps) => {
     size = 'small',
     embedded,
     toggled,
-    toggledDefault = false,
+    toggledDefault,
     onToggledChange,
     disabled,
     nonactive,
     ...propsRest
   } = props;
   
-  const isControlled = typeof toggled !== 'undefined';
-  if (isControlled && typeof toggledDefault !== 'undefined') {
-    console.warn('[ToggleButton] `toggledDefault` passed to controlled component');
-  }
-  if (isControlled && typeof onToggledChange === 'undefined') {
-    console.warn('[ToggleButton] Missing `onToggledChange` in controlled component');
-  }
-  
-  const isControlledPrev = usePrevious(isControlled);
-  // biome-ignore lint/correctness/useExhaustiveDependencies(isControlledPrev): Do not re-run effect on prev change
-  React.useEffect(() => {
-    if (typeof isControlledPrev !== 'undefined' && isControlled !== isControlledPrev) {
-      const change = isControlled ? `uncontrolled to controlled` : `controlled to uncontrolled`;
-      console.warn(`[ToggleButton] Component switched from ${change}`);
-    }
-  }, [isControlled]);
-  
-  
-  const [isToggled, setIsToggled] = React.useState(toggled ?? toggledDefault);
-  
-  React.useEffect(() => {
-    if (isControlled) { onToggledChange?.(isToggled); }
-  }, [isControlled, isToggled, onToggledChange]);
+  const { state: isToggled, setState: setIsToggled } = useControllableState<boolean>({
+    componentName: 'ToggleButton',
+    propName: 'toggled',
+    state: toggled,
+    stateDefault: toggledDefault,
+    stateFallback: false,
+    onStateChange: onToggledChange,
+  });
   
   const isInteractive = !disabled && !nonactive;
-  const handlePress = React.useCallback(() => {
-    if (!isInteractive) { return; }
-    
-    setIsToggled(toggled => !toggled);
-    propsRest.onPress?.();
-  }, [isInteractive, propsRest.onPress]);
+  const handlePress = () => {
+    if (isInteractive) {
+      setIsToggled(toggled => !toggled);
+    }
+  };
   
   // By default we consider this to be a toggle button, i.e. `role="button"` with `aria-pressed`. But if the consumer
   // uses this component as one of the below roles then we should use `aria-checked` instead.
@@ -105,7 +89,7 @@ export const ToggleButton = (props: ToggleButtonProps) => {
         { [cl['bk-toggle-button--nonactive']]: nonactive },
         propsRest.className,
       )}
-      onPress={handlePress}
+      onPress={mergeCallbacks([propsRest.onPress, handlePress])}
       disabled={disabled}
       nonactive={nonactive}
     />

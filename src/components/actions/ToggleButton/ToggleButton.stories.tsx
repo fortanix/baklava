@@ -77,8 +77,8 @@ export const ToggleButtonAsRadio: Story = {
   },
 };
 
-const ToggleButtonControlledC = (args: ToggleButtonArgs) => {
-  const [toggled, setToggled] = React.useState(args.toggledDefault ?? false);
+const ToggleButtonControlledC = ({ toggledDefault, ...args }: ToggleButtonArgs) => {
+  const [toggled, setToggled] = React.useState(toggledDefault ?? false);
   return (
     <div>
       <style>{`@scope { display: grid; place-items: center; gap: 0.4lh; }`}</style>
@@ -89,7 +89,5 @@ const ToggleButtonControlledC = (args: ToggleButtonArgs) => {
 };
 export const ToggleButtonControlled: Story = {
   render: (args) => <ToggleButtonControlledC {...args}/>,
-  args: {
-    //toggledDefault: true, // TEMP
-  },
+  args: {},
 };
