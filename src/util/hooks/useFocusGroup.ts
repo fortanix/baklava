@@ -3,18 +3,20 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { mergeRefs, useEffectOnce } from '../../../util/reactUtil.ts';
+import { useEffectOnce } from '../reactUtil.ts';
 
 import * as FG from '@microsoft/focusgroup-polyfill/shadowless';
 
 
-type FocusGroupProps = Omit<React.ComponentProps<'div'>, 'focusgroup'> & {
+type UseFocusGroupProps = {
   focusGroup: string,
 };
-export const FocusGroup = (props: FocusGroupProps) => {
-  const { focusGroup, ...propsRest } = props;
-  
-  const ref = React.useRef<HTMLDivElement>(null);
+type UseFocusGroupResult<E extends HTMLElement> = {
+  ref: React.RefObject<null | E>,
+  focusgroup: string,
+};
+export const useFocusGroup = <E extends HTMLElement>({ focusGroup }: UseFocusGroupProps): UseFocusGroupResult<E> => {
+  const ref = React.useRef<E>(null);
   
   useEffectOnce(() => {
     if (ref.current) {
@@ -22,12 +24,8 @@ export const FocusGroup = (props: FocusGroupProps) => {
     }
   });
   
-  return (
-    <div
-      {...propsRest}
-      ref={mergeRefs(ref, props.ref)}
-      // @ts-ignore
-      focusgroup={focusGroup}
-    />
-  );
+  return {
+    ref,
+    focusgroup: focusGroup,
+  };
 };

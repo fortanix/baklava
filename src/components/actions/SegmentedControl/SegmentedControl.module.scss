@@ -10,16 +10,24 @@
     
     --bk-segmented-control-background-color: #{bk.$theme-segmented-control-background-default};
     --bk-segmented-control-border-color: #{bk.$theme-segmented-control-border-unselected};
+    --bk-segmented-control-border-width: #{bk.$size-hairline};
     --bk-segmented-control-text-color: #{bk.$theme-segmented-control-text-unselected};
+    
+    // Note: since we have `overflow: visible`, the buttons will "escape" the border radius. In order to fix this, we
+    // need to manually give the buttons an "inner" border radius, which should be the outer radius minus border width.
+    --bk-segmented-control-border-radius: #{bk.$radius-1};
+    --bk-segmented-control-border-radius-inner: calc(
+      var(--bk-segmented-control-border-radius) - var(--bk-segmented-control-border-width)
+    );
     
     overflow: visible; // We need overflow to be visible so as not to trim the focus outlines on the inner buttons
     
-    inline-size: fit-content; // Do not stretch in a block context
-    align-self: center; // Do not stretch along cross axis in flex context
     flex: none; // Do not shrink/grow in a flex context
+    align-self: center; // Do not stretch along cross axis in flex context
+    inline-size: fit-content; // Do not stretch in a block context
     
     border: bk.$size-hairline solid var(--bk-segmented-control-border-color);
-    border-radius: bk.$radius-1;
+    border-radius: var(--bk-segmented-control-border-radius);
     background: var(--bk-segmented-control-border-color);
     
     display: flex;
@@ -30,6 +38,18 @@
     //flex-wrap: wrap;
     // Note: may want to implement https://heydonworks.com/article/the-flexbox-holy-albatross-reincarnated
     
+    &.bk-segmented-control--small {
+      font-size: bk.$font-size-xs;
+    }
+    
+    // State: nonactive (entire control)
+    &.bk-segmented-control--nonactive {
+      --bk-segmented-control-background-color: #{bk.$theme-segmented-control-background-disabled-2};
+      --bk-segmented-control-border-color: #{bk.$theme-segmented-control-border-disabled};
+      --bk-segmented-control-text-color: #{bk.$theme-segmented-control-text-unselected-2};
+      
+      cursor: not-allowed;
+    }
     // State: disabled (entire control)
     &.bk-segmented-control--disabled {
       --bk-segmented-control-background-color: #{bk.$theme-segmented-control-background-disabled-2};
@@ -38,11 +58,29 @@
       
       cursor: not-allowed;
     }
+  }
+}
+
+@layer baklava.overrides {
+  // FIXME: `ToggleButton` is already in `baklava.overrides`, so this would ideally be in a higher layer
+  .bk-segmented-control .bk-segmented-control__button {
+    // Inherit from parent `SegmentedControl`
+    font-size: inherit;
     
-    &.bk-segmented-control--small {
-      .bk-toggle-button {
-        font-size: bk.$font-size-xs;
-      }
+    border: none;
+    border-radius: 0;
+    
+    &:first-of-type {
+      border-start-start-radius: var(--bk-segmented-control-border-radius-inner);
+      border-end-start-radius: var(--bk-segmented-control-border-radius-inner);
+    }
+    &:last-of-type {
+      border-start-end-radius: var(--bk-segmented-control-border-radius-inner);
+      border-end-end-radius: var(--bk-segmented-control-border-radius-inner);
+    }
+    // When the focus outline is visible, we use the full border radius so that the outline is nicely rounded
+    &:focus-visible {
+      border-radius: var(--bk-segmented-control-border-radius-inner);
     }
   }
 }

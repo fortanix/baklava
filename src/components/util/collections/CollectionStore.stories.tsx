@@ -1,10 +1,10 @@
 
 import * as React from 'react';
 import { mergeProps } from '../../../util/reactUtil.ts';
+import { useFocusGroup } from '../../../util/hooks/useFocusGroup.ts';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { FocusGroup } from '../FocusGroup/FocusGroup.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 
 import { type ItemKey, useCollectionItem, useCollection } from './CollectionStore.tsx';
@@ -21,11 +21,12 @@ const CollectionItem = ({ itemKey, ...propsRest }: CollectionItemProps) => {
   );
 };
 const Collection = Object.assign(
-  (props: React.ComponentProps<typeof FocusGroup>) => {
+  (props: React.ComponentProps<'div'>) => {
     const coll = useCollection();
+    const focusGroupProps = useFocusGroup({ focusGroup: 'listbox' });
     return (
       <coll.Provider>
-        <FocusGroup {...mergeProps(props, coll.props)} role="listbox" focusGroup="listbox">
+        <div {...mergeProps(focusGroupProps, props, coll.props)} role="listbox">
           <style>{`
             @scope {
               display: flex;
@@ -46,7 +47,7 @@ const Collection = Object.assign(
             }
           `}</style>
           {props.children}
-        </FocusGroup>
+        </div>
       </coll.Provider>
     );
   },

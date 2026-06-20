@@ -84,7 +84,18 @@
       transition: filter 100ms ease-out;
     }
     
-    // State: disabled
+    // State: nonactive
+    &.bk-toggle-button--nonactive {
+      --bk-toggle-button-border-color: #{bk.$theme-segmented-control-border-disabled};
+      --bk-toggle-button-text-color: #{bk.$theme-segmented-control-text-unselected-2};
+      
+      cursor: not-allowed;
+      
+      &:is([aria-pressed="true" i], [aria-checked="true" i]) {
+        --bk-toggle-button-background-color: #{bk.$theme-button-primary-background-non-active};
+      }
+    }
+    // State: disabled (note: should override `nonactive` if both are set)
     &.bk-toggle-button:disabled {
       --bk-toggle-button-background-color: #{bk.$theme-segmented-control-background-disabled-2};
       --bk-toggle-button-border-color: #{bk.$theme-segmented-control-border-disabled};
@@ -94,16 +105,6 @@
       
       &:is([aria-pressed="true" i], [aria-checked="true" i]) {
         --bk-toggle-button-background-color: #{bk.$theme-segmented-control-background-disabled};
-      }
-    }
-    // State: nonactive
-    &.bk-toggle-button--nonactive {
-      --bk-toggle-button-border-color: #{bk.$theme-segmented-control-border-disabled};
-      
-      cursor: not-allowed;
-      
-      &:is([aria-pressed="true" i], [aria-checked="true" i]) {
-        --bk-toggle-button-background-color: #{bk.$theme-button-primary-background-non-active};
       }
     }
   }

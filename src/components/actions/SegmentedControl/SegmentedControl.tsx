@@ -4,11 +4,12 @@
 
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
-import { mergeCallbacks, mergeProps } from '../../../util/reactUtil.ts';
+import { mergeProps, useMemoOnce } from '../../../util/reactUtil.ts';
+import { useFocusGroup } from '../../../util/hooks/useFocusGroup.ts';
+import { useControllableState } from '../../../util/hooks/useControllableState.ts';
 import { useStore } from 'zustand';
 
 import { type ItemKey, useRadioGroup, useRadioGroupItem } from '../../util/collections/RadioGroupStore.tsx';
-import { FocusGroup } from '../../util/FocusGroup/FocusGroup.tsx';
 import { ToggleButton } from '../ToggleButton/ToggleButton.tsx';
 
 import cl from './SegmentedControl.module.scss';
@@ -16,91 +17,169 @@ import cl from './SegmentedControl.module.scss';
 
 export { cl as SegmentedControlClassNames };
 
+export type ButtonKey = ItemKey;
+type SegmentedControlSize = 'small'; // Only supporting `small` for now
 
-type SegmentedControlButtonProps = ComponentProps<typeof ToggleButton> & {
+
+type SegmentedControlContext = {
+  size: SegmentedControlSize,
+  disabled: boolean,
+  nonactive: boolean,
+};
+const SegmentedControlContext = React.createContext<null | SegmentedControlContext>(null);
+const useSegmentedControlContext = (): SegmentedControlContext => {
+  const context = React.use(SegmentedControlContext);
+  if (context === null) { throw new Error(`Missing SegmentedControlContext`); }
+  return context;
+};
+
+
+type SegmentedControlButtonProps = Omit<ComponentProps<typeof ToggleButton>, 'size'> & {
   buttonKey: ItemKey,
 };
-export const SegmentedControlButton = (props: SegmentedControlButtonProps) => {
-  const { buttonKey, ...propsRest } = props;
+// Note: use `memo()` so that children don't rerendered on state change, in the case that:
+// - The consumer uses this component with controlled state
+// - The `children` prop on consumer side is unstable (usually the case, unless the consumer does something special)
+export const SegmentedControlButton = React.memo(({ buttonKey, ...propsRest }: SegmentedControlButtonProps) => {
+  const containerProps = useSegmentedControlContext();
   
   const { store, itemProps } = useRadioGroupItem({ itemKey: buttonKey });
-  if (store === null) { throw new Error(`[SegmentedControlButton] Missing 'RadioGroupContext' provider`); }
-  
   const isSelected = useStore(store, store => buttonKey === store.selectedItemKey);
   const selectItem = useStore(store, store => store.selectItem);
   
+  React.useLayoutEffect(() => {
+    console.log('render', buttonKey); // TEMP
+  });
+  
   return (
     <ToggleButton
+      // Note: the role will already be set implicitly through `focusgroup`, but we want to set it explicitly so that
+      // the right `aria` attributes are set by `ToggleButton` (`aria-checked` rather than `aria-pressed`).
+      role="radio"
       {...mergeProps(
         itemProps,
         propsRest,
         { className: cl['bk-segmented-control__button'] },
       )}
       embedded
-      // Note: the role will already be set implicitly through `focusgroup`, but we want to set it explicitly so that
-      // the right `aria` attributes are set (`aria-checked` rather than `aria-pressed`).
-      role="radio"
       toggled={isSelected}
-      onToggledChange={toggled => { if (toggled) { selectItem(buttonKey); } }}
-      // @ts-ignore
-      focusgroupstart={isSelected ? '' : undefined} // Once React supports this, remove the string conversion
+      onUpdateToggled={toggled => { if (toggled) { selectItem(buttonKey); } }}
+      //focusgroupstart={isSelected ? '' : undefined} // Not needed, rely on `focusgroup` memory instead
+      size={containerProps.size} // Do not let this be overridden locally (doesn't make sense to have mixed sizes)
+      disabled={containerProps.disabled || propsRest.disabled}
+      nonactive={containerProps.nonactive || propsRest.nonactive}
     />
   );
-};
+});
 
-export type SegmentedControlProps = Omit<ComponentProps<typeof FocusGroup>, 'focusGroup' | 'defaultChecked'> & {
-  /** Focus group behavior. */
-  focusGroup?: React.ComponentProps<typeof FocusGroup>['focusGroup'],
-  
+type SelectedState = null | ItemKey;
+type PropsIrrelevant = 'defaultChecked' | 'defaultValue' | 'onSelect';
+export type SegmentedControlProps = Omit<Partial<ComponentProps<'div'>>, PropsIrrelevant> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
   // Note: currently only supports `small`, but we may introduce a 'medium' default in the future. Make this field
   // required for now so that we can change the default later.
-  /** The size of the component. */
-  size: 'small',
+  /** The overall size of the component. */
+  size: SegmentedControlSize,
   
-  /** The default button to select. Only relevant for uncontrolled usage (`selected` is `undefined`). */
-  defaultSelected?: undefined | ItemKey,
+  /** Whether the button is currently in selected state. If `undefined`, the toggle button will be uncontrolled. */
+  selected?: undefined | SelectedState,
   
-  /** The button to select. If `undefined`, this component will be considered uncontrolled. */
-  selected?: undefined | ItemKey,
+  /** When uncontrolled, specifies the default selected state. Default: `false`. */
+  selectedDefault?: undefined | SelectedState,
   
-  /** Event handler for segmented control button change events. */
-  onUpdate?: undefined | ((buttonKey: ItemKey) => void),
+  /** Alias for `selectedDefault` for backwards compatbility. @deprecated */
+  defaultSelected?: undefined | SelectedState,
+  
+  /** Callback that is called when the selected state changes. If controlled, should not be `undefined`. */
+  onUpdateSelected?: undefined | ((selected: SelectedState) => void),
+  
+  /** Alias for `onUpdateSelected` for backwards compatbility. @deprecated */
+  onUpdate?: undefined | ((selected: SelectedState) => void),
   
   /** Whether the segmented control is disabled or not. Default: false. */
   disabled?: undefined | boolean,
+  
+  /** Whether the segmented control is nonactive or not. Default: false. */
+  nonactive?: undefined | boolean,
 };
 export const SegmentedControl = Object.assign(
   (props: SegmentedControlProps) => {
-    const { unstyled = false, size, defaultSelected, selected, onUpdate, disabled, ...propsRest } = props;
+    const {
+      unstyled = false,
+      size,
+      selected,
+      selectedDefault,
+      defaultSelected, // Legacy alias
+      onUpdateSelected,
+      onUpdate, // Legacy alias
+      disabled = false,
+      nonactive = false,
+      ...propsRest
+    } = props;
     
-    const { Provider: RadioGroupProvider, props: radioGroupProps } = useRadioGroup({
-      selectedItemKey: defaultSelected ?? null,
+    const focusGroupProps = useFocusGroup({ focusGroup: 'radiogroup nowrap' });
+    
+    const { state: selectedState, updateState: updateSelectedState } = useControllableState<SelectedState>({
+      componentName: 'SegmentedControl',
+      propName: 'selected',
+      state: selected,
+      stateDefault: typeof selectedDefault !== 'undefined' ? selectedDefault : defaultSelected,
+      stateFallback: null,
+      onUpdateState: onUpdateSelected ?? onUpdate,
+    });
+    
+    const segmentedControlContext = useMemoOnce<SegmentedControlContext>(() => ({ size, disabled, nonactive }));
+    const SegmentedControlProvider = useMemoOnce(() => ({ children }: React.PropsWithChildren) =>
+      <SegmentedControlContext value={segmentedControlContext}>{children}</SegmentedControlContext>,
+    );
+    
+    // const { Provider: RadioGroupProvider, store, props: radioGroupProps } = useRadioGroup({
+    //   selectedItemKey: selectedState,
+    // });
+    
+    const { Provider: RadioGroupProvider, store, props: radioGroupProps } = useRadioGroup({
+      selectedItemKey: selectedState,
     });
     
     // FIXME: controlled usage (sync with store)
+    console.log('x', selectedState, useStore(store, store => store.selectedItemKey));
+    
+    /*
+    // Sync
+    store.subscribe((state, prevState) => {
+      if (state.selectedItemKey !== prevState.selectedItemKey) {
+        updateSelectedState(state.selectedItemKey);
+      }
+    });
+    React.useEffect(() => {
+      store.setState({ selectedItemKey: selectedState });
+    }, [store, selectedState]);
+    */
     
     return (
-      <RadioGroupProvider>
-        <FocusGroup
-          role="radiogroup" // Needed for the polyfill, remove this once all browsers support `focusgroup`
-          focusGroup="radiogroup nowrap nomemory"
-          {...mergeProps(
-            propsRest,
-            radioGroupProps,
-            {
-              className: cx(
-                'bk',
-                { [cl['bk-segmented-control']]: !unstyled },
-                { [cl['bk-segmented-control--small']]: size === 'small' },
-                propsRest.className,
-              ),
-            },
-          )}
-        />
-      </RadioGroupProvider>
+      <SegmentedControlProvider>
+        <RadioGroupProvider>
+          <div
+            role="radiogroup" // Needed for the `focusgroup` polyfill, remove this once all browsers have support
+            {...mergeProps(
+              focusGroupProps,
+              propsRest,
+              radioGroupProps,
+              {
+                className: cx(
+                  'bk',
+                  { [cl['bk-segmented-control']]: !unstyled },
+                  { [cl['bk-segmented-control--small']]: size === 'small' },
+                  { [cl['bk-segmented-control--nonactive']]: nonactive },
+                  { [cl['bk-segmented-control--disabled']]: disabled },
+                ),
+              },
+            )}
+          />
+        </RadioGroupProvider>
+      </SegmentedControlProvider>
     );
   },
   {

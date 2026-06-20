@@ -6,15 +6,16 @@ import type { RequireOnly } from '../../../util/types.ts';
 import * as React from 'react';
 import { useMemoOnce } from '../../../util/reactUtil.ts';
 import { type StateCreator, type StoreApi, createStore, useStore } from 'zustand';
+
 import { type CollectionSlice, createCollectionSlice } from './CollectionStore.tsx';
 
 
 export type ItemKey = string;
 
-type RadioGroupState = {
+export type RadioGroupState = {
   selectedItemKey: null | ItemKey,
 };
-type RadioGroupSlice = RadioGroupState & {
+export type RadioGroupSlice = RadioGroupState & {
   selectItem: (itemKey: null | ItemKey) => void,
 };
 
@@ -24,17 +25,9 @@ export const createRadioGroupSlice = (
 ): StateCreator<RadioGroupSlice, [], [], RadioGroupSlice> => set => {
   return {
     selectedItemKey,
-    
-    selectItem: itemKey => {
-      set({ selectedItemKey: itemKey });
-    },
+    selectItem: itemKey => { set({ selectedItemKey: itemKey }); },
   };
 };
-
-
-
-
-
 
 
 export type RadioGroupCollectionSlice = CollectionSlice & RadioGroupSlice;
@@ -44,39 +37,43 @@ export const RadioGroupContext = React.createContext<null | RadioGroupContext>(n
 export const useRadioGroup = (props: RadioGroupProps) => {
   const radioGroupId = React.useId();
   
-  const store = useMemoOnce(() => createStore<RadioGroupCollectionSlice>()((...args) => ({
-    ...createCollectionSlice({ collectionId: radioGroupId })(...args),
-    ...createRadioGroupSlice(props)(...args),
-  })));
-  const context = useMemoOnce(() => ({ store }));
+  const context: RadioGroupContext = useMemoOnce(() => ({
+    store: createStore<RadioGroupCollectionSlice>()((...args) => ({
+      ...createCollectionSlice({ collectionId: radioGroupId })(...args),
+      ...createRadioGroupSlice(props)(...args),
+    })),
+  }));
   
   const Provider = useMemoOnce(() => ({ children }: React.PropsWithChildren) =>
     <RadioGroupContext value={context}>{children}</RadioGroupContext>,
   );
   
-  const radioGroupIdStored = useStore(store, state => state.collectionId);
-  const consumeDirty = useStore(store, state => state.consumeDirty);
-  const getItemKeys = useStore(store, state => state.getItemKeys);
+  const radioGroupIdStored = useStore(context.store, state => state.collectionId);
+  const consumeDirty = useStore(context.store, state => state.consumeDirty);
+  const getItemKeys = useStore(context.store, state => state.getItemKeys);
   
   // TODO: move this inside the `Provider` instead?
   React.useLayoutEffect(() => {
+    // FIXME: how do we make sure that only the `useRadioHook` can call `consumeDirty()`?
     if (consumeDirty()) {
-      console.log('CHANGED', getItemKeys());
+      console.log('REGISTRY UPDATE', getItemKeys());
     }
   });
   
   return {
+    context,
     Provider,
+    store: context.store,
     props: {
-      //ref,
       'data-bk-radio-group-id': radioGroupIdStored,
     },
   };
 };
 
+
 type UseRadioGroupItemParams = { itemKey: ItemKey };
 type UseRadioGroupItemResult<E extends Element> = {
-  store: null | RadioGroupContext['store'],
+  store: RadioGroupContext['store'],
   itemProps: {
     ref: React.RefCallback<E>,
     'data-bk-radio-group-parent': string,
@@ -92,10 +89,6 @@ export const useRadioGroupItem = <E extends Element>(params: UseRadioGroupItemPa
   const radioGroupId = useStore(store, state => state.collectionId);
   const registerItem = useStore(store, state => state.registerItem);
   const unregisterItem = useStore(store, state => state.unregisterItem);
-  
-  React.useLayoutEffect(() => {
-    //console.log('child re-render', itemKey);
-  });
   
   const ref = React.useCallback<React.RefCallback<E>>(el => {
     if (typeof itemKey === 'undefined') {

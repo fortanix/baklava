@@ -100,7 +100,7 @@ export const useCollection = /*<E extends Element>*/(props: UseCollectionProps =
 
 type UseCollectionItemParams = { itemKey: ItemKey };
 type UseCollectionItemResult<E extends Element> = {
-  store: null | CollectionContext['store'],
+  store: CollectionContext['store'],
   itemProps: {
     ref: React.RefCallback<E>,
     'data-bk-coll-parent': string,

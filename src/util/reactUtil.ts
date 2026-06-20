@@ -2,13 +2,11 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-/* Source: https://github.com/wojtekmaj/merge-refs/tree/main */
-
-import { capitalizeFirstLetter } from './formatting.ts';
 import * as React from 'react';
 import { classNames as cx, isClassNameArgument } from './componentUtil.ts';
 
 
+/* Source: https://github.com/wojtekmaj/merge-refs/tree/main */
 /**
  * A function that merges React refs into one.
  * Supports both functions and ref objects created using createRef() and useRef().
@@ -171,96 +169,4 @@ export const useRefWithInitializer = <T>(initializer: () => T) => {
   if (ref.current === null) { ref.current = initializer(); }
   
   return ref as React.RefObject<T>;
-};
-
-
-const formatStateProp = (propName: string, propType: 'state' | 'stateDefault' | 'onStateChange'): string => {
-  switch (propType) {
-    case 'state': return propName;
-    case 'stateDefault': return `${propName}Default`;
-    case 'onStateChange': return `on${capitalizeFirstLetter(propName)}Change`;
-    default: throw new Error(`Unexpected prop type '${propType satisfies never}'`);
-  }
-};
-const isStateDispatchCallable = <S>(stateDispatch: React.SetStateAction<S>): stateDispatch is ((prevState: S) => S) => {
-  return typeof stateDispatch === 'function';
-};
-
-type UseControllableStateProps<S> = {
-  componentName: string,
-  propName: string,
-  state: undefined | S,
-  stateDefault: undefined | S,
-  stateFallback: S,
-  onStateChange: undefined | ((state: S) => void),
-};
-/**
- * Utility hook for a component that has some state that can be either controlled or uncontrolled. Similar to how
- * built-in React DOM components like `<input/>` work (with `value` as the state). We expect three props:
- * - `state`: If given (not undefined), we consider the state to be controlled with this prop as the current value.
- * - `stateDefault`: If uncontrolled, this gives the initial value for the state.
- * - `stateFallback`: If uncontrolled, and no `stateDefault` is given, this gives the fallback value.
- * - `onStateChange`: Callback that is called (in either controlled or uncontrolled case) when the state changes.
- * 
- * Components should never switch from controlled to uncontrolled or vice versa after rendering. If this happens, we
- * print a warning in the console.
- */
-export const useControllableState = <S>(props: UseControllableStateProps<S>) => {
-  const { componentName: comp, propName, state, stateDefault, stateFallback, onStateChange } = props;
-  
-  // When `state` is explicitly given (not undefined), we consider the state to be controlled
-  const isControlled = typeof state !== 'undefined';
-  
-  
-  // Track when the component changes from controlled to uncontrolled or vice versa
-  const wasControlled: undefined | boolean = usePrevious(isControlled);
-  const handleControlledChange = React.useEffectEvent((isControlled: boolean) => {
-    if (typeof wasControlled !== 'undefined' && isControlled !== wasControlled) {
-      const change = isControlled ? `uncontrolled to controlled` : `controlled to uncontrolled`;
-      console.warn(`[${comp}] Component switched from ${change} upon rerendering`);
-    }
-  });
-  React.useEffect(() => { handleControlledChange(isControlled); }, [isControlled]);
-  
-  
-  // Validate preconditions
-  if (isControlled && typeof onStateChange === 'undefined') {
-    console.warn(`[${comp}] 'Missing ${formatStateProp(propName, 'onStateChange')}' in controlled component`);
-  }
-  if (isControlled && typeof stateDefault !== 'undefined') {
-    console.warn(`[${comp}] '${formatStateProp(propName, 'stateDefault')}' passed to controlled component`);
-  }
-  
-  
-  // When uncontrolled, we need to keep track of the current state ourselves
-  const [stateUncontrolled, setStateUncontrolled] = React.useState<S>(stateDefault ?? stateFallback);
-  
-  // The actual state to be used by the component (whether controlled or uncontrolled)
-  const stateUsed: S = isControlled ? state : stateUncontrolled;
-  
-  // When uncontrolled, notify the consumer whenever the state changes
-  const onStateChangeEvent = React.useEffectEvent((stateDispatch: React.SetStateAction<S>) => {
-    const stateUpdated = isStateDispatchCallable(stateDispatch) ? stateDispatch(stateUsed) : stateDispatch;
-    onStateChange?.(stateUpdated);
-  });
-  React.useEffect(() => {
-    onStateChangeEvent(stateUncontrolled);
-  }, [stateUncontrolled]);
-  
-  // Allow the component to trigger an update to the state (e.g. in response to user action)
-  const setState = React.useCallback((stateDispatch: React.SetStateAction<S>) => {
-    if (isControlled) {
-      onStateChangeEvent(stateDispatch);
-    } else {
-      // Note: don't call `onStateChangeEvent` directly, update the internal state first and then let it sync through
-      // the `useEffect` above.
-      setStateUncontrolled(stateDispatch);
-    }
-  }, [isControlled]);
-  
-  return {
-    isControlled,
-    state: stateUsed,
-    setState,
-  };
 };

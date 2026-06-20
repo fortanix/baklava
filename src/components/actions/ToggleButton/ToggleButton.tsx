@@ -2,8 +2,9 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { mergeCallbacks, useControllableState } from '../../../util/reactUtil.ts';
+import { mergeCallbacks } from '../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
+import { useControllableState } from '../../../util/hooks/useControllableState.ts';
 
 import { Button } from '../Button/Button.tsx';
 
@@ -32,8 +33,8 @@ type ToggleButtonProps = Omit<ComponentProps<typeof Button>, ButtonPropsIrreleva
   /** When uncontrolled, specifies the default toggled state. Default: `false`. */
   toggledDefault?: undefined | boolean,
   
-  /** Callback that is called when the toggled state changes. If `toggled` is controlled, should not be `undefined`. */
-  onToggledChange?: undefined | ((toggled: boolean) => void),
+  /** Callback that is called when the toggled state changes. If controlled, should not be `undefined`. */
+  onUpdateToggled?: undefined | ((toggled: boolean) => void),
 };
 export const ToggleButton = (props: ToggleButtonProps) => {
   const {
@@ -42,25 +43,25 @@ export const ToggleButton = (props: ToggleButtonProps) => {
     embedded,
     toggled,
     toggledDefault,
-    onToggledChange,
+    onUpdateToggled,
     disabled,
     nonactive,
     ...propsRest
   } = props;
   
-  const { state: isToggled, setState: setIsToggled } = useControllableState<boolean>({
+  const { state: toggledState, updateState: updateToggledState } = useControllableState<boolean>({
     componentName: 'ToggleButton',
     propName: 'toggled',
     state: toggled,
     stateDefault: toggledDefault,
     stateFallback: false,
-    onStateChange: onToggledChange,
+    onUpdateState: onUpdateToggled,
   });
   
   const isInteractive = !disabled && !nonactive;
   const handlePress = () => {
     if (isInteractive) {
-      setIsToggled(toggled => !toggled);
+      updateToggledState(toggled => !toggled);
     }
   };
   
@@ -78,8 +79,8 @@ export const ToggleButton = (props: ToggleButtonProps) => {
   return (
     <Button
       wrap={false}
-      aria-pressed={isCheckable ? undefined : isToggled}
-      aria-checked={isCheckable ? isToggled : undefined}
+      aria-pressed={isCheckable ? undefined : toggledState}
+      aria-checked={isCheckable ? toggledState : undefined}
       {...propsRest}
       className={cx(
         'bk',
