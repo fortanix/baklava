@@ -19,9 +19,9 @@ export type RadioGroupSlice = RadioGroupState & {
   selectItem: (itemKey: null | ItemKey) => void,
 };
 
-export type RadioGroupProps = RequireOnly<RadioGroupState, 'selectedItemKey'>;
+export type RadioGroupStateInit = RequireOnly<RadioGroupState, 'selectedItemKey'>;
 export const createRadioGroupSlice = (
-  { selectedItemKey }: RadioGroupProps,
+  { selectedItemKey }: RadioGroupStateInit,
 ): StateCreator<RadioGroupSlice, [], [], RadioGroupSlice> => set => {
   return {
     selectedItemKey,
@@ -31,18 +31,24 @@ export const createRadioGroupSlice = (
 
 
 export type RadioGroupCollectionSlice = CollectionSlice & RadioGroupSlice;
-export type RadioGroupContext = { store: StoreApi<RadioGroupCollectionSlice> };
+export type RadioGroupContext = {
+  store: StoreApi<RadioGroupCollectionSlice>,
+  /** Called when the user requests the given item (or none) to be selected. */
+  requestSelect: (store: StoreApi<RadioGroupCollectionSlice>, itemKey: null | ItemKey) => void,
+};
 export const RadioGroupContext = React.createContext<null | RadioGroupContext>(null);
 
-export const useRadioGroup = (props: RadioGroupProps) => {
+export type RadioGroupProps = RadioGroupStateInit & {
+  requestSelect: RadioGroupContext['requestSelect'],
+};
+export const useRadioGroup = ({ requestSelect, ...propsInit }: RadioGroupProps) => {
   const radioGroupId = React.useId();
   
-  const context: RadioGroupContext = useMemoOnce(() => ({
-    store: createStore<RadioGroupCollectionSlice>()((...args) => ({
-      ...createCollectionSlice({ collectionId: radioGroupId })(...args),
-      ...createRadioGroupSlice(props)(...args),
-    })),
-  }));
+  const store = useMemoOnce(() => createStore<RadioGroupCollectionSlice>()((...args) => ({
+    ...createCollectionSlice({ collectionId: radioGroupId })(...args),
+    ...createRadioGroupSlice(propsInit)(...args),
+  })));
+  const context: RadioGroupContext = React.useMemo(() => ({ store, requestSelect }), [requestSelect]);
   
   const Provider = useMemoOnce(() => ({ children }: React.PropsWithChildren) =>
     <RadioGroupContext value={context}>{children}</RadioGroupContext>,
@@ -74,6 +80,7 @@ export const useRadioGroup = (props: RadioGroupProps) => {
 type UseRadioGroupItemParams = { itemKey: ItemKey };
 type UseRadioGroupItemResult<E extends Element> = {
   store: RadioGroupContext['store'],
+  requestSelect: () => void,
   itemProps: {
     ref: React.RefCallback<E>,
     'data-bk-radio-group-parent': string,
@@ -83,12 +90,14 @@ type UseRadioGroupItemResult<E extends Element> = {
 export const useRadioGroupItem = <E extends Element>(params: UseRadioGroupItemParams): UseRadioGroupItemResult<E> => {
   const { itemKey } = params;
   
-  const store = React.use(RadioGroupContext)?.store;
-  if (!store) { throw new Error(`[RadioGroupItem] Missing 'RadioGroupContext' provider`); }
+  const context = React.use(RadioGroupContext);
+  if (!context) { throw new Error(`[RadioGroupItem] Missing 'RadioGroupContext' provider`); }
+  const { store, requestSelect } = context;
   
   const radioGroupId = useStore(store, state => state.collectionId);
   const registerItem = useStore(store, state => state.registerItem);
   const unregisterItem = useStore(store, state => state.unregisterItem);
+  const requestSelectItem = () => requestSelect(store, itemKey);
   
   const ref = React.useCallback<React.RefCallback<E>>(el => {
     if (typeof itemKey === 'undefined') {
@@ -111,6 +120,7 @@ export const useRadioGroupItem = <E extends Element>(params: UseRadioGroupItemPa
   
   return {
     store,
+    requestSelect: requestSelectItem,
     itemProps: {
       ref,
       'data-bk-radio-group-parent': radioGroupId,
