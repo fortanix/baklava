@@ -29,7 +29,7 @@ export default {
 export const ToggleButtonStandard: Story = {};
 
 export const ToggleButtonToggled: Story = {
-  args: { toggledDefault: true },
+  args: { defaultToggled: true },
 };
 
 export const ToggleButtonHovered: Story = {
@@ -44,14 +44,14 @@ export const ToggleButtonNonactive: Story = {
   args: { nonactive: true },
 };
 export const ToggleButtonNonactiveToggled: Story = {
-  args: { nonactive: true, toggledDefault: true },
+  args: { nonactive: true, defaultToggled: true },
 };
 
 export const ToggleButtonDisabled: Story = {
   args: { disabled: true },
 };
 export const ToggleButtonDisabledToggled: Story = {
-  args: { disabled: true, toggledDefault: true },
+  args: { disabled: true, defaultToggled: true },
 };
 
 export const ToggleButtonWithIcon: Story = {
@@ -77,8 +77,8 @@ export const ToggleButtonAsRadio: Story = {
   },
 };
 
-const ToggleButtonControlledC = ({ toggledDefault, ...args }: ToggleButtonArgs) => {
-  const [toggled, setToggled] = React.useState(toggledDefault ?? false);
+const ToggleButtonControlledC = ({ defaultToggled, ...args }: ToggleButtonArgs) => {
+  const [toggled, setToggled] = React.useState(defaultToggled ?? false);
   return (
     <div>
       <style>{`@scope { display: grid; place-items: center; gap: 0.4lh; }`}</style>

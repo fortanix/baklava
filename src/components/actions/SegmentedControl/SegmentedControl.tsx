@@ -57,7 +57,7 @@ export const SegmentedControlButton = React.memo(({ buttonKey, ...propsRest }: S
       )}
       embedded
       toggled={isSelected}
-      onUpdateToggled={toggled => { if (toggled) { requestSelect(); } }}
+      onToggledChange={toggled => { if (toggled) { requestSelect(); } }}
       //focusgroupstart={isSelected ? '' : undefined} // Not needed, rely on `focusgroup` memory instead
       size={containerProps.size} // Do not let this be overridden locally (doesn't make sense to have mixed sizes)
       disabled={containerProps.disabled || propsRest.disabled}
@@ -67,8 +67,21 @@ export const SegmentedControlButton = React.memo(({ buttonKey, ...propsRest }: S
 });
 
 type SelectedState = null | ItemKey;
+type SelectedProps = (
+  | {
+    selected?: undefined, // Uncontrolled
+    defaultSelected?: undefined | SelectedState,
+    onSelectedChange?: undefined | ((selected: SelectedState) => void),
+  }
+  | {
+    selected: SelectedState, // Controlled
+    defaultSelected?: undefined,
+    onSelectedChange: (selected: SelectedState) => void,
+  }
+);
+
 type PropsIrrelevant = 'defaultChecked' | 'defaultValue' | 'onSelect';
-export type SegmentedControlProps = Omit<Partial<ComponentProps<'div'>>, PropsIrrelevant> & {
+export type SegmentedControlProps = Omit<Partial<ComponentProps<'div'>>, PropsIrrelevant> & SelectedProps & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -77,19 +90,7 @@ export type SegmentedControlProps = Omit<Partial<ComponentProps<'div'>>, PropsIr
   /** The overall size of the component. */
   size: SegmentedControlSize,
   
-  /** Whether the button is currently in selected state. If `undefined`, the toggle button will be uncontrolled. */
-  selected?: undefined | SelectedState,
-  
-  /** When uncontrolled, specifies the default selected state. Default: `false`. */
-  selectedDefault?: undefined | SelectedState,
-  
-  /** Alias for `selectedDefault` for backwards compatbility. @deprecated */
-  defaultSelected?: undefined | SelectedState,
-  
-  /** Callback that is called when the selected state changes. If controlled, should not be `undefined`. */
-  onUpdateSelected?: undefined | ((selected: SelectedState) => void),
-  
-  /** Alias for `onUpdateSelected` for backwards compatbility. @deprecated */
+  /** Alias for `onSelectedChange` for backwards compatbility. @deprecated */
   onUpdate?: undefined | ((selected: SelectedState) => void),
   
   /** Whether the segmented control is disabled or not. Default: false. */
@@ -104,9 +105,8 @@ export const SegmentedControl = Object.assign(
       unstyled = false,
       size,
       selected,
-      selectedDefault,
-      defaultSelected, // Legacy alias
-      onUpdateSelected,
+      defaultSelected,
+      onSelectedChange,
       onUpdate, // Legacy alias
       disabled = false,
       nonactive = false,
@@ -118,13 +118,11 @@ export const SegmentedControl = Object.assign(
       <SegmentedControlContext value={segmentedControlContext}>{children}</SegmentedControlContext>,
     );
     
-    // TODO: add controlled/uncontrolled checks
-    
     const { Provider: RadioGroupProvider, props: radioGroupProps } = useRadioGroup({
       state: selected,
-      defaultState: selectedDefault ?? defaultSelected,
+      defaultState: defaultSelected,
       defaultStateFallback: null,
-      onStateChange: onUpdateSelected ?? onUpdate,
+      onStateChange: onSelectedChange ?? onUpdate,
     });
     
     const focusGroupProps = useFocusGroup({ focusGroup: 'radiogroup nowrap' });

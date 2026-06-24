@@ -10,26 +10,24 @@ import { type StateCreator, type StoreApi, createStore, useStore } from 'zustand
 import { type CollectionSlice, createCollectionSlice } from './CollectionStore.tsx';
 
 
-type ControllableState<S extends null | {}> = (
+export type ControllableState<S extends null | {}> = (
   | {
-    state: undefined, // Uncontrolled
+    state?: undefined, // Uncontrolled
     defaultState?: undefined | S,
     onStateChange?: undefined | ((state: S) => void),
   }
   | {
     state: S, // Controlled
+    defaultState?: undefined,
     onStateChange: (state: S) => void,
   }
 );
-type ControllableStateDef<S extends null | {}> = ControllableState<S> & (
-  | {
-    state: undefined,
-    defaultStateFallback: S,
-  }
-  | {
-    state: S,
-  }
-);
+export type ControllableStateDef<S extends null | {}> = {
+  state: undefined | S,
+  defaultState: undefined | S,
+  defaultStateFallback: undefined | S,
+  onStateChange: undefined | ((state: S) => void),
+};
 
 export type ItemKey = string;
 export type SelectedState = null | ItemKey;
@@ -83,7 +81,7 @@ export const useRadioGroup = (props: RadioGroupProps) => {
   
   const store = useMemoOnce(() => createStore<RadioGroupCollectionSlice>()((...args) => ({
     ...createCollectionSlice({ collectionId: radioGroupId })(...args),
-    ...createRadioGroupSlice({ selectedItemKey: selectedItemKeyInit })(...args),
+    ...createRadioGroupSlice({ selectedItemKey: selectedItemKeyInit ?? null })(...args),
   })));
   const context: RadioGroupContext = React.useMemo(() => ({ store, requestSelect }), [requestSelect]);
   
@@ -107,7 +105,7 @@ export const useRadioGroup = (props: RadioGroupProps) => {
   // Controlled case: update store when controlled state changes
   React.useEffect(() => {
     if (isControlled) {
-      store.setState({ selectedItemKey: props.state });
+      store.setState({ selectedItemKey: props.state ?? null });
     }
   }, [isControlled, props.state]);
   

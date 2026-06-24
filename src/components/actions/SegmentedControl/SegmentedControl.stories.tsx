@@ -25,8 +25,8 @@ export default {
   args: {
     size: 'small',
     'aria-label': 'Choose a color',
-    onUpdate: selected => { console.log('Update:', selected); },
-    selectedDefault: 'red',
+    onSelectedChange: selected => { console.log('onSelectedChange:', selected); },
+    defaultSelected: 'red',
     children: (
       <>
         <SegmentedControl.Button buttonKey="red" label="Red"/>
@@ -42,7 +42,7 @@ export default {
 export const SegmentedControlStandard: Story = {
   args: {
     'aria-label': 'Color',
-    selectedDefault: 'blue',
+    defaultSelected: 'blue',
     children: (
       <>
         <SegmentedControl.Button buttonKey="red" label="Red"/>
@@ -55,7 +55,7 @@ export const SegmentedControlStandard: Story = {
 
 export const SegmentedControlWithIcon: Story = {
   args: {
-    selectedDefault: 'edit',
+    defaultSelected: 'edit',
     children: (
       <>
         <SegmentedControl.Button buttonKey="edit" icon="edit" label="Edit"/>
@@ -67,7 +67,7 @@ export const SegmentedControlWithIcon: Story = {
 
 export const SegmentedControlWithIconOnly: Story = {
   args: {
-    selectedDefault: 'edit',
+    defaultSelected: 'edit',
     children: (
       <>
         <SegmentedControl.Button buttonKey="edit" aria-label="edit" icon="edit"/>
@@ -152,7 +152,7 @@ export const SegmentedControlVerticalWritingMode: Story = {
 export const SegmentedControlUncontrolled: Story = {
   args: {
     'aria-label': 'Color',
-    selectedDefault: 'blue',
+    defaultSelected: 'blue',
     children: (
       <>
         <SegmentedControl.Button buttonKey="red" label="Red"/>
@@ -160,18 +160,18 @@ export const SegmentedControlUncontrolled: Story = {
         <SegmentedControl.Button buttonKey="blue" label="Blue"/>
       </>
     ),
-    onUpdateSelected: selected => { notify.info(`Uncontrolled state was changed: ${selected ?? '(none)'}`); },
+    onSelectedChange: selected => { notify.info(`Uncontrolled state was changed: ${selected ?? '(none)'}`); },
   },
 };
 
 type SegmentedControlControlledProps = Omit<React.ComponentProps<typeof SegmentedControl>, 'selected'>;
-const SegmentedControlControlledC = ({ selectedDefault, ...props }: SegmentedControlControlledProps) => {
-  const [selectedButton, setSelectedButton] = React.useState<undefined | null | ButtonKey>(selectedDefault ?? null);
+const SegmentedControlControlledC = ({ defaultSelected, ...props }: SegmentedControlControlledProps) => {
+  const [selectedButton, setSelectedButton] = React.useState<undefined | null | ButtonKey>(defaultSelected ?? null);
   
   return (
     <>
       <p>Selected color: {selectedButton ?? <em>none</em>}</p>
-      <SegmentedControl {...props} selected={selectedButton} onUpdateSelected={setSelectedButton}>
+      <SegmentedControl {...props} selected={selectedButton} onSelectedChange={setSelectedButton}>
         <SegmentedControl.Button buttonKey="red" label="Red"/>
         <SegmentedControl.Button buttonKey="green" label="Green"/>
         <SegmentedControl.Button buttonKey="blue" label="Blue"/>
@@ -182,19 +182,19 @@ const SegmentedControlControlledC = ({ selectedDefault, ...props }: SegmentedCon
 };
 
 export const SegmentedControlControlled: Story = {
-  render: args => <SegmentedControlControlledC {...args}/>,
+  render: (args: SegmentedControlArgs) => <SegmentedControlControlledC {...args}/>,
   args: {
     // Don't define `children` here, we want to have them dynamically recreated on render, in order to verify rerender
     // behavior. Selecting an item should cause `children` to be recreated, but the items should not rerender unless
     // they were affected by the state change (i.e. only the unselected and newly selected items should rerender).
     //children: undefined,
-    selectedDefault: 'green',
+    defaultSelected: 'green',
   },
 };
 
 export const SegmentedControlControlledWithEmptyDefault: Story = {
-  render: args => <SegmentedControlControlledC {...args}/>,
+  render: (args: SegmentedControlArgs) => <SegmentedControlControlledC {...args}/>,
   args: {
-    selectedDefault: undefined,
+    defaultSelected: undefined,
   },
 };

@@ -31,10 +31,10 @@ type ToggleButtonProps = Omit<ComponentProps<typeof Button>, ButtonPropsIrreleva
   toggled?: undefined | boolean,
   
   /** When uncontrolled, specifies the default toggled state. Default: `false`. */
-  toggledDefault?: undefined | boolean,
+  defaultToggled?: undefined | boolean,
   
   /** Callback that is called when the toggled state changes. If controlled, should not be `undefined`. */
-  onUpdateToggled?: undefined | ((toggled: boolean) => void),
+  onToggledChange?: undefined | ((toggled: boolean) => void),
 };
 export const ToggleButton = (props: ToggleButtonProps) => {
   const {
@@ -42,8 +42,8 @@ export const ToggleButton = (props: ToggleButtonProps) => {
     size = 'small',
     embedded,
     toggled,
-    toggledDefault,
-    onUpdateToggled,
+    defaultToggled,
+    onToggledChange,
     disabled,
     nonactive,
     ...propsRest
@@ -53,9 +53,9 @@ export const ToggleButton = (props: ToggleButtonProps) => {
     componentName: 'ToggleButton',
     propName: 'toggled',
     state: toggled,
-    stateDefault: toggledDefault,
+    stateDefault: defaultToggled,
     stateFallback: false,
-    onUpdateState: onUpdateToggled,
+    onUpdateState: onToggledChange,
   });
   
   const isInteractive = !disabled && !nonactive;
