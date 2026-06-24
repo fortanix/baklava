@@ -166,7 +166,7 @@ export const SegmentedControlUncontrolled: Story = {
 
 type SegmentedControlControlledProps = Omit<React.ComponentProps<typeof SegmentedControl>, 'selected'>;
 const SegmentedControlControlledC = ({ selectedDefault, ...props }: SegmentedControlControlledProps) => {
-  const [selectedButton, setSelectedButton] = React.useState<undefined | null | ButtonKey>(selectedDefault);
+  const [selectedButton, setSelectedButton] = React.useState<undefined | null | ButtonKey>(selectedDefault ?? null);
   
   return (
     <>

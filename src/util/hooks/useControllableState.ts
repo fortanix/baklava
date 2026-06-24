@@ -73,7 +73,8 @@ export const useControllableState = <S>(props: UseControllableStateProps<S>) => 
   
   
   // When uncontrolled, we need to keep track of the current state ourselves
-  const [stateUncontrolled, updateStateUncontrolled] = React.useState<S>(stateDefault ?? stateFallback);
+  const stateInit = typeof stateDefault !== 'undefined' ? stateDefault : stateFallback;
+  const [stateUncontrolled, updateStateUncontrolled] = React.useState<S>(stateInit);
   
   // The actual state to be used by the component (whether controlled or uncontrolled)
   const stateUsed: S = isControlled ? state : stateUncontrolled;

@@ -10,7 +10,29 @@ import { type StateCreator, type StoreApi, createStore, useStore } from 'zustand
 import { type CollectionSlice, createCollectionSlice } from './CollectionStore.tsx';
 
 
+type ControllableState<S extends null | {}> = (
+  | {
+    state: undefined, // Uncontrolled
+    defaultState?: undefined | S,
+    onStateChange?: undefined | ((state: S) => void),
+  }
+  | {
+    state: S, // Controlled
+    onStateChange: (state: S) => void,
+  }
+);
+type ControllableStateDef<S extends null | {}> = ControllableState<S> & (
+  | {
+    state: undefined,
+    defaultStateFallback: S,
+  }
+  | {
+    state: S,
+  }
+);
+
 export type ItemKey = string;
+export type SelectedState = null | ItemKey;
 
 export type RadioGroupState = {
   selectedItemKey: null | ItemKey,
@@ -19,9 +41,9 @@ export type RadioGroupSlice = RadioGroupState & {
   selectItem: (itemKey: null | ItemKey) => void,
 };
 
-export type RadioGroupStateInit = RequireOnly<RadioGroupState, 'selectedItemKey'>;
+export type CreateRadioGroupSliceProps = RequireOnly<RadioGroupState, 'selectedItemKey'>;
 export const createRadioGroupSlice = (
-  { selectedItemKey }: RadioGroupStateInit,
+  { selectedItemKey }: CreateRadioGroupSliceProps,
 ): StateCreator<RadioGroupSlice, [], [], RadioGroupSlice> => set => {
   return {
     selectedItemKey,
@@ -38,15 +60,30 @@ export type RadioGroupContext = {
 };
 export const RadioGroupContext = React.createContext<null | RadioGroupContext>(null);
 
-export type RadioGroupProps = RadioGroupStateInit & {
-  requestSelect: RadioGroupContext['requestSelect'],
-};
-export const useRadioGroup = ({ requestSelect, ...propsInit }: RadioGroupProps) => {
+export type RadioGroupProps = ControllableStateDef<SelectedState>;
+export const useRadioGroup = (props: RadioGroupProps) => {
   const radioGroupId = React.useId();
+  
+  const isControlled = typeof props.state !== 'undefined';
+  const selectedItemKeyInit = isControlled
+    ? props.state
+    : (typeof props.defaultState !== 'undefined' ? props.defaultState : props.defaultStateFallback);
+  
+  const requestSelect = React.useCallback((
+    store: RadioGroupContext['store'],
+    selectedItemKey: SelectedState,
+  ) => {
+    // Note: when controlled, don't directly update the store. Just trigger `onStateChange` and if the consumer
+    // respects the change then it'll be handled in the `useEffect` below.
+    if (!isControlled) {
+      store.setState({ selectedItemKey });
+    }
+    props.onStateChange?.(selectedItemKey);
+  }, [isControlled, props.onStateChange]);
   
   const store = useMemoOnce(() => createStore<RadioGroupCollectionSlice>()((...args) => ({
     ...createCollectionSlice({ collectionId: radioGroupId })(...args),
-    ...createRadioGroupSlice(propsInit)(...args),
+    ...createRadioGroupSlice({ selectedItemKey: selectedItemKeyInit })(...args),
   })));
   const context: RadioGroupContext = React.useMemo(() => ({ store, requestSelect }), [requestSelect]);
   
@@ -58,9 +95,25 @@ export const useRadioGroup = ({ requestSelect, ...propsInit }: RadioGroupProps) 
   const consumeDirty = useStore(context.store, state => state.consumeDirty);
   const getItemKeys = useStore(context.store, state => state.getItemKeys);
   
+  // Uncontrolled case: call `onUpdateSelected` when state changes
+  const handleUpdateSelected = React.useEffectEvent((selected: SelectedState) => { props.onStateChange?.(selected); });
+  React.useEffect(() => {
+    return store.subscribe((state, prevState) => {
+      if (!isControlled && state.selectedItemKey !== prevState.selectedItemKey) {
+        handleUpdateSelected(state.selectedItemKey);
+      }
+    });
+  }, [isControlled]);
+  // Controlled case: update store when controlled state changes
+  React.useEffect(() => {
+    if (isControlled) {
+      store.setState({ selectedItemKey: props.state });
+    }
+  }, [isControlled, props.state]);
+  
   // TODO: move this inside the `Provider` instead?
   React.useLayoutEffect(() => {
-    // FIXME: how do we make sure that only the `useRadioHook` can call `consumeDirty()`?
+    // FIXME: how do we make sure that only the `useRadioGroup` hook can call `consumeDirty()`?
     if (consumeDirty()) {
       console.log('REGISTRY UPDATE', getItemKeys());
     }

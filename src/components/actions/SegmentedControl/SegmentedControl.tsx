@@ -6,10 +6,9 @@ import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import { mergeProps, useMemoOnce } from '../../../util/reactUtil.ts';
 import { useFocusGroup } from '../../../util/hooks/useFocusGroup.ts';
-import { useControllableState } from '../../../util/hooks/useControllableState.ts';
 import { useStore } from 'zustand';
 
-import { type ItemKey, type RadioGroupContext, useRadioGroup, useRadioGroupItem } from '../../util/collections/RadioGroupStore.tsx';
+import { type ItemKey, useRadioGroup, useRadioGroupItem } from '../../util/collections/RadioGroupStore.tsx';
 import { ToggleButton } from '../ToggleButton/ToggleButton.tsx';
 
 import cl from './SegmentedControl.module.scss';
@@ -18,8 +17,8 @@ import cl from './SegmentedControl.module.scss';
 export { cl as SegmentedControlClassNames };
 
 export type ButtonKey = ItemKey;
-type SegmentedControlSize = 'small'; // Only supporting `small` for now
 
+type SegmentedControlSize = 'small'; // Only supporting `small` for now
 
 type SegmentedControlContext = {
   size: SegmentedControlSize,
@@ -45,10 +44,6 @@ export const SegmentedControlButton = React.memo(({ buttonKey, ...propsRest }: S
   
   const { store, requestSelect, itemProps } = useRadioGroupItem({ itemKey: buttonKey });
   const isSelected = useStore(store, store => buttonKey === store.selectedItemKey);
-  
-  React.useLayoutEffect(() => {
-    console.log('render', buttonKey); // TEMP
-  });
   
   return (
     <ToggleButton
@@ -118,65 +113,21 @@ export const SegmentedControl = Object.assign(
       ...propsRest
     } = props;
     
-    const focusGroupProps = useFocusGroup({ focusGroup: 'radiogroup nowrap' });
-    
-    const isControlled = typeof selected !== 'undefined';
-    /*
-    const { state: selectedState, updateState: updateSelectedState } = useControllableState<SelectedState>({
-      componentName: 'SegmentedControl',
-      propName: 'selected',
-      state: selected,
-      stateDefault: typeof selectedDefault !== 'undefined' ? selectedDefault : defaultSelected,
-      stateFallback: null,
-      onUpdateState: onUpdateSelected ?? onUpdate,
-    });
-    */
-    
     const segmentedControlContext = useMemoOnce<SegmentedControlContext>(() => ({ size, disabled, nonactive }));
     const SegmentedControlProvider = useMemoOnce(() => ({ children }: React.PropsWithChildren) =>
       <SegmentedControlContext value={segmentedControlContext}>{children}</SegmentedControlContext>,
     );
     
-    // const { Provider: RadioGroupProvider, store, props: radioGroupProps } = useRadioGroup({
-    //   selectedItemKey: selectedState,
-    // });
-    
-    const requestSelect = React.useCallback((
-      store: RadioGroupContext['store'],
-      selectedItemKey: SelectedState,
-    ) => {
-      if (isControlled) {
-        onUpdateSelected?.(selectedItemKey);
-      } else {
-        store.setState({ selectedItemKey });
-      }
-    }, [isControlled, onUpdateSelected]);
-    
     // TODO: add controlled/uncontrolled checks
     
-    const { Provider: RadioGroupProvider, store, props: radioGroupProps } = useRadioGroup({
-      //selectedItemKey: selectedState,
-      //selectedItemKey: selected!, // FIXME: this needs to take into account the default/fallback for uncontrolled
-      selectedItemKey: isControlled ? selected : (selectedDefault ?? null),
-      onUpdateSelectedItemKey: onUpdateSelected, // TODO
-      requestSelect,
+    const { Provider: RadioGroupProvider, props: radioGroupProps } = useRadioGroup({
+      state: selected,
+      defaultState: selectedDefault ?? defaultSelected,
+      defaultStateFallback: null,
+      onStateChange: onUpdateSelected ?? onUpdate,
     });
     
-    // Uncontrolled case: call `onUpdateSelected` when state changes
-    const handleUpdateSelected = React.useEffectEvent((selected: SelectedState) => { onUpdateSelected?.(selected); });
-    React.useEffect(() => {
-      return store.subscribe((state, prevState) => {
-        if (!isControlled && state.selectedItemKey !== prevState.selectedItemKey) {
-          handleUpdateSelected(state.selectedItemKey);
-        }
-      });
-    }, [store, isControlled]);
-    // Controlled case: update store when controlled state changes
-    React.useEffect(() => {
-      if (isControlled) {
-        store.setState({ selectedItemKey: selected });
-      }
-    }, [store, isControlled, selected]);
+    const focusGroupProps = useFocusGroup({ focusGroup: 'radiogroup nowrap' });
     
     return (
       <SegmentedControlProvider>
