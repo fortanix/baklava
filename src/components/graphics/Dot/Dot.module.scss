@@ -12,7 +12,7 @@
     --bk-dot-color: #{bk.$theme-text-default};
     
     inline-size: var(--bk-dot-size);
-    block-size: var(--bk-dot-size);
+    aspect-ratio: 1;
     border-radius: bk.$border-radius-circle;
     
     // similar to inline icon
