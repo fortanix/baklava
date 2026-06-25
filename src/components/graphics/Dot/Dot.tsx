@@ -10,7 +10,7 @@ import cl from './Dot.module.scss';
 
 export { cl as DotClassNames };
 
-export type DotEvent = 'alert' | 'informational' | 'success' | 'warning';
+export type DotEvent = 'critical' | 'informational' | 'success' | 'warning';
 
 export type DotVariant = 'filled';
 

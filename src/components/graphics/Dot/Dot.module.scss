@@ -22,7 +22,7 @@
   
   .bk-dot--filled { background: var(--bk-dot-color); }
 
-  .bk-dot--alert { --bk-dot-color: #{bk.$theme-icon-alert}; }
+  .bk-dot--critical { --bk-dot-color: #{bk.$theme-icon-alert}; }
   .bk-dot--informational { --bk-dot-color: #{bk.$theme-icon-informational}; }
   .bk-dot--success { --bk-dot-color: #{bk.$theme-icon-success}; }
   .bk-dot--warning { --bk-dot-color: #{bk.$theme-icon-warning}; }

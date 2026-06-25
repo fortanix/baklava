@@ -29,9 +29,9 @@ export default {
 // it is not possible for a story to completely replace a default decorator, so it is repeated in some stories
 // see https://storybook.js.org/docs/writing-stories/decorators#decorator-inheritance
 // and https://github.com/storybookjs/storybook/issues/12670
-export const DotAlert: Story = {
+export const DotCritical: Story = {
   args: {
-    event: 'alert',
+    event: 'critical',
   },
   decorators: [
     Story => <div style={{ display: 'flex', gap: '8px', 'align-items': 'center' }}><Story/> Dot</div>,
