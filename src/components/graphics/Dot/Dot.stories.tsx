@@ -27,8 +27,6 @@ export default {
 } satisfies Meta<DotArgs>;
 
 
-export const DotStandard: Story = {};
-
 export const DotAlert: Story = {
   args: {
     event: 'alert',
@@ -39,6 +37,12 @@ export const DotInformational: Story = {
   args: {
     event: 'informational',
   }
+};
+
+export const DotSuccess: Story = {
+  args: {
+    event: 'success',
+  },
 };
 
 export const DotWarning: Story = {
