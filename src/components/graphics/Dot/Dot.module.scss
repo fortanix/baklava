@@ -11,8 +11,8 @@
     --bk-dot-size: 10px; // Figma doesn't have a variable for this size
     --bk-dot-color: #{bk.$theme-text-default};
     
-    width: var(--bk-dot-size);
-    height: var(--bk-dot-size);
+    inline-size: var(--bk-dot-size);
+    block-size: var(--bk-dot-size);
     border-radius: bk.$border-radius-circle;
     
     // similar to inline icon
