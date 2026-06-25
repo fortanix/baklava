@@ -12,24 +12,24 @@ export { cl as DotClassNames };
 
 export type DotEvent = 'alert' | 'informational' | 'success' | 'warning';
 
-export type DotType = 'filled';
+export type DotVariant = 'filled';
 
 export type DotProps = React.PropsWithChildren<ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: boolean,
   
   /** Type of Dot to be returned, for now only filled is supported. */
-  type?: undefined | DotType,
+  variant?: undefined | DotVariant,
   
   /** The color of dot to be returned, defaults to success. */
   event: DotEvent,
 }>;
-export const Dot = ({ event = 'success', type = 'filled', unstyled, ...propsRest }: DotProps) => (
+export const Dot = ({ event, variant = 'filled', unstyled, ...propsRest }: DotProps) => (
   <div
     {...propsRest}
     className={cx(
       { [cl['bk-dot']]: !unstyled },
-      { [cl['bk-dot--filled']]: type === 'filled' },
+      { [cl['bk-dot--filled']]: variant === 'filled' },
       cl[`bk-dot--${event}`],
       propsRest.className,
     )}
