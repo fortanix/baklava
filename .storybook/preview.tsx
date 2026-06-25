@@ -40,6 +40,7 @@ const preview = {
           [
             'graphics',
             [
+              'Dot',
               'Icon',
               'Spinner',
               'PlaceholderEmpty',

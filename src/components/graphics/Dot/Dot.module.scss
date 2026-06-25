@@ -1,0 +1,29 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use 'sass:math';
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-dot {
+    @include bk.component-base(bk-dot);
+    --bk-dot-size: 10px; // Figma doesn't have a variable for this size
+    --bk-dot-color: #{bk.$theme-text-default};
+    
+    width: var(--bk-dot-size);
+    height: var(--bk-dot-size);
+    border-radius: bk.$border-radius-circle;
+    
+    // similar to inline icon
+    display: inline-flex;
+    vertical-align: 15%;
+  }
+  
+  .bk-dot--filled { background: var(--bk-dot-color); }
+
+  .bk-dot--alert { --bk-dot-color: #{bk.$theme-icon-alert}; }
+  .bk-dot--informational { --bk-dot-color: #{bk.$theme-icon-informational}; }
+  .bk-dot--success { --bk-dot-color: #{bk.$theme-icon-success}; }
+  .bk-dot--warning { --bk-dot-color: #{bk.$theme-icon-warning}; }
+}
