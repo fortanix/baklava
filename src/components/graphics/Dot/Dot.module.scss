@@ -8,7 +8,7 @@
 @layer baklava.components {
   .bk-dot {
     @include bk.component-base(bk-dot);
-    --bk-dot-size: 10px; // Figma doesn't have a variable for this size
+    --bk-dot-size: #{round(math.div(10, 14) * 1rem, 1px)}; // ~10px; Figma doesn't have a variable for this size
     --bk-dot-color: #{bk.$theme-text-default};
     
     inline-size: var(--bk-dot-size);
