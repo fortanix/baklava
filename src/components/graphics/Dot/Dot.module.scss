@@ -8,22 +8,19 @@
 @layer baklava.components {
   .bk-dot {
     @include bk.component-base(bk-dot);
-    --bk-dot-size: #{round(math.div(10, 14) * 1rem, 1px)}; // ~10px; Figma doesn't have a variable for this size
-    --bk-dot-color: #{bk.$theme-text-default};
-    
-    inline-size: var(--bk-dot-size);
+    inline-size: 0.8em;
     aspect-ratio: 1;
     border-radius: bk.$border-radius-circle;
     
-    // similar to inline icon
+    // Similar to inline icon
     display: inline-flex;
-    vertical-align: 15%;
+    vertical-align: -5%;
+    
+    &.bk-dot--event-critical { color: #{bk.$theme-icon-alert}; }
+    &.bk-dot--event-informational { color: #{bk.$theme-icon-informational}; }
+    &.bk-dot--event-success { color: #{bk.$theme-icon-success}; }
+    &.bk-dot--event-warning { color: #{bk.$theme-icon-warning}; }
+    
+    &.bk-dot--variant-filled { background: currentColor; }
   }
-  
-  .bk-dot--filled { background: var(--bk-dot-color); }
-
-  .bk-dot--critical { --bk-dot-color: #{bk.$theme-icon-alert}; }
-  .bk-dot--informational { --bk-dot-color: #{bk.$theme-icon-informational}; }
-  .bk-dot--success { --bk-dot-color: #{bk.$theme-icon-success}; }
-  .bk-dot--warning { --bk-dot-color: #{bk.$theme-icon-warning}; }
 }
