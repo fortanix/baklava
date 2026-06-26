@@ -67,7 +67,7 @@ export const SegmentedControlButton = React.memo(({ buttonKey, ...propsRest }: S
 });
 
 type SelectedState = null | ItemKey;
-type SelectedProps = (
+type SelectedStateProps = (
   | {
     selected?: undefined, // Uncontrolled
     defaultSelected?: undefined | SelectedState,
@@ -80,8 +80,8 @@ type SelectedProps = (
   }
 );
 
-type PropsIrrelevant = 'defaultChecked' | 'defaultValue' | 'onSelect';
-export type SegmentedControlProps = Omit<Partial<ComponentProps<'div'>>, PropsIrrelevant> & SelectedProps & {
+type PropsOmit = keyof SelectedStateProps | 'defaultChecked' | 'defaultValue' | 'onSelect';
+export type SegmentedControlProps = Omit<ComponentProps<'div'>, PropsOmit> & SelectedStateProps & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -90,14 +90,14 @@ export type SegmentedControlProps = Omit<Partial<ComponentProps<'div'>>, PropsIr
   /** The overall size of the component. */
   size: SegmentedControlSize,
   
-  /** Alias for `onSelectedChange` for backwards compatbility. @deprecated */
-  onUpdate?: undefined | ((selected: SelectedState) => void),
-  
   /** Whether the segmented control is disabled or not. Default: false. */
   disabled?: undefined | boolean,
   
   /** Whether the segmented control is nonactive or not. Default: false. */
   nonactive?: undefined | boolean,
+  
+  /** Alias for `onSelectedChange` for backwards compatbility. @deprecated */
+  onUpdate?: undefined | ((selected: SelectedState) => void),
 };
 export const SegmentedControl = Object.assign(
   (props: SegmentedControlProps) => {
@@ -107,7 +107,7 @@ export const SegmentedControl = Object.assign(
       selected,
       defaultSelected,
       onSelectedChange,
-      onUpdate, // Legacy alias
+      onUpdate, // Legacy alias for `onSelectedChange`
       disabled = false,
       nonactive = false,
       ...propsRest
