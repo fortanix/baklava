@@ -87,7 +87,9 @@ export { TextAreaField } from '../src/components/forms/fields/TextAreaField/Text
 export {
   TextAreaWithFileUploadField,
 } from '../src/components/forms/fields/TextAreaWithFileUploadField/TextAreaWithFileUploadField.tsx';
+
 // Graphics
+export { Dot } from '../src/components/graphics/Dot/Dot.tsx';
 export { Icon } from '../src/components/graphics/Icon/Icon.tsx';
 export { PlaceholderEmpty } from '../src/components/graphics/PlaceholderEmpty/PlaceholderEmpty.tsx';
 export { ProgressBar } from '../src/components/graphics/ProgressBar/ProgressBar.tsx';

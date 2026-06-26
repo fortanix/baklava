@@ -1,0 +1,26 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use 'sass:math';
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-dot {
+    @include bk.component-base(bk-dot);
+    inline-size: 0.8em;
+    aspect-ratio: 1;
+    border-radius: bk.$border-radius-circle;
+    
+    // Similar to inline icon
+    display: inline-flex;
+    vertical-align: -5%;
+    
+    &.bk-dot--event-critical { color: #{bk.$theme-icon-alert}; }
+    &.bk-dot--event-informational { color: #{bk.$theme-icon-informational}; }
+    &.bk-dot--event-success { color: #{bk.$theme-icon-success}; }
+    &.bk-dot--event-warning { color: #{bk.$theme-icon-warning}; }
+    
+    &.bk-dot--variant-filled { background: currentColor; }
+  }
+}
