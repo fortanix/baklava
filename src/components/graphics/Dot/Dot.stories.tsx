@@ -8,7 +8,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Dot } from './Dot.tsx';
 
-import { LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
+import { Prose } from '../../../typography/Prose/Prose.tsx';
+import { LoremIpsum, loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
 
 
 type DotArgs = React.ComponentProps<typeof Dot>;
@@ -70,7 +71,9 @@ export const DotWithParagraphAndNoExtraStyling: Story = {
     event: 'success',
   },
   decorators: [
-    Story => <><Story/><LoremIpsum paragraphs={1}/></>,
+    Story => <Prose>
+      <p>{loremIpsumSentence} <Story/> {loremIpsumSentence}</p>
+    </Prose>,
   ],
 };
 
