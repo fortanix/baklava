@@ -52,10 +52,11 @@ export const useRadioGroup = (props: RadioGroupProps) => {
   })));
   
   const { props: propsCollection } = useCollectionWith(store, {
-    onItemsChange: itemKeys => { console.log('RADIO GROUP UPDATE', itemKeys) }, // TEMP
+    //onItemsChange: itemKeys => { console.log('Registry update', itemKeys) },
   });
   const { props: propsSelection } = useSelectionWith(store, selectionState);
   
+  // FIXME: integrate this into `SelectionSingle`? Would require storing this callback in the zustand slice.
   const onStateChange = React.useEffectEvent(props.onStateChange ?? noop);
   const requestSelect = React.useCallback((selectedItemKey: SelectedState) => {
     // Note: when controlled, don't directly update the store. Just trigger `onStateChange` and if the consumer
