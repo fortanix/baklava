@@ -2,75 +2,59 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import type { RequireOnly } from '../../../util/types.ts';
 import * as React from 'react';
-import { useMemoOnce } from '../../../util/reactUtil.ts';
-import { type StateCreator, type StoreApi, createStore, useStore } from 'zustand';
+import { mergeProps, useMemoOnce } from '../../../util/reactUtil.ts';
+import { type StoreApi, createStore } from 'zustand';
 
-import { type CollectionSlice, createCollectionSlice } from './CollectionStore.tsx';
+import { ControllableStateDef, parseControllableState } from './ControllableState.ts';
 
+import {
+  type ItemKey,
+  type CollectionSlice,
+  createCollectionSlice,
+  useCollectionWith,
+  useCollectionItemWith,
+} from './CollectionStore.tsx';
+import {
+  type SelectedState,
+  type SelectionSingleSlice,
+  createSelectionSingleSlice,
+  useSelectionWith,
+} from './SelectionSingleStore.tsx';
+
+
+export type { ItemKey };
 
 const noop = () => {};
 
-export type ControllableState<S extends null | {}> = (
-  | {
-    state?: undefined, // Uncontrolled
-    defaultState?: undefined | S,
-    onStateChange?: undefined | ((state: S) => void),
-  }
-  | {
-    state: S, // Controlled
-    defaultState?: undefined,
-    onStateChange: (state: S) => void,
-  }
-);
-export type ControllableStateDef<S extends null | {}> = {
-  state: undefined | S,
-  defaultState: undefined | S,
-  defaultStateFallback: undefined | S,
-  onStateChange: undefined | ((state: S) => void),
-};
-
-export type ItemKey = string;
-export type SelectedState = null | ItemKey;
-
-export type RadioGroupState = {
-  selectedItemKey: SelectedState,
-};
-export type RadioGroupSlice = RadioGroupState & {
-  selectItem: (itemKey: SelectedState) => void,
-};
-
-export type CreateRadioGroupSliceProps = RequireOnly<RadioGroupState, 'selectedItemKey'>;
-export const createRadioGroupSlice = (
-  { selectedItemKey }: CreateRadioGroupSliceProps,
-): StateCreator<RadioGroupSlice, [], [], RadioGroupSlice> => set => ({
-  selectedItemKey,
-  selectItem: itemKey => { set({ selectedItemKey: itemKey }); },
-});
-
-
-export type RadioGroupCollectionSlice = CollectionSlice & RadioGroupSlice;
+export type RadioGroupSlice = CollectionSlice & SelectionSingleSlice;
 export type RadioGroupContext = {
-  store: StoreApi<RadioGroupCollectionSlice>,
+  store: StoreApi<RadioGroupSlice>,
   /** Called when the user requests the given item (or none) to be selected. */
   requestSelect: (itemKey: SelectedState) => void,
 };
 export const RadioGroupContext = React.createContext<null | RadioGroupContext>(null);
+export const useRadioGroupContext = () => {
+  const context = React.use(RadioGroupContext);
+  if (!context) { throw new Error(`Missing 'RadioGroupContext' provider`); }
+  return context;
+};
 
 export type RadioGroupProps = ControllableStateDef<SelectedState>;
 export const useRadioGroup = (props: RadioGroupProps) => {
   const radioGroupId = React.useId();
   
-  const isControlled = typeof props.state !== 'undefined';
-  const selectedItemKeyInit = isControlled
-    ? props.state
-    : (typeof props.defaultState !== 'undefined' ? props.defaultState : props.defaultStateFallback);
+  const { isControlled, stateInitial, ...selectionState } = parseControllableState(props);
   
-  const store = useMemoOnce(() => createStore<RadioGroupCollectionSlice>()((...args) => ({
+  const store = useMemoOnce(() => createStore<RadioGroupSlice>()((...args) => ({
     ...createCollectionSlice({ collectionId: radioGroupId })(...args),
-    ...createRadioGroupSlice({ selectedItemKey: selectedItemKeyInit ?? null })(...args),
+    ...createSelectionSingleSlice({ selectedItemKey: stateInitial ?? null })(...args),
   })));
+  
+  const { props: propsCollection } = useCollectionWith(store, {
+    onItemsChange: itemKeys => { console.log('RADIO GROUP UPDATE', itemKeys) }, // TEMP
+  });
+  const { props: propsSelection } = useSelectionWith(store, selectionState);
   
   const onStateChange = React.useEffectEvent(props.onStateChange ?? noop);
   const requestSelect = React.useCallback((selectedItemKey: SelectedState) => {
@@ -85,107 +69,40 @@ export const useRadioGroup = (props: RadioGroupProps) => {
   
   // Note: this context value should be as stable as possible, the state changing means the entire subtree will get
   // rerendered. The way we've set this up, only a change in `isControlled` will cause this state to change. Changes
-  // to `isControlled` after mount should be avoided by consumers.
+  // to `isControlled` after mount should be avoided by consumers (but are technically allowed).
   // `props.onStateChange` should be assumed to be unstable. We use `useEffectEvent` to keep a reference to the latest
   // value of `props.onStateChange` without it being a memo dep. React enforces `useEffectEvent` is not called during
-  // rendering in order to avoid bugs in concurrent rendering, but we call `onStateChange` in event listeners only.
+  // rendering in order to avoid bugs in concurrent rendering. We should call `onStateChange` in event listeners only.
   const context: RadioGroupContext = React.useMemo(() => ({ store, requestSelect }), [requestSelect]);
-  
-  const Provider = useMemoOnce(() => ({ children }: React.PropsWithChildren) =>
-    <RadioGroupContext value={context}>{children}</RadioGroupContext>,
+  const Provider = useMemoOnce(() =>
+    (props: React.PropsWithChildren) => <RadioGroupContext {...props} value={context}/>,
   );
   
-  const radioGroupIdStored = useStore(context.store, state => state.collectionId);
-  const consumeDirty = useStore(context.store, state => state.consumeDirty);
-  const getItemKeys = useStore(context.store, state => state.getItemKeys);
-  
-  // Uncontrolled case: call `onStateChange` when state changes
-  React.useEffect(() => {
-    return store.subscribe((state, prevState) => {
-      if (!isControlled && state.selectedItemKey !== prevState.selectedItemKey) {
-        onStateChange(state.selectedItemKey);
-      }
-    });
-  }, [isControlled]);
-  
-  // Controlled case: update store when controlled state changes
-  React.useEffect(() => {
-    if (isControlled) {
-      store.setState({ selectedItemKey: props.state ?? null });
-    }
-  }, [isControlled, props.state]);
-  
-  // This `useLayoutEffect` is triggered every time React finishes a batch update of all children inside this element.
-  // If any items were added/removed in this batch, then `consumeDirty()` will return `true`. Caveat: reordering of
-  // elements (e.g. two items swap) does not trigger a layout effect in React.
-  // TODO: move this inside the `Provider` instead?
-  React.useLayoutEffect(() => {
-    // FIXME: how do we make sure that only the `useRadioGroup` hook can call `consumeDirty()`?
-    if (consumeDirty()) {
-      // TODO: remove this `console.log()` and replace it with a configurable callback from the consumer
-      console.log('REGISTRY UPDATE', getItemKeys());
-    }
-  });
-  
   return {
+    store,
     context,
     Provider,
-    store: context.store,
-    props: {
-      'data-bk-radio-group-id': radioGroupIdStored,
-    },
+    props: mergeProps(
+      propsCollection,
+      propsSelection,
+      //{ role: 'radiogroup' }, // Leave this up to the consumer
+    ),
   };
 };
 
 
 type UseRadioGroupItemParams = { itemKey: ItemKey };
-type UseRadioGroupItemResult<E extends Element> = {
-  store: RadioGroupContext['store'],
-  requestSelect: () => void,
-  itemProps: {
-    ref: React.RefCallback<E>,
-    'data-bk-radio-group-parent': string,
-    'data-bk-radio-group-item': string,
-  },
-};
-export const useRadioGroupItem = <E extends Element>(params: UseRadioGroupItemParams): UseRadioGroupItemResult<E> => {
+export const useRadioGroupItem = <E extends Element>(params: UseRadioGroupItemParams) => {
   const { itemKey } = params;
   
-  const context = React.use(RadioGroupContext);
-  if (!context) { throw new Error(`[RadioGroupItem] Missing 'RadioGroupContext' provider`); }
-  const { store, requestSelect } = context;
+  const { store, requestSelect } = useRadioGroupContext();
   
-  const radioGroupId = useStore(store, state => state.collectionId);
-  const registerItem = useStore(store, state => state.registerItem);
-  const unregisterItem = useStore(store, state => state.unregisterItem);
+  const { props } = useCollectionItemWith<E>(store, { itemKey });
   const requestSelectItem = () => requestSelect(itemKey);
-  
-  const ref = React.useCallback<React.RefCallback<E>>(el => {
-    if (typeof itemKey === 'undefined') {
-      console.warn(`[RadioGroup] Found item without an 'itemKey'`, el);
-      return;
-    }
-    
-    if (el === null) {
-      // Note: in React 19+ `el` should never be `null` anymore when we return a cleanup function, but we handle this
-      // scenario just in case.
-      unregisterItem(itemKey);
-    } else {
-      registerItem(itemKey, el);
-    }
-    
-    return () => {
-      unregisterItem(itemKey);
-    };
-  }, [itemKey, registerItem, unregisterItem]);
   
   return {
     store,
     requestSelect: requestSelectItem,
-    itemProps: {
-      ref,
-      'data-bk-radio-group-parent': radioGroupId,
-      'data-bk-radio-group-item': itemKey,
-    },
+    props,
   };
 };

@@ -38,11 +38,11 @@ type SegmentedControlButtonProps = Omit<ComponentProps<typeof ToggleButton>, 'si
 };
 // Note: use `memo()` so that children don't rerendered on state change, in the case that:
 // - The consumer uses this component with controlled state
-// - The `children` prop on consumer side is unstable (usually the case, unless the consumer does something special)
+// - The `children` prop on consumer side is not memoized/static (usually the case)
 export const SegmentedControlButton = React.memo(({ buttonKey, ...propsRest }: SegmentedControlButtonProps) => {
   const containerProps = useSegmentedControlContext();
   
-  const { store, requestSelect, itemProps } = useRadioGroupItem({ itemKey: buttonKey });
+  const { store, requestSelect, props: itemProps } = useRadioGroupItem({ itemKey: buttonKey });
   const isSelected = useStore(store, store => buttonKey === store.selectedItemKey);
   
   return (
