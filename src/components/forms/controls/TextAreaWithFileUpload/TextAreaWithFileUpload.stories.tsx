@@ -6,6 +6,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import * as React from 'react';
 
+import { LayoutDecorator } from '../../../../util/storybook/LayoutDecorator.tsx';
+import { loremIpsumParagraph } from '../../../../util/storybook/LoremIpsum.tsx';
+
 import { TextAreaWithFileUpload } from './TextAreaWithFileUpload.tsx';
 
 type TextAreaWithFileUploadArgs = React.ComponentProps<typeof TextAreaWithFileUpload>;
@@ -108,4 +111,11 @@ export const AutomaticHorizontalResize: Story = {
     defaultValue: longText,
     style: { blockSize: 100 },
   },
+};
+
+export const WithLongText: Story = {
+  args: {
+    defaultValue: loremIpsumParagraph,
+  },
+  decorators: [Story => <LayoutDecorator size="small" resize="both"><Story/></LayoutDecorator>],
 };
