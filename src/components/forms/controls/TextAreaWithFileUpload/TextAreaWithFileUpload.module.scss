@@ -39,6 +39,7 @@
       border-end-end-radius: 0;
       border: none;
       min-inline-size: var(--bk-text-area-with-upload-size);
+      inline-size: 100%;
     }
 
     &:has(.bk-text-area-upload__textarea:placeholder-shown) {
