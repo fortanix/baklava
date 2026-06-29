@@ -13,7 +13,7 @@ import { useTypeAhead } from '../../../../util/hooks/useTypeAhead.ts';
 
 
 /*
-Store for a composable list box with (up to) a single selected item state.
+Store for a composable list box with support for multiple selected items.
 */
 
 /** Unique key of an item. */
