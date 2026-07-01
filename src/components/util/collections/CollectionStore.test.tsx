@@ -220,7 +220,7 @@ describe('useCollectionItemWith', () => {
 
 describe('useCollection / useCollectionItem integration', () => {
   it('Provider supplies context consumed by useCollectionItem', () => {
-    let capturedStore: ReturnType<typeof makeStore> | null = null;
+    let capturedStore = null as null | ReturnType<typeof makeStore>;
     
     const Child = () => {
       const { store } = useCollectionItem<HTMLLIElement>({ itemKey: 'child-1' });
@@ -244,7 +244,9 @@ describe('useCollection / useCollectionItem integration', () => {
     
     expect(screen.getByTestId('child')).toHaveAttribute('data-bk-coll-item', 'child-1');
     expect(capturedStore).not.toBeNull();
-    expect(capturedStore!.getState().getItemKeys()).toContain('child-1');
+    
+    if (capturedStore === null) { throw new Error(`Should not happen`); }
+    expect(capturedStore.getState().getItemKeys()).toContain('child-1');
   });
   
   it('useCollection props carry a data-bk-coll-id attribute', () => {
@@ -284,12 +286,15 @@ describe('useCollection / useCollectionItem integration', () => {
     render(<Parent/>);
     // onItemsChange may be called once or multiple times depending on batching;
     // what matters is that the final call includes both keys.
-    const lastCall = onItemsChange.mock.calls.at(-1)![0] as Set<ItemKey>;
-    expect(lastCall).toEqual(new Set(['a', 'b']));
+    const lastCall = onItemsChange.mock.calls.at(-1);
+    if (typeof lastCall === 'undefined') { throw new Error(`Should not happen`); }
+    
+    const lastState = lastCall[0] as Set<ItemKey>;
+    expect(lastState).toEqual(new Set(['a', 'b']));
   });
 
   it('unregisters items when children unmount', () => {
-    let capturedStore: ReturnType<typeof makeStore> | null = null;
+    let capturedStore = null as null | ReturnType<typeof makeStore>;
     
     const Child = ({ itemKey }: { itemKey: string }) => {
       const { store, itemProps } = useCollectionItem<HTMLLIElement>({ itemKey });
@@ -310,10 +315,12 @@ describe('useCollection / useCollectionItem integration', () => {
     };
     
     const { rerender } = render(<Parent showB/>);
-    expect(capturedStore!.getState().getItemKeys()).toEqual(new Set(['a', 'b']));
+    if (capturedStore === null) { throw new Error(`Should not happen`); }
+    
+    expect(capturedStore.getState().getItemKeys()).toEqual(new Set(['a', 'b']));
     
     rerender(<Parent showB={false}/>);
-    expect(capturedStore!.getState().getItemKeys()).toEqual(new Set(['a']));
+    expect(capturedStore.getState().getItemKeys()).toEqual(new Set(['a']));
   });
   
   it('throws when useCollectionItem is used without a Provider', () => {

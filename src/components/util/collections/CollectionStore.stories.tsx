@@ -195,9 +195,6 @@ export const CollectionWithColumns: Story = {
 
 
 const CollectionWithControlsC = (args: CollectionArgs) => {
-  // const [isTransitionPending, startTransition] = React.useTransition();
-  const startTransition = (fn: any) => fn();
-  
   const [itemCount, setItemCount] = React.useState(100);
   const [items, setItems] = React.useState<Record<ItemKey, CollectionItemProps>>(() => generateItems(itemCount));
   
@@ -265,10 +262,10 @@ const CollectionWithControlsC = (args: CollectionArgs) => {
       
       <div>
         <style>{`@scope { margin-block: 0.4lh; display: flex; gap: 1ch; align-items: center; }`}</style>
-        <Button kind="secondary" label="10" onPress={() => { startTransition(() => { setItemCount(10); }); }}/>
-        <Button kind="secondary" label="100" onPress={() => { startTransition(() => { setItemCount(100); }); }}/>
-        <Button kind="secondary" label="1K" onPress={() => { startTransition(() => { setItemCount(1000); }); }}/>
-        <Button kind="secondary" label="10K" onPress={() => { startTransition(() => { setItemCount(10_000); }); }}/>
+        <Button kind="secondary" label="10" onPress={() => { setItemCount(10); }}/>
+        <Button kind="secondary" label="100" onPress={() => { setItemCount(100); }}/>
+        <Button kind="secondary" label="1K" onPress={() => { setItemCount(1000); }}/>
+        <Button kind="secondary" label="10K" onPress={() => { setItemCount(10_000); }}/>
       </div>
       
       <ScrollContainer>
@@ -279,10 +276,10 @@ const CollectionWithControlsC = (args: CollectionArgs) => {
         </Collection>
       </ScrollContainer>
       
-      <Button label="Append" onPress={() => { startTransition(() => { appendItem(); }); }}/>
-      <Button label="Prepend" onPress={() => { startTransition(() => { prependItem(); }); }}/>
-      <Button label="Randomize" onPress={() => { startTransition(() => { randomizeItems(); }); }}/>
-      <Button label="Randomize + splice" onPress={() => { startTransition(() => { randomizeItemsAndSplice(); }); }}/>
+      <Button label="Append" onPress={() => { appendItem(); }}/>
+      <Button label="Prepend" onPress={() => { prependItem(); }}/>
+      <Button label="Randomize" onPress={() => { randomizeItems(); }}/>
+      <Button label="Randomize + splice" onPress={() => { randomizeItemsAndSplice(); }}/>
     </div>
   );
 };
