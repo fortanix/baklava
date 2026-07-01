@@ -4,6 +4,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import {
   type ItemKey,
+  _internalKeyForTestingOnly as consumeRegistryChange,
   createCollectionSlice,
   useCollectionWith,
   useCollectionItemWith,
@@ -29,26 +30,29 @@ describe('createCollectionSlice', () => {
     expect(store.getState().collectionId).toBe('my-id');
   });
   
-  it('starts dirty so the first consumeDirty() returns true', () => {
+  it('starts changed so the first consumeRegistryChange() returns true', () => {
     const store = makeStore();
-    expect(store.getState().consumeDirty()).toBe(true);
+    expect(store.getState()[consumeRegistryChange]()).toBe(true);
   });
   
-  it('clears the dirty flag after consumeDirty()', () => {
+  it('clears the change flag after consumeRegistryChange()', () => {
     const store = makeStore();
-    store.getState().consumeDirty(); // clears initial dirty
-    expect(store.getState().consumeDirty()).toBe(false);
+    
+    console.log('XXX', store.getState(), consumeRegistryChange);
+    
+    store.getState()[consumeRegistryChange](); // Clear initial state
+    expect(store.getState()[consumeRegistryChange]()).toBe(false);
   });
   
-  it('registerItem adds a key and sets dirty', () => {
+  it('registerItem adds a key and sets changed', () => {
     const store = makeStore();
-    store.getState().consumeDirty(); // clear initial dirty
+    store.getState()[consumeRegistryChange](); // Clear initial state
 
     const el = document.createElement('div');
     store.getState().registerItem('a', el);
 
     expect(store.getState().getItemKeys()).toEqual(new Set(['a']));
-    expect(store.getState().consumeDirty()).toBe(true);
+    expect(store.getState()[consumeRegistryChange]()).toBe(true);
   });
   
   it('registerItem warns on duplicate keys', () => {
@@ -65,25 +69,25 @@ describe('createCollectionSlice', () => {
     warn.mockRestore();
   });
   
-  it('unregisterItem removes a key and sets dirty', () => {
+  it('unregisterItem removes a key and sets changed', () => {
     const store = makeStore();
     const el = document.createElement('div');
     store.getState().registerItem('a', el);
-    store.getState().consumeDirty(); // clear
+    store.getState()[consumeRegistryChange](); // Clear initial state
     
     store.getState().unregisterItem('a');
     
     expect(store.getState().getItemKeys()).toEqual(new Set());
-    expect(store.getState().consumeDirty()).toBe(true);
+    expect(store.getState()[consumeRegistryChange]()).toBe(true);
   });
   
-  it('unregisterItem is a no-op for unknown keys and does not set dirty', () => {
+  it('unregisterItem is a no-op for unknown keys and does not set changed state', () => {
     const store = makeStore();
-    store.getState().consumeDirty(); // clear initial dirty
+    store.getState()[consumeRegistryChange](); // Clear initial state
     
     store.getState().unregisterItem('ghost');
     
-    expect(store.getState().consumeDirty()).toBe(false);
+    expect(store.getState()[consumeRegistryChange]()).toBe(false);
   });
   
   it('getItemKeys returns a snapshot set, not a live reference', () => {
@@ -134,7 +138,7 @@ describe('useCollectionWith', () => {
     const store = makeStore('coll-1');
     const onItemsChange = vi.fn();
     
-    // Pre-register an item so the first layout effect finds a dirty registry.
+    // Pre-register an item so the first layout effect finds a changed registry.
     const el = document.createElement('div');
     store.getState().registerItem('item-1', el);
     
@@ -148,9 +152,9 @@ describe('useCollectionWith', () => {
     expect(onItemsChange).toHaveBeenCalledWith(new Set(['item-1']));
   });
   
-  it('does not call onItemsChange when registry is not dirty', () => {
+  it('does not call onItemsChange when registry is not changed', () => {
     const store = makeStore('coll-2');
-    store.getState().consumeDirty(); // clear the initial dirty flag
+    store.getState()[consumeRegistryChange](); // clear the initial change flag
     const onItemsChange = vi.fn();
     
     const Fixture = () => {

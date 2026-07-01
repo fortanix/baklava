@@ -14,15 +14,18 @@ export type ItemKey = string;
 // Store slice
 //
 
+export const consumeRegistryChange = Symbol('baklava.CollectionStore.consumeRegistryChange');
+
 export type CollectionState = {
   collectionId: string,
 };
-export type CollectionSlice = CollectionState & {
-  /** Returns whether the registry has changed since the last `consumeDirty()` call, and clears the flag. */
-  consumeDirty: () => boolean,
+export interface CollectionSlice extends CollectionState {
   registerItem: (itemKey: ItemKey, el: Element) => void,
   unregisterItem: (itemKey: ItemKey) => void,
   getItemKeys: () => Set<ItemKey>,
+  
+  /** Returns whether the registry has changed since the last `consumeRegistryChange` call, and clears the flag. */
+  [consumeRegistryChange]: () => boolean,
 };
 
 export type CollectionProps = Pick<CollectionState, 'collectionId'>;
@@ -31,29 +34,31 @@ export const createCollectionSlice = (
 ): StateCreator<CollectionSlice, [], [], CollectionSlice> => (_set, _get, _store) => {
   // Private, mutable registry for bookkeeping purposes
   const registry = new Map<ItemKey, Element>();
-  let dirty = true; // Whether the registry has changed since it was last processed
+  let registryHasChanged = true; // Dirty flag to track whether the registry has changed since it was last processed
   
   return {
     collectionId,
-    
-    consumeDirty: () => {
-      const wasDirty = dirty;
-      dirty = false;
-      return wasDirty;
-    },
     
     registerItem: (itemKey, el) => {
       if (registry.has(itemKey)) {
         console.warn(`[Collection] Found duplicate item key '${itemKey}'`);
       }
       registry.set(itemKey, el);
-      dirty = true;
+      registryHasChanged = true;
     },
     
     unregisterItem: (itemKey) => {
       if (!registry.has(itemKey)) { return; }
       registry.delete(itemKey);
-      dirty = true;
+      registryHasChanged = true;
+    },
+    
+    // Internal method: consume the `registryHasChanged` flag, returning it then resetting the flag.
+    // Uses a `consumeRegistryChange`, because this should only ever be called by us and exactly once per render.
+    [consumeRegistryChange]: () => {
+      const changed = registryHasChanged;
+      registryHasChanged = false;
+      return changed;
     },
     
     getItemKeys: () => new Set(registry.keys()),
@@ -70,17 +75,15 @@ type UseCollectionParams = {
 };
 export const useCollectionWith = (store: StoreApi<CollectionSlice>, { onItemsChange }: UseCollectionParams = {}) => {
   const collectionId = useStore(store, state => state.collectionId);
-  const consumeDirty = useStore(store, state => state.consumeDirty);
+  const consumeChange = useStore(store, state => state[consumeRegistryChange]);
   const getItemKeys = useStore(store, state => state.getItemKeys);
   
   // `useLayoutEffect` on the collection parent is guaranteed to run after all the component children have rerendered.
-  // If any items were added/removed in this rerender batch, then `consumeDirty()` will return `true`. Caveat:
+  // If any items were added/removed in this rerender batch, then `consumeRegistryChange` will return `true`. Caveat:
   // merely reordering the elements (e.g. two items swap) does not trigger a layout effect in React, hence the registry
   // must be considered unordered.
   React.useLayoutEffect(() => {
-    // FIXME: enforce that only `useCollectionSync` hook can call `consumeDirty()`?
-    // FIXME: need to ensure that `consumeDirty()` is only called once per render
-    if (consumeDirty()) {
+    if (consumeChange()) {
       onItemsChange?.(getItemKeys());
     }
   });
@@ -206,3 +209,6 @@ export const useCollectionItem = <E extends Element>(params: UseCollectionItemPa
     },
   };
 };
+
+
+export const _internalKeyForTestingOnly: typeof consumeRegistryChange = consumeRegistryChange;
