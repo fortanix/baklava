@@ -47,7 +47,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
   
   return (
     <div className={cx(cl['bk-pagination'])}>
-      <PaginationSizeSelector pageSizeOptions={pageSizeOptions} />
+      <PaginationSizeSelector pageSizeOptions={pageSizeOptions} setPageIndexIndicator={setPageIndexIndicator}/>
       
       <div className={cx(cl['pager'], cl['pager--indexed'])}>
         <IconButton
