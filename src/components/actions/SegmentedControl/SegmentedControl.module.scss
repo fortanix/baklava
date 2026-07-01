@@ -79,7 +79,7 @@
       border-end-end-radius: var(--bk-segmented-control-border-radius-inner);
     }
     // When the focus outline is visible, we use the full border radius so that the outline is nicely rounded
-    &:focus-visible {
+    &:focus-visible, &:global(.pseudo-focus-visible) {
       border-radius: var(--bk-segmented-control-border-radius-inner);
     }
   }

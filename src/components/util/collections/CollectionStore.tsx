@@ -151,22 +151,19 @@ export const useCollection = (params: UseCollectionParams = {}) => {
   const store = useMemoOnce(() => createStore(createCollectionSlice({ collectionId })));
   
   const context = useMemoOnce(() => ({ store }));
-  const Provider = useMemoOnce(() => ({ children }: React.PropsWithChildren) =>
-    <CollectionContext value={context}>{children}</CollectionContext>,
-  );
   
   const { props } = useCollectionWith(store, params);
   return {
     store,
     context,
-    Provider,
+    Provider: CollectionContext,
     props,
   };
 };
 
 type UseCollectionItemResult<E extends Element> = {
   store: CollectionContext['store'],
-  itemProps: {
+  props: {
     ref: React.RefCallback<E>,
     'data-bk-coll-parent': string,
     'data-bk-coll-item': string,
@@ -176,38 +173,9 @@ export const useCollectionItem = <E extends Element>(params: UseCollectionItemPa
   const { itemKey } = params;
   
   const { store } = useCollectionContext();
+  const { props } = useCollectionItemWith(store, { itemKey });
   
-  const collectionId = useStore(store, state => state.collectionId);
-  const registerItem = useStore(store, state => state.registerItem);
-  const unregisterItem = useStore(store, state => state.unregisterItem);
-  
-  const ref = React.useCallback<React.RefCallback<E>>(el => {
-    if (typeof itemKey === 'undefined') {
-      console.warn(`[Collection] Found item without an 'itemKey'`, el);
-      return;
-    }
-    
-    if (el === null) {
-      // Note: in React 19+ `el` should never be `null` anymore when we return a cleanup function, but we handle this
-      // scenario just in case.
-      unregisterItem(itemKey);
-    } else {
-      registerItem(itemKey, el);
-    }
-    
-    return () => {
-      unregisterItem(itemKey);
-    };
-  }, [itemKey, registerItem, unregisterItem]);
-  
-  return {
-    store,
-    itemProps: {
-      ref,
-      'data-bk-coll-parent': collectionId,
-      'data-bk-coll-item': itemKey,
-    },
-  };
+  return { store, props };
 };
 
 

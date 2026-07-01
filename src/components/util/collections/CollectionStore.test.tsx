@@ -225,14 +225,14 @@ describe('useCollection / useCollectionItem integration', () => {
     const Child = () => {
       const { store } = useCollectionItem<HTMLLIElement>({ itemKey: 'child-1' });
       capturedStore = store;
-      const { itemProps } = useCollectionItem<HTMLLIElement>({ itemKey: 'child-1' });
-      return <li data-label="child" {...itemProps}/>;
+      const { props } = useCollectionItem<HTMLLIElement>({ itemKey: 'child-1' });
+      return <li data-label="child" {...props}/>;
     };
     
     const Parent = () => {
-      const { Provider, props } = useCollection();
+      const { Provider, context, props } = useCollection();
       return (
-        <Provider>
+        <Provider value={context}>
           <ul data-label="parent" {...props}>
             <Child/>
           </ul>
@@ -251,9 +251,9 @@ describe('useCollection / useCollectionItem integration', () => {
   
   it('useCollection props carry a data-bk-coll-id attribute', () => {
     const Parent = () => {
-      const { Provider, props } = useCollection();
+      const { Provider, context, props } = useCollection();
       return (
-        <Provider>
+        <Provider value={context}>
           <div data-label="parent" {...props}/>
         </Provider>
       );
@@ -267,14 +267,14 @@ describe('useCollection / useCollectionItem integration', () => {
     const onItemsChange = vi.fn();
     
     const Child = ({ itemKey }: { itemKey: string }) => {
-      const { itemProps } = useCollectionItem<HTMLLIElement>({ itemKey });
-      return <li {...itemProps}/>;
+      const { props } = useCollectionItem<HTMLLIElement>({ itemKey });
+      return <li {...props}/>;
     };
     
     const Parent = () => {
-      const { Provider, props } = useCollection({ onItemsChange });
+      const { Provider, context, props } = useCollection({ onItemsChange });
       return (
-        <Provider>
+        <Provider value={context}>
           <ul {...props}>
             <Child itemKey="a"/>
             <Child itemKey="b"/>
@@ -297,15 +297,15 @@ describe('useCollection / useCollectionItem integration', () => {
     let capturedStore = null as null | ReturnType<typeof makeStore>;
     
     const Child = ({ itemKey }: { itemKey: string }) => {
-      const { store, itemProps } = useCollectionItem<HTMLLIElement>({ itemKey });
+      const { store, props } = useCollectionItem<HTMLLIElement>({ itemKey });
       capturedStore = store;
-      return <li {...itemProps}/>;
+      return <li {...props}/>;
     };
     
     const Parent = ({ showB }: { showB: boolean }) => {
-      const { Provider, props } = useCollection();
+      const { Provider, context, props } = useCollection();
       return (
-        <Provider>
+        <Provider value={context}>
           <ul {...props}>
             <Child itemKey="a"/>
             {showB && <Child itemKey="b"/>}
@@ -352,9 +352,9 @@ describe('useCollection / useCollectionItem integration', () => {
     const stores: Array<ReturnType<typeof makeStore>> = [];
     
     const Parent = () => {
-      const { store, Provider, props } = useCollection();
+      const { store, Provider, context, props } = useCollection();
       stores.push(store);
-      return <Provider><div {...props}/></Provider>;
+      return <Provider value={context}><div {...props}/></Provider>;
     };
     
     const { rerender } = render(<Parent/>);

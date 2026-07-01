@@ -75,14 +75,11 @@ export const useRadioGroup = (props: RadioGroupProps) => {
   // value of `props.onStateChange` without it being a memo dep. React enforces `useEffectEvent` is not called during
   // rendering in order to avoid bugs in concurrent rendering. We should call `onStateChange` in event listeners only.
   const context: RadioGroupContext = React.useMemo(() => ({ store, requestSelect }), [requestSelect]);
-  const Provider = useMemoOnce(() =>
-    (props: React.PropsWithChildren) => <RadioGroupContext {...props} value={context}/>,
-  );
   
   return {
     store,
     context,
-    Provider,
+    Provider: RadioGroupContext,
     props: mergeProps(
       propsCollection,
       propsSelection,

@@ -25,7 +25,7 @@ const Collection = Object.assign(
     const coll = useCollection();
     const focusGroupProps = useFocusGroup({ focusGroup: 'listbox' });
     return (
-      <coll.Provider>
+      <coll.Provider value={coll.context}>
         <div {...mergeProps(focusGroupProps, props, coll.props)} role="listbox">
           <style>{`
             @scope {
@@ -138,7 +138,7 @@ export const CollectionStandard: Story = {
 
 type ColumnProps = React.ComponentProps<typeof Collection> & { itemKey: ItemKey };
 const Column = ({ itemKey, ...propsRest }: ColumnProps) => {
-  const itemProps = useCollectionItem({ itemKey });
+  const { itemProps } = useCollectionItem({ itemKey });
   return (
     <Collection {...mergeProps(propsRest, itemProps)}/>
   );
@@ -148,20 +148,17 @@ type CollectionTwoColumnsProps = {
   right: React.ReactNode,
 };
 const CollectionTwoColumns = ({ left, right }: CollectionTwoColumnsProps) => {
-  const { Provider: CollectionProvider, props } = useCollection();
-  
-  React.useEffect(() => {
-    //...
-  }, []);
+  const { Provider: CollectionProvider, context, props } = useCollection();
   
   return (
     <ScrollContainer>
-      <CollectionProvider>
+      <CollectionProvider value={context}>
         <div {...props}>
           <style>{`
             @scope {
               display: flex;
-              flex-direction: column;
+              flex-direction: row;
+              gap: 1em;
             }
           `}</style>
           

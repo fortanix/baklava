@@ -114,11 +114,8 @@ export const SegmentedControl = Object.assign(
     } = props;
     
     const segmentedControlContext = useMemoOnce<SegmentedControlContext>(() => ({ size, disabled, nonactive }));
-    const SegmentedControlProvider = useMemoOnce(() => ({ children }: React.PropsWithChildren) =>
-      <SegmentedControlContext value={segmentedControlContext}>{children}</SegmentedControlContext>,
-    );
     
-    const { Provider: RadioGroupProvider, props: radioGroupProps } = useRadioGroup({
+    const { Provider: RadioGroupProvider, context: radioGroupContext, props: radioGroupProps } = useRadioGroup({
       state: selected,
       defaultState: defaultSelected,
       defaultStateFallback: null,
@@ -128,10 +125,10 @@ export const SegmentedControl = Object.assign(
     const focusGroupProps = useFocusGroup({ focusGroup: 'radiogroup nowrap' });
     
     return (
-      <SegmentedControlProvider>
-        <RadioGroupProvider>
+      <SegmentedControlContext value={segmentedControlContext}>
+        <RadioGroupProvider value={radioGroupContext}>
           <div
-            role="radiogroup" // Needed for the `focusgroup` polyfill, remove this once all browsers have support
+            role="radiogroup" // Needed for the `focusgroup` polyfill, can remove this once all browsers have support
             {...mergeProps(
               focusGroupProps,
               propsRest,
@@ -148,7 +145,7 @@ export const SegmentedControl = Object.assign(
             )}
           />
         </RadioGroupProvider>
-      </SegmentedControlProvider>
+      </SegmentedControlContext>
     );
   },
   {
