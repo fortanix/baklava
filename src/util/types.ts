@@ -10,11 +10,5 @@
 // https://www.typescriptlang.org/play/?#code/LAKAxg9gdgzgLgAgGZQQXgQHgCoBoB8AFAIYBOA5gFwLYCU6+CA3qAmwgJZIKFwCeABwCmEbmXLo0GAOQBXKABMhSDlCELp9FiHa6EpIXFmkoAblbsAvhbbjzIS-aA
 export type NonUndefined<T> = T & ({} | null);
 
-// https://stackoverflow.com/questions/39419170/how-do-i-check-that-a-switch-block-is-exhaustive-in-typescript
-export const assertUnreachable = (value: never, message?: string): never => {
-  console.error('Unexpected value:', value);
-  throw new Error(message ?? `Unexpected case`);
-};
-
 /** Given a type `T`, the keys `K` should be required, and everything else becomes optional. */
 export type RequireOnly<T, K extends keyof T> = Pick<Required<T>, K> & Partial<T>;

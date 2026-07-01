@@ -2,11 +2,11 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-/* Source: https://github.com/wojtekmaj/merge-refs/tree/main */
-
 import * as React from 'react';
 import { classNames as cx, isClassNameArgument } from './componentUtil.ts';
 
+
+/* Source: https://github.com/wojtekmaj/merge-refs/tree/main */
 /**
  * A function that merges React refs into one.
  * Supports both functions and ref objects created using createRef() and useRef().
@@ -120,13 +120,24 @@ export const mergeProps = <T extends Array<PropsArg>>(...args: T): UnionToInters
 };
 
 
+/**
+ * Similar to `useMemo(fn, [])` but with the guarantee to only run the initializer once.
+ * @see {@link https://tkdodo.eu/blog/use-state-for-one-time-initializations}
+ */
+export const useMemoOnce = <T>(initialize: () => T) => {
+  const [state] = React.useState(initialize);
+  return state;
+};
+
+
 export const usePrevious = <T>(value: T) => {
-  const ref: React.RefObject<null | T> = React.useRef(null);
+  const ref: React.RefObject<undefined | T> = React.useRef(undefined);
   React.useEffect(() => {
     ref.current = value;
   });
   return ref.current;
 };
+
 
 export const useEffectOnce = (fn: () => void) => {
   const isCalledRef = React.useRef(false);
@@ -147,15 +158,15 @@ export const useEffectAsync = (effect: () => Promise<unknown>, inputs?: undefine
   }, inputs);
 };
 
+
 // Helper hook 'useLazyRef' lazily initializes a ref value without re-running the initializer
 // on every render. Passing an expression directly to 'React.useRef()' (e.g. 'React.useRef(fn())')
 // would unnecessarily invoke 'fn' on each render, even though the ref value itself is preserved.
 // This helper ensures the initializer runs exactly once.
 export const useRefWithInitializer = <T>(initializer: () => T) => {
   const ref = React.useRef<null | T>(null);
-
+  
   if (ref.current === null) { ref.current = initializer(); }
-
+  
   return ref as React.RefObject<T>;
 };
-
