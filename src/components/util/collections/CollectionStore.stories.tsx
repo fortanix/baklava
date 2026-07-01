@@ -15,7 +15,7 @@ const generateRandomId = () => Math.random().toString(36).slice(-6);
 // An example `Collection` component
 type CollectionItemProps = React.ComponentProps<typeof Button> & { itemKey: ItemKey };
 const CollectionItem = ({ itemKey, ...propsRest }: CollectionItemProps) => {
-  const itemProps = useCollectionItem({ itemKey });
+  const { itemProps } = useCollectionItem({ itemKey });
   return (
     <Button {...mergeProps(propsRest, itemProps, { className: 'story-collection-item' })} icon="file"/>
   );
