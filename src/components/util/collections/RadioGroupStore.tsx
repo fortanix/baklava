@@ -25,8 +25,6 @@ import {
 
 export type { ItemKey };
 
-const noop = () => {};
-
 export type RadioGroupSlice = CollectionSlice & SelectionSingleSlice;
 export type RadioGroupContext = {
   store: StoreApi<RadioGroupSlice>,
@@ -56,25 +54,26 @@ export const useRadioGroup = (props: RadioGroupProps) => {
   });
   const { props: propsSelection } = useSelectionWith(store, selectionState);
   
-  // FIXME: integrate this into `SelectionSingle`? Would require storing this callback in the zustand slice.
-  const onStateChange = React.useEffectEvent(props.onStateChange ?? noop);
   const requestSelect = React.useCallback((selectedItemKey: SelectedState) => {
     // Note: when controlled, don't directly update the store. Just trigger `onStateChange` and if the consumer
     // chooses to respect the change then it'll be synced to the store through the `useEffect` below.
     if (isControlled) {
-      onStateChange(selectedItemKey);
+      props.onStateChange?.(selectedItemKey);
     } else {
       store.setState({ selectedItemKey });
     }
-  }, [isControlled]);
+  }, [isControlled, props.onStateChange]);
   
   // Note: this context value should be as stable as possible, the state changing means the entire subtree will get
   // rerendered. The way we've set this up, only a change in `isControlled` will cause this state to change. Changes
   // to `isControlled` after mount should be avoided by consumers (but are technically allowed).
-  // `props.onStateChange` should be assumed to be unstable. We use `useEffectEvent` to keep a reference to the latest
-  // value of `props.onStateChange` without it being a memo dep. React enforces `useEffectEvent` is not called during
-  // rendering in order to avoid bugs in concurrent rendering. We should call `onStateChange` in event listeners only.
+  // This also depends on `onStateChange`, therefore consumers must be really careful to memoize this callback!
   const context: RadioGroupContext = React.useMemo(() => ({ store, requestSelect }), [requestSelect]);
+  
+  // Storing `onStateChange` in a ref, or using `useEffectEvent` could maybe help with the `context` rerendering issue.
+  // However, this is explicitly frowned upon by the React team, who recommend just memoizing (or React Compiler).
+  // https://github.com/reactjs/rfcs/pull/220#issuecomment-1259938816
+  //const onStateChange = React.useEffectEvent(stateDef.onStateChange ?? noop);
   
   return {
     store,

@@ -40,22 +40,20 @@ export const useSelectionWith = (store: StoreApi<SelectionSingleSlice>, stateDef
   const onStateChange = React.useEffectEvent(stateDef.onStateChange ?? noop);
   
   // Uncontrolled case: call `onStateChange` when state changes
-  // biome-ignore lint/correctness/useExhaustiveDependencies(store.subscribe): Store is a stable reference.
   React.useEffect(() => {
     return store.subscribe((state, prevState) => {
       if (!isControlled && state.selectedItemKey !== prevState.selectedItemKey) {
         onStateChange(state.selectedItemKey);
       }
     });
-  }, [isControlled]);
+  }, [store, isControlled]);
   
   // Controlled case: update store when controlled state changes
-  // biome-ignore lint/correctness/useExhaustiveDependencies(store.setState): Store is a stable reference.
   React.useEffect(() => {
     if (isControlled) {
       store.setState({ selectedItemKey: stateDef.state ?? null });
     }
-  }, [isControlled, stateDef.state]);
+  }, [store, isControlled, stateDef.state]);
   
   return {
     props: {},
