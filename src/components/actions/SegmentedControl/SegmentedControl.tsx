@@ -113,7 +113,11 @@ export const SegmentedControl = Object.assign(
       ...propsRest
     } = props;
     
-    const segmentedControlContext = useMemoOnce<SegmentedControlContext>(() => ({ size, disabled, nonactive }));
+    const segmentedControlContext = React.useMemo<SegmentedControlContext>(() => ({
+      size,
+      disabled,
+      nonactive,
+    }), [size, disabled, nonactive]);
     
     const { Provider: RadioGroupProvider, context: radioGroupContext, props: radioGroupProps } = useRadioGroup({
       state: selected,
