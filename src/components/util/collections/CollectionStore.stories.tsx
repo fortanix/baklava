@@ -15,7 +15,7 @@ const generateRandomId = () => Math.random().toString(36).slice(-6);
 // An example `Collection` component
 type CollectionItemProps = React.ComponentProps<typeof Button> & { itemKey: ItemKey };
 const CollectionItem = ({ itemKey, ...propsRest }: CollectionItemProps) => {
-  const { itemProps } = useCollectionItem({ itemKey });
+  const { props: itemProps } = useCollectionItem({ itemKey });
   return (
     <Button {...mergeProps(propsRest, itemProps, { className: 'story-collection-item' })} icon="file"/>
   );
@@ -138,7 +138,7 @@ export const CollectionStandard: Story = {
 
 type ColumnProps = React.ComponentProps<typeof Collection> & { itemKey: ItemKey };
 const Column = ({ itemKey, ...propsRest }: ColumnProps) => {
-  const { itemProps } = useCollectionItem({ itemKey });
+  const { props: itemProps } = useCollectionItem({ itemKey });
   return (
     <Collection {...mergeProps(propsRest, itemProps)}/>
   );
