@@ -1,0 +1,10 @@
+<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+  <defs>
+    <clipPath id="arrow-left__clip0_7948_149702" class="arrow-left__clip0_7948">
+      <rect width="18" height="18"/>
+    </clipPath>
+  </defs>
+  <g id="arrow-left__Icon=arrow-left" clip-path="url(#arrow-left__clip0_7948_149702)" class="arrow-left__Icon=arrow-left">
+    <path id="arrow-left__Vector" d="M17.5202 9.73007V8.27007L3.26023 8.27007L9.94024 1.59007L8.92023 0.570068L0.490234 9.00007L8.92023 17.4301L9.94024 16.4101L3.26023 9.73007L17.5202 9.73007Z" class="arrow-left__Vector"/>
+  </g>
+</svg>
