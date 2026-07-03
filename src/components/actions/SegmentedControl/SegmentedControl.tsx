@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
-import { mergeProps, useMemoOnce } from '../../../util/reactUtil.ts';
+import { mergeProps } from '../../../util/reactUtil.ts';
 import { useFocusGroup } from '../../../util/hooks/useFocusGroup.ts';
 import { useStore } from 'zustand';
 
@@ -96,7 +96,7 @@ export type SegmentedControlProps = Omit<ComponentProps<'div'>, PropsOmit> & Sel
   /** Whether the segmented control is nonactive or not. Default: false. */
   nonactive?: undefined | boolean,
   
-  /** Alias for `onSelectedChange` for backwards compatbility. @deprecated */
+  /** Alias for `onSelectedChange`, for backwards compatbility. @deprecated */
   onUpdate?: undefined | ((selected: SelectedState) => void),
 };
 export const SegmentedControl = Object.assign(
