@@ -53,9 +53,9 @@ export const ToggleButton = (props: ToggleButtonProps) => {
     componentName: 'ToggleButton',
     propName: 'toggled',
     state: toggled,
-    stateDefault: defaultToggled,
+    defaultState: defaultToggled,
     stateFallback: false,
-    onUpdateState: onToggledChange,
+    onStateChange: onToggledChange,
   });
   
   const isInteractive = !disabled && !nonactive;
