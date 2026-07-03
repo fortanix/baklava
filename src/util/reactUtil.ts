@@ -2,6 +2,8 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import type { UnionToIntersection } from './types.ts';
+import { isObject } from './objectUtil.ts';
 import * as React from 'react';
 import { classNames as cx, isClassNameArgument } from './componentUtil.ts';
 
@@ -72,44 +74,44 @@ const chain = (...callbacks: Array<unknown>): ((...args: Array<unknown>) => void
   };
 };
 
-type Props = { [key: string]: unknown };
-type PropsArg = Props | null | undefined;
-type NullToObject<T> = T extends (null | undefined) ? {} : T;
-type TupleTypes<T> = { [P in keyof T]: T[P] } extends { [key: number]: infer V } ? NullToObject<V> : never;
-type UnionToIntersection<U> = (U extends unknown ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never;
+// biome-ignore lint/suspicious/noExplicitAny: `any` here is needed for function argument `extends` to work.
+type Props = { [key: string]: any };
+type PropsArg = undefined | null | Props;
+type NullishToObject<T> = T extends (null | undefined) ? {} : T;
+type TupleTypes<T> = { [P in keyof T]: T[P] } extends { [key: number]: infer V } ? NullishToObject<V> : never;
+
 /**
- * Takes zero or more callbacks, and returns a new callback that applies each callback one by one. Returns the return
- * value of the last callback.
- * 
- * Adapted from: https://github.com/adobe/react-spectrum/blob/main/packages/%40react-aria/utils/src/mergeProps.ts
- * Copyright 2020 Adobe. All rights reserved.
+ * Take a series of props objects, and merges them, with later props taking precedence. Wherever possible, props will
+ * be combined together:
+ * - Event listeners (prop names starting with `on[A-Z]`) will be chained.
+ * - Class names will be concatenated.
+ * - `ref` props are merged into a single ref.
+ * - `style` props are merged into a single object.
  */
 export const mergeProps = <T extends Array<PropsArg>>(...args: T): UnionToIntersection<TupleTypes<T>> => {
   // Start with a base clone of the first argument. This is a lot faster than starting
   // with an empty object and adding properties as we go.
-  const result: Props = {...args[0]};
+  const result = { ...args[0] } as Props;
   for (let i = 1; i < args.length; i++) {
     const props = args[i];
     for (const key in props) {
       const a = result[key];
       const b = props[key];
       
-      // Chain events
       if (
-        typeof a === 'function' &&
-        typeof b === 'function' &&
-        // This is a lot faster than a regex.
-        key[0] === 'o' &&
-        key[1] === 'n' &&
-        key.charCodeAt(2) >= /* 'A' */ 65 &&
-        key.charCodeAt(2) <= /* 'Z' */ 90
+        typeof a === 'function' && typeof b === 'function'
+        // Check if the key is of the form `on[A-Z]`. Do not use a regex for this (slow).
+        && key[0] === 'o' && key[1] === 'n'
+        && key.charCodeAt(2) >= 65 /*A*/ && key.charCodeAt(2) <= 90 /*Z*/
       ) {
+        // Chain event listeners
         result[key] = chain(a, b);
       } else if (key === 'className' && isClassNameArgument(a) && isClassNameArgument(b)) {
         result[key] = cx(a, b);
       } else if (key === 'ref') {
-        // @ts-ignore
         result[key] = mergeRefs(a, b);
+      } else if (key === 'style' && isObject(a) && isObject(b)) {
+        result[key] = { ...a, ...b };
       } else {
         result[key] = b !== undefined ? b : a;
       }
@@ -118,6 +120,7 @@ export const mergeProps = <T extends Array<PropsArg>>(...args: T): UnionToInters
   
   return result as UnionToIntersection<TupleTypes<T>>;
 };
+
 
 
 /**
@@ -159,14 +162,15 @@ export const useEffectAsync = (effect: () => Promise<unknown>, inputs?: undefine
 };
 
 
-// Helper hook 'useLazyRef' lazily initializes a ref value without re-running the initializer
-// on every render. Passing an expression directly to 'React.useRef()' (e.g. 'React.useRef(fn())')
-// would unnecessarily invoke 'fn' on each render, even though the ref value itself is preserved.
-// This helper ensures the initializer runs exactly once.
+// Lazily initializes a ref value without re-running the initializer on every render. Passing an expression directly
+// to `useRef()` (e.g. `useRef(fn())`) would unnecessarily invoke `fn` on each render, even though the ref value itself
+// is preserved. This helper ensures the initializer runs exactly once.
+const useRefWithInitializerSentinal = Symbol();
 export const useRefWithInitializer = <T>(initializer: () => T) => {
-  const ref = React.useRef<null | T>(null);
+  const ref = React.useRef<T | typeof useRefWithInitializerSentinal>(useRefWithInitializerSentinal);
   
-  if (ref.current === null) { ref.current = initializer(); }
+  if (ref.current === useRefWithInitializerSentinal) { ref.current = initializer(); }
   
+  // The cast here is safe since `useRefWithInitializerSentinal` is not exposed (cannot be returned by `initializer`)
   return ref as React.RefObject<T>;
 };
