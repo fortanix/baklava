@@ -17,7 +17,7 @@ export const isIconName = (iconName: string): iconName is IconName => {
   return (iconNames as Set<string>).has(iconName);
 };
 
-export type Decoration = (
+export type IconDecoration = (
   | { type: 'background-circle' }
 );
 
@@ -41,7 +41,7 @@ export type IconProps = React.PropsWithChildren<ComponentProps<'svg'> & {
   inline?: undefined | boolean,
   
   /** Visual decoration to apply. */
-  decoration?: undefined | Decoration,
+  decoration?: undefined | IconDecoration,
 }>;
 
 type IconEventProps = Omit<IconProps, 'icon'> & {

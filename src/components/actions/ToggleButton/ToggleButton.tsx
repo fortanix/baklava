@@ -78,6 +78,7 @@ export const ToggleButton = (props: ToggleButtonProps) => {
   
   return (
     <Button
+      variant="basic"
       wrap={false}
       aria-pressed={isCheckable ? undefined : toggledState}
       aria-checked={isCheckable ? toggledState : undefined}

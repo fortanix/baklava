@@ -11,7 +11,7 @@
     
     --bk-button-color-border: transparent;
     --bk-button-color-background: transparent;
-    --bk-button-color-text: transparent;
+    --bk-button-color-text: inherit;
     
     cursor: pointer;
     user-select: none;
@@ -19,8 +19,6 @@
     margin: 0;
     padding: calc(bk.$spacing-2 - 0.2lh) bk.$spacing-3; /* Note: compensate for line-height difference with Figma */
     
-    border: bk.$size-1 solid var(--bk-button-color-border);
-    border-radius: bk.$radius-2;
     background: var(--bk-button-color-background);
     color: var(--bk-button-color-text);
     
@@ -33,103 +31,110 @@
     display: inline-flex;
     flex-flow: row wrap;
     align-items: center;
-    justify-content: center;
     gap: bk.$spacing-1;
-    text-align: center;
     
-    @include bk.font(bk.$font-family-display, bk.$font-weight-semibold);
-    font-size: bk.$font-size-s;
-    text-transform: uppercase;
-    
-    &.bk-button--tertiary {
-      --bk-button-color-border: transparent;
-      --bk-button-color-background: transparent;
-      --bk-button-color-text: #{bk.$theme-button-tertiary-text-default};
+    &.bk-button--variant-basic { --keep: ; }
+    &.bk-button--variant-normal {
+      border: bk.$size-1 solid var(--bk-button-color-border);
+      border-radius: bk.$radius-2;
       
-      padding-inline: 0; // Remove the padding (since tertiary buttons don't have a background
-    }
-    &.bk-button--secondary {
-      --bk-button-color-border: #{bk.$theme-button-secondary-border-default};
-      --bk-button-color-background: transparent;
-      --bk-button-color-text: #{bk.$theme-button-secondary-text-default};
-    }
-    &.bk-button--primary {
-      --bk-button-color-border: transparent;
-      --bk-button-color-background: #{bk.$theme-button-primary-background-default};
-      --bk-button-color-text: #{bk.$theme-button-primary-text-default};
-    }
-    
-    @include bk.focus-outset;
-    
-    /* States */
-    /* NOTE: the ordering here is important, more important rules must come later (in case of multiple states) */
-    &:is(:hover, :global(.pseudo-hover)) {
-      &.bk-button--tertiary {
-        --bk-button-color-text: #{bk.$theme-button-tertiary-text-hover};
-      }
-      &.bk-button--secondary {
-        --bk-button-color-border: #{bk.$theme-button-secondary-border-hover};
-        --bk-button-color-text: #{bk.$theme-button-secondary-text-hover};
-      }
-      &.bk-button--primary {
-        --bk-button-color-background: #{bk.$theme-button-primary-background-hover};
-      }
-    }
-    
-    /*
-    // NOTE: in current design focused state no longer gets any specialized colors besides the focus outline
-    &:is(:focus-visible, :global(.pseudo-focus-visible)) {
-      &.bk-button--tertiary {
-        --bk-button-color-text: #/{bk.$theme-button-tertiary-text-focused};
-      }
-      &.bk-button--secondary {
-        --bk-button-color-border: #/{bk.$theme-button-secondary-border-focused};
-      }
-      &.bk-button--primary {
-        --bk-button-color-background: #/{bk.$theme-button-primary-background-focused};
-      }
-    }
-    */
-    
-    &:is(:disabled, .bk-button--disabled) {
-      cursor: not-allowed;
+      text-align: center;
+      justify-content: center;
+      
+      @include bk.font(bk.$font-family-display, bk.$font-weight-semibold);
+      font-size: bk.$font-size-s;
+      text-transform: uppercase;
       
       &.bk-button--tertiary {
-        --bk-button-color-text: #{bk.$theme-button-tertiary-text-disabled};
+        --bk-button-color-border: transparent;
+        --bk-button-color-background: transparent;
+        --bk-button-color-text: #{bk.$theme-button-tertiary-text-default};
+        
+        padding-inline: 0; // Remove the padding (since tertiary buttons don't have a background
       }
       &.bk-button--secondary {
-        --bk-button-color-border: #{bk.$theme-button-secondary-border-disabled};
-        --bk-button-color-text: #{bk.$theme-button-secondary-text-disabled};
+        --bk-button-color-border: #{bk.$theme-button-secondary-border-default};
+        --bk-button-color-background: transparent;
+        --bk-button-color-text: #{bk.$theme-button-secondary-text-default};
       }
       &.bk-button--primary {
-        --bk-button-color-background: #{bk.$theme-button-primary-background-disabled};
+        --bk-button-color-border: transparent;
+        --bk-button-color-background: #{bk.$theme-button-primary-background-default};
+        --bk-button-color-text: #{bk.$theme-button-primary-text-default};
       }
-    }
-    &.bk-button--nonactive {
-      cursor: not-allowed;
       
-      &.bk-button--tertiary {
-        --bk-button-color-text: #{bk.$theme-button-tertiary-text-non-active};
+      @include bk.focus-outset;
+      
+      /* States */
+      /* NOTE: the ordering here is important, more important rules must come later (in case of multiple states) */
+      &:is(:hover, :global(.pseudo-hover)) {
+        &.bk-button--tertiary {
+          --bk-button-color-text: #{bk.$theme-button-tertiary-text-hover};
+        }
+        &.bk-button--secondary {
+          --bk-button-color-border: #{bk.$theme-button-secondary-border-hover};
+          --bk-button-color-text: #{bk.$theme-button-secondary-text-hover};
+        }
+        &.bk-button--primary {
+          --bk-button-color-background: #{bk.$theme-button-primary-background-hover};
+        }
+        
+        /*
+        // NOTE: in current design focused state no longer gets any specialized colors besides the focus outline
+        &:is(:focus-visible, :global(.pseudo-focus-visible)) {
+          &.bk-button--tertiary {
+            --bk-button-color-text: #/{bk.$theme-button-tertiary-text-focused};
+          }
+          &.bk-button--secondary {
+            --bk-button-color-border: #/{bk.$theme-button-secondary-border-focused};
+          }
+          &.bk-button--primary {
+            --bk-button-color-background: #/{bk.$theme-button-primary-background-focused};
+          }
+        }
+        */
+        
+        &:is(:disabled, .bk-button--disabled) {
+          cursor: not-allowed;
+          
+          &.bk-button--tertiary {
+            --bk-button-color-text: #{bk.$theme-button-tertiary-text-disabled};
+          }
+          &.bk-button--secondary {
+            --bk-button-color-border: #{bk.$theme-button-secondary-border-disabled};
+            --bk-button-color-text: #{bk.$theme-button-secondary-text-disabled};
+          }
+          &.bk-button--primary {
+            --bk-button-color-background: #{bk.$theme-button-primary-background-disabled};
+          }
+        }
+        &.bk-button--nonactive {
+          cursor: not-allowed;
+          
+          &.bk-button--tertiary {
+            --bk-button-color-text: #{bk.$theme-button-tertiary-text-non-active};
+          }
+          &.bk-button--secondary {
+            --bk-button-color-border: #{bk.$theme-button-secondary-border-non-active};
+            --bk-button-color-text: #{bk.$theme-button-secondary-text-non-active};
+          }
+          &.bk-button--primary {
+            --bk-button-color-background: #{bk.$theme-button-primary-background-non-active};
+          }
+        }
+        &:not(:disabled, .bk-button--disabled, .bk-button--nonactive):active {
+          scale: 0.98;
+        }
       }
-      &.bk-button--secondary {
-        --bk-button-color-border: #{bk.$theme-button-secondary-border-non-active};
-        --bk-button-color-text: #{bk.$theme-button-secondary-text-non-active};
+      
+      --bk-button-transition: 150ms ease-in-out; // Allow consumer code to extend the transition for other properties
+      @media (prefers-reduced-motion: no-preference) {
+        transition:
+          border 150ms ease-in-out,
+          background-color 150ms ease-in-out,
+          color 150ms ease-in-out,
+          scale 100ms ease-in;
       }
-      &.bk-button--primary {
-        --bk-button-color-background: #{bk.$theme-button-primary-background-non-active};
-      }
-    }
-    &:not(:disabled, .bk-button--disabled, .bk-button--nonactive):active {
-      scale: 0.98;
-    }
-    
-    --bk-button-transition: 150ms ease-in-out; // Allow consumer code to extend the transition for other properties
-    @media (prefers-reduced-motion: no-preference) {
-      transition:
-        border 150ms ease-in-out,
-        background-color 150ms ease-in-out,
-        color 150ms ease-in-out,
-        scale 100ms ease-in;
     }
     
     // Styling for elements within this button, which should apply up until the next Baklava component or isolate
@@ -143,6 +148,10 @@
         
         .bk-button__label {
           @include bk.text-one-line();
+          
+          &:empty {
+            display: none;
+          }
         }
       }
     }
