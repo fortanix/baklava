@@ -385,7 +385,7 @@ export const ListBoxInForm: Story = {
           id="story-form"
           onSubmit={event => {
             event.preventDefault();
-            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('controlledListBox') ?? 'unknown'}`);
+            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('controlledListBox') ?? '(none)'}`);
           }}
         />
         <Story/>
