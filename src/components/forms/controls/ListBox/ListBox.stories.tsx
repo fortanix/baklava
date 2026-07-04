@@ -67,6 +67,59 @@ export const ListBoxStandard: Story = {
   },
 };
 
+export const ListBoxWithGroup: Story = {
+  args: {
+    defaultSelected: 'Blueberry',
+    children: (
+      <>
+        <ListBox.Group label="Fruits 1">
+          {fruits.slice(0, 5).map((fruit) =>
+            <ListBox.Option key={fruit} itemKey={`fruits-1-${fruit}`} label={fruit}/>
+          )}
+        </ListBox.Group>
+        <ListBox.Group label="Fruits 2">
+          {fruits.slice(5, 10).map((fruit) =>
+            <ListBox.Option key={fruit} itemKey={`fruits-2-${fruit}`} label={fruit}/>
+          )}
+        </ListBox.Group>
+      </>
+    ),
+  },
+};
+
+export const ListBoxWithStatic: Story = {
+  args: {
+    defaultSelected: 'Blueberry',
+    children: (
+      <>
+        <ListBox.Static>Some static content</ListBox.Static>
+        <ListBox.Group label="Fruits 1">
+          {fruits.slice(0, 5).map((fruit) =>
+            <ListBox.Option key={fruit} itemKey={`fruits-1-${fruit}`} label={fruit}/>
+          )}
+        </ListBox.Group>
+        <ListBox.Group label="Fruits 2">
+          {fruits.slice(5, 10).map((fruit) =>
+            <ListBox.Option key={fruit} itemKey={`fruits-2-${fruit}`} label={fruit}/>
+          )}
+        </ListBox.Group>
+      </>
+    ),
+  },
+};
+
+
+
+
+
+
+
+
+
+
+
+// OLD
+
 export const ListBoxWithLabel: Story = {
   args: {
     defaultSelected: 'Blueberry',
@@ -143,8 +196,9 @@ export const ListBoxWithHighlightedIcon: Story = {
   args: {
     children: (
       <>
-        <ListBox.Option icon="account" iconDecoration="highlight" itemKey="option-1" label="Option with an icon"/>
-        <ListBox.Option icon="user" iconDecoration="highlight" itemKey="option-2" label="Another option"/>
+        <ListBox.Option itemKey="option-1" icon="account" iconDecoration="highlight" label="Option with an icon"/>
+        <ListBox.Option itemKey="option-2" icon="user" iconDecoration="highlight" label="Another option"/>
+        <ListBox.Option itemKey="option-3" icon="user" label="Without highlight (should line up)"/>
       </>
     ),
   },
@@ -196,9 +250,6 @@ export const ListBoxWithDisabledOption: Story = {
   },
 };
 
-const handleDisabledActivate = () => {
-  notify.error(`This should not have been triggered! Check the disabled logic.`);
-};
 export const ListBoxDisabled: Story = {
   args: {
     disabled: true,
@@ -206,7 +257,6 @@ export const ListBoxDisabled: Story = {
       <>
         <ListBox.Option itemKey="item-1" label="All options should be disabled"/>
         <ListBox.Option itemKey="item-2" label="Selecting me should do nothing"/>
-        <ListBox.Action itemKey="item-3" label="Activating me should do nothing" onActivate={handleDisabledActivate}/>
       </>
     ),
   },
