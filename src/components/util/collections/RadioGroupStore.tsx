@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { mergeProps, useMemoOnce } from '../../../util/reactUtil.ts';
-import { type StoreApi, createStore } from 'zustand';
+import { type StoreApi, createStore, useStore } from 'zustand';
 
 import { ControllableStateDef, parseControllableState } from './ControllableState.ts';
 
@@ -29,7 +29,7 @@ export type RadioGroupSlice = CollectionSlice & SelectionSingleSlice;
 export type RadioGroupContext = {
   store: StoreApi<RadioGroupSlice>,
   /** Called when the user requests the given item (or none) to be selected. */
-  requestSelect: (itemKey: SelectedState) => void,
+  requestSelected: (itemKey: SelectedState) => void,
 };
 export const RadioGroupContext = React.createContext<null | RadioGroupContext>(null);
 export const useRadioGroupContext = () => {
@@ -49,12 +49,10 @@ export const useRadioGroup = (props: RadioGroupProps) => {
     ...createSelectionSingleSlice({ selectedItemKey: stateInitial ?? null })(...args),
   })));
   
-  const { props: propsCollection } = useCollectionWith(store, {
-    //onItemsChange: itemKeys => { console.log('Registry update', itemKeys) },
-  });
+  const { props: propsCollection } = useCollectionWith(store);
   const { props: propsSelection } = useSelectionWith(store, selectionState);
   
-  const requestSelect = React.useCallback((selectedItemKey: SelectedState) => {
+  const requestSelected = React.useCallback((selectedItemKey: SelectedState) => {
     // Note: when controlled, don't directly update the store. Just trigger `onStateChange` and if the consumer
     // chooses to respect the change then it'll be synced to the store through the `useEffect` below.
     if (isControlled) {
@@ -68,7 +66,7 @@ export const useRadioGroup = (props: RadioGroupProps) => {
   // rerendered. The way we've set this up, only a change in `isControlled` will cause this state to change. Changes
   // to `isControlled` after mount should be avoided by consumers (but are technically allowed).
   // This also depends on `onStateChange`, therefore consumers must be really careful to memoize this callback!
-  const context: RadioGroupContext = React.useMemo(() => ({ store, requestSelect }), [requestSelect]);
+  const context: RadioGroupContext = React.useMemo(() => ({ store, requestSelected }), [requestSelected]);
   
   // Storing `onStateChange` in a ref, or using `useEffectEvent` could maybe help with the `context` rerendering issue.
   // However, this is explicitly frowned upon by the React team, who recommend just memoizing (or React Compiler).
@@ -92,14 +90,15 @@ type UseRadioGroupItemParams = { itemKey: ItemKey };
 export const useRadioGroupItem = <E extends Element>(params: UseRadioGroupItemParams) => {
   const { itemKey } = params;
   
-  const { store, requestSelect } = useRadioGroupContext();
+  const { store, requestSelected } = useRadioGroupContext();
+  const selected = useStore(store, store => itemKey === store.selectedItemKey);
+  const requestSelectedForItem = () => requestSelected(itemKey);
   
   const { props } = useCollectionItemWith<E>(store, { itemKey });
-  const requestSelectItem = () => requestSelect(itemKey);
-  
   return {
     store,
-    requestSelect: requestSelectItem,
+    selected,
+    requestSelected: requestSelectedForItem,
     props,
   };
 };

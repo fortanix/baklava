@@ -42,8 +42,11 @@ type SegmentedControlButtonProps = Omit<ComponentProps<typeof ToggleButton>, 'si
 export const SegmentedControlButton = React.memo(({ buttonKey, ...propsRest }: SegmentedControlButtonProps) => {
   const containerProps = useSegmentedControlContext();
   
-  const { store, requestSelect, props: itemProps } = useRadioGroupItem({ itemKey: buttonKey });
-  const isSelected = useStore(store, store => buttonKey === store.selectedItemKey);
+  const { selected, requestSelected, props: itemProps } = useRadioGroupItem({ itemKey: buttonKey });
+  
+  const handleToggledChange = React.useCallback((toggled: boolean) => {
+    if (toggled) { requestSelected(); }
+  }, [requestSelected]);
   
   return (
     <ToggleButton
@@ -56,8 +59,8 @@ export const SegmentedControlButton = React.memo(({ buttonKey, ...propsRest }: S
         { className: cl['bk-segmented-control__button'] },
       )}
       embedded
-      toggled={isSelected}
-      onToggledChange={toggled => { if (toggled) { requestSelect(); } }}
+      toggled={selected}
+      onToggledChange={handleToggledChange}
       //focusgroupstart={isSelected ? '' : undefined} // Not needed, rely on `focusgroup` memory instead
       size={containerProps.size} // Do not let this be overridden locally (doesn't make sense to have mixed sizes)
       disabled={containerProps.disabled || propsRest.disabled}
@@ -113,6 +116,7 @@ export const SegmentedControl = Object.assign(
       ...propsRest
     } = props;
     
+    const ref = React.useRef<null | HTMLDivElement>(null);
     const segmentedControlContext = React.useMemo<SegmentedControlContext>(() => ({
       size,
       disabled,
@@ -138,6 +142,7 @@ export const SegmentedControl = Object.assign(
               propsRest,
               radioGroupProps,
               {
+                ref,
                 className: cx(
                   'bk',
                   { [cl['bk-segmented-control']]: !unstyled },
