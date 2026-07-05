@@ -4,3 +4,22 @@
 
 /** A bright color that works in both light and dark mode. Used in stories to test custom color usage. */
 export const colorBright = 'light-dark(#b822d2, #ca65dc)';
+
+
+/** A sample list of items to show in a list. */
+export const fruits = [
+  'Apple',
+  'Apricot',
+  'Blueberry',
+  'Cherry',
+  'Durian',
+  'Jackfruit',
+  'Melon',
+  'Mango',
+  'Mangosteen',
+  'Orange',
+  'Peach',
+  'Pineapple',
+  'Razzberry',
+  'Strawberry',
+] as const;

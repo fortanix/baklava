@@ -207,6 +207,7 @@ export const ItemOption = React.memo((props: ItemOptionProps) => {
           onPress: handlePress,
           iconProps,
         },
+        }
         propsRest,
         {
           className: cx(

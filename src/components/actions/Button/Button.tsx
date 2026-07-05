@@ -29,7 +29,7 @@ export type ButtonIconProps = Pick<React.ComponentProps<typeof BkIcon>, 'icon' |
 
 type ButtonPropsIrrelevant = 'defaultChecked' | 'defaultValue';
 export type ButtonProps<
-  IconProps extends ButtonIconProps,
+  IconProps extends ButtonIconProps = ButtonIconProps,
 > = React.PropsWithChildren<Omit<ComponentProps<'button'>, 'type' | ButtonPropsIrrelevant> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,

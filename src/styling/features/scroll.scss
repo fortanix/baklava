@@ -15,4 +15,10 @@
     // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
     box-shadow: 0 -1px 4px light-dark($shadow-color-light, $shadow-color-dark) !important;;
   }
+  
+  // The following risks overriding `transition` (since transitions are not additive). Rely on the consumer to set this
+  // instead.
+  //@media (prefers-reduced-motion: no-preference) {
+  //  transition: box-shadow 150ms ease-in;
+  //}
 }

@@ -149,7 +149,7 @@ export const Option = (props: OptionProps) => {
           { 'pseudo-checked': isSelected },
         )}
       />
-
+      
       {icon &&
         <Icon
           icon={icon}

@@ -14,14 +14,6 @@ import { H5 } from '../../../../typography/Heading/Heading.tsx';
 import cl from './RadioGroupAsCards.module.scss';
 
 
-/*
-References:
-- https://primer.style/components/segmented-control
-- https://canvas.workday.com/components/buttons/segmented-control
-- https://github.com/adobe/react-spectrum/discussions/7274
-- https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/radiogroup_role
-*/
-
 export { cl as RadioGroupAsCardsClassNames };
 
 
@@ -53,10 +45,10 @@ type RadioGroupCardProps = ComponentProps<typeof CardAction> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
 
-  /** The unique key of this card within the segmented control. */
+  /** The unique key of this card within the radio group. */
   cardKey: CardKey,
 
-  /** The title of the card, to be displayed in the under the segmented control. */
+  /** The title of the card. */
   title: React.ReactNode,
 
   /** The name of the icon to display or customIcon */
@@ -125,17 +117,17 @@ export type RadioGroupAsCardsProps = ComponentProps<'div'> & {
   /** The card to select. If `undefined`, this component will be considered uncontrolled. */
   selected?: undefined | CardKey,
 
-  /** Event handler for segmented control card change events. */
+  /** Event handler for radio group card change events. */
   onUpdate?: undefined | ((cardKey: CardKey) => void),
 
-  /** Whether the segmented control is disabled or not. Default: false. */
+  /** Whether the radio group is disabled or not. Default: false. */
   disabled?: undefined | boolean,
 
   /** Any additional props to apply to the internal `<input type="hidden"/>`. */
   inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
 };
 /**
- * A segmented control is a set of mutually exclusive cards that can be switched between.
+ * A radio group is a set of mutually exclusive cards that can be switched between.
  */
 export const RadioGroupAsCards = Object.assign(
   (props: RadioGroupAsCardsProps) => {

@@ -27,7 +27,7 @@ export type PanelProps = React.PropsWithChildren<ComponentProps<'section'> & {
   /** Whether the panel should be edgeless. */
   edgeless?: undefined | boolean,
   
-  /** Whether the panel display a loading indicator, instead of it's children */
+  /** The current status of the panel. Default: `ready`. */
   status?: undefined | 'ready' | 'loading',
 }>;
 /**

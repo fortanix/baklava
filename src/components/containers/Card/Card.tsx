@@ -60,7 +60,7 @@ export type CardProps = ComponentProps<'section'> & {
   /** If enabled, removes the outside border/padding. For use in nested contexts. Default: false. */
   flat?: undefined | boolean,
   
-  /** Whether the panel display a loading indicator, instead of it's children */
+  /** The current status of the card. Default: `ready`. */
   status?: undefined | 'ready' | 'loading',
 };
 /**

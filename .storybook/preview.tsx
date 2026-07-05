@@ -70,6 +70,7 @@ const preview = {
               'ToggleButton',
               'SegmentedControl',
               'CardAction',
+              'MenuList',
             ],
             'overlays',
             [
