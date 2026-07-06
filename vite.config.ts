@@ -51,6 +51,7 @@ export default defineConfig({
 
     // Generate `.d.ts` files
     dts({
+      logLevel: 'error',
       // https://github.com/qmhc/vite-plugin-dts/issues/275#issuecomment-1963123685
       outDir: 'dist', // dts.root + 'dist' => where we need to rollup.
       root: '../', //vite.root + ../ = ./ = (dts.root)
@@ -60,6 +61,15 @@ export default defineConfig({
 
       //include: [path.resolve(__dirname, 'app')],
       tsconfigPath: path.resolve(__dirname, 'tsconfig.app.json'),
+      
+      // `vite-plugin-dts` by default does not fail the build when there are errors
+      afterDiagnostic(diagnostics) {
+        // Categories: Warning = 0, Error = 1, Suggestion = 2, Message = 3
+        const errorDiagnostics = diagnostics.map(({ category }) => category === 0 || category === 1 );
+        if (errorDiagnostics.length > 0) {
+          throw new Error(`vite-plugin-dts reported ${errorDiagnostics.length} type error(s), failing the build.`)
+        }
+      },
     }),
   ],
   css: {
