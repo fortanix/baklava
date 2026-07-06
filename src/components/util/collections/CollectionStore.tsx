@@ -95,11 +95,14 @@ export const useCollectionWith = (store: StoreApi<CollectionSlice>, { onItemsCha
   };
 };
 
-type UseCollectionItemParams = { itemKey: ItemKey };
+type UseCollectionItemWithParams = { itemKey: ItemKey };
+type UseCollectionItemWithResult<E extends Element> = {
+  props: { ref: React.RefCallback<E>, 'data-bk-coll-parent': string, 'data-bk-coll-item': string },
+};
 export const useCollectionItemWith = <E extends Element>(
   store: StoreApi<CollectionSlice>,
-  { itemKey }: UseCollectionItemParams,
-) => {
+  { itemKey }: UseCollectionItemWithParams,
+): UseCollectionItemWithResult<E> => {
   const collectionId = useStore(store, state => state.collectionId);
   const registerItem = useStore(store, state => state.registerItem);
   const unregisterItem = useStore(store, state => state.unregisterItem);
@@ -169,7 +172,9 @@ type UseCollectionItemResult<E extends Element> = {
     'data-bk-coll-item': string,
   },
 };
-export const useCollectionItem = <E extends Element>(params: UseCollectionItemParams): UseCollectionItemResult<E> => {
+export const useCollectionItem = <E extends Element>(
+  params: UseCollectionItemWithParams,
+): UseCollectionItemResult<E> => {
   const { itemKey } = params;
   
   const { store } = useCollectionContext();

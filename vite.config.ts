@@ -48,17 +48,16 @@ export default defineConfig({
       customDomId: 'baklava-icon-sprite',
     }),
     //libInjectCss(), // Disabled for now (`.css` import causes issues in vitest)
-
+    
     // Generate `.d.ts` files
     dts({
-      logLevel: 'error',
       // https://github.com/qmhc/vite-plugin-dts/issues/275#issuecomment-1963123685
       outDir: 'dist', // dts.root + 'dist' => where we need to rollup.
       root: '../', //vite.root + ../ = ./ = (dts.root)
       staticImport: true,
       insertTypesEntry: true,
       //rollupTypes: true, // Issue: https://github.com/qmhc/vite-plugin-dts/issues/399
-
+      
       //include: [path.resolve(__dirname, 'app')],
       tsconfigPath: path.resolve(__dirname, 'tsconfig.app.json'),
       
