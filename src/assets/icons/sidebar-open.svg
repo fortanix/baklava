@@ -1,0 +1,15 @@
+<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+  <defs>
+    <clipPath id="sidebar-open__clip0_8064_142554" class="sidebar-open__clip0_8064">
+      <rect width="15.76" height="9.53" transform="translate(1.12 4.24)"/>
+    </clipPath>
+  </defs>
+  <g id="sidebar-open__Icon=sidebar-open" class="sidebar-open__Icon=sidebar-open">
+    <g id="sidebar-open__sidebar-open" clip-path="url(#sidebar-open__clip0_8064_142554)" class="sidebar-open__sidebar-open">
+      <path id="sidebar-open__Vector" d="M16.8802 5.28027H9.99023V6.20027H16.8802V5.28027Z" class="sidebar-open__Vector"/>
+      <path id="sidebar-open__Vector_2" d="M16.8802 11.8003H9.99023V12.7203H16.8802V11.8003Z" class="sidebar-open__Vector"/>
+      <path id="sidebar-open__Vector_3" d="M16.8904 8.54004H6.94043V9.46004H16.8904V8.54004Z" class="sidebar-open__Vector"/>
+      <path id="sidebar-open__Vector_4" d="M5.97012 13.7702L6.65012 13.1202L2.46012 9.00023L6.65012 4.89023L5.97012 4.24023L1.12012 9.01023L5.97012 13.7702Z" class="sidebar-open__Vector"/>
+    </g>
+  </g>
+</svg>
