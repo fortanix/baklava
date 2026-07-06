@@ -2,8 +2,6 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { assertUnreachable } from '../../../util/types.ts';
-
 import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
@@ -30,7 +28,7 @@ const BannerVariantIcon = ({ variant, ...propsRest }: BannerVariantIconProps) =>
       case 'warning': return 'warning-filled';
       case 'error': return 'status-failed-filled';
       case 'success': return 'status-success-filled';
-      default: return assertUnreachable(variant);
+      default: throw new Error(`Unexpected banner variant '${variant satisfies never}'`);
     }
   })();
   return <Icon icon={icon} {...propsRest}/>;
@@ -128,7 +126,7 @@ export const Banner = Object.assign(
         case 'warning': return 'Warning';
         case 'error': return 'Error';
         case 'success': return 'Success';
-        default: return assertUnreachable(variant);
+        default: throw new Error(`Unexpected banner variant '${variant satisfies never}'`);
       }
     };
     

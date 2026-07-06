@@ -160,6 +160,9 @@ const packageConfig = {
     'effect': '^3.21.2',
     //'optics-ts': '^2.4.1',
     
+    // Polyfills
+    '@microsoft/focusgroup-polyfill': '^1.5.0',
+    
     // React
     'react': '^19.2.6',
     'react-dom': '^19.2.6', // Must be in sync with `react`

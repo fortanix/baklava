@@ -11,7 +11,7 @@ import { loremIpsum, LoremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
-import { SegmentedControl } from '../../forms/controls/SegmentedControl/SegmentedControl.tsx';
+import { SegmentedControl } from '../../actions/SegmentedControl/SegmentedControl.tsx';
 import { TooltipProvider } from '../../overlays/Tooltip/TooltipProvider.tsx';
 import { DialogModal } from '../../overlays/DialogModal/DialogModal.tsx';
 

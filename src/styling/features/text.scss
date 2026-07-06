@@ -21,15 +21,8 @@
   hyphens: auto;
 }
 
-@mixin text-one-line($include-padding: true) {
+@mixin text-one-line() {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  
-  @if $include-padding {
-    // Add a little bit of padding to prevent parts of characters getting cut off in some browsers. For example,
-    // try the letter "J" and view it in Safari, the bottom extender of the "J" overflows the text box and gets cut off.
-    // UPDATE: disabled this for now, causes other issues (e.g. vertical misalignment)
-    //padding-inline: 0.3ch;
-  }
 }

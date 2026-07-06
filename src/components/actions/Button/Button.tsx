@@ -17,12 +17,24 @@ export const internalSubmitSymbol = Symbol('baklava.Button.internalSubmit');
 
 export { cl as ButtonClassNames };
 
-export type ButtonProps = React.PropsWithChildren<Omit<ComponentProps<'button'>, 'type'> & {
+type ButtonLabelProps = React.PropsWithChildren<{ wrap: boolean }>;
+const ButtonLabel = ({ children, wrap }: ButtonLabelProps) => {
+  // FIXME: we should refactor this to render a `<span>` unconditionally. However, the addition of the `<span>` may
+  // break some downstream applications, so we should we careful with the change.
+  if (wrap) { return children; }
+  return <span className={cx(cl['bk-button__label'])}>{children}</span>;
+};
+
+type ButtonPropsIrrelevant = 'defaultChecked' | 'defaultValue';
+export type ButtonProps = React.PropsWithChildren<Omit<ComponentProps<'button'>, 'type' | ButtonPropsIrrelevant> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
   /** Whether to trim this component (strip any spacing around the element). */
   trimmed?: undefined | boolean,
+  
+  /** Whether to allow the contents of the button to wrap, or keep it to one line. Default: `true`. */
+  wrap?: undefined | boolean,
   
   /**
    * The label of the button. Additional UI elements may be added, e.g. a loading indicator. If full control over
@@ -68,6 +80,7 @@ export const Button = (props: ButtonProps) => {
     children,
     unstyled = false,
     trimmed = false,
+    wrap = true,
     label,
     icon,
     kind = 'tertiary',
@@ -118,14 +131,14 @@ export const Button = (props: ButtonProps) => {
   const renderContent = (): React.ReactNode => {
     // If `children` is specified, that overrides the button content
     if (children) {
-      return children;
+      return <ButtonLabel wrap={wrap}>{children}</ButtonLabel>;
     }
     
     return (
       <>
         {isPending && <Spinner className="icon" inline/>}
         {icon && <Icon className="icon" icon={icon}/>}
-        {label}
+        <ButtonLabel wrap={wrap}>{label}</ButtonLabel>
       </>
     );
   };
@@ -145,7 +158,7 @@ export const Button = (props: ButtonProps) => {
   
   return (
     <button
-      aria-label={label}
+      aria-label={label} // Set an explicit `aria-label` to prevent the `text-transform` from all-uppercasing
       aria-disabled={isInteractive ? undefined : true}
       disabled={disabled}
       {...propsRest}
@@ -154,6 +167,7 @@ export const Button = (props: ButtonProps) => {
         bk: true,
         [cl['bk-button']]: !unstyled,
         [cl['bk-button--trimmed']]: trimmed,
+        [cl['bk-button--wrap']]: wrap,
         [cl['bk-button--primary']]: kind === 'primary',
         [cl['bk-button--secondary']]: kind === 'secondary',
         [cl['bk-button--tertiary']]: kind === 'tertiary',

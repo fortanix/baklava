@@ -9,7 +9,7 @@ import { colorBright } from '../../util/storybook/StorybookUtils.tsx';
 import { DummyLink } from '../../util/storybook/StorybookLink.tsx';
 
 import { Button } from '../../components/actions/Button/Button.tsx';
-import { SegmentedControl } from '../../components/forms/controls/SegmentedControl/SegmentedControl.tsx';
+import { SegmentedControl } from '../../components/actions/SegmentedControl/SegmentedControl.tsx';
 import { Panel } from '../../components/containers/Panel/Panel.tsx';
 
 import { Prose } from './Prose.tsx';

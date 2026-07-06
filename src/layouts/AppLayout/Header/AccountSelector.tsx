@@ -21,7 +21,8 @@ export { cl as AccountSelectorClassNames };
 
 export type { ItemKey };
 
-export type AccountSelectorProps = Omit<ComponentProps<typeof Button>, 'label' | 'children' | 'selected' | 'onSelect'> & {
+type PropsOmit = 'label' | 'children' | 'selected' | 'onSelect' | 'wrap';
+export type AccountSelectorProps = Omit<ComponentProps<typeof Button>, PropsOmit> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   

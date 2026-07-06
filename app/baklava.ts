@@ -20,6 +20,8 @@ export { ButtonAsLink } from '../src/components/actions/ButtonAsLink/ButtonAsLin
 export { Link } from '../src/components/actions/Link/Link.tsx';
 export { LinkAsButton } from '../src/components/actions/LinkAsButton/LinkAsButton.tsx';
 export { IconButton } from '../src/components/actions/IconButton/IconButton.tsx';
+export { ToggleButton } from '../src/components/actions/ToggleButton/ToggleButton.tsx';
+export { SegmentedControl } from '../src/components/actions/SegmentedControl/SegmentedControl.tsx';
 export { CardAction } from '../src/components/actions/CardAction/CardAction.tsx';
 
 // Containers
@@ -46,7 +48,6 @@ export { CheckboxGroup } from '../src/components/forms/controls/CheckboxGroup/Ch
 export { Switch } from '../src/components/forms/controls/Switch/Switch.tsx';
 export { Radio } from '../src/components/forms/controls/Radio/Radio.tsx';
 export { RadioGroup } from '../src/components/forms/controls/RadioGroup/RadioGroup.tsx';
-export { SegmentedControl } from '../src/components/forms/controls/SegmentedControl/SegmentedControl.tsx';
 export { 
   RadioGroupAsCards 
 } from '../src/components/forms/controls/RadioGroupAsCards/RadioGroupAsCards.tsx';

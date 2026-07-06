@@ -2,7 +2,6 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { assertUnreachable } from '../../../util/types.ts';
 import * as React from 'react';
 import { ClassNameArgument, classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import { useScroller } from '../../../layouts/util/Scroller.tsx';
@@ -54,7 +53,7 @@ export const Tooltip = (props: TooltipProps) => {
       case 'right': return cx(cl['bk-tooltip--arrow'], cl['bk-tooltip--arrow-right']);
       case 'bottom': return cx(cl['bk-tooltip--arrow'], cl['bk-tooltip--arrow-bottom']);
       case 'left': return cx(cl['bk-tooltip--arrow'], cl['bk-tooltip--arrow-left']);
-      default: return assertUnreachable(arrow);
+      default: throw new Error(`Unexpected arrow placement '${arrow satisfies never}'`);
     }
   })();
   

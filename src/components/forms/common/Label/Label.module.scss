@@ -15,7 +15,7 @@
     column-gap: bk.$spacing-2;
     
     .bk-label__text {
-      @include bk.text-one-line($include-padding: false);
+      @include bk.text-one-line();
       @include bk.font($family: bk.$font-family-body, $size: bk.$font-size-m);
     }
   }

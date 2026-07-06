@@ -3,7 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { mergeRefs, useEffectOnce, usePrevious } from '../../../../util/reactUtil.ts';
+import { useEffectOnce, usePrevious } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import { isItemProgrammaticallyFocusable } from '../../../util/composition/compositionUtil.ts';
 
@@ -188,20 +188,18 @@ export const RadioGroupAsCards = Object.assign(
         }
       });
     }, []);
-
-    const selectedCardPrev = usePrevious(selectedCard);
+    
+    const selectedCardPrev = usePrevious(selectedCard ?? null); // Note: `undefined` means "no previous"
     // biome-ignore lint/correctness/useExhaustiveDependencies: Do not include event callbacks as dep.
     React.useEffect(() => {
-      // Note: selected state should be updated to `undefined`, the `undefined` case should only be possible as an
-      // initial state. Subsequent updates should always be some value. Just like how native HTML radio groups work.
       const isDefined = typeof selectedCard !== 'undefined';
-      const isInitial = selectedCardPrev === null; // `null` should only ever mean "not yet set"
-
+      const isInitial = typeof selectedCardPrev === 'undefined';
+      
       if (isDefined && !isInitial) {
         onUpdate?.(selectedCard);
       }
     }, [selectedCard]);
-
+    
     // After initial rendering, check whether `defaultSelected` refers to one of the rendered cards
     useEffectOnce(() => {
       if (typeof defaultSelected === 'undefined') { return; }

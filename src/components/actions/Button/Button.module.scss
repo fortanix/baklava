@@ -7,6 +7,7 @@
 @layer baklava.components {
   .bk-button {
     @include bk.component-base(bk-button);
+    overflow: hidden;
     
     --bk-button-color-border: transparent;
     --bk-button-color-background: transparent;
@@ -131,10 +132,19 @@
         scale 100ms ease-in;
     }
     
-    & > :global(.icon) { font-size: 1em; }
-    
-    // Experiment: implementing `unstyled` using `revert-layer` rather than by removing the class names
-    // https://css-tricks.com/css-cascade-layers/#aa-reverting-important-layers
-    // &:is(:global(.unstyled), #specificity#hack) { all: revert-layer; }
+    // Styling for elements within this button, which should apply up until the next Baklava component or isolate
+    @scope (&) to (.bk-isolate, .bk) {
+      :global(.icon) {
+        font-size: 1em;
+      }
+      
+      &:not(.bk-button--wrap) {
+        flex-wrap: nowrap;
+        
+        .bk-button__label {
+          @include bk.text-one-line();
+        }
+      }
+    }
   }
 }

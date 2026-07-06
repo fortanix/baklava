@@ -6,7 +6,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import * as React from 'react';
 
-import { Button } from '../../../actions/Button/Button.tsx';
+import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
+import { Button } from '../Button/Button.tsx';
 
 import { type ButtonKey, SegmentedControl } from './SegmentedControl.tsx';
 
@@ -20,11 +21,11 @@ export default {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {
-  },
+  argTypes: {},
   args: {
+    size: 'small',
     'aria-label': 'Choose a color',
-    onUpdate: selected => { console.log('update', selected); },
+    onSelectedChange: selected => { console.log('onSelectedChange:', selected); },
     defaultSelected: 'red',
     children: (
       <>
@@ -38,7 +39,19 @@ export default {
 } satisfies Meta<SegmentedControlArgs>;
 
 
-export const SegmentedControlStandard: Story = {};
+export const SegmentedControlStandard: Story = {
+  args: {
+    'aria-label': 'Color',
+    defaultSelected: 'blue',
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="red" label="Red"/>
+        <SegmentedControl.Button buttonKey="green" label="Green"/>
+        <SegmentedControl.Button buttonKey="blue" label="Blue"/>
+      </>
+    ),
+  },
+};
 
 export const SegmentedControlWithIcon: Story = {
   args: {
@@ -93,7 +106,6 @@ export const SegmentedControlDisabled: Story = {
     disabled: true,
   },
 };
-
 export const SegmentedControlDisabledOne: Story = {
   args: {
     children: (
@@ -106,35 +118,41 @@ export const SegmentedControlDisabledOne: Story = {
   },
 };
 
-type SegmentedControlControlledProps = Omit<React.ComponentProps<typeof SegmentedControl>, 'selected'>;
-const SegmentedControlControlledC = (props: SegmentedControlControlledProps) => {
-  const [selectedButton, setSelectedButton] = React.useState<undefined | ButtonKey>(props.defaultSelected ?? undefined);
-  
-  return (
-    <>
-      <p>Selected color: {selectedButton ?? <em>none</em>}</p>
-      <SegmentedControl {...props} selected={selectedButton} onUpdate={setSelectedButton}/>
-      <Button label="Update state" onPress={() => { setSelectedButton('blue'); }}/>
-    </>
-  );
+export const SegmentedControlNonactive: Story = {
+  args: {
+    nonactive: true,
+  },
 };
-
-export const SegmentedControlControlled: Story = {
-  render: args => <SegmentedControlControlledC {...args}/>,
+export const SegmentedControlNonactiveOne: Story = {
   args: {
     children: (
       <>
         <SegmentedControl.Button buttonKey="red" label="Red"/>
-        <SegmentedControl.Button buttonKey="green" label="Green"/>
+        <SegmentedControl.Button buttonKey="green" label="Green" nonactive/>
         <SegmentedControl.Button buttonKey="blue" label="Blue"/>
       </>
     ),
   },
 };
 
-export const SegmentedControlControlledWithDefault: Story = {
-  render: args => <SegmentedControlControlledC {...args} defaultSelected="green"/>,
+export const SegmentedControlVerticalWritingMode: Story = {
   args: {
+    style: { writingMode: 'vertical-rl', fontSize: '1.4em' },
+    'aria-orientation': 'vertical',
+    children: (
+      <>
+        <SegmentedControl.Button buttonKey="red" label="赤"/>
+        <SegmentedControl.Button buttonKey="green" label="緑"/>
+        <SegmentedControl.Button buttonKey="blue" label="青"/>
+      </>
+    ),
+  },
+};
+
+export const SegmentedControlUncontrolled: Story = {
+  args: {
+    'aria-label': 'Color',
+    defaultSelected: 'blue',
     children: (
       <>
         <SegmentedControl.Button buttonKey="red" label="Red"/>
@@ -142,5 +160,41 @@ export const SegmentedControlControlledWithDefault: Story = {
         <SegmentedControl.Button buttonKey="blue" label="Blue"/>
       </>
     ),
+    onSelectedChange: selected => { notify.info(`Uncontrolled state was changed: ${selected ?? '(none)'}`); },
+  },
+};
+
+type SegmentedControlControlledProps = Omit<React.ComponentProps<typeof SegmentedControl>, 'selected'>;
+const SegmentedControlControlledC = ({ defaultSelected, ...props }: SegmentedControlControlledProps) => {
+  const [selectedButton, setSelectedButton] = React.useState<undefined | null | ButtonKey>(defaultSelected ?? null);
+  
+  return (
+    <>
+      <p>Selected color: {selectedButton ?? <em>none</em>}</p>
+      <SegmentedControl {...props} selected={selectedButton} onSelectedChange={setSelectedButton}>
+        <SegmentedControl.Button buttonKey="red" label="Red"/>
+        <SegmentedControl.Button buttonKey="green" label="Green"/>
+        <SegmentedControl.Button buttonKey="blue" label="Blue"/>
+      </SegmentedControl>
+      <Button label="Update state" onPress={() => { setSelectedButton('blue'); }}/>
+    </>
+  );
+};
+
+export const SegmentedControlControlled: Story = {
+  render: (args: SegmentedControlArgs) => <SegmentedControlControlledC {...args}/>,
+  args: {
+    // Don't define `children` here, we want to have them dynamically recreated on render, in order to verify rerender
+    // behavior. Selecting an item should cause `children` to be recreated, but the items should not rerender unless
+    // they were affected by the state change (i.e. only the unselected and newly selected items should rerender).
+    //children: undefined,
+    defaultSelected: 'green',
+  },
+};
+
+export const SegmentedControlControlledWithEmptyDefault: Story = {
+  render: (args: SegmentedControlArgs) => <SegmentedControlControlledC {...args}/>,
+  args: {
+    defaultSelected: undefined,
   },
 };
