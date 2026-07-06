@@ -87,7 +87,13 @@ export const useRadioGroup = (props: RadioGroupProps) => {
 
 
 type UseRadioGroupItemParams = { itemKey: ItemKey };
-export const useRadioGroupItem = <E extends Element>(params: UseRadioGroupItemParams) => {
+type UseRadioGroupItemResult<E extends Element> = {
+  store: StoreApi<RadioGroupSlice>,
+  selected: boolean,
+  requestSelected: () => void,
+  props: ReturnType<typeof useCollectionItemWith<E>>['props'],
+};
+export const useRadioGroupItem = <E extends Element>(params: UseRadioGroupItemParams): UseRadioGroupItemResult<E> => {
   const { itemKey } = params;
   
   const { store, requestSelected } = useRadioGroupContext();

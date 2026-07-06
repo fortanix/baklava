@@ -48,7 +48,7 @@ export default defineConfig({
       customDomId: 'baklava-icon-sprite',
     }),
     //libInjectCss(), // Disabled for now (`.css` import causes issues in vitest)
-
+    
     // Generate `.d.ts` files
     dts({
       // https://github.com/qmhc/vite-plugin-dts/issues/275#issuecomment-1963123685
@@ -57,9 +57,18 @@ export default defineConfig({
       staticImport: true,
       insertTypesEntry: true,
       //rollupTypes: true, // Issue: https://github.com/qmhc/vite-plugin-dts/issues/399
-
+      
       //include: [path.resolve(__dirname, 'app')],
       tsconfigPath: path.resolve(__dirname, 'tsconfig.app.json'),
+      
+      // `vite-plugin-dts` by default does not fail the build when there are errors
+      afterDiagnostic(diagnostics) {
+        // Categories: Warning = 0, Error = 1, Suggestion = 2, Message = 3
+        const errorDiagnostics = diagnostics.map(({ category }) => category === 0 || category === 1 );
+        if (errorDiagnostics.length > 0) {
+          throw new Error(`vite-plugin-dts reported ${errorDiagnostics.length} type error(s), failing the build.`)
+        }
+      },
     }),
   ],
   css: {
