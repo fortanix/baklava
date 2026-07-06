@@ -119,7 +119,6 @@ export const icons = {
   'hsm': {},
   'info-filled': {},
   'info': {},
-  'install-desktop': {},
   'install': {},
   'integration': {},
   'intro-confidential': {},
