@@ -123,7 +123,7 @@ export const MenuListGroup = (props: MenuListGroupProps) => {
   );
 };
 
-type MenuListContainerProps = ComponentProps<'section'> & {
+type MenuListSegmentProps = ComponentProps<'section'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -134,7 +134,7 @@ type MenuListContainerProps = ComponentProps<'section'> & {
  * A visual-only container of items. Unlike `Group`, does not have any semantics, an accessible name, or visible
  * heading. Can be used to apply an effect to a group of items, for example sticky positioning.
  */
-export const MenuListContainer = ({ unstyled, sticky, ...propsRest }: MenuListContainerProps) => (
+export const MenuListSegment = ({ unstyled, sticky, ...propsRest }: MenuListSegmentProps) => (
   <section
     //role="presentation" // Already the default
     {...propsRest}
@@ -293,12 +293,16 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
   }, [iconDecoration]);
   
   const optionRole = getDefaultOptionRole(context.role, selectionType);
+  
+  // For the "selected state" aria prop, use either `aria-selected` or `aria-checked`, depending on the role
+  const ariaSelectedProp = optionRole === 'option' ? 'aria-selected' : 'aria-checked';
+  
   return (
     <Button
       variant="basic"
       wrap={false}
       role={optionRole}
-      aria-selected={selected || undefined}
+      {...{ [ariaSelectedProp]: selected || undefined }}
       aria-disabled={isDisabled || undefined}
       {...mergeProps(
         {
@@ -377,7 +381,7 @@ export const MenuListItemLink = (props: MenuListItemLinkProps) => {
 // Menu list
 //
 
-export type MenuListProps = Omit<ComponentProps<'div'>, 'role'> & {
+export type MenuListProps = Omit<ComponentProps<'div'>, 'role' | 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -517,7 +521,7 @@ export const MenuList = Object.assign(
   },
   {
     Group: MenuListGroup,
-    Container: MenuListContainer,
+    Segment: MenuListSegment,
     Static: MenuListItemStatic,
     Action: MenuListItemAction,
     Option: MenuListItemOption,

@@ -22,6 +22,7 @@ const ButtonLabel = ({ children, wrap }: ButtonLabelProps) => {
   // FIXME: we should refactor this to render a `<span>` unconditionally. However, the addition of the `<span>` may
   // break some downstream applications, so we should we careful with the change.
   if (wrap) { return children; }
+  if (!children) { return null; }
   return <span className={cx(cl['bk-button__label'])}>{children}</span>;
 };
 

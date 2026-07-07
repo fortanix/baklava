@@ -67,7 +67,7 @@ export const ListBoxStandard: Story = {
   },
 };
 
-export const ListBoxWithGroup: Story = {
+export const ListBoxWithGroups: Story = {
   args: {
     defaultSelected: 'Blueberry',
     children: (

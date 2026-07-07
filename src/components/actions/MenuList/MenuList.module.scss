@@ -22,8 +22,8 @@
   &:not(#{$is-disabled}):hover {
     background: bk.$theme-dropdown-menu-menu-background-hover;
   }
-  &[role="menuitemradio"] {
-    &[aria-selected="true"] {
+  &:is([role="menuitemradio"], [role="option"]) {
+    &:is([aria-selected="true"], [aria-checked="true"]) {
       background: bk.$theme-dropdown-menu-menu-background-hover;
       // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
       box-shadow: inset 0.3em 0 bk.$theme-dropdown-menu-menu-tab-default !important;

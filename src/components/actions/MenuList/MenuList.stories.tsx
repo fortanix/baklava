@@ -10,7 +10,6 @@ import { loremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
-import { Button } from '../../actions/Button/Button.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 
 import { MenuList } from './MenuList.tsx';
@@ -126,21 +125,21 @@ export const MenuListWithGroups: Story = {
   },
 };
 
-export const MenuListWithContainers: Story = {
+export const MenuListWithSegments: Story = {
   args: {
     children: (
       <>
-        <MenuList.Container sticky="start">
-          <MenuList.Static>This item is in a sticky container</MenuList.Static>
+        <MenuList.Segment sticky="start">
+          <MenuList.Static>This item is in a sticky segment</MenuList.Static>
           <MenuList.Static>Scroll the list, and we should stick to the top</MenuList.Static>
-        </MenuList.Container>
+        </MenuList.Segment>
         {fruits.map((fruit) =>
           <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
         )}
-        <MenuList.Container sticky="end">
-          <MenuList.Static>This item is in a sticky container</MenuList.Static>
+        <MenuList.Segment sticky="end">
+          <MenuList.Static>This item is in a sticky segment</MenuList.Static>
           <MenuList.Static>Scroll the list, and we should stick to the bottom</MenuList.Static>
-        </MenuList.Container>
+        </MenuList.Segment>
       </>
     ),
   },
@@ -150,16 +149,16 @@ export const MenuListWithHeaderAndFooter: Story = {
   args: {
     children: (
       <>
-        <MenuList.Container sticky="start">
+        <MenuList.Segment sticky="start">
         <MenuList.Static><InputSearch style={{ flexGrow: 1 }} placeholder="Search"/></MenuList.Static>
-        </MenuList.Container>
+        </MenuList.Segment>
         {fruits.map((fruit) =>
           <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
         )}
-        <MenuList.Container sticky="end">
+        <MenuList.Segment sticky="end">
           <MenuList.Action {...propsAction} label="Footer action 1"/>
           <MenuList.Action {...propsAction} label="Footer action 2"/>
-        </MenuList.Container>
+        </MenuList.Segment>
       </>
     ),
   },
@@ -171,15 +170,15 @@ export const MenuListWithHeaderAndFooterEmpty: Story = {
     empty: true,
     children: (
       <>
-        <MenuList.Container sticky="start">
+        <MenuList.Segment sticky="start">
           <MenuList.Static><InputSearch style={{ flexGrow: 1 }} placeholder="Search"/></MenuList.Static>
-        </MenuList.Container>
+        </MenuList.Segment>
         
         {/* FIXME: need to move this down to the bottom, even when there is an empty placeholder */}
-        <MenuList.Container sticky="end">
+        <MenuList.Segment sticky="end">
           <MenuList.Action {...propsAction} label="Footer action 1"/>
           <MenuList.Action {...propsAction} label="Footer action 2"/>
-        </MenuList.Container>
+        </MenuList.Segment>
       </>
     ),
   },
