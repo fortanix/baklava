@@ -3,11 +3,9 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 @use '../../../../styling/defs.scss' as bk;
-@use './MenuList.mixin.scss' as menu-list;
 
 @layer baklava.components {
   .bk-list-box {
     @include bk.component-base(bk-list-box);
-    @include menu-list.menu-list(bk-list-box);
   }
 }
