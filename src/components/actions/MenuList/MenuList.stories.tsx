@@ -331,3 +331,20 @@ export const MenuListDisabled: Story = {
     ),
   },
 };
+
+export const MenuListWritingModeVertical: Story = {
+  args: {
+    style: { writingMode: 'vertical-rl' },
+    size: 'small',
+    children: (
+      <>
+        <MenuList.Option {...propsRadio} label="林檎"/>
+        <MenuList.Option {...propsRadio} label="オレンジ"/>
+        <MenuList.Option {...propsRadio} label="バナナ"/>
+        <MenuList.Option {...propsRadio} label="苺"/>
+        <MenuList.Option {...propsRadio} label="マンゴー"/>
+        <MenuList.Option {...propsRadio} label="スイカ"/>
+      </>
+    ),
+  },
+};
