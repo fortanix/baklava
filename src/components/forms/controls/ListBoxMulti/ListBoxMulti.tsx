@@ -3,27 +3,23 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { mergeRefs, mergeCallbacks } from '../../../../util/reactUtil.ts';
-import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
-import { useScroller } from '../../../../layouts/util/Scroller.tsx';
+import { mergeProps } from '../../../../util/reactUtil.ts';
+import { classNames as cx } from '../../../../util/componentUtil.ts';
+import { useStore } from 'zustand';
 
-import { TextLine } from '../../../text/TextLine/TextLine.tsx';
-import { type IconName, Icon as BkIcon } from '../../../graphics/Icon/Icon.tsx';
-import { Spinner } from '../../../graphics/Spinner/Spinner.tsx';
-import { Button } from '../../../actions/Button/Button.tsx';
-import { CheckboxClassNames } from '../Checkbox/Checkbox.tsx';
+import { MenuList } from '../../../actions/MenuList/MenuList.tsx';
 
 import {
   type ItemKey,
-  type ItemDef,
-  type ItemDetails,
-  type ItemWithKey,
-  type VirtualItemKeys,
-  ListBoxContext,
-  useListBoxSelector,
+  type SelectedState,
+  // type ItemDef,
+  // type ItemDetails,
+  // type ItemWithKey,
+  // type VirtualItemKeys,
+  useListBoxContext,
   useListBox,
   useListBoxItem,
-} from './ListBoxStore.tsx';
+} from '../../../util/collections/ListBoxMultiStore.ts';
 
 import cl from './ListBoxMulti.module.scss';
 
@@ -36,11 +32,15 @@ References:
 - https://www.radix-ui.com/primitives/docs/components/select
 */
 
-export { type ItemKey, type ItemDef, type ItemDetails, ListBoxContext, useListBoxItem };
-export { cl as ListBoxMultiClassNames };
+export { type ItemKey, useListBoxItem };
+export { cl as ListBoxClassNames };
 
 
-export interface ListBoxMultiRef extends HTMLDivElement {
+//
+// ListBoxRef
+//
+
+export interface ListBoxRef extends HTMLDivElement {
   _bkListBoxFocusFirst: () => void,
   _bkListBoxFocusLast: () => void,
   // TODO:
@@ -48,351 +48,167 @@ export interface ListBoxMultiRef extends HTMLDivElement {
   //_bkListBoxSelectAll: () => void,
 };
 
-type ListBoxIcon = React.ComponentType<Pick<React.ComponentProps<typeof BkIcon>, 'icon' | 'className' | 'decoration'>>;
+
+//
+// Group
+//
+
+export type GroupProps = React.ComponentProps<typeof MenuList.Group> & {
+  /** Whether this component should be unstyled. */
+  unstyled?: undefined | boolean,
+};
+/**
+ * A group element that can contain list options or other groups.
+ */
+export const Group = (props: GroupProps) => {
+  const { unstyled, ...propsRest } = props;
+  
+  return (
+    <MenuList.Group
+      unstyled={unstyled}
+      {...propsRest}
+      className={cx(
+        { [cl['bk-list-box__group']]: !unstyled },
+        propsRest.className,
+      )}
+    />
+  );
+};
 
 
 //
 // Static item
 //
 
-export type StaticProps = ComponentProps<'div'> & {
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
-
-  /** Whether the item should stick on scroll. Default: false. */
-  sticky?: undefined | false | 'start',
-};
 /**
- * A static item, that can be customized for any content that does not need to interact with the list box store.
+ * A static item, that can be customized for any presentational content (not affected by store state).
+ * 
+ * Important: since this is inside a `role="listbox"`, the static content should be presentational only. There should
+ * be no interactive elements or other semantic content, only presentational content.
  */
-export const Static = ({ unstyled, sticky = false, ...propsRest }: StaticProps) => {
-  return (
-    <div
-      {...propsRest}
-      className={cx(
-        { [cl['bk-list-box-multi__item']]: !unstyled },
-        cl['bk-list-box-multi__item--static'],
-        { [cl['bk-list-box-multi__item--sticky-start']]: sticky === 'start' },
-        propsRest.className,
-      )}
-    />
-  );
-};
+export const ItemStatic = ({ unstyled, ...propsRest }: React.ComponentProps<typeof MenuList.Static>) => (
+  <MenuList.Static
+    {...propsRest}
+    className={cx({ [cl['bk-list-box__item']]: !unstyled }, propsRest.className)}
+  />
+);
 
 
 //
 // Option item
 //
 
-export type OptionProps = ComponentProps<typeof Button> & {
+type ItemOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionType'> & {
   /** A unique identifier for this option. */
   itemKey: ItemKey,
-
-  /** An accessible name for this option. */
-  label: string,
-
-  /** An icon to be displayed before the label. */
-  icon?: undefined | IconName,
-
-  /** How to decorate the icon. Default: undefined (i.e. no decoration). */
-  iconDecoration?: undefined | 'highlight',
-
-  /** A callback to be called when the option is selected. */
-  onSelect?: undefined | ((isSelected: boolean) => void),
-
-  /** Custom icon component. */
-  Icon?: undefined | ListBoxIcon,
 };
 /**
- * A list box item that can be selected.
+ * A list box option (can be selected by the user).
  */
-export const Option = (props: OptionProps) => {
-  const { ref, unstyled, itemKey, label, icon, iconDecoration, onSelect, Icon = BkIcon, ...propsRest } = props;
-
-  const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
-  const itemDef = React.useMemo<ItemWithKey>(() => ({ itemKey, itemRef, isContentItem: true }), [itemKey]);
-
-  const { id, disabled, isFocused, isSelected, toggleSelection } = useListBoxItem(itemDef);
-  const isNonactive = propsRest.disabled || propsRest.nonactive || disabled;
-
-  const handlePress = React.useCallback(() => {
-    const isSelected = toggleSelection();
-    onSelect?.(isSelected);
-  }, [toggleSelection, onSelect]);
-
+export const ItemOption = React.memo((props: ItemOptionProps) => {
+  // Note: use `memo()` so that children don't rerendered on state change, in the case that:
+  // - The consumer uses this component with controlled state
+  // - The `children` prop on consumer side is not memoized/static (usually the case)
+  
+  const { unstyled, itemKey, className, iconDecoration, ...propsRest } = props;
+  const { selected, requestSelected: onRequestSelected, props: itemProps } = useListBoxItem({ itemKey });
+  
   return (
-    <Button
-      unstyled
-      id={id}
-      ref={mergeRefs(ref, itemRef)}
-      role="option"
-      tabIndex={isFocused ? 0 : -1}
-      data-item-key={itemKey}
-      aria-selected={isSelected}
-      {...propsRest}
-      className={cx(
-        { [cl['bk-list-box-multi__item']]: !unstyled },
-        { [cl['bk-list-box-multi__item--disabled']]: isNonactive },
-        cl['bk-list-box-multi__item--option'],
-        propsRest.className,
+    <MenuList.Option
+      unstyled={unstyled}
+      selectionType="checkbox"
+      {...mergeProps(
+        itemProps,
+        { selected, onRequestSelected },
+        propsRest,
+        { className: cx({ [cl['bk-list-box__item']]: !unstyled }, className) },
       )}
-      // See: https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Keyboard-navigable_JavaScript_widgets#grouping_controls
-      disabled={false} // Use `nonactive` for disabled state, so that we still allow focus
-      nonactive={isNonactive}
-      onPress={handlePress}
-    >
-      {/* Note: should not be an actual `<input type="checkbox">` element, buttons can't have interactive children */}
-      <span
-        className={cx(
-          CheckboxClassNames['bk-checkbox'],
-          { 'pseudo-disabled': isNonactive },
-          { 'pseudo-checked': isSelected },
-        )}
-      />
-      
-      {icon &&
-        <Icon
-          icon={icon}
-          decoration={iconDecoration !== 'highlight' ? undefined : { type: 'background-circle' }}
-          className={cx(
-            cl['bk-list-box-multi__item__icon'],
-            { [cl['bk-list-box-multi__item__icon--highlight']]: iconDecoration === 'highlight' },
-          )}
-        />
-      }
-      <TextLine className={cl['bk-list-box-multi__item__label']}>{propsRest.children ?? label}</TextLine>
-    </Button>
+    />
   );
-};
-
-
-//
-// Header item
-//
-
-export type HeaderProps = ComponentProps<typeof Button> & {
-  /** A unique identifier for this item. */
-  itemKey: ItemKey,
-
-  /** An accessible name for this header. */
-  label: string,
-
-  /** An icon to be displayed before the label. */
-  icon?: undefined | IconName,
-
-  /** Whether the action should stick on scroll. Default: 'start'. */
-  sticky?: undefined | false | 'start',
-
-  /** Custom icon component. */
-  Icon?: undefined | ListBoxIcon,
-};
-/**
- * A static text item that can be used as a heading.
- */
-export const Header = (props: HeaderProps) => {
-  const { unstyled, itemKey, label, icon, sticky = 'start', Icon = BkIcon, ...propsRest } = props;
-
-  return (
-    <span
-      data-item-key={itemKey}
-      {...propsRest}
-      className={cx(
-        { [cl['bk-list-box-multi__item']]: !unstyled },
-        cl['bk-list-box-multi__item--static'],
-        cl['bk-list-box-multi__item--header'],
-        { [cl['bk-list-box-multi__item--sticky-start']]: sticky === 'start' },
-        propsRest.className,
-      )}
-    >
-      {icon && <Icon icon={icon} className={cl['bk-list-box-multi__item__icon']} />}
-      <span className={cl['bk-list-box-multi__item__label']}>{propsRest.children ?? label}</span>
-    </span>
-  );
-};
-
-
-//
-// Action item
-//
-
-export type ActionProps = ComponentProps<typeof Button> & {
-  /** A unique identifier for this action. */
-  itemKey: ItemKey,
-
-  /** Explicit position of this item in the list (e.g. for virtualization). */
-  itemPos?: undefined | number,
-
-  /** An accessible name for this action. */
-  label: string,
-
-  /** An icon to be displayed before the label. */
-  icon?: undefined | IconName,
-
-  /** Whether this action is positioned sticky. Default: false. */
-  sticky?: undefined | false | 'end',
-
-  /** The event handler for when the user activates this action. */
-  onActivate: () => void | Promise<void>,
-
-  /** Custom icon component. */
-  Icon?: undefined | ListBoxIcon,
-};
-/**
- * A list box item that can be activated to perform some action.
- */
-export const Action = (props: ActionProps) => {
-  const { unstyled, itemKey, itemPos, label, icon, sticky = false, onActivate, Icon = BkIcon, ...propsRest } = props;
-
-  const itemRef = React.useRef<React.ComponentRef<typeof Button>>(null);
-  const itemDef = React.useMemo<ItemWithKey>(() => ({
-    itemKey,
-    itemRef,
-    isContentItem: sticky === false,
-  }), [itemKey, sticky]);
-
-  const { id, disabled, isFocused, requestFocus } = useListBoxItem(itemDef);
-  const isNonactive = propsRest.disabled || propsRest.nonactive || disabled;
-
-  return (
-    <Button
-      unstyled
-      id={id}
-      ref={itemRef}
-      tabIndex={isFocused ? 0 : -1}
-      data-item-key={itemKey}
-      aria-posinset={itemPos}
-      {...propsRest}
-      className={cx(
-        { [cl['bk-list-box-multi__item']]: !unstyled },
-        { [cl['bk-list-box-multi__item--disabled']]: isNonactive },
-        cl['bk-list-box-multi__item--action'],
-        propsRest.className,
-      )}
-      // See: https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Keyboard-navigable_JavaScript_widgets#grouping_controls
-      disabled={false} // Use `nonactive` for disabled state, so that we still allow focus
-      nonactive={isNonactive}
-      onPress={() => { requestFocus(); onActivate?.(); }}
-    >
-      {icon && <Icon icon={icon} className={cl['bk-list-box-multi__item__icon']} />}
-      <span className={cl['bk-list-box-multi__item__label']}>{propsRest.children ?? label}</span>
-    </Button>
-  );
-};
-
-export const FooterAction = (props: Omit<ActionProps, 'sticky'>) => {
-  return <Action {...props} sticky="end" />;
-};
-export const FooterActions = (props: React.ComponentProps<'div'>) => {
-  return <div {...props} className={cx(cl['bk-list-box-multi__footer-actions'], props.className)} />;
-};
+});
 
 
 //
 // List box
 //
-export type ListBoxMultiProps<K extends ItemKey = ItemKey> = Omit<ComponentProps<'div'>, 'ref' | 'onSelect'> & {
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
 
-  /** A React ref to pass to the list box element. */
-  ref?: undefined | React.Ref<null | ListBoxMultiRef>,
-
-  /** The (inline) size of the list box. Optional. Default: `medium`. */
-  size?: undefined | 'shrink' | 'small' | 'medium' | 'large',
-
-  /** An accessible name for this list box. Required. */
-  label: string,
-
-  /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
-  defaultSelected?: undefined | Set<K>,
-
-  /** The option to select. If `undefined`, this component will be considered uncontrolled. */
-  selected?: undefined | Set<K>,
-
-  /** Event handler to be called when the selected option state changes. */
-  onSelect?: undefined | ((selectedItems: Set<K>, itemDetails: Map<K, ItemDetails>) => void),
-
-  /** Whether the list box is disabled or not. Default: false. */
-  disabled?: undefined | boolean,
-
-  /** The machine readable name of the list box control, used as part of `<form>` submission. */
-  name?: undefined | string,
-
-  /** A placeholder message to display when there are no items in the list. Set to `false` to prevent showing. */
-  placeholderEmpty?: undefined | false | React.ReactNode,
-
-  /** The ID of the `<form>` element to associate this list box with. Optional. */
-  form?: undefined | string,
-
-  /** Any additional props to apply to the internal `<input type="hidden"/>`. */
-  inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
-
-  /** Render the given item key as a string label. If not given, will use the item element's text value. */
-  formatItemLabel?: undefined | ((itemKey: K) => undefined | string),
-
-  /** Whether the list is currently in loading state. Default: false. */
-  isLoading?: undefined | boolean,
-
-  /** If the list is virtually rendered, `virtualItemKeys` should be provided with the full list of item keys. */
-  virtualItemKeys?: undefined | null | VirtualItemKeys,
-};
-
-type HiddenSelectedStateProps = Pick<ListBoxMultiProps, 'name' | 'form' | 'inputProps'> & {
-  ref: React.Ref<React.ComponentRef<'input'>>,
-};
+type HiddenSelectedStateProps = Omit<React.ComponentProps<'input'>, 'value' | 'defaultValue' | 'onChange'>;
 /** Hidden input, so that this component can be connected to a <form> element. */
-const HiddenSelectedState = ({ ref, name, form, inputProps }: HiddenSelectedStateProps) => {
-  const selectedItems = useListBoxSelector(s => s.selectedItems);
-  const onChange = React.useCallback(() => { }, []);
-  return (
-    <>
-      {[...selectedItems.values()].map(selectedItem =>
-        <input
-          key={selectedItem}
-          type="hidden"
-          name={`${name}[]`}
-          form={form}
-          {...inputProps}
-          ref={mergeRefs(ref, inputProps?.ref)}
-          value={selectedItem ?? ''}
-          onChange={onChange}
-        />
-      )}
-    </>
-  );
-};
-
-export const EmptyPlaceholder = (props: React.ComponentProps<'div'>) => {
-  return (
-    <div
-      {...props}
-      className={cx(
-        cl['bk-list-box-multi__item'],
-        cl['bk-list-box-multi__item--static'],
-        cl['bk-list-box-multi__item--disabled'],
-        cl['bk-list-box-multi__empty-placeholder'],
-        props.className,
-      )}
+const HiddenSelectedState = ({ ref, name, form, ...inputProps }: HiddenSelectedStateProps) => {
+  const { store } = useListBoxContext();
+  const selectedItemKeys = useStore(store, s => s.selectedItemKeys);
+  
+  if (selectedItemKeys.size === 0) {
+    // When there is no selected item, we will still render the input (so that we can get the `input.form`
+    // association), but we will leave the `name` blank. This way, form submit handlers can distinguish between
+    // "no selected" and "selected an item with key = empty string".
+    return (
+      <input
+        ref={ref}
+        name={undefined}
+        form={form}
+        type="hidden"
+        {...inputProps}
+        value=""
+        defaultValue={undefined}
+        onChange={undefined}
+      />
+    );
+  }
+  
+  return Array.from(selectedItemKeys).map(itemKey =>
+    <input
+      key={itemKey}
+      ref={ref}
+      name={name}
+      form={form}
+      type="hidden"
+      {...inputProps}
+      value={itemKey}
+      defaultValue={undefined}
+      onChange={undefined}
     />
   );
 };
 
-export const LoadingSpinner = (props: React.ComponentProps<'span'>) => {
-  return (
-    <span
-      {...props}
-      className={cx(
-        cl['bk-list-box-multi__item'],
-        cl['bk-list-box-multi__item--static'],
-        cl['bk-list-box-multi__item--loading'],
-        props.className,
-      )}
-    >
-      Loading... <Spinner inline size="small" />
-    </span>
-  );
+type SelectedStateProps = (
+  | {
+    selected?: undefined, // Uncontrolled
+    defaultSelected?: undefined | SelectedState,
+    onSelectedChange?: undefined | ((selected: SelectedState) => void),
+  }
+  | {
+    selected: SelectedState, // Controlled
+    defaultSelected?: undefined,
+    onSelectedChange: (selected: SelectedState) => void,
+  }
+);
+type PropsOmit = 'ref' | keyof SelectedStateProps;
+export type ListBoxMultiProps = Omit<React.ComponentProps<typeof MenuList>, PropsOmit> & SelectedStateProps & {
+  /** A React ref to pass to the list box element. */
+  ref?: undefined | React.Ref<null | ListBoxRef>,
+  
+  /** The machine readable name of the list box control, used as part of `<form>` submission. */
+  name?: undefined | string,
+  
+  /** The ID of the `<form>` element to associate this list box with. Optional. */
+  form?: undefined | string,
+  
+  /** Any additional props to apply to the internal `<input type="hidden"/>`. */
+  inputProps?: undefined | HiddenSelectedStateProps,
+  
+  /** Render the given item key as a string label. If not given, will use the item element's text value. */
+  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
+  
+  /** If the list is virtually rendered, `virtualItemKeys` should be provided with the full list of item keys. */
+  virtualItemKeys?: undefined | null | VirtualItemKeys,
+  
+  /** Legacy alias for `onSelectedChange`, for backwards compatbility. @deprecated */
+  onSelect?: undefined | ((selected: SelectedState) => void),
+    
+  /** Legacy alias for `status="loading"`, for backwards compatbility. @deprecated */
+  isLoading?: undefined | boolean,
 };
-
 /**
  * A list box is a composite control, consisting of a (flat) list of items. Each item can be either an option that can
  * be selected, or an action that can be activated. The items list may be partial, in case of virtualization (see
@@ -400,178 +216,124 @@ export const LoadingSpinner = (props: React.ComponentProps<'span'>) => {
  * identity and ordering of the full list.
  */
 export const ListBoxMulti = Object.assign(
-  <K extends ItemKey = ItemKey>(props: ListBoxMultiProps<K>) => {
+  (props: ListBoxMultiProps) => {
     const {
       ref,
       children,
-      unstyled = false,
-      size = 'medium',
-      label,
-      defaultSelected,
+      unstyled,
       selected,
-      onSelect,
-      disabled = false,
+      defaultSelected,
+      onSelectedChange,
       name,
-      placeholderEmpty = 'No items',
       form,
       inputProps,
-      isLoading = false,
       virtualItemKeys = null,
       formatItemLabel,
+      onSelect,
+      isLoading,
       ...propsRest
     } = props;
-
-    const id = React.useId();
-    const listBoxRef = React.useRef<ListBoxMultiRef>(null);
-    const inputRef = React.useRef<React.ComponentRef<typeof HiddenSelectedState>>(null);
-    const scrollerProps = useScroller();
-
+    
+    const listBoxRef = React.useRef<ListBoxRef>(null);
+    
     /*
     Set up the list box store.
     
-    NOTE: be careful not to use `useStore` or any other hook that would cause a re-render when the store is updated.
+    NOTE: try to avoid the use of `useStore` or other hooks that would cause a re-render when the store is updated.
     This would cause all items in the list to re-render unnecessarily. Instead, you can:
-      - Separate logic out to a separate component (as in `HiddenSelectedState`).
+      - Separate logic out to a separate component (like we did for `HiddenSelectedState`).
       - Use `listBox.store.subscribe` for side effects.
     */
-    const selectedItemKeysDefault = selected ?? defaultSelected ?? new Set();
-    const listBox = useListBox(listBoxRef, {
-      id: props.id ?? id,
-      disabled,
-      selectedItems: selectedItemKeysDefault,
-      focusedItem: null,
-      virtualItemKeys,
+    const { store, ...listBoxStore } = useListBox<HTMLDivElement>({
+      state: selected,
+      defaultState: defaultSelected,
+      defaultStateFallback: new Set(),
+      onStateChange: onSelectedChange ?? onSelect,
     });
-
-    // Sync `selected` prop to the store
-    const selectedSerialized = typeof selected === 'undefined' ? '' : JSON.stringify([...selected.values()]);
-    // biome-ignore lint/correctness/useExhaustiveDependencies: Using a serialized version of `selected`.
-    React.useEffect(() => {
-      if (typeof selected !== 'undefined') {
-        const state = listBox.store.getState();
-        state.setSelectedItems(selected);
-      }
-    }, [selectedSerialized, listBox.store]);
-
+    const isEmpty = useStore(store, state => state.getItemKeys().size === 0); // Re-render is acceptable here
+    
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
-    React.useImperativeHandle<null | ListBoxMultiRef, null | ListBoxMultiRef>(ref, () => {
+    React.useImperativeHandle<null | ListBoxRef, null | ListBoxRef>(ref, () => {
       const listBoxElement = listBoxRef.current;
       if (listBoxElement === null) { return null; }
       return Object.assign(listBoxElement, {
-        focus: () => {
-          const state = listBox.store.getState();
-          if (state.focusedItem) {
-            state.focusItem(state.focusedItem);
-          }
-        },
-        _bkListBoxFocusFirst: () => { listBox.store.getState().focusItemAt('first'); },
-        _bkListBoxFocusLast: () => { listBox.store.getState().focusItemAt('last'); },
+        _bkListBoxFocusFirst: () => { store.getState().focusItemAt('first'); },
+        _bkListBoxFocusLast: () => { store.getState().focusItemAt('last'); },
       });
-    }, [listBox]);
-
+    }, [store]);
+    
+    /* virtualItemKeys
     // Keep the `virtualItemKeys` prop in sync with the store
     React.useEffect(() => {
-      return listBox.store.subscribe(state => {
+      return store.subscribe(state => {
         if (state.virtualItemKeys !== virtualItemKeys) {
           state.setVirtualItemKeys(virtualItemKeys);
         }
       });
-    }, [listBox.store, virtualItemKeys]);
-
-    const isEmpty = useListBoxSelector(state => state.isEmpty(), listBox.store);
-
+    }, [store, virtualItemKeys]);
+    */
+    
+    /* formatItemKeys
     React.useEffect(() => {
-      return listBox.store.subscribe((state, prevState) => {
-        if (state.selectedItems !== prevState.selectedItems) {
-          const itemKeys = state.selectedItems as Set<K>;
-
-          const itemDetails = new Map<K, ItemDetails>([...itemKeys.values()].map(itemKey => {
-            const label: string = formatItemLabel?.(itemKey)
-              ?? state._internalItemsRegistry.get(itemKey)?.itemRef.current?.textContent
-              ?? itemKey;
-            return [itemKey, { label }];
-          }));
-
-          onSelect?.(itemKeys, itemDetails);
+      return store.subscribe((state, prevState) => {
+        if (state.selectedItem !== prevState.selectedItem && state.selectedItem !== null) {
+          const itemKeys = state.selectedItem;
+          const label: string = formatItemLabel?.(itemKeys)
+            ?? state._internalItemsRegistry.get(itemKeys)?.itemRef.current?.textContent
+            ?? itemKeys;
+          const selectedItem: null | ItemDetails = state.selectedItem === null ? null : {
+            itemKeys,
+            label,
+          };
+          
+          onSelect?.(itemKeys, selectedItem);
         }
       });
-    }, [listBox.store, onSelect, formatItemLabel]);
-
+    }, [store, onSelect, formatItemLabel]);
+    */
+    
+    // Delegate 'Enter' key to the hidden input for form submissions
+    const hiddenInputRef = React.useRef<React.ComponentRef<typeof HiddenSelectedState>>(null);
     const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
       if (event.key === 'Enter') {
-        const formId = inputRef.current?.getAttribute('form');
-        if (!formId) { return; }
-
-        const form = document.getElementById(formId);
-        if (form instanceof HTMLFormElement) {
+        const form = hiddenInputRef.current?.form;
+        if (form) {
           // Submit the form (after a timeout to allow the `<input>` to be updated in response to the Enter key event)
-          window.setTimeout(() => { form.requestSubmit(); }, 0);
+          window.setTimeout(form.requestSubmit.bind(form), 0);
         }
       }
     }, []);
-
-    // Note: WCAG requires at least one element with `role="option"` (or "group") in a `role="listbox"`. If there are
-    // no options, then we should not render a `role="listbox"`.
-    // https://github.com/dequelabs/axe-core/issues/383
-    // https://github.com/dequelabs/axe-core/issues/2339
-    // We can instead just render a normal (`role="presentation"`) element, see for example how it's done in MUI:
-    // https://mui.com/material-ui/react-autocomplete/#combo-box
-    const ariaProps = isEmpty ? {
-      'aria-describedby': `${id}_empty-placeholder`,
-    } : {
-      role: 'listbox',
-      'aria-label': label,
-      'aria-busy': isLoading,
-    } as const;
-
+    
     return (
-      <listBox.Provider>
-        {/* biome-ignore lint/a11y/noStaticElementInteractions: `onKeyDown` needed as event ancestor (bubbling). */}
-        <div
-          {...scrollerProps}
-          tabIndex={undefined} // Do not make the listbox focusable, use a roving tabindex instead
-          {...ariaProps}
-          {...propsRest}
-          {...listBox.props}
-          ref={listBoxRef}
-          onKeyDown={mergeCallbacks([handleKeyDown, propsRest.onKeyDown, listBox.props.onKeyDown])}
-          onToggle={mergeCallbacks([props.onToggle, listBox.props.onToggle])}
-          className={cx(
-            scrollerProps.className,
-            'bk',
-            { [cl['bk-list-box-multi']]: !unstyled },
-            { [cl['bk-list-box-multi--empty']]: isEmpty },
-            { [cl['bk-list-box-multi--size-shrink']]: size === 'shrink' },
-            { [cl['bk-list-box-multi--size-small']]: size === 'small' },
-            { [cl['bk-list-box-multi--size-medium']]: size === 'medium' },
-            { [cl['bk-list-box-multi--size-large']]: size === 'large' },
-
-            listBox.props.className,
-            propsRest.className,
+      <listBoxStore.Provider value={listBoxStore.context}>
+        <MenuList
+          role="listbox"
+          unstyled={unstyled}
+          {...mergeProps(
+            listBoxStore.props,
+            {
+              status: isLoading === true ? 'loading' : undefined,
+              onKeyDown: handleKeyDown,
+              className: cx(
+                'bk',
+                { [cl['bk-list-box']]: !unstyled },
+              ),
+            },
+            propsRest,
           )}
+          empty={isEmpty}
         >
-          {typeof name === 'string' && <HiddenSelectedState ref={inputRef} name={name} form={form} />}
-
+          {typeof name === 'string' &&
+            <HiddenSelectedState ref={hiddenInputRef} form={form} name={name} {...inputProps}/>
+          }
           {children}
-
-          {isEmpty && placeholderEmpty !== false && !isLoading &&
-            <EmptyPlaceholder id={`${id}_empty-placeholder`}>{placeholderEmpty}</EmptyPlaceholder>
-          }
-
-          {isLoading &&
-            <LoadingSpinner id={`${id}_loading-spinner`}/>
-          }
-        </div>
-      </listBox.Provider>
+        </MenuList>
+      </listBoxStore.Provider>
     );
   },
   {
-    Static,
-    Option,
-    Header,
-    Action,
-    FooterAction,
-    FooterActions,
-    EmptyPlaceholder,
+    Group,
+    Static: ItemStatic,
+    Option: ItemOption,
   },
 );

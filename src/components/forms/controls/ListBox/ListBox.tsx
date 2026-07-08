@@ -18,7 +18,7 @@ import {
   useListBoxContext,
   useListBox,
   useListBoxItem,
-} from '../../../util/collections/ListBoxStore.tsx';
+} from '../../../util/collections/ListBoxStore.ts';
 
 import cl from './ListBox.module.scss';
 

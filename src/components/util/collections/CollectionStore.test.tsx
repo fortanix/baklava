@@ -14,7 +14,7 @@ import {
   useCollectionContext,
   useCollection,
   useCollectionItem,
-} from './CollectionStore.tsx';
+} from './CollectionStore.ts';
 
 
 //

@@ -37,6 +37,19 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
   - table.setPageSize
   */
   
+  console.table({
+    'pageIndex': JSON.stringify(table.state.pageIndex),
+    'pageSize': JSON.stringify(table.state.pageSize),
+    'canPreviousPage': JSON.stringify(table.canPreviousPage),
+    'canNextPage': JSON.stringify(table.canNextPage),
+    'pageOptions': JSON.stringify(table.pageOptions),
+    'pageCount': JSON.stringify(table.pageCount),
+    //'gotoPage': JSON.stringify(table.gotoPage),
+    //'nextPage': JSON.stringify(table.nextPage),
+    //'previousPage': JSON.stringify(table.previousPage),
+    //'setPageSize': JSON.stringify(table.setPageSize),
+  });
+  
   const updatePage = React.useCallback(() => {
     const requestedIndex = Number.isSafeInteger(pageIndexIndicator) ? pageIndexIndicator - 1 : 0;
     const targetIndex: number = Math.max(0, Math.min(table.pageCount - 1, requestedIndex));

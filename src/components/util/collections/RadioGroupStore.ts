@@ -14,13 +14,13 @@ import {
   createCollectionSlice,
   useCollectionWith,
   useCollectionItemWith,
-} from './CollectionStore.tsx';
+} from './CollectionStore.ts';
 import {
   type SelectedState,
   type SelectionSingleSlice,
   createSelectionSingleSlice,
   useSelectionWith,
-} from './SelectionSingleStore.tsx';
+} from './SelectionSingleStore.ts';
 
 
 export type { ItemKey };

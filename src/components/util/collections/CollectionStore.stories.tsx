@@ -10,7 +10,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Button } from '../../actions/Button/Button.tsx';
 
-import { type ItemKey, useCollectionItem, useCollection } from './CollectionStore.tsx';
+import { type ItemKey, useCollectionItem, useCollection } from './CollectionStore.ts';
 
 
 const generateRandomId = () => Math.random().toString(36).slice(-6);

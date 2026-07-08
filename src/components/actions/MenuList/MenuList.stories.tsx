@@ -251,6 +251,25 @@ export const MenuListWithStaticContent: Story = {
     ),
   },
 };
+export const MenuListWithIntermediateTabStop: Story = {
+  args: {
+    size: 'shrink',
+    children: (
+      <>
+        {fruits.slice(0, 4).map((fruit) =>
+          <MenuList.Option {...propsRadio} key={fruit} label={fruit} selected={fruit === 'Blueberry'}/>
+        )}
+        {/* @ts-ignore */}
+        <MenuList.Static focusgroup="none">
+          <InputSearch placeholder="I am an intermediate tab stop" automaticResize/>
+        </MenuList.Static>
+        {fruits.slice(4, 8).map((fruit) =>
+          <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
+        )}
+      </>
+    ),
+  },
+}; 
 
 /** When viewing the accessibility tree for this menu list, the accessible name should by "My menu list". */
 export const MenuListWithVisibleLabel: Story = {

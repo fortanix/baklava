@@ -14,22 +14,31 @@ import {
   createCollectionSlice,
   useCollectionWith,
   useCollectionItemWith,
-} from './CollectionStore.tsx';
+} from './CollectionStore.ts';
 import {
   type SelectedState,
-  type SelectionSingleSlice,
-  createSelectionSingleSlice,
+  type SelectionMultiSlice,
+  createSelectionMultiSlice,
   useSelectionWith,
-} from './SelectionSingleStore.tsx';
+} from './SelectionMultiStore.ts';
 
 
-export type { ItemKey };
+export type { ItemKey, SelectedState };
 
-export type ListBoxSlice = CollectionSlice & SelectionSingleSlice;
+const SetUtil = {
+  add<T>(set: Set<T>, item: T) {
+    return new Set([...set, item]);
+  },
+  remove<T>(set: Set<T>, item: T) {
+    return new Set([...set].filter(cur => cur !== item));
+  },
+};
+
+export type ListBoxSlice = CollectionSlice & SelectionMultiSlice;
 export type ListBoxContext = {
   store: StoreApi<ListBoxSlice>,
-  /** Called when the user requests the given item (or none) to be selected. */
-  requestSelected: (itemKey: SelectedState) => void,
+  /** Called when the user requests the given items (or none) to be selected. */
+  requestSelected: (itemKeys: SelectedState) => void,
 };
 export const ListBoxContext = React.createContext<null | ListBoxContext>(null);
 export const useListBoxContext = () => {
@@ -47,19 +56,19 @@ export const useListBox = <E extends Element = Element>(props: ListBoxProps) => 
   
   const store = useMemoOnce(() => createStore<ListBoxSlice>()((...args) => ({
     ...createCollectionSlice({ collectionId: listBoxId })(...args),
-    ...createSelectionSingleSlice({ selectedItemKey: stateInitial ?? null })(...args),
+    ...createSelectionMultiSlice({ selectedItemKeys: stateInitial ?? new Set() })(...args),
   })));
   
   const { props: propsCollection } = useCollectionWith(store);
   const { props: propsSelection } = useSelectionWith(store, selectionState);
   
-  const requestSelected = React.useCallback((selectedItemKey: SelectedState) => {
+  const requestSelected = React.useCallback((selectedItemKeys: SelectedState) => {
     // Note: when controlled, don't directly update the store. Just trigger `onStateChange` and if the consumer
     // chooses to respect the change then it'll be synced to the store through the `useEffect` below.
     if (isControlled) {
-      props.onStateChange?.(selectedItemKey);
+      props.onStateChange?.(selectedItemKeys);
     } else {
-      store.setState({ selectedItemKey });
+      store.setState({ selectedItemKeys });
     }
   }, [isControlled, props.onStateChange]);
   
@@ -89,12 +98,19 @@ export const useListBox = <E extends Element = Element>(props: ListBoxProps) => 
 
 
 type UseListBoxItemParams = { itemKey: ItemKey };
-export const useListBoxItem = <E extends Element>(params: UseListBoxItemParams) => {
-  const { itemKey } = params;
-  
+export const useListBoxItem = <E extends Element>({ itemKey }: UseListBoxItemParams) => {
   const { store, requestSelected } = useListBoxContext();
-  const selected = useStore(store, store => itemKey === store.selectedItemKey);
-  const requestSelectedForItem = () => requestSelected(itemKey);
+  const selected = useStore(store, store => store.selectedItemKeys?.has(itemKey) ?? false);
+  
+  // FIXME: better way to add/remove item keys from the store. Should `requestSelected` take a callback?
+  // FIXME: "requestSelected" doesn't make sense for multi where things can be unselected as well as selected
+  const selectedItemKeys = useStore(store, store => store.selectedItemKeys);
+  const requestSelectedForItem = () => {
+    const selectedItemKeysUpdated = selectedItemKeys.has(itemKey)
+      ? SetUtil.remove(selectedItemKeys, itemKey)
+      : SetUtil.add(selectedItemKeys, itemKey);
+    requestSelected(selectedItemKeysUpdated);
+  };
   
   const { props } = useCollectionItemWith<E>(store, { itemKey });
   return {
