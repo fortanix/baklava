@@ -8,7 +8,7 @@ import { type StateCreator, type StoreApi, createStore, useStore } from 'zustand
 
 
 export type ItemKey = string;
-
+export type RegistryItem = Element;
 
 //
 // Store slice
@@ -20,7 +20,7 @@ export type CollectionState = {
   collectionId: string,
 };
 export interface CollectionSlice extends CollectionState {
-  registerItem: (itemKey: ItemKey, el: Element) => void,
+  registerItem: (itemKey: ItemKey, item: RegistryItem) => void,
   unregisterItem: (itemKey: ItemKey) => void,
   getItemKeys: () => Set<ItemKey>,
   
@@ -33,7 +33,7 @@ export const createCollectionSlice = (
   { collectionId }: CollectionProps,
 ): StateCreator<CollectionSlice, [], [], CollectionSlice> => (_set, _get, _store) => {
   // Private, mutable registry for bookkeeping purposes
-  const registry = new Map<ItemKey, Element>();
+  const registry = new Map<ItemKey, RegistryItem>();
   let registryHasChanged = true; // Dirty flag to track whether the registry has changed since it was last processed
   
   return {

@@ -16,7 +16,7 @@ import {
   // type ItemDetails,
   // type ItemWithKey,
   // type VirtualItemKeys,
-  useListBoxContext,
+  useListBoxSelector,
   useListBox,
   useListBoxItem,
 } from '../../../util/collections/ListBoxMultiStore.ts';
@@ -135,8 +135,7 @@ export const ItemOption = React.memo((props: ItemOptionProps) => {
 type HiddenSelectedStateProps = Omit<React.ComponentProps<'input'>, 'value' | 'defaultValue' | 'onChange'>;
 /** Hidden input, so that this component can be connected to a <form> element. */
 const HiddenSelectedState = ({ ref, name, form, ...inputProps }: HiddenSelectedStateProps) => {
-  const { store } = useListBoxContext();
-  const selectedItemKeys = useStore(store, s => s.selectedItemKeys);
+  const selectedItemKeys = useListBoxSelector(s => s.selectedItemKeys);
   
   if (selectedItemKeys.size === 0) {
     // When there is no selected item, we will still render the input (so that we can get the `input.form`
@@ -160,7 +159,7 @@ const HiddenSelectedState = ({ ref, name, form, ...inputProps }: HiddenSelectedS
     <input
       key={itemKey}
       ref={ref}
-      name={name}
+      name={`${name}[]`}
       form={form}
       type="hidden"
       {...inputProps}
@@ -200,9 +199,6 @@ export type ListBoxMultiProps = Omit<React.ComponentProps<typeof MenuList>, Prop
   /** Render the given item key as a string label. If not given, will use the item element's text value. */
   formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
   
-  /** If the list is virtually rendered, `virtualItemKeys` should be provided with the full list of item keys. */
-  virtualItemKeys?: undefined | null | VirtualItemKeys,
-  
   /** Legacy alias for `onSelectedChange`, for backwards compatbility. @deprecated */
   onSelect?: undefined | ((selected: SelectedState) => void),
     
@@ -227,7 +223,6 @@ export const ListBoxMulti = Object.assign(
       name,
       form,
       inputProps,
-      virtualItemKeys = null,
       formatItemLabel,
       onSelect,
       isLoading,
@@ -261,17 +256,6 @@ export const ListBoxMulti = Object.assign(
         _bkListBoxFocusLast: () => { store.getState().focusItemAt('last'); },
       });
     }, [store]);
-    
-    /* virtualItemKeys
-    // Keep the `virtualItemKeys` prop in sync with the store
-    React.useEffect(() => {
-      return store.subscribe(state => {
-        if (state.virtualItemKeys !== virtualItemKeys) {
-          state.setVirtualItemKeys(virtualItemKeys);
-        }
-      });
-    }, [store, virtualItemKeys]);
-    */
     
     /* formatItemKeys
     React.useEffect(() => {
@@ -308,16 +292,14 @@ export const ListBoxMulti = Object.assign(
       <listBoxStore.Provider value={listBoxStore.context}>
         <MenuList
           role="listbox"
+          aria-multiselectable="true"
           unstyled={unstyled}
           {...mergeProps(
             listBoxStore.props,
             {
               status: isLoading === true ? 'loading' : undefined,
               onKeyDown: handleKeyDown,
-              className: cx(
-                'bk',
-                { [cl['bk-list-box']]: !unstyled },
-              ),
+              className: cx({ [cl['bk-list-box']]: !unstyled }),
             },
             propsRest,
           )}

@@ -15,7 +15,7 @@ import {
   // type ItemDetails,
   // type ItemWithKey,
   // type VirtualItemKeys,
-  useListBoxContext,
+  useListBoxSelector,
   useListBox,
   useListBoxItem,
 } from '../../../util/collections/ListBoxStore.ts';
@@ -131,8 +131,7 @@ export const ItemOption = React.memo((props: ItemOptionProps) => {
 type HiddenSelectedStateProps = Omit<React.ComponentProps<'input'>, 'value' | 'defaultValue' | 'onChange'>;
 /** Hidden input, so that this component can be connected to a <form> element. */
 const HiddenSelectedState = ({ ref, name, form, ...inputProps }: HiddenSelectedStateProps) => {
-  const { store } = useListBoxContext();
-  const selectedItemKey = useStore(store, s => s.selectedItemKey);
+  const selectedItemKey = useListBoxSelector(s => s.selectedItemKey);
   
   return (
     <input
@@ -151,8 +150,8 @@ const HiddenSelectedState = ({ ref, name, form, ...inputProps }: HiddenSelectedS
   );
 };
 
-type SelectedState = null | ItemKey;
-type SelectedStateProps = (
+export type SelectedState = null | ItemKey;
+export type SelectedStateProps = (
   | {
     selected?: undefined, // Uncontrolled
     defaultSelected?: undefined | SelectedState,
@@ -164,6 +163,7 @@ type SelectedStateProps = (
     onSelectedChange: (selected: SelectedState) => void,
   }
 );
+
 type PropsOmit = 'ref' | keyof SelectedStateProps;
 export type ListBoxProps = Omit<React.ComponentProps<typeof MenuList>, PropsOmit> & SelectedStateProps & {
   /** A React ref to pass to the list box element. */
@@ -181,9 +181,6 @@ export type ListBoxProps = Omit<React.ComponentProps<typeof MenuList>, PropsOmit
   /** Render the given item key as a string label. If not given, will use the item element's text value. */
   formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
   
-  /** If the list is virtually rendered, `virtualItemKeys` should be provided with the full list of item keys. */
-  virtualItemKeys?: undefined | null | VirtualItemKeys,
-  
   /** Legacy alias for `onSelectedChange`, for backwards compatbility. @deprecated */
   onSelect?: undefined | ((selected: SelectedState) => void),
     
@@ -191,15 +188,11 @@ export type ListBoxProps = Omit<React.ComponentProps<typeof MenuList>, PropsOmit
   isLoading?: undefined | boolean,
 };
 /**
- * A list box is a composite control, consisting of a (flat) list of items. Each item can be either an option that can
- * be selected, or an action that can be activated. The items list may be partial, in case of virtualization (see
- * also `ListBoxLazy`). In this case, the `itemKeys` prop must be provided so that the list box can determine the
- * identity and ordering of the full list.
+ * A single-select list box. Presents a (flat) list of options, out of which the user can select at most one.
  */
 export const ListBox = Object.assign(
   (props: ListBoxProps) => {
     const {
-      ref,
       children,
       unstyled,
       selected,
@@ -208,14 +201,11 @@ export const ListBox = Object.assign(
       name,
       form,
       inputProps,
-      virtualItemKeys = null,
       formatItemLabel,
       onSelect,
       isLoading,
       ...propsRest
     } = props;
-    
-    const listBoxRef = React.useRef<ListBoxRef>(null);
     
     /*
     Set up the list box store.
@@ -234,25 +224,14 @@ export const ListBox = Object.assign(
     const isEmpty = useStore(store, state => state.getItemKeys().size === 0); // Re-render is acceptable here
     
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
-    React.useImperativeHandle<null | ListBoxRef, null | ListBoxRef>(ref, () => {
-      const listBoxElement = listBoxRef.current;
-      if (listBoxElement === null) { return null; }
-      return Object.assign(listBoxElement, {
-        _bkListBoxFocusFirst: () => { store.getState().focusItemAt('first'); },
-        _bkListBoxFocusLast: () => { store.getState().focusItemAt('last'); },
-      });
-    }, [store]);
-    
-    /* virtualItemKeys
-    // Keep the `virtualItemKeys` prop in sync with the store
-    React.useEffect(() => {
-      return store.subscribe(state => {
-        if (state.virtualItemKeys !== virtualItemKeys) {
-          state.setVirtualItemKeys(virtualItemKeys);
-        }
-      });
-    }, [store, virtualItemKeys]);
-    */
+    // React.useImperativeHandle<null | ListBoxRef, null | ListBoxRef>(propsRest.ref, () => {
+    //   const listBoxElement = listBoxRef.current;
+    //   if (listBoxElement === null) { return null; }
+    //   return Object.assign(listBoxElement, {
+    //     _bkListBoxFocusFirst: () => { store.getState().focusItemAt('first'); },
+    //     _bkListBoxFocusLast: () => { store.getState().focusItemAt('last'); },
+    //   });
+    // }, [store]);
     
     /* formatItemKey
     React.useEffect(() => {
@@ -289,6 +268,7 @@ export const ListBox = Object.assign(
       <listBoxStore.Provider value={listBoxStore.context}>
         <MenuList
           role="listbox"
+          aria-multiselectable="false"
           unstyled={unstyled}
           {...mergeProps(
             listBoxStore.props,

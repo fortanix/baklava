@@ -22,7 +22,7 @@
   &:not(#{$is-disabled}):hover {
     background: bk.$theme-dropdown-menu-menu-background-hover;
   }
-  &:is([role="menuitemradio"], [role="option"]) {
+  &:not([data-multiselect="true"]) {
     &:is([aria-selected="true"], [aria-checked="true"]) {
       background: bk.$theme-dropdown-menu-menu-background-hover;
       // stylelint-disable-next-line declaration-no-important -- Override accessibility layer

@@ -303,6 +303,7 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
       wrap={false}
       role={optionRole}
       {...{ [ariaSelectedProp]: selected || undefined }}
+      data-multiselect={selectionType === 'checkbox' ? 'true' : 'false'}
       aria-disabled={isDisabled || undefined}
       {...mergeProps(
         {
@@ -415,7 +416,7 @@ export type MenuListProps = Omit<ComponentProps<'div'>, 'role' | 'onSelect'> & {
 
 export const PlaceholderEmpty = (props: React.ComponentProps<'div'>) => (
   <div
-    role="menuitem"
+    role={getDefaultOptionRole(useMenuListContext().role)}
     tabIndex={-1}
     aria-disabled="true"
     {...props}

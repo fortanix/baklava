@@ -46,6 +46,10 @@ export const useListBoxContext = () => {
   if (!context) { throw new Error(`Missing 'ListBoxContext' provider`); }
   return context;
 };
+export const useListBoxSelector = <T>(selector: (state: ListBoxSlice) => T) => {
+  const { store } = useListBoxContext();
+  return useStore(store, selector);
+};
 
 export type ListBoxProps = ControllableStateDef<SelectedState>;
 export const useListBox = <E extends Element = Element>(props: ListBoxProps) => {

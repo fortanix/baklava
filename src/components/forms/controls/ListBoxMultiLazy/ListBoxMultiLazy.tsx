@@ -13,12 +13,12 @@ import {
   useVirtualizer,
 } from '@tanstack/react-virtual';
 
-import {
-  type ItemKey,
-  type VirtualItemKeys,
-  VirtualItemKeysUtil,
-  useListBoxSelector,
-} from '../ListBoxMulti/ListBoxStore.tsx';
+// import {
+//   type ItemKey,
+//   type VirtualItemKeys,
+//   VirtualItemKeysUtil,
+//   useListBoxSelector,
+// } from '../ListBoxMulti/ListBoxStore.tsx';
 import {
   type ListBoxMultiRef,
   type ItemDetails,
