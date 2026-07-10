@@ -203,7 +203,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     count: virtualItemKeys.length,
     getScrollElement: () => scrollElement,
     getItemKey,
-    estimateSize: () => 36,
+    estimateSize: () => 37,
     //directDomUpdates: true,
     overscan: 15,
     rangeExtractor: rangeExtractorWithFocused,

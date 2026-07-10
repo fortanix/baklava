@@ -98,7 +98,7 @@ export const ItemStatic = ({ unstyled, ...propsRest }: React.ComponentProps<type
 // Option item
 //
 
-type ItemOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionType'> & {
+type ItemOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionMode'> & {
   /** A unique identifier for this option. */
   itemKey: ItemKey,
 };
@@ -116,7 +116,7 @@ export const ItemOption = React.memo((props: ItemOptionProps) => {
   return (
     <MenuList.Option
       unstyled={unstyled}
-      selectionType="checkbox"
+      selectionMode="multiple"
       {...mergeProps(
         itemProps,
         { selected, onRequestSelected },

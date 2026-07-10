@@ -27,17 +27,20 @@ export { cl as MenuListClassNames };
 
 
 //
-// MenuListContext: used to pass component configuration from parent to items.
+// MenuListContext
 //
 
-type MenuListRole = 'menu' | 'listbox';
-type MenuListSelectionType = 'radio' | 'checkbox';
-const getDefaultOptionRole = (role: MenuListRole, selectionType?: undefined | MenuListSelectionType) => {
+type MenuListRole = 'none' | 'presentation' | 'menu' | 'listbox'; // TODO: add `menubar` support?
+type MenuListSelectionMode = 'single' | 'multiple';
+const getDefaultOptionRole = (role: MenuListRole, selectionMode?: undefined | MenuListSelectionMode) => {
   switch (role) {
+    case 'none':
+    case 'presentation':
+      throw new Error(`Unexpected option in presentational MenuList`);
     case 'menu': {
-      switch (selectionType) {
-        case 'radio': return 'menuitemradio';
-        case 'checkbox': return 'menuitemcheckbox';
+      switch (selectionMode) {
+        case 'single': return 'menuitemradio';
+        case 'multiple': return 'menuitemcheckbox';
         default: return 'menuitem';
       }
     }
@@ -46,6 +49,7 @@ const getDefaultOptionRole = (role: MenuListRole, selectionType?: undefined | Me
   }
 };
 
+/** Context used to pass component configuration from parent to items. */
 type MenuListContext = { role: MenuListRole, disabled: boolean };
 const MenuListContext = React.createContext<null | MenuListContext>(null);
 const useMenuListContext = (): MenuListContext => {
@@ -56,13 +60,50 @@ const useMenuListContext = (): MenuListContext => {
 
 
 //
-// Grouping elements
+// Grouping components
 //
 
-export type MenuListGroupProps = ComponentProps<'section'> & {
-  /** Whether this component should be unstyled. */
+type MenuListSegmentProps = ComponentProps<'section'> & {
+  /** Whether this component should be unstyled. Default: `false`. */
   unstyled?: undefined | boolean,
   
+  /** Whether the items in this segment are disabled or not. Default: inherit from context. */
+  disabled?: undefined | boolean,
+  
+  /** Whether the item should stick on scroll. Default: `false`. */
+  sticky?: undefined | false | 'start' | 'end',
+};
+/**
+ * A generic container of items. Unlike `Group`, does not have a `role`, an accessible name, or visible heading.
+ * Can be used to apply an effect to a group of items, for example sticky positioning.
+ */
+export const MenuListSegment = ({ unstyled, disabled, sticky = false, ...propsRest }: MenuListSegmentProps) => {
+  const context = useMenuListContext();
+  const isDisabled = disabled ?? context.disabled;
+  
+  const contextSegment = React.useMemo<MenuListContext>(() => ({
+    ...context,
+    disabled: isDisabled,
+  }), [context, isDisabled]);
+  
+  return (
+    <MenuListContext value={contextSegment}>
+      <section
+        //role="presentation" // Already the default
+        {...propsRest}
+        aria-disabled={isDisabled ? 'true' : 'false'}
+        className={cx(
+          { [cl['bk-menu-list__segment']]: !unstyled },
+          { [cl['bk-menu-list__sticky--start']]: sticky === 'start' },
+          { [cl['bk-menu-list__sticky--end']]: sticky === 'end' },
+          propsRest.className,
+        )}
+      />
+    </MenuListContext>
+  );
+};
+
+export type MenuListGroupProps = Omit<MenuListSegmentProps, 'sticky'> & {
   /**
    * An accessible name for this group. Required. Can be set to `null` if the label is provided through implicit means,
    * or if an `aria-labelledby` is used instead.
@@ -72,89 +113,60 @@ export type MenuListGroupProps = ComponentProps<'section'> & {
   /** A heading to display. Optional. If not defined, the `label` will be displayed. */
   heading?: undefined | React.ReactNode,
   
-  /** Whether the action should stick on scroll. Default: 'start'. */
-  sticky?: undefined | false | 'start',
+  /** Whether the heading should be sticky when scrolling. Default: `true`. */
+  stickyHeading?: undefined | boolean,
   
-  /** An icon to be displayed before the label. */
-  icon?: undefined | IconName,
-  
-  /** Custom icon component. */
-  Icon?: undefined | MenuListIcon,
+  /** Additional props to pass to the group heading element. */
+  headingProps?: undefined | React.ComponentProps<typeof H6>,
 };
 /**
- * A group element that can contain list options or other groups.
+ * A group element, can contain menu items and/or other groups.
  */
 export const MenuListGroup = (props: MenuListGroupProps) => {
-  const { unstyled, label, heading, icon, sticky = 'start', Icon = BkIcon, ...propsRest } = props;
-  
-  const id = React.useId();
-  const ariaProps = {
-    'aria-label': heading === null ? label : undefined,
-    'aria-labelledby': heading === null ? undefined : `${id}-heading`,
-  };
+  const { unstyled, label, heading, stickyHeading = true, headingProps = {}, ...propsRest } = props;
   
   const headingContent = heading ?? (label !== null ? label : null);
   
+  const id = React.useId();
+  const headingId = headingProps.id ?? `${id}-heading`;
+  const ariaProps = {
+    'aria-labelledby': headingContent ? headingId : undefined,
+  };
+  
   return (
-    // biome-ignore lint/a11y/useSemanticElements: Using `role="group"` instead of `<fieldset>`, it's not a form field
-    <section
+    <MenuListSegment
+      unstyled={unstyled}
       role="group"
       {...mergeProps(ariaProps, propsRest)}
-      className={cx(
-        { [cl['bk-menu-list__group']]: !unstyled },
-        propsRest.className,
-      )}
+      sticky={false}
     >
       {headingContent !== null &&
         <H6 unstyled // FIXME: hardcoded level 6 heading
-          id={`${id}-heading`}
+          id={headingId}
+          {...headingProps}
           className={cx(
             cl['bk-menu-list__item'],
             cl['bk-menu-list__item--heading'],
+            { [cl['bk-menu-list__sticky--start']]: stickyHeading },
+            headingProps.className,
           )}
         >
-          {icon && <Icon icon={icon} className={cl['bk-menu-list__item__icon']}/>}
           {headingContent}
         </H6>
       }
       
       {propsRest.children}
-    </section>
+    </MenuListSegment>
   );
 };
 
-type MenuListSegmentProps = ComponentProps<'section'> & {
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
-  
-  /** Whether the item should stick on scroll. Default: `false`. */
-  sticky?: undefined | 'start' | 'end',
-};
-/**
- * A visual-only container of items. Unlike `Group`, does not have any semantics, an accessible name, or visible
- * heading. Can be used to apply an effect to a group of items, for example sticky positioning.
- */
-export const MenuListSegment = ({ unstyled, sticky, ...propsRest }: MenuListSegmentProps) => (
-  <section
-    //role="presentation" // Already the default
-    {...propsRest}
-    className={cx(
-      { [cl['bk-menu-list__group']]: !unstyled },
-      { [cl['bk-menu-list__group--sticky']]: typeof sticky === 'string' },
-      { [cl['bk-menu-list__group--sticky-start']]: sticky === 'start' },
-      { [cl['bk-menu-list__group--sticky-end']]: sticky === 'end' },
-      propsRest.className,
-    )}
-  />
-);
-
 
 //
-// Static item
+// Item components
 //
 
 type MenuListItemStaticProps = ComponentProps<'div'> & {
-  /** Whether this component should be unstyled. */
+  /** Whether this component should be unstyled. Default: `false`. */
   unstyled?: undefined | boolean,
   
   /** Whether to display the static text as muted. Default: `false`. */
@@ -162,13 +174,12 @@ type MenuListItemStaticProps = ComponentProps<'div'> & {
 };
 /**
  * A static item, that can be customized for any presentational content (not affected by store state).
- * 
- * Important: since this is inside a `role="menulist"`, the static content should be presentational only. There should
- * be no interactive elements or other semantic content, only presentational content.
  */
 export const MenuListItemStatic = ({ unstyled, muted, ...propsRest }: MenuListItemStaticProps) => (
   <div
     //role="presentation" // Already the default
+    // @ts-ignore
+    focusgroup="none" // Exclude static items (and any focusable items within) from the focus group
     {...propsRest}
     className={cx(
       { [cl['bk-menu-list__item']]: !unstyled },
@@ -178,11 +189,6 @@ export const MenuListItemStatic = ({ unstyled, muted, ...propsRest }: MenuListIt
     )}
   />
 );
-
-
-//
-// MenuListItemAction
-//
 
 type MenuListItemActionProps = Omit<ComponentProps<typeof Button>, 'kind' | 'variant' | 'onSelect'> & {
   /** How to decorate the icon. Default: undefined (i.e. no decoration). */
@@ -243,14 +249,9 @@ export const MenuListItemAction = (props: MenuListItemActionProps) => {
   );
 };
 
-
-//
-// MenuListItemOption
-//
-
 type MenuListItemOptionProps = Omit<ComponentProps<typeof Button>, 'kind' | 'variant' | 'onSelect'> & {
   /** Whether to display this as a radio option (single select) or a checkbox option (multiple select). */
-  selectionType: MenuListSelectionType,
+  selectionMode: MenuListSelectionMode,
   
   /** Whether this element is currently selected. */
   selected?: undefined | boolean,
@@ -270,7 +271,7 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
     className,
     disabled,
     nonactive,
-    selectionType,
+    selectionMode,
     selected = false,
     onRequestSelected,
     iconDecoration,
@@ -282,9 +283,9 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
   const isDisabled = disabled || nonactive || context.disabled;
   const handlePress = React.useCallback(() => {
     if (isDisabled) { return; }
-    if (selectionType === 'radio' && selected) { return; }
+    if (selectionMode === 'single' && selected) { return; }
     onRequestSelected?.();
-  }, [isDisabled, selectionType, selected, onRequestSelected]);
+  }, [isDisabled, selectionMode, selected, onRequestSelected]);
   
   const iconProps = React.useMemo<undefined | { decoration: IconDecoration }>(() => {
     if (iconDecoration === 'highlight') {
@@ -292,7 +293,7 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
     }
   }, [iconDecoration]);
   
-  const optionRole = getDefaultOptionRole(context.role, selectionType);
+  const optionRole = getDefaultOptionRole(context.role, selectionMode);
   
   // For the "selected state" aria prop, use either `aria-selected` or `aria-checked`, depending on the role
   const ariaSelectedProp = optionRole === 'option' ? 'aria-selected' : 'aria-checked';
@@ -303,7 +304,7 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
       wrap={false}
       role={optionRole}
       {...{ [ariaSelectedProp]: selected || undefined }}
-      data-multiselect={selectionType === 'checkbox' ? 'true' : 'false'}
+      data-multiselect={selectionMode === 'multiple' ? 'true' : 'false'}
       aria-disabled={isDisabled || undefined}
       {...mergeProps(
         {
@@ -324,18 +325,15 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
       disabled={false} // Never use `disabled`, only use `nonactive`, so that we still allow focus
       nonactive={isDisabled}
     >
-      {selectionType === 'checkbox' &&
-        <Checkbox checked={selected} tabIndex={-1} className={cx(cl['bk-menu-list__item__checkbox'])}/>
+      {selectionMode === 'multiple' &&
+        <Checkbox tabIndex={-1} checked={selected} disabled={isDisabled}
+          className={cx(cl['bk-menu-list__item__checkbox'])}
+        />
       }
       {propsRest.children ?? propsRest.label}
     </Button>
   );
 };
-
-
-//
-// MenuListItemLink
-//
 
 type MenuListItemLinkProps = Omit<ComponentProps<typeof LinkAsButton>, 'kind'>;
 /**
@@ -382,38 +380,6 @@ export const MenuListItemLink = (props: MenuListItemLinkProps) => {
 // Menu list
 //
 
-export type MenuListProps = Omit<ComponentProps<'div'>, 'role' | 'onSelect'> & {
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
-  
-  /** The role for this menu. Currently, only `menu` and `listbox` are supported. Default: `"menu"`. */
-  role?: undefined | MenuListRole,
-  
-  /**
-   * An accessible name for this menu list. Required. Can be set to `null` if the label is provided through implicit
-   * means, or if an `aria-labelledby` is used instead.
-  */
-  label: null | string,
-  
-  /** The orientation of the menu list, either block or inline. Default: `"block"`. */
-  orientation?: undefined | 'inline' | 'block',
-  
-  /** The (inline) size of the menu list. Optional. Default: `medium`. */
-  size?: undefined | 'shrink' | 'small' | 'medium' | 'large',
-  
-  /** Whether the menu list is disabled or not. Default: `false`. */
-  disabled?: undefined | boolean,
-  
-  /** The current status of the menu list. Default: `ready`. */
-  status?: undefined | 'ready' | 'loading',
-  
-  /** Whether the menu is considered empty (no items). When empty, the `placeholderEmpty` is shown. Default: `false`. */
-  empty?: undefined | boolean,
-  
-  /** A placeholder message to display when there are no items in the list. Set to `null` to prevent showing at all. */
-  placeholderEmpty?: undefined | React.ReactNode,
-};
-
 export const PlaceholderEmpty = (props: React.ComponentProps<'div'>) => (
   <div
     role={getDefaultOptionRole(useMenuListContext().role)}
@@ -441,12 +407,46 @@ export const PlaceholderLoading = (props: React.ComponentProps<'span'>) => (
   </span>
 );
 
+export type MenuListProps = Omit<ComponentProps<'div'>, 'role' | 'onSelect'> & {
+  /** Whether this component should be unstyled. Default: `false`. */
+  unstyled?: undefined | boolean,
+  
+  /** The role for this menu. Currently, only `menu` and `listbox` are supported. Default: `"menu"`. */
+  role?: undefined | MenuListRole,
+  
+  /**
+   * An accessible name for this menu list. Required. Can be set to `null` if the label is provided through implicit
+   * means, or if an `aria-labelledby` is used instead.
+  */
+  label: null | string,
+  
+  /** The orientation of the menu list, either block or inline. Default: `"block"`. */
+  orientation?: undefined | 'inline' | 'block',
+  
+  /** The (inline) size of the menu list. Default: `medium`. */
+  size?: undefined | 'shrink' | 'small' | 'medium' | 'large',
+  
+  /** Whether this component is meant to be embedded in another component. Default: `false`. */
+  embedded?: undefined | boolean,
+  
+  /** Whether the menu list is disabled or not. Default: `false`. */
+  disabled?: undefined | boolean,
+  
+  /** The current status of the menu list. Default: `ready`. */
+  status?: undefined | 'ready' | 'loading',
+  
+  /** Whether the menu is considered empty (no items). When empty, the `placeholderEmpty` is shown. Default: `false`. */
+  empty?: undefined | boolean,
+  
+  /** A placeholder message to display when there are no items in the list. Set to `null` to prevent showing at all. */
+  placeholderEmpty?: undefined | React.ReactNode,
+};
 /**
  * A menu list is a composite component, presenting a list of choices to the user. Each choice corresponds to a menu
  * item, which can be an action button, a selectable option, a link, etc. Items may be grouped together.
  * 
- * The `MenuList` component does not come with any built-in state management, it is visual only. Other components like
- * `ListBox` and `Menu` build on top of this component.
+ * `MenuList` is a presentational-only component, and does not come with any built-in state management. Other
+ * components like `ListBox` and `Menu` build on top of this component to add state management.
  * 
  * @see {@link https://w3c.github.io/aria/#menu}
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/menu_role}
@@ -460,38 +460,39 @@ export const MenuList = Object.assign(
       label,
       orientation = 'block',
       size = 'medium',
+      embedded = false,
       disabled = false,
       status = 'ready',
       empty = false,
       placeholderEmpty = 'No items available',
-      footer,
       ...propsRest
     } = props;
     
     const scrollerProps = useScroller();
     const focusGroupProps = useFocusGroup({ focusGroup: `${role} ${orientation} nowrap` });
+    const isPresentational = ['none', 'presentation'].includes(role);
     
     const isEmpty = empty || !children;
     const isLoading = status === 'loading';
     
-    const context = React.useMemo(() => ({ role, disabled }), [role, disabled]);
-    
-    const placeholderItemRole = getDefaultOptionRole(role);
+    const context = React.useMemo<MenuListContext>(() => ({ role, disabled }), [role, disabled]);
     
     return (
       <MenuListContext value={context}>
-        {/* biome-ignore lint/a11y/useAriaPropsSupportedByRole: `aria-label` is supported on `role="menu"`. */}
+        {/* biome-ignore lint/a11y/useAriaPropsSupportedByRole: False positive, `aria-label` is supported for `role` */}
         <div
           role={role}
           aria-label={typeof label === 'string' ? label : undefined}
           aria-busy={isLoading}
+          aria-orientation={orientation === 'block' ? 'vertical' : 'horizontal'} // Take into account `writing-mode`?
           {...mergeProps(
-            scrollerProps,
-            focusGroupProps,
+            embedded ? {} : scrollerProps,
+            isPresentational ? {} : focusGroupProps,
             {
               className: cx(
                 'bk',
                 { [cl['bk-menu-list']]: !unstyled },
+                { [cl['bk-menu-list--embedded']]: embedded }, // TODO
                 { [cl['bk-menu-list--empty']]: isEmpty },
                 { [cl['bk-menu-list--size-shrink']]: size === 'shrink' },
                 { [cl['bk-menu-list--size-small']]: size === 'small' },
@@ -512,7 +513,7 @@ export const MenuList = Object.assign(
             https://github.com/dequelabs/axe-core/issues/2339
           */}
           {isEmpty && placeholderEmpty && status === 'ready' &&
-            <PlaceholderEmpty role={placeholderItemRole}>{placeholderEmpty}</PlaceholderEmpty>
+            <PlaceholderEmpty role={getDefaultOptionRole(role)}>{placeholderEmpty}</PlaceholderEmpty>
           }
           
           {isLoading && <PlaceholderLoading/>}

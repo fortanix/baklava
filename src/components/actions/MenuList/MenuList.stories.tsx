@@ -17,8 +17,8 @@ import { MenuList } from './MenuList.tsx';
 
 const notifyAction = (title: string) => () => { notify.info(`Activated the ${title}`); };
 const propsAction = { onPress: notifyAction('action button') } as const;
-const propsRadio = { selectionType: 'radio', onRequestSelected: notifyAction('option') } as const;
-const propsCheckbox = { selectionType: 'checkbox', onRequestSelected: notifyAction('option') } as const;
+const propsRadio = { selectionMode: 'single', onRequestSelected: notifyAction('option') } as const;
+const propsCheckbox = { selectionMode: 'multiple', onRequestSelected: notifyAction('option') } as const;
 const propsLink = {
   href: '#',
   onClick: (event: React.MouseEvent) => { event.preventDefault(); notifyAction('link')(); },
@@ -39,7 +39,7 @@ export default {
     label: 'Test menu list',
     children: (
       <>
-        {fruits.map((fruit) =>
+        {fruits.map(fruit =>
           <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
         )}
       </>
@@ -70,7 +70,7 @@ export const MenuListLoading: Story = {
   args: {
     children: (
       <>
-        {fruits.slice(0, 2).map((fruit) =>
+        {fruits.slice(0, 2).map(fruit =>
           <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
         )}
       </>
@@ -97,29 +97,9 @@ export const MenuListWithOverflow: Story = {
     children: (
       <>
         <MenuList.Option {...propsRadio} label={loremIpsum()}/>
-        {fruits.map((fruit) =>
+        {fruits.map(fruit =>
           <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
         )}
-      </>
-    ),
-  },
-};
-
-export const MenuListWithGroups: Story = {
-  args: {
-    children: (
-      <>
-        <MenuList.Option {...propsRadio} selectionType="radio" label="No preference"/>
-        <MenuList.Group label="Fruits 1">
-          {fruits.slice(0, 5).map((fruit) =>
-            <MenuList.Option {...propsRadio} key={fruit} selected={fruit === 'Cherry'} label={fruit}/>
-          )}
-        </MenuList.Group>
-        <MenuList.Group label="Fruits 2">
-          {fruits.slice(5, 10).map((fruit) =>
-            <MenuList.Option {...propsRadio} key={fruit} selected={fruit === 'Melon'} label={fruit}/>
-          )}
-        </MenuList.Group>
       </>
     ),
   },
@@ -133,7 +113,7 @@ export const MenuListWithSegments: Story = {
           <MenuList.Static>This item is in a sticky segment</MenuList.Static>
           <MenuList.Static>Scroll the list, and we should stick to the top</MenuList.Static>
         </MenuList.Segment>
-        {fruits.map((fruit) =>
+        {fruits.map(fruit =>
           <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
         )}
         <MenuList.Segment sticky="end">
@@ -145,40 +125,87 @@ export const MenuListWithSegments: Story = {
   },
 };
 
-export const MenuListWithHeaderAndFooter: Story = {
+export const MenuListWithSegmentsDisabled: Story = {
   args: {
     children: (
       <>
-        <MenuList.Segment sticky="start">
-        <MenuList.Static><InputSearch style={{ flexGrow: 1 }} placeholder="Search"/></MenuList.Static>
-        </MenuList.Segment>
-        {fruits.map((fruit) =>
-          <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
-        )}
-        <MenuList.Segment sticky="end">
-          <MenuList.Action {...propsAction} label="Footer action 1"/>
-          <MenuList.Action {...propsAction} label="Footer action 2"/>
+        <MenuList.Option {...propsRadio} label="This option should be enabled"/>
+        <MenuList.Segment disabled>
+          <MenuList.Option {...propsRadio} label="This option should be disabled"/>
+          <MenuList.Segment>
+            <MenuList.Option {...propsRadio} label="This option should also be disabled"/>
+          </MenuList.Segment>
+          <MenuList.Segment disabled={false}>
+            <MenuList.Option {...propsRadio} label="This option should be enabled"/>
+          </MenuList.Segment>
         </MenuList.Segment>
       </>
     ),
   },
 };
 
-export const MenuListWithHeaderAndFooterEmpty: Story = {
+export const MenuListWithGroups: Story = {
   args: {
-    placeholderEmpty: <><Icon icon="user"/> No users to select</>,
-    empty: true,
     children: (
       <>
-        <MenuList.Segment sticky="start">
-          <MenuList.Static><InputSearch style={{ flexGrow: 1 }} placeholder="Search"/></MenuList.Static>
-        </MenuList.Segment>
-        
-        {/* FIXME: need to move this down to the bottom, even when there is an empty placeholder */}
-        <MenuList.Segment sticky="end">
-          <MenuList.Action {...propsAction} label="Footer action 1"/>
-          <MenuList.Action {...propsAction} label="Footer action 2"/>
-        </MenuList.Segment>
+        <MenuList.Option {...propsRadio} label="No preference"/>
+        <MenuList.Group label="Flavor 1">
+          {fruits.slice(0, 5).map(fruit =>
+            <MenuList.Option {...propsRadio} key={fruit} selected={fruit === 'Cherry'} label={fruit}/>
+          )}
+        </MenuList.Group>
+        <MenuList.Group label="Flavor 2">
+          {fruits.slice(5, -2).map(fruit =>
+            <MenuList.Option {...propsRadio} key={fruit} selected={fruit === 'Melon'} label={fruit}/>
+          )}
+        </MenuList.Group>
+        <MenuList.Group label="Extra flavors (premium only)" disabled
+          heading={<><Icon inline icon="star-empty"/> Extra flavors (premium only)</>}
+        >
+          {fruits.slice(-2).map(fruit =>
+            <MenuList.Option {...propsCheckbox} key={fruit} label={fruit}/>
+          )}
+        </MenuList.Group>
+      </>
+    ),
+  },
+};
+
+export const MenuListWithStaticItems: Story = {
+  args: {
+    role: 'none', // No menu items, so needs to have `role="none"`
+    children: (
+      <>
+        <MenuList.Static>Some static content</MenuList.Static>
+        <MenuList.Static>This text should be selectable</MenuList.Static>
+        <MenuList.Static>I can contain arbitrary content like icons: <Icon icon="bell"/></MenuList.Static>
+        <MenuList.Group label="Group">
+          <MenuList.Static>Static items can also be in a group</MenuList.Static>
+        </MenuList.Group>
+      </>
+    ),
+  },
+};
+
+/**
+ * `MenuList.Static` is excluded from the `focusgroup`. When a tab stop is included in a static item, it becomes
+ * a new intermediate tab stop that can be navigated to separately from the `focusgroup`. * In the following example,
+ * notice that sequential (tab) navigation will go from the first options, to the input, to the last options.
+ */
+export const MenuListWithIntermediateTabStop: Story = {
+  args: {
+    size: 'shrink',
+    children: (
+      <>
+        {fruits.slice(0, 4).map(fruit =>
+          <MenuList.Option {...propsRadio} key={fruit} label={fruit} selected={fruit === 'Blueberry'}/>
+        )}
+        <MenuList.Static>
+          <InputSearch placeholder="I am an intermediate tab stop" automaticResize/>
+        </MenuList.Static>
+        {fruits.slice(4, 8).map(fruit =>
+          <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
+        )}
       </>
     ),
   },
@@ -188,8 +215,22 @@ export const MenuListWithRadioOptions: Story = {
   args: {
     children: (
       <>
-        {fruits.map((fruit) =>
+        {fruits.map(fruit =>
           <MenuList.Option {...propsRadio} key={fruit} label={fruit} selected={fruit === 'Blueberry'}/>
+        )}
+      </>
+    ),
+  },
+};
+
+export const MenuListWithRadioOptionsDisabled: Story = {
+  args: {
+    children: (
+      <>
+        {fruits.map(fruit =>
+          <MenuList.Option {...propsRadio} key={fruit} label={fruit} selected={fruit === 'Blueberry'}
+            disabled={['Blueberry', 'Mango'].includes(fruit)}
+          />
         )}
       </>
     ),
@@ -200,9 +241,10 @@ export const MenuListWithCheckboxOptions: Story = {
   args: {
     children: (
       <>
-        {fruits.map((fruit) =>
+        {fruits.map(fruit =>
           <MenuList.Option {...propsCheckbox} key={fruit} label={fruit}
             selected={['Apple', 'Apricot', 'Melon', 'Orange'].includes(fruit)}
+            disabled={['Apricot', 'Blueberry'].includes(fruit)}
           />
         )}
       </>
@@ -236,40 +278,6 @@ export const MenuListWithLinks: Story = {
     ),
   },
 };
-
-export const MenuListWithStaticContent: Story = {
-  args: {
-    children: (
-      <>
-        <MenuList.Static>Some static content</MenuList.Static>
-        <MenuList.Static>This text should be selectable</MenuList.Static>
-        <MenuList.Static>I can contain arbitrary content like icons: <Icon icon="bell"/></MenuList.Static>
-        <MenuList.Group label="Group">
-          <MenuList.Static>Static items can also be in a group</MenuList.Static>
-        </MenuList.Group>
-      </>
-    ),
-  },
-};
-export const MenuListWithIntermediateTabStop: Story = {
-  args: {
-    size: 'shrink',
-    children: (
-      <>
-        {fruits.slice(0, 4).map((fruit) =>
-          <MenuList.Option {...propsRadio} key={fruit} label={fruit} selected={fruit === 'Blueberry'}/>
-        )}
-        {/* @ts-ignore */}
-        <MenuList.Static focusgroup="none">
-          <InputSearch placeholder="I am an intermediate tab stop" automaticResize/>
-        </MenuList.Static>
-        {fruits.slice(4, 8).map((fruit) =>
-          <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
-        )}
-      </>
-    ),
-  },
-}; 
 
 /** When viewing the accessibility tree for this menu list, the accessible name should by "My menu list". */
 export const MenuListWithVisibleLabel: Story = {
@@ -351,6 +359,45 @@ export const MenuListDisabled: Story = {
   },
 };
 
+export const MenuListWithHeaderAndFooter: Story = {
+  args: {
+    children: (
+      <>
+        <MenuList.Segment sticky="start">
+          <MenuList.Static><InputSearch style={{ flexGrow: 1 }} placeholder="Search"/></MenuList.Static>
+        </MenuList.Segment>
+        {fruits.map(fruit =>
+          <MenuList.Option {...propsCheckbox} key={fruit} label={fruit}/>
+        )}
+        <MenuList.Segment sticky="end">
+          <MenuList.Action {...propsAction} label="Footer action 1"/>
+          <MenuList.Action {...propsAction} label="Footer action 2"/>
+        </MenuList.Segment>
+      </>
+    ),
+  },
+};
+
+export const MenuListWithHeaderAndFooterEmpty: Story = {
+  args: {
+    placeholderEmpty: <><Icon icon="user"/> No users to select</>,
+    empty: true,
+    children: (
+      <>
+        <MenuList.Segment sticky="start">
+          <MenuList.Static><InputSearch style={{ flexGrow: 1 }} placeholder="Search"/></MenuList.Static>
+        </MenuList.Segment>
+        
+        {/* FIXME: need to move this down to the bottom, even when there is an empty placeholder */}
+        <MenuList.Segment sticky="end">
+          <MenuList.Action {...propsAction} label="Footer action 1"/>
+          <MenuList.Action {...propsAction} label="Footer action 2"/>
+        </MenuList.Segment>
+      </>
+    ),
+  },
+};
+
 export const MenuListWritingModeVertical: Story = {
   args: {
     style: { writingMode: 'vertical-rl' },
@@ -362,8 +409,17 @@ export const MenuListWritingModeVertical: Story = {
         <MenuList.Option {...propsRadio} label="バナナ"/>
         <MenuList.Option {...propsRadio} label="苺"/>
         <MenuList.Option {...propsRadio} label="マンゴー"/>
-        <MenuList.Option {...propsRadio} label="スイカ"/>
+        <MenuList.Option {...propsRadio} label="みかん"/>
+        <MenuList.Option {...propsRadio} label="もも"/>
+        <MenuList.Option {...propsRadio} label="メロン"/>
+        <MenuList.Option {...propsRadio} label="梨"/>
       </>
     ),
+  },
+};
+
+export const MenuListEmbedded: Story = {
+  args: {
+    embedded: true,
   },
 };

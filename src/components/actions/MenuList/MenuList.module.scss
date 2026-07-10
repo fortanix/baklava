@@ -4,7 +4,34 @@
 
 @use '../../../styling/defs.scss' as bk;
 
-@mixin menu-list-item-interactive($name) {
+@mixin menu-list-item-sticky($side: start) {
+  container-type: scroll-state;
+  position: sticky;
+  z-index: 2; // Needs to be higher than the `z-index` for `:focus-visible`
+  
+  &::before {
+    content: '';
+    z-index: -1; // Display behind the items
+    display: block;
+    position: absolute;
+    inset: 0;
+    
+    @container scroll-state(stuck: block-#{$side}) {
+      --shadow-offset: calc(#{if(sass($side == start): 1; else: -1)} * var(--bk-menu-list-border-width));
+      box-shadow:
+        0 var(--shadow-offset) bk.$theme-dropdown-menu-menu-border-default,
+        bk.scroll-box-shadow($side);
+    }
+  }
+  
+  @if $side == start {
+    inset-block-start: 0;
+  } @else {
+    inset-block-end: calc(-1 * var(--bk-menu-list-chin-size));
+  }
+}
+
+@mixin menu-list-item-interactive {
   $is-disabled: ':is([aria-disabled="true"], :disabled, :global(.nonactive))';
   
   @include bk.focus-hidden; // Make sure the default focus styling is not applied
@@ -13,15 +40,12 @@
     margin-inline-end: 0.3ch;
     padding: 0.3em; // Keep a consistent padding for both decorated and non-decorated
   }
-  &.#{$name}__item--icon-highlight :global(.icon--prefix) {
+  &.bk-menu-list__item--icon-highlight :global(.icon--prefix) {
     --bk-icon-accent-color: color-mix(
       in oklch, #{bk.$theme-dropdown-menu-menu-icon-background-default}, 30% transparent
     );
   }
   
-  &:not(#{$is-disabled}):hover {
-    background: bk.$theme-dropdown-menu-menu-background-hover;
-  }
   &:not([data-multiselect="true"]) {
     &:is([aria-selected="true"], [aria-checked="true"]) {
       background: bk.$theme-dropdown-menu-menu-background-hover;
@@ -39,12 +63,16 @@
     cursor: not-allowed;
     color: bk.$theme-text-small-text-subtle;
   }
-  &:focus {
-    &:not(.#{$name}__item--nonactive) {
-      background: bk.$theme-dropdown-menu-menu-background-focused;
+  &:not(#{$is-disabled}) {
+    &:hover {
+      background: bk.$theme-dropdown-menu-menu-background-hover;
+    }
+    &:focus {
+      &:not(.bk-menu-list__item--nonactive) {
+        background: bk.$theme-dropdown-menu-menu-background-focused;
+      }
     }
   }
-  
   &:focus-visible {
     z-index: 1; // Render the outline over the next item
     background: bk.$theme-dropdown-menu-menu-background-focused;
@@ -56,187 +84,165 @@
   }
 }
 
-@mixin menu-list($name) {
-  --#{$name}-border-width: #{bk.$size-hairline};
-  --#{$name}-chin-size: #{bk.$spacing-2}; // There's a slight "chin" at the end of the list box
-  --#{$name}-item-padding-inline: #{bk.$spacing-3};
-  --#{$name}-item-padding-block: #{bk.$spacing-2};
-  --#{$name}-item-block-size: calc(var(--#{$name}-border-width) + var(--#{$name}-item-padding-block) * 2 + 1lh);
-  
-  overflow: hidden;
-  scroll-behavior: smooth; // Smooth scrolling when programatically focusing an item
-  
-  // Add a scroll padding, so that focusing items will scroll them into view even if there are sticky items
-  --sticky-items-start: 1; // Increase this if there is more than one sticky item at the start
-  --sticky-items-end: 1; // Increase this if there is more than one sticky item at the end
-  scroll-padding-block-start: calc(var(--sticky-items-start) * var(--#{$name}-item-block-size));
-  scroll-padding-block-end: calc(
-    var(--sticky-items-end) * var(--#{$name}-item-block-size) + var(--#{$name}-chin-size)
-  );
-  
-  // Container
-  background: bk.$theme-dropdown-menu-menu-background-default;
-  color: bk.$theme-dropdown-menu-menu-text-default;
-  
-  &:not(.#{$name}--embedded) {
-    border: bk.$size-hairline solid bk.$theme-dropdown-menu-menu-border-default;
-    border-radius: bk.$radius-3;
-    
-    // For use in popovers
-    &[data-placement^="top"] { border-end-start-radius: 0; border-end-end-radius: 0; }
-    &[data-placement^="right"] { border-start-start-radius: 0; border-end-start-radius: 0; }
-    &[data-placement^="bottom"] { border-start-start-radius: 0; border-start-end-radius: 0; }
-    &[data-placement^="left"] { border-start-end-radius: 0; border-end-end-radius: 0; }
-  }
-  
-  min-block-size: 2lh;
-  max-block-size: 18lh;
-  padding-block-end: var(--#{$name}-chin-size);
-  
-  &.#{$name}--size-shrink {
-    min-inline-size: 0;
-    max-inline-size: 30svi;
-  }
-  &.#{$name}--size-small {
-    min-inline-size: 18ch;
-    max-inline-size: 30svi;
-  }
-  &.#{$name}--size-medium {
-    min-inline-size: 28ch;
-    max-inline-size: 40svi;
-  }
-  &.#{$name}--size-large {
-    min-inline-size: 38ch;
-    max-inline-size: 70svi;
-  }
-  
-  // --min-block-size: 25lh;
-  // @supports (min-block-size: calc-size(fit-content, min(size, 1em))) {
-  //   min-block-size: calc-size(fit-content, min(size, var(--min-block-size)));
-  // }
-  
-  // Target self and all `role="group"` elements within the current component scope
-  @scope (&) to (.bk-isolate, .bk) {
-    &, .#{$name}__group {
-      display: grid;
-      align-items: stretch;
-    }
-  }
-  
-  --#{$name}-group-indent: 0em; // Note: need to give the unit here otherwise the `calc()` will fail
-  .#{$name}__group {
-    // Workaround for a weird rounding bug in Chrome where the border doesn't appear for groups sometimes
-    margin-block: 1px;
-    
-    &[role="group"] {
-      --#{$name}-group-indent: #{bk.$spacing-2};
-    }
-    
-    background: bk.$theme-dropdown-menu-menu-background-default;
-    
-    &.#{$name}__group--sticky {
-      container-type: scroll-state;
-      position: sticky;
-      z-index: 1;
-      
-      @media (prefers-reduced-motion: no-preference) {
-        // FIXME: this conflicts with `menuitemradio` box-shadow
-        transition: box-shadow 150ms ease-in;
-      }
-      
-      &.#{$name}__group--sticky-start {
-        inset-block-start: 0;
-        
-        > :last-child {
-          @container scroll-state(stuck: block-start) {
-            @include bk.scroll-shadow($dir: start);
-            border-block-end: var(--#{$name}-border-width) solid bk.$theme-dropdown-menu-menu-border-default;
-          }
-        }
-      }
-      &.#{$name}__group--sticky-end {
-        inset-block-end: calc(-1 * var(--#{$name}-chin-size));
-        padding-block-end: var(--#{$name}-chin-size);
-        
-        > :first-child {
-          @container scroll-state(stuck: block-end) { @include bk.scroll-shadow($dir: end); }
-        }
-      }
-    }
-  }
-  
-  .#{$name}__item {
-    // Virtualization
-    // https://github.com/TanStack/virtual/issues/860
-    contain: paint;
-    will-change: transform;
-    
-    // FIXME: enabling this causes a strange issue with keyboard navigation (scrolling goes too far down/up)
-    //content-visibility: auto;
-    // Border + padding + content
-    //contain-intrinsic-block-size: calc(bk.rem-from-px(1) + var(--#{$name}-item-padding-block) * 2 + 1lh);
-    
-    padding: var(--#{$name}-item-padding-block) var(--#{$name}-item-padding-inline);
-    
-    &:not(.#{$name}__item--heading) {
-      // The `group-indent` can be set to indent items in a group a bit more
-      padding-inline-start: calc(var(--#{$name}-item-padding-inline) + var(--#{$name}-group-indent, 0));
-    }
-  
-    background: bk.$theme-dropdown-menu-menu-background-default;
-    
-    display: flex;
-    align-items: center;
-    gap: 1ch;
-    
-    &.#{$name}__item--heading, &.#{$name}__item--muted {
-      user-select: none;
-      
-      color: bk.$theme-text-small-text-subtle;
-      font-size: bk.$font-size-s;
-      text-transform: uppercase;
-    }
-    
-    &.#{$name}__item--interactive {
-      @include menu-list-item-interactive($name);
-    }
-    
-    &.#{$name}__item--action, &.#{$name}__item--link {
-      @include bk.font(bk.$font-family-display, bk.$font-weight-semibold);
-      font-size: bk.$font-size-s;
-      text-transform: uppercase;
-      color: #{bk.$theme-button-tertiary-text-default};
-    }
-    
-    &.#{$name}__item--option {
-      .bk-menu-list__item__checkbox { margin-inline-end: 1.2ch; }
-    }
-    
-    &.#{$name}__item--loading {
-      user-select: none;
-      
-      color: bk.$theme-text-small-text-subtle;
-      font-size: bk.$font-size-s;
-      text-transform: uppercase;
-    }
-  }
-  
-  // Separator between consecutive items/groups
-  :is(&, .#{$name}__group) > :nth-child(n + 2 of :is(.#{$name}__item, .#{$name}__group)) {
-    border-block-start: var(--#{$name}-border-width) solid bk.$theme-dropdown-menu-menu-border-default;
-  }
-  
-  &.#{$name}--empty {
-    .#{$name}__empty-placeholder {
-      color: bk.$theme-dropdown-menu-menu-text-empty;
-    }
-  }
-}
-
 @layer baklava.components {
   .bk-menu-list {
     @include bk.component-base(bk-menu-list);
     
-    @include menu-list(bk-menu-list);
+    --bk-menu-list-border-width: #{bk.$size-hairline};
+    --bk-menu-list-chin-size: #{bk.$spacing-2}; // There's a slight "chin" at the end of the list box
+    --bk-menu-list-item-padding-inline: #{bk.$spacing-3};
+    --bk-menu-list-item-padding-block: #{bk.$spacing-2};
+    --bk-menu-list-item-block-size: calc(
+      var(--bk-menu-list-border-width) + var(--bk-menu-list-item-padding-block) * 2 + 1lh
+    );
+    
+    overflow: hidden;
+    scroll-behavior: smooth; // Smooth scrolling when programatically focusing an item
+    
+    // Add a scroll padding, so that focusing items will scroll them into view even if there are sticky items
+    --sticky-items-start: 1; // Increase this if there is more than one sticky item at the start
+    --sticky-items-end: 1; // Increase this if there is more than one sticky item at the end
+    scroll-padding-block-start: calc(var(--sticky-items-start) * var(--bk-menu-list-item-block-size));
+    scroll-padding-block-end: calc(
+      var(--sticky-items-end) * var(--bk-menu-list-item-block-size) + var(--bk-menu-list-chin-size)
+    );
+    
+    // Container
+    background: bk.$theme-dropdown-menu-menu-background-default;
+    color: bk.$theme-dropdown-menu-menu-text-default;
+    
+    &:not(.bk-menu-list--embedded) {
+      min-block-size: 2lh;
+      max-block-size: 18lh;
+      padding-block-end: var(--bk-menu-list-chin-size);
+      border: bk.$size-hairline solid bk.$theme-dropdown-menu-menu-border-default;
+      border-radius: bk.$radius-3;
+      
+      // For use in popovers
+      &[data-placement^="top"] { border-end-start-radius: 0; border-end-end-radius: 0; }
+      &[data-placement^="right"] { border-start-start-radius: 0; border-end-start-radius: 0; }
+      &[data-placement^="bottom"] { border-start-start-radius: 0; border-start-end-radius: 0; }
+      &[data-placement^="left"] { border-start-end-radius: 0; border-end-end-radius: 0; }
+    }
+    
+    &.bk-menu-list--size-shrink {
+      min-inline-size: 0;
+      max-inline-size: 30svi;
+    }
+    &.bk-menu-list--size-small {
+      min-inline-size: 18ch;
+      max-inline-size: 30svi;
+    }
+    &.bk-menu-list--size-medium {
+      min-inline-size: 28ch;
+      max-inline-size: 40svi;
+    }
+    &.bk-menu-list--size-large {
+      min-inline-size: 38ch;
+      max-inline-size: 70svi;
+    }
+    
+    // --min-block-size: 25lh;
+    // @supports (min-block-size: calc-size(fit-content, min(size, 1em))) {
+    //   min-block-size: calc-size(fit-content, min(size, var(--min-block-size)));
+    // }
+    
+    // Target self and all segments within the current component scope
+    @scope (&) to (.bk-isolate, .bk) {
+      &, .bk-menu-list__segment {
+        display: grid;
+        align-items: stretch;
+      }
+    }
+    
+    --bk-menu-list-segment-indent: 0em; // Note: need to give the unit here otherwise the `calc()` will fail
+    .bk-menu-list__segment {
+      &[role="group"] {
+        --bk-menu-list-segment-indent: #{bk.$spacing-2};
+      }
+      
+      background: bk.$theme-dropdown-menu-menu-background-default;
+    }
+    
+    .bk-menu-list__item {
+      // Workaround for a rounding issue in Chrome, where the 1px border is not always properly rendered
+      block-size: calc-size(auto, round(size, 1px)); // Round the height to the nearest pixel
+      
+      // FIXME: enabling this causes a strange issue with keyboard navigation (scrolling goes too far down/up)
+      //content-visibility: auto;
+      // Border + padding + content
+      //contain-intrinsic-block-size: calc(bk.rem-from-px(1) + var(--bk-menu-list-item-padding-block) * 2 + 1lh);
+      
+      padding: var(--bk-menu-list-item-padding-block) var(--bk-menu-list-item-padding-inline);
+      
+      &:not(.bk-menu-list__item--heading) {
+        // The `group-indent` can be set to indent items in a group a bit more
+        padding-inline-start: calc(var(--bk-menu-list-item-padding-inline) + var(--bk-menu-list-segment-indent, 0));
+      }
+    
+      background: bk.$theme-dropdown-menu-menu-background-default;
+      
+      display: flex;
+      align-items: center;
+      gap: 1ch;
+      
+      &.bk-menu-list__item--heading {
+        display: flex;
+        align-items: center;
+      }
+      &.bk-menu-list__item--heading, &.bk-menu-list__item--muted {
+        user-select: none;
+        
+        color: bk.$theme-text-small-text-subtle;
+        font-size: bk.$font-size-s;
+        text-transform: uppercase;
+      }
+      
+      &.bk-menu-list__item--interactive {
+        @include menu-list-item-interactive;
+      }
+      
+      &.bk-menu-list__item--action, &.bk-menu-list__item--link {
+        @include bk.font(bk.$font-family-display, bk.$font-weight-semibold);
+        font-size: bk.$font-size-s;
+        text-transform: uppercase;
+        color: #{bk.$theme-button-tertiary-text-default};
+      }
+      
+      &.bk-menu-list__item--option {
+        .bk-menu-list__item__checkbox { margin-inline-end: 1.2ch; }
+      }
+      
+      &.bk-menu-list__item--loading {
+        user-select: none;
+        
+        color: bk.$theme-text-small-text-subtle;
+        font-size: bk.$font-size-s;
+        text-transform: uppercase;
+      }
+    }
+    
+    // Separator between consecutive items/groups
+    :is(&, .bk-menu-list__segment) > :nth-child(n + 2 of :is(.bk-menu-list__item, .bk-menu-list__segment)) {
+      border-block-start: var(--bk-menu-list-border-width) solid bk.$theme-dropdown-menu-menu-border-default;
+    }
+    
+    &.bk-menu-list--empty {
+      .bk-menu-list__empty-placeholder {
+        color: bk.$theme-dropdown-menu-menu-text-empty;
+      }
+    }
+    
+    // Place footer content at the end of flex ordering, so that it is shown _after_ the empty/loading indicators
+    > .bk-menu-list__sticky--end { order: 1; }
+    
+    :is(.bk-menu-list__item, .bk-menu-list__segment) {
+      &.bk-menu-list__sticky--start {
+        @include menu-list-item-sticky(start);
+      }
+      &.bk-menu-list__sticky--end {
+        @include menu-list-item-sticky(end);
+      }
+    }
   }
 }
