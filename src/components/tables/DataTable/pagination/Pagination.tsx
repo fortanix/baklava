@@ -18,6 +18,7 @@ import cl from './Pagination.module.scss';
 
 
 const parsePageNumber = (pageBuffer: string, max: number): null | number => {
+  if (pageBuffer.trim() === '') { return null; }
   const num = Math.floor(Number(pageBuffer));
   if (!Number.isFinite(num)) { return null; }
   if (!Number.isSafeInteger(num)) { return null; }
