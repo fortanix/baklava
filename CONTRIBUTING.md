@@ -19,7 +19,7 @@ format `<username>/<date>-<summary>`, for example `mkrause/241129-upgrade-depend
 To create a new release:
 
 - First, create a release PR:
-  - Create a release branch named `release/v1.0.0-beta-yyyymmdd`.
+  - Create a release branch named `release/vx.y.z`.
   - Bump the version in `package.json.js`.
   - Run `npm run install-project` to update the `package.json` and `package-lock.json` files.
   - Commit the changes, and push the branch. The commit message should be "Release vx.y.z".
