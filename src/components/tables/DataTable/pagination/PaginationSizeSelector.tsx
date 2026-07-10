@@ -19,7 +19,6 @@ export const defaultPageSizeOptions: Array<PageSizeOption> = [10, 25, 50, 100];
 type PaginationSizeSelectorProps = {
   pageSizeOptions?: undefined | Array<PageSizeOption>,
   pageSizeLabel?: undefined | string,
-  setPageIndexIndicator?: undefined | React.Dispatch<React.SetStateAction<number>>,
 };
 export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
   const { pageSizeOptions = defaultPageSizeOptions, pageSizeLabel = 'Rows per page' } = props;
@@ -35,21 +34,10 @@ export const PaginationSizeSelector = (props: PaginationSizeSelectorProps) => {
         className={cx(cl['page-size-selector__dropdown'])}
         items={pageSizeOptions.map((pageSize) => (
           <MenuProvider.Option
-            key={pageSize.toString()}
-            itemKey={pageSize.toString()}
-            label={`${pageSize}`}
-            onSelect={() => {
-              table.setPageSize(pageSize);
-              if (props.setPageIndexIndicator) {
-                // manually update the page index
-                const oldPageSize = table.state.pageSize;
-                const newPageSize = pageSize;
-                const oldPageIndex = table.state.pageIndex;
-                const newPageIndex = Math.floor(oldPageIndex * oldPageSize / newPageSize);
-                // page displayed is always +1 than the index
-                props.setPageIndexIndicator(newPageIndex + 1);
-              }
-            }}
+            key={pageSize}
+            itemKey={String(pageSize)}
+            label={String(pageSize)}
+            onSelect={() => { table.setPageSize(pageSize); }}
           />
         ))}
       >
