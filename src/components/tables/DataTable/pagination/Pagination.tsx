@@ -17,12 +17,22 @@ import { useTable } from '../DataTableContext.tsx';
 import cl from './Pagination.module.scss';
 
 
+const parsePageNumber = (pageBuffer: string, max: number): null | number => {
+  if (pageBuffer.trim() === '') { return null; }
+  const num = Math.floor(Number(pageBuffer));
+  if (!Number.isFinite(num)) { return null; }
+  if (!Number.isSafeInteger(num)) { return null; }
+  return Math.min(max, Math.max(1, num));
+};
+
 type PaginationProps = {
   pageSizeOptions?: Array<PageSizeOption>,
 };
 export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
   const { table } = useTable();
-  const [pageIndexIndicator, setPageIndexIndicator] = React.useState<number>(1);
+  const [pageBuffer, setPageBuffer] = React.useState<string>('1');
+  const pageNumber = parsePageNumber(pageBuffer, table.pageCount) ?? (table.state.pageIndex + 1);
+  
   /*
   Available pagination state:
   - table.state.pageIndex
@@ -37,17 +47,19 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
   - table.setPageSize
   */
   
+  // Sync the table state with the buffer
+  React.useEffect(() => {
+    setPageBuffer(String(table.state.pageIndex + 1));
+  }, [table.state.pageIndex]);
+  
   const updatePage = React.useCallback(() => {
-    const requestedIndex = Number.isSafeInteger(pageIndexIndicator) ? pageIndexIndicator - 1 : 0;
-    const targetIndex: number = Math.max(0, Math.min(table.pageCount - 1, requestedIndex));
-    
-    table.gotoPage(targetIndex);
-    setPageIndexIndicator(targetIndex + 1);
-  }, [pageIndexIndicator, table.pageCount, table.gotoPage]);
+    setPageBuffer(String(pageNumber));
+    table.gotoPage(pageNumber - 1);
+  }, [pageNumber, table.gotoPage]);
   
   return (
     <div className={cx(cl['bk-pagination'])}>
-      <PaginationSizeSelector pageSizeOptions={pageSizeOptions} />
+      <PaginationSizeSelector pageSizeOptions={pageSizeOptions}/>
       
       <div className={cx(cl['pager'], cl['pager--indexed'])}>
         <IconButton
@@ -55,10 +67,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
           icon="page-backward"
           label="Go to first page"
           nonactive={!table.canPreviousPage}
-          onPress={() => {
-            table.gotoPage(0)
-            setPageIndexIndicator(1);
-          }}
+          onPress={() => { table.gotoPage(0); }}
         />
         <div className={cx(cl['pagination-main'])}>
           <IconButton
@@ -66,10 +75,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
             icon="caret-left"
             label="Go to previous page"
             nonactive={!table.canPreviousPage}
-            onPress={() => {
-              table.previousPage();
-              setPageIndexIndicator(pageIndexIndicator - 1);
-            }}
+            onPress={() => { table.previousPage(); }}
           />
           
           <span className="visually-hidden">Current page:</span>
@@ -79,10 +85,10 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
             automaticResize
             className={cx(cl['pagination__page-input'])}
             inputProps={{ className: cx(cl['pagination__page-input__input']) }}
-            value={pageIndexIndicator}
-            max={table.pageCount}
-            onChange={(event) => { setPageIndexIndicator(Number.parseInt(event.target.value, 10)); }}
+            value={pageBuffer}
+            onChange={(event) => { setPageBuffer(event.target.value); }}
             onBlur={() => { updatePage(); }}
+            max={table.pageCount}
             onKeyDown={event => {
               if (event.key === 'Enter') {
                 updatePage();
@@ -95,10 +101,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
             icon="caret-right"
             label="Go to next page"
             nonactive={!table.canNextPage}
-            onPress={() => {
-              table.nextPage();
-              setPageIndexIndicator(pageIndexIndicator + 1);
-            }}
+            onPress={() => { table.nextPage(); }}
           />
         </div>
         <IconButton
@@ -106,10 +109,7 @@ export const Pagination = ({ pageSizeOptions }: PaginationProps) => {
           icon="page-forward"
           nonactive={!table.canNextPage}
           label="Go to last page"
-          onPress={() => {
-            table.gotoPage(table.pageCount - 1)
-            setPageIndexIndicator(table.pageCount);
-          }}
+          onPress={() => { table.gotoPage(table.pageCount - 1); }}
         />
       </div>
     </div>
