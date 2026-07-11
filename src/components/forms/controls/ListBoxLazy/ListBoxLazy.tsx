@@ -40,7 +40,7 @@ export type VirtualItemKeys = Pick<ReadonlyArray<ItemKey>, 'length' | 'at' | 'in
 // };
 
 type ListItemVirtualProps = {
-  ref?: undefined | React.Ref<null | HTMLButtonElement>,
+  ref?: undefined | React.Ref<HTMLButtonElement>,
   virtualItem: VirtualItem,
   itemsCount: number,
   renderItem: (item: VirtualItem) => React.ReactNode,
@@ -160,7 +160,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   //       state.unregisterItem(`item-${i}`);
   //       state.registerItem(`item-${i}`, null);
   //     }
-  //     console.log('x', state.getItemKeys());
+  //     console.log('x', state.collectionItemKeys());
   //   }
   // }, [store, virtualItemKeys]);
   
@@ -196,7 +196,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     return virtualItemKey ?? `__INVALID-INDEX_${index}`;
   }, [virtualItemKeys]);
   
-  const isEmpty = useListBoxSelector(state => state.getItemKeys().size === 0);
+  const isEmpty = useListBoxSelector(state => state.collectionIsEmpty()); // Re-render is considered acceptable here
   
   const virtualizer = useVirtualizer({
     //debug: true,

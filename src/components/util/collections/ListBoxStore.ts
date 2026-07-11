@@ -43,14 +43,14 @@ export const useListBoxSelector = <T>(selector: (state: ListBoxSlice) => T) => {
 };
 
 export type ListBoxProps = ControllableStateDef<SelectedState>;
-export const useListBox = <E extends Element = Element>(props: ListBoxProps) => {
+export const useListBox = <E extends HTMLElement = HTMLElement>(props: ListBoxProps) => {
   const ref = React.useRef<E>(null);
   const listBoxId = React.useId();
   
   const { isControlled, stateInitial, ...selectionState } = parseControllableState(props);
   
   const store = useMemoOnce(() => createStore<ListBoxSlice>()((...args) => ({
-    ...createCollectionSlice({ collectionId: listBoxId })(...args),
+    ...createCollectionSlice(ref, { collectionId: listBoxId })(...args),
     ...createSelectionSingleSlice({ selectedItemKey: stateInitial ?? null })(...args),
   })));
   

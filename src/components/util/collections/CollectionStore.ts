@@ -3,12 +3,22 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { useMemoOnce } from '../../../util/reactUtil.ts';
+import { mergeProps, useMemoOnce } from '../../../util/reactUtil.ts';
 import { type StateCreator, type StoreApi, createStore, useStore } from 'zustand';
 
 
 export type ItemKey = string;
 export type RegistryItem = Element;
+
+const nodeListEmpty: NodeList = {
+  length: 0,
+  item: () => null,
+  forEach: () => {},
+  entries: () => [].entries(),
+  keys: () => [].keys(),
+  values: () => [].values(),
+  [Symbol.iterator]: () => [].values(),
+};
 
 //
 // Store slice
@@ -22,14 +32,17 @@ export type CollectionState = {
 export interface CollectionSlice extends CollectionState {
   registerItem: (itemKey: ItemKey, item: RegistryItem) => void,
   unregisterItem: (itemKey: ItemKey) => void,
-  getItemKeys: () => Set<ItemKey>,
+  collectionItemKeys: () => Set<ItemKey>,
+  collectionIsEmpty: () => boolean,
+  collectionNodeList: () => NodeList,
   
   /** Returns whether the registry has changed since the last `consumeRegistryChange` call, and clears the flag. */
   [consumeRegistryChange]: () => boolean,
 };
 
 export type CollectionProps = Pick<CollectionState, 'collectionId'>;
-export const createCollectionSlice = (
+export const createCollectionSlice = <E extends HTMLElement = HTMLElement>(
+  ref: React.RefObject<null | E>,
   { collectionId }: CollectionProps,
 ): StateCreator<CollectionSlice, [], [], CollectionSlice> => (_set, _get, _store) => {
   // Private, mutable registry for bookkeeping purposes
@@ -61,7 +74,13 @@ export const createCollectionSlice = (
       return changed;
     },
     
-    getItemKeys: () => new Set(registry.keys()),
+    collectionItemKeys: () => new Set(registry.keys()),
+    collectionIsEmpty: () => registry.size === 0,
+    collectionNodeList: (): NodeList => {
+      const el = ref.current;
+      if (!(el instanceof HTMLElement)) { return nodeListEmpty; }
+      return el.querySelectorAll(`[data-bk-coll-parent=${JSON.stringify(collectionId)}]`);
+    },
   };
 };
 
@@ -73,10 +92,13 @@ export const createCollectionSlice = (
 type UseCollectionParams = {
   onItemsChange?: undefined | ((itemKeys: Set<ItemKey>) => void),
 };
-export const useCollectionWith = (store: StoreApi<CollectionSlice>, { onItemsChange }: UseCollectionParams = {}) => {
+export const useCollectionWith = (
+  store: StoreApi<CollectionSlice>,
+  { onItemsChange }: UseCollectionParams = {},
+) => {
   const collectionId = useStore(store, state => state.collectionId);
   const consumeChange = useStore(store, state => state[consumeRegistryChange]);
-  const getItemKeys = useStore(store, state => state.getItemKeys);
+  const collectionItemKeys = useStore(store, state => state.collectionItemKeys);
   
   // `useLayoutEffect` on the collection parent is guaranteed to run after all the component children have rerendered.
   // If any items were added/removed in this rerender batch, then `consumeRegistryChange` will return `true`. Caveat:
@@ -84,7 +106,7 @@ export const useCollectionWith = (store: StoreApi<CollectionSlice>, { onItemsCha
   // must be considered unordered.
   React.useLayoutEffect(() => {
     if (consumeChange()) {
-      onItemsChange?.(getItemKeys());
+      onItemsChange?.(collectionItemKeys());
     }
   });
   
@@ -148,19 +170,22 @@ export const useCollectionContext = () => {
   return context;
 };
 
-export const useCollection = (params: UseCollectionParams = {}) => {
+export const useCollection = <E extends HTMLElement = HTMLElement>(
+  params: UseCollectionParams = {},
+) => {
   const collectionId = React.useId();
   
-  const store = useMemoOnce(() => createStore(createCollectionSlice({ collectionId })));
+  const ref = React.useRef<E>(null);
+  const store = useMemoOnce(() => createStore(createCollectionSlice(ref, { collectionId })));
   
   const context = useMemoOnce(() => ({ store }));
   
-  const { props } = useCollectionWith(store, params);
+  const { props: collProps } = useCollectionWith(store, params);
   return {
     store,
     context,
     Provider: CollectionContext,
-    props,
+    props: mergeProps({ ref }, collProps),
   };
 };
 

@@ -2,6 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import { useRef } from 'react';
 import { createStore } from 'zustand';
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
@@ -21,7 +22,11 @@ import {
 // Helpers
 //
 
-const makeStore = (collectionId = 'test-coll') => createStore(createCollectionSlice({ collectionId }));
+const makeRef = <E extends HTMLElement = HTMLElement>(el: null | E) => ({ current: el });
+const makeStore = <E extends HTMLElement>(
+  ref: React.RefObject<null | E> = makeRef<E>(null),
+  collectionId = 'test-coll',
+) => createStore(createCollectionSlice(ref, { collectionId }));
 
 //
 // createCollectionSlice (pure store, no React)
@@ -29,7 +34,7 @@ const makeStore = (collectionId = 'test-coll') => createStore(createCollectionSl
 
 describe('createCollectionSlice', () => {
   it('exposes the collectionId', () => {
-    const store = makeStore('my-id');
+    const store = makeStore(makeRef(null), 'my-id');
     expect(store.getState().collectionId).toBe('my-id');
   });
   
@@ -40,8 +45,6 @@ describe('createCollectionSlice', () => {
   
   it('clears the change flag after consumeRegistryChange()', () => {
     const store = makeStore();
-    
-    console.log('XXX', store.getState(), consumeRegistryChange);
     
     store.getState()[consumeRegistryChange](); // Clear initial state
     expect(store.getState()[consumeRegistryChange]()).toBe(false);
@@ -54,7 +57,8 @@ describe('createCollectionSlice', () => {
     const el = document.createElement('div');
     store.getState().registerItem('a', el);
 
-    expect(store.getState().getItemKeys()).toEqual(new Set(['a']));
+    expect(store.getState().collectionItemKeys()).toEqual(new Set(['a']));
+    expect(store.getState().collectionIsEmpty()).toEqual(false);
     expect(store.getState()[consumeRegistryChange]()).toBe(true);
   });
   
@@ -80,7 +84,8 @@ describe('createCollectionSlice', () => {
     
     store.getState().unregisterItem('a');
     
-    expect(store.getState().getItemKeys()).toEqual(new Set());
+    expect(store.getState().collectionItemKeys()).toEqual(new Set());
+    expect(store.getState().collectionIsEmpty()).toEqual(true);
     expect(store.getState()[consumeRegistryChange]()).toBe(true);
   });
   
@@ -93,15 +98,15 @@ describe('createCollectionSlice', () => {
     expect(store.getState()[consumeRegistryChange]()).toBe(false);
   });
   
-  it('getItemKeys returns a snapshot set, not a live reference', () => {
+  it('collectionItemKeys returns a snapshot set, not a live reference', () => {
     const store = makeStore();
     const el = document.createElement('div');
     store.getState().registerItem('a', el);
     
-    const snapshot = store.getState().getItemKeys();
+    const snapshot = store.getState().collectionItemKeys();
     store.getState().registerItem('b', document.createElement('span'));
     
-    // The original snapshot must not have changed.
+    // The original snapshot must not have changed
     expect(snapshot).toEqual(new Set(['a']));
   });
   
@@ -113,10 +118,10 @@ describe('createCollectionSlice', () => {
     store.getState().registerItem('a', elA);
     store.getState().registerItem('b', elB);
     
-    expect(store.getState().getItemKeys()).toEqual(new Set(['a', 'b']));
+    expect(store.getState().collectionItemKeys()).toEqual(new Set(['a', 'b']));
     
     store.getState().unregisterItem('a');
-    expect(store.getState().getItemKeys()).toEqual(new Set(['b']));
+    expect(store.getState().collectionItemKeys()).toEqual(new Set(['b']));
   });
 });
 
@@ -126,11 +131,12 @@ describe('createCollectionSlice', () => {
 
 describe('useCollectionWith', () => {
   it('renders props with the correct data attribute', () => {
-    const store = makeStore('coll-42');
+    const store = makeStore(makeRef(null), 'coll-42');
     
     const Fixture = () => {
+      const ref = useRef<HTMLDivElement>(null);
       const { props } = useCollectionWith(store);
-      return <div data-label="root" {...props}/>;
+      return <div ref={ref} data-label="root" {...props}/>;
     };
     
     render(<Fixture/>);
@@ -138,7 +144,7 @@ describe('useCollectionWith', () => {
   });
   
   it('calls onItemsChange when items are registered', () => {
-    const store = makeStore('coll-1');
+    const store = makeStore(makeRef(null), 'coll-1');
     const onItemsChange = vi.fn();
     
     // Pre-register an item so the first layout effect finds a changed registry.
@@ -146,6 +152,7 @@ describe('useCollectionWith', () => {
     store.getState().registerItem('item-1', el);
     
     const Fixture = () => {
+      const ref = useRef<HTMLDivElement>(null);
       useCollectionWith(store, { onItemsChange });
       return null;
     };
@@ -156,11 +163,12 @@ describe('useCollectionWith', () => {
   });
   
   it('does not call onItemsChange when registry is not changed', () => {
-    const store = makeStore('coll-2');
+    const store = makeStore(makeRef(null), 'coll-2');
     store.getState()[consumeRegistryChange](); // clear the initial change flag
     const onItemsChange = vi.fn();
     
     const Fixture = () => {
+      const ref = useRef<HTMLDivElement>(null);
       useCollectionWith(store, { onItemsChange });
       return null;
     };
@@ -176,7 +184,7 @@ describe('useCollectionWith', () => {
 
 describe('useCollectionItemWith', () => {
   it('attaches item data attributes to the element', () => {
-    const store = makeStore('coll-x');
+    const store = makeStore(makeRef(null), 'coll-x');
     
     const Fixture = () => {
       const { props } = useCollectionItemWith<HTMLDivElement>(store, { itemKey: 'item-a' });
@@ -190,7 +198,7 @@ describe('useCollectionItemWith', () => {
   });
   
   it('registers the element in the store on mount', () => {
-    const store = makeStore('coll-x');
+    const store = makeStore(makeRef(null), 'coll-x');
     
     const Fixture = () => {
       const { props } = useCollectionItemWith<HTMLDivElement>(store, { itemKey: 'item-b' });
@@ -198,11 +206,11 @@ describe('useCollectionItemWith', () => {
     };
     
     render(<Fixture/>);
-    expect(store.getState().getItemKeys()).toContain('item-b');
+    expect(store.getState().collectionItemKeys()).toContain('item-b');
   });
   
   it('unregisters the element when unmounted', () => {
-    const store = makeStore('coll-x');
+    const store = makeStore(makeRef(null), 'coll-x');
     
     const Fixture = () => {
       const { props } = useCollectionItemWith<HTMLDivElement>(store, { itemKey: 'item-c' });
@@ -210,10 +218,10 @@ describe('useCollectionItemWith', () => {
     };
     
     const { unmount } = render(<Fixture/>);
-    expect(store.getState().getItemKeys()).toContain('item-c');
+    expect(store.getState().collectionItemKeys()).toContain('item-c');
     
     unmount();
-    expect(store.getState().getItemKeys()).not.toContain('item-c');
+    expect(store.getState().collectionItemKeys()).not.toContain('item-c');
   });
 });
 
@@ -233,7 +241,7 @@ describe('useCollection / useCollectionItem integration', () => {
     };
     
     const Parent = () => {
-      const { Provider, context, props } = useCollection();
+      const { Provider, context, props } = useCollection<HTMLUListElement>();
       return (
         <Provider value={context}>
           <ul data-label="parent" {...props}>
@@ -249,12 +257,12 @@ describe('useCollection / useCollectionItem integration', () => {
     expect(capturedStore).not.toBeNull();
     
     if (capturedStore === null) { throw new Error(`Should not happen`); }
-    expect(capturedStore.getState().getItemKeys()).toContain('child-1');
+    expect(capturedStore.getState().collectionItemKeys()).toContain('child-1');
   });
   
   it('useCollection props carry a data-bk-coll-id attribute', () => {
     const Parent = () => {
-      const { Provider, context, props } = useCollection();
+      const { Provider, context, props } = useCollection<HTMLDivElement>();
       return (
         <Provider value={context}>
           <div data-label="parent" {...props}/>
@@ -275,7 +283,7 @@ describe('useCollection / useCollectionItem integration', () => {
     };
     
     const Parent = () => {
-      const { Provider, context, props } = useCollection({ onItemsChange });
+      const { Provider, context, props } = useCollection<HTMLUListElement>({ onItemsChange });
       return (
         <Provider value={context}>
           <ul {...props}>
@@ -306,7 +314,7 @@ describe('useCollection / useCollectionItem integration', () => {
     };
     
     const Parent = ({ showB }: { showB: boolean }) => {
-      const { Provider, context, props } = useCollection();
+      const { Provider, context, props } = useCollection<HTMLUListElement>();
       return (
         <Provider value={context}>
           <ul {...props}>
@@ -320,10 +328,10 @@ describe('useCollection / useCollectionItem integration', () => {
     const { rerender } = render(<Parent showB/>);
     if (capturedStore === null) { throw new Error(`Should not happen`); }
     
-    expect(capturedStore.getState().getItemKeys()).toEqual(new Set(['a', 'b']));
+    expect(capturedStore.getState().collectionItemKeys()).toEqual(new Set(['a', 'b']));
     
     rerender(<Parent showB={false}/>);
-    expect(capturedStore.getState().getItemKeys()).toEqual(new Set(['a']));
+    expect(capturedStore.getState().collectionItemKeys()).toEqual(new Set(['a']));
   });
   
   it('throws when useCollectionItem is used without a Provider', () => {
@@ -355,7 +363,7 @@ describe('useCollection / useCollectionItem integration', () => {
     const stores: Array<ReturnType<typeof makeStore>> = [];
     
     const Parent = () => {
-      const { store, Provider, context, props } = useCollection();
+      const { store, Provider, context, props } = useCollection<HTMLDivElement>();
       stores.push(store);
       return <Provider value={context}><div {...props}/></Provider>;
     };

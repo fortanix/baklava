@@ -12,13 +12,9 @@ import { MenuList } from '../../../actions/MenuList/MenuList.tsx';
 import {
   type ItemKey,
   type SelectedState,
-  // type ItemDef,
-  // type ItemDetails,
-  // type ItemWithKey,
-  // type VirtualItemKeys,
-  useListBoxSelector,
-  useListBox,
-  useListBoxItem,
+  useListBoxMultiSelector,
+  useListBoxMulti,
+  useListBoxMultiItem,
 } from '../../../util/collections/ListBoxMultiStore.ts';
 
 import cl from './ListBoxMulti.module.scss';
@@ -32,8 +28,21 @@ References:
 - https://www.radix-ui.com/primitives/docs/components/select
 */
 
-export { type ItemKey, useListBoxItem };
-export { cl as ListBoxClassNames };
+export { type ItemKey, type SelectedState, useListBoxMultiItem, useListBoxMultiSelector };
+export { cl as ListBoxMultiClassNames };
+
+export type SelectedStateProps = (
+  | {
+    selected?: undefined, // Uncontrolled
+    defaultSelected?: undefined | SelectedState,
+    onSelectedChange?: undefined | ((selected: SelectedState) => void),
+  }
+  | {
+    selected: SelectedState, // Controlled
+    defaultSelected?: undefined,
+    onSelectedChange: (selected: SelectedState) => void,
+  }
+);
 
 
 //
@@ -47,51 +56,6 @@ export interface ListBoxRef extends HTMLDivElement {
   //_bkListBoxSelectNone: () => void,
   //_bkListBoxSelectAll: () => void,
 };
-
-
-//
-// Group
-//
-
-export type GroupProps = React.ComponentProps<typeof MenuList.Group> & {
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
-};
-/**
- * A group element that can contain list options or other groups.
- */
-export const Group = (props: GroupProps) => {
-  const { unstyled, ...propsRest } = props;
-  
-  return (
-    <MenuList.Group
-      unstyled={unstyled}
-      {...propsRest}
-      className={cx(
-        { [cl['bk-list-box__group']]: !unstyled },
-        propsRest.className,
-      )}
-    />
-  );
-};
-
-
-//
-// Static item
-//
-
-/**
- * A static item, that can be customized for any presentational content (not affected by store state).
- * 
- * Important: since this is inside a `role="listbox"`, the static content should be presentational only. There should
- * be no interactive elements or other semantic content, only presentational content.
- */
-export const ItemStatic = ({ unstyled, ...propsRest }: React.ComponentProps<typeof MenuList.Static>) => (
-  <MenuList.Static
-    {...propsRest}
-    className={cx({ [cl['bk-list-box__item']]: !unstyled }, propsRest.className)}
-  />
-);
 
 
 //
@@ -111,7 +75,7 @@ export const ItemOption = React.memo((props: ItemOptionProps) => {
   // - The `children` prop on consumer side is not memoized/static (usually the case)
   
   const { unstyled, itemKey, className, iconDecoration, ...propsRest } = props;
-  const { selected, requestSelected: onRequestSelected, props: itemProps } = useListBoxItem({ itemKey });
+  const { selected, requestSelected: onRequestSelected, props: itemProps } = useListBoxMultiItem({ itemKey });
   
   return (
     <MenuList.Option
@@ -121,7 +85,7 @@ export const ItemOption = React.memo((props: ItemOptionProps) => {
         itemProps,
         { selected, onRequestSelected },
         propsRest,
-        { className: cx({ [cl['bk-list-box__item']]: !unstyled }, className) },
+        { className: cx({ [cl['bk-list-box-multi__item']]: !unstyled }, className) },
       )}
     />
   );
@@ -135,7 +99,7 @@ export const ItemOption = React.memo((props: ItemOptionProps) => {
 type HiddenSelectedStateProps = Omit<React.ComponentProps<'input'>, 'value' | 'defaultValue' | 'onChange'>;
 /** Hidden input, so that this component can be connected to a <form> element. */
 const HiddenSelectedState = ({ ref, name, form, ...inputProps }: HiddenSelectedStateProps) => {
-  const selectedItemKeys = useListBoxSelector(s => s.selectedItemKeys);
+  const selectedItemKeys = useListBoxMultiSelector(s => s.selectedItemKeys);
   
   if (selectedItemKeys.size === 0) {
     // When there is no selected item, we will still render the input (so that we can get the `input.form`
@@ -170,22 +134,11 @@ const HiddenSelectedState = ({ ref, name, form, ...inputProps }: HiddenSelectedS
   );
 };
 
-type SelectedStateProps = (
-  | {
-    selected?: undefined, // Uncontrolled
-    defaultSelected?: undefined | SelectedState,
-    onSelectedChange?: undefined | ((selected: SelectedState) => void),
-  }
-  | {
-    selected: SelectedState, // Controlled
-    defaultSelected?: undefined,
-    onSelectedChange: (selected: SelectedState) => void,
-  }
-);
+
 type PropsOmit = 'ref' | keyof SelectedStateProps;
 export type ListBoxMultiProps = Omit<React.ComponentProps<typeof MenuList>, PropsOmit> & SelectedStateProps & {
   /** A React ref to pass to the list box element. */
-  ref?: undefined | React.Ref<null | ListBoxRef>,
+  ref?: undefined | React.Ref<ListBoxRef>,
   
   /** The machine readable name of the list box control, used as part of `<form>` submission. */
   name?: undefined | string,
@@ -201,15 +154,14 @@ export type ListBoxMultiProps = Omit<React.ComponentProps<typeof MenuList>, Prop
   
   /** Legacy alias for `onSelectedChange`, for backwards compatbility. @deprecated */
   onSelect?: undefined | ((selected: SelectedState) => void),
-    
+  
   /** Legacy alias for `status="loading"`, for backwards compatbility. @deprecated */
   isLoading?: undefined | boolean,
 };
 /**
- * A list box is a composite control, consisting of a (flat) list of items. Each item can be either an option that can
- * be selected, or an action that can be activated. The items list may be partial, in case of virtualization (see
- * also `ListBoxLazy`). In this case, the `itemKeys` prop must be provided so that the list box can determine the
- * identity and ordering of the full list.
+ * A multiple-select list box. Presents a (linear) list of options, out of which the user can select zero or more. Can
+ * be associated with a form through the `name` prop. Each option that is selected will appear in the form data under
+ * the name `${name}[]`, and with the value equal to the item key of the selected option.
  */
 export const ListBoxMulti = Object.assign(
   (props: ListBoxMultiProps) => {
@@ -229,8 +181,6 @@ export const ListBoxMulti = Object.assign(
       ...propsRest
     } = props;
     
-    const listBoxRef = React.useRef<ListBoxRef>(null);
-    
     /*
     Set up the list box store.
     
@@ -239,23 +189,36 @@ export const ListBoxMulti = Object.assign(
       - Separate logic out to a separate component (like we did for `HiddenSelectedState`).
       - Use `listBox.store.subscribe` for side effects.
     */
-    const { store, ...listBoxStore } = useListBox<HTMLDivElement>({
+    const { store, ...listBoxStore } = useListBoxMulti<HTMLDivElement>({
       state: selected,
       defaultState: defaultSelected,
       defaultStateFallback: new Set(),
       onStateChange: onSelectedChange ?? onSelect,
     });
-    const isEmpty = useStore(store, state => state.getItemKeys().size === 0); // Re-render is acceptable here
+    const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
     
+    const listBoxRef = React.useRef<React.ComponentRef<typeof MenuList>>(null);
+    const getOptionNodes = useStore(store, state => state.collectionNodeList);
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
     React.useImperativeHandle<null | ListBoxRef, null | ListBoxRef>(ref, () => {
       const listBoxElement = listBoxRef.current;
-      if (listBoxElement === null) { return null; }
+      if (!listBoxElement) { return null; }
+      
       return Object.assign(listBoxElement, {
-        _bkListBoxFocusFirst: () => { store.getState().focusItemAt('first'); },
-        _bkListBoxFocusLast: () => { store.getState().focusItemAt('last'); },
+        _bkListBoxFocusFirst: () => {
+          const options = getOptionNodes();
+          const optionLast = options.item(0);
+          if (!(optionLast instanceof HTMLElement)) { return; }
+          optionLast.focus();
+        },
+        _bkListBoxFocusLast: () => {
+          const options = getOptionNodes();
+          const optionLast = options.item(options.length - 1);
+          if (!(optionLast instanceof HTMLElement)) { return; }
+          optionLast.focus();
+        },
       });
-    }, [store]);
+    }, [getOptionNodes]);
     
     /* formatItemKeys
     React.useEffect(() => {
@@ -295,11 +258,12 @@ export const ListBoxMulti = Object.assign(
           aria-multiselectable="true"
           unstyled={unstyled}
           {...mergeProps(
+            { ref: listBoxRef },
             listBoxStore.props,
             {
               status: isLoading === true ? 'loading' : undefined,
               onKeyDown: handleKeyDown,
-              className: cx({ [cl['bk-list-box']]: !unstyled }),
+              className: cx({ [cl['bk-list-box-multi']]: !unstyled }),
             },
             propsRest,
           )}
@@ -314,8 +278,9 @@ export const ListBoxMulti = Object.assign(
     );
   },
   {
-    Group,
-    Static: ItemStatic,
+    Segment: MenuList.Segment,
+    Group: MenuList.Group,
+    Static: MenuList.Static,
     Option: ItemOption,
   },
 );

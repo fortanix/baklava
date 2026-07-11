@@ -5,7 +5,7 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { colorBright } from '../../../../util/storybook/StorybookUtils.tsx';
+import { colorBright, fruits } from '../../../../util/storybook/StorybookUtils.tsx';
 import { loremIpsum } from '../../../../util/storybook/LoremIpsum.tsx';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
@@ -13,31 +13,13 @@ import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 import { InputSearch } from '../Input/InputSearch.tsx';
 
-import { type ItemKey, type ListBoxRef, ListBox } from './ListBox.tsx';
+import { type ItemKey, ListBox } from './ListBox.tsx';
 
 
 const notifyPressed = () => { notify.info('Pressed the item'); };
 
 type ListBoxArgs = React.ComponentProps<typeof ListBox>;
 type Story = StoryObj<ListBoxArgs>;
-
-// Sample items
-const fruits = [
-  'Apple',
-  'Apricot',
-  'Blueberry',
-  'Cherry',
-  'Durian',
-  'Jackfruit',
-  'Melon',
-  'Mango',
-  'Mangosteen',
-  'Orange',
-  'Peach',
-  'Pineapple',
-  'Razzberry',
-  'Strawberry',
-];
 
 export default {
   component: ListBox,
@@ -51,13 +33,13 @@ export default {
     label: 'Test list box',
     children: (
       <>
-        {fruits.map((fruit) =>
+        {fruits.map(fruit =>
           <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
         )}
       </>
     ),
   },
-  render: (args) => <ListBox {...args}/>,
+  render: args => <ListBox {...args}/>,
 } satisfies Meta<ListBoxArgs>;
 
 
@@ -159,7 +141,7 @@ export const ListBoxWithOverflow: Story = {
     children: (
       <>
         <ListBox.Option itemKey="overflow" label={loremIpsum()}/>
-        {fruits.map((fruit) =>
+        {fruits.map(fruit =>
           <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
         )}
       </>
@@ -412,7 +394,7 @@ const ListBoxControlledC = (props: ListBoxControlledProps) => {
         selected={selectedItem}
         onSelect={setSelectedItem}
       >
-        {fruits.map((fruit) =>
+        {fruits.map(fruit =>
           <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
         )}
       </ListBox>
@@ -448,7 +430,7 @@ export const ListBoxInForm: Story = {
     name: 'controlledListBox',
     children: (
       <>
-        {fruits.map((fruit) =>
+        {fruits.map(fruit =>
           <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
         )}
       </>
@@ -457,7 +439,7 @@ export const ListBoxInForm: Story = {
 };
 
 const ListBoxWithRefC = (props: React.ComponentProps<typeof ListBox>) => {
-  const ref = React.useRef<ListBoxRef>(null);
+  const ref = React.useRef<React.ComponentRef<typeof ListBox>>(null);
   
   React.useEffect(() => {
     if (ref.current) {

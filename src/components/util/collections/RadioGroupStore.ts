@@ -39,13 +39,14 @@ export const useRadioGroupContext = () => {
 };
 
 export type RadioGroupProps = ControllableStateDef<SelectedState>;
-export const useRadioGroup = (props: RadioGroupProps) => {
+export const useRadioGroup = <E extends HTMLElement = HTMLElement>(props: RadioGroupProps) => {
+  const ref = React.useRef<E>(null);
   const radioGroupId = React.useId();
   
   const { isControlled, stateInitial, ...selectionState } = parseControllableState(props);
   
   const store = useMemoOnce(() => createStore<RadioGroupSlice>()((...args) => ({
-    ...createCollectionSlice({ collectionId: radioGroupId })(...args),
+    ...createCollectionSlice(ref, { collectionId: radioGroupId })(...args),
     ...createSelectionSingleSlice({ selectedItemKey: stateInitial ?? null })(...args),
   })));
   
@@ -78,6 +79,7 @@ export const useRadioGroup = (props: RadioGroupProps) => {
     context,
     Provider: RadioGroupContext,
     props: mergeProps(
+      { ref },
       propsCollection,
       propsSelection,
       //{ role: 'radiogroup' }, // Leave this up to the consumer

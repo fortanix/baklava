@@ -11,10 +11,7 @@ import { MenuList } from '../../../actions/MenuList/MenuList.tsx';
 
 import {
   type ItemKey,
-  // type ItemDef,
-  // type ItemDetails,
-  // type ItemWithKey,
-  // type VirtualItemKeys,
+  type SelectedState,
   useListBoxSelector,
   useListBox,
   useListBoxItem,
@@ -31,67 +28,35 @@ References:
 - https://www.radix-ui.com/primitives/docs/components/select
 */
 
-export { type ItemKey, useListBoxItem };
+export { type ItemKey, type SelectedState, useListBoxItem, useListBoxSelector };
 export { cl as ListBoxClassNames };
+
+export type SelectedStateProps = (
+  | {
+    selected?: undefined, // Uncontrolled
+    defaultSelected?: undefined | SelectedState,
+    onSelectedChange?: undefined | ((selected: SelectedState) => void),
+  }
+  | {
+    selected: SelectedState, // Controlled
+    defaultSelected?: undefined,
+    onSelectedChange: (selected: SelectedState) => void,
+  }
+);
 
 
 //
 // ListBoxRef
 //
 
-export interface ListBoxRef extends HTMLDivElement {
+export interface ListBoxRef extends React.ComponentRef<typeof MenuList> {
   _bkListBoxFocusFirst: () => void,
   _bkListBoxFocusLast: () => void,
 };
 
 
 //
-// Group
-//
-
-export type GroupProps = React.ComponentProps<typeof MenuList.Group> & {
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
-};
-/**
- * A group element that can contain list options or other groups.
- */
-export const Group = (props: GroupProps) => {
-  const { unstyled, ...propsRest } = props;
-  
-  return (
-    <MenuList.Group
-      unstyled={unstyled}
-      {...propsRest}
-      className={cx(
-        { [cl['bk-list-box__group']]: !unstyled },
-        propsRest.className,
-      )}
-    />
-  );
-};
-
-
-//
-// Static item
-//
-
-/**
- * A static item, that can be customized for any presentational content (not affected by store state).
- * 
- * Important: since this is inside a `role="listbox"`, the static content should be presentational only. There should
- * be no interactive elements or other semantic content, only presentational content.
- */
-export const ItemStatic = ({ unstyled, ...propsRest }: React.ComponentProps<typeof MenuList.Static>) => (
-  <MenuList.Static
-    {...propsRest}
-    className={cx({ [cl['bk-list-box__item']]: !unstyled }, propsRest.className)}
-  />
-);
-
-
-//
-// Option item
+// ItemOption
 //
 
 type ItemOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionMode'> & {
@@ -106,19 +71,18 @@ export const ItemOption = React.memo((props: ItemOptionProps) => {
   // - The consumer uses this component with controlled state
   // - The `children` prop on consumer side is not memoized/static (usually the case)
   
-  const { unstyled, itemKey, className, iconDecoration, ...propsRest } = props;
-  const { selected, requestSelected: onRequestSelected, props: itemProps } = useListBoxItem({ itemKey });
+  const { itemKey, ...propsRest } = props;
+  const { selected, requestSelected, props: itemProps } = useListBoxItem({ itemKey });
   
   return (
     <MenuList.Option
-      unstyled={unstyled}
-      selectionMode="single"
       {...mergeProps(
         itemProps,
-        { selected, onRequestSelected },
+        { selected, onRequestSelected: requestSelected },
         propsRest,
-        { className: cx({ [cl['bk-list-box__item']]: !unstyled }, className) },
+        { className: cx({ [cl['bk-list-box__item']]: !propsRest.unstyled }) },
       )}
+      selectionMode="single"
     />
   );
 });
@@ -150,24 +114,10 @@ const HiddenSelectedState = ({ ref, name, form, ...inputProps }: HiddenSelectedS
   );
 };
 
-export type SelectedState = null | ItemKey;
-export type SelectedStateProps = (
-  | {
-    selected?: undefined, // Uncontrolled
-    defaultSelected?: undefined | SelectedState,
-    onSelectedChange?: undefined | ((selected: SelectedState) => void),
-  }
-  | {
-    selected: SelectedState, // Controlled
-    defaultSelected?: undefined,
-    onSelectedChange: (selected: SelectedState) => void,
-  }
-);
-
 type PropsOmit = 'ref' | keyof SelectedStateProps;
 export type ListBoxProps = Omit<React.ComponentProps<typeof MenuList>, PropsOmit> & SelectedStateProps & {
   /** A React ref to pass to the list box element. */
-  ref?: undefined | React.Ref<null | ListBoxRef>,
+  ref?: undefined | React.Ref<ListBoxRef>,
   
   /** The machine readable name of the list box control, used as part of `<form>` submission. */
   name?: undefined | string,
@@ -183,16 +133,20 @@ export type ListBoxProps = Omit<React.ComponentProps<typeof MenuList>, PropsOmit
   
   /** Legacy alias for `onSelectedChange`, for backwards compatbility. @deprecated */
   onSelect?: undefined | ((selected: SelectedState) => void),
-    
+  
   /** Legacy alias for `status="loading"`, for backwards compatbility. @deprecated */
   isLoading?: undefined | boolean,
 };
 /**
- * A single-select list box. Presents a (flat) list of options, out of which the user can select at most one.
+ * A single-select list box. Presents a (linear) list of options, out of which the user can select at most one. Can
+ * be associated with a form through the `name` prop. If an option is selected, this will show up in the form data under
+ * the given `name` and the item key as the `value`. If no option is selected, the `name` will not show up in the
+ * form data.
  */
 export const ListBox = Object.assign(
   (props: ListBoxProps) => {
     const {
+      ref,
       children,
       unstyled,
       selected,
@@ -221,17 +175,30 @@ export const ListBox = Object.assign(
       defaultStateFallback: null,
       onStateChange: onSelectedChange ?? onSelect,
     });
-    const isEmpty = useStore(store, state => state.getItemKeys().size === 0); // Re-render is acceptable here
+    const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
     
+    const listBoxRef = React.useRef<React.ComponentRef<typeof MenuList>>(null);
+    const getOptionNodes = useStore(store, state => state.collectionNodeList);
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
-    // React.useImperativeHandle<null | ListBoxRef, null | ListBoxRef>(propsRest.ref, () => {
-    //   const listBoxElement = listBoxRef.current;
-    //   if (listBoxElement === null) { return null; }
-    //   return Object.assign(listBoxElement, {
-    //     _bkListBoxFocusFirst: () => { store.getState().focusItemAt('first'); },
-    //     _bkListBoxFocusLast: () => { store.getState().focusItemAt('last'); },
-    //   });
-    // }, [store]);
+    React.useImperativeHandle<null | ListBoxRef, null | ListBoxRef>(ref, () => {
+      const listBoxElement = listBoxRef.current;
+      if (!listBoxElement) { return null; }
+      
+      return Object.assign(listBoxElement, {
+        _bkListBoxFocusFirst: () => {
+          const options = getOptionNodes();
+          const optionLast = options.item(0);
+          if (!(optionLast instanceof HTMLElement)) { return; }
+          optionLast.focus();
+        },
+        _bkListBoxFocusLast: () => {
+          const options = getOptionNodes();
+          const optionLast = options.item(options.length - 1);
+          if (!(optionLast instanceof HTMLElement)) { return; }
+          optionLast.focus();
+        },
+      });
+    }, [getOptionNodes]);
     
     /* formatItemKey
     React.useEffect(() => {
@@ -271,14 +238,12 @@ export const ListBox = Object.assign(
           aria-multiselectable="false"
           unstyled={unstyled}
           {...mergeProps(
+            { ref: listBoxRef },
             listBoxStore.props,
             {
               status: isLoading === true ? 'loading' : undefined,
               onKeyDown: handleKeyDown,
-              className: cx(
-                'bk',
-                { [cl['bk-list-box']]: !unstyled },
-              ),
+              className: cx({ [cl['bk-list-box']]: !unstyled }),
             },
             propsRest,
           )}
@@ -293,8 +258,9 @@ export const ListBox = Object.assign(
     );
   },
   {
-    Group,
-    Static: ItemStatic,
+    Segment: MenuList.Segment,
+    Group: MenuList.Group,
+    Static: MenuList.Static,
     Option: ItemOption,
   },
 );

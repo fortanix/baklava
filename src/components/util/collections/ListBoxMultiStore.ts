@@ -34,32 +34,32 @@ const SetUtil = {
   },
 };
 
-export type ListBoxSlice = CollectionSlice & SelectionMultiSlice;
-export type ListBoxContext = {
-  store: StoreApi<ListBoxSlice>,
+export type ListBoxMultiSlice = CollectionSlice & SelectionMultiSlice;
+export type ListBoxMultiContext = {
+  store: StoreApi<ListBoxMultiSlice>,
   /** Called when the user requests the given items (or none) to be selected. */
   requestSelected: (itemKeys: SelectedState) => void,
 };
-export const ListBoxContext = React.createContext<null | ListBoxContext>(null);
-export const useListBoxContext = () => {
-  const context = React.use(ListBoxContext);
-  if (!context) { throw new Error(`Missing 'ListBoxContext' provider`); }
+export const ListBoxMultiContext = React.createContext<null | ListBoxMultiContext>(null);
+export const useListBoxMultiContext = () => {
+  const context = React.use(ListBoxMultiContext);
+  if (!context) { throw new Error(`Missing 'ListBoxMultiContext' provider`); }
   return context;
 };
-export const useListBoxSelector = <T>(selector: (state: ListBoxSlice) => T) => {
-  const { store } = useListBoxContext();
+export const useListBoxMultiSelector = <T>(selector: (state: ListBoxMultiSlice) => T) => {
+  const { store } = useListBoxMultiContext();
   return useStore(store, selector);
 };
 
-export type ListBoxProps = ControllableStateDef<SelectedState>;
-export const useListBox = <E extends Element = Element>(props: ListBoxProps) => {
+export type ListBoxMultiProps = ControllableStateDef<SelectedState>;
+export const useListBoxMulti = <E extends HTMLElement = HTMLElement>(props: ListBoxMultiProps) => {
   const ref = React.useRef<E>(null);
   const listBoxId = React.useId();
   
   const { isControlled, stateInitial, ...selectionState } = parseControllableState(props);
   
-  const store = useMemoOnce(() => createStore<ListBoxSlice>()((...args) => ({
-    ...createCollectionSlice({ collectionId: listBoxId })(...args),
+  const store = useMemoOnce(() => createStore<ListBoxMultiSlice>()((...args) => ({
+    ...createCollectionSlice(ref, { collectionId: listBoxId })(...args),
     ...createSelectionMultiSlice({ selectedItemKeys: stateInitial ?? new Set() })(...args),
   })));
   
@@ -80,7 +80,7 @@ export const useListBox = <E extends Element = Element>(props: ListBoxProps) => 
   // rerendered. The way we've set this up, only a change in `isControlled` will cause this state to change. Changes
   // to `isControlled` after mount should be avoided by consumers (but are technically allowed).
   // This also depends on `onStateChange`, therefore consumers must be really careful to memoize this callback!
-  const context: ListBoxContext = React.useMemo(() => ({ store, requestSelected }), [requestSelected]);
+  const context: ListBoxMultiContext = React.useMemo(() => ({ store, requestSelected }), [requestSelected]);
   
   // Storing `onStateChange` in a ref, or using `useEffectEvent` could maybe help with the `context` rerendering issue.
   // However, this is explicitly frowned upon by the React team, who recommend just memoizing (or React Compiler).
@@ -90,7 +90,7 @@ export const useListBox = <E extends Element = Element>(props: ListBoxProps) => 
   return {
     store,
     context,
-    Provider: ListBoxContext,
+    Provider: ListBoxMultiContext,
     props: mergeProps(
       { ref },
       propsCollection,
@@ -101,9 +101,9 @@ export const useListBox = <E extends Element = Element>(props: ListBoxProps) => 
 };
 
 
-type UseListBoxItemParams = { itemKey: ItemKey };
-export const useListBoxItem = <E extends Element>({ itemKey }: UseListBoxItemParams) => {
-  const { store, requestSelected } = useListBoxContext();
+type UseListBoxMultiItemParams = { itemKey: ItemKey };
+export const useListBoxMultiItem = <E extends HTMLElement = HTMLElement>({ itemKey }: UseListBoxMultiItemParams) => {
+  const { store, requestSelected } = useListBoxMultiContext();
   const selected = useStore(store, store => store.selectedItemKeys?.has(itemKey) ?? false);
   
   // FIXME: better way to add/remove item keys from the store. Should `requestSelected` take a callback?
