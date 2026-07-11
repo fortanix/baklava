@@ -2,6 +2,7 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import scrollIntoView from 'scroll-into-view-if-needed';
 import * as React from 'react';
 import { mergeProps, useMemoOnce } from '../../../util/reactUtil.ts';
 import { type StoreApi, createStore, useStore } from 'zustand';
@@ -62,6 +63,21 @@ export const useRadioGroup = <E extends HTMLElement = HTMLElement>(props: RadioG
       store.setState({ selectedItemKey });
     }
   }, [isControlled, props.onStateChange]);
+  
+  // When the selected item state changes, focus that item element
+  const getCollectionItem = React.useEffectEvent(useStore(store, state => state.collectionItem));
+  React.useEffect(() => {
+    return store.subscribe((state, prevState) => {
+      if (state.selectedItemKey !== prevState.selectedItemKey && state.selectedItemKey !== null) {
+        const element = getCollectionItem(state.selectedItemKey);
+        if (element) {
+          element.focus({ focusVisible: false, preventScroll: true });
+          // Note: `focus()` alone doesn't guarantee scroll (the element might already be focused focused)
+          scrollIntoView(element, { scrollMode: 'if-needed' });
+        }
+      }
+    });
+  }, []);
   
   // Note: this context value should be as stable as possible, the state changing means the entire subtree will get
   // rerendered. The way we've set this up, only a change in `isControlled` will cause this state to change. Changes

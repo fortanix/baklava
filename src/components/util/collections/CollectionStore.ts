@@ -8,7 +8,7 @@ import { type StateCreator, type StoreApi, createStore, useStore } from 'zustand
 
 
 export type ItemKey = string;
-export type RegistryItem = Element;
+export type RegistryItem = HTMLElement;
 
 const nodeListEmpty: NodeList = {
   length: 0,
@@ -32,6 +32,7 @@ export type CollectionState = {
 export interface CollectionSlice extends CollectionState {
   registerItem: (itemKey: ItemKey, item: RegistryItem) => void,
   unregisterItem: (itemKey: ItemKey) => void,
+  collectionItem: (itemKey: ItemKey) => null | RegistryItem,
   collectionItemKeys: () => Set<ItemKey>,
   collectionIsEmpty: () => boolean,
   collectionNodeList: () => NodeList,
@@ -74,6 +75,7 @@ export const createCollectionSlice = <E extends HTMLElement = HTMLElement>(
       return changed;
     },
     
+    collectionItem: itemKey => registry.get(itemKey) ?? null,
     collectionItemKeys: () => new Set(registry.keys()),
     collectionIsEmpty: () => registry.size === 0,
     collectionNodeList: (): NodeList => {

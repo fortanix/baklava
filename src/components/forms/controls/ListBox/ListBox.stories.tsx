@@ -153,11 +153,13 @@ export const ListBoxEmptyWithHeaderAndFooter: Story = {
   args: {
     children: (
       <>
-        <ListBox.Header itemKey="header" label="An empty list with header/footer" sticky="start"/>
-        <ListBox.FooterActions>
-          <ListBox.FooterAction itemKey="action-1" label="Action 1" onActivate={() => { notifyPressed(); }}/>
-          <ListBox.FooterAction itemKey="action-2" label="Action 2" onActivate={() => { notifyPressed(); }}/>
-        </ListBox.FooterActions>
+        <ListBox.Segment sticky="start">
+          <ListBox.Static muted>An empty list with header/footer</ListBox.Static>
+        </ListBox.Segment>
+        <ListBox.Segment sticky="end">
+          <ListBox.Static>Footer 1</ListBox.Static>
+          <ListBox.Static>Footer 2</ListBox.Static>
+        </ListBox.Segment>
       </>
     ),
   },
@@ -204,15 +206,16 @@ export const ListBoxWithCustomIcon: Story = {
 
 export const ListBoxWithCustomItems: Story = {
   args: {
+    placeholderEmpty: null,
     children: (
       <>
-        <ListBox.Static sticky="start">
-          <InputSearch style={{ flexGrow: 1 }} placeholder="Sticky static item"/>
-        </ListBox.Static>
-        {Array.from({ length: 20 }, (_, i) => i).map(index => // A lot of items to test scroll for sticky item
-          <ListBox.Static key={index}>
-            Static item
+        <ListBox.Segment sticky="start">
+          <ListBox.Static>
+            <InputSearch style={{ flexGrow: 1 }} placeholder="Sticky static item"/>
           </ListBox.Static>
+        </ListBox.Segment>
+        {Array.from({ length: 20 }, (_, i) => i).map(index => // A lot of items to test scroll for sticky item
+          <ListBox.Static key={index}>Static item</ListBox.Static>
         )}
       </>
     ),
@@ -239,75 +242,6 @@ export const ListBoxDisabled: Story = {
       <>
         <ListBox.Option itemKey="item-1" label="All options should be disabled"/>
         <ListBox.Option itemKey="item-2" label="Selecting me should do nothing"/>
-      </>
-    ),
-  },
-};
-
-export const ListBoxWithHeaders: Story = {
-  args: {
-    children: (
-      <>
-        <ListBox.Header itemKey="header" label={`Ice cream flavors (${fruits.length})`} sticky={false}/>
-        {fruits.map(fruit =>
-          <ListBox.Option key={`icecream-${fruit}`} itemKey={`icecream-${fruit}`} label={fruit}/>
-        )}
-        <ListBox.Header itemKey="header" label={`Jelly bean flavors (${fruits.length})`} sticky={false}/>
-        {fruits.map(fruit =>
-          <ListBox.Option key={`jellybean-${fruit}`} itemKey={`jellybean-${fruit}`} label={fruit}/>
-        )}
-      </>
-    ),
-  },
-};
-
-export const ListBoxWithStickyHeaders: Story = {
-  args: {
-    children: (
-      <>
-        <ListBox.Header itemKey="header" label={`Ice cream flavors (${fruits.length})`} sticky="start"/>
-        {fruits.map(fruit =>
-          <ListBox.Option key={`icecream-${fruit}`} itemKey={`icecream-${fruit}`} label={fruit}/>
-        )}
-        <ListBox.Header itemKey="header" label={`Jelly bean flavors (${fruits.length})`} sticky="start"/>
-        {fruits.map(fruit =>
-          <ListBox.Option key={`jellybean-${fruit}`} itemKey={`jellybean-${fruit}`} label={fruit}/>
-        )}
-      </>
-    ),
-  },
-};
-
-export const ListBoxWithActions: Story = {
-  args: {
-    children: (
-      <>
-        <ListBox.Option itemKey="option-1" label="Option 1"/>
-        <ListBox.Option itemKey="option-2" label="Option 2"/>
-        <ListBox.Action itemKey="action-1" icon="edit" label="Action 1" onActivate={() => { notifyPressed(); }}/>
-        <ListBox.Action disabled itemKey="action-2" icon="delete" label="Action 2" onActivate={() => { notifyPressed(); }}/>
-      </>
-    ),
-  },
-};
-
-export const ListBoxWithStickyActions: Story = {
-  args: {
-    style: { '--sticky-items-end': 2 },
-    children: (
-      <>
-        <ListBox.Header itemKey="header" label={`Ice cream flavors (${fruits.length})`} sticky="start"/>
-        {fruits.map(fruit =>
-          <ListBox.Option key={`icecream-${fruit}`} itemKey={`icecream-${fruit}`} label={fruit}/>
-        )}
-        <ListBox.Header itemKey="header" label={`Jelly bean flavors (${fruits.length})`} sticky="start"/>
-        {fruits.map(fruit =>
-          <ListBox.Option key={`jellybean-${fruit}`} itemKey={`jellybean-${fruit}`} label={fruit}/>
-        )}
-        <ListBox.FooterActions>
-          <ListBox.Action itemKey="action-checkout" label="Go to Checkout" onActivate={() => { notifyPressed(); }}/>
-          <ListBox.Action itemKey="action-oneclick" label="One-Click Purchase" onActivate={() => { notifyPressed(); }}/>
-        </ListBox.FooterActions>
       </>
     ),
   },
