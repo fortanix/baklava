@@ -15,6 +15,7 @@ import {
   createCollectionSlice,
   useCollectionWith,
   useCollectionItemWith,
+  useCollectionTypeAhead,
 } from './CollectionStore.ts';
 import {
   type SelectedState,
@@ -77,7 +78,7 @@ export const useListBox = <E extends HTMLElement = HTMLElement>(props: ListBoxPr
         if (element) {
           element.focus({ focusVisible: false, preventScroll: true });
           // Note: `focus()` alone doesn't guarantee scroll (the element might already be focused focused)
-          scrollIntoView(element, { scrollMode: 'if-needed' });
+          scrollIntoView(element, { scrollMode: 'if-needed', boundary: ref.current });
         }
       }
     });
@@ -94,6 +95,8 @@ export const useListBox = <E extends HTMLElement = HTMLElement>(props: ListBoxPr
   // https://github.com/reactjs/rfcs/pull/220#issuecomment-1259938816
   //const onStateChange = React.useEffectEvent(stateDef.onStateChange ?? noop);
   
+  const { props: propsTypeAhead } = useCollectionTypeAhead(ref, store);
+  
   return {
     store,
     context,
@@ -102,6 +105,7 @@ export const useListBox = <E extends HTMLElement = HTMLElement>(props: ListBoxPr
       { ref },
       propsCollection,
       propsSelection,
+      propsTypeAhead,
       //{ role: 'listbox' }, // Leave this up to the consumer
     ),
   };
@@ -109,7 +113,7 @@ export const useListBox = <E extends HTMLElement = HTMLElement>(props: ListBoxPr
 
 
 type UseListBoxItemParams = { itemKey: ItemKey };
-export const useListBoxItem = <E extends Element>({ itemKey }: UseListBoxItemParams) => {
+export const useListBoxItem = <E extends HTMLElement>({ itemKey }: UseListBoxItemParams) => {
   const { store, requestSelected } = useListBoxContext();
   const selected = useStore(store, store => itemKey === store.selectedItemKey);
   const requestSelectedForItem = () => requestSelected(itemKey);

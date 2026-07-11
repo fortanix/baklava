@@ -15,6 +15,7 @@ import {
   createCollectionSlice,
   useCollectionWith,
   useCollectionItemWith,
+  useCollectionTypeAhead,
 } from './CollectionStore.ts';
 import {
   type SelectedState,
@@ -91,7 +92,7 @@ export const useListBoxMulti = <E extends HTMLElement = HTMLElement>(props: List
           if (element) {
             element.focus({ focusVisible: false, preventScroll: true });
             // Note: `focus()` alone doesn't guarantee scroll (the element might already be focused focused)
-            scrollIntoView(element, { scrollMode: 'if-needed' });
+            scrollIntoView(element, { scrollMode: 'if-needed', boundary: ref.current });
           }
         }
       }
@@ -109,6 +110,8 @@ export const useListBoxMulti = <E extends HTMLElement = HTMLElement>(props: List
   // https://github.com/reactjs/rfcs/pull/220#issuecomment-1259938816
   //const onStateChange = React.useEffectEvent(stateDef.onStateChange ?? noop);
   
+  const { props: propsTypeAhead } = useCollectionTypeAhead(ref, store);
+  
   return {
     store,
     context,
@@ -117,6 +120,7 @@ export const useListBoxMulti = <E extends HTMLElement = HTMLElement>(props: List
       { ref },
       propsCollection,
       propsSelection,
+      propsTypeAhead,
       //{ role: 'listbox' }, // Leave this up to the consumer
     ),
   };

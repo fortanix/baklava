@@ -73,7 +73,7 @@ export const useRadioGroup = <E extends HTMLElement = HTMLElement>(props: RadioG
         if (element) {
           element.focus({ focusVisible: false, preventScroll: true });
           // Note: `focus()` alone doesn't guarantee scroll (the element might already be focused focused)
-          scrollIntoView(element, { scrollMode: 'if-needed' });
+          scrollIntoView(element, { scrollMode: 'if-needed', boundary: ref.current });
         }
       }
     });
@@ -105,13 +105,15 @@ export const useRadioGroup = <E extends HTMLElement = HTMLElement>(props: RadioG
 
 
 type UseRadioGroupItemParams = { itemKey: ItemKey };
-type UseRadioGroupItemResult<E extends Element> = {
+type UseRadioGroupItemResult<E extends HTMLElement> = {
   store: StoreApi<RadioGroupSlice>,
   selected: boolean,
   requestSelected: () => void,
   props: ReturnType<typeof useCollectionItemWith<E>>['props'],
 };
-export const useRadioGroupItem = <E extends Element>(params: UseRadioGroupItemParams): UseRadioGroupItemResult<E> => {
+export const useRadioGroupItem = <E extends HTMLElement>(
+  params: UseRadioGroupItemParams,
+): UseRadioGroupItemResult<E> => {
   const { itemKey } = params;
   
   const { store, requestSelected } = useRadioGroupContext();

@@ -6,9 +6,8 @@ import * as React from 'react';
 
 
 /**
- * 
- * @param maxDuration 
- * @returns 
+ * Track keyboard events for type-ahead searching. When the user types printable characters in quick succession, they
+ * get added to a sequence. After `maxDuration`, the sequence is cleared.
  */
 export const useTypeAhead = (maxDuration = 400/*ms*/) => {
   const [sequence, setSequence] = React.useState<Array<string>>([]);
@@ -44,5 +43,5 @@ export const useTypeAhead = (maxDuration = 400/*ms*/) => {
     });
   }, [maxDuration]);
   
-  return { handleKeyDown, sequence };
+  return { sequence, props: { onKeyDown: handleKeyDown } };
 };

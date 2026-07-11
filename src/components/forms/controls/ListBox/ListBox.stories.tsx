@@ -266,6 +266,7 @@ export const ListBoxLoading: Story = {
  */
 export const ListBoxTypeAhead: Story = {
   args: {
+    size: 'shrink',
     children: (
       <>
         {[
@@ -276,6 +277,15 @@ export const ListBoxTypeAhead: Story = {
           '#hashtag', // Special characters should work (matches: "#")
           'ça', // Diacritics should be ignored (matches: "c")
           'ôté', // (matches: "o")
+          <ListBox.Static key="input-test">
+            <InputSearch placeholder="Input keys should be ignored" automaticResize/>
+          </ListBox.Static>,
+          <ListBox.Static key="listbox-test">
+            <ListBox label="Nested ListBox">
+              <ListBox.Option itemKey="nested-1" label="Key events on nested listbox should be ignored"/>
+              <ListBox.Option itemKey="nested-2" label="Another nested option"/>
+            </ListBox>
+          </ListBox.Static>,
           'ñoñada', // (matches: "n")
           'Über', // Case insensitivity + diacritics (matches: "u", or also "U")
           'ß', // Language-specific collation rules (e.g. "Straße" = "Strasse") (NOTE: currently does not work)
@@ -283,8 +293,10 @@ export const ListBoxTypeAhead: Story = {
           'ไทย', // Non-ASCII characters should work (matches: "ไ" on a Thai keyboard)
           'かな', // For keyboards using live conversion like Japanese romaji or Chinese pinyin, matching will still be
                  // Latin-based. However, this would match "か" on a kana-based Japanese keyboard layout.
-        ].map((char) =>
-          <ListBox.Option key={char} itemKey={char} label={char}/>
+        ].map(stringOrElement =>
+          typeof stringOrElement === 'string'
+            ? <ListBox.Option key={stringOrElement} itemKey={stringOrElement} label={stringOrElement}/>
+            : stringOrElement
         )}
       </>
     ),

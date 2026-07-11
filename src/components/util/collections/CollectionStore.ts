@@ -2,9 +2,13 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import scrollIntoView from 'scroll-into-view-if-needed';
 import * as React from 'react';
 import { mergeProps, useMemoOnce } from '../../../util/reactUtil.ts';
 import { type StateCreator, type StoreApi, createStore, useStore } from 'zustand';
+
+import { removeCombiningCharacters } from '../../../util/formatting.ts';
+import { useTypeAhead } from '../../../util/hooks/useTypeAhead.ts';
 
 
 export type ItemKey = string;
@@ -120,10 +124,10 @@ export const useCollectionWith = (
 };
 
 type UseCollectionItemWithParams = { itemKey: ItemKey };
-type UseCollectionItemWithResult<E extends Element> = {
+type UseCollectionItemWithResult<E extends HTMLElement> = {
   props: { ref: React.RefCallback<E>, 'data-bk-coll-parent': string, 'data-bk-coll-item': string },
 };
-export const useCollectionItemWith = <E extends Element>(
+export const useCollectionItemWith = <E extends HTMLElement>(
   store: StoreApi<CollectionSlice>,
   { itemKey }: UseCollectionItemWithParams,
 ): UseCollectionItemWithResult<E> => {
@@ -191,7 +195,7 @@ export const useCollection = <E extends HTMLElement = HTMLElement>(
   };
 };
 
-type UseCollectionItemResult<E extends Element> = {
+type UseCollectionItemResult<E extends HTMLElement> = {
   store: CollectionContext['store'],
   props: {
     ref: React.RefCallback<E>,
@@ -199,7 +203,7 @@ type UseCollectionItemResult<E extends Element> = {
     'data-bk-coll-item': string,
   },
 };
-export const useCollectionItem = <E extends Element>(
+export const useCollectionItem = <E extends HTMLElement>(
   params: UseCollectionItemWithParams,
 ): UseCollectionItemResult<E> => {
   const { itemKey } = params;
@@ -208,6 +212,61 @@ export const useCollectionItem = <E extends Element>(
   const { props } = useCollectionItemWith(store, { itemKey });
   
   return { store, props };
+};
+
+
+export const useCollectionTypeAhead = (
+  containerRef: React.RefObject<null | HTMLElement>,
+  store: StoreApi<CollectionSlice>,
+) => {
+  const { sequence, props } = useTypeAhead();
+  
+  const collectionId = useStore(store, state => state.collectionId);
+  const getNodeList = React.useEffectEvent(useStore(store, state => state.collectionNodeList));
+  
+  // biome-ignore lint/correctness/useExhaustiveDependencies(containerRef.current): It's a ref, don't use as dep.
+  React.useEffect(() => {
+    const query: string = removeCombiningCharacters(sequence.join(''));
+    if (query.trim() === '') { return; }
+    
+    let itemNodes = Array.from(getNodeList());
+    
+    // Cycle the nodes such that the focused item (if any) comes first. This is so that the type-ahead search will
+    // always continue from the current focused element.
+    const focusedNodeIndex = document.activeElement ? itemNodes.indexOf(document.activeElement) : -1;
+    if (focusedNodeIndex) {
+      itemNodes = [...itemNodes.slice(focusedNodeIndex), ...itemNodes.slice(0, focusedNodeIndex)];
+    }
+    
+    for (const itemNode of itemNodes) {
+      if (!(itemNode instanceof HTMLElement)) { continue; }
+      if (itemNode === document.activeElement) { continue; }
+      
+      const elementText = itemNode.innerText ?? '';
+      const elementTextNormalized = removeCombiningCharacters(elementText).replaceAll(/\s+/g, '');
+      
+      if (elementText.trim() !== '' && elementTextNormalized.startsWith(query)) {
+        itemNode.focus({ preventScroll: true });
+        scrollIntoView(itemNode, { scrollMode: 'if-needed', boundary: containerRef.current });
+        break;
+      }
+    }
+  }, [sequence]);
+  
+  const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+    // Ignore key events coming from things other than items
+    if (!(event.target instanceof HTMLElement)) { return; }
+    if (event.target.dataset.bkCollParent !== collectionId) { return; }
+    
+    props.onKeyDown(event);
+  }, [collectionId, props.onKeyDown]);
+  
+  return {
+    props: {
+      ...props,
+      onKeyDown: handleKeyDown,
+    },
+  };
 };
 
 
