@@ -326,7 +326,7 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
       nonactive={isDisabled}
     >
       {selectionMode === 'multiple' &&
-        <Checkbox tabIndex={-1} checked={selected} disabled={isDisabled}
+        <Checkbox role="presentation" tabIndex={-1} checked={selected} disabled={isDisabled}
           className={cx(cl['bk-menu-list__item__checkbox'])}
         />
       }
@@ -483,7 +483,7 @@ export const MenuList = Object.assign(
         <div
           role={role}
           aria-label={typeof label === 'string' ? label : undefined}
-          aria-busy={isLoading}
+          aria-busy={isLoading ? 'true' : undefined}
           aria-orientation={orientation === 'block' ? 'vertical' : 'horizontal'} // Take into account `writing-mode`?
           {...mergeProps(
             embedded ? {} : scrollerProps,

@@ -198,27 +198,17 @@ export const ListBoxMulti = Object.assign(
     const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
     
     const listBoxRef = React.useRef<React.ComponentRef<typeof MenuList>>(null);
-    const getOptionNodes = useStore(store, state => state.collectionNodeList);
+    const collectionFocusItemAt = useStore(store, state => state.collectionFocusItemAt);
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
     React.useImperativeHandle<null | ListBoxRef, null | ListBoxRef>(ref, () => {
       const listBoxElement = listBoxRef.current;
       if (!listBoxElement) { return null; }
       
       return Object.assign(listBoxElement, {
-        _bkListBoxFocusFirst: () => {
-          const options = getOptionNodes();
-          const optionLast = options.item(0);
-          if (!(optionLast instanceof HTMLElement)) { return; }
-          optionLast.focus();
-        },
-        _bkListBoxFocusLast: () => {
-          const options = getOptionNodes();
-          const optionLast = options.item(options.length - 1);
-          if (!(optionLast instanceof HTMLElement)) { return; }
-          optionLast.focus();
-        },
+        _bkListBoxFocusFirst: () => { collectionFocusItemAt('first'); },
+        _bkListBoxFocusLast: () => { collectionFocusItemAt('last'); },
       });
-    }, [getOptionNodes]);
+    }, [collectionFocusItemAt]);
     
     /* formatItemKeys
     React.useEffect(() => {

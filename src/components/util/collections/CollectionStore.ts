@@ -14,14 +14,25 @@ import { useTypeAhead } from '../../../util/hooks/useTypeAhead.ts';
 export type ItemKey = string;
 export type RegistryItem = HTMLElement;
 
-const nodeListEmpty: NodeList = {
-  length: 0,
-  item: () => null,
-  forEach: () => {},
-  entries: () => [].entries(),
-  keys: () => [].keys(),
-  values: () => [].values(),
-  [Symbol.iterator]: () => [].values(),
+
+//
+// Utilities
+//
+
+/**
+ * Programmatically focus the given item element. Optionally, specify the `containerEl` in order to scroll only within
+ * the container, preventing scroll of the rest of the page.
+ */
+export const focusItem = (itemEl: HTMLElement, containerEl?: undefined | null | HTMLElement) => {
+  // Note: we don't rely on `focus()` to scroll, because:
+  // - It doesn't work if the element is already focused
+  // - It will scroll even when not needed (i.e. when the element is already visible)
+  // - It will scroll the viewport as well, not just the local scrollport.
+  itemEl.focus({ preventScroll: true });
+  scrollIntoView(itemEl, {
+    scrollMode: 'if-needed',
+    boundary: containerEl ?? null,
+  });
 };
 
 //
@@ -34,15 +45,29 @@ export type CollectionState = {
   collectionId: string,
 };
 export interface CollectionSlice extends CollectionState {
+  /** Register an item, with the given item key, and element reference. If the key exists, it is updated. @private */
   registerItem: (itemKey: ItemKey, item: RegistryItem) => void,
+  /** Unregister the item with the given item key, if it exists. @private */
   unregisterItem: (itemKey: ItemKey) => void,
-  collectionItem: (itemKey: ItemKey) => null | RegistryItem,
-  collectionItemKeys: () => Set<ItemKey>,
-  collectionIsEmpty: () => boolean,
-  collectionNodeList: () => NodeList,
-  
-  /** Returns whether the registry has changed since the last `consumeRegistryChange` call, and clears the flag. */
+  /**
+   * Internal: returns whether the registry has changed since last `consumeRegistryChange` call, and clears the flag.
+   * Should not be called by consumers, only intended for the internal module.
+   * @private
+   */
   [consumeRegistryChange]: () => boolean,
+  
+  /** Return the item for the given key. Returns `null` if the item does not exist. */
+  collectionItemByKey: (itemKey: ItemKey) => null | RegistryItem,
+  /** Return the set of all item keys in the registry. */
+  collectionItemKeys: () => Set<ItemKey>,
+  /** Returns whether the registry is currently empty. */
+  collectionIsEmpty: () => boolean,
+  /** Returns whether the registry is currently empty. */
+  collectionItemElements: () => Array<HTMLElement>,
+  /** Focus the given item key. */
+  collectionFocusItem: (itemKey: ItemKey) => void,
+  /** Focus the item at the given position in the DOM. */
+  collectionFocusItemAt: (position: 'first' | 'last') => void,
 };
 
 export type CollectionProps = Pick<CollectionState, 'collectionId'>;
@@ -53,6 +78,14 @@ export const createCollectionSlice = <E extends HTMLElement = HTMLElement>(
   // Private, mutable registry for bookkeeping purposes
   const registry = new Map<ItemKey, RegistryItem>();
   let registryHasChanged = true; // Dirty flag to track whether the registry has changed since it was last processed
+  
+  const queryItemElements = () => {
+    const el = ref.current;
+    if (!(el instanceof HTMLElement)) { return []; }
+    
+    const elements = el.querySelectorAll(`[data-bk-coll-parent=${JSON.stringify(collectionId)}]`);
+    return Array.from(elements) as Array<HTMLElement>;
+  };
   
   return {
     collectionId,
@@ -79,13 +112,36 @@ export const createCollectionSlice = <E extends HTMLElement = HTMLElement>(
       return changed;
     },
     
-    collectionItem: itemKey => registry.get(itemKey) ?? null,
+    collectionItemByKey: itemKey => registry.get(itemKey) ?? null,
     collectionItemKeys: () => new Set(registry.keys()),
     collectionIsEmpty: () => registry.size === 0,
-    collectionNodeList: (): NodeList => {
-      const el = ref.current;
-      if (!(el instanceof HTMLElement)) { return nodeListEmpty; }
-      return el.querySelectorAll(`[data-bk-coll-parent=${JSON.stringify(collectionId)}]`);
+    collectionItemElements: queryItemElements,
+    collectionFocusItem: itemKey => {
+      const item = registry.get(itemKey) ?? null;
+      if (item) {
+        focusItem(item, ref.current);
+      }
+    },
+    collectionFocusItemAt: pos => {
+      const itemElements = queryItemElements();
+      
+      switch (pos) {
+        case 'first': {
+          const itemFirst = itemElements.at(0);
+          if (itemFirst) {
+            focusItem(itemFirst, ref.current);
+          }
+          break;
+        }
+        case 'last': {
+          const itemLast = itemElements.at(itemElements.length - 1);
+          if (itemLast) {
+            focusItem(itemLast, ref.current);
+          }
+          break;
+        }
+        default: throw new Error(`Unexpected position '${pos satisfies never}'`);
+      }
     },
   };
 };
@@ -222,32 +278,32 @@ export const useCollectionTypeAhead = (
   const { sequence, props } = useTypeAhead();
   
   const collectionId = useStore(store, state => state.collectionId);
-  const getNodeList = React.useEffectEvent(useStore(store, state => state.collectionNodeList));
+  const getItemElements = React.useEffectEvent(useStore(store, state => state.collectionItemElements));
   
   // biome-ignore lint/correctness/useExhaustiveDependencies(containerRef.current): It's a ref, don't use as dep.
   React.useEffect(() => {
     const query: string = removeCombiningCharacters(sequence.join(''));
     if (query.trim() === '') { return; }
     
-    let itemNodes = Array.from(getNodeList());
+    let itemEls = getItemElements();
+    const focusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     
-    // Cycle the nodes such that the focused item (if any) comes first. This is so that the type-ahead search will
+    // Cycle the elements such that the focused item (if any) comes first. This is so that the type-ahead search will
     // always continue from the current focused element.
-    const focusedNodeIndex = document.activeElement ? itemNodes.indexOf(document.activeElement) : -1;
+    const focusedNodeIndex = focusedElement ? itemEls.indexOf(focusedElement) : -1;
     if (focusedNodeIndex) {
-      itemNodes = [...itemNodes.slice(focusedNodeIndex), ...itemNodes.slice(0, focusedNodeIndex)];
+      itemEls = [...itemEls.slice(focusedNodeIndex), ...itemEls.slice(0, focusedNodeIndex)];
     }
     
-    for (const itemNode of itemNodes) {
-      if (!(itemNode instanceof HTMLElement)) { continue; }
-      if (itemNode === document.activeElement) { continue; }
+    for (const itemEl of itemEls) {
+      if (!(itemEl instanceof HTMLElement)) { continue; }
+      if (itemEl === document.activeElement) { continue; }
       
-      const elementText = itemNode.innerText ?? '';
+      const elementText = itemEl.innerText ?? '';
       const elementTextNormalized = removeCombiningCharacters(elementText).replaceAll(/\s+/g, '');
       
       if (elementText.trim() !== '' && elementTextNormalized.startsWith(query)) {
-        itemNode.focus({ preventScroll: true });
-        scrollIntoView(itemNode, { scrollMode: 'if-needed', boundary: containerRef.current });
+        focusItem(itemEl, containerRef.current);
         break;
       }
     }

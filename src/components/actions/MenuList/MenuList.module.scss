@@ -48,9 +48,16 @@
   
   &:not([data-multiselect="true"]) {
     &:is([aria-selected="true"], [aria-checked="true"]) {
+      --bk-menu-list-select-indicator-size: 0.3em;
+      
       background: bk.$theme-dropdown-menu-menu-background-hover;
       // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
-      box-shadow: inset 0.3em 0 bk.$theme-dropdown-menu-menu-tab-default !important;
+      box-shadow: inset var(--bk-menu-list-select-indicator-size) 0 bk.$theme-dropdown-menu-menu-tab-default !important;
+      
+      &:focus-visible {
+        // Compensate for the focus outline (which overlaps the indicator)
+        --bk-menu-list-select-indicator-size: calc(0.3em + var(--bk-focus-outline-width));
+      }
       
       @media (prefers-reduced-motion: no-preference) {
         transition: box-shadow 150ms ease-in;
@@ -210,7 +217,10 @@
       }
       
       &.bk-menu-list__item--option {
-        .bk-menu-list__item__checkbox { margin-inline-end: 1.2ch; }
+        .bk-menu-list__item__checkbox {
+          pointer-events: none; // Pass-through to the option
+          margin-inline-end: 1.2ch;
+        }
       }
       
       &.bk-menu-list__item--loading {
