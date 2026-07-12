@@ -28,8 +28,8 @@ References:
 - https://www.radix-ui.com/primitives/docs/components/select
 */
 
-export { type ItemKey, type SelectedState, useListBoxMultiItem, useListBoxMultiSelector };
 export { cl as ListBoxMultiClassNames };
+export { type ItemKey, type SelectedState, useListBoxMultiItem, useListBoxMultiSelector };
 
 export type SelectedStateProps = (
   | {
@@ -69,24 +69,21 @@ type ItemOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 'selec
 /**
  * A list box option (can be selected by the user).
  */
-export const ItemOption = React.memo((props: ItemOptionProps) => {
+export const ItemOption = React.memo(({ itemKey, ...propsRest }: ItemOptionProps) => {
   // Note: use `memo()` so that children don't rerendered on state change, in the case that:
   // - The consumer uses this component with controlled state
   // - The `children` prop on consumer side is not memoized/static (usually the case)
   
-  const { unstyled, itemKey, className, iconDecoration, ...propsRest } = props;
-  const { selected, requestSelected: onRequestSelected, props: itemProps } = useListBoxMultiItem({ itemKey });
-  
+  const { selected, requestSelected, props: itemProps } = useListBoxMultiItem({ itemKey });
   return (
     <MenuList.Option
-      unstyled={unstyled}
-      selectionMode="multiple"
       {...mergeProps(
         itemProps,
-        { selected, onRequestSelected },
+        { selected, onRequestSelected: requestSelected },
         propsRest,
-        { className: cx({ [cl['bk-list-box-multi__item']]: !unstyled }, className) },
+        { className: cx({ [cl['bk-list-box-multi__item']]: !propsRest.unstyled }) },
       )}
+      selectionMode="multiple"
     />
   );
 });
@@ -169,6 +166,7 @@ export const ListBoxMulti = Object.assign(
       ref,
       children,
       unstyled,
+      status,
       selected,
       defaultSelected,
       onSelectedChange,
@@ -189,7 +187,7 @@ export const ListBoxMulti = Object.assign(
       - Separate logic out to a separate component (like we did for `HiddenSelectedState`).
       - Use `listBox.store.subscribe` for side effects.
     */
-    const { store, ...listBoxStore } = useListBoxMulti<HTMLDivElement>({
+    const { store, ...listBoxStore } = useListBoxMulti<React.ComponentRef<typeof MenuList>>({
       state: selected,
       defaultState: defaultSelected,
       defaultStateFallback: new Set(),
@@ -251,7 +249,7 @@ export const ListBoxMulti = Object.assign(
             { ref: listBoxRef },
             listBoxStore.props,
             {
-              status: isLoading === true ? 'loading' : undefined,
+              status: status ?? (typeof isLoading !== 'undefined' ? (isLoading ? 'loading' : 'ready') : undefined),
               onKeyDown: handleKeyDown,
               className: cx({ [cl['bk-list-box-multi']]: !unstyled }),
             },

@@ -28,8 +28,8 @@ References:
 - https://www.radix-ui.com/primitives/docs/components/select
 */
 
-export { type ItemKey, type SelectedState, useListBoxItem, useListBoxSelector };
 export { cl as ListBoxClassNames };
+export { type ItemKey, type SelectedState, useListBoxItem, useListBoxSelector };
 
 export type SelectedStateProps = (
   | {
@@ -66,14 +66,12 @@ type ItemOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 'selec
 /**
  * A list box option (can be selected by the user).
  */
-export const ItemOption = React.memo((props: ItemOptionProps) => {
+export const ItemOption = React.memo(({ itemKey, ...propsRest }: ItemOptionProps) => {
   // Note: use `memo()` so that children don't rerendered on state change, in the case that:
   // - The consumer uses this component with controlled state
   // - The `children` prop on consumer side is not memoized/static (usually the case)
   
-  const { itemKey, ...propsRest } = props;
   const { selected, requestSelected, props: itemProps } = useListBoxItem({ itemKey });
-  
   return (
     <MenuList.Option
       {...mergeProps(
@@ -149,6 +147,7 @@ export const ListBox = Object.assign(
       ref,
       children,
       unstyled,
+      status,
       selected,
       defaultSelected,
       onSelectedChange,
@@ -169,7 +168,7 @@ export const ListBox = Object.assign(
       - Separate logic out to a separate component (like we did for `HiddenSelectedState`).
       - Use `listBox.store.subscribe` for side effects.
     */
-    const { store, ...listBoxStore } = useListBox<HTMLDivElement>({
+    const { store, ...listBoxStore } = useListBox<React.ComponentRef<typeof MenuList>>({
       state: selected,
       defaultState: defaultSelected,
       defaultStateFallback: null,
@@ -231,7 +230,7 @@ export const ListBox = Object.assign(
             { ref: listBoxRef },
             listBoxStore.props,
             {
-              status: isLoading === true ? 'loading' : undefined,
+              status: status ?? (typeof isLoading !== 'undefined' ? (isLoading ? 'loading' : 'ready') : undefined),
               onKeyDown: handleKeyDown,
               className: cx({ [cl['bk-list-box']]: !unstyled }),
             },

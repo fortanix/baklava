@@ -242,11 +242,11 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
     </>
   );
 }, {
-    Static: ListBox.Static,
-    Option: ListBox.Option,
-    Action: ListBox.Action,
-    Header: ListBox.Header,
-    FooterActions: ListBox.FooterActions,
+    Static: ListBox.ListBox.Static,
+    Option: ListBox.ListBox.Option,
+    // Action: ListBox.ListBox.Action,
+    // Header: ListBox.ListBox.Header,
+    // FooterActions: ListBox.ListBox.FooterActions,
   },
 );
 

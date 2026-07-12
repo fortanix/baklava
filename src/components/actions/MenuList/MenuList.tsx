@@ -30,14 +30,15 @@ export { cl as MenuListClassNames };
 // MenuListContext
 //
 
-type MenuListRole = 'none' | 'presentation' | 'menu' | 'listbox'; // TODO: add `menubar` support?
+type MenuListRole = 'none' | 'presentation' | 'menu' | 'listbox' | 'group'; // TODO: add `menubar` support?
 type MenuListSelectionMode = 'single' | 'multiple';
 const getDefaultOptionRole = (role: MenuListRole, selectionMode?: undefined | MenuListSelectionMode) => {
   switch (role) {
     case 'none':
     case 'presentation':
       throw new Error(`Unexpected option in presentational MenuList`);
-    case 'menu': {
+    case 'menu':
+    case 'group': {
       switch (selectionMode) {
         case 'single': return 'menuitemradio';
         case 'multiple': return 'menuitemcheckbox';
@@ -470,7 +471,7 @@ export const MenuList = Object.assign(
     
     const scrollerProps = useScroller();
     const focusGroupProps = useFocusGroup({ focusGroup: `${role} ${orientation} nowrap` });
-    const isPresentational = ['none', 'presentation'].includes(role);
+    const isFocusGroup = ['menu', 'menubar', 'listbox'].includes(role);
     
     const isEmpty = empty || !children;
     const isLoading = status === 'loading';
@@ -487,7 +488,7 @@ export const MenuList = Object.assign(
           aria-orientation={orientation === 'block' ? 'vertical' : 'horizontal'} // Take into account `writing-mode`?
           {...mergeProps(
             embedded ? {} : scrollerProps,
-            isPresentational ? {} : focusGroupProps,
+            isFocusGroup ? focusGroupProps : {},
             {
               className: cx(
                 'bk',
