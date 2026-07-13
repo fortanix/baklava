@@ -31,13 +31,6 @@ export type { VirtualItem, ItemKey, ListBoxRef };
 export { cl as ListBoxLazyClassNames };
 
 export type VirtualItemKeys = Pick<ReadonlyArray<ItemKey>, 'length' | 'at' | 'indexOf'>;
-// export const VirtualItemKeysUtil = {
-//   /** Find the index of the given `itemKey`, or `null` if not found in the list. */
-//   indexForItemKey(virtualItemKeys: VirtualItemKeys, itemKey: ItemKey): null | number {
-//     const index = virtualItemKeys.indexOf(itemKey);
-//     return index >= 0 ? index : null;
-//   },
-// };
 
 type ListItemVirtualProps = {
   ref?: undefined | React.Ref<HTMLButtonElement>,
@@ -150,21 +143,6 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   } = props;
   const isLoading = status === 'loading';
   
-  
-  // TEMP
-  // const { store } = useListBoxContext();
-  // React.useEffect(() => {
-  //   if (virtualItemKeys) {
-  //     const state = store.getState();
-  //     for (let i = 0; i < virtualItemKeys.length; i++) {
-  //       state.unregisterItem(`item-${i}`);
-  //       state.registerItem(`item-${i}`, null);
-  //     }
-  //     console.log('x', state.collectionItemKeys());
-  //   }
-  // }, [store, virtualItemKeys]);
-  
-  
   const { focusedItemIndex, props: focusProps } = useFocusedItemIndex();
   
   // Range extractor for `useVirtualizer` that always includes the focused item, if there is one. This is so that we
@@ -245,6 +223,7 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     
     return (
       <div
+        // FIXME: styling
         className={cx(
           cl['bk-list-box-lazy__item'],
           ListBoxClassNames['bk-list-box__item'],

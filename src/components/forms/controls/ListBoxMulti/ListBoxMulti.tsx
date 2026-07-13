@@ -53,10 +53,10 @@ export type SelectedStateProps = {
 
 
 //
-// ListBoxRef
+// ListBoxMultiRef
 //
 
-export interface ListBoxRef extends HTMLDivElement {
+export interface ListBoxMultiRef extends HTMLDivElement {
   _bkListBoxFocusFirst: () => void,
   _bkListBoxFocusLast: () => void,
   // TODO:
@@ -142,7 +142,7 @@ const HiddenSelectedState = ({ ref, name, form, ...inputProps }: HiddenSelectedS
 type PropsOmit = 'ref' | keyof SelectedStateProps;
 export type ListBoxMultiProps = Omit<React.ComponentProps<typeof MenuList>, PropsOmit> & SelectedStateProps & {
   /** A React ref to pass to the list box element. */
-  ref?: undefined | React.Ref<ListBoxRef>,
+  ref?: undefined | React.Ref<ListBoxMultiRef>,
   
   /** The machine readable name of the list box control, used as part of `<form>` submission. */
   name?: undefined | string,
@@ -205,7 +205,7 @@ export const ListBoxMulti = Object.assign(
     const listBoxRef = React.useRef<React.ComponentRef<typeof MenuList>>(null);
     const collectionFocusItemAt = useStore(store, state => state.collectionFocusItemAt);
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
-    React.useImperativeHandle<null | ListBoxRef, null | ListBoxRef>(ref, () => {
+    React.useImperativeHandle<null | ListBoxMultiRef, null | ListBoxMultiRef>(ref, () => {
       const listBoxElement = listBoxRef.current;
       if (!listBoxElement) { return null; }
       
