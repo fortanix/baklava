@@ -30,16 +30,16 @@ export { cl as MenuListClassNames };
 // MenuListContext
 //
 
-type MenuListRole = 'none' | 'presentation' | 'menu' | 'menubar' | 'listbox' | 'group';
+type MenuListRole = 'none' | 'presentation' | 'menu' | 'menubar' | 'listbox' /* | group */;
 type MenuListSelectionMode = 'single' | 'multiple';
 const getDefaultOptionRole = (role: MenuListRole, selectionMode?: undefined | MenuListSelectionMode) => {
   switch (role) {
     case 'none':
     case 'presentation':
       throw new Error(`Found invalid 'option' element in presentational MenuList`);
+    //case 'group': 
     case 'menu':
-    case 'menubar':
-    case 'group': {
+    case 'menubar': {
       switch (selectionMode) {
         case 'single': return 'menuitemradio';
         case 'multiple': return 'menuitemcheckbox';

@@ -31,6 +31,7 @@ References:
 export { cl as ListBoxClassNames };
 export { type ItemKey, type SelectedState, useListBoxItem, useListBoxSelector };
 
+/* FIXME: this causes issues: type errors in wrapper types, Storybook inference will fail, ...
 export type SelectedStateProps = (
   | {
     selected?: undefined, // Uncontrolled
@@ -43,6 +44,12 @@ export type SelectedStateProps = (
     onSelectedChange: (selected: SelectedState) => void,
   }
 );
+*/
+export type SelectedStateProps = {
+  selected?: undefined | SelectedState,
+  defaultSelected?: undefined | SelectedState,
+  onSelectedChange?: undefined | ((selected: SelectedState) => void),
+};
 
 
 //
