@@ -156,10 +156,10 @@ export const ListBoxEmptyWithHeaderAndFooter: Story = {
         <ListBox.Segment sticky="start">
           <ListBox.Static muted>An empty list with header/footer</ListBox.Static>
         </ListBox.Segment>
-        <ListBox.Segment sticky="end">
+        <ListBox.Footer>
           <ListBox.Static>Footer 1</ListBox.Static>
           <ListBox.Static>Footer 2</ListBox.Static>
-        </ListBox.Segment>
+        </ListBox.Footer>
       </>
     ),
   },

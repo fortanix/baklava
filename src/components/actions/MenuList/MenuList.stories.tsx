@@ -7,6 +7,7 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { colorBright, fruits } from '../../../util/storybook/StorybookUtils.tsx';
 import { loremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
+import { generateData } from '../../tables/util/generateData.ts'; // FIXME: move to a common location
 
 import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
@@ -306,29 +307,27 @@ export const MenuListWithIcon: Story = {
   },
 };
 
+const iconHighlight: Partial<React.ComponentProps<typeof Icon>> = { decoration: { type: 'background-circle' } };
 export const MenuListWithHighlightedIcon: Story = {
   args: {
     children: (
       <>
-        <MenuList.Option {...propsRadio} icon="account" iconDecoration="highlight" label="Option with an icon"/>
-        <MenuList.Option {...propsRadio} icon="user" iconDecoration="highlight" label="Another option"/>
+        <MenuList.Option {...propsRadio} icon="account" iconProps={iconHighlight} label="Option with an icon"/>
+        <MenuList.Option {...propsRadio} icon="user" iconProps={iconHighlight} label="Another option"/>
         <MenuList.Option {...propsRadio} icon="user" label="Without highlight (should line up)"/>
       </>
     ),
   },
 };
 
-const CustomIcon = (props: React.ComponentProps<typeof Icon>) =>
-  <Icon
-    {...props}
-    style={{ color: colorBright, ...props.style }}
-  />;
+const CustomIcon = (props: Partial<React.ComponentProps<typeof Icon>>) =>
+  <Icon icon="account" {...props} style={{ color: colorBright, ...props.style }}/>;
 export const MenuListWithCustomIcon: Story = {
   args: {
     children: (
       <>
-        <MenuList.Option {...propsRadio} Icon={CustomIcon} icon="account" label="Option with an icon"/>
-        <MenuList.Option {...propsRadio} Icon={CustomIcon} icon="user" label="Another option"/>
+        <MenuList.Option {...propsRadio} icon={p => <CustomIcon {...p}/>} label="Option with a custom icon"/>
+        <MenuList.Option {...propsRadio} icon={p => <CustomIcon {...p} icon="bell"/>} label="Another custom icon"/>
       </>
     ),
   },
@@ -361,6 +360,7 @@ export const MenuListDisabled: Story = {
 
 export const MenuListWithHeaderAndFooter: Story = {
   args: {
+    style: { '--sticky-items-end': 2 },
     children: (
       <>
         <MenuList.Segment sticky="start">
@@ -369,10 +369,10 @@ export const MenuListWithHeaderAndFooter: Story = {
         {fruits.map(fruit =>
           <MenuList.Option {...propsCheckbox} key={fruit} label={fruit}/>
         )}
-        <MenuList.Segment sticky="end">
+        <MenuList.Footer>
           <MenuList.Action {...propsAction} label="Footer action 1"/>
           <MenuList.Action {...propsAction} label="Footer action 2"/>
-        </MenuList.Segment>
+        </MenuList.Footer>
       </>
     ),
   },
@@ -380,6 +380,7 @@ export const MenuListWithHeaderAndFooter: Story = {
 
 export const MenuListWithHeaderAndFooterEmpty: Story = {
   args: {
+    style: { '--sticky-items-end': 2 },
     placeholderEmpty: <><Icon icon="user"/> No users to select</>,
     empty: true,
     children: (
@@ -388,11 +389,10 @@ export const MenuListWithHeaderAndFooterEmpty: Story = {
           <MenuList.Static><InputSearch style={{ flexGrow: 1 }} placeholder="Search"/></MenuList.Static>
         </MenuList.Segment>
         
-        {/* FIXME: need to move this down to the bottom, even when there is an empty placeholder */}
-        <MenuList.Segment sticky="end">
+        <MenuList.Footer>
           <MenuList.Action {...propsAction} label="Footer action 1"/>
           <MenuList.Action {...propsAction} label="Footer action 2"/>
-        </MenuList.Segment>
+        </MenuList.Footer>
       </>
     ),
   },
@@ -421,5 +421,26 @@ export const MenuListWritingModeVertical: Story = {
 export const MenuListEmbedded: Story = {
   args: {
     embedded: true,
+  },
+};
+
+export const MenuListWithManyItems: Story = {
+  args: {
+    children: (
+      <>
+        {Array.from({ length: 1000 }, (_, i) => i + 1).map(index =>
+          <MenuList.Option key={`item-${index}`} {...propsRadio}>
+            {generateData({ numItems: 1, seed: String(index) })[0]?.name ?? ''}
+            
+            {/*
+            Give items a much larger block size (compared to our `contain-intrinsic-block-size`), in order to test the
+            `content-visibility` behavior in the browser. What should happen is: the scroll indicator should make a lot
+            of progress at first but then get slower and slower as the browser starts calculating the actual elements.
+            */}
+            {index >= 100 && <span style={{ blockSize: '5lh' }}></span>}
+          </MenuList.Option>
+        )}
+      </>
+    ),
   },
 };

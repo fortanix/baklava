@@ -30,14 +30,15 @@ export { cl as MenuListClassNames };
 // MenuListContext
 //
 
-type MenuListRole = 'none' | 'presentation' | 'menu' | 'listbox' | 'group'; // TODO: add `menubar` support?
+type MenuListRole = 'none' | 'presentation' | 'menu' | 'menubar' | 'listbox' | 'group';
 type MenuListSelectionMode = 'single' | 'multiple';
 const getDefaultOptionRole = (role: MenuListRole, selectionMode?: undefined | MenuListSelectionMode) => {
   switch (role) {
     case 'none':
     case 'presentation':
-      throw new Error(`Unexpected option in presentational MenuList`);
+      throw new Error(`Found invalid 'option' element in presentational MenuList`);
     case 'menu':
+    case 'menubar':
     case 'group': {
       switch (selectionMode) {
         case 'single': return 'menuitemradio';
@@ -104,6 +105,17 @@ export const MenuListSegment = ({ unstyled, disabled, sticky = false, ...propsRe
   );
 };
 
+type MenuListFooterProps = React.ComponentProps<typeof MenuListSegment>;
+/**
+ * A segment to display as a footer. Will be sticky (at end) by default, and will be shown below all other UI including
+ * automatically-added elements like the empty placeholder or the loading indicator.
+ */
+export const MenuListFooter = (props: MenuListFooterProps) => {
+  return (
+    <MenuListSegment sticky="end" {...props} className={cx(cl['bk-menu-list__footer'], props.className)}/>
+  );
+};
+
 export type MenuListGroupProps = Omit<MenuListSegmentProps, 'sticky'> & {
   /**
    * An accessible name for this group. Required. Can be set to `null` if the label is provided through implicit means,
@@ -142,7 +154,7 @@ export const MenuListGroup = (props: MenuListGroupProps) => {
       sticky={false}
     >
       {headingContent !== null &&
-        <H6 unstyled // FIXME: hardcoded level 6 heading
+        <H6 unstyled // FIXME: hardcoded level 6 heading, would be better if this level is dynamic (see ticket #160)
           id={headingId}
           {...headingProps}
           className={cx(
@@ -152,7 +164,7 @@ export const MenuListGroup = (props: MenuListGroupProps) => {
             headingProps.className,
           )}
         >
-          {headingContent}
+          <span className={cx(cl['bk-menu-list__item__label'])}>{headingContent}</span>
         </H6>
       }
       
@@ -209,7 +221,6 @@ export const MenuListItemAction = (props: MenuListItemActionProps) => {
   } = props;
   
   const context = useMenuListContext();
-  
   const isDisabled = disabled || nonactive || context.disabled;
   
   const iconProps = React.useMemo<undefined | { decoration: IconDecoration }>(() => {
@@ -250,7 +261,7 @@ export const MenuListItemAction = (props: MenuListItemActionProps) => {
   );
 };
 
-type MenuListItemOptionProps = Omit<ComponentProps<typeof Button>, 'kind' | 'variant' | 'onSelect'> & {
+type MenuListItemOptionProps = Omit<ComponentProps<typeof Button>, 'kind' | 'variant' | 'onSelect' | 'icon'> & {
   /** Whether to display this as a radio option (single select) or a checkbox option (multiple select). */
   selectionMode: MenuListSelectionMode,
   
@@ -260,8 +271,10 @@ type MenuListItemOptionProps = Omit<ComponentProps<typeof Button>, 'kind' | 'var
   /** A callback that is triggeed when the user requests this option to be selected. */
   onRequestSelected?: undefined | (() => void),
   
-  /** How to decorate the icon. Default: undefined (i.e. no decoration). */
-  iconDecoration?: undefined | 'highlight',
+  icon?: undefined | IconName | ((props: Partial<React.ComponentProps<typeof BkIcon>>) => React.ReactNode),
+  
+  /** Additional props to pass to the icon. */
+  iconProps?: undefined | Partial<React.ComponentProps<typeof BkIcon>>,
 };
 /**
  * A menu list option (which can be selected by the user).
@@ -275,7 +288,8 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
     selectionMode,
     selected = false,
     onRequestSelected,
-    iconDecoration,
+    icon,
+    iconProps,
     ...propsRest
   } = props;
   
@@ -288,16 +302,17 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
     onRequestSelected?.();
   }, [isDisabled, selectionMode, selected, onRequestSelected]);
   
-  const iconProps = React.useMemo<undefined | { decoration: IconDecoration }>(() => {
-    if (iconDecoration === 'highlight') {
-      return { decoration: { type: 'background-circle' } };
-    }
-  }, [iconDecoration]);
-  
   const optionRole = getDefaultOptionRole(context.role, selectionMode);
   
   // For the "selected state" aria prop, use either `aria-selected` or `aria-checked`, depending on the role
   const ariaSelectedProp = optionRole === 'option' ? 'aria-selected' : 'aria-checked';
+  
+  const renderIcon = () => {
+    const propsIcon = mergeProps(iconProps, { className: cl['bk-menu-list__item__icon'] });
+    if (typeof icon === 'string') { return <BkIcon icon={icon} {...propsIcon}/>; }
+    if (typeof icon === 'function') { return icon(propsIcon); }
+    return null;
+  };
   
   return (
     <Button
@@ -310,7 +325,6 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
       {...mergeProps(
         {
           onPress: handlePress,
-          iconProps,
         },
         propsRest,
         {
@@ -318,7 +332,6 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
             { [cl['bk-menu-list__item']]: !unstyled },
             cl['bk-menu-list__item--interactive'],
             cl['bk-menu-list__item--option'],
-            { [cl['bk-menu-list__item--icon-highlight']]: iconDecoration === 'highlight' },
             className,
           ),
         },
@@ -326,12 +339,16 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
       disabled={false} // Never use `disabled`, only use `nonactive`, so that we still allow focus
       nonactive={isDisabled}
     >
-      {selectionMode === 'multiple' &&
-        <Checkbox role="presentation" tabIndex={-1} checked={selected} disabled={isDisabled}
-          className={cx(cl['bk-menu-list__item__checkbox'])}
-        />
-      }
-      {propsRest.children ?? propsRest.label}
+      <span className={cx(cl['bk-menu-list__item__label'])}>
+        {renderIcon()}
+        
+        {selectionMode === 'multiple' &&
+          <Checkbox role="presentation" tabIndex={-1} checked={selected} disabled={isDisabled}
+            className={cx(cl['bk-menu-list__item__checkbox'])}
+          />
+        }
+        {propsRest.children ?? propsRest.label}
+      </span>
     </Button>
   );
 };
@@ -381,7 +398,7 @@ export const MenuListItemLink = (props: MenuListItemLinkProps) => {
 // Menu list
 //
 
-export const PlaceholderEmpty = (props: React.ComponentProps<'div'>) => (
+export const PlaceholderEmpty = (props: ComponentProps<'div'>) => (
   <div
     role={getDefaultOptionRole(useMenuListContext().role)}
     tabIndex={-1}
@@ -389,18 +406,18 @@ export const PlaceholderEmpty = (props: React.ComponentProps<'div'>) => (
     {...props}
     className={cx(
       cl['bk-menu-list__item'],
-      cl['bk-menu-list__empty-placeholder'],
+      cl['bk-menu-list__placeholder-empty'],
       props.className,
     )}
   />
 );
 
-export const PlaceholderLoading = (props: React.ComponentProps<'span'>) => (
+export const PlaceholderLoading = (props: ComponentProps<'span'>) => (
   <span
     {...props}
     className={cx(
       cl['bk-menu-list__item'],
-      cl['bk-menu-list__item--loading'],
+      cl['bk-menu-list__placeholder-loading'],
       props.className,
     )}
   >
@@ -408,11 +425,11 @@ export const PlaceholderLoading = (props: React.ComponentProps<'span'>) => (
   </span>
 );
 
-export type MenuListProps = Omit<ComponentProps<'div'>, 'role' | 'onSelect'> & {
+export type MenuListProps = Omit<ComponentProps<'div'>, 'role' | 'onSelect' | 'defaultValue' | 'defaultChecked'> & {
   /** Whether this component should be unstyled. Default: `false`. */
   unstyled?: undefined | boolean,
   
-  /** The role for this menu. Currently, only `menu` and `listbox` are supported. Default: `"menu"`. */
+  /** The semantic role for this menu. Default: `"menu"`. */
   role?: undefined | MenuListRole,
   
   /**
@@ -487,13 +504,13 @@ export const MenuList = Object.assign(
           aria-busy={isLoading ? 'true' : undefined}
           aria-orientation={orientation === 'block' ? 'vertical' : 'horizontal'} // Take into account `writing-mode`?
           {...mergeProps(
-            embedded ? {} : scrollerProps,
+            !embedded ? scrollerProps : {},
             isFocusGroup ? focusGroupProps : {},
             {
               className: cx(
                 'bk',
                 { [cl['bk-menu-list']]: !unstyled },
-                { [cl['bk-menu-list--embedded']]: embedded }, // TODO
+                { [cl['bk-menu-list--embedded']]: embedded },
                 { [cl['bk-menu-list--empty']]: isEmpty },
                 { [cl['bk-menu-list--size-shrink']]: size === 'shrink' },
                 { [cl['bk-menu-list--size-small']]: size === 'small' },
@@ -523,8 +540,9 @@ export const MenuList = Object.assign(
     );
   },
   {
-    Group: MenuListGroup,
     Segment: MenuListSegment,
+    Footer: MenuListFooter,
+    Group: MenuListGroup,
     Static: MenuListItemStatic,
     Action: MenuListItemAction,
     Option: MenuListItemOption,

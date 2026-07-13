@@ -234,7 +234,7 @@ const CollectionWithControlsC = (args: CollectionArgs) => {
     
     setItems(items => {
       const newItemKey = `${newItem}-${generateRandomId()}`;
-      return { ...items, [newItemKey]: { itemKey: newItemKey, children: newItemKey } };
+      return { ...items, [newItemKey]: { itemKey: newItemKey, label: newItemKey } };
     });
   }, []);
   
@@ -244,7 +244,7 @@ const CollectionWithControlsC = (args: CollectionArgs) => {
     
     setItems(items => {
       const newItemKey = `${newItem}-${generateRandomId()}`;
-      return { [newItemKey]: { itemKey: newItemKey, children: newItemKey }, ...items };
+      return { [newItemKey]: { itemKey: newItemKey, label: newItemKey }, ...items };
     });
   }, []);
   

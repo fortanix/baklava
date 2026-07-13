@@ -248,6 +248,7 @@ export const ListBox = Object.assign(
   },
   {
     Segment: MenuList.Segment,
+    Footer: MenuList.Footer,
     Group: MenuList.Group,
     Static: MenuList.Static,
     Option: ItemOption,

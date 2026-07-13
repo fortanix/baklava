@@ -30,6 +30,7 @@ export type { ItemKey, SelectedSingleState, SelectedMultiState };
 
 const subcomponentsGeneric = {
   Segment: MenuList.Segment,
+  Footer: MenuList.Footer,
   Group: MenuList.Group,
   Static: MenuList.Static,
   Action: MenuList.Action,
@@ -38,6 +39,10 @@ const subcomponentsGeneric = {
 
 
 interface MenuRef extends React.ComponentRef<typeof MenuList> {
+  _bkCollectionFocusFirst: () => void,
+  _bkCollectionFocusLast: () => void,
+};
+interface MenuGroupRef extends React.ComponentRef<typeof MenuList.Group> {
   _bkCollectionFocusFirst: () => void,
   _bkCollectionFocusLast: () => void,
 };
@@ -71,10 +76,12 @@ const MenuSelectOption = React.memo(({ itemKey, ...propsRest }: MenuSelectOption
   );
 });
 
-type MenuSelectPropsBase = Omit<React.ComponentProps<typeof MenuList>, 'ref' | 'label' | keyof MenuSelectStateProps>;
+type MenuSelectPropsBase = Omit<
+  React.ComponentProps<typeof MenuList.Group>, 'ref' | 'label' | keyof MenuSelectStateProps
+>;
 type MenuSelectProps = MenuSelectPropsBase & MenuSelectStateProps & {
   /** A React ref to pass to the menu element. */
-  ref?: undefined | React.Ref<MenuRef>,
+  ref?: undefined | React.Ref<MenuGroupRef>,
   
   /** A unique identifier for this option. */
   itemKey: ItemKey,
@@ -107,7 +114,7 @@ export const MenuSelect = Object.assign(
     const menuRef = React.useRef<React.ComponentRef<typeof MenuList>>(null);
     const collectionFocusItemAt = useStore(store, state => state.collectionFocusItemAt);
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
-    React.useImperativeHandle<null | MenuRef, null | MenuRef>(ref, () => {
+    React.useImperativeHandle<null | MenuGroupRef, null | MenuGroupRef>(ref, () => {
       const listBoxElement = menuRef.current;
       if (!listBoxElement) { return null; }
       
@@ -119,11 +126,10 @@ export const MenuSelect = Object.assign(
     
     return (
       <listBoxStore.Provider value={listBoxStore.context}>
-        <MenuList
-          embedded
-          label={undefined} // FIXME, need to add a `heading` prop
-          role="group"
-          aria-multiselectable="false"
+        <MenuList.Group
+          //heading="Test" // FIXME
+          //role="group" // FIXME
+          //aria-multiselectable="false" // Note: not applicable to `role="menu"`
           {...mergeProps(
             { ref: menuRef },
             itemProps,
@@ -171,12 +177,11 @@ const MenuSelectMultiOption = React.memo(({ itemKey, ...propsRest }: MenuSelectM
 });
 
 type MenuSelectMultiPropsBase = Omit<
-  React.ComponentProps<typeof MenuList>,
-  'ref' | 'label' | keyof MenuSelectMultiStateProps
+  React.ComponentProps<typeof MenuList>, 'ref' | 'label' | keyof MenuSelectMultiStateProps
 >;
 type MenuSelectMultiProps = MenuSelectMultiPropsBase & MenuSelectMultiStateProps & {
   /** A React ref to pass to the menu element. */
-  ref?: undefined | React.Ref<MenuRef>,
+  ref?: undefined | React.Ref<MenuGroupRef>,
   
   /** A unique identifier for this group. */
   itemKey: ItemKey,
@@ -209,7 +214,7 @@ export const MenuSelectMulti = Object.assign(
     const menuRef = React.useRef<React.ComponentRef<typeof MenuList>>(null);
     const collectionFocusItemAt = useStore(store, state => state.collectionFocusItemAt);
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
-    React.useImperativeHandle<null | MenuRef, null | MenuRef>(ref, () => {
+    React.useImperativeHandle<null | MenuGroupRef, null | MenuGroupRef>(ref, () => {
       const listBoxElement = menuRef.current;
       if (!listBoxElement) { return null; }
       
@@ -221,11 +226,10 @@ export const MenuSelectMulti = Object.assign(
     
     return (
       <listBoxStore.Provider value={listBoxStore.context}>
-        <MenuList
-          embedded
-          label={undefined} // FIXME, need to add a `heading` prop
-          role="group"
-          aria-multiselectable="true"
+        <MenuList.Group
+          //embedded
+          //role="group"
+          //aria-multiselectable="true" // Note: not applicable to `role="menu"`
           {...mergeProps(
             { ref: menuRef },
             itemProps,

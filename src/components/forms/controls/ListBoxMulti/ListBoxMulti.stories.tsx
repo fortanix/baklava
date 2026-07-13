@@ -117,11 +117,13 @@ export const ListBoxMultiEmptyWithHeaderAndFooter: Story = {
     defaultSelected: new Set(),
     children: (
       <>
-        <ListBoxMulti.Header itemKey="header" label="An empty list with header/footer" sticky="start"/>
-        <ListBoxMulti.FooterActions>
-          <ListBoxMulti.FooterAction itemKey="action-1" label="Action 1" onActivate={() => { notifyPressed(); }}/>
-          <ListBoxMulti.FooterAction itemKey="action-2" label="Action 2" onActivate={() => { notifyPressed(); }}/>
-        </ListBoxMulti.FooterActions>
+        <ListBoxMulti.Segment sticky="start">
+          <ListBoxMulti.Static>An empty list with header/footer</ListBoxMulti.Static>
+        </ListBoxMulti.Segment>
+        <ListBoxMulti.Footer>
+          <ListBoxMulti.Static>Footer 1</ListBoxMulti.Static>
+          <ListBoxMulti.Static>Footer 2</ListBoxMulti.Static>
+        </ListBoxMulti.Footer>
       </>
     ),
   },
@@ -273,37 +275,6 @@ export const ListBoxMultiWithActions: Story = {
         <ListBoxMulti.Option itemKey="option-2" label="Option 2"/>
         <ListBoxMulti.Action itemKey="action-1" icon="edit" label="Action 1" onActivate={() => { notifyPressed(); }}/>
         <ListBoxMulti.Action disabled itemKey="action-2" icon="delete" label="Action 2" onActivate={() => { notifyPressed(); }}/>
-      </>
-    ),
-  },
-};
-
-export const ListBoxMultiWithStickyActions: Story = {
-  args: {
-    style: { '--sticky-items-end': 2 },
-    defaultSelected: new Set(['icecream-blueberry', 'icecream-mango', 'icecream-strawberry', 'jellybean-apple']),
-    children: (
-      <>
-        <ListBoxMulti.Header itemKey="header-1" sticky={false}
-          label={`Ice cream flavors (${Object.keys(fruits).length})`}
-        />
-        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ListBoxMulti.Option key={`icecream-${fruitKey}`} itemKey={`icecream-${fruitKey}`} label={fruitName}/>
-        )}
-        <ListBoxMulti.Header itemKey="header-2" sticky={false}
-          label={`Jelly bean flavors (${Object.keys(fruits).length})`}
-        />
-        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ListBoxMulti.Option key={`jellybean-${fruitKey}`} itemKey={`jellybean-${fruitKey}`} label={fruitName}/>
-        )}
-        <ListBoxMulti.FooterActions>
-          <ListBoxMulti.Action itemKey="action-checkout" label="Go to Checkout"
-            onActivate={() => { notifyPressed(); }}
-          />
-          <ListBoxMulti.Action itemKey="action-oneclick" label="One-Click Purchase"
-            onActivate={() => { notifyPressed(); }}
-          />
-        </ListBoxMulti.FooterActions>
       </>
     ),
   },

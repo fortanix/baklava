@@ -118,6 +118,9 @@
     background: bk.$theme-dropdown-menu-menu-background-default;
     color: bk.$theme-dropdown-menu-menu-text-default;
     
+    &.bk-menu-list--embedded {
+      --bk-menu-list-chin-size: 0;
+    }
     &:not(.bk-menu-list--embedded) {
       min-block-size: 2lh;
       max-block-size: 18lh;
@@ -172,6 +175,10 @@
     }
     
     .bk-menu-list__item {
+      content-visibility: auto;
+      contain-intrinsic-inline-size: none;
+      contain-intrinsic-block-size: auto 37px; // FIXME (px value)
+      
       // Workaround for a rounding issue in Chrome, where the 1px border is not always properly rendered
       block-size: calc-size(auto, round(size, 1px)); // Round the height to the nearest pixel
       
@@ -186,14 +193,27 @@
         // The `group-indent` can be set to indent items in a group a bit more
         padding-inline-start: calc(var(--bk-menu-list-item-padding-inline) + var(--bk-menu-list-segment-indent, 0));
       }
-    
+      
       background: bk.$theme-dropdown-menu-menu-background-default;
       
-      display: flex;
-      align-items: center;
-      gap: 1ch;
+      .bk-menu-list__item__label {
+        display: flex;
+        align-items: center;
+        gap: 1ch;
+        
+        .bk-menu-list__item__icon {
+          // FIXME: the accent color in dark mode is very low-contrast, barely visible
+          $color: bk.$theme-dropdown-menu-menu-icon-background-default;
+          --bk-icon-accent-color: light-dark(color-mix(in oklch, #{$color}, 50% transparent), #{$color});
+          
+          // Note: apply the padding unconditionally (even for non-highlight), so that there is a consistent alignment
+          // between options with highlight or without
+          padding: 0.25em;
+        }
+      }
       
       &.bk-menu-list__item--heading {
+        --bk-menu-list-item-padding-block: calc(0.8 * #{bk.$spacing-2});
         display: flex;
         align-items: center;
       }
@@ -222,14 +242,6 @@
           margin-inline-end: 1.2ch;
         }
       }
-      
-      &.bk-menu-list__item--loading {
-        user-select: none;
-        
-        color: bk.$theme-text-small-text-subtle;
-        font-size: bk.$font-size-s;
-        text-transform: uppercase;
-      }
     }
     
     // Separator between consecutive items/groups
@@ -238,13 +250,29 @@
     }
     
     &.bk-menu-list--empty {
-      .bk-menu-list__empty-placeholder {
+      .bk-menu-list__placeholder-empty {
         color: bk.$theme-dropdown-menu-menu-text-empty;
+        
+        display: flex;
+        align-items: center;
+        gap: 1ch;
       }
     }
     
+    .bk-menu-list__placeholder-loading {
+      user-select: none;
+      
+      color: bk.$theme-text-small-text-subtle;
+      font-size: bk.$font-size-s;
+      text-transform: uppercase;
+      
+      display: flex;
+      align-items: center;
+      gap: 1ch;
+    }
+    
     // Place footer content at the end of flex ordering, so that it is shown _after_ the empty/loading indicators
-    > .bk-menu-list__sticky--end { order: 1; }
+    .bk-menu-list__footer { order: 1; }
     
     :is(.bk-menu-list__item, .bk-menu-list__segment) {
       &.bk-menu-list__sticky--start {
