@@ -123,7 +123,7 @@
       --negative-margin: calc(-1 * var(--bk-panel-inset-compensation));
       margin: var(--negative-margin) var(--negative-margin) 0 var(--negative-margin);
       
-      .bk-tabs__switcher {
+      > .bk-tabs__switcher {
         flex-direction: column;
         inline-size: bk.rem-from-px(216);
         gap: bk.$spacing-3;
@@ -164,7 +164,7 @@
         }
       }
 
-      .bk-tabs__tab-content {
+      > .bk-tabs__tab-content {
         flex: 1;
         padding: bk.$spacing-7;
         margin-block-end: var(--negative-margin);
