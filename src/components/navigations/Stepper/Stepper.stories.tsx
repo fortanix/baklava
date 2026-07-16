@@ -24,7 +24,7 @@ const DefaultSteps = (
 export default {
   component: Stepper,
   parameters: {
-    layout: 'centered',
+    layout: 'padded',
   },
   tags: ['autodocs'],
   args: {
@@ -33,14 +33,14 @@ export default {
   },
 } satisfies Meta<StepperArgs>;
 
-export const Vertical: Story = {
+export const StepperStandard: Story = {
   args: {
     defaultActiveStepKey: 'account',
   },
   render: (args) => <Stepper {...args} />,
 };
 
-export const Horizontal: Story = {
+export const StepperHorizontal: Story = {
   args: {
     orientation: 'horizontal',
     defaultActiveStepKey: 'account',
@@ -48,14 +48,14 @@ export const Horizontal: Story = {
   render: (args) => <Stepper {...args} />,
 };
 
-export const DefaultActiveStep: Story = {
+export const StepperWithDefaultActiveStep: Story = {
   args: {
     defaultActiveStepKey: 'profile',
   },
   render: (args) => <Stepper {...args} />,
 };
 
-export const Controlled: Story = {
+export const StepperControlled: Story = {
 
   render: (args) => {
     const [activeStep, setActiveStep] = React.useState('step-2');
@@ -75,7 +75,7 @@ export const Controlled: Story = {
   },
 };
 
-export const ControlledHorizontal: Story = {
+export const StepperControlledHorizontal: Story = {
   args: {
     orientation: 'horizontal',
   },
@@ -97,9 +97,10 @@ export const ControlledHorizontal: Story = {
   },
 };
 
-export const CustomStart: Story = {
+export const StepperWithCustomStart: Story = {
   args: {
     start: 5,
+    defaultActiveStepKey: 'planning',
     children: (
       <>
         <Stepper.Step stepKey="planning" label="Planning" />
@@ -111,9 +112,10 @@ export const CustomStart: Story = {
   },
 };
 
-export const CustomCounts: Story = {
+export const StepperWithCustomCounts: Story = {
   args: {
     start: 5,
+    defaultActiveStepKey: 'planning',
     children: (
       <>
         <Stepper.Step
@@ -141,9 +143,10 @@ export const CustomCounts: Story = {
   },
 };
 
-export const CustomCountsHorizontal: Story = {
+export const StepperWithCustomCountsHorizontal: Story = {
   args: {
     orientation: 'horizontal',
+    defaultActiveStepKey: 'planning',
     start: 2,
     children: (
       <>
@@ -188,7 +191,7 @@ export const CustomCountsHorizontal: Story = {
   },
 };
 
-export const Disabled: Story = {
+export const StepperWithDisabledStep: Story = {
   args: {
     defaultActiveStepKey: 'profile',
   },
@@ -219,7 +222,7 @@ export const Disabled: Story = {
   ),
 };
 
-export const DisabledHorizontal: Story = {
+export const StepperHorizontalWithDisabledStep: Story = {
   args: {
     orientation: 'horizontal',
     defaultActiveStepKey: 'profile',
@@ -263,44 +266,7 @@ export const DisabledHorizontal: Story = {
   ),
 };
 
-export const HorizontalLongBody: Story = {
-  args: {
-    orientation: 'horizontal',
-    defaultActiveStepKey: '2',
-  },
-  render: (args) => (
-    <Stepper {...args}>
-      <Stepper.Step stepKey="1" label="Create project">
-        Short description.
-      </Stepper.Step>
-
-      <Stepper.Step
-        stepKey="2"
-        label="Configure confidential computing environment"
-      >
-        This is a much longer body that should be the children to
-        verify that the connector length is calculated correctly when a step
-        contains additional content.
-      </Stepper.Step>
-
-      <Stepper.Step
-        stepKey="3"
-        label="Deploy application to production"
-      >
-        Another body with child of content for testing.
-      </Stepper.Step>
-
-      <Stepper.Step
-        stepKey="4"
-        label="Verify"
-      >
-        Done.
-      </Stepper.Step>
-    </Stepper >
-  ),
-};
-
-export const VerticalLongBody: Story = {
+export const StepperVerticalWithStepBody: Story = {
   args: {
     orientation: 'vertical',
     defaultActiveStepKey: '2',
@@ -313,7 +279,7 @@ export const VerticalLongBody: Story = {
 
       <Stepper.Step
         stepKey="2"
-        label="Configure confidential computing environment"
+        label="Configure environment"
       >
         This is a much longer body that should be the children to
         verify that the connector length is calculated correctly when a step
@@ -322,7 +288,7 @@ export const VerticalLongBody: Story = {
 
       <Stepper.Step
         stepKey="3"
-        label="Deploy application to production"
+        label="Deploy to production"
       >
         Another body with child of content for testing.
       </Stepper.Step>
@@ -336,3 +302,42 @@ export const VerticalLongBody: Story = {
     </Stepper >
   ),
 };
+
+export const StepperHorizontalWithStepBody: Story = {
+  args: {
+    orientation: 'horizontal',
+    defaultActiveStepKey: '2',
+  },
+  render: (args) => (
+    <Stepper {...args}>
+      <Stepper.Step stepKey="1" label="Create project">
+        Short description.
+      </Stepper.Step>
+
+      <Stepper.Step
+        stepKey="2"
+        label="Configure environment"
+      >
+        This is a much longer body that should be the children to
+        verify that the connector length is calculated correctly when a step
+        contains additional content.
+      </Stepper.Step>
+
+      <Stepper.Step
+        stepKey="3"
+        label="Deploy to production"
+      >
+        Another body with child of content for testing.
+      </Stepper.Step>
+
+      <Stepper.Step
+        stepKey="4"
+        label="Verify"
+      >
+        Done.
+      </Stepper.Step>
+    </Stepper >
+  ),
+};
+
+
