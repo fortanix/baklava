@@ -2,78 +2,337 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Meta, StoryObj } from '@storybook/react';
 
 import * as React from 'react';
 
-import { type Step, Stepper } from './Stepper.tsx';
-
+import { Stepper } from './Stepper.tsx';
+import { Button } from '../../actions/Button/Button.tsx';
 
 type StepperArgs = React.ComponentProps<typeof Stepper>;
 type Story = StoryObj<StepperArgs>;
 
+const DefaultSteps = (
+  <>
+    <Stepper.Step stepKey="account" label="Account" />
+    <Stepper.Step stepKey="profile" label="Profile" />
+    <Stepper.Step stepKey="security" label="Security" />
+    <Stepper.Step stepKey="review" label="Review" />
+  </>
+);
+
 export default {
   component: Stepper,
   parameters: {
-    layout: 'padded',
+    layout: 'centered',
   },
   tags: ['autodocs'],
-  argTypes: {
+  args: {
+    label: 'Setup wizard',
+    children: DefaultSteps,
   },
-  args: {},
-  render: (args) => <Stepper {...args}/>,
 } satisfies Meta<StepperArgs>;
 
-const defaultSteps: Array<Step> = [1,2,3,4].map(index => { 
-  return {
-    stepKey: `${index}`,
-    title: `Step ${index}`,
-    isOptional: index === 4,
-  };
-});
-
-type StepperWithTriggerProps = React.PropsWithChildren<Partial<StepperArgs>>;
-const StepperWithTrigger = (props: StepperWithTriggerProps) => {
-  const { steps = defaultSteps, activeKey, ...stepperContext } = props;
-  const [activeStepKey, setActiveStepKey] = React.useState<string>(activeKey || '1');
-  return (
-    <Stepper
-      onSwitch={setActiveStepKey}
-      activeKey={activeStepKey}
-      steps={steps}
-      {...stepperContext}
-    />
-  );
-};
-
-const BaseStory: Story = {
-  args: {},
-  render: (args) => <StepperWithTrigger {...args} />,
-};
-
-export const StepperStandard: Story = {
-  ...BaseStory,
-  args: { ...BaseStory.args },
-};
-
-/** A step may be disabled. In this case, it will not be clickable. */
-export const StepperWithDisabledStep: Story = {
-  ...BaseStory,
+export const Vertical: Story = {
   args: {
-    ...BaseStory.args,
-    steps: [
-      { stepKey: '1', title: 'Step 1', isDisabled: false },
-      { stepKey: '2', title: 'Step 2', isDisabled: false },
-      { stepKey: '3', title: 'Step 3 (disabled)', isDisabled: true },
-      { stepKey: '4', title: 'Step 4', isDisabled: false },
-    ],
+    defaultActiveStepKey: 'account',
+  },
+  render: (args) => <Stepper {...args} />,
+};
+
+export const Horizontal: Story = {
+  args: {
+    orientation: 'horizontal',
+    defaultActiveStepKey: 'account',
+  },
+  render: (args) => <Stepper {...args} />,
+};
+
+export const DefaultActiveStep: Story = {
+  args: {
+    defaultActiveStepKey: 'profile',
+  },
+  render: (args) => <Stepper {...args} />,
+};
+
+export const Controlled: Story = {
+
+  render: (args) => {
+    const [activeStep, setActiveStep] = React.useState('step-2');
+
+    return (
+      <Stepper
+        {...args}
+        activeStepKey={activeStep}
+        onSwitch={setActiveStep}
+      >
+        <Stepper.Step stepKey="step-1" label="Step 1" />
+        <Stepper.Step stepKey="step-2" label="Step 2" />
+        <Stepper.Step stepKey="step-3" label="Step 3" />
+        <Stepper.Step stepKey="step-4" label="Step 4" />
+      </Stepper>
+    );
   },
 };
 
-export const StepperHorizontal: Story = {
-  ...BaseStory,
+export const ControlledHorizontal: Story = {
   args: {
-    ...BaseStory.args,
-    direction: 'horizontal',
+    orientation: 'horizontal',
   },
+  render: (args) => {
+    const [activeStep, setActiveStep] = React.useState('step-2');
+
+    return (
+      <Stepper
+        {...args}
+        activeStepKey={activeStep}
+        onSwitch={setActiveStep}
+      >
+        <Stepper.Step stepKey="step-1" label="Step 1" />
+        <Stepper.Step stepKey="step-2" label="Step 2" />
+        <Stepper.Step stepKey="step-3" label="Step 3" />
+        <Stepper.Step stepKey="step-4" label="Step 4" />
+      </Stepper>
+    );
+  },
+};
+
+export const CustomStart: Story = {
+  args: {
+    start: 5,
+    children: (
+      <>
+        <Stepper.Step stepKey="planning" label="Planning" />
+        <Stepper.Step stepKey="design" label="Design" />
+        <Stepper.Step stepKey="development" label="Development" />
+        <Stepper.Step stepKey="testing" label="Testing" />
+      </>
+    ),
+  },
+};
+
+export const CustomCounts: Story = {
+  args: {
+    start: 5,
+    children: (
+      <>
+        <Stepper.Step
+          stepKey="planning"
+          label="Planning"
+        />
+
+        <Stepper.Step
+          stepKey="phase-10"
+          count={10}
+          label="Implementation"
+        />
+
+        <Stepper.Step
+          stepKey="phase-11"
+          label="Validation"
+        />
+
+        <Stepper.Step
+          stepKey="release"
+          label="Release"
+        />
+      </>
+    ),
+  },
+};
+
+export const CustomCountsHorizontal: Story = {
+  args: {
+    orientation: 'horizontal',
+    start: 2,
+    children: (
+      <>
+        <Stepper.Step
+          stepKey="planning"
+          label="Planning"
+        />
+
+        <Stepper.Step
+          stepKey="verification1"
+          label="Verification 1"
+        />
+
+        <Stepper.Step
+          stepKey="migration"
+          count={102}
+          label="Large data migration"
+        />
+
+        <Stepper.Step
+          stepKey="verification2"
+          label="Verification 2"
+        />
+
+        <Stepper.Step
+          stepKey="verification3"
+          label="Verification 3"
+        />
+
+        <Stepper.Step
+          stepKey="release-candidate"
+          count={10}
+          label="Release candidate"
+        />
+
+        <Stepper.Step
+          stepKey="production"
+          label="Production rollout"
+        />
+      </>
+    ),
+  },
+};
+
+export const Disabled: Story = {
+  args: {
+    defaultActiveStepKey: 'profile',
+  },
+  render: args => (
+    <Stepper {...args}>
+      <Stepper.Step stepKey="account" label="Account" />
+      <Stepper.Step stepKey="profile" label="Profile" />
+
+      <Stepper.Step stepKey="security" label="Security">
+        <p>Complete security authentication before continuing.</p>
+
+        <Button>
+          Configure
+        </Button>
+      </Stepper.Step>
+
+      <Stepper.Step
+        stepKey="review"
+        label="Review (disabled)"
+        disabled
+      />
+
+      <Stepper.Step
+        stepKey="finish"
+        label="Finish"
+      />
+    </Stepper>
+  ),
+};
+
+export const DisabledHorizontal: Story = {
+  args: {
+    orientation: 'horizontal',
+    defaultActiveStepKey: 'profile',
+  },
+  render: (args) => (
+    <Stepper {...args}>
+      <Stepper.Step stepKey="account" label="Account" />
+
+      <Stepper.Step stepKey="profile" label="Profile" />
+
+      <Stepper.Step
+        stepKey="security"
+        label="Security configuration"
+      >
+        <p>
+          Configure your security settings before proceeding to the
+          next step.
+        </p>
+
+        <Button>
+          Configure
+        </Button>
+      </Stepper.Step>
+
+      <Stepper.Step
+        stepKey="review"
+        label="Review"
+      />
+
+      <Stepper.Step
+        stepKey="disabled"
+        label="Review disabled"
+        disabled
+      />
+
+      <Stepper.Step
+        stepKey="finish"
+        label="Finish"
+      />
+    </Stepper>
+  ),
+};
+
+export const HorizontalLongBody: Story = {
+  args: {
+    orientation: 'horizontal',
+    defaultActiveStepKey: '2',
+  },
+  render: (args) => (
+    <Stepper {...args}>
+      <Stepper.Step stepKey="1" label="Create project">
+        Short description.
+      </Stepper.Step>
+
+      <Stepper.Step
+        stepKey="2"
+        label="Configure confidential computing environment"
+      >
+        This is a much longer body that should be the children to
+        verify that the connector length is calculated correctly when a step
+        contains additional content.
+      </Stepper.Step>
+
+      <Stepper.Step
+        stepKey="3"
+        label="Deploy application to production"
+      >
+        Another body with child of content for testing.
+      </Stepper.Step>
+
+      <Stepper.Step
+        stepKey="4"
+        label="Verify"
+      >
+        Done.
+      </Stepper.Step>
+    </Stepper >
+  ),
+};
+
+export const VerticalLongBody: Story = {
+  args: {
+    orientation: 'vertical',
+    defaultActiveStepKey: '2',
+  },
+  render: (args) => (
+    <Stepper {...args}>
+      <Stepper.Step stepKey="1" label="Create project">
+        Short description.
+      </Stepper.Step>
+
+      <Stepper.Step
+        stepKey="2"
+        label="Configure confidential computing environment"
+      >
+        This is a much longer body that should be the children to
+        verify that the connector length is calculated correctly when a step
+        contains additional content.
+      </Stepper.Step>
+
+      <Stepper.Step
+        stepKey="3"
+        label="Deploy application to production"
+      >
+        Another body with child of content for testing.
+      </Stepper.Step>
+
+      <Stepper.Step
+        stepKey="4"
+        label="Verify"
+      >
+        Done.
+      </Stepper.Step>
+    </Stepper >
+  ),
 };

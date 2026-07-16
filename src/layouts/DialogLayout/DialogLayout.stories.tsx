@@ -43,18 +43,14 @@ export const DialogOnboarding: Story = {
           title="Let's Connect to Your Cloud Provider"
           aside={(
             <>
-              <Stepper
-                steps={[
-                  { stepKey: '1', title: 'Select Cloud Provider' },
-                  { stepKey: '2', title: 'Setup Cloud Connection' },
-                  { stepKey: '3', title: 'Set Up Subscriptions' },
-                  { stepKey: '4', title: '4th Option Title' },
-                ]}
-                activeKey="1"
-                onSwitch={() => {}}
-              />
+              <Stepper label="Cloud onboarding" activeStepKey="1" onSwitch={() => { }}>
+                <Stepper.Step stepKey="1" label="Select Cloud Provider" />
+                <Stepper.Step stepKey="2" label="Setup Cloud Connection" />
+                <Stepper.Step stepKey="3" label="Set Up Subscriptions" />
+                <Stepper.Step stepKey="4" label="4th Option Title" />
+              </Stepper>
               <DialogLayout.Hint>
-                <DialogLayout.Icon icon="info"/>
+                <DialogLayout.Icon icon="info" />
                 Step-by-Step Guide to Connect to Azure Cloud Provider
               </DialogLayout.Hint>
             </>
@@ -76,8 +72,8 @@ export const DialogOnboarding: Story = {
               </FieldLayout>
 
               <CheckboxGroup label="Select your account type">
-                <CheckboxGroup.Checkbox checkboxKey="m" label="Management groups"/>
-                <CheckboxGroup.Checkbox checkboxKey="s" label="Subscriptions"/>
+                <CheckboxGroup.Checkbox checkboxKey="m" label="Management groups" />
+                <CheckboxGroup.Checkbox checkboxKey="s" label="Subscriptions" />
               </CheckboxGroup>
 
               <FieldLayout size="medium">
@@ -114,7 +110,7 @@ export const DialogOnboarding: Story = {
 
               {/* TODO: Eventually in the future implement something like this:
               https://react-spectrum.adobe.com/react-spectrum/Flex.html */}
-              <div style={{display: 'flex', flexDirection: 'row', gap: '12px'}}>{/* bk.spacing-3 */}
+              <div style={{ display: 'flex', flexDirection: 'row', gap: '12px' }}>{/* bk.spacing-3 */}
                 <Dialog.CancelAction kind="secondary">Close</Dialog.CancelAction>
                 <Button kind="secondary">Back</Button>
                 <Button kind="secondary">Skip Onboarding</Button>
