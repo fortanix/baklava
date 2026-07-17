@@ -339,5 +339,3 @@ export const StepperHorizontalWithStepBody: Story = {
     </Stepper >
   ),
 };
-
-

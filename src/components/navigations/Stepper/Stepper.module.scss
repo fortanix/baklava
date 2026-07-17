@@ -11,7 +11,7 @@
     --bk-stepper-indicator-size: #{bk.rem-from-px(28)};
     --bk-stepper-line-width: #{bk.$size-1};
     
-    >ol {
+    > ol {
       display: flex;
       flex-direction: column;
       gap: bk.$spacing-9;
@@ -20,9 +20,11 @@
     }
     
     &.bk-stepper--horizontal {
+      padding-block: bk.$spacing-1;
+      padding-inline-start: bk.$spacing-1;
       overflow-y: hidden;
       
-      >ol {
+      > ol {
         flex-direction: row;
         flex-wrap: nowrap;
         min-inline-size: 100%;
@@ -32,26 +34,23 @@
         position: relative;
         flex: 0 0 auto;
 
-        &:last-child {
-          flex: 1 0 auto; // Grow only the last step.
-        }
-
         &:not(:last-child)::after {
           content: '';
 
           position: absolute;
 
-          inset-inline-start: anchor(--step-action right);
+          inset-inline-start: calc(anchor(--step-action right) + bk.$spacing-2);
           inset-block-start: calc(anchor(--step-action top) + var(--bk-stepper-indicator-size) / 2);
 
-          inline-size: calc(anchor-size(--step-action inline) - anchor-size(--step-label inline));
+          inline-size: calc(anchor-size(--step-action inline) - anchor-size(--step-label inline) - bk.$spacing-2);
           block-size: var(--bk-stepper-line-width);
 
           background: bk.$theme-stepper-border-disabled;
         }
 
         &:has(.bk-stepper__step__body)::after {
-          inline-size: calc(anchor-size(--step-body inline) - anchor-size(--step-label inline) + bk.$spacing-9);
+          inline-size: calc(anchor-size(--step-body inline) - anchor-size(--step-label inline) + bk.$spacing-9 
+          - bk.$spacing-2);
         }
 
         .bk-stepper__step__action {
@@ -129,10 +128,6 @@
         border-radius: 50%;
         font-weight: bk.$font-weight-bold;
         font-size: bk.$font-size-m;
-
-        &:empty::before {
-          content: counter(list-item);
-        }
 
         .bk-stepper__step__indicator__icon {
           font-size: bk.$font-size-xs;
