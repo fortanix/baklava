@@ -32,16 +32,16 @@ export { cl as StepperClassNames };
 
 
 
-type StepKey = string;
+export type StepKey = string;
 
 //
 // Context
 //
 
 export type StepperContext = {
-  activeStepKey: StepKey | undefined;
-  setActiveStepKey: (stepKey: StepKey) => void;
-  completedStepKeys: ReadonlySet<StepKey>;
+  activeStepKey: StepKey | undefined,
+  setActiveStepKey: (stepKey: StepKey) => void,
+  completedStepKeys: ReadonlySet<StepKey>,
 };
 export const StepperContext = React.createContext<null | StepperContext>(null);
 export const useStepperContext = () => {
@@ -64,10 +64,10 @@ type StepProps = Omit<ComponentProps<'li'>, 'children'> & {
   stepKey: StepKey,
 
   /** The human-readable name for this step. */
-  label: string;
+  label: string,
 
   /** Additional content rendered below the label. */
-  children?: React.ReactNode;
+  children?: React.ReactNode,
 
   /** Override the displayed step number. */
   count?: undefined | number;
@@ -115,7 +115,9 @@ export const Step = (props: StepProps) => {
         propsRest.className,
       )}
       style={{
-        counterSet: count != null ? `list-item ${count}` : undefined,
+        // Chrome v150 has a bug where counter doesn't auto set when count is provided but not v152, 
+        // This should be removed once browser support is good enough.
+        counterSet: typeof count === 'number' ? `list-item ${count}` : undefined,
         ...propsRest.style,
       }}
       value={count}
@@ -146,7 +148,7 @@ type StepperProps = ComponentProps<'nav'> & {
   orientation?: undefined | 'vertical' | 'horizontal',
 
   /** Controlled active step. */
-  activeStepKey?: undefined | StepKey;
+  activeStepKey?: undefined | StepKey,
 
   /** The default active step, in case no step has been explicitly selected through the URL. */
   defaultActiveStepKey?: undefined | StepKey,
@@ -158,7 +160,7 @@ type StepperProps = ComponentProps<'nav'> & {
   start?: undefined | number,
 
   /** Whether the ordered list should be rendered in reverse order. */
-  reverse?: undefined | boolean;
+  reversed?: undefined | boolean,
 
 };
 
@@ -176,7 +178,7 @@ export const Stepper = Object.assign(
       defaultActiveStepKey,
       onSwitch,
       start,
-      reverse = false,
+      reversed = false,
       ...propsRest
     } = props;
 
@@ -251,7 +253,7 @@ export const Stepper = Object.assign(
             propsRest.className,
           )}
         >
-          <ol start={start} reversed={reverse}>
+          <ol start={start} reversed={reversed}>
             {children}
           </ol>
         </nav>

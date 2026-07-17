@@ -340,10 +340,10 @@ export const StepperHorizontalWithStepBody: Story = {
   ),
 };
 
-export const StepperWithCustomCountsReverse: Story = {
+export const StepperWithCustomCountsReversed: Story = {
   args: {
     defaultActiveStepKey: 'planning',
-    reverse:true,
+    reversed:true,
     start: 2,
     children: (
       <>
