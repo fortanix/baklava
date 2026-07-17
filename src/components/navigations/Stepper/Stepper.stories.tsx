@@ -339,3 +339,51 @@ export const StepperHorizontalWithStepBody: Story = {
     </Stepper >
   ),
 };
+
+export const StepperWithCustomCountsReverse: Story = {
+  args: {
+    defaultActiveStepKey: 'planning',
+    reverse:true,
+    start: 2,
+    children: (
+      <>
+        <Stepper.Step
+          stepKey="planning"
+          label="Planning"
+        />
+
+        <Stepper.Step
+          stepKey="verification1"
+          label="Verification 1"
+        />
+
+        <Stepper.Step
+          stepKey="migration"
+          count={102}
+          label="Large data migration"
+        />
+
+        <Stepper.Step
+          stepKey="verification2"
+          label="Verification 2"
+        />
+
+        <Stepper.Step
+          stepKey="verification3"
+          label="Verification 3"
+        />
+
+        <Stepper.Step
+          stepKey="release-candidate"
+          count={10}
+          label="Release candidate"
+        />
+
+        <Stepper.Step
+          stepKey="production"
+          label="Production rollout"
+        />
+      </>
+    ),
+  },
+};

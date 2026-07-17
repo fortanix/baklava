@@ -106,6 +106,7 @@
     }
 
     .bk-stepper__step {
+      display: list-item;
       .bk-stepper__step__action {
         display: grid;
         column-gap: bk.$spacing-3;
@@ -128,6 +129,10 @@
         border-radius: 50%;
         font-weight: bk.$font-weight-bold;
         font-size: bk.$font-size-m;
+
+        &:empty::before {
+          content: counter(list-item);
+        }
 
         .bk-stepper__step__indicator__icon {
           font-size: bk.$font-size-xs;

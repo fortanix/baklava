@@ -30,47 +30,6 @@ Accessibility notes:
 
 export { cl as StepperClassNames };
 
-// Recursively collect all step keys, including those inside React.Fragments.
-// This is used to determine step order and completed steps.
-const getStepKeys = (children: React.ReactNode): StepKey[] => {
-  return React.Children.toArray(children).flatMap(child => {
-    if (!React.isValidElement<StepProps>(child)) {
-      return [];
-    }
-
-    if (child.type === React.Fragment) {
-      return getStepKeys(child.props.children);
-    }
-
-    return [child.props.stepKey];
-  });
-}
-
-const assignCounts = (children: React.ReactNode, nextCount: number, reverse = false): [React.ReactNode, number] => {
-  const mappedChildren = React.Children.map(children, child => {
-    if (!React.isValidElement<StepProps>(child)) {
-      return child;
-    }
-
-    if (child.type === React.Fragment) {
-      const [fragmentChildren, updatedCount] = assignCounts(child.props.children, nextCount, reverse);
-      nextCount = updatedCount;
-
-      return (
-        <React.Fragment>
-          {fragmentChildren}
-        </React.Fragment>
-      );
-    }
-
-    const count = child.props.count ?? nextCount;
-    nextCount = reverse ? count - 1 : count + 1;
-
-    return React.cloneElement(child, { count });
-  });
-
-  return [mappedChildren, nextCount];
-};
 
 
 type StepKey = string;
@@ -83,8 +42,6 @@ export type StepperContext = {
   activeStepKey: StepKey | undefined;
   setActiveStepKey: (stepKey: StepKey) => void;
   completedStepKeys: ReadonlySet<StepKey>;
-  start: number;
-  stepKeys: StepKey[];
 };
 export const StepperContext = React.createContext<null | StepperContext>(null);
 export const useStepperContext = () => {
@@ -129,12 +86,11 @@ export const Step = (props: StepProps) => {
     disabled = false,
     ...propsRest
   } = props;
-  const { activeStepKey, completedStepKeys, setActiveStepKey, stepKeys, start, } = useStepperContext();
+  const { activeStepKey, completedStepKeys, setActiveStepKey } = useStepperContext();
 
   const isActive = activeStepKey === stepKey;
 
   const isCompleted = completedStepKeys.has(stepKey);
-  const stepNumber = count ?? start;
   const handleClick = React.useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
       if (disabled) {
@@ -158,14 +114,15 @@ export const Step = (props: StepProps) => {
         { [cl['bk-stepper__step--disabled']]: disabled },
         propsRest.className,
       )}
-      value={stepNumber}
+      style={{
+        counterSet: count != null ? `list-item ${count}` : undefined,
+        ...propsRest.style,
+      }}
+      value={count}
     >
       <Button unstyled className={cx(cl['bk-stepper__step__action'])} onClick={handleClick} aria-disabled={disabled} disabled={disabled}>
         <span className={cx(cl['bk-stepper__step__indicator'])}>
-          {isCompleted
-            ? (<Icon icon="check" className={cx(cl['bk-stepper__step__indicator__icon'])} />)
-            : stepNumber
-          }
+          {isCompleted && (<Icon icon="check" className={cx(cl['bk-stepper__step__indicator__icon'])} />)}
         </span>
         <span className={cx(cl['bk-stepper__step__label'])}>{label}</span>
       </Button>
@@ -229,22 +186,36 @@ export const Stepper = Object.assign(
 
     const activeStepKey = isControlled ? controlledActiveStepKey : uncontrolledActiveStepKey;
 
-    // Flattened list of all step keys in render order.
-    const stepKeys = React.useMemo(
-      () => getStepKeys(children),
-      [children],
-    );
+    const stepKeys = React.useMemo(() => {
+      const keys: StepKey[] = [];
+
+      React.Children.forEach(children, child => {
+        if (!React.isValidElement<StepProps>(child)) {
+          return;
+        }
+
+        if (child.type === React.Fragment) {
+          React.Children.forEach(child.props.children, nested => {
+            if (React.isValidElement<StepProps>(nested)) {
+              keys.push(nested.props.stepKey);
+            }
+          });
+          return;
+        }
+
+        keys.push(child.props.stepKey);
+      });
+
+      return keys;
+    }, [children]);
 
     const activeIndex = stepKeys.indexOf(activeStepKey ?? '');
 
     // Every step before the active one is considered completed.
-    const completedStepKeys = React.useMemo(() => {
-      if (activeIndex < 0) {
-        return new Set<StepKey>();
-      }
-
-      return new Set(stepKeys.slice(0, activeIndex));
-    }, [stepKeys, activeIndex]);
+    const completedStepKeys = React.useMemo(
+      () => new Set(stepKeys.slice(0, activeIndex)),
+      [stepKeys, activeIndex],
+    );
 
     const handleSetActiveStepKey = React.useCallback(
       (stepKey: StepKey) => {
@@ -262,15 +233,8 @@ export const Stepper = Object.assign(
         activeStepKey,
         completedStepKeys,
         setActiveStepKey: handleSetActiveStepKey,
-        start: start ?? 1,
-        stepKeys,
       }),
-      [activeStepKey, completedStepKeys, handleSetActiveStepKey, start, stepKeys],
-    );
-
-    const [childrenWithCounts] = React.useMemo(
-      () => assignCounts(children, start ?? 1, reverse),
-      [children, start, reverse],
+      [activeStepKey, completedStepKeys, handleSetActiveStepKey],
     );
 
     return (
@@ -287,9 +251,8 @@ export const Stepper = Object.assign(
             propsRest.className,
           )}
         >
-          <div className={cx("connector-line")}></div>
           <ol start={start} reversed={reverse}>
-            {childrenWithCounts}
+            {children}
           </ol>
         </nav>
       </StepperContext>
