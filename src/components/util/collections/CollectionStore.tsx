@@ -2,13 +2,38 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import scrollIntoView from 'scroll-into-view-if-needed';
 import * as React from 'react';
-import { useMemoOnce } from '../../../util/reactUtil.ts';
 import { type StateCreator, type StoreApi, createStore, useStore } from 'zustand';
+
+import { mergeProps, useMemoOnce } from '../../../util/reactUtil.ts';
+import { removeCombiningCharacters } from '../../../util/formatting.ts';
+import { useTypeAhead } from '../../../util/hooks/useTypeAhead.ts';
 
 
 export type ItemKey = string;
+export type RegistryItem = HTMLElement;
 
+
+//
+// Utilities
+//
+
+/**
+ * Programmatically focus the given item element. Optionally, specify the `containerEl` in order to scroll only within
+ * the container, preventing scroll of the rest of the page.
+ */
+export const focusItem = (itemEl: HTMLElement, containerEl?: undefined | null | HTMLElement) => {
+  // Note: we don't rely on `focus()` to scroll, because:
+  // - It doesn't work if the element is already focused
+  // - It will scroll even when not needed (i.e. when the element is already visible)
+  // - It will scroll the viewport as well, not just the local scrollport.
+  itemEl.focus({ preventScroll: true });
+  scrollIntoView(itemEl, {
+    scrollMode: 'if-needed',
+    boundary: containerEl ?? null,
+  });
+};
 
 //
 // Store slice
@@ -20,22 +45,53 @@ export type CollectionState = {
   collectionId: string,
 };
 export interface CollectionSlice extends CollectionState {
-  registerItem: (itemKey: ItemKey, el: Element) => void,
+  /** Register an item, with the given item key, and element reference. If the key exists, it is updated. @private */
+  registerItem: (itemKey: ItemKey, item: RegistryItem) => void,
+  /** Unregister the item with the given item key, if it exists. @private */
   unregisterItem: (itemKey: ItemKey) => void,
-  getItemKeys: () => Set<ItemKey>,
-  
-  /** Returns whether the registry has changed since the last `consumeRegistryChange` call, and clears the flag. */
+  /**
+   * Internal: returns whether the registry has changed since last `consumeRegistryChange` call, and clears the flag.
+   * Should not be called by consumers, only intended for the internal module.
+   * @private
+   */
   [consumeRegistryChange]: () => boolean,
+
+  /** Return the item for the given key. Returns `null` if the item does not exist. */
+  collectionItemByKey: (itemKey: ItemKey) => null | RegistryItem,
+  /** Return the set of all item keys in the registry. */
+  collectionItemKeys: () => Set<ItemKey>,
+  /** Returns whether the registry is currently empty. */
+  collectionIsEmpty: () => boolean,
+  /** Returns whether the registry is currently empty. */
+  collectionItemElements: () => Array<HTMLElement>,
+  collectionItemKeysOrdered: () => Array<ItemKey>,
+  /** Focus the given item key. */
+  collectionFocusItem: (itemKey: ItemKey) => void,
+  /** Focus the item at the given position in the DOM. */
+  collectionFocusItemAt: (position: 'first' | 'last') => void,
 };
 
 export type CollectionProps = Pick<CollectionState, 'collectionId'>;
-export const createCollectionSlice = (
+export const createCollectionSlice = <E extends HTMLElement = HTMLElement>(
+  ref: React.RefObject<null | E>,
   { collectionId }: CollectionProps,
 ): StateCreator<CollectionSlice, [], [], CollectionSlice> => (_set, _get, _store) => {
   // Private, mutable registry for bookkeeping purposes
-  const registry = new Map<ItemKey, Element>();
+  const registry = new Map<ItemKey, RegistryItem>();
   let registryHasChanged = true; // Dirty flag to track whether the registry has changed since it was last processed
-  
+
+  const queryItemElements = () => {
+    const el = ref.current;
+    if (!(el instanceof HTMLElement)) { return []; }
+
+    const elements = el.querySelectorAll(`[data-bk-coll-parent=${JSON.stringify(collectionId)}]`);
+    return Array.from(elements) as Array<HTMLElement>;
+  };
+
+  const queryItemKeysOrdered = () => {
+    return queryItemElements().map(el => el.dataset.bkCollItem).filter((key): key is ItemKey => key !== undefined);
+  };
+
   return {
     collectionId,
     
@@ -61,7 +117,38 @@ export const createCollectionSlice = (
       return changed;
     },
     
-    getItemKeys: () => new Set(registry.keys()),
+    collectionItemByKey: itemKey => registry.get(itemKey) ?? null,
+    collectionItemKeys: () => new Set(registry.keys()),
+    collectionIsEmpty: () => registry.size === 0,
+    collectionItemElements: queryItemElements,
+    collectionItemKeysOrdered: queryItemKeysOrdered,
+    collectionFocusItem: itemKey => {
+      const item = registry.get(itemKey) ?? null;
+      if (item) {
+        focusItem(item, ref.current);
+      }
+    },
+    collectionFocusItemAt: pos => {
+      const itemElements = queryItemElements();
+
+      switch (pos) {
+        case 'first': {
+          const itemFirst = itemElements.at(0);
+          if (itemFirst) {
+            focusItem(itemFirst, ref.current);
+          }
+          break;
+        }
+        case 'last': {
+          const itemLast = itemElements.at(itemElements.length - 1);
+          if (itemLast) {
+            focusItem(itemLast, ref.current);
+          }
+          break;
+        }
+        default: throw new Error(`Unexpected position '${pos satisfies never}'`);
+      }
+    },
   };
 };
 
@@ -76,7 +163,7 @@ type UseCollectionParams = {
 export const useCollectionWith = (store: StoreApi<CollectionSlice>, { onItemsChange }: UseCollectionParams = {}) => {
   const collectionId = useStore(store, state => state.collectionId);
   const consumeChange = useStore(store, state => state[consumeRegistryChange]);
-  const getItemKeys = useStore(store, state => state.getItemKeys);
+  const collectionItemKeys = useStore(store, state => state.collectionItemKeys);
   
   // `useLayoutEffect` on the collection parent is guaranteed to run after all the component children have rerendered.
   // If any items were added/removed in this rerender batch, then `consumeRegistryChange` will return `true`. Caveat:
@@ -84,7 +171,7 @@ export const useCollectionWith = (store: StoreApi<CollectionSlice>, { onItemsCha
   // must be considered unordered.
   React.useLayoutEffect(() => {
     if (consumeChange()) {
-      onItemsChange?.(getItemKeys());
+      onItemsChange?.(collectionItemKeys());
     }
   });
   
@@ -96,10 +183,10 @@ export const useCollectionWith = (store: StoreApi<CollectionSlice>, { onItemsCha
 };
 
 type UseCollectionItemWithParams = { itemKey: ItemKey };
-type UseCollectionItemWithResult<E extends Element> = {
+type UseCollectionItemWithResult<E extends HTMLElement> = {
   props: { ref: React.RefCallback<E>, 'data-bk-coll-parent': string, 'data-bk-coll-item': string },
 };
-export const useCollectionItemWith = <E extends Element>(
+export const useCollectionItemWith = <E extends HTMLElement>(
   store: StoreApi<CollectionSlice>,
   { itemKey }: UseCollectionItemWithParams,
 ): UseCollectionItemWithResult<E> => {
@@ -148,23 +235,26 @@ export const useCollectionContext = () => {
   return context;
 };
 
-export const useCollection = (params: UseCollectionParams = {}) => {
+export const useCollection = <E extends HTMLElement = HTMLElement>(
+  params: UseCollectionParams = {},
+) => {
   const collectionId = React.useId();
   
-  const store = useMemoOnce(() => createStore(createCollectionSlice({ collectionId })));
+  const ref = React.useRef<E>(null);
+  const store = useMemoOnce(() => createStore(createCollectionSlice(ref, { collectionId })));
   
   const context = useMemoOnce(() => ({ store }));
   
-  const { props } = useCollectionWith(store, params);
+  const { props: collProps } = useCollectionWith(store, params);
   return {
     store,
     context,
     Provider: CollectionContext,
-    props,
+    props: mergeProps({ ref }, collProps),
   };
 };
 
-type UseCollectionItemResult<E extends Element> = {
+type UseCollectionItemResult<E extends HTMLElement> = {
   store: CollectionContext['store'],
   props: {
     ref: React.RefCallback<E>,
@@ -172,7 +262,7 @@ type UseCollectionItemResult<E extends Element> = {
     'data-bk-coll-item': string,
   },
 };
-export const useCollectionItem = <E extends Element>(
+export const useCollectionItem = <E extends HTMLElement>(
   params: UseCollectionItemWithParams,
 ): UseCollectionItemResult<E> => {
   const { itemKey } = params;
@@ -181,6 +271,59 @@ export const useCollectionItem = <E extends Element>(
   const { props } = useCollectionItemWith(store, { itemKey });
   
   return { store, props };
+};
+  
+export const useCollectionTypeAhead = (
+  containerRef: React.RefObject<null | HTMLElement>,
+  store: StoreApi<CollectionSlice>,
+) => {
+  const { sequence, handleKeyDown: typeAheadHandleKeyDown } = useTypeAhead();
+
+  const collectionId = useStore(store, state => state.collectionId);
+  const getItemElements = React.useEffectEvent(useStore(store, state => state.collectionItemElements));
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies(containerRef.current): It's a ref, don't use as dep.
+  React.useEffect(() => {
+    const query: string = removeCombiningCharacters(sequence.join(''));
+    if (query.trim() === '') { return; }
+
+    let itemEls = getItemElements();
+    const focusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+    // Cycle the elements such that the focused item (if any) comes first. This is so that the type-ahead search will
+    // always continue from the current focused element.
+    const focusedNodeIndex = focusedElement ? itemEls.indexOf(focusedElement) : -1;
+    if (focusedNodeIndex) {
+      itemEls = [...itemEls.slice(focusedNodeIndex), ...itemEls.slice(0, focusedNodeIndex)];
+    }
+
+    for (const itemEl of itemEls) {
+      if (!(itemEl instanceof HTMLElement)) { continue; }
+      if (itemEl === document.activeElement) { continue; }
+
+      const elementText = itemEl.innerText ?? '';
+      const elementTextNormalized = removeCombiningCharacters(elementText).replaceAll(/\s+/g, '');
+
+      if (elementText.trim() !== '' && elementTextNormalized.startsWith(query)) {
+        focusItem(itemEl, containerRef.current);
+        break;
+      }
+    }
+  }, [sequence]);
+
+  const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+    // Ignore key events coming from things other than items
+    if (!(event.target instanceof HTMLElement)) { return; }
+    if (event.target.dataset.bkCollParent !== collectionId) { return; }
+
+    typeAheadHandleKeyDown(event);
+  }, [collectionId, typeAheadHandleKeyDown]);
+
+  return {
+    props: {
+      onKeyDown: handleKeyDown,
+    },
+  };
 };
 
 

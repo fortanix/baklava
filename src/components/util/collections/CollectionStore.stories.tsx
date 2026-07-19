@@ -151,7 +151,7 @@ type CollectionTwoColumnsProps = {
   right: React.ReactNode,
 };
 const CollectionTwoColumns = ({ left, right }: CollectionTwoColumnsProps) => {
-  const { Provider: CollectionProvider, context, props } = useCollection();
+  const { Provider: CollectionProvider, context, props } = useCollection<HTMLDivElement>();
   
   return (
     <ScrollContainer>

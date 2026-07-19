@@ -4,11 +4,13 @@
 
 import * as React from 'react';
 import { type ComponentProps, classNames as cx } from '../../../util/componentUtil.ts';
+import { mergeProps } from '../../../util/reactUtil.ts';
 
 import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 
 import { useScroller } from '../../../layouts/util/Scroller.tsx';
+import { useCollection, useCollectionItem } from '../../util/collections/CollectionStore.tsx';
 import cl from './Stepper.module.scss';
 
 
@@ -86,6 +88,7 @@ export const Step = (props: StepProps) => {
     disabled = false,
     ...propsRest
   } = props;
+  const { props: collectionItemProps } = useCollectionItem({ itemKey: stepKey });
   const { activeStepKey, completedStepKeys, setActiveStepKey } = useStepperContext();
 
   const isActive = activeStepKey === stepKey;
@@ -107,7 +110,7 @@ export const Step = (props: StepProps) => {
   return (
     <li
       aria-current={isActive ? 'step' : undefined}
-      {...propsRest}
+      {...mergeProps(collectionItemProps, propsRest)}
       className={cx(
         { [cl['bk-stepper__step']]: !unstyled },
         { [cl['bk-stepper__step--completed']]: isCompleted },
@@ -182,42 +185,31 @@ export const Stepper = Object.assign(
       ...propsRest
     } = props;
 
+    const [orderedStepKeys, setOrderedStepKeys] = React.useState<Array<StepKey>>([]);
+
+    const {
+      context: collectionContext,
+      Provider: CollectionProvider,
+      props: collectionProps,
+    } = useCollection<HTMLOListElement>({
+      onItemsChange: () => setOrderedStepKeys(collectionContext.store.getState().collectionItemKeysOrdered()),
+    });
     const scrollerProps = useScroller();
     const isControlled = controlledActiveStepKey !== undefined;
     const [uncontrolledActiveStepKey, setUncontrolledActiveStepKey] = React.useState(defaultActiveStepKey);
 
     const activeStepKey = isControlled ? controlledActiveStepKey : uncontrolledActiveStepKey;
 
-    const stepKeys = React.useMemo(() => {
-      const keys: StepKey[] = [];
-
-      React.Children.forEach(children, child => {
-        if (!React.isValidElement<StepProps>(child)) {
-          return;
-        }
-
-        if (child.type === React.Fragment) {
-          React.Children.forEach(child.props.children, nested => {
-            if (React.isValidElement<StepProps>(nested)) {
-              keys.push(nested.props.stepKey);
-            }
-          });
-          return;
-        }
-
-        keys.push(child.props.stepKey);
-      });
-
-      return keys;
-    }, [children]);
-
-    const activeIndex = stepKeys.indexOf(activeStepKey ?? '');
+    const activeIndex = orderedStepKeys.indexOf(activeStepKey ?? '');
 
     // Every step before the active one is considered completed.
-    const completedStepKeys = React.useMemo(
-      () => new Set(stepKeys.slice(0, activeIndex)),
-      [stepKeys, activeIndex],
-    );
+    const completedStepKeys = React.useMemo(() => {
+      if (activeIndex < 0) {
+        return new Set<StepKey>();
+      }
+
+      return new Set(orderedStepKeys.slice(0, activeIndex));
+    }, [orderedStepKeys, activeIndex]);
 
     const handleSetActiveStepKey = React.useCallback(
       (stepKey: StepKey) => {
@@ -241,22 +233,24 @@ export const Stepper = Object.assign(
 
     return (
       <StepperContext value={stepperContext}>
-        <nav
-          {...propsRest}
-          aria-label={label ?? 'Steps'} // Must be unique within the page
-          {...(orientation === 'horizontal' ? scrollerProps : {})}
-          className={cx(
-            'bk',
-            { [cl['bk-stepper']]: !unstyled },
-            { [cl['bk-stepper--vertical']]: orientation === 'vertical' },
-            { [cl['bk-stepper--horizontal']]: orientation === 'horizontal' },
-            propsRest.className,
-          )}
-        >
-          <ol start={start} reversed={reversed}>
-            {children}
-          </ol>
-        </nav>
+        <CollectionProvider value={collectionContext}>
+          <nav
+            {...propsRest}
+            aria-label={label ?? 'Steps'} // Must be unique within the page
+            {...(orientation === 'horizontal' ? scrollerProps : {})}
+            className={cx(
+              'bk',
+              { [cl['bk-stepper']]: !unstyled },
+              { [cl['bk-stepper--vertical']]: orientation === 'vertical' },
+              { [cl['bk-stepper--horizontal']]: orientation === 'horizontal' },
+              propsRest.className,
+            )}
+          >
+            <ol {...collectionProps} start={start} reversed={reversed}>
+              {children}
+            </ol>
+          </nav>
+        </CollectionProvider>
       </StepperContext>
     );
   },
