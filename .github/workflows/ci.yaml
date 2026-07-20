@@ -27,8 +27,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - run: npm ci
-      - run: node -v
-      - run: npm -v
       #- run: npm run build # Note: already runs as part of `npm ci` through the `prepare` hook
       - run: npm test
       - run: cd tests/installation && npm ci && npm test
