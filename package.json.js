@@ -24,6 +24,16 @@ const packageConfig = {
   ],
   sideEffects: ['*.css'],
   type: 'module',
+  engines: {
+    node: '>=26.4.0',
+    // npm 11.17 adds min-release-age-exclude and install-script allowlisting.
+    npm: '>=11.17.0',
+  },
+  allowScripts: {
+    '@parcel/watcher': true,
+    'esbuild': true,
+    'fsevents': true,
+  },
   exports: {
     '.': {
       'sass': './dist/baklava.css',
@@ -193,6 +203,7 @@ const packageConfig = {
       'react': '$react',
       'react-dom': '$react-dom',
     },
+    less: "^4.6.7",
   },
 };
 
