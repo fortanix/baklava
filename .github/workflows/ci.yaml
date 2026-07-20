@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [24.x, 26.x]
+        node-version: [26.4.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -27,6 +27,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - run: npm ci
+      - run: node -v
+      - run: npm -v
       #- run: npm run build # Note: already runs as part of `npm ci` through the `prepare` hook
       - run: npm test
       - run: cd tests/installation && npm ci && npm test

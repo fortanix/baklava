@@ -25,10 +25,9 @@ const packageConfig = {
   sideEffects: ['*.css'],
   type: 'module',
   engines: {
-    node: '>=26.4.0',
-    // npm 11.17 adds min-release-age-exclude and install-script allowlisting.
-    npm: '>=11.17.0',
-  },
+  node: '>=26.4.0',
+  npm: '>=11.17.0',
+},
   allowScripts: {
     '@parcel/watcher': true,
     'esbuild': true,
