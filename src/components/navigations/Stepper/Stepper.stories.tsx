@@ -8,6 +8,8 @@ import * as React from 'react';
 
 import { Stepper } from './Stepper.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
+import { TooltipProvider } from '../../overlays/Tooltip/TooltipProvider.tsx';
 
 type StepperArgs = React.ComponentProps<typeof Stepper>;
 type Story = StoryObj<StepperArgs>;
@@ -195,17 +197,27 @@ export const StepperWithDisabledStep: Story = {
   args: {
     defaultActiveStepKey: 'profile',
   },
-  render: args => (
+  render: (args) => (
     <Stepper {...args}>
       <Stepper.Step stepKey="account" label="Account" />
       <Stepper.Step stepKey="profile" label="Profile" />
+      <Stepper.Step
+        stepKey="security"
+        label="Security"
+        description={
+          <>
+            <p>Complete security authentication before continuing.</p>
 
-      <Stepper.Step stepKey="security" label="Security">
-        <p>Complete security authentication before continuing.</p>
-
-        <Button>
-          Configure
-        </Button>
+            <Button>
+              Configure
+            </Button>
+          </>
+        }
+      >
+        Security configuration
+        <TooltipProvider tooltip="This is a security configuration step">
+          <Icon icon='info' />
+        </TooltipProvider>
       </Stepper.Step>
 
       <Stepper.Step
@@ -236,15 +248,20 @@ export const StepperHorizontalWithDisabledStep: Story = {
       <Stepper.Step
         stepKey="security"
         label="Security configuration"
-      >
-        <p>
-          Configure your security settings before proceeding to the
-          next step.
-        </p>
+        description={
+          <>
+            <p>Complete security authentication before continuing.</p>
 
-        <Button>
-          Configure
-        </Button>
+            <Button>
+              Configure
+            </Button>
+          </>
+        }
+      >
+        Security configuration
+        <TooltipProvider tooltip="This is a security configuration step">
+          <Icon icon='info' />
+        </TooltipProvider>
       </Stepper.Step>
 
       <Stepper.Step
@@ -273,32 +290,26 @@ export const StepperVerticalWithStepBody: Story = {
   },
   render: (args) => (
     <Stepper {...args}>
-      <Stepper.Step stepKey="1" label="Create project">
-        Short description.
-      </Stepper.Step>
-
+      <Stepper.Step stepKey="1" label="Create project" description="Short description." />
       <Stepper.Step
         stepKey="2"
         label="Configure environment"
-      >
-        This is a much longer body that should be the children to
+        description={`This is a much longer body that should be the children to
         verify that the connector length is calculated correctly when a step
-        contains additional content.
-      </Stepper.Step>
+        contains additional content.`}
+      />
 
       <Stepper.Step
         stepKey="3"
         label="Deploy to production"
-      >
-        Another body with child of content for testing.
-      </Stepper.Step>
+        description="Another body with child of content for testing."
+      />
 
       <Stepper.Step
         stepKey="4"
         label="Verify"
-      >
-        Done.
-      </Stepper.Step>
+        description="Done"
+      />
     </Stepper >
   ),
 };
@@ -310,32 +321,27 @@ export const StepperHorizontalWithStepBody: Story = {
   },
   render: (args) => (
     <Stepper {...args}>
-      <Stepper.Step stepKey="1" label="Create project">
-        Short description.
-      </Stepper.Step>
+      <Stepper.Step stepKey="1" label="Create project" description="Short description." />
 
       <Stepper.Step
         stepKey="2"
         label="Configure environment"
-      >
-        This is a much longer body that should be the children to
+        description={`This is a much longer body that should be the children to
         verify that the connector length is calculated correctly when a step
-        contains additional content.
-      </Stepper.Step>
+        contains additional content.`}
+      />
 
       <Stepper.Step
         stepKey="3"
         label="Deploy to production"
-      >
-        Another body with child of content for testing.
-      </Stepper.Step>
+        description="Another body with child of content for testing."
+      />
 
       <Stepper.Step
         stepKey="4"
         label="Verify"
-      >
-        Done.
-      </Stepper.Step>
+        description="Done"
+      />
     </Stepper >
   ),
 };
@@ -343,7 +349,7 @@ export const StepperHorizontalWithStepBody: Story = {
 export const StepperWithCustomCountsReversed: Story = {
   args: {
     defaultActiveStepKey: 'planning',
-    reversed:true,
+    reversed: true,
     start: 2,
     children: (
       <>

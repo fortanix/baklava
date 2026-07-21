@@ -69,10 +69,13 @@ type StepProps = Omit<ComponentProps<'li'>, 'children'> & {
   label: string,
 
   /** Additional content rendered below the label. */
+  description?: React.ReactNode,
+
+  /** When specified, overrides the the visual `label` with custom content. Optional. */
   children?: React.ReactNode,
 
   /** Override the displayed step number. */
-  count?: undefined | number;
+  count?: undefined | number,
 
   /** Whether this step should be disabled. Default: `false`. */
   disabled?: undefined | boolean,
@@ -81,6 +84,7 @@ type StepProps = Omit<ComponentProps<'li'>, 'children'> & {
 export const Step = (props: StepProps) => {
   const {
     children,
+    description,
     unstyled,
     stepKey,
     label,
@@ -129,11 +133,13 @@ export const Step = (props: StepProps) => {
         <span className={cx(cl['bk-stepper__step__indicator'])}>
           {isCompleted && (<Icon icon="check" className={cx(cl['bk-stepper__step__indicator__icon'])} />)}
         </span>
-        <span className={cx(cl['bk-stepper__step__label'])}>{label}</span>
+        <span className={cx(cl['bk-stepper__step__label'])}>
+          {typeof children !== 'undefined' ? children : label ? children : label}
+        </span>
       </Button>
-      {children && (
+      {description && (
         <div className={cx(cl['bk-stepper__step__body'])}>
-          {children}
+          {description}
         </div>
       )}
     </li>
