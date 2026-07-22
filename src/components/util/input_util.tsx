@@ -61,7 +61,7 @@ export const inputSpecificPropKeys = {
   
   // Focus events
   // Note: do *not* include these as input-specific. The reason is because React uses the `focusin` and `focusout`
-  // events for `onFocus` and `onBlur` respectively. Thus, focus/blur on the input will already be captures by the
+  // events for `onFocus` and `onBlur` respectively. Thus, focus/blur on the input will already be captured by the
   // parent.
   // See: https://github.com/facebook/react/pull/19186
   // onFocus: true,

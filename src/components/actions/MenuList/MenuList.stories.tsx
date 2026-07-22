@@ -5,9 +5,8 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { colorBright, fruits } from '../../../util/storybook/StorybookUtils.tsx';
+import { colorBright, fruits, generateUsers } from '../../../util/storybook/StorybookUtils.tsx';
 import { loremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
-import { generateData } from '../../tables/util/generateData.ts'; // FIXME: move to a common location
 
 import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
@@ -424,23 +423,26 @@ export const MenuListEmbedded: Story = {
   },
 };
 
+/**
+ * MenuList is built to handle a reasonably large list of items. CSS optimization on items is applied through
+ * `content-visibility`, such that the browser skips painting items that are not currently relevant to the user.
+ */
 export const MenuListWithManyItems: Story = {
   args: {
-    children: (
-      <>
-        {Array.from({ length: 1000 }, (_, i) => i + 1).map(index =>
-          <MenuList.Option key={`item-${index}`} {...propsRadio}>
-            {generateData({ numItems: 1, seed: String(index) })[0]?.name ?? ''}
-            
-            {/*
-            Give items a much larger block size (compared to our `contain-intrinsic-block-size`), in order to test the
-            `content-visibility` behavior in the browser. What should happen is: the scroll indicator should make a lot
-            of progress at first but then get slower and slower as the browser starts calculating the actual elements.
-            */}
-            {index >= 100 && <span style={{ blockSize: '5lh' }}></span>}
-          </MenuList.Option>
-        )}
-      </>
+    children: Array.from({ length: 1000 }, (_, i) => i + 1).map(index =>
+      <MenuList.Option key={`option-${index}`} {...propsRadio}>
+        {generateUsers({ numItems: 1, seed: String(index) })[0]?.name ?? ''}
+        
+        {/*
+        Give later items a larger block size (compared to our `contain-intrinsic-block-size`), in order to test the
+        `content-visibility` behavior in the browser. What should happen is: the scroll indicator should make a lot
+        of progress at first but then get slower and slower as the browser starts calculating the actual elements.
+        */}
+        {index >= 80 && <span style={{ blockSize: '5lh' }}></span>}
+        
+        {/* Searchability test (CTRL/CMD+F). Should still work despite `content-visibility`. */}
+        {index === 500 && <span>FIND ME</span>}
+      </MenuList.Option>
     ),
-  },
+  }
 };

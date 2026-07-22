@@ -175,17 +175,17 @@
     }
     
     .bk-menu-list__item {
-      content-visibility: auto;
-      contain-intrinsic-inline-size: none;
-      contain-intrinsic-block-size: auto 37px; // FIXME (px value)
+      // Note: do not apply to sticky items. `content-visibility` enables containment, which clips our scroll shadow.
+      &:not(.bk-menu-list__sticky) {
+        content-visibility: auto;
+        contain-intrinsic-inline-size: none;
+        contain-intrinsic-block-size: auto 37px; // FIXME (px value)
+        // Border + padding + content
+        //contain-intrinsic-block-size: calc(bk.rem-from-px(1) + var(--bk-menu-list-item-padding-block) * 2 + 1lh);
+      }
       
       // Workaround for a rounding issue in Chrome, where the 1px border is not always properly rendered
       block-size: calc-size(auto, round(size, 1px)); // Round the height to the nearest pixel
-      
-      // FIXME: enabling this causes a strange issue with keyboard navigation (scrolling goes too far down/up)
-      //content-visibility: auto;
-      // Border + padding + content
-      //contain-intrinsic-block-size: calc(bk.rem-from-px(1) + var(--bk-menu-list-item-padding-block) * 2 + 1lh);
       
       padding: var(--bk-menu-list-item-padding-block) var(--bk-menu-list-item-padding-inline);
       

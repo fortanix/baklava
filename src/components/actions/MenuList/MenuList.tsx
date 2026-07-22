@@ -96,6 +96,7 @@ export const MenuListSegment = ({ unstyled, disabled, sticky = false, ...propsRe
         aria-disabled={isDisabled ? 'true' : 'false'}
         className={cx(
           { [cl['bk-menu-list__segment']]: !unstyled },
+          { [cl['bk-menu-list__sticky']]: typeof sticky === 'string' },
           { [cl['bk-menu-list__sticky--start']]: sticky === 'start' },
           { [cl['bk-menu-list__sticky--end']]: sticky === 'end' },
           propsRest.className,
@@ -160,6 +161,7 @@ export const MenuListGroup = (props: MenuListGroupProps) => {
           className={cx(
             cl['bk-menu-list__item'],
             cl['bk-menu-list__item--heading'],
+            { [cl['bk-menu-list__sticky']]: stickyHeading },
             { [cl['bk-menu-list__sticky--start']]: stickyHeading },
             headingProps.className,
           )}
@@ -340,13 +342,12 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
       nonactive={isDisabled}
     >
       <span className={cx(cl['bk-menu-list__item__label'])}>
-        {renderIcon()}
-        
         {selectionMode === 'multiple' &&
           <Checkbox role="presentation" tabIndex={-1} checked={selected} disabled={isDisabled}
-            className={cx(cl['bk-menu-list__item__checkbox'])}
+          className={cx(cl['bk-menu-list__item__checkbox'])}
           />
         }
+        {renderIcon()}
         {propsRest.children ?? propsRest.label}
       </span>
     </Button>
