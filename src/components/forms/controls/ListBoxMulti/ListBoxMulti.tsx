@@ -5,10 +5,8 @@
 import * as React from 'react';
 import { mergeProps } from '../../../../util/reactUtil.ts';
 import { classNames as cx } from '../../../../util/componentUtil.ts';
+
 import { useStore } from 'zustand';
-
-import { MenuList } from '../../../actions/MenuList/MenuList.tsx';
-
 import {
   type ItemKey,
   type SelectedState,
@@ -16,6 +14,8 @@ import {
   useListBoxMulti,
   useListBoxMultiItem,
 } from '../../../util/collections/ListBoxMultiStore.ts';
+
+import { MenuList } from '../../../actions/MenuList/MenuList.tsx';
 
 import cl from './ListBoxMulti.module.scss';
 
@@ -31,20 +31,6 @@ References:
 export { cl as ListBoxMultiClassNames };
 export { type ItemKey, type SelectedState, useListBoxMultiItem, useListBoxMultiSelector };
 
-/* FIXME: this causes issues: type errors in wrapper types, Storybook inference will fail, ...
-export type SelectedStateProps = (
-  | {
-    selected?: undefined, // Uncontrolled
-    defaultSelected?: undefined | SelectedState,
-    onSelectedChange?: undefined | ((selected: SelectedState) => void),
-  }
-  | {
-    selected: SelectedState, // Controlled
-    defaultSelected?: undefined,
-    onSelectedChange: (selected: SelectedState) => void,
-  }
-);
-*/
 export type SelectedStateProps = {
   selected?: undefined | SelectedState,
   defaultSelected?: undefined | SelectedState,
@@ -69,18 +55,14 @@ export interface ListBoxMultiRef extends HTMLDivElement {
 // Option item
 //
 
-type ItemOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionMode'> & {
+type ListBoxMultiOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionMode'> & {
   /** A unique identifier for this option. */
   itemKey: ItemKey,
 };
 /**
  * A list box option (can be selected by the user).
  */
-export const ItemOption = React.memo(({ itemKey, ...propsRest }: ItemOptionProps) => {
-  // Note: use `memo()` so that children don't rerendered on state change, in the case that:
-  // - The consumer uses this component with controlled state
-  // - The `children` prop on consumer side is not memoized/static (usually the case)
-  
+export const ListBoxMultiOption = ({ itemKey, ...propsRest }: ListBoxMultiOptionProps) => {
   const { selected, requestSelected, props: itemProps } = useListBoxMultiItem({ itemKey });
   return (
     <MenuList.Option
@@ -93,7 +75,7 @@ export const ItemOption = React.memo(({ itemKey, ...propsRest }: ItemOptionProps
       selectionMode="multiple"
     />
   );
-});
+};
 
 
 //
@@ -277,6 +259,6 @@ export const ListBoxMulti = Object.assign(
     Footer: MenuList.Footer,
     Group: MenuList.Group,
     Static: MenuList.Static,
-    Option: ItemOption,
+    Option: ListBoxMultiOption,
   },
 );

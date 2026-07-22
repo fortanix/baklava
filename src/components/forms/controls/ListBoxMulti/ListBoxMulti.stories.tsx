@@ -5,8 +5,7 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { colorBright } from '../../../../util/storybook/StorybookUtils.tsx';
-import { loremIpsum } from '../../../../util/storybook/LoremIpsum.tsx';
+import { fruits, generateUsers } from '../../../../util/storybook/StorybookUtils.tsx';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
@@ -16,30 +15,8 @@ import { InputSearch } from '../Input/InputSearch.tsx';
 import { type ItemKey, type ListBoxMultiRef, ListBoxMulti } from './ListBoxMulti.tsx';
 
 
-const notifyPressed = () => { notify.info('Pressed the item'); };
-
 type ListBoxMultiArgs = React.ComponentProps<typeof ListBoxMulti>;
 type Story = StoryObj<ListBoxMultiArgs>;
-
-// Sample options
-const fruits = {
-  apple: 'Apple',
-  apricot: 'Apricot',
-  blueberry: 'Blueberry',
-  cherry: 'Cherry',
-  durian: 'Durian',
-  jackfruit: 'Jackfruit',
-  melon: 'Melon',
-  mango: 'Mango',
-  mangosteen: 'Mangosteen',
-  orange: 'Orange',
-  peach: 'Peach',
-  pineapple: 'Pineapple',
-  razzberry: 'Razzberry',
-  strawberry: 'Strawberry',
-};
-type FruitKey = keyof typeof fruits;
-const formatFruitLabel = (itemKey: FruitKey): string => fruits[itemKey];
 
 export default {
   component: ListBoxMulti,
@@ -50,12 +27,11 @@ export default {
   argTypes: {
   },
   args: {
-    label: 'Test list box',
-    defaultSelected: new Set(['blueberry', 'cherry', 'melon']),
+    label: 'Test list box multi',
     children: (
       <>
-        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ListBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        {fruits.map(fruit =>
+          <ListBoxMulti.Option key={fruit} itemKey={fruit} label={fruit}/>
         )}
       </>
     ),
@@ -64,27 +40,17 @@ export default {
 } satisfies Meta<ListBoxMultiArgs>;
 
 
-export const ListBoxMultiStandard: Story = {};
-
-export const ListBoxMultiWithLabel: Story = {
+export const ListBoxMultiStandard: Story = {
   args: {
-    'aria-label': undefined,
-    'aria-describedby': 'my-label',
+    defaultSelected: new Set(['Blueberry', 'Mango']),
   },
-  decorators: [
-    Story => (
-      <div>
-        <span id="my-label">My list box multi:</span>
-        <Story/>
-      </div>
-    ),
-  ],
 };
 
-export const ListBoxMultiShrink: Story = { args: { size: 'shrink' } };
-export const ListBoxMultiSmall: Story = { args: { size: 'small' } };
-export const ListBoxMultiMedium: Story = { args: { size: 'medium' } };
-export const ListBoxMultiLarge: Story = { args: { size: 'large' } };
+export const ListBoxMultiWithoutSelection: Story = {
+  args: {
+    defaultSelected: undefined,
+  },
+};
 
 export const ListBoxMultiEmpty: Story = {
   args: {
@@ -99,14 +65,89 @@ export const ListBoxMultiEmptyWithCustomPlaceholder: Story = {
   },
 };
 
-export const ListBoxMultiWithOverflow: Story = {
+export const ListBoxMultiLoading: Story = {
   args: {
+    status: 'loading',
     children: (
       <>
-        <ListBoxMulti.Option itemKey="overflow" label={loremIpsum()}/>
-        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ListBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        {fruits.slice(0, 5).map(fruit =>
+          <ListBoxMulti.Option key={fruit} itemKey={fruit} label={fruit}/>
         )}
+      </>
+    ),
+  },
+};
+
+export const ListBoxMultiLoadingEmpty: Story = {
+  args: {
+    status: 'loading',
+    children: null,
+  },
+};
+
+/** In the accessibility tree, the accessible name should be "My list box multi". */
+export const ListBoxMultiWithLabel: Story = {
+  args: {
+    'aria-label': undefined,
+    'aria-labelledby': 'story-label',
+  },
+  decorators: [
+    Story => (
+      <div>
+        <span id="story-label">My list box multi:</span>
+        <Story/>
+      </div>
+    ),
+  ],
+};
+
+export const ListBoxMultiShrink: Story = { args: { size: 'shrink' } };
+export const ListBoxMultiSmall: Story = { args: { size: 'small' } };
+export const ListBoxMultiMedium: Story = { args: { size: 'medium' } };
+export const ListBoxMultiLarge: Story = { args: { size: 'large' } };
+
+export const ListBoxMultiWithGroups: Story = {
+  args: {
+    defaultSelected: new Set(['fruits-1-Blueberry', 'fruits-2-Mango']),
+    children: (
+      <>
+        <ListBoxMulti.Group label="Fruits 1">
+          {fruits.slice(0, 5).map(fruit =>
+            <ListBoxMulti.Option key={fruit} itemKey={`fruits-1-${fruit}`} label={fruit}/>
+          )}
+        </ListBoxMulti.Group>
+        <ListBoxMulti.Group label="Fruits 2">
+          {fruits.slice(5, 10).map(fruit =>
+            <ListBoxMulti.Option key={fruit} itemKey={`fruits-2-${fruit}`} label={fruit}/>
+          )}
+        </ListBoxMulti.Group>
+        <ListBoxMulti.Group label="Fruits 3">
+          {fruits.slice(10).map(fruit =>
+            <ListBoxMulti.Option key={fruit} itemKey={`fruits-3-${fruit}`} label={fruit}/>
+          )}
+        </ListBoxMulti.Group>
+      </>
+    ),
+  },
+};
+
+/**
+ * Note: static content should be presentational only. In HTML/ARIA, a listbox cannot contain interactive elements
+ * other than options.
+ */
+export const ListBoxMultiWithStatic: Story = {
+  args: {
+    defaultSelected: new Set(['Blueberry', 'Mango']),
+    children: (
+      <>
+        <ListBoxMulti.Static>Some static content</ListBoxMulti.Static>
+        <ListBoxMulti.Static><Icon icon="bell"/> More static content</ListBoxMulti.Static>
+        <ListBoxMulti.Option itemKey="example-option">An option</ListBoxMulti.Option>
+        <ListBoxMulti.Group label="Fruits">
+          {fruits.slice(0, 5).map(fruit =>
+            <ListBoxMulti.Option key={fruit} itemKey={fruit} label={fruit}/>
+          )}
+        </ListBoxMulti.Group>
       </>
     ),
   },
@@ -114,11 +155,29 @@ export const ListBoxMultiWithOverflow: Story = {
 
 export const ListBoxMultiEmptyWithHeaderAndFooter: Story = {
   args: {
-    defaultSelected: new Set(),
     children: (
       <>
         <ListBoxMulti.Segment sticky="start">
-          <ListBoxMulti.Static>An empty list with header/footer</ListBoxMulti.Static>
+          <ListBoxMulti.Static muted>A list box with header/footer</ListBoxMulti.Static>
+        </ListBoxMulti.Segment>
+        {fruits.map(fruit =>
+          <ListBoxMulti.Option key={fruit} itemKey={fruit} label={fruit}/>
+        )}
+        <ListBoxMulti.Footer>
+          <ListBoxMulti.Static>Footer 1</ListBoxMulti.Static>
+          <ListBoxMulti.Static>Footer 2</ListBoxMulti.Static>
+        </ListBoxMulti.Footer>
+      </>
+    ),
+  },
+};
+
+export const ListBoxMultiWithHeaderAndFooterEmpty: Story = {
+  args: {
+    children: (
+      <>
+        <ListBoxMulti.Segment sticky="start">
+          <ListBoxMulti.Static muted>An empty list with header/footer</ListBoxMulti.Static>
         </ListBoxMulti.Segment>
         <ListBoxMulti.Footer>
           <ListBoxMulti.Static>Footer 1</ListBoxMulti.Static>
@@ -129,60 +188,15 @@ export const ListBoxMultiEmptyWithHeaderAndFooter: Story = {
   },
 };
 
+const iconHl: Partial<React.ComponentProps<typeof Icon>> = { decoration: { type: 'background-circle' } };
 export const ListBoxMultiWithIcon: Story = {
   args: {
-    defaultSelected: new Set(['option-2']),
+    defaultSelected: new Set(['option-1', 'option-3']),
     children: (
       <>
         <ListBoxMulti.Option icon="account" itemKey="option-1" label="Option with an icon"/>
         <ListBoxMulti.Option icon="user" itemKey="option-2" label="Another option"/>
-      </>
-    ),
-  },
-};
-
-export const ListBoxMultiWithHighlightedIcon: Story = {
-  args: {
-    defaultSelected: new Set(['option-2']),
-    children: (
-      <>
-        <ListBoxMulti.Option icon="account" iconDecoration="highlight" itemKey="option-1" label="Option with an icon"/>
-        <ListBoxMulti.Option icon="user" iconDecoration="highlight" itemKey="option-2" label="Another option"/>
-      </>
-    ),
-  },
-};
-
-const CustomIcon = (props: React.ComponentProps<typeof Icon>) =>
-  <Icon
-    {...props}
-    style={{ color: colorBright, ...props.style }}
-  />;
-export const ListBoxMultiWithCustomIcon: Story = {
-  args: {
-    defaultSelected: new Set(['option-2']),
-    children: (
-      <>
-        <ListBoxMulti.Option Icon={CustomIcon} icon="account" itemKey="option-1" label="Option with an icon"/>
-        <ListBoxMulti.Option Icon={CustomIcon} icon="user" itemKey="option-2" label="Another option"/>
-      </>
-    ),
-  },
-};
-
-export const ListBoxWithCustomItems: Story = {
-  args: {
-    defaultSelected: new Set([]),
-    children: (
-      <>
-        <ListBoxMulti.Static sticky="start">
-          <InputSearch style={{ flexGrow: 1 }} placeholder="Sticky static item"/>
-        </ListBoxMulti.Static>
-        {Array.from({ length: 20 }, (_, i) => i).map(index => // A lot of items to test scroll for sticky item
-          <ListBoxMulti.Static key={index}>
-            Static item
-          </ListBoxMulti.Static>
-        )}
+        <ListBoxMulti.Option icon="bell" itemKey="option-3" iconProps={iconHl} label="Option with highlighted icon"/>
       </>
     ),
   },
@@ -203,94 +217,22 @@ export const ListBoxMultiWithDisabledOption: Story = {
   },
 };
 
-const handleDisabledActivate = () => {
+const handleDisabledPress = () => {
   notify.error(`This should not have been triggered! Check the disabled logic.`);
 };
 export const ListBoxMultiDisabled: Story = {
   args: {
     disabled: true,
-    defaultSelected: new Set(['item-1']),
+    defaultSelected: new Set(['option-1']),
     children: (
       <>
-        <ListBoxMulti.Option itemKey="item-1" label="All options should be disabled"/>
-        <ListBoxMulti.Option itemKey="item-2" label="Selecting me should do nothing"/>
-        <ListBoxMulti.Action itemKey="item-3" label="Activating me should do nothing"
-          onActivate={handleDisabledActivate}
-        />
+        <ListBoxMulti.Option itemKey="option-1" label="All options should be disabled" onPress={handleDisabledPress}/>
+        <ListBoxMulti.Option itemKey="option-2" label="Selecting me should do nothing" onPress={handleDisabledPress}/>
+        <ListBoxMulti.Group disabled={false} label="Force-enabled group">
+          <ListBoxMulti.Option itemKey="option-group-1" label="I am enabled since the group overrides enabled"/>
+        </ListBoxMulti.Group>
       </>
     ),
-  },
-};
-
-export const ListBoxMultiWithHeaders: Story = {
-  args: {
-    defaultSelected: new Set(['icecream-blueberry', 'icecream-mango', 'icecream-strawberry', 'jellybean-apple']),
-    children: (
-      <>
-        <ListBoxMulti.Header itemKey="header-1" sticky={false}
-          label={`Ice cream flavors (${Object.keys(fruits).length})`}
-        />
-        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ListBoxMulti.Option key={`icecream-${fruitKey}`} itemKey={`icecream-${fruitKey}`} label={fruitName}/>
-        )}
-        <ListBoxMulti.Header itemKey="header-2" sticky={false}
-          label={`Jelly bean flavors (${Object.keys(fruits).length})`}
-        />
-        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ListBoxMulti.Option key={`jellybean-${fruitKey}`} itemKey={`jellybean-${fruitKey}`} label={fruitName}/>
-        )}
-      </>
-    ),
-  },
-};
-
-export const ListBoxMultiWithStickyHeaders: Story = {
-  args: {
-    defaultSelected: new Set(['icecream-blueberry', 'icecream-mango', 'icecream-strawberry', 'jellybean-apple']),
-    children: (
-      <>
-        <ListBoxMulti.Header itemKey="header-1" sticky="start"
-          label={`Ice cream flavors (${Object.keys(fruits).length})`}
-        />
-        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ListBoxMulti.Option key={`icecream-${fruitKey}`} itemKey={`icecream-${fruitKey}`} label={fruitName}/>
-        )}
-        <ListBoxMulti.Header itemKey="header-2" sticky="start"
-          label={`Jelly bean flavors (${Object.keys(fruits).length})`}
-        />
-        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <ListBoxMulti.Option key={`jellybean-${fruitKey}`} itemKey={`jellybean-${fruitKey}`} label={fruitName}/>
-        )}
-      </>
-    ),
-  },
-};
-
-export const ListBoxMultiWithActions: Story = {
-  args: {
-    defaultSelected: new Set(['option-2']),
-    children: (
-      <>
-        <ListBoxMulti.Option itemKey="option-1" label="Option 1"/>
-        <ListBoxMulti.Option itemKey="option-2" label="Option 2"/>
-        <ListBoxMulti.Action itemKey="action-1" icon="edit" label="Action 1" onActivate={() => { notifyPressed(); }}/>
-        <ListBoxMulti.Action disabled itemKey="action-2" icon="delete" label="Action 2" onActivate={() => { notifyPressed(); }}/>
-      </>
-    ),
-  },
-};
-
-export const ListBoxMultiLoading: Story = {
-  args: {
-    defaultSelected: new Set(['apple']),
-    children: (
-      <>
-        {Object.entries(fruits).slice(0, 2).map(([fruitKey, fruitName]) =>
-          <ListBoxMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
-        )}
-      </>
-    ),
-    isLoading: true,
   },
 };
 
@@ -310,6 +252,17 @@ export const ListBoxMultiTypeAhead: Story = {
           '#hashtag', // Special characters should work (matches: "#")
           'ça', // Diacritics should be ignored (matches: "c")
           'ôté', // (matches: "o")
+          <ListBoxMulti.Static key="input-test">
+            {/* Note: this is technically not legal, accessibility-wise. Just for testing purposes. */}
+            <InputSearch placeholder="Input keys should be ignored" automaticResize/>
+          </ListBoxMulti.Static>,
+          <ListBoxMulti.Static key="listbox-test">
+            {/* Note: this is technically not legal, accessibility-wise. Just for testing purposes. */}
+            <ListBoxMulti label="Nested ListBoxMulti">
+              <ListBoxMulti.Option itemKey="nested-1" label="Key events on nested listbox should be ignored"/>
+              <ListBoxMulti.Option itemKey="nested-2" label="Another nested option"/>
+            </ListBoxMulti>
+          </ListBoxMulti.Static>,
           'ñoñada', // (matches: "n")
           'Über', // Case insensitivity + diacritics (matches: "u", or also "U")
           'ß', // Language-specific collation rules (e.g. "Straße" = "Strasse") (NOTE: currently does not work)
@@ -317,48 +270,25 @@ export const ListBoxMultiTypeAhead: Story = {
           'ไทย', // Non-ASCII characters should work (matches: "ไ" on a Thai keyboard)
           'かな', // For keyboards using live conversion like Japanese romaji or Chinese pinyin, matching will still be
                  // Latin-based. However, this would match "か" on a kana-based Japanese keyboard layout.
-        ].map((char) =>
-          <ListBoxMulti.Option key={char} itemKey={char} label={char}/>
+        ].map(stringOrElement =>
+          typeof stringOrElement === 'string'
+            ? <ListBoxMulti.Option key={stringOrElement} itemKey={stringOrElement} label={stringOrElement}/>
+            : stringOrElement
         )}
       </>
     ),
   },
 };
 
-type ListBoxMultiManyProps = Omit<React.ComponentProps<typeof ListBoxMulti>, 'selected'>;
-const ListBoxMultiManyC = (props: ListBoxMultiManyProps) => {
-  const [isPending, startTransition] = React.useTransition();
-  const [count, setCount] = React.useState(100);
-  return (
-    <>
-      <div style={{ display: 'flex', gap: 5, margin: 5 }}>
-        <Button kind="primary" onPress={() => { startTransition(() => setCount(100)); }}>100 items</Button>
-        <Button kind="primary" onPress={() => { startTransition(() => setCount(1000)); }}>1K items</Button>
-        <Button kind="primary" onPress={() => { startTransition(() => setCount(10_000)); }}>10K items</Button>
-      </div>
-      <ListBoxMulti {...props}>
-        {Array.from({ length: count }).map((_, index) =>
-          index === 500
-            ? <ListBoxMulti.Option key="find-me" itemKey="find-me" label="Find me"/> // Searchability test (CTRL/CMD+F)
-            : <ListBoxMulti.Option key={`opt-${index + 1}`} itemKey={`opt-${index + 1}`} label={`Option ${index + 1}`}/>
-        )}
-      </ListBoxMulti>
-    </>
-  );
-};
-export const ListBoxMultiMany: Story = {
-  render: args => <ListBoxMultiManyC {...args}/>,
-};
-
-type ListBoxMultiControlledProps<K extends ItemKey> = Omit<React.ComponentProps<typeof ListBoxMulti<K>>, 'selected'>;
-const ListBoxMultiControlledC = (props: ListBoxMultiControlledProps<FruitKey>) => {
-  const [selectedItems, setSelectedItems] = React.useState<Set<FruitKey>>(props.defaultSelected ?? new Set());
+type ListBoxMultiControlledProps = Omit<React.ComponentProps<typeof ListBoxMulti>, 'selected'>;
+const ListBoxMultiControlledC = (props: ListBoxMultiControlledProps) => {
+  const [selectedItems, setSelectedItems] = React.useState<Set<ItemKey>>(props.defaultSelected ?? new Set());
   
   return (
     <>
-      <p>Selected fruits: {[...selectedItems].map(key => formatFruitLabel(key)).join(', ') || '(none)'}</p>
-      <ListBoxMulti<FruitKey> {...props} selected={new Set(selectedItems.keys())} onSelect={setSelectedItems}/>
-      <Button label="Update state" onPress={() => { setSelectedItems(new Set(['razzberry', 'strawberry'])); }}/>
+      <p>Selected fruits: {[...selectedItems].map(key => key).join(', ') || '(none)'}</p>
+      <ListBoxMulti {...props} selected={new Set(selectedItems.keys())} onSelectedChange={setSelectedItems}/>
+      <Button label="Update state" onPress={() => { setSelectedItems(new Set(['Razzberry', 'Strawberry'])); }}/>
     </>
   );
 };
@@ -367,7 +297,7 @@ export const ListBoxMultiControlled: Story = {
 };
 export const ListBoxMultiControlledWithDefault: Story = {
   render: ({ label, children }) => (
-    <ListBoxMultiControlledC label={label} defaultSelected={new Set(['blueberry', 'cherry', 'orange'])}>
+    <ListBoxMultiControlledC label={label} defaultSelected={new Set(['Blueberry', 'Cherry', 'Orange'])}>
       {children}
     </ListBoxMultiControlledC>
   ),
@@ -410,4 +340,37 @@ const ListBoxMultiWithRefC = (props: React.ComponentProps<typeof ListBoxMulti>) 
 export const ListBoxMultiWithRef: Story = {
   render: args => <ListBoxMultiWithRefC {...args}/>,
   args: {},
+};
+
+
+const ListBoxMultiWithManyOptionsC = (args: ListBoxMultiArgs) => {
+  const [count, setCount] = React.useState(100);
+  
+  // Recommended: memoize `children`, so that React does not rerender children elements on state change, in the case
+  // that the consumer uses controlled state. If the consumer changes state and it rerenders, then the entire subtree
+  // will rerender including the huge list of items. Prevent this by memoizing `children`. State updates on the items
+  // that need it will still happen thanks to the internal zustand store.
+  const children = React.useMemo(() => (
+    <>
+      {Array.from({ length: count }, (_, i) => i + 1).map(index =>
+        <ListBoxMulti.Option key={`option-${index}`} itemKey={`option-${index}`}>
+          {generateUsers({ numItems: 1, seed: String(index) })[0]?.name ?? ''}
+        </ListBoxMulti.Option>
+      )}
+    </>
+  ), [count]);
+  
+  return (
+    <>
+      <div style={{ display: 'flex', gap: 5, margin: 5 }}>
+        <Button kind="primary" onPress={() => { setCount(100); }}>100 items</Button>
+        <Button kind="primary" onPress={() => { setCount(1000); }}>1K items</Button>
+        <Button kind="primary" onPress={() => { setCount(10_000); }}>10K items</Button>
+      </div>
+      <ListBoxMulti {...args}>{children}</ListBoxMulti>
+    </>
+  );
+};
+export const ListBoxMultiWithManyOptions: Story = {
+  render: args => <ListBoxMultiWithManyOptionsC {...args}/>,
 };

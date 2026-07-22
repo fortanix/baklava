@@ -5,8 +5,7 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { colorBright, fruits } from '../../../../util/storybook/StorybookUtils.tsx';
-import { loremIpsum } from '../../../../util/storybook/LoremIpsum.tsx';
+import { fruits, generateUsers } from '../../../../util/storybook/StorybookUtils.tsx';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
@@ -15,8 +14,6 @@ import { InputSearch } from '../Input/InputSearch.tsx';
 
 import { type ItemKey, ListBox } from './ListBox.tsx';
 
-
-const notifyPressed = () => { notify.info('Pressed the item'); };
 
 type ListBoxArgs = React.ComponentProps<typeof ListBox>;
 type Story = StoryObj<ListBoxArgs>;
@@ -49,79 +46,11 @@ export const ListBoxStandard: Story = {
   },
 };
 
-export const ListBoxWithGroups: Story = {
+export const ListBoxWithoutSelection: Story = {
   args: {
-    defaultSelected: 'Blueberry',
-    children: (
-      <>
-        <ListBox.Group label="Fruits 1">
-          {fruits.slice(0, 5).map((fruit) =>
-            <ListBox.Option key={fruit} itemKey={`fruits-1-${fruit}`} label={fruit}/>
-          )}
-        </ListBox.Group>
-        <ListBox.Group label="Fruits 2">
-          {fruits.slice(5, 10).map((fruit) =>
-            <ListBox.Option key={fruit} itemKey={`fruits-2-${fruit}`} label={fruit}/>
-          )}
-        </ListBox.Group>
-      </>
-    ),
+    defaultSelected: undefined,
   },
 };
-
-export const ListBoxWithStatic: Story = {
-  args: {
-    defaultSelected: 'Blueberry',
-    children: (
-      <>
-        <ListBox.Static>Some static content</ListBox.Static>
-        <ListBox.Group label="Fruits 1">
-          {fruits.slice(0, 5).map((fruit) =>
-            <ListBox.Option key={fruit} itemKey={`fruits-1-${fruit}`} label={fruit}/>
-          )}
-        </ListBox.Group>
-        <ListBox.Group label="Fruits 2">
-          {fruits.slice(5, 10).map((fruit) =>
-            <ListBox.Option key={fruit} itemKey={`fruits-2-${fruit}`} label={fruit}/>
-          )}
-        </ListBox.Group>
-      </>
-    ),
-  },
-};
-
-
-
-
-
-
-
-
-
-
-
-// OLD
-
-export const ListBoxWithLabel: Story = {
-  args: {
-    defaultSelected: 'Blueberry',
-    'aria-label': undefined,
-    'aria-describedby': 'my-label',
-  },
-  decorators: [
-    Story => (
-      <div>
-        <span id="my-label">My list box:</span>
-        <Story/>
-      </div>
-    ),
-  ],
-};
-
-export const ListBoxShrink: Story = { args: { size: 'shrink' } };
-export const ListBoxSmall: Story = { args: { size: 'small' } };
-export const ListBoxMedium: Story = { args: { size: 'medium' } };
-export const ListBoxLarge: Story = { args: { size: 'large' } };
 
 export const ListBoxEmpty: Story = {
   args: {
@@ -136,12 +65,12 @@ export const ListBoxEmptyWithCustomPlaceholder: Story = {
   },
 };
 
-export const ListBoxWithOverflow: Story = {
+export const ListBoxLoading: Story = {
   args: {
+    status: 'loading',
     children: (
       <>
-        <ListBox.Option itemKey="overflow" label={loremIpsum()}/>
-        {fruits.map(fruit =>
+        {fruits.slice(0, 5).map(fruit =>
           <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
         )}
       </>
@@ -149,7 +78,101 @@ export const ListBoxWithOverflow: Story = {
   },
 };
 
+export const ListBoxLoadingEmpty: Story = {
+  args: {
+    status: 'loading',
+    children: null,
+  },
+};
+
+/** In the accessibility tree, the accessible name should be "My list box". */
+export const ListBoxWithLabel: Story = {
+  args: {
+    'aria-label': undefined,
+    'aria-labelledby': 'story-label',
+  },
+  decorators: [
+    Story => (
+      <div>
+        <span id="story-label">My list box:</span>
+        <Story/>
+      </div>
+    ),
+  ],
+};
+
+export const ListBoxShrink: Story = { args: { size: 'shrink' } };
+export const ListBoxSmall: Story = { args: { size: 'small' } };
+export const ListBoxMedium: Story = { args: { size: 'medium' } };
+export const ListBoxLarge: Story = { args: { size: 'large' } };
+
+export const ListBoxWithGroups: Story = {
+  args: {
+    defaultSelected: 'fruits-1-Blueberry',
+    children: (
+      <>
+        <ListBox.Group label="Fruits 1">
+          {fruits.slice(0, 5).map(fruit =>
+            <ListBox.Option key={fruit} itemKey={`fruits-1-${fruit}`} label={fruit}/>
+          )}
+        </ListBox.Group>
+        <ListBox.Group label="Fruits 2">
+          {fruits.slice(5, 10).map(fruit =>
+            <ListBox.Option key={fruit} itemKey={`fruits-2-${fruit}`} label={fruit}/>
+          )}
+        </ListBox.Group>
+        <ListBox.Group label="Fruits 3">
+          {fruits.slice(10).map(fruit =>
+            <ListBox.Option key={fruit} itemKey={`fruits-3-${fruit}`} label={fruit}/>
+          )}
+        </ListBox.Group>
+      </>
+    ),
+  },
+};
+
+/**
+ * Note: static content should be presentational only. In HTML/ARIA, a listbox cannot contain interactive elements
+ * other than options.
+ */
+export const ListBoxWithStatic: Story = {
+  args: {
+    defaultSelected: 'Blueberry',
+    children: (
+      <>
+        <ListBox.Static>Some static content</ListBox.Static>
+        <ListBox.Static><Icon icon="bell"/> More static content</ListBox.Static>
+        <ListBox.Option itemKey="example-option">An option</ListBox.Option>
+        <ListBox.Group label="Fruits">
+          {fruits.slice(0, 5).map(fruit =>
+            <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
+          )}
+        </ListBox.Group>
+      </>
+    ),
+  },
+};
+
 export const ListBoxEmptyWithHeaderAndFooter: Story = {
+  args: {
+    children: (
+      <>
+        <ListBox.Segment sticky="start">
+          <ListBox.Static muted>A list box with header/footer</ListBox.Static>
+        </ListBox.Segment>
+        {fruits.map(fruit =>
+          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
+        )}
+        <ListBox.Footer>
+          <ListBox.Static>Footer 1</ListBox.Static>
+          <ListBox.Static>Footer 2</ListBox.Static>
+        </ListBox.Footer>
+      </>
+    ),
+  },
+};
+
+export const ListBoxWithHeaderAndFooterEmpty: Story = {
   args: {
     children: (
       <>
@@ -165,58 +188,15 @@ export const ListBoxEmptyWithHeaderAndFooter: Story = {
   },
 };
 
+const iconHl: Partial<React.ComponentProps<typeof Icon>> = { decoration: { type: 'background-circle' } };
 export const ListBoxWithIcon: Story = {
   args: {
+    defaultSelected: 'option-1',
     children: (
       <>
         <ListBox.Option icon="account" itemKey="option-1" label="Option with an icon"/>
         <ListBox.Option icon="user" itemKey="option-2" label="Another option"/>
-      </>
-    ),
-  },
-};
-
-export const ListBoxWithHighlightedIcon: Story = {
-  args: {
-    children: (
-      <>
-        <ListBox.Option itemKey="option-1" icon="account" iconDecoration="highlight" label="Option with an icon"/>
-        <ListBox.Option itemKey="option-2" icon="user" iconDecoration="highlight" label="Another option"/>
-        <ListBox.Option itemKey="option-3" icon="user" label="Without highlight (should line up)"/>
-      </>
-    ),
-  },
-};
-
-const CustomIcon = (props: React.ComponentProps<typeof Icon>) =>
-  <Icon
-    {...props}
-    style={{ color: colorBright, ...props.style }}
-  />;
-export const ListBoxWithCustomIcon: Story = {
-  args: {
-    children: (
-      <>
-        <ListBox.Option Icon={CustomIcon} icon="account" itemKey="option-1" label="Option with an icon"/>
-        <ListBox.Option Icon={CustomIcon} icon="user" itemKey="option-2" label="Another option"/>
-      </>
-    ),
-  },
-};
-
-export const ListBoxWithCustomItems: Story = {
-  args: {
-    placeholderEmpty: null,
-    children: (
-      <>
-        <ListBox.Segment sticky="start">
-          <ListBox.Static>
-            <InputSearch style={{ flexGrow: 1 }} placeholder="Sticky static item"/>
-          </ListBox.Static>
-        </ListBox.Segment>
-        {Array.from({ length: 20 }, (_, i) => i).map(index => // A lot of items to test scroll for sticky item
-          <ListBox.Static key={index}>Static item</ListBox.Static>
-        )}
+        <ListBox.Option icon="bell" itemKey="option-3" iconProps={iconHl} label="Option with highlighted icon"/>
       </>
     ),
   },
@@ -235,28 +215,22 @@ export const ListBoxWithDisabledOption: Story = {
   },
 };
 
+const handleDisabledPress = () => {
+  notify.error(`This should not have been triggered! Check the disabled logic.`);
+};
 export const ListBoxDisabled: Story = {
   args: {
     disabled: true,
+    defaultSelected: 'option-group-1',
     children: (
       <>
-        <ListBox.Option itemKey="item-1" label="All options should be disabled"/>
-        <ListBox.Option itemKey="item-2" label="Selecting me should do nothing"/>
+        <ListBox.Option itemKey="option-1" label="All options should be disabled" onPress={handleDisabledPress}/>
+        <ListBox.Option itemKey="option-2" label="Selecting me should do nothing" onPress={handleDisabledPress}/>
+        <ListBox.Group disabled={false} label="Force-enabled group">
+          <ListBox.Option itemKey="option-group-1" label="I am enabled since the group overrides enabled"/>
+        </ListBox.Group>
       </>
     ),
-  },
-};
-
-export const ListBoxLoading: Story = {
-  args: {
-    children: (
-      <>
-        {fruits.slice(0, 2).map((fruit) =>
-          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
-        )}
-      </>
-    ),
-    isLoading: true,
   },
 };
 
@@ -278,9 +252,11 @@ export const ListBoxTypeAhead: Story = {
           'ça', // Diacritics should be ignored (matches: "c")
           'ôté', // (matches: "o")
           <ListBox.Static key="input-test">
+            {/* Note: this is technically not legal, accessibility-wise. Just for testing purposes. */}
             <InputSearch placeholder="Input keys should be ignored" automaticResize/>
           </ListBox.Static>,
           <ListBox.Static key="listbox-test">
+            {/* Note: this is technically not legal, accessibility-wise. Just for testing purposes. */}
             <ListBox label="Nested ListBox">
               <ListBox.Option itemKey="nested-1" label="Key events on nested listbox should be ignored"/>
               <ListBox.Option itemKey="nested-2" label="Another nested option"/>
@@ -303,56 +279,27 @@ export const ListBoxTypeAhead: Story = {
   },
 };
 
-type ListBoxManyProps = Omit<React.ComponentProps<typeof ListBox>, 'selected'>;
-const ListBoxManyC = (props: ListBoxManyProps) => {
-  const [isPending, startTransition] = React.useTransition();
-  const [count, setCount] = React.useState(100);
-  return (
-    <>
-      <div style={{ display: 'flex', gap: 5, margin: 5 }}>
-        <Button kind="primary" onPress={() => { startTransition(() => setCount(100)); }}>100 items</Button>
-        <Button kind="primary" onPress={() => { startTransition(() => setCount(1000)); }}>1K items</Button>
-        <Button kind="primary" onPress={() => { startTransition(() => setCount(10_000)); }}>10K items</Button>
-      </div>
-      <ListBox {...props}>
-        {Array.from({ length: count }).map((_, index) =>
-          index === 500
-            ? <ListBox.Option key="find-me" itemKey="find-me" label="Find me"/> // Searchability test (CTRL/CMD+F)
-            : <ListBox.Option key={`opt-${index + 1}`} itemKey={`opt-${index + 1}`} label={`Option ${index + 1}`}/>
-        )}
-      </ListBox>
-    </>
-  );
-};
-export const ListBoxMany: Story = {
-  render: args => <ListBoxManyC {...args}/>,
-};
-
 type ListBoxControlledProps = Omit<React.ComponentProps<typeof ListBox>, 'selected'>;
 const ListBoxControlledC = (props: ListBoxControlledProps) => {
-  const [selectedItem, setSelectedItem] = React.useState<null | ItemKey>(props.defaultSelected ?? null);
+  const [selectedFruit, setSelectedFruit] = React.useState<null | ItemKey>(props.defaultSelected ?? null);
   
   return (
     <>
-      <p>Selected fruit: {selectedItem ?? <em>none</em>}</p>
-      <ListBox
-        {...props}
-        selected={selectedItem}
-        onSelect={setSelectedItem}
-      >
-        {fruits.map(fruit =>
-          <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
-        )}
-      </ListBox>
-      <Button label="Update state" onPress={() => { setSelectedItem('Strawberry'); }}/>
+      <p>Selected fruit: {selectedFruit ?? <em>none</em>}</p>
+      <ListBox {...props} selected={selectedFruit} onSelectedChange={setSelectedFruit}/>
+      <Button label="Update state" onPress={() => { setSelectedFruit('Strawberry'); }}/>
     </>
   );
 };
 export const ListBoxControlled: Story = {
-  render: args => <ListBoxControlledC {...args}/>,
+  render: ({ label, children }) => <ListBoxControlledC label={label}>{children}</ListBoxControlledC>,
 };
 export const ListBoxControlledWithDefault: Story = {
-  render: args => <ListBoxControlledC {...args} defaultSelected="Blueberry"/>,
+  render: ({ label, children }) => (
+    <ListBoxControlledC label={label} defaultSelected="Blueberry">
+      {children}
+    </ListBoxControlledC>
+  ),
 };
 
 export const ListBoxInForm: Story = {
@@ -398,4 +345,36 @@ const ListBoxWithRefC = (props: React.ComponentProps<typeof ListBox>) => {
 export const ListBoxWithRef: Story = {
   render: args => <ListBoxWithRefC {...args}/>,
   args: {},
+};
+
+const ListBoxWithManyOptionsC = (args: ListBoxArgs) => {
+  const [count, setCount] = React.useState(100);
+  
+  // Recommended: memoize `children`, so that React does not rerender children elements on state change, in the case
+  // that the consumer uses controlled state. If the consumer changes state and it rerenders, then the entire subtree
+  // will rerender including the huge list of items. Prevent this by memoizing `children`. State updates on the items
+  // that need it will still happen thanks to the internal zustand store.
+  const children = React.useMemo(() => (
+    <>
+      {Array.from({ length: count }, (_, i) => i + 1).map(index =>
+        <ListBox.Option key={`option-${index}`} itemKey={`option-${index}`}>
+          {generateUsers({ numItems: 1, seed: String(index) })[0]?.name ?? ''}
+        </ListBox.Option>
+      )}
+    </>
+  ), [count]);
+  
+  return (
+    <>
+      <div style={{ display: 'flex', gap: 5, margin: 5 }}>
+        <Button kind="primary" onPress={() => { setCount(100); }}>100 items</Button>
+        <Button kind="primary" onPress={() => { setCount(1000); }}>1K items</Button>
+        <Button kind="primary" onPress={() => { setCount(10_000); }}>10K items</Button>
+      </div>
+      <ListBox {...args}>{children}</ListBox>
+    </>
+  );
+};
+export const ListBoxWithManyOptions: Story = {
+  render: args => <ListBoxWithManyOptionsC {...args}/>,
 };

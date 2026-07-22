@@ -7,8 +7,8 @@ import { mergeProps } from '../../../util/reactUtil.ts';
 import { classNames as cx } from '../../../util/componentUtil.ts';
 import { useStore } from 'zustand';
 
+import { type ItemKey, useCollection, useCollectionItem } from '../../util/collections/CollectionStore.ts';
 // FIXME: we're using the ListBox stores here, but technically we're not using them for `role="listbox"` components.
-import { ItemKey, useCollection, useCollectionItem } from '../../util/collections/CollectionStore.ts';
 import {
   type SelectedState as SelectedSingleState,
   useListBox,
@@ -61,7 +61,7 @@ type MenuSelectOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 
   /** A unique identifier for this option. */
   itemKey: ItemKey,
 };
-const MenuSelectOption = React.memo(({ itemKey, ...propsRest }: MenuSelectOptionProps) => {
+const MenuSelectOption = ({ itemKey, ...propsRest }: MenuSelectOptionProps) => {
   const { selected, requestSelected, props: itemProps } = useListBoxItem({ itemKey });
   return (
     <MenuList.Option
@@ -74,7 +74,7 @@ const MenuSelectOption = React.memo(({ itemKey, ...propsRest }: MenuSelectOption
       selectionMode="single"
     />
   );
-});
+};
 
 type MenuSelectPropsBase = Omit<
   React.ComponentProps<typeof MenuList.Group>, 'ref' | 'label' | keyof MenuSelectStateProps

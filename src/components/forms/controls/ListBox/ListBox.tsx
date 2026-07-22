@@ -5,10 +5,8 @@
 import * as React from 'react';
 import { mergeProps } from '../../../../util/reactUtil.ts';
 import { classNames as cx } from '../../../../util/componentUtil.ts';
+
 import { useStore } from 'zustand';
-
-import { MenuList } from '../../../actions/MenuList/MenuList.tsx';
-
 import {
   type ItemKey,
   type SelectedState,
@@ -16,6 +14,8 @@ import {
   useListBox,
   useListBoxItem,
 } from '../../../util/collections/ListBoxStore.ts';
+
+import { MenuList } from '../../../actions/MenuList/MenuList.tsx';
 
 import cl from './ListBox.module.scss';
 
@@ -31,20 +31,6 @@ References:
 export { cl as ListBoxClassNames };
 export { type ItemKey, type SelectedState, useListBoxItem, useListBoxSelector };
 
-/* FIXME: this causes issues: type errors in wrapper types, Storybook inference will fail, ...
-export type SelectedStateProps = (
-  | {
-    selected?: undefined, // Uncontrolled
-    defaultSelected?: undefined | SelectedState,
-    onSelectedChange?: undefined | ((selected: SelectedState) => void),
-  }
-  | {
-    selected: SelectedState, // Controlled
-    defaultSelected?: undefined,
-    onSelectedChange: (selected: SelectedState) => void,
-  }
-);
-*/
 export type SelectedStateProps = {
   selected?: undefined | SelectedState,
   defaultSelected?: undefined | SelectedState,
@@ -63,21 +49,17 @@ export interface ListBoxRef extends React.ComponentRef<typeof MenuList> {
 
 
 //
-// ItemOption
+// ListBoxOption
 //
 
-type ItemOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionMode'> & {
+type ListBoxOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionMode'> & {
   /** A unique identifier for this option. */
   itemKey: ItemKey,
 };
 /**
  * A list box option (can be selected by the user).
  */
-export const ItemOption = React.memo(({ itemKey, ...propsRest }: ItemOptionProps) => {
-  // Note: use `memo()` so that children don't rerendered on state change, in the case that:
-  // - The consumer uses this component with controlled state
-  // - The `children` prop on consumer side is not memoized/static (usually the case)
-  
+export const ListBoxOption = ({ itemKey, ...propsRest }: ListBoxOptionProps) => {
   const { selected, requestSelected, props: itemProps } = useListBoxItem({ itemKey });
   return (
     <MenuList.Option
@@ -90,7 +72,7 @@ export const ItemOption = React.memo(({ itemKey, ...propsRest }: ItemOptionProps
       selectionMode="single"
     />
   );
-});
+};
 
 
 //
@@ -258,6 +240,6 @@ export const ListBox = Object.assign(
     Footer: MenuList.Footer,
     Group: MenuList.Group,
     Static: MenuList.Static,
-    Option: ItemOption,
+    Option: ListBoxOption,
   },
 );
