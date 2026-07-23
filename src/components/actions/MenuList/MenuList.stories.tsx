@@ -171,6 +171,14 @@ export const MenuListWithGroups: Story = {
   },
 };
 
+export const MenuListWithGroupEmpty: Story = {
+  args: {
+    children: (
+      <MenuList.Group label="Empty group" empty/>
+    ),
+  },
+};
+
 export const MenuListWithStaticItems: Story = {
   args: {
     role: 'none', // No menu items, so needs to have `role="none"`

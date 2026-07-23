@@ -132,13 +132,32 @@ export type MenuListGroupProps = Omit<MenuListSegmentProps, 'sticky'> & {
   
   /** Additional props to pass to the group heading element. */
   headingProps?: undefined | React.ComponentProps<typeof H6>,
+  
+  /** Whether the menu is considered empty (no items). When empty, the `placeholderEmpty` is shown. Default: `false`. */
+  empty?: undefined | boolean,
+  
+  /** A placeholder message to display when there are no items in the list. Set to `null` to prevent showing at all. */
+  placeholderEmpty?: undefined | React.ReactNode,
 };
 /**
  * A group element, can contain menu items and/or other groups.
  */
 export const MenuListGroup = (props: MenuListGroupProps) => {
-  const { unstyled, label, heading, stickyHeading = true, headingProps = {}, ...propsRest } = props;
+  const {
+    unstyled,
+    children,
+    label,
+    heading,
+    stickyHeading = true,
+    headingProps = {},
+    empty = false,
+    placeholderEmpty = 'No items available',
+    ...propsRest
+  } = props;
   
+  // FIXME: should deduplicate `MenuListGroup` and `MenuList`, which are mostly similar
+  
+  const { role } = useMenuListContext();
   const headingContent = heading ?? (label !== null ? label : null);
   
   const id = React.useId();
@@ -147,11 +166,22 @@ export const MenuListGroup = (props: MenuListGroupProps) => {
     'aria-labelledby': headingContent ? headingId : undefined,
   };
   
+  const isEmpty = empty || !children;
+  
   return (
     <MenuListSegment
       unstyled={unstyled}
       role="group"
-      {...mergeProps(ariaProps, propsRest)}
+      {...mergeProps(
+        ariaProps,
+        propsRest,
+        {
+          className: cx(
+            cl['bk-menu-list__group'],
+            { [cl['bk-menu-list__group--empty']]: isEmpty },
+          ),
+        },
+      )}
       sticky={false}
     >
       {headingContent !== null &&
@@ -170,7 +200,18 @@ export const MenuListGroup = (props: MenuListGroupProps) => {
         </H6>
       }
       
-      {propsRest.children}
+      {children}
+      
+      {/*
+        As per the "Required Owned Elements" rule, there must be at least one item. When the menu is empty, we will
+        add a disabled placeholder item.
+        https://www.w3.org/TR/wai-aria-1.1/#mustContain
+        https://github.com/dequelabs/axe-core/issues/383
+        https://github.com/dequelabs/axe-core/issues/2339
+      */}
+      {isEmpty && placeholderEmpty &&
+        <PlaceholderEmpty role={getDefaultOptionRole(role)}>{placeholderEmpty}</PlaceholderEmpty>
+      }
     </MenuListSegment>
   );
 };
