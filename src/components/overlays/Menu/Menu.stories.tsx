@@ -87,7 +87,42 @@ export const MenuWithSelectMulti: Story = {
           <Menu.Select.Option itemKey="single-2" label="Option 2"/>
           <Menu.Select.Option itemKey="single-3" label="Option 3"/>
         </Menu.Select>
-        <Menu.Action label="Action"/>
+        <Menu.Action {...propsAction} label="Action"/>
+        <Menu.SelectMulti itemKey="group-multi" label="Multiple-select group"
+          defaultSelected={new Set(['multi-2', 'multi-3'])}
+        >
+          <Menu.SelectMulti.Option itemKey="multi-1" label="Option 1"/>
+          <Menu.SelectMulti.Option itemKey="multi-2" label="Option 2"/>
+          <Menu.SelectMulti.Option itemKey="multi-3" label="Option 3"/>
+        </Menu.SelectMulti>
+      </>
+    ),
+  },
+};
+
+
+const MenuWithRefC = (props: React.ComponentProps<typeof Menu>) => {
+  const ref = React.useRef<React.ComponentRef<typeof Menu>>(null);
+  
+  React.useEffect(() => {
+    if (ref.current) {
+      ref.current._bkFocusLast();
+    }
+  }, []);
+  
+  return <Menu {...props} ref={ref}/>;
+};
+export const MenuWithRef: Story = {
+  render: args => <MenuWithRefC {...args}/>,
+  args: {
+    children: (
+      <>
+        <Menu.Select itemKey="group-single" label="Single-select group" defaultSelected="single-2">
+          <Menu.Select.Option itemKey="single-1" label="Option 1"/>
+          <Menu.Select.Option itemKey="single-2" label="Option 2"/>
+          <Menu.Select.Option itemKey="single-3" label="Option 3"/>
+        </Menu.Select>
+        <Menu.Action {...propsAction} label="Action"/>
         <Menu.SelectMulti itemKey="group-multi" label="Multiple-select group"
           defaultSelected={new Set(['multi-2', 'multi-3'])}
         >

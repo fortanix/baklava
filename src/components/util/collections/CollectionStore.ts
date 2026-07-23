@@ -19,11 +19,37 @@ export type RegistryItem = HTMLElement;
 // Utilities
 //
 
+const queryItemElements = <E extends HTMLElement = HTMLElement>(
+  collectionId: string,
+  containerEl: E,
+) => {
+  const elements = containerEl.querySelectorAll(`[data-bk-coll-parent=${JSON.stringify(collectionId)}]`);
+  return Array.from(elements) as Array<HTMLElement>;
+};
+
 /**
  * Programmatically focus the given item element. Optionally, specify the `containerEl` in order to scroll only within
  * the container, preventing scroll of the rest of the page.
  */
-export const focusItem = (itemEl: HTMLElement, containerEl?: undefined | null | HTMLElement) => {
+export const focusItem = (
+  itemEl: HTMLElement,
+  containerEl?: undefined | null | HTMLElement,
+  pos: 'first' | 'last' = 'first',
+) => {
+  // Take into account the scenario that the targeted item is itself a collection (e.g. `role="group"` in a menu)
+  const nestedCollId = itemEl.dataset.bkCollId;
+  if (typeof nestedCollId === 'string') {
+    const items = queryItemElements(nestedCollId, itemEl);
+    
+    const itemAtPos: null | HTMLElement = pos === 'first' ? (items[0] ?? null) : (items.at(-1) ?? null);
+    
+    if (itemAtPos) {
+      focusItem(itemAtPos, containerEl, pos);
+      return;
+    }
+    // Fall through to the normal logic below
+  }
+  
   // Note: we don't rely on `focus()` to scroll, because:
   // - It doesn't work if the element is already focused
   // - It will scroll even when not needed (i.e. when the element is already visible)
@@ -79,14 +105,6 @@ export const createCollectionSlice = <E extends HTMLElement = HTMLElement>(
   const registry = new Map<ItemKey, RegistryItem>();
   let registryHasChanged = true; // Dirty flag to track whether the registry has changed since it was last processed
   
-  const queryItemElements = () => {
-    const el = ref.current;
-    if (!(el instanceof HTMLElement)) { return []; }
-    
-    const elements = el.querySelectorAll(`[data-bk-coll-parent=${JSON.stringify(collectionId)}]`);
-    return Array.from(elements) as Array<HTMLElement>;
-  };
-  
   return {
     collectionId,
     
@@ -115,28 +133,28 @@ export const createCollectionSlice = <E extends HTMLElement = HTMLElement>(
     collectionItemByKey: itemKey => registry.get(itemKey) ?? null,
     collectionItemKeys: () => new Set(registry.keys()),
     collectionIsEmpty: () => registry.size === 0,
-    collectionItemElements: queryItemElements,
+    collectionItemElements: () => ref.current ? queryItemElements(collectionId, ref.current) : [],
     collectionFocusItem: itemKey => {
       const item = registry.get(itemKey) ?? null;
       if (item) {
-        focusItem(item, ref.current);
+        focusItem(item, ref.current, 'first');
       }
     },
     collectionFocusItemAt: pos => {
-      const itemElements = queryItemElements();
+      const itemElements = ref.current ? queryItemElements(collectionId, ref.current) : [];
       
       switch (pos) {
         case 'first': {
           const itemFirst = itemElements.at(0);
           if (itemFirst) {
-            focusItem(itemFirst, ref.current);
+            focusItem(itemFirst, ref.current, pos);
           }
           break;
         }
         case 'last': {
           const itemLast = itemElements.at(itemElements.length - 1);
           if (itemLast) {
-            focusItem(itemLast, ref.current);
+            focusItem(itemLast, ref.current, pos);
           }
           break;
         }

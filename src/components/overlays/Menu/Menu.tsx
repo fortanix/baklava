@@ -39,12 +39,12 @@ const subcomponentsGeneric = {
 
 
 interface MenuRef extends React.ComponentRef<typeof MenuList> {
-  _bkCollectionFocusFirst: () => void,
-  _bkCollectionFocusLast: () => void,
+  _bkFocusFirst: () => void,
+  _bkFocusLast: () => void,
 };
 interface MenuGroupRef extends React.ComponentRef<typeof MenuList.Group> {
-  _bkCollectionFocusFirst: () => void,
-  _bkCollectionFocusLast: () => void,
+  _bkFocusFirst: () => void,
+  _bkFocusLast: () => void,
 };
 
 
@@ -152,8 +152,8 @@ export const MenuSelect = Object.assign(
       if (!listBoxElement) { return null; }
       
       return Object.assign(listBoxElement, {
-        _bkCollectionFocusFirst: () => { collectionFocusItemAt('first'); },
-        _bkCollectionFocusLast: () => { collectionFocusItemAt('last'); },
+        _bkFocusFirst: () => { collectionFocusItemAt('first'); },
+        _bkFocusLast: () => { collectionFocusItemAt('last'); },
       });
     }, [collectionFocusItemAt]);
     
@@ -252,8 +252,8 @@ export const MenuSelectMulti = Object.assign(
       if (!listBoxElement) { return null; }
       
       return Object.assign(listBoxElement, {
-        _bkCollectionFocusFirst: () => { collectionFocusItemAt('first'); },
-        _bkCollectionFocusLast: () => { collectionFocusItemAt('last'); },
+        _bkFocusFirst: () => { collectionFocusItemAt('first'); },
+        _bkFocusLast: () => { collectionFocusItemAt('last'); },
       });
     }, [collectionFocusItemAt]);
     
@@ -312,8 +312,8 @@ export const Menu = Object.assign(
       if (!menuElement) { return null; }
       
       return Object.assign(menuElement, {
-        _bkCollectionFocusFirst: () => { collectionFocusItemAt('first'); },
-        _bkCollectionFocusLast: () => { collectionFocusItemAt('last'); },
+        _bkFocusFirst: () => { collectionFocusItemAt('first'); },
+        _bkFocusLast: () => { collectionFocusItemAt('last'); },
       });
     }, [collectionFocusItemAt]);
     

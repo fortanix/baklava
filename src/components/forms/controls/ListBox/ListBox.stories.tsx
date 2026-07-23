@@ -344,7 +344,6 @@ const ListBoxWithRefC = (props: React.ComponentProps<typeof ListBox>) => {
 };
 export const ListBoxWithRef: Story = {
   render: args => <ListBoxWithRefC {...args}/>,
-  args: {},
 };
 
 const ListBoxWithManyOptionsC = (args: ListBoxArgs) => {
