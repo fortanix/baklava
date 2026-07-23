@@ -40,6 +40,17 @@ interface MenuRef extends React.ComponentRef<typeof MenuList> {
   _bkFocusLast: () => void,
 };
 
+type MenuSelectStateProps = {
+  selected?: undefined | SelectedSingleState,
+  defaultSelected?: undefined | SelectedSingleState,
+  onSelectedChange?: undefined | ((selected: SelectedSingleState) => void),
+};
+type MenuSelectMultiStateProps = {
+  selected?: undefined | SelectedMultiState,
+  defaultSelected?: undefined | SelectedMultiState,
+  onSelectedChange?: undefined | ((selected: SelectedMultiState) => void),
+};
+
 
 //
 // Menu actions
@@ -54,7 +65,7 @@ export const MenuAction = ({ itemKey, ...propsRest }: MenuActionProps) => {
   const { props: itemProps } = useCollectionItem({ itemKey });
   return (
     <MenuList.Action
-      {...mergeProps(itemProps, propsRest, { className: cx({ [cl['bk-menu__item']]: !propsRest.unstyled }) })}
+      {...mergeProps(itemProps, propsRest, { className: cl['bk-menu__item'] })}
     />
   );
 };
@@ -68,7 +79,7 @@ export const MenuLink = ({ itemKey, ...propsRest }: MenuLinkProps) => {
   const { props: itemProps } = useCollectionItem({ itemKey });
   return (
     <MenuList.Link
-      {...mergeProps(itemProps, propsRest, { className: cx({ [cl['bk-menu__item']]: !propsRest.unstyled }) })}
+      {...mergeProps(itemProps, propsRest, { className: cl['bk-menu__item'] })}
     />
   );
 };
@@ -100,7 +111,7 @@ export const MenuGroup = ({ itemKey, ...propsRest }: MenuGroupProps) => {
       <MenuList.Group
         {...mergeProps(
           itemProps,
-          { className: cx({ [cl['bk-menu__group']]: !propsRest.unstyled }) },
+          { className: cx(cl['bk-menu__item'], { [cl['bk-menu__group']]: !propsRest.unstyled }) },
           propsRest,
         )}
         empty={isEmpty}
@@ -111,49 +122,46 @@ export const MenuGroup = ({ itemKey, ...propsRest }: MenuGroupProps) => {
 
 
 //
-// MenuSelect
+// MenuGroupSelect
 //
 
-type MenuSelectStateProps = {
-  selected?: undefined | SelectedSingleState,
-  defaultSelected?: undefined | SelectedSingleState,
-  onSelectedChange?: undefined | ((selected: SelectedSingleState) => void),
-};
 type MenuSelectOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionMode'> & {
   /** A unique identifier for this option. */
   itemKey: ItemKey,
 };
 const MenuSelectOption = ({ itemKey, ...propsRest }: MenuSelectOptionProps) => {
+  const { props: collectionProps } = useCollectionItem({ itemKey });
   const { selected, requestSelected, props: itemProps } = useListBoxItem({ itemKey });
   return (
     <MenuList.Option
       {...mergeProps(
+        collectionProps,
         itemProps,
         { selected, onRequestSelected: requestSelected },
         propsRest,
-        { className: cx({ [cl['bk-menu-select__item']]: !propsRest.unstyled }) },
+        { className: cl['bk-menu__item'] },
       )}
       selectionMode="single"
     />
   );
 };
 
-type MenuSelectPropsBase = Omit<React.ComponentProps<typeof MenuList.Group>, keyof MenuSelectStateProps>;
-type MenuSelectProps = MenuSelectPropsBase & MenuSelectStateProps & {
+type MenuGroupSelectPropsBase = Omit<React.ComponentProps<typeof MenuList.Group>, keyof MenuSelectStateProps>;
+type MenuGroupSelectProps = MenuGroupSelectPropsBase & MenuSelectStateProps & {
   /** A unique identifier for this option. */
   itemKey: ItemKey,
   
-  /** Render the given item key as a string label. If not given, will use the item element's text value. */
-  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
+  ///** Render the given item key as a string label. If not given, will use the item element's text value. */
+  //formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
 };
-export const MenuSelect = Object.assign(
-  (props: MenuSelectProps) => {
+export const MenuGroupSelect = Object.assign(
+  (props: MenuGroupSelectProps) => {
     const {
       itemKey,
       selected,
       defaultSelected,
       onSelectedChange,
-      formatItemLabel,
+      //formatItemLabel,
       ...propsRest
     } = props;
     
@@ -170,13 +178,11 @@ export const MenuSelect = Object.assign(
     return (
       <listBoxStore.Provider value={listBoxStore.context}>
         <MenuList.Group
-          //heading="Test" // FIXME
-          //role="group" // FIXME
           //aria-multiselectable="false" // Note: not applicable to `role="menu"`
           {...mergeProps(
             itemProps,
             listBoxStore.props,
-            { className: cx({ [cl['bk-menu-select']]: !propsRest.unstyled }) },
+            { className: cx(cl['bk-menu__item'], { [cl['bk-menu__group-select']]: !propsRest.unstyled }) },
             propsRest,
           )}
           empty={isEmpty}
@@ -193,51 +199,49 @@ export const MenuSelect = Object.assign(
   },
 );
 
+
 //
-// MenuSelectMulti
+// MenuGroupSelectMulti
 //
 
-type MenuSelectMultiStateProps = {
-  selected?: undefined | SelectedMultiState,
-  defaultSelected?: undefined | SelectedMultiState,
-  onSelectedChange?: undefined | ((selected: SelectedMultiState) => void),
-};
 type MenuSelectMultiOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionMode'> & {
   /** A unique identifier for this option. */
   itemKey: ItemKey,
 };
 const MenuSelectMultiOption = React.memo(({ itemKey, ...propsRest }: MenuSelectMultiOptionProps) => {
+  const { props: collectionProps } = useCollectionItem({ itemKey });
   const { selected, requestSelected, props: itemProps } = useListBoxMultiItem({ itemKey });
   return (
     <MenuList.Option
       {...mergeProps(
+        collectionProps,
         itemProps,
         { selected, onRequestSelected: requestSelected },
         propsRest,
-        { className: cx({ [cl['bk-menu-select-multi__item']]: !propsRest.unstyled }) },
+        { className: cl['bk-menu__item'] },
       )}
       selectionMode="multiple"
     />
   );
 });
 
-type MenuSelectMultiPropsBase = Omit<React.ComponentProps<typeof MenuList>, keyof MenuSelectMultiStateProps>;
-export type MenuSelectMultiProps = MenuSelectMultiPropsBase & MenuSelectMultiStateProps & {
+type MenuGroupSelectMultiPropsBase = Omit<React.ComponentProps<typeof MenuList>, keyof MenuSelectMultiStateProps>;
+export type MenuGroupSelectMultiProps = MenuGroupSelectMultiPropsBase & MenuSelectMultiStateProps & {
   /** A unique identifier for this group. */
   itemKey: ItemKey,
   
   ///** Render the given item key as a string label. If not given, will use the item element's text value. */
   //formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
 };
-export const MenuSelectMulti = Object.assign(
-  (props: MenuSelectMultiProps) => {
+export const MenuGroupSelectMulti = Object.assign(
+  (props: MenuGroupSelectMultiProps) => {
     const {
       ref,
       itemKey,
       selected,
       defaultSelected,
       onSelectedChange,
-      // formatItemLabel,
+      //formatItemLabel,
       ...propsRest
     } = props;
     
@@ -258,7 +262,7 @@ export const MenuSelectMulti = Object.assign(
           {...mergeProps(
             itemProps,
             listBoxStore.props,
-            { className: cx({ [cl['bk-menu-select-multi']]: !propsRest.unstyled }) },
+            { className: cx(cl['bk-menu__item'], { [cl['bk-menu__group-select-multi']]: !propsRest.unstyled }) },
             propsRest,
           )}
           empty={isEmpty}
@@ -330,7 +334,101 @@ export const Menu = Object.assign(
     Action: MenuAction,
     Link: MenuLink,
     Group: MenuGroup,
-    Select: MenuSelect,
-    SelectMulti: MenuSelectMulti,
+    GroupSelect: MenuGroupSelect,
+    GroupSelectMulti: MenuGroupSelectMulti,
+  },
+);
+
+
+
+//
+// Specialized single/multi-select menu components (top-level)
+//
+
+type MenuSelectPropsBase = Omit<React.ComponentProps<typeof Menu>, keyof MenuSelectStateProps>;
+type MenuSelectProps = MenuSelectPropsBase & MenuSelectStateProps & {
+  ///** Render the given item key as a string label. If not given, will use the item element's text value. */
+  //formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
+};
+export const MenuSelect = Object.assign(
+  (props: MenuSelectProps) => {
+    const {
+      selected,
+      defaultSelected,
+      onSelectedChange,
+      //formatItemLabel,
+      ...propsRest
+    } = props;
+    
+    const { store, ...listBoxStore } = useListBox<React.ComponentRef<typeof Menu>>({
+      state: selected,
+      defaultState: defaultSelected,
+      defaultStateFallback: null,
+      onStateChange: onSelectedChange,
+    });
+    
+    return (
+      <listBoxStore.Provider value={listBoxStore.context}>
+        <Menu
+          //aria-multiselectable="false" // Note: not applicable to `role="menu"`
+          {...mergeProps(
+            listBoxStore.props,
+            { className: cx({ [cl['bk-menu-select']]: !propsRest.unstyled }) },
+            propsRest,
+          )}
+        />
+      </listBoxStore.Provider>
+    );
+  },
+  {
+    ...subcomponentsGeneric,
+    Action: MenuAction,
+    Link: MenuLink,
+    Group: MenuGroup,
+    Option: MenuSelectOption,
+  },
+);
+
+type MenuSelectMultiPropsBase = Omit<React.ComponentProps<typeof Menu>, keyof MenuSelectMultiStateProps>;
+type MenuSelectMultiProps = MenuSelectMultiPropsBase & MenuSelectMultiStateProps & {
+  ///** Render the given item key as a string label. If not given, will use the item element's text value. */
+  //formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
+};
+export const MenuSelectMulti = Object.assign(
+  (props: MenuSelectMultiProps) => {
+    const {
+      selected,
+      defaultSelected,
+      onSelectedChange,
+      //formatItemLabel,
+      ...propsRest
+    } = props;
+    
+    const { store, ...listBoxStore } = useListBoxMulti<React.ComponentRef<typeof Menu>>({
+      state: selected,
+      defaultState: defaultSelected,
+      defaultStateFallback: new Set(),
+      onStateChange: onSelectedChange,
+    });
+    
+    return (
+      <listBoxStore.Provider value={listBoxStore.context}>
+        <Menu
+          //aria-multiselectable="false" // Note: not applicable to `role="menu"`
+          {...mergeProps(
+            listBoxStore.props,
+            { className: cx({ [cl['bk-menu-select-multi']]: !propsRest.unstyled }) },
+            propsRest,
+          )}
+        />
+      </listBoxStore.Provider>
+    );
+  },
+  {
+    ...subcomponentsGeneric,
+    Action: MenuAction,
+    Link: MenuLink,
+    Group: MenuGroup,
+    Option: MenuSelectMultiOption,
   },
 );

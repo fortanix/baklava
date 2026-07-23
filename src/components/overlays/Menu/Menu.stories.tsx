@@ -96,11 +96,11 @@ export const MenuActionsAndLinks: Story = {
 export const MenuWithSelect: Story = {
   args: {
     children: (
-      <Menu.Select itemKey="group-single" label="Single-select group" defaultSelected="Apricot">
+      <Menu.GroupSelect itemKey="group-single" label="Single-select group" defaultSelected="Apricot">
         {fruits.map(fruit =>
-          <Menu.Select.Option key={fruit} itemKey={fruit} label={fruit}/>
+          <Menu.GroupSelect.Option key={fruit} itemKey={fruit} label={fruit}/>
         )}
-      </Menu.Select>
+      </Menu.GroupSelect>
     ),
   },
 };
@@ -109,19 +109,19 @@ export const MenuWithSelectMulti: Story = {
   args: {
     children: (
       <>
-        <Menu.Select itemKey="group-single" label="Single-select group" defaultSelected="single-2">
-          <Menu.Select.Option itemKey="single-1" label="Option 1"/>
-          <Menu.Select.Option itemKey="single-2" label="Option 2"/>
-          <Menu.Select.Option itemKey="single-3" label="Option 3"/>
-        </Menu.Select>
+        <Menu.GroupSelect itemKey="group-single" label="Single-select group" defaultSelected="single-2">
+          <Menu.GroupSelect.Option itemKey="single-1" label="Option 1"/>
+          <Menu.GroupSelect.Option itemKey="single-2" label="Option 2"/>
+          <Menu.GroupSelect.Option itemKey="single-3" label="Option 3"/>
+        </Menu.GroupSelect>
         <Menu.Action {...propsAction} itemKey="action-1" label="Action"/>
-        <Menu.SelectMulti itemKey="group-multi" label="Multiple-select group"
+        <Menu.GroupSelectMulti itemKey="group-multi" label="Multiple-select group"
           defaultSelected={new Set(['multi-2', 'multi-3'])}
         >
-          <Menu.SelectMulti.Option itemKey="multi-1" label="Option 1"/>
-          <Menu.SelectMulti.Option itemKey="multi-2" label="Option 2"/>
-          <Menu.SelectMulti.Option itemKey="multi-3" label="Option 3"/>
-        </Menu.SelectMulti>
+          <Menu.GroupSelectMulti.Option itemKey="multi-1" label="Option 1"/>
+          <Menu.GroupSelectMulti.Option itemKey="multi-2" label="Option 2"/>
+          <Menu.GroupSelectMulti.Option itemKey="multi-3" label="Option 3"/>
+        </Menu.GroupSelectMulti>
       </>
     ),
   },
@@ -144,19 +144,19 @@ export const MenuWithRef: Story = {
   args: {
     children: (
       <>
-        <Menu.Select itemKey="group-single" label="Single-select group" defaultSelected="single-2">
-          <Menu.Select.Option itemKey="single-1" label="Option 1"/>
-          <Menu.Select.Option itemKey="single-2" label="Option 2"/>
-          <Menu.Select.Option itemKey="single-3" label="Option 3"/>
-        </Menu.Select>
+        <Menu.GroupSelect itemKey="group-single" label="Single-select group" defaultSelected="single-2">
+          <Menu.GroupSelect.Option itemKey="single-1" label="Option 1"/>
+          <Menu.GroupSelect.Option itemKey="single-2" label="Option 2"/>
+          <Menu.GroupSelect.Option itemKey="single-3" label="Option 3"/>
+        </Menu.GroupSelect>
         <Menu.Action {...propsAction} itemKey="action-2" label="Action"/>
-        <Menu.SelectMulti itemKey="group-multi" label="Multi-select group"
+        <Menu.GroupSelectMulti itemKey="group-multi" label="Multi-select group"
           defaultSelected={new Set(['multi-2', 'multi-3'])}
         >
-          <Menu.SelectMulti.Option itemKey="multi-1" label="Option 1"/>
-          <Menu.SelectMulti.Option itemKey="multi-2" label="Option 2"/>
-          <Menu.SelectMulti.Option itemKey="multi-3" label="Option 3"/>
-        </Menu.SelectMulti>
+          <Menu.GroupSelectMulti.Option itemKey="multi-1" label="Option 1"/>
+          <Menu.GroupSelectMulti.Option itemKey="multi-2" label="Option 2"/>
+          <Menu.GroupSelectMulti.Option itemKey="multi-3" label="Option 3"/>
+        </Menu.GroupSelectMulti>
       </>
     ),
   },

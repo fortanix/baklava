@@ -5,6 +5,15 @@
 @use '../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
+  .bk-menu {
+    @include bk.component-base(bk-menu);
+    
+    .bk-menu__item { --keep: ; }
+    .bk-menu__group { --keep: ; }
+    .bk-menu__group-select { --keep: ; }
+    .bk-menu__group-select-multi { --keep: ; }
+  }
+  
   .bk-menu-select {
     @include bk.component-base(bk-menu-select);
     
@@ -15,12 +24,5 @@
     @include bk.component-base(bk-menu-select-multi);
     
     .bk-menu-select-multi__item { --keep: ; }
-  }
-  
-  .bk-menu {
-    @include bk.component-base(bk-menu);
-    
-    .bk-menu__item { --keep: ; }
-    .bk-menu__group { --keep: ; }
   }
 }
