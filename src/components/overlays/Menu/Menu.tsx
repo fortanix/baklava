@@ -31,18 +31,11 @@ export type { ItemKey, SelectedSingleState, SelectedMultiState };
 const subcomponentsGeneric = {
   Segment: MenuList.Segment,
   Footer: MenuList.Footer,
-  Group: MenuList.Group,
   Static: MenuList.Static,
-  Action: MenuList.Action,
-  Link: MenuList.Link,
 } as const;
 
 
 interface MenuRef extends React.ComponentRef<typeof MenuList> {
-  _bkFocusFirst: () => void,
-  _bkFocusLast: () => void,
-};
-interface MenuGroupRef extends React.ComponentRef<typeof MenuList.Group> {
   _bkFocusFirst: () => void,
   _bkFocusLast: () => void,
 };
@@ -82,6 +75,36 @@ export const MenuLink = ({ itemKey, ...propsRest }: MenuLinkProps) => {
 
 
 //
+// MenuGroup
+//
+
+export type MenuGroupProps = React.ComponentProps<typeof MenuList.Group> & {
+  /** A unique identifier for this group. */
+  itemKey: ItemKey,
+};
+export const MenuGroup = ({ itemKey, ...propsRest }: MenuGroupProps) => {
+  const { props: itemProps } = useCollectionItem({ itemKey });
+  
+  // Groups create their own nested collections
+  const { store, ...collectionStore } = useCollection<React.ComponentRef<typeof MenuList>>();
+  const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
+  
+  return (
+    <collectionStore.Provider value={collectionStore.context}>
+      <MenuList.Group
+        {...mergeProps(
+          itemProps,
+          { className: cx({ [cl['bk-menu__group']]: !propsRest.unstyled }) },
+          propsRest,
+        )}
+        empty={isEmpty}
+      />
+    </collectionStore.Provider>
+  );
+};
+
+
+//
 // MenuSelect
 //
 
@@ -109,13 +132,8 @@ const MenuSelectOption = ({ itemKey, ...propsRest }: MenuSelectOptionProps) => {
   );
 };
 
-type MenuSelectPropsBase = Omit<
-  React.ComponentProps<typeof MenuList.Group>, 'ref' | 'label' | keyof MenuSelectStateProps
->;
+type MenuSelectPropsBase = Omit<React.ComponentProps<typeof MenuList.Group>, keyof MenuSelectStateProps>;
 type MenuSelectProps = MenuSelectPropsBase & MenuSelectStateProps & {
-  /** A React ref to pass to the menu element. */
-  ref?: undefined | React.Ref<MenuGroupRef>,
-  
   /** A unique identifier for this option. */
   itemKey: ItemKey,
   
@@ -125,7 +143,6 @@ type MenuSelectProps = MenuSelectPropsBase & MenuSelectStateProps & {
 export const MenuSelect = Object.assign(
   (props: MenuSelectProps) => {
     const {
-      ref,
       itemKey,
       selected,
       defaultSelected,
@@ -144,19 +161,6 @@ export const MenuSelect = Object.assign(
     });
     const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
     
-    const menuRef = React.useRef<React.ComponentRef<typeof MenuList>>(null);
-    const collectionFocusItemAt = useStore(store, state => state.collectionFocusItemAt);
-    // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
-    React.useImperativeHandle<null | MenuGroupRef, null | MenuGroupRef>(ref, () => {
-      const listBoxElement = menuRef.current;
-      if (!listBoxElement) { return null; }
-      
-      return Object.assign(listBoxElement, {
-        _bkFocusFirst: () => { collectionFocusItemAt('first'); },
-        _bkFocusLast: () => { collectionFocusItemAt('last'); },
-      });
-    }, [collectionFocusItemAt]);
-    
     return (
       <listBoxStore.Provider value={listBoxStore.context}>
         <MenuList.Group
@@ -164,7 +168,6 @@ export const MenuSelect = Object.assign(
           //role="group" // FIXME
           //aria-multiselectable="false" // Note: not applicable to `role="menu"`
           {...mergeProps(
-            { ref: menuRef },
             itemProps,
             listBoxStore.props,
             { className: cx({ [cl['bk-menu-select']]: !propsRest.unstyled }) },
@@ -177,6 +180,9 @@ export const MenuSelect = Object.assign(
   },
   {
     ...subcomponentsGeneric,
+    Action: MenuAction,
+    Link: MenuLink,
+    Group: MenuGroup,
     Option: MenuSelectOption,
   },
 );
@@ -209,18 +215,13 @@ const MenuSelectMultiOption = React.memo(({ itemKey, ...propsRest }: MenuSelectM
   );
 });
 
-type MenuSelectMultiPropsBase = Omit<
-  React.ComponentProps<typeof MenuList>, 'ref' | 'label' | keyof MenuSelectMultiStateProps
->;
+type MenuSelectMultiPropsBase = Omit<React.ComponentProps<typeof MenuList>, keyof MenuSelectMultiStateProps>;
 export type MenuSelectMultiProps = MenuSelectMultiPropsBase & MenuSelectMultiStateProps & {
-  /** A React ref to pass to the menu element. */
-  ref?: undefined | React.Ref<MenuGroupRef>,
-  
   /** A unique identifier for this group. */
   itemKey: ItemKey,
   
-  /** Render the given item key as a string label. If not given, will use the item element's text value. */
-  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
+  ///** Render the given item key as a string label. If not given, will use the item element's text value. */
+  //formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
 };
 export const MenuSelectMulti = Object.assign(
   (props: MenuSelectMultiProps) => {
@@ -230,7 +231,7 @@ export const MenuSelectMulti = Object.assign(
       selected,
       defaultSelected,
       onSelectedChange,
-      formatItemLabel,
+      // formatItemLabel,
       ...propsRest
     } = props;
     
@@ -244,39 +245,27 @@ export const MenuSelectMulti = Object.assign(
     });
     const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
     
-    const menuRef = React.useRef<React.ComponentRef<typeof MenuList>>(null);
-    const collectionFocusItemAt = useStore(store, state => state.collectionFocusItemAt);
-    // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
-    React.useImperativeHandle<null | MenuGroupRef, null | MenuGroupRef>(ref, () => {
-      const listBoxElement = menuRef.current;
-      if (!listBoxElement) { return null; }
-      
-      return Object.assign(listBoxElement, {
-        _bkFocusFirst: () => { collectionFocusItemAt('first'); },
-        _bkFocusLast: () => { collectionFocusItemAt('last'); },
-      });
-    }, [collectionFocusItemAt]);
-    
     return (
       <listBoxStore.Provider value={listBoxStore.context}>
         <MenuList.Group
           //embedded
-          //role="group"
           //aria-multiselectable="true" // Note: not applicable to `role="menu"`
           {...mergeProps(
-            { ref: menuRef },
             itemProps,
             listBoxStore.props,
             { className: cx({ [cl['bk-menu-select-multi']]: !propsRest.unstyled }) },
             propsRest,
           )}
-          //empty={isEmpty} // FIXME: add this for MenuList.Group?
+          empty={isEmpty}
         />
       </listBoxStore.Provider>
     );
   },
   {
     ...subcomponentsGeneric,
+    Action: MenuAction,
+    Link: MenuLink,
+    Group: MenuGroup,
     Option: MenuSelectMultiOption,
   },
 );
@@ -301,8 +290,7 @@ export type MenuProps = Omit<React.ComponentProps<typeof MenuList>, 'ref'> & {
 export const Menu = Object.assign(
   ({ ref, ...propsRest }: MenuProps) => {
     const { store, ...collectionStore } = useCollection<React.ComponentRef<typeof MenuList>>();
-    
-    //const isEmpty = useStore(store, state => state.collectionIsEmpty());
+    const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
     
     const menuRef = React.useRef<React.ComponentRef<typeof MenuList>>(null);
     const collectionFocusItemAt = useStore(store, state => state.collectionFocusItemAt);
@@ -327,15 +315,16 @@ export const Menu = Object.assign(
             { className: cx({ [cl['bk-menu']]: !propsRest.unstyled }) },
             propsRest,
           )}
-          // Note: this won't work, since we don't know whether there are any groups in this list. Leave the logic to
-          // the default MenuList: empty is true if consumer explicitly sets it, or `children` is undefined.
-          //empty={isEmpty}
+          empty={isEmpty}
         />
       </collectionStore.Provider>
     );
   },
   {
     ...subcomponentsGeneric,
+    Action: MenuAction,
+    Link: MenuLink,
+    Group: MenuGroup,
     Select: MenuSelect,
     SelectMulti: MenuSelectMulti,
   },

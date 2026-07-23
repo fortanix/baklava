@@ -19,5 +19,8 @@
   
   .bk-menu {
     @include bk.component-base(bk-menu);
+    
+    .bk-menu__item { --keep: ; }
+    .bk-menu__group { --keep: ; }
   }
 }

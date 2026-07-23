@@ -38,9 +38,9 @@ export const MenuStandard: Story = {
   args: {
     children: (
       <>
-        <Menu.Action {...propsAction} label="Action 1"/>
-        <Menu.Action {...propsAction} label="Action 2"/>
-        <Menu.Action {...propsAction} label="Action 3"/>
+        <Menu.Action {...propsAction} itemKey="action-1" label="Action 1"/>
+        <Menu.Action {...propsAction} itemKey="action-2" label="Action 2"/>
+        <Menu.Action {...propsAction} itemKey="action-3"label="Action 3"/>
       </>
     ),
   },
@@ -49,7 +49,34 @@ export const MenuStandard: Story = {
 export const MenuEmpty: Story = {
   args: {
     children: null,
-    empty: true, // Must be determined manually by the consumer
+  },
+};
+
+export const MenuWithGroups: Story = {
+  args: {
+    children: (
+      <>
+        <Menu.Group itemKey="group-actions" label="Actions">
+          <Menu.Action {...propsAction} itemKey="action-1" label="Action 1"/>
+          <Menu.Action {...propsAction} itemKey="action-2" label="Action 2"/>
+        </Menu.Group>
+        <Menu.Group itemKey="group-links" label="Links">
+          <Menu.Link {...propsLink} itemKey="link-1" label="Link 1"/>
+          <Menu.Link {...propsLink} itemKey="link-2" label="Link 2"/>
+        </Menu.Group>
+      </>
+    ),
+  },
+};
+
+export const MenuWithGroupsEmpty: Story = {
+  args: {
+    children: (
+      <>
+        <Menu.Group itemKey="group-actions" label="An empty group"/>
+        <Menu.Group itemKey="group-links" label="Another empty group"/>
+      </>
+    ),
   },
 };
 
@@ -57,10 +84,10 @@ export const MenuActionsAndLinks: Story = {
   args: {
     children: (
       <>
-        <Menu.Action {...propsAction} label="Action 1"/>
-        <Menu.Action {...propsAction} label="Action 2"/>
-        <Menu.Link {...propsLink} label="Link 1"/>
-        <Menu.Link {...propsLink} label="Link 2"/>
+        <Menu.Action {...propsAction} itemKey="action-1" label="Action 1"/>
+        <Menu.Action {...propsAction} itemKey="action-2" label="Action 2"/>
+        <Menu.Link {...propsLink} itemKey="link-1" label="Link 1"/>
+        <Menu.Link {...propsLink} itemKey="link-2" label="Link 2"/>
       </>
     ),
   },
@@ -87,7 +114,7 @@ export const MenuWithSelectMulti: Story = {
           <Menu.Select.Option itemKey="single-2" label="Option 2"/>
           <Menu.Select.Option itemKey="single-3" label="Option 3"/>
         </Menu.Select>
-        <Menu.Action {...propsAction} label="Action"/>
+        <Menu.Action {...propsAction} itemKey="action-1" label="Action"/>
         <Menu.SelectMulti itemKey="group-multi" label="Multiple-select group"
           defaultSelected={new Set(['multi-2', 'multi-3'])}
         >
@@ -122,7 +149,7 @@ export const MenuWithRef: Story = {
           <Menu.Select.Option itemKey="single-2" label="Option 2"/>
           <Menu.Select.Option itemKey="single-3" label="Option 3"/>
         </Menu.Select>
-        <Menu.Action {...propsAction} label="Action"/>
+        <Menu.Action {...propsAction} itemKey="action-2" label="Action"/>
         <Menu.SelectMulti itemKey="group-multi" label="Multiple-select group"
           defaultSelected={new Set(['multi-2', 'multi-3'])}
         >
