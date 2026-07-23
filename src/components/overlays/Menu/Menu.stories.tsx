@@ -150,7 +150,7 @@ export const MenuWithRef: Story = {
           <Menu.Select.Option itemKey="single-3" label="Option 3"/>
         </Menu.Select>
         <Menu.Action {...propsAction} itemKey="action-2" label="Action"/>
-        <Menu.SelectMulti itemKey="group-multi" label="Multiple-select group"
+        <Menu.SelectMulti itemKey="group-multi" label="Multi-select group"
           defaultSelected={new Set(['multi-2', 'multi-3'])}
         >
           <Menu.SelectMulti.Option itemKey="multi-1" label="Option 1"/>

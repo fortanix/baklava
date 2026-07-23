@@ -131,6 +131,18 @@ export const ListBoxWithGroups: Story = {
   },
 };
 
+export const ListBoxWithGroupsEmpty: Story = {
+  args: {
+    empty: false, // NOTE: the consumer must set this manually in this case
+    children: (
+      <>
+        <ListBox.Group label="An empty group"/>
+        <ListBox.Group label="Another empty group"/>
+      </>
+    ),
+  },
+};
+
 /**
  * Note: static content should be presentational only. In HTML/ARIA, a listbox cannot contain interactive elements
  * other than options.

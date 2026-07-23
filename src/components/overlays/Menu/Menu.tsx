@@ -89,6 +89,12 @@ export const MenuGroup = ({ itemKey, ...propsRest }: MenuGroupProps) => {
   const { store, ...collectionStore } = useCollection<React.ComponentRef<typeof MenuList>>();
   const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
   
+  // Note: groups for differently for menu than for listbox. In a listbox, the groups are just semantic groupings
+  // but they don't affect state. For example, a single-select listbox will always have one selected item at the top
+  // level, even if there are groups. In menu, each group has its own state. If there are two menu groups, and each
+  // has items with role `menuitemradio`, then each group has its own separate selected item.
+  // In `Menu`, we also model it so that we have one collection store per `Group`.
+  
   return (
     <collectionStore.Provider value={collectionStore.context}>
       <MenuList.Group
@@ -248,7 +254,6 @@ export const MenuSelectMulti = Object.assign(
     return (
       <listBoxStore.Provider value={listBoxStore.context}>
         <MenuList.Group
-          //embedded
           //aria-multiselectable="true" // Note: not applicable to `role="menu"`
           {...mergeProps(
             itemProps,

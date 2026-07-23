@@ -137,6 +137,7 @@ export const ListBox = Object.assign(
       children,
       unstyled,
       status,
+      empty,
       selected,
       defaultSelected,
       onSelectedChange,
@@ -163,7 +164,8 @@ export const ListBox = Object.assign(
       defaultStateFallback: null,
       onStateChange: onSelectedChange ?? onSelect,
     });
-    const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
+    const collEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
+    const isEmpty = typeof empty === 'boolean' ? empty : collEmpty;
     
     const listBoxRef = React.useRef<React.ComponentRef<typeof MenuList>>(null);
     const collectionFocusItemAt = useStore(store, state => state.collectionFocusItemAt);

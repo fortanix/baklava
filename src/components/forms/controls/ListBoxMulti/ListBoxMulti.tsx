@@ -156,6 +156,7 @@ export const ListBoxMulti = Object.assign(
       children,
       unstyled,
       status,
+      empty,
       selected,
       defaultSelected,
       onSelectedChange,
@@ -182,8 +183,9 @@ export const ListBoxMulti = Object.assign(
       defaultStateFallback: new Set(),
       onStateChange: onSelectedChange ?? onSelect,
     });
-    const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
-    
+    const collEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
+    const isEmpty = typeof empty === 'boolean' ? empty : collEmpty;
+        
     const listBoxRef = React.useRef<React.ComponentRef<typeof MenuList>>(null);
     const collectionFocusItemAt = useStore(store, state => state.collectionFocusItemAt);
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
