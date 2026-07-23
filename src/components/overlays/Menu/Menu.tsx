@@ -5,8 +5,8 @@
 import * as React from 'react';
 import { mergeProps } from '../../../util/reactUtil.ts';
 import { classNames as cx } from '../../../util/componentUtil.ts';
-import { useStore } from 'zustand';
 
+import { useStore } from 'zustand';
 import { type ItemKey, useCollection, useCollectionItem } from '../../util/collections/CollectionStore.ts';
 // FIXME: we're using the ListBox stores here, but technically we're not using them for `role="listbox"` components.
 import {
@@ -45,6 +45,39 @@ interface MenuRef extends React.ComponentRef<typeof MenuList> {
 interface MenuGroupRef extends React.ComponentRef<typeof MenuList.Group> {
   _bkCollectionFocusFirst: () => void,
   _bkCollectionFocusLast: () => void,
+};
+
+
+//
+// Menu actions
+//
+
+type MenuActionProps = React.ComponentProps<typeof MenuList.Action> & {
+  /** A unique identifier for this action. */
+  itemKey: ItemKey,
+};
+/** A menu item that triggers some arbitrary action. */
+export const MenuAction = ({ itemKey, ...propsRest }: MenuActionProps) => {
+  const { props: itemProps } = useCollectionItem({ itemKey });
+  return (
+    <MenuList.Action
+      {...mergeProps(itemProps, propsRest, { className: cx({ [cl['bk-menu__item']]: !propsRest.unstyled }) })}
+    />
+  );
+};
+
+type MenuLinkProps = React.ComponentProps<typeof MenuList.Link> & {
+  /** A unique identifier for this link. */
+  itemKey: ItemKey,
+};
+/** A menu item that triggers a navigation. */
+export const MenuLink = ({ itemKey, ...propsRest }: MenuLinkProps) => {
+  const { props: itemProps } = useCollectionItem({ itemKey });
+  return (
+    <MenuList.Link
+      {...mergeProps(itemProps, propsRest, { className: cx({ [cl['bk-menu__item']]: !propsRest.unstyled }) })}
+    />
+  );
 };
 
 
@@ -179,7 +212,7 @@ const MenuSelectMultiOption = React.memo(({ itemKey, ...propsRest }: MenuSelectM
 type MenuSelectMultiPropsBase = Omit<
   React.ComponentProps<typeof MenuList>, 'ref' | 'label' | keyof MenuSelectMultiStateProps
 >;
-type MenuSelectMultiProps = MenuSelectMultiPropsBase & MenuSelectMultiStateProps & {
+export type MenuSelectMultiProps = MenuSelectMultiPropsBase & MenuSelectMultiStateProps & {
   /** A React ref to pass to the menu element. */
   ref?: undefined | React.Ref<MenuGroupRef>,
   
@@ -237,7 +270,7 @@ export const MenuSelectMulti = Object.assign(
             { className: cx({ [cl['bk-menu-select-multi']]: !propsRest.unstyled }) },
             propsRest,
           )}
-          empty={isEmpty}
+          //empty={isEmpty} // FIXME: add this for MenuList.Group?
         />
       </listBoxStore.Provider>
     );
@@ -257,13 +290,19 @@ export type MenuProps = Omit<React.ComponentProps<typeof MenuList>, 'ref'> & {
   /** A React ref to pass to the menu element. */
   ref?: undefined | React.Ref<MenuRef>,
 };
+/**
+ * A menu component. Presents a list of items to the user, which can be either actions (may trigger something, for
+ * instance to open a submenu), or options that can be selected (either single or multiple selection). Groups can be
+ * nested inside, which can be generic groups or nested single/multi-select option groups, which have their own
+ * state separate from the rest of the menu.
+ * 
+ * Corresponds to the ARIA `menu` role by default, or also allows `role="menubar"`.
+ */
 export const Menu = Object.assign(
-  (props: MenuProps) => {
-    const { ref, ...propsRest } = props;
-    
+  ({ ref, ...propsRest }: MenuProps) => {
     const { store, ...collectionStore } = useCollection<React.ComponentRef<typeof MenuList>>();
     
-    const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
+    //const isEmpty = useStore(store, state => state.collectionIsEmpty());
     
     const menuRef = React.useRef<React.ComponentRef<typeof MenuList>>(null);
     const collectionFocusItemAt = useStore(store, state => state.collectionFocusItemAt);
@@ -288,7 +327,9 @@ export const Menu = Object.assign(
             { className: cx({ [cl['bk-menu']]: !propsRest.unstyled }) },
             propsRest,
           )}
-          empty={isEmpty}
+          // Note: this won't work, since we don't know whether there are any groups in this list. Leave the logic to
+          // the default MenuList: empty is true if consumer explicitly sets it, or `children` is undefined.
+          //empty={isEmpty}
         />
       </collectionStore.Provider>
     );

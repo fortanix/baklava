@@ -6,9 +6,16 @@ import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fruits } from '../../../util/storybook/StorybookUtils.tsx';
+import { dummyLinkPropsWithNotify } from '../../../util/storybook/StorybookLink.tsx';
+
+import { notify } from '../ToastProvider/ToastProvider.tsx';
 
 import { Menu } from './Menu.tsx';
 
+
+const notifyAction = (title: string) => () => { notify.info(`Activated the ${title}`); };
+const propsAction = { onPress: notifyAction('action button') } as const;
+const propsLink = dummyLinkPropsWithNotify;
 
 type MenuArgs = React.ComponentProps<typeof Menu>;
 type Story = StoryObj<MenuArgs>;
@@ -22,6 +29,45 @@ export default {
   argTypes: {},
   args: {
     label: 'Test menu',
+  },
+  render: (args) => <Menu {...args}/>,
+} satisfies Meta<MenuArgs>;
+
+
+export const MenuStandard: Story = {
+  args: {
+    children: (
+      <>
+        <Menu.Action {...propsAction} label="Action 1"/>
+        <Menu.Action {...propsAction} label="Action 2"/>
+        <Menu.Action {...propsAction} label="Action 3"/>
+      </>
+    ),
+  },
+};
+
+export const MenuEmpty: Story = {
+  args: {
+    children: null,
+    empty: true, // Must be determined manually by the consumer
+  },
+};
+
+export const MenuActionsAndLinks: Story = {
+  args: {
+    children: (
+      <>
+        <Menu.Action {...propsAction} label="Action 1"/>
+        <Menu.Action {...propsAction} label="Action 2"/>
+        <Menu.Link {...propsLink} label="Link 1"/>
+        <Menu.Link {...propsLink} label="Link 2"/>
+      </>
+    ),
+  },
+};
+
+export const MenuWithSelect: Story = {
+  args: {
     children: (
       <Menu.Select itemKey="group-single" label="Single-select group" defaultSelected="Apricot">
         {fruits.map(fruit =>
@@ -30,13 +76,9 @@ export default {
       </Menu.Select>
     ),
   },
-  render: (args) => <Menu {...args}/>,
-} satisfies Meta<MenuArgs>;
+};
 
-
-export const MenuStandard: Story = {};
-
-export const MenuWithGroups: Story = {
+export const MenuWithSelectMulti: Story = {
   args: {
     children: (
       <>
@@ -46,7 +88,9 @@ export const MenuWithGroups: Story = {
           <Menu.Select.Option itemKey="single-3" label="Option 3"/>
         </Menu.Select>
         <Menu.Action label="Action"/>
-        <Menu.SelectMulti itemKey="group-multi" label="Multiple-select group" defaultSelected={new Set(['multi-2', 'multi-3'])}>
+        <Menu.SelectMulti itemKey="group-multi" label="Multiple-select group"
+          defaultSelected={new Set(['multi-2', 'multi-3'])}
+        >
           <Menu.SelectMulti.Option itemKey="multi-1" label="Option 1"/>
           <Menu.SelectMulti.Option itemKey="multi-2" label="Option 2"/>
           <Menu.SelectMulti.Option itemKey="multi-3" label="Option 3"/>

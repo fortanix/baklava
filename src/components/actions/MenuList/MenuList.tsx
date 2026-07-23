@@ -272,16 +272,17 @@ export const MenuListItemAction = (props: MenuListItemActionProps) => {
     }
   }, [iconDecoration]);
   
-  const optionRole = getDefaultOptionRole(context.role);
-  
-  if (context.role !== 'menu') { throw new Error(`Cannot render an arbitrary action inside a listbox`); }
+  // Note: only `role="menuitem"` makes sense for actions. Must be inside a `menu` or `menubar`.
+  if (!['menu', 'menubar'].includes(context.role)) {
+    console.warn(`Invalid element: found an action inside of a non-menu role`);
+  }
   
   return (
     <Button
       variant="basic"
       kind="tertiary"
       wrap={false}
-      role={optionRole}
+      role="menuitem"
       aria-disabled={isDisabled || undefined}
       {...mergeProps(
         {
@@ -294,6 +295,51 @@ export const MenuListItemAction = (props: MenuListItemActionProps) => {
             cl['bk-menu-list__item--interactive'],
             cl['bk-menu-list__item--action'],
             { [cl['bk-menu-list__item--icon-highlight']]: iconDecoration === 'highlight' },
+            className,
+          ),
+        },
+      )}
+      disabled={false} // Never use `disabled`, only use `nonactive`, so that we still allow focus
+      nonactive={isDisabled}
+    />
+  );
+};
+
+type MenuListItemLinkProps = Omit<ComponentProps<typeof LinkAsButton>, 'kind'>;
+/**
+ * A menu list option (which can be selected by the user).
+ */
+export const MenuListItemLink = (props: MenuListItemLinkProps) => {
+  const {
+    unstyled,
+    className,
+    disabled,
+    nonactive,
+    ...propsRest
+  } = props;
+  
+  const context = useMenuListContext();
+  
+  // Note: only `role="menuitem"` makes sense for links. Must be inside a `menu` or `menubar`.
+  // Ref: https://www.w3.org/WAI/ARIA/apg/patterns/menubar/examples/menubar-navigation/
+  if (!['menu', 'menubar'].includes(context.role)) {
+    console.warn(`Invalid element: found a link inside of a non-menu role`);
+  }
+  
+  const isDisabled = disabled || nonactive || context.disabled;
+  return (
+    <LinkAsButton
+      variant="basic"
+      wrap={false}
+      role="menuitem"
+      aria-disabled={isDisabled}
+      {...mergeProps(
+        propsRest,
+        {
+          className: cx(
+            { [cl['bk-menu-list__item']]: !unstyled },
+            cl['bk-menu-list__item--link'],
+            cl['bk-menu-list__item--interactive'],
             className,
           ),
         },
@@ -392,46 +438,6 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
         {propsRest.children ?? propsRest.label}
       </span>
     </Button>
-  );
-};
-
-type MenuListItemLinkProps = Omit<ComponentProps<typeof LinkAsButton>, 'kind'>;
-/**
- * A menu list option (which can be selected by the user).
- */
-export const MenuListItemLink = (props: MenuListItemLinkProps) => {
-  const {
-    unstyled,
-    className,
-    disabled,
-    nonactive,
-    ...propsRest
-  } = props;
-  
-  const context = useMenuListContext();
-  
-  const isDisabled = disabled || nonactive || context.disabled;
-  const optionRole = getDefaultOptionRole(context.role);
-  return (
-    <LinkAsButton
-      variant="basic"
-      wrap={false}
-      role={optionRole}
-      aria-disabled={isDisabled}
-      {...mergeProps(
-        propsRest,
-        {
-          className: cx(
-            { [cl['bk-menu-list__item']]: !unstyled },
-            cl['bk-menu-list__item--link'],
-            cl['bk-menu-list__item--interactive'],
-            className,
-          ),
-        },
-      )}
-      disabled={false} // Never use `disabled`, only use `nonactive`, so that we still allow focus
-      nonactive={isDisabled}
-    />
   );
 };
 
@@ -587,7 +593,7 @@ export const MenuList = Object.assign(
     Group: MenuListGroup,
     Static: MenuListItemStatic,
     Action: MenuListItemAction,
-    Option: MenuListItemOption,
     Link: MenuListItemLink,
+    Option: MenuListItemOption,
   },
 );
