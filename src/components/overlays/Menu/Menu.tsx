@@ -97,7 +97,7 @@ export const MenuGroup = ({ itemKey, ...propsRest }: MenuGroupProps) => {
   const { props: itemProps } = useCollectionItem({ itemKey });
   
   // Groups create their own nested collections
-  const { store, ...collectionStore } = useCollection<React.ComponentRef<typeof MenuList>>();
+  const { collectionId, store, ...collectionStore } = useCollection<React.ComponentRef<typeof MenuList>>();
   const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
   
   // Note: groups for differently for menu than for listbox. In a listbox, the groups are just semantic groupings

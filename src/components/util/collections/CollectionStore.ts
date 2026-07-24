@@ -23,8 +23,15 @@ const queryItemElements = <E extends HTMLElement = HTMLElement>(
   collectionId: string,
   containerEl: E,
 ) => {
-  const elements = containerEl.querySelectorAll(`[data-bk-coll-parent=${JSON.stringify(collectionId)}]`);
+  const elements = containerEl.querySelectorAll(`[data-bk-coll-${collectionId}-item]`);
   return Array.from(elements) as Array<HTMLElement>;
+};
+
+const getCollectionIds = (element: HTMLElement): Array<string> => {
+  const prefix = 'data-bk-coll-';
+  return element.getAttributeNames()
+    .filter(name => name.slice(0, prefix.length) === prefix)
+    .map(name => name.slice(prefix.length));
 };
 
 /**
@@ -37,18 +44,20 @@ export const focusItem = (
   pos: 'first' | 'last' = 'first',
 ) => {
   // Take into account the scenario that the targeted item is itself a collection (e.g. `role="group"` in a menu)
-  const nestedCollId = itemEl.dataset.bkCollId;
-  if (typeof nestedCollId === 'string') {
-    const items = queryItemElements(nestedCollId, itemEl);
-    
-    const itemAtPos: null | HTMLElement = pos === 'first' ? (items[0] ?? null) : (items.at(-1) ?? null);
-    
-    if (itemAtPos) {
-      focusItem(itemAtPos, containerEl, pos);
-      return;
+  const nestedCollIds = getCollectionIds(itemEl);
+  for (const nestedCollId of nestedCollIds) {
+    if (typeof nestedCollId === 'string') {
+      const items = queryItemElements(nestedCollId, itemEl);
+      
+      const itemAtPos: null | HTMLElement = pos === 'first' ? (items[0] ?? null) : (items.at(-1) ?? null);
+      
+      if (itemAtPos) {
+        focusItem(itemAtPos, containerEl, pos);
+        return;
+      }
     }
-    // Fall through to the normal logic below
   }
+  // Fall through to the normal logic below if no `return`
   
   // Note: we don't rely on `focus()` to scroll, because:
   // - It doesn't work if the element is already focused
@@ -60,6 +69,7 @@ export const focusItem = (
     boundary: containerEl ?? null,
   });
 };
+
 
 //
 // Store slice
@@ -192,14 +202,16 @@ export const useCollectionWith = (
   
   return {
     props: {
-      'data-bk-coll-id': collectionId,
+      [`data-bk-coll-${collectionId}`]: '',
     },
   };
 };
 
 type UseCollectionItemWithParams = { itemKey: ItemKey };
 type UseCollectionItemWithResult<E extends HTMLElement> = {
-  props: { ref: React.RefCallback<E>, 'data-bk-coll-parent': string, 'data-bk-coll-item': string },
+  props: {
+    ref: React.RefCallback<E>,
+  },
 };
 export const useCollectionItemWith = <E extends HTMLElement>(
   store: StoreApi<CollectionSlice>,
@@ -231,8 +243,7 @@ export const useCollectionItemWith = <E extends HTMLElement>(
   return {
     props: {
       ref,
-      'data-bk-coll-parent': collectionId,
-      'data-bk-coll-item': itemKey,
+      [`data-bk-coll-${collectionId}-item`]: itemKey,
     },
   };
 };
@@ -262,6 +273,7 @@ export const useCollection = <E extends HTMLElement = HTMLElement>(
   
   const { props: collProps } = useCollectionWith(store, params);
   return {
+    collectionId,
     store,
     context,
     Provider: CollectionContext,
@@ -273,8 +285,6 @@ type UseCollectionItemResult<E extends HTMLElement> = {
   store: CollectionContext['store'],
   props: {
     ref: React.RefCallback<E>,
-    'data-bk-coll-parent': string,
-    'data-bk-coll-item': string,
   },
 };
 export const useCollectionItem = <E extends HTMLElement>(
@@ -330,7 +340,7 @@ export const useCollectionTypeAhead = (
   const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
     // Ignore key events coming from things other than items
     if (!(event.target instanceof HTMLElement)) { return; }
-    if (event.target.dataset.bkCollParent !== collectionId) { return; }
+    if (typeof event.target.getAttribute(`data-bk-coll-${collectionId}-item`) !== 'string') { return; }
     
     props.onKeyDown(event);
   }, [collectionId, props.onKeyDown]);

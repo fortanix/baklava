@@ -4,6 +4,42 @@
 
 @use '../../../styling/defs.scss' as bk;
 
+@mixin menu-list-fade($entry-dur: 40ms, $exit-dur: 40ms, $scale: 1) {
+  --transition-props: opacity, scale;
+  transition-property: overlay, display, var(--transition-props);
+  transition-timing-function: ease-out;
+  transition-behavior: allow-discrete;
+  
+  // Fallback for older browsers. See: https://codepen.io/maikelkrause/pen/qEZybQX
+  @supports not (overlay: auto) {
+    transition-property: var(--transition-props); // Exclude display/overlay
+  }
+  
+  // Open state styling
+  opacity: 1;
+  scale: 1;
+  
+  // Entry transition styling
+  @media (prefers-reduced-motion: no-preference) { transition-duration: $entry-dur; }
+  @starting-style {
+    opacity: 0;
+    scale: $scale;
+  }
+  
+  // Exit transition styling
+  &:not(:popover-open) {
+    transition-duration: 0ms;
+    @supports (overlay: auto) { // Only in supported browsers
+      @media (prefers-reduced-motion: no-preference) {
+        transition-duration: $exit-dur;
+      }
+    }
+    transition-timing-function: ease-in;
+    opacity: 0;
+    scale: calc(1 - (($scale - 1) * 0.2)); // Multiply by 0.2 to make the scale out effect a bit more subtle
+  }
+}
+
 @mixin menu-list-item-sticky($side: start) {
   container-type: scroll-state;
   position: sticky;
@@ -283,6 +319,10 @@
       &.bk-menu-list__sticky--end {
         @include menu-list-item-sticky(end);
       }
+    }
+    
+    &[popover] {
+      @include menu-list-fade;
     }
   }
 }

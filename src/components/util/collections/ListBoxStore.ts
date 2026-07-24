@@ -95,6 +95,7 @@ export const useListBox = <E extends HTMLElement = HTMLElement>(props: ListBoxPr
   const { props: propsTypeAhead } = useCollectionTypeAhead(ref, store);
   
   return {
+    collectionId: listBoxId,
     store,
     context,
     Provider: ListBoxContext,

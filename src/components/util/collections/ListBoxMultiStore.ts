@@ -107,6 +107,7 @@ export const useListBoxMulti = <E extends HTMLElement = HTMLElement>(props: List
   const { props: propsTypeAhead } = useCollectionTypeAhead(ref, store);
   
   return {
+    collectionId: listBoxId,
     store,
     context,
     Provider: ListBoxMultiContext,
