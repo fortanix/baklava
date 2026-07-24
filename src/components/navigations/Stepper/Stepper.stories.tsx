@@ -69,7 +69,7 @@ export const StepperControlled: Story = {
         onSwitch={setActiveStep}
       >
         <Stepper.Step stepKey="step-1" label="Step 1" />
-        <Stepper.Step stepKey="step-2" label="Step 2" />
+        <Stepper.Step stepKey="step-2" label="Step 2" optional={true} />
         <Stepper.Step stepKey="step-3" label="Step 3" />
         <Stepper.Step stepKey="step-4" label="Step 4" />
       </Stepper>
@@ -91,7 +91,7 @@ export const StepperControlledHorizontal: Story = {
         onSwitch={setActiveStep}
       >
         <Stepper.Step stepKey="step-1" label="Step 1" />
-        <Stepper.Step stepKey="step-2" label="Step 2" />
+        <Stepper.Step stepKey="step-2" label="Step 2" optional={true} />
         <Stepper.Step stepKey="step-3" label="Step 3" />
         <Stepper.Step stepKey="step-4" label="Step 4" />
       </Stepper>

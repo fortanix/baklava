@@ -79,6 +79,9 @@ type StepProps = Omit<ComponentProps<'li'>, 'children'> & {
 
   /** Whether this step should be disabled. Default: `false`. */
   disabled?: undefined | boolean,
+  
+  /** Whether this step should optional. Default: `false`. */
+  optional?: undefined | boolean,
 };
 
 export const Step = (props: StepProps) => {
@@ -90,6 +93,7 @@ export const Step = (props: StepProps) => {
     label,
     count,
     disabled = false,
+    optional = false,
     ...propsRest
   } = props;
   const { props: collectionItemProps } = useCollectionItem({ itemKey: stepKey });
@@ -134,7 +138,8 @@ export const Step = (props: StepProps) => {
           {isCompleted && (<Icon icon="check" className={cx(cl['bk-stepper__step__indicator__icon'])} />)}
         </span>
         <span className={cx(cl['bk-stepper__step__label'])}>
-          {typeof children !== 'undefined' ? children : label ? children : label}
+          {typeof children !== 'undefined' ? children : label}
+          {optional && <span className={cx(cl['bk-stepper__step__optional'])}>(Optional)</span>}
         </span>
       </Button>
       {description && (

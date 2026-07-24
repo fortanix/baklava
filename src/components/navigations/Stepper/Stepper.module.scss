@@ -144,6 +144,11 @@
         align-self: center;
         white-space: nowrap;
       }
+      
+      .bk-stepper__step__optional {
+        margin-inline-start: bk.$spacing-2;
+        font-size: bk.$font-size-xs;
+      }
 
       .bk-stepper__step__body {
         anchor-name: --step-body;
