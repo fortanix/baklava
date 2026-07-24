@@ -4,10 +4,10 @@
 
 import { timeout } from '../../../util/time.ts';
 
-import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import * as React from 'react';
+import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 
-import { type IconName, Icon } from '../../graphics/Icon/Icon.tsx';
+import { type IconName, Icon as BkIcon } from '../../graphics/Icon/Icon.tsx';
 import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
 
 import cl from './Button.module.scss';
@@ -22,11 +22,16 @@ const ButtonLabel = ({ children, wrap }: ButtonLabelProps) => {
   // FIXME: we should refactor this to render a `<span>` unconditionally. However, the addition of the `<span>` may
   // break some downstream applications, so we should we careful with the change.
   if (wrap) { return children; }
+  if (!children) { return null; }
   return <span className={cx(cl['bk-button__label'])}>{children}</span>;
 };
 
+export type ButtonIconProps = Pick<React.ComponentProps<typeof BkIcon>, 'icon' | 'className' | 'decoration'>;
+
 type ButtonPropsIrrelevant = 'defaultChecked' | 'defaultValue';
-export type ButtonProps = React.PropsWithChildren<Omit<ComponentProps<'button'>, 'type' | ButtonPropsIrrelevant> & {
+export type ButtonProps<
+  IconProps extends ButtonIconProps = ButtonIconProps,
+> = React.PropsWithChildren<Omit<ComponentProps<'button'>, 'type' | ButtonPropsIrrelevant> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -45,13 +50,19 @@ export type ButtonProps = React.PropsWithChildren<Omit<ComponentProps<'button'>,
   /** An icon to show before the label. Optional. */
   icon?: undefined | IconName,
   
+  /** Props to pass to the icon component, if an `icon` is set. Optional. */
+  iconProps?: undefined | Partial<IconProps>,
+  
+  /** Custom icon component. Optional. */
+  Icon?: undefined | React.ComponentType<IconProps>,
+  
   /** The kind of button, from higher prominance to lower. */
   kind?: undefined | 'primary' | 'secondary' | 'tertiary',
   
   /**
    * Which visual variant to use. Default: 'normal'.
    */
-  variant?: undefined | 'normal',
+  variant?: undefined | 'normal' | 'basic',
   
   /**
    * Whether the button is disabled. This is meant for essentially permanent disabled buttons, not for buttons that
@@ -75,7 +86,7 @@ export type ButtonProps = React.PropsWithChildren<Omit<ComponentProps<'button'>,
 /**
  * Button component.
  */
-export const Button = (props: ButtonProps) => {
+export const Button = <IconProps extends ButtonIconProps>(props: ButtonProps<IconProps>) => {
   const {
     children,
     unstyled = false,
@@ -83,6 +94,8 @@ export const Button = (props: ButtonProps) => {
     wrap = true,
     label,
     icon,
+    iconProps,
+    Icon = BkIcon,
     kind = 'tertiary',
     variant = 'normal',
     disabled = false,
@@ -137,7 +150,15 @@ export const Button = (props: ButtonProps) => {
     return (
       <>
         {isPending && <Spinner className="icon" inline/>}
-        {icon && <Icon className="icon" icon={icon}/>}
+        
+        {(icon && Icon === BkIcon) &&
+          <BkIcon {...iconProps} className={cx('icon icon--prefix', iconProps?.className)} icon={icon}/>
+        }
+        {Icon !== BkIcon &&
+          // @ts-ignore
+          <Icon {...iconProps} className={cx('icon icon--prefix', iconProps?.className)} icon={icon}/>
+        }
+        
         <ButtonLabel wrap={wrap}>{label}</ButtonLabel>
       </>
     );
@@ -171,6 +192,8 @@ export const Button = (props: ButtonProps) => {
         [cl['bk-button--primary']]: kind === 'primary',
         [cl['bk-button--secondary']]: kind === 'secondary',
         [cl['bk-button--tertiary']]: kind === 'tertiary',
+        [cl['bk-button--variant-normal']]: variant === 'normal',
+        [cl['bk-button--variant-basic']]: variant === 'basic',
         [cl['bk-button--disabled']]: !isInteractive,
         [cl['bk-button--nonactive']]: isNonactive,
         'nonactive': isNonactive, // Global class name so that consumers can style nonactive states

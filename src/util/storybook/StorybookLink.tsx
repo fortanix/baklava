@@ -19,6 +19,16 @@ const handleClickWithNotify = (event: React.MouseEvent) => {
   }
 };
 
+export const dummyLinkProps: Partial<React.ComponentProps<'a'>> = {
+  href: '/',
+  onClick: handleClick,
+};
+
+export const dummyLinkPropsWithNotify: Partial<React.ComponentProps<'a'>> = {
+  href: '/',
+  onClick: handleClickWithNotify,
+};
+
 type DummyLinkProps = React.ComponentProps<'a'>;
 export const DummyLink = (props: DummyLinkProps) =>
   <a href="/" {...props} onClick={mergeCallbacks([props.onClick, handleClick])}/>;

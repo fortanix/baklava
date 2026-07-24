@@ -170,6 +170,7 @@ const packageConfig = {
     //'optics-ts': '^2.4.1',
     
     // Polyfills
+    'scroll-into-view-if-needed': '^3.1.0',
     '@microsoft/focusgroup-polyfill': '^1.5.0',
     
     // React
@@ -180,7 +181,7 @@ const packageConfig = {
     'zustand': '^5.0.13',
     
     // React UI libraries
-    '@tanstack/react-virtual': '^3.13.24',
+    '@tanstack/react-virtual': '^3.14.5',
     '@floating-ui/react': '^0.27.18', // https://github.com/floating-ui/floating-ui/blob/master/packages/react/CHANGELOG.md
     'react-hook-form': '^7.75.0',
     'react-table': '^7.8.0',

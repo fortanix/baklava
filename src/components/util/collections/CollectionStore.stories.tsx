@@ -10,7 +10,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Button } from '../../actions/Button/Button.tsx';
 
-import { type ItemKey, useCollectionItem, useCollection } from './CollectionStore.tsx';
+import { type ItemKey, useCollectionItem, useCollection } from './CollectionStore.ts';
 
 
 const generateRandomId = () => Math.random().toString(36).slice(-6);
@@ -151,7 +151,7 @@ type CollectionTwoColumnsProps = {
   right: React.ReactNode,
 };
 const CollectionTwoColumns = ({ left, right }: CollectionTwoColumnsProps) => {
-  const { Provider: CollectionProvider, context, props } = useCollection();
+  const { Provider: CollectionProvider, context, props } = useCollection<HTMLDivElement>();
   
   return (
     <ScrollContainer>
@@ -234,7 +234,7 @@ const CollectionWithControlsC = (args: CollectionArgs) => {
     
     setItems(items => {
       const newItemKey = `${newItem}-${generateRandomId()}`;
-      return { ...items, [newItemKey]: { itemKey: newItemKey, children: newItemKey } };
+      return { ...items, [newItemKey]: { itemKey: newItemKey, label: newItemKey } };
     });
   }, []);
   
@@ -244,7 +244,7 @@ const CollectionWithControlsC = (args: CollectionArgs) => {
     
     setItems(items => {
       const newItemKey = `${newItem}-${generateRandomId()}`;
-      return { [newItemKey]: { itemKey: newItemKey, children: newItemKey }, ...items };
+      return { [newItemKey]: { itemKey: newItemKey, label: newItemKey }, ...items };
     });
   }, []);
   

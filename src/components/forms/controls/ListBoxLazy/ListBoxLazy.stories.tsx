@@ -10,8 +10,7 @@ import { generateData } from '../../../tables/util/generateData.ts'; // FIXME: m
 import { InputSearch } from '../Input/InputSearch.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
-import { type ItemKey, type VirtualItemKeys } from '../ListBox/ListBoxStore.tsx';
-import { ListBoxLazy } from './ListBoxLazy.tsx';
+import { type ItemKey, type VirtualItemKeys, ListBoxLazy } from './ListBoxLazy.tsx';
 
 
 const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKeys => {
@@ -22,7 +21,7 @@ const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKey
     indexOf: (itemKey: ItemKey) => indicesByKey.get(itemKey) ?? -1,
   };
 };
-const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `test-${i}`);
+const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `test-${i + 1}`);
 
 type ListBoxLazyArgs = React.ComponentProps<typeof ListBoxLazy>;
 type Story = StoryObj<ListBoxLazyArgs>;
@@ -35,10 +34,11 @@ export default {
   },
   argTypes: {},
   args: {
+    'aria-label': 'Test listbox',
     limit: 5,
-    onUpdateLimit: () => {},
+    onLimitChange: () => {},
     renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
-    formatItemLabel: item => `Item ${item.split('-')[1]}`,
+    formatItemLabel: itemKey => `Item ${itemKey.replace('item-', '')}`,
   },
   render: (args) => <ListBoxLazy {...args}/>,
 } satisfies Meta<ListBoxLazyArgs>;
@@ -62,13 +62,13 @@ export const ListBoxLazyEmpty: Story = {
 export const ListBoxLazyLoading: Story = {
   args: {
     virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(5)),
-    isLoading: true,
+    status: 'loading',
   },
 };
 
 const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
   const pageSize = 20;
-  const maxItems = 90;
+  const maxItems = 90; // "Infinite scrolling", but with a limited number of items to show
   
   const [isLoading, setIsLoading] = React.useState(false);
   const [limit, setLimit] = React.useState(pageSize);
@@ -102,10 +102,10 @@ const ListBoxLazyInfiniteC = (props: ListBoxLazyArgs) => {
       {...props}
       limit={limit}
       pageSize={pageSize}
-      onUpdateLimit={updateLimit}
+      onLimitChange={updateLimit}
       virtualItemKeys={virtualItemKeys}
       hasMoreItems={hasMoreItems}
-      isLoading={isLoading}
+      status={isLoading ? 'loading' : 'ready'}
       renderItem={item => <>Item {item.index + 1}</>}
       formatItemLabel={itemKey => `Item ${itemKey.split('-')[1]}`}
     />
@@ -166,10 +166,10 @@ const ListBoxLazyWithFilterC = (props: ListBoxLazyArgs) => {
           {...props}
           limit={limit}
           pageSize={pageSize}
-          onUpdateLimit={updateLimit}
+          onLimitChange={updateLimit}
           virtualItemKeys={virtualItemKeys}
           hasMoreItems={hasMoreItems}
-          isLoading={isLoading}
+          status={isLoading ? 'loading' : 'ready'}
           renderItem={item => <>{itemsFiltered[item.index]?.name}</>}
           formatItemLabel={itemKey => itemsFiltered.find(i => i.id === itemKey)?.name ?? 'Unknown'}
           placeholderEmpty={items.length === 0 ? 'No items' : 'No items found'}
@@ -226,7 +226,7 @@ const ListBoxLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxLazyArgs) => {
       {...props}
       limit={limit}
       virtualItemKeys={virtualItemKeys}
-      isLoading={isLoading}
+      status={isLoading ? 'loading' : 'ready'}
       renderItem={item => <div>Item {item.index + 1}</div>}
       formatItemLabel={itemKey => `Item ${itemKey.split('-')[1]}`}
       loadMoreItemsTriggerType="custom"
@@ -236,7 +236,5 @@ const ListBoxLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxLazyArgs) => {
 };
 export const ListBoxLazyWithCustomLoadMoreItemsTrigger: Story = {
   render: args => <ListBoxLazyWithCustomLoadMoreItemsTriggerC {...args}/>,
-  args: {
-  },
 };
 

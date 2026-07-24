@@ -75,6 +75,8 @@ Notes:
       text-size-adjust: inherit; /* Inherit from global context */
       -webkit-tap-highlight-color: inherit; /* Inherit from global context */
       tab-size: inherit; /* Inherit from global context */
+      writing-mode: inherit; /* Inherit from context */
+      direction: inherit; /* Inherit from context */
     }
     
     /* Bring back fundamental UA style rules */

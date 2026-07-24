@@ -45,10 +45,9 @@ export default {
   },
   args: {
     label: 'Test menu provider',
-    formatItemLabel: formatFruitLabel,
     children: ({ props, selectedOption }) => (
       <Button kind="primary" {...props()}>
-        {typeof selectedOption !== 'undefined' ? `Selected: ${selectedOption?.label ?? 'none'}` : 'Open dropdown'}
+        {selectedOption !== null ? `Selected: ${formatFruitLabel(selectedOption)}` : 'Open dropdown'}
       </Button>
     ),
     items: (
@@ -58,7 +57,7 @@ export default {
         )}
       </>
     ),
-    onSelect: selectedOption => { console.log('Selected:', selectedOption); },
+    onSelectedChange: selectedOption => { console.log('Selected:', selectedOption); },
   },
   render: (args) => <MenuProvider {...args}/>,
 } satisfies Meta<MenuProviderArgs>;
@@ -75,9 +74,9 @@ export const MenuProviderWithInput: Story = {
   args: {
     items: (
       <>
-        <MenuProvider.Header unstyled itemKey="header-1" label="Input">
+        <MenuProvider.Segment sticky="start">
           <InputSearch/>
-        </MenuProvider.Header>
+        </MenuProvider.Segment>
         <MenuProvider.Static><input type="file"/></MenuProvider.Static>
         <MenuProvider.Option itemKey="option-1" label="Option 1"/>
         <MenuProvider.Option itemKey="option-2" label="Option 2"/>
@@ -92,7 +91,7 @@ export const MenuProviderWithPlacement: Story = {
     children: ({ props, selectedOption }) => (
       <Button kind="primary" {...props()}>
         {typeof selectedOption !== 'undefined'
-          ? `Selected: ${selectedOption?.label ?? 'none'}`
+          ? `Selected: ${selectedOption ?? 'none'}`
           : 'Open dropdown placed to the right'
         }
       </Button>
@@ -106,7 +105,7 @@ export const MenuProviderWithAction: Story = {
       <>
         <MenuProvider.Option itemKey="option-1" label="Option 1"/>
         <MenuProvider.Option itemKey="option-2" label="Option 2"/>
-        <MenuProvider.Action itemKey="action-close" onActivate={close} label="Close">
+        <MenuProvider.Action itemKey="action-close" onPress={close} label="Close">
           Close
         </MenuProvider.Action>
       </>
@@ -140,9 +139,8 @@ const MenuProviderControlledC = (props: React.ComponentProps<typeof MenuProvider
       <p>Selected: {selectedOption === null ? '(none)' : formatFruitLabel(selectedOption)}</p>
       <MenuProvider
         {...props}
-        formatItemLabel={formatFruitLabel}
         selected={selectedOption}
-        onSelect={setSelectedOption}
+        onSelectedChange={setSelectedOption}
       />
       <div><Button label="Update state" onPress={() => { setSelectedOption('item-strawberry'); }}/></div>
     </>

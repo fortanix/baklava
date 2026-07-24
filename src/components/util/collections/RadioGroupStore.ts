@@ -14,13 +14,13 @@ import {
   createCollectionSlice,
   useCollectionWith,
   useCollectionItemWith,
-} from './CollectionStore.tsx';
+} from './CollectionStore.ts';
 import {
   type SelectedState,
   type SelectionSingleSlice,
   createSelectionSingleSlice,
   useSelectionWith,
-} from './SelectionSingleStore.tsx';
+} from './SelectionSingleStore.ts';
 
 
 export type { ItemKey };
@@ -39,13 +39,14 @@ export const useRadioGroupContext = () => {
 };
 
 export type RadioGroupProps = ControllableStateDef<SelectedState>;
-export const useRadioGroup = (props: RadioGroupProps) => {
+export const useRadioGroup = <E extends HTMLElement = HTMLElement>(props: RadioGroupProps) => {
+  const ref = React.useRef<E>(null);
   const radioGroupId = React.useId();
   
   const { isControlled, stateInitial, ...selectionState } = parseControllableState(props);
   
   const store = useMemoOnce(() => createStore<RadioGroupSlice>()((...args) => ({
-    ...createCollectionSlice({ collectionId: radioGroupId })(...args),
+    ...createCollectionSlice(ref, { collectionId: radioGroupId })(...args),
     ...createSelectionSingleSlice({ selectedItemKey: stateInitial ?? null })(...args),
   })));
   
@@ -61,6 +62,19 @@ export const useRadioGroup = (props: RadioGroupProps) => {
       store.setState({ selectedItemKey });
     }
   }, [isControlled, props.onStateChange]);
+  
+  // When the selected item state changes, focus that item element
+  const collectionFocusItem = React.useEffectEvent(useStore(store, state => state.collectionFocusItem));
+  React.useEffect(() => {
+    return store.subscribe((state, prevState) => {
+      if (state.selectedItemKey !== prevState.selectedItemKey && state.selectedItemKey !== null) {
+        const itemKeyTarget = state.selectedItemKey;
+        if (itemKeyTarget) {
+          collectionFocusItem(itemKeyTarget);
+        }
+      }
+    });
+  }, []);
   
   // Note: this context value should be as stable as possible, the state changing means the entire subtree will get
   // rerendered. The way we've set this up, only a change in `isControlled` will cause this state to change. Changes
@@ -78,6 +92,7 @@ export const useRadioGroup = (props: RadioGroupProps) => {
     context,
     Provider: RadioGroupContext,
     props: mergeProps(
+      { ref },
       propsCollection,
       propsSelection,
       //{ role: 'radiogroup' }, // Leave this up to the consumer
@@ -87,13 +102,15 @@ export const useRadioGroup = (props: RadioGroupProps) => {
 
 
 type UseRadioGroupItemParams = { itemKey: ItemKey };
-type UseRadioGroupItemResult<E extends Element> = {
+type UseRadioGroupItemResult<E extends HTMLElement> = {
   store: StoreApi<RadioGroupSlice>,
   selected: boolean,
   requestSelected: () => void,
   props: ReturnType<typeof useCollectionItemWith<E>>['props'],
 };
-export const useRadioGroupItem = <E extends Element>(params: UseRadioGroupItemParams): UseRadioGroupItemResult<E> => {
+export const useRadioGroupItem = <E extends HTMLElement>(
+  params: UseRadioGroupItemParams,
+): UseRadioGroupItemResult<E> => {
   const { itemKey } = params;
   
   const { store, requestSelected } = useRadioGroupContext();

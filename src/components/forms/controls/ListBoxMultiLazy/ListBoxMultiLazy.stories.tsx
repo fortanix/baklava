@@ -10,8 +10,7 @@ import { generateData } from '../../../tables/util/generateData.ts'; // FIXME: m
 import { InputSearch } from '../Input/InputSearch.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
-import { type ItemKey, type VirtualItemKeys } from '../ListBoxMulti/ListBoxStore.tsx';
-import { ListBoxMultiLazy } from './ListBoxMultiLazy.tsx';
+import { type ItemKey, type VirtualItemKeys, ListBoxMultiLazy } from './ListBoxMultiLazy.tsx';
 
 
 const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKeys => {
@@ -22,7 +21,7 @@ const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKey
     indexOf: (itemKey: ItemKey) => indicesByKey.get(itemKey) ?? -1,
   };
 };
-const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `test-${i}`);
+const generateItemKeys = (count: number) => Array.from({ length: count }, (_, i) => `test-${i + 1}`);
 
 type ListBoxMultiLazyArgs = React.ComponentProps<typeof ListBoxMultiLazy>;
 type Story = StoryObj<ListBoxMultiLazyArgs>;
@@ -35,10 +34,11 @@ export default {
   },
   argTypes: {},
   args: {
+    'aria-label': 'Test listbox',
     limit: 5,
-    onUpdateLimit: () => {},
+    onLimitChange: () => {},
     renderItem: item => generateData({ numItems: 1, seed: String(item.index) })[0]?.name,
-    formatItemLabel: item => `Item ${item.split('-')[1]}`,
+    formatItemLabel: itemKey => `Item ${itemKey.replace('item-', '')}`,
   },
   render: (args) => <ListBoxMultiLazy {...args}/>,
 } satisfies Meta<ListBoxMultiLazyArgs>;
@@ -47,9 +47,9 @@ export default {
 export const ListBoxMultiLazyStandard: Story = {
   args: {
     virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(10_000)),
-    defaultSelected: new Set(['test-2', 'test-3']),
+    defaultSelected: new Set('test-2'),
     renderItem: item => `Item ${item.index + 1}`,
-    formatItemLabel: item => `Item ${item.split('-')[1]}`,
+    formatItemLabel: itemKey => `Item ${itemKey.split('-')[1]}`,
   },
 };
 
@@ -62,14 +62,13 @@ export const ListBoxMultiLazyEmpty: Story = {
 export const ListBoxMultiLazyLoading: Story = {
   args: {
     virtualItemKeys: cachedVirtualItemKeys(generateItemKeys(5)),
-    isLoading: true,
+    status: 'loading',
   },
 };
 
-
 const ListBoxMultiLazyInfiniteC = (props: ListBoxMultiLazyArgs) => {
   const pageSize = 20;
-  const maxItems = 90;
+  const maxItems = 90; // "Infinite scrolling", but with a limited number of items to show
   
   const [isLoading, setIsLoading] = React.useState(false);
   const [limit, setLimit] = React.useState(pageSize);
@@ -103,10 +102,10 @@ const ListBoxMultiLazyInfiniteC = (props: ListBoxMultiLazyArgs) => {
       {...props}
       limit={limit}
       pageSize={pageSize}
-      onUpdateLimit={updateLimit}
+      onLimitChange={updateLimit}
       virtualItemKeys={virtualItemKeys}
       hasMoreItems={hasMoreItems}
-      isLoading={isLoading}
+      status={isLoading ? 'loading' : 'ready'}
       renderItem={item => <>Item {item.index + 1}</>}
       formatItemLabel={itemKey => `Item ${itemKey.split('-')[1]}`}
     />
@@ -128,7 +127,6 @@ const ListBoxMultiLazyWithFilterC = (props: ListBoxMultiLazyArgs) => {
   const [filter, setFilter] = React.useState('');
   
   const hasMoreItems = items.length < maxItems;
-  
   const itemsFiltered = items.filter(item => item.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()));
   
   const updateLimit = React.useCallback((limit: number) => {
@@ -163,19 +161,19 @@ const ListBoxMultiLazyWithFilterC = (props: ListBoxMultiLazyArgs) => {
         }}
       />
       {filter !== 'hide' &&
-      <ListBoxMultiLazy
-        data-placement="bottom"
-        {...props}
-        limit={limit}
-        pageSize={pageSize}
-        onUpdateLimit={updateLimit}
-        virtualItemKeys={virtualItemKeys}
-        hasMoreItems={hasMoreItems}
-        isLoading={isLoading}
-        renderItem={item => <>{itemsFiltered[item.index]?.name}</>}
-        formatItemLabel={itemKey => itemsFiltered.find(i => i.id === itemKey)?.name ?? 'Unknown'}
-        placeholderEmpty={items.length === 0 ? 'No items' : 'No items found'}
-      />
+        <ListBoxMultiLazy
+          data-placement="bottom"
+          {...props}
+          limit={limit}
+          pageSize={pageSize}
+          onLimitChange={updateLimit}
+          virtualItemKeys={virtualItemKeys}
+          hasMoreItems={hasMoreItems}
+          status={isLoading ? 'loading' : 'ready'}
+          renderItem={item => <>{itemsFiltered[item.index]?.name}</>}
+          formatItemLabel={itemKey => itemsFiltered.find(i => i.id === itemKey)?.name ?? 'Unknown'}
+          placeholderEmpty={items.length === 0 ? 'No items' : 'No items found'}
+        />
       }
     </>
   );
@@ -214,10 +212,10 @@ const ListBoxMultiLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxMultiLazy
   }, [limit, hasMoreItems]);
   
   const virtualItemKeys = items.map(item => item.id);
-
+  
   const renderLoadMoreItemsTrigger = () => {
     if (limit === maxItems) { return null; }
-
+    
     return (
       <Button kind="primary" onPress={updateLimit}>Load more items</Button>
     );
@@ -228,7 +226,7 @@ const ListBoxMultiLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxMultiLazy
       {...props}
       limit={limit}
       virtualItemKeys={virtualItemKeys}
-      isLoading={isLoading}
+      status={isLoading ? 'loading' : 'ready'}
       renderItem={item => <div>Item {item.index + 1}</div>}
       formatItemLabel={itemKey => `Item ${itemKey.split('-')[1]}`}
       loadMoreItemsTriggerType="custom"
@@ -238,7 +236,5 @@ const ListBoxMultiLazyWithCustomLoadMoreItemsTriggerC = (props: ListBoxMultiLazy
 };
 export const ListBoxMultiLazyWithCustomLoadMoreItemsTrigger: Story = {
   render: args => <ListBoxMultiLazyWithCustomLoadMoreItemsTriggerC {...args}/>,
-  args: {
-  },
 };
 
