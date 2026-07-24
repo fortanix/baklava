@@ -150,9 +150,6 @@ type MenuGroupSelectPropsBase = Omit<React.ComponentProps<typeof MenuList.Group>
 type MenuGroupSelectProps = MenuGroupSelectPropsBase & MenuSelectStateProps & {
   /** A unique identifier for this option. */
   itemKey: ItemKey,
-  
-  ///** Render the given item key as a string label. If not given, will use the item element's text value. */
-  //formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
 };
 export const MenuGroupSelect = Object.assign(
   (props: MenuGroupSelectProps) => {
@@ -161,7 +158,6 @@ export const MenuGroupSelect = Object.assign(
       selected,
       defaultSelected,
       onSelectedChange,
-      //formatItemLabel,
       ...propsRest
     } = props;
     
@@ -229,9 +225,6 @@ type MenuGroupSelectMultiPropsBase = Omit<React.ComponentProps<typeof MenuList>,
 export type MenuGroupSelectMultiProps = MenuGroupSelectMultiPropsBase & MenuSelectMultiStateProps & {
   /** A unique identifier for this group. */
   itemKey: ItemKey,
-  
-  ///** Render the given item key as a string label. If not given, will use the item element's text value. */
-  //formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
 };
 export const MenuGroupSelectMulti = Object.assign(
   (props: MenuGroupSelectMultiProps) => {
@@ -241,7 +234,6 @@ export const MenuGroupSelectMulti = Object.assign(
       selected,
       defaultSelected,
       onSelectedChange,
-      //formatItemLabel,
       ...propsRest
     } = props;
     
@@ -346,17 +338,13 @@ export const Menu = Object.assign(
 //
 
 type MenuSelectPropsBase = Omit<React.ComponentProps<typeof Menu>, keyof MenuSelectStateProps>;
-type MenuSelectProps = MenuSelectPropsBase & MenuSelectStateProps & {
-  ///** Render the given item key as a string label. If not given, will use the item element's text value. */
-  //formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
-};
+type MenuSelectProps = MenuSelectPropsBase & MenuSelectStateProps;
 export const MenuSelect = Object.assign(
   (props: MenuSelectProps) => {
     const {
       selected,
       defaultSelected,
       onSelectedChange,
-      //formatItemLabel,
       ...propsRest
     } = props;
     
@@ -390,17 +378,13 @@ export const MenuSelect = Object.assign(
 );
 
 type MenuSelectMultiPropsBase = Omit<React.ComponentProps<typeof Menu>, keyof MenuSelectMultiStateProps>;
-type MenuSelectMultiProps = MenuSelectMultiPropsBase & MenuSelectMultiStateProps & {
-  ///** Render the given item key as a string label. If not given, will use the item element's text value. */
-  //formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
-};
+type MenuSelectMultiProps = MenuSelectMultiPropsBase & MenuSelectMultiStateProps;
 export const MenuSelectMulti = Object.assign(
   (props: MenuSelectMultiProps) => {
     const {
       selected,
       defaultSelected,
       onSelectedChange,
-      //formatItemLabel,
       ...propsRest
     } = props;
     

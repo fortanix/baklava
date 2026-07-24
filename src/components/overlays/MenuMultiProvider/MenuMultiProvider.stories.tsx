@@ -45,9 +45,8 @@ export default {
   },
   args: {
     label: 'Test menu provider',
-    formatItemLabel: formatFruitLabel,
     children: ({ props, selectedOptions }) => {
-      const selectedLabels = [...selectedOptions.values()].map(({ label }) => label).join(', ');
+      const selectedLabels = Array.from(selectedOptions).map(key => formatFruitLabel(key)).join(', ');
       return (
         <Button kind="primary" {...props()}>
           {selectedOptions.size > 0 ? `Selected: ${selectedLabels}` : 'Open dropdown'}
@@ -56,12 +55,12 @@ export default {
     },
     items: (
       <>
-        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <MenuMultiProvider.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        {Object.keys(fruits).map(fruitKey =>
+          <MenuMultiProvider.Option key={fruitKey} itemKey={fruitKey} label={formatFruitLabel(fruitKey)}/>
         )}
       </>
     ),
-    onSelect: selectedOption => { console.log('Selected:', selectedOption); },
+    onSelectedChange: selectedOption => { console.log('Selected:', selectedOption); },
   },
   render: (args) => <MenuMultiProvider {...args}/>,
 } satisfies Meta<MenuMultiProviderArgs>;
@@ -77,11 +76,18 @@ export const MenuMultiProviderWithDefault: Story = {
 
 export const MenuMultiProviderWithInput: Story = {
   args: {
+    children: ({ props, selectedOptions }) => {
+      return (
+        <Button kind="primary" {...props()}>
+          {selectedOptions.size > 0 ? `Selected: ${selectedOptions.size} options` : 'Open dropdown'}
+        </Button>
+      );
+    },
     items: (
       <>
-        <MenuMultiProvider.Header unstyled itemKey="header-1" label="Input">
+        <MenuMultiProvider.Segment sticky="start">
           <InputSearch/>
-        </MenuMultiProvider.Header>
+        </MenuMultiProvider.Segment>
         <MenuMultiProvider.Option itemKey="option-1" label="Option 1"/>
         <MenuMultiProvider.Option itemKey="option-2" label="Option 2"/>
       </>
@@ -109,7 +115,7 @@ export const MenuMultiProviderWithAction: Story = {
       <>
         <MenuMultiProvider.Option itemKey="option-1" label="Option 1"/>
         <MenuMultiProvider.Option itemKey="option-2" label="Option 2"/>
-        <MenuMultiProvider.Action itemKey="action-close" onActivate={close} label="Close" icon="logout">
+        <MenuMultiProvider.Action itemKey="action-close" onPress={close} label="Close" icon="logout">
           Close
         </MenuMultiProvider.Action>
       </>
@@ -143,7 +149,7 @@ const MenuMultiProviderControlledC = (props: React.ComponentProps<typeof MenuMul
       <MenuMultiProvider
         {...props}
         selected={selectedOptions}
-        onSelect={setSelectedOptions}
+        onSelectedChange={setSelectedOptions}
       />
       <div>
         <Button label="Update state"
