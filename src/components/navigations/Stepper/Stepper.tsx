@@ -3,104 +3,269 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { type ClassNameArgument, type ComponentProps, classNames as cx } from '../../../util/componentUtil.ts';
+import { type ComponentProps, classNames as cx } from '../../../util/componentUtil.ts';
+import { mergeProps } from '../../../util/reactUtil.ts';
 
 import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 
+import { useScroller } from '../../../layouts/util/Scroller.tsx';
+import { useCollection, useCollectionItem } from '../../util/collections/CollectionStore.tsx';
 import cl from './Stepper.module.scss';
 
 
 /*
 References:
-- https://stackoverflow.com/questions/52932018/making-a-step-progress-indicator-accessible-for-screen-readers
+- [WAI-multi-page] https://www.w3.org/WAI/tutorials/forms/multi-page/#using-step-by-step-indicator
+- [MDN-aria-current] https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-current
+- [SO-1] https://stackoverflow.com/questions/52932018/making-a-step-progress-indicator-accessible-for-screen-readers
+- https://www.aditus.io/aria/aria-current
 - https://www.telerik.com/design-system/docs/components/stepper/accessibility
 - https://cauldron.dequelabs.com/components/Stepper
+
+Accessibility notes:
+- Should be structured as an `<ol>` with a list of links.
+- Should be wrapped inside a `<nav>` with an `aria-label` (unique in the page).
+- `aria-current="step"` should be applied to the `<li>` that is the currently active step.
+- Some `class="visually-hidden"` text elements should be added to each step to clarify the state (e.g. "Completed").
 */
 
-export { cl as SteppersClassNames };
+export { cl as StepperClassNames };
 
-export type Step = {
-  stepKey: string,
-  title: React.ReactNode,
-  className?: undefined | ClassNameArgument,
-  hide?: undefined | boolean,
-  isOptional?: undefined | boolean,
-  isDisabled?: undefined | boolean,
+
+
+export type StepKey = string;
+
+//
+// Context
+//
+
+export type StepperContext = {
+  activeStepKey: StepKey | undefined,
+  setActiveStepKey: (stepKey: StepKey) => void,
+  completedStepKeys: ReadonlySet<StepKey>,
 };
-export type StepperKey = Step['stepKey'];
-export type StepperDirection = 'vertical' | 'horizontal';
+export const StepperContext = React.createContext<null | StepperContext>(null);
+export const useStepperContext = () => {
+  const context = React.use(StepperContext);
+  if (context === null) { throw new Error(`Missing StepperContext provider`); }
 
-export type StepperProps = React.PropsWithChildren<ComponentProps<'nav'> & {
+  return context;
+};
+
+
+//
+// Components
+//
+
+type StepProps = Omit<ComponentProps<'li'>, 'children'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
+
+  /** The key for this step, should be unique within the `Stepper` component. */
+  stepKey: StepKey,
+
+  /** The human-readable name for this step. */
+  label: string,
+
+  /** Additional content rendered below the label. */
+  description?: React.ReactNode,
+
+  /** When specified, overrides the the visual `label` with custom content. Optional. */
+  children?: React.ReactNode,
+
+  /** Override the displayed step number. */
+  count?: undefined | number,
+
+  /** Whether this step should be disabled. Default: `false`. */
+  disabled?: undefined | boolean,
   
-  /** Step items. */
-  steps: Array<Step>,
-  
-  /** Active key of step. */
-  activeKey?: undefined | string,
-  
-  /** Whether this component should be displayed vertically or horizontally. */
-  direction?: undefined | StepperDirection,
-  
-  /** Callback executed when active step is changed. */
-  onSwitch: (stepKey: StepperKey) => void,
-}>;
-/**
- * A stepper component
- */
-export const Stepper = (props: StepperProps) => {
-  const { unstyled = false, steps = [], activeKey, direction = 'vertical', onSwitch, ...propsRest } = props;
-  
+  /** Whether this step should optional. Default: `false`. */
+  optional?: undefined | boolean,
+};
+
+export const Step = (props: StepProps) => {
+  const {
+    children,
+    description,
+    unstyled,
+    stepKey,
+    label,
+    count,
+    disabled = false,
+    optional = false,
+    ...propsRest
+  } = props;
+  const { props: collectionItemProps } = useCollectionItem({ itemKey: stepKey });
+  const { activeStepKey, completedStepKeys, setActiveStepKey } = useStepperContext();
+
+  const isActive = activeStepKey === stepKey;
+
+  const isCompleted = completedStepKeys.has(stepKey);
+  const handleClick = React.useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      if (disabled) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+
+      setActiveStepKey(stepKey);
+    },
+    [disabled, stepKey, setActiveStepKey],
+  );
+
   return (
-    <nav
-      aria-label="Steps" // Recommendation is to override this per usage
-      {...propsRest}
+    <li
+      aria-current={isActive ? 'step' : undefined}
+      {...mergeProps(collectionItemProps, propsRest)}
       className={cx(
-        'bk',
-        { [cl['bk-stepper']]: !unstyled },
-        { [cl['bk-stepper--horizontal']]: direction === 'horizontal' },
-        { [cl['bk-stepper--vertical']]: direction === 'vertical' },
+        { [cl['bk-stepper__step']]: !unstyled },
+        { [cl['bk-stepper__step--completed']]: isCompleted },
+        { [cl['bk-stepper__step--disabled']]: disabled },
         propsRest.className,
       )}
+      style={{
+        // Chrome v150 has a bug where counter doesn't auto set when count is provided but not v152, 
+        // This should be removed once browser support is good enough.
+        counterSet: typeof count === 'number' ? `list-item ${count}` : undefined,
+        ...propsRest.style,
+      }}
+      value={count}
     >
-      <ol>
-        {steps.map((step, index) => {
-          if (step.hide) { return null; }
-          
-          const isActive = step.stepKey === activeKey;
-          const stepNumber = index + 1;
-          const isChecked = index < steps.findIndex(step => step.stepKey === activeKey);
-          const isDisabled = step.isDisabled ?? false;
-          
-          return (
-            <li key={step.stepKey} aria-current={isActive ? 'step' : undefined}>
-              <Button
-                unstyled
-                nonactive={isDisabled} // Note: disabled steps should still be focusable, so use `nonactive` here
-                className={cx(
-                  cl['bk-stepper__item'],
-                  { [cl['bk-stepper__item--checked']]: isChecked },
-                  { [cl['bk-stepper__item--disabled']]: isDisabled },
-                  step.className,
-                )}
-                onPress={() => { onSwitch(step.stepKey); }}
-              >
-                <span className="visually-hidden">Step {stepNumber}{isChecked && ' (checked)'}</span>
-                <span className={cx(cl['bk-stepper__item__indicator'])} aria-hidden="true">
-                  {isChecked
-                    ? <Icon icon="check" className={cx(cl['bk-stepper__item__indicator__icon'])}/> 
-                    : stepNumber
-                  }
-                </span>
-                <span className={cx(cl['bk-stepper__item__title'])}>{step.title}</span>
-                {step.isOptional && <span className={cx(cl['bk-stepper__item__optional'])}>(Optional)</span>}
-              </Button>
-            </li>
-          )
-        })}
-      </ol>
-    </nav>
+      <Button unstyled className={cx(cl['bk-stepper__step__action'])} onClick={handleClick} aria-disabled={disabled} disabled={disabled}>
+        <span className={cx(cl['bk-stepper__step__indicator'])}>
+          {isCompleted && (<Icon icon="check" className={cx(cl['bk-stepper__step__indicator__icon'])} />)}
+        </span>
+        <span className={cx(cl['bk-stepper__step__label'])}>
+          {typeof children !== 'undefined' ? children : label}
+          {optional && <span className={cx(cl['bk-stepper__step__optional'])}>(Optional)</span>}
+        </span>
+      </Button>
+      {description && (
+        <div className={cx(cl['bk-stepper__step__body'])}>
+          {description}
+        </div>
+      )}
+    </li>
   );
 };
+
+type StepperProps = ComponentProps<'nav'> & {
+  /** Whether this component should be unstyled. */
+  unstyled?: undefined | boolean,
+
+  /** A unique human-readable name for this landmark. Required. */
+  label: string,
+
+  /** Whether this component should be displayed vertically or horizontally. Default: `"vertical"`. */
+  orientation?: undefined | 'vertical' | 'horizontal',
+
+  /** Controlled active step. */
+  activeStepKey?: undefined | StepKey,
+
+  /** The default active step, in case no step has been explicitly selected through the URL. */
+  defaultActiveStepKey?: undefined | StepKey,
+
+  /** Callback executed when active step is changed. */
+  onSwitch?: undefined | ((stepKey: StepKey) => void),
+
+  /** The starting number of the list (if different from 1). Optional. */
+  start?: undefined | number,
+
+  /** Whether the ordered list should be rendered in reverse order. */
+  reversed?: undefined | boolean,
+
+};
+
+/**
+ * Stepper: a navigation component displaying a numbered list, representing progress through some multi-part UI flow.
+ */
+export const Stepper = Object.assign(
+  (props: StepperProps) => {
+    const {
+      children,
+      unstyled = false,
+      label,
+      orientation = 'vertical',
+      activeStepKey: controlledActiveStepKey,
+      defaultActiveStepKey,
+      onSwitch,
+      start,
+      reversed = false,
+      ...propsRest
+    } = props;
+
+    const [orderedStepKeys, setOrderedStepKeys] = React.useState<Array<StepKey>>([]);
+
+    const {
+      context: collectionContext,
+      Provider: CollectionProvider,
+      props: collectionProps,
+    } = useCollection<HTMLOListElement>({
+      onItemsChange: () => setOrderedStepKeys(collectionContext.store.getState().collectionItemKeysOrdered()),
+    });
+    const scrollerProps = useScroller();
+    const isControlled = controlledActiveStepKey !== undefined;
+    const [uncontrolledActiveStepKey, setUncontrolledActiveStepKey] = React.useState(defaultActiveStepKey);
+
+    const activeStepKey = isControlled ? controlledActiveStepKey : uncontrolledActiveStepKey;
+
+    const activeIndex = orderedStepKeys.indexOf(activeStepKey ?? '');
+
+    // Every step before the active one is considered completed.
+    const completedStepKeys = React.useMemo(() => {
+      if (activeIndex < 0) {
+        return new Set<StepKey>();
+      }
+
+      return new Set(orderedStepKeys.slice(0, activeIndex));
+    }, [orderedStepKeys, activeIndex]);
+
+    const handleSetActiveStepKey = React.useCallback(
+      (stepKey: StepKey) => {
+        if (!isControlled) {
+          setUncontrolledActiveStepKey(stepKey);
+        }
+
+        onSwitch?.(stepKey);
+      },
+      [isControlled, onSwitch],
+    );
+
+    const stepperContext = React.useMemo(
+      () => ({
+        activeStepKey,
+        completedStepKeys,
+        setActiveStepKey: handleSetActiveStepKey,
+      }),
+      [activeStepKey, completedStepKeys, handleSetActiveStepKey],
+    );
+
+    return (
+      <StepperContext value={stepperContext}>
+        <CollectionProvider value={collectionContext}>
+          <nav
+            {...propsRest}
+            aria-label={label ?? 'Steps'} // Must be unique within the page
+            {...(orientation === 'horizontal' ? scrollerProps : {})}
+            className={cx(
+              'bk',
+              { [cl['bk-stepper']]: !unstyled },
+              { [cl['bk-stepper--vertical']]: orientation === 'vertical' },
+              { [cl['bk-stepper--horizontal']]: orientation === 'horizontal' },
+              propsRest.className,
+            )}
+          >
+            <ol {...collectionProps} start={start} reversed={reversed}>
+              {children}
+            </ol>
+          </nav>
+        </CollectionProvider>
+      </StepperContext>
+    );
+  },
+  {
+    Step,
+  },
+);

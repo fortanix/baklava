@@ -9,97 +9,178 @@
     @include bk.component-base(bk-stepper);
     
     --bk-stepper-indicator-size: #{bk.rem-from-px(28)};
-    display: flex;
+    --bk-stepper-line-width: #{bk.$size-1};
     
     > ol {
-      display: contents;
+      display: flex;
+      flex-direction: column;
+      gap: bk.$spacing-9;
+
+      anchor-scope: --step-link;
     }
     
     &.bk-stepper--horizontal {
-      flex-direction: row;
-      column-gap: bk.$spacing-9;
-    }
-    
-    &.bk-stepper--vertical {
-      flex-direction: column;
-      row-gap: bk.$spacing-9;
+      padding-block: bk.$spacing-1;
+      padding-inline-start: bk.$spacing-1;
+      overflow-y: hidden;
       
-      // Draw a line between subsequent items
-      li + li .bk-stepper__item__indicator {
-        &::before {
+      > ol {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        min-inline-size: 100%;
+      }
+
+      .bk-stepper__step {
+        position: relative;
+        flex: 0 0 auto;
+
+        &:not(:last-child)::after {
           content: '';
+
           position: absolute;
-          inset-block-start: calc(-1 * bk.$spacing-9 - bk.$size-2);
-          inset-inline-start: calc(50% - bk.$size-2 / 2);
-          inline-size: 0;
-          block-size: bk.$spacing-9;
-          border-inline-start: bk.$size-2 solid bk.$theme-stepper-border-disabled;
+
+          inset-inline-start: calc(anchor(--step-action right) + bk.$spacing-2);
+          inset-block-start: calc(anchor(--step-action top) + var(--bk-stepper-indicator-size) / 2);
+
+          inline-size: calc(anchor-size(--step-action inline) - anchor-size(--step-label inline) - bk.$spacing-2);
+          block-size: var(--bk-stepper-line-width);
+
+          background: bk.$theme-stepper-border-disabled;
+        }
+
+        &:has(.bk-stepper__step__body)::after {
+          inline-size: calc(anchor-size(--step-body inline) - anchor-size(--step-label inline) + bk.$spacing-9 
+          - bk.$spacing-2);
+        }
+
+        .bk-stepper__step__action {
+          anchor-name: --step-action;
+
+          grid-template-columns: var(--bk-stepper-indicator-size) minmax(0, 1fr);
+          align-items: first baseline;
         }
       }
     }
-    
-    .bk-stepper__item {
-      cursor: pointer;
+
+    &.bk-stepper--vertical {
+      .bk-stepper__step {
+        anchor-scope: --step-index;
       
-      display: flex;
-      align-items: center;
-      color: bk.$theme-stepper-text-disabled;
-      
-      .bk-stepper__item__indicator {
-        position: relative; // Needed for the vertical line `position: absolute`
-        flex-shrink: 0;
+        // Draw a line between subsequent items
+        &::after {
+          content: '';
+          display: block;
+          position: absolute;
+
+          anchor-name: --step-link;
+        }
+
+        &:first-child::after {
+          inset-block-end: anchor(--step-index top);
+          inset-inline-start: calc(anchor(--step-index center) - var(--bk-stepper-line-width) / 2);
+
+          inline-size: var(--bk-stepper-line-width);
+          block-size: 0;
+        }
         
-        margin-inline-end: bk.$spacing-3;
-        aspect-ratio: 1;
+        &:not(:first-child)::after {
+          inset-block: calc(anchor(--step-link bottom) + var(--bk-stepper-indicator-size));
+          inset-inline-start: anchor(--step-link left);
+          inset-block-end: anchor(--step-index top);
+
+          inline-size: var(--bk-stepper-line-width);
+          block-size: auto;
+
+          background: bk.$theme-stepper-border-disabled;
+        }
+
+        .bk-stepper__step__action {
+          grid-template-columns: var(--bk-stepper-indicator-size) 1fr;
+          align-items: center;
+        }
+
+        .bk-stepper__step__indicator {
+          anchor-name: --step-index;
+        }
+      }
+    }
+
+    .bk-stepper__step {
+      display: list-item;
+      .bk-stepper__step__action {
+        display: grid;
+        column-gap: bk.$spacing-3;
+        cursor: pointer;
+        color: bk.$theme-stepper-text-disabled;
+      }
+
+      .bk-stepper__step__indicator {
+        position: relative;
+
         inline-size: var(--bk-stepper-indicator-size);
-        
+        aspect-ratio: 1;
+        flex-shrink: 0;
+
+        display: grid;
+        place-items: center;
+
+
         border: bk.$size-2 solid #{bk.$theme-stepper-border-disabled};
         border-radius: 50%;
         font-weight: bk.$font-weight-bold;
         font-size: bk.$font-size-m;
-        
-        display: grid;
-        place-content: center;
-        
-        .bk-stepper__item__indicator__icon {
+
+        &:empty::before {
+          content: counter(list-item);
+        }
+
+        .bk-stepper__step__indicator__icon {
           font-size: bk.$font-size-xs;
         }
       }
-      
-      .bk-stepper__item__title {
-        font-size: bk.$font-size-m;
+
+      .bk-stepper__step__label {
+        anchor-name: --step-label;
+        align-self: center;
+        white-space: nowrap;
       }
       
-      .bk-stepper__item__optional {
+      .bk-stepper__step__optional {
         margin-inline-start: bk.$spacing-2;
         font-size: bk.$font-size-xs;
       }
-    }
-    
-    // Any steps we've already visited
-    .bk-stepper__item--checked {
-      color: bk.$theme-stepper-text-selected;
-      
-      .bk-stepper__item__indicator {
-        border-color: bk.$theme-stepper-border-default;
+
+      .bk-stepper__step__body {
+        anchor-name: --step-body;
+        margin-inline-start: calc(var(--bk-stepper-indicator-size) + bk.$spacing-3);
       }
-    }
-    
-    // The currently active step
-    [aria-current="step"] {
-      .bk-stepper__item {
-        color: bk.$theme-stepper-text-selected;
-        
-        .bk-stepper__item__indicator {
+
+      &[aria-current='step'] {
+        .bk-stepper__step__action {
+          color: bk.$theme-stepper-text-selected;
+        }
+        .bk-stepper__step__indicator {
           border-color: bk.$theme-stepper-border-default;
           background-color: bk.$theme-stepper-background-default;
           color: bk.$theme-stepper-text-selected-number;
         }
       }
-    }
-    
-    .bk-stepper__item--disabled {
-      cursor: not-allowed;
+
+      &.bk-stepper__step--completed {
+        .bk-stepper__step__action {
+          color: bk.$theme-stepper-text-selected;
+        }
+
+        .bk-stepper__step__indicator {
+          border-color: bk.$theme-stepper-border-default;
+        }
+      }
+
+      &.bk-stepper__step--disabled {
+        .bk-stepper__step__action {
+          cursor: not-allowed;
+        }
+      }
     }
   }
 }

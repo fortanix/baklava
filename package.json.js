@@ -170,6 +170,7 @@ const packageConfig = {
     //'optics-ts': '^2.4.1',
     
     // Polyfills
+    'scroll-into-view-if-needed': '^3.1.0',
     '@microsoft/focusgroup-polyfill': '^1.5.0',
     
     // React
