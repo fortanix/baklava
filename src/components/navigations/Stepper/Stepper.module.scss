@@ -9,7 +9,7 @@
     @include bk.component-base(bk-stepper);
     
     --bk-stepper-indicator-size: #{bk.rem-from-px(28)};
-    --bk-stepper-line-width: #{bk.$size-1};
+    --bk-stepper-line-width: #{bk.$size-2};
     
     > ol {
       display: flex;
