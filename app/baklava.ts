@@ -116,6 +116,7 @@ export { DialogModal } from '../src/components/overlays/DialogModal/DialogModal.
 export { DialogOverlay } from '../src/components/overlays/DialogOverlay/DialogOverlay.tsx';
 export { MenuProvider } from '../src/components/overlays/MenuProvider/MenuProvider.tsx';
 export { MenuProvider as DropdownMenuProvider } from '../src/components/overlays/MenuProvider/MenuProvider.tsx'; // alias
+export { useFloatingElement } from '../src/components/util/overlays/floating-ui/useFloatingElement.tsx'
 export { MenuMultiProvider } from '../src/components/overlays/MenuMultiProvider/MenuMultiProvider.tsx';
 export { MenuLazyProvider } from '../src/components/overlays/MenuLazyProvider/MenuLazyProvider.tsx';
 export { MenuMultiLazyProvider } from '../src/components/overlays/MenuMultiLazyProvider/MenuMultiLazyProvider.tsx';
