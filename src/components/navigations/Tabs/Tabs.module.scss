@@ -125,6 +125,7 @@
       
       > .bk-tabs__switcher {
         flex-direction: column;
+        flex-shrink: 0;
         inline-size: bk.rem-from-px(216);
         gap: bk.$spacing-3;
         padding: bk.$spacing-6 0;
