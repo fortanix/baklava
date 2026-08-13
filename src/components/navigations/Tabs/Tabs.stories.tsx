@@ -121,6 +121,21 @@ export const VerticalTabs: StoryWithTrigger = {
   },
 };
 
+export const VerticalTabsWithLongTitles: StoryWithTrigger = {
+  ...BaseStory,
+  decorators: [Story => <Panel><Story /></Panel>],
+  args: {
+    ...BaseStory.args,
+    orientation: 'vertical',
+    options: defaultTabOptions.map((option, index) => {
+      return {
+        ...option,
+        title: `Tab ${index} - long title that should be truncated with ellipsis`,
+      };
+    }),
+  },
+};
+
 export const VerticalParentTabsWithHorizontalSubTabs: StoryWithTrigger = {
   decorators: [
     Story => (
