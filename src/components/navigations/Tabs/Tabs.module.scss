@@ -132,8 +132,14 @@
         border-inline-end: 1px solid bk.$theme-side-nav-menu-background-hover;
 
         .bk-tabs__switcher__tab {
+          padding: bk.$spacing-2 bk.$spacing-4;
           font-weight: bk.$font-weight-regular;
           text-transform: capitalize;
+          
+          >.bk-tabs__switcher__tab__title,
+          >.bk-tabs__switcher__tab__hover-placeholder {
+            @include bk.text-one-line;
+          }
 
           >.bk-tabs__switcher__tab__hover-placeholder {
             font-weight: bk.$font-weight-regular;
