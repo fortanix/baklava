@@ -28,7 +28,7 @@ import { DialogOverlay } from '../../overlays/DialogOverlay/DialogOverlay.tsx';
 
 import './DataTableEager_stories.scss';
 
-const columns: Array<ReactTable.Column<User>> = [
+export const columns: Array<ReactTable.Column<User>> = [
   {
     id: 'name',
     accessor: (user: User) => user.name,

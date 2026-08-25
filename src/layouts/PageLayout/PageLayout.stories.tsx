@@ -7,9 +7,12 @@ import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { Button } from '../../components/actions/Button/Button.tsx';
+import * as DataTableEager from '../../components/tables/DataTable/DataTableEager.tsx';
+import { columns } from '../../components/tables/DataTable/DataTableEager.stories.tsx';
 import { Input } from '../../components/forms/controls/Input/Input.tsx';
 import { Select } from '../../components/forms/controls/Select/Select.tsx';
 import { Tabs, Tab } from '../../components/navigations/Tabs/Tabs.tsx';
+import { generateData, type User } from '../../components/tables/util/generateData.ts';
 import { loremIpsumSentence } from '../../util/storybook/LoremIpsum.tsx';
 
 import { PageLayout } from './PageLayout.tsx';
@@ -225,3 +228,21 @@ export const PageLayoutVerticalSubTabs: Story = {
   },
 };
 
+export const PageLayoutWithTable: Story = {
+  args: {
+    children: (
+      <>
+        {header1}
+        <PageLayout.Body>
+          <DataTableEager.TableProviderEager
+            columns={columns}
+            items={generateData({ numItems: 5 })}
+            getRowId={(item: User) => item.id}
+          >
+            <DataTableEager.DataTableEager />
+          </DataTableEager.TableProviderEager>
+        </PageLayout.Body>
+      </>
+    ),
+  },
+};
