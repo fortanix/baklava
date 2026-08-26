@@ -80,6 +80,7 @@ export { Select } from '../src/components/forms/controls/Select/Select.tsx';
 export { SelectMulti } from '../src/components/forms/controls/SelectMulti/SelectMulti.tsx';
 
 // Forms > Fields
+export { FieldLayout } from '../src/components/forms/fields/FieldLayout/FieldLayout.tsx';
 export { CheckboxField } from '../src/components/forms/fields/CheckboxField/CheckboxField.tsx';
 export { InputField } from '../src/components/forms/fields/InputField/InputField.tsx';
 export { InputFieldWithTags } from '../src/components/forms/fields/InputFieldWithTags/InputFieldWithTags.tsx';
