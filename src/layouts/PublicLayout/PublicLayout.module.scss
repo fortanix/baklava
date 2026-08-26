@@ -79,8 +79,12 @@
     @include bk.component-base(bk-public-layout);
     container-type: size;
     
-    // Note: the background image is a semi-transparent png. We add a solid color behind it to shade the image.
-    background: url('@/assets/images/public-bg.png?no-inline') no-repeat;
+    // Note: the background image is semi-transparent. We add a solid color behind it to shade the image.
+    background: url('@/assets/images/public-bg.webp?no-inline') no-repeat;
+    background-image: image-set(
+      url('@/assets/images/public-bg.avif?no-inline') type('image/avif'),
+      url('@/assets/images/public-bg.webp?no-inline') type('image/webp')
+    );
     background-color: light-dark(#2d4ab8, #253264);
     background-size: cover;
     

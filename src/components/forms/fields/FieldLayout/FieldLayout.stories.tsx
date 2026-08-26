@@ -23,16 +23,20 @@ export default {
   tags: ['autodocs'],
   argTypes: {
   },
+  args: {
+    size: 'small',
+  },
   render: (args) => {
     return (
       <Card>
         <LoremIpsum paragraphs={1}/>
-        <FieldLayout size="small">
-          <Input value="Small text input" />
+        <FieldLayout {...args}>
+          <Input value={args.size === 'medium' ? 'Medium text input' : 'Small text input'} />
         </FieldLayout>
       </Card>
     );
   },
 } satisfies Meta<FieldLayoutArgs>;
 
-export const FieldLayoutSmall: Story = {};
+export const FieldLayoutSmall: Story = { args: { size: 'small' } };
+export const FieldLayoutMedium: Story = { args: { size: 'medium' } };
