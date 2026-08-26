@@ -31,7 +31,7 @@ To create a new release:
 
 ```shell
 # Define the new version
-# Note: this should be the version number without any prefix, for example: "VERSION=1.0.0"
+# Note: this should be the version number without any v prefix, for example: "VERSION=1.0.0"
 VERSION=x.y.z
 
 baklava_release_branch() {
@@ -53,9 +53,6 @@ baklava_release_branch() {
 baklava_release_branch && npm run automate github:create-release-pr
 # Follow instructions from above command
 ```
-
-Note: using the script above, the version number should start directly with the number, not with `v`
-(i.e. `1.0.0-beta-yyyymmdd` instead of `v1.0.0-beta-yyyymmdd`).
 
 - Once the release PR is merged, create a new GitHub release:
   - From the `master` branch, run `npm run automate github:create-release`, this will generate a link to create the
