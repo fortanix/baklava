@@ -31,7 +31,7 @@ To create a new release:
 
 ```shell
 # Define the new version
-# Note: this should be the version number without any prefix, for example: "VERSION=1.0.0"
+# Note: this should be the version number without any v prefix, for example: "VERSION=1.0.0"
 VERSION=x.y.z
 
 baklava_release_branch() {
