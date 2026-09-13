@@ -93,7 +93,7 @@ export const MenuListSegment = ({ unstyled, disabled, sticky = false, ...propsRe
       <section
         //role="presentation" // Already the default
         {...propsRest}
-        aria-disabled={isDisabled ? 'true' : 'false'}
+        aria-disabled={isDisabled ? 'true' : undefined}
         className={cx(
           { [cl['bk-menu-list__segment']]: !unstyled },
           { [cl['bk-menu-list__sticky']]: typeof sticky === 'string' },
@@ -534,7 +534,10 @@ export const MenuList = Object.assign(
       ...propsRest
     } = props;
     
-    const scrollerProps = useScroller();
+    const scrollerProps = {
+      ...useScroller(),
+      'data-bk-menu-list-scroller': true,
+    };
     const focusGroupProps = useFocusGroup({ focusGroup: `${role} ${orientation} nowrap` });
     const isFocusGroup = ['menu', 'menubar', 'listbox'].includes(role);
     
