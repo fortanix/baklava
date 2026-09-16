@@ -51,14 +51,14 @@ const syncPopoverWithController = (params: {
   const isPopoverActive = popoverEl.matches(':popover-open');
   if (controllerActive && !isPopoverActive) { // Case: should be active but isn't
     try {
-      popoverEl.togglePopover({ force: true, source });
+      popoverEl.togglePopover(source === undefined ? { force: true } : { force: true, source });
     } catch (error: unknown) {
       console.error(`Unable to open popover`, error);
       //controller.deactivate(); // Attempt to feed this state back to the controller to prevent de-sync
     }
   } else if (!controllerActive && isPopoverActive) { // Case: should not be active but is
     try {
-      popoverEl.togglePopover({ force: false, source });
+      popoverEl.togglePopover(source === undefined ? { force: false } : { force: false, source });
     } catch (error: unknown) {
       console.error(`Failed to close popover`, error);
       //controller.activate(); // Attempt to feed this state back to the controller to prevent de-sync
