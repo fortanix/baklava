@@ -17,3 +17,7 @@
 /dist/storybook
 /storybook-static
 /build-storybook.log
+
+# GitHub Copilot
+.github/checkpoints
+.github/*.md

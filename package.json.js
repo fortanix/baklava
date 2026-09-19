@@ -113,7 +113,7 @@ const packageConfig = {
     'vite-plugin-svg-icons-ng': '^1.9.0',
     
     // Static analysis
-    'typescript': '^5.9.3',
+    'typescript': '^6.0.3',
     '@types/node': '^24.*', // Should match the Node major version in .nvmrc
     'stylelint': '^17.11.0',
     'stylelint-config-standard-scss': '^17.0.0',
