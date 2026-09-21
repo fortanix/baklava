@@ -113,6 +113,7 @@ const packageConfig = {
     'vite-plugin-svg-icons-ng': '^1.9.0',
     
     // Static analysis
+    // ts6 is still required, see https://github.com/fortanix/baklava/pull/730/changes#r4062796736
     '@typescript/native': 'npm:typescript@^7.0.2',
     '@typescript/typescript6': '^6.0.2',
     'typescript': 'npm:@typescript/typescript6@^6.0.2',
