@@ -52,7 +52,7 @@ export default defineConfig({
     // Generate `.d.ts` files
     dts({
       // https://github.com/qmhc/vite-plugin-dts/issues/275#issuecomment-1963123685
-      outDir: 'dist', // dts.root + 'dist' => where we need to rollup.
+      outDirs: 'dist', // dts.root + 'dist' => where we need to rollup.
       root: '../', //vite.root + ../ = ./ = (dts.root)
       staticImport: true,
       insertTypesEntry: true,
