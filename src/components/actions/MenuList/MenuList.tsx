@@ -14,6 +14,7 @@ import { Spinner } from '../../graphics/Spinner/Spinner.tsx';
 import { Checkbox } from '../../forms/controls/Checkbox/Checkbox.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { LinkAsButton } from '../LinkAsButton/LinkAsButton.tsx';
+import { MenuListSegmentVirtual } from './MenuListSegmentVirtual.tsx';
 
 import cl from './MenuList.module.scss';
 
@@ -79,7 +80,9 @@ type MenuListSegmentProps = ComponentProps<'section'> & {
  * A generic container of items. Unlike `Group`, does not have a `role`, an accessible name, or visible heading.
  * Can be used to apply an effect to a group of items, for example sticky positioning.
  */
-export const MenuListSegment = ({ unstyled, disabled, sticky = false, ...propsRest }: MenuListSegmentProps) => {
+export const MenuListSegment = (props: MenuListSegmentProps) => {
+  const { unstyled, disabled, sticky = false, children, ...propsRest } = props;
+  
   const context = useMenuListContext();
   const isDisabled = disabled ?? context.disabled;
   
@@ -101,7 +104,9 @@ export const MenuListSegment = ({ unstyled, disabled, sticky = false, ...propsRe
           { [cl['bk-menu-list__sticky--end']]: sticky === 'end' },
           propsRest.className,
         )}
-      />
+      >
+        {children}
+      </section>
     </MenuListContext>
   );
 };
@@ -592,6 +597,7 @@ export const MenuList = Object.assign(
   },
   {
     Segment: MenuListSegment,
+    SegmentVirtual: MenuListSegmentVirtual,
     Footer: MenuListFooter,
     Group: MenuListGroup,
     Static: MenuListItemStatic,

@@ -1,0 +1,24 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-menu-list-segment-virtual {
+    @include bk.component-base(bk-menu-list-segment-virtual);
+    
+    position: relative;
+    anchor-name: --bk-menu-list-segment-virtual;
+    
+    .bk-menu-list-segment-virtual__item {
+      position: absolute;
+      // Maybe: use anchor positioning so intermediate positioned containers (e.g. `sticky`) don't interfere
+      position-anchor: --bk-menu-list-segment-virtual;
+      inset-block-start: 0;
+      inset-inline-start: 0;
+      
+      inline-size: 100%;
+    }
+  }
+}

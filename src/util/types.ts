@@ -17,6 +17,9 @@ export type NonUndefined<T> = T & ({} | null);
 /** Given a type `T`, the keys `K` should be required, and everything else becomes optional. */
 export type RequireOnly<T, K extends keyof T> = Pick<Required<T>, K> & Partial<T>;
 
+/** Given a type `T`, the keys `K` should be optional. */
+export type PartialKeys<T, K extends keyof T> = Omit<T, K> & Pick<Partial<T>, K>;
+
 /**
  * Convert a union type to an intersection. For example:
  * ```

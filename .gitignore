@@ -17,3 +17,4 @@
 /dist/storybook
 /storybook-static
 /build-storybook.log
+/debug-storybook.log

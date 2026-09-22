@@ -5,13 +5,15 @@
 import * as React from 'react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { colorBright, fruits, generateUsers } from '../../../util/storybook/StorybookUtils.tsx';
+import { colorBright, fruits, generateUsers, User as TestUser } from '../../../util/storybook/StorybookUtils.tsx';
 import { loremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
 
 import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
+import { Button } from '../Button/Button.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 
+import { type VirtualItem, type VirtualItemProps } from './MenuListSegmentVirtual.tsx';
 import { MenuList } from './MenuList.tsx';
 
 
@@ -453,4 +455,253 @@ export const MenuListWithManyItems: Story = {
       </MenuList.Option>
     ),
   }
+};
+
+
+
+
+const optionSize = 37;
+const renderStandardOption = (renderLabel: (virtualItem: VirtualItem) => string) =>
+  (props: VirtualItemProps, virtualItem: VirtualItem) =>
+    <MenuList.Option key={virtualItem.key} {...propsRadio} {...props} label={renderLabel(virtualItem)}/>;
+
+export const MenuListVirtualStandard: Story = {
+  args: {
+    children: (
+      <MenuList.SegmentVirtual
+        items={{
+          count: 10_000,
+          renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
+          estimateSize: () => optionSize,
+        }}
+      />
+    ),
+  },
+};
+
+export const MenuListVirtualEmpty: Story = {
+  args: {
+    empty: true,
+    children: <MenuList.SegmentVirtual items={[]}/>,
+  },
+};
+
+export const MenuListVirtualLoading: Story = {
+  args: {
+    status: 'loading',
+    children: (
+      <MenuList.SegmentVirtual
+        items={{
+          count: 4,
+          renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
+          estimateSize: () => optionSize,
+        }}
+      />
+    ),
+  },
+};
+
+export const MenuListVirtualEmptyLoading: Story = {
+  args: {
+    status: 'loading',
+    children: <MenuList.SegmentVirtual items={[]}/>,
+  },
+};
+
+/**
+ * Item keys must be unique within their chunk. Conflicts between keys (like below) should _not_ lead to a React
+ * console warning.
+ */
+export const MenuListVirtualChunkKeysNoConflict: Story = {
+  args: {
+    children: (
+      <MenuList.SegmentVirtual
+        items={[
+          {
+            count: 1,
+            renderItem: renderStandardOption(() => 'Different chunk, same key'),
+            estimateSize: () => optionSize,
+            getItemKey: () => 'same-key',
+          },
+          {
+            count: 1,
+            renderItem: renderStandardOption(() => 'Different chunk, same key'),
+            estimateSize: () => optionSize,
+            getItemKey: () => 'same-key',
+          },
+        ]}
+      />
+    ),
+  },
+};
+
+export const MenuListVirtualWithSiblings: Story = {
+  args: {
+    children: (
+      <>
+        <MenuList.Static muted>Before</MenuList.Static>
+        <MenuList.SegmentVirtual
+          items={{
+            //count: 20,
+            count: 100,
+            renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
+            estimateSize: () => optionSize,
+          }}
+        />
+        <MenuList.Static muted>In between</MenuList.Static>
+        <MenuList.SegmentVirtual
+          items={{
+            //count: 22,
+            count: 100,
+            renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
+            estimateSize: () => optionSize,
+          }}
+        />
+        <MenuList.Static muted>After</MenuList.Static>
+      </>
+    ),
+  },
+};
+
+/** Virtual segments can be nested inside one another. */
+export const MenuListVirtualNested: Story = {
+  args: {
+    children: (
+      <MenuList.SegmentVirtual
+        items={[
+          {
+            count: 1,
+            renderItem: (props, virtualItem) =>
+              <MenuList.SegmentVirtual key={virtualItem.key} {...props}
+                items={{
+                  count: 3,
+                  renderItem: renderStandardOption(({ index }) => `Nested option ${index + 1}`),
+                  estimateSize: () => optionSize,
+                }}
+              />,
+            estimateSize: () => optionSize * 3,
+          },
+          {
+            count: 100,
+            renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
+            estimateSize: () => optionSize,
+          },
+        ]}
+      />
+    ),
+  },
+};
+
+const MenuListVirtualInfiniteScrollC = (props: MenuListArgs) => {
+  const pageSize = 20;
+  const maxItems = 50; // Have a small maximum, so we can test reaching the end of the list
+  
+  //const [isLoading, setIsLoading] = React.useState(false); // Not needed here?
+  const [limit, setLimit] = React.useState(pageSize);
+  const [items, setItems] = React.useState<Array<TestUser>>(() => generateUsers({ numItems: limit }));
+  
+  const hasMoreItems = items.length < maxItems;
+  
+  const handleNearEnd = React.useCallback(async () => {
+    if (!hasMoreItems) { return; }
+    
+    // Load another page
+    const limitUpdated = Math.min(limit + pageSize, maxItems);
+    setLimit(limitUpdated);
+    //setIsLoading(true);
+    
+    await new Promise(resolve => window.setTimeout(resolve, 1200)); // Simulate time delay
+    
+    //setIsLoading(false);
+    setItems(generateUsers({ numItems: limitUpdated }));
+  }, [limit, hasMoreItems]);
+  
+  return (
+    <MenuList
+      {...props}
+      // Note: for infinite scrolling, it is a better UX to immediately show "loading", even before the "near end"
+      // event triggers (so that the user doesn't scroll down _and then_ a split second later a loading indicator is
+      // rendered below and the user has to scroll down even more to see it).
+      status={hasMoreItems ? 'loading' : 'ready'}
+    >
+      <MenuList.SegmentVirtual
+        items={[
+          {
+            count: items.length,
+            estimateSize: () => optionSize,
+            renderItem: renderStandardOption(({ index }) => items[index]?.name ?? 'Unknown index'),
+          },
+          // XXX replaced by top-level `status="loading"`
+          //{
+          //  count: hasMoreItems ? 1 : 0, // Better UX to immediately show "loading", even before the "near end" event
+          //  estimateSize: () => optionSize,
+          //  renderItem: renderStandardOption(() => 'Loading...'),
+          //},
+          // XXX replaced with custom `MenuList.Static` element
+          // {
+          //   count: hasMoreItems ? 0 : 1,
+          //   estimateSize: () => optionSize,
+          //   renderItem: renderStandardOption(() => `You've reached the end!`),
+          // },
+        ]}
+        onNearEnd={handleNearEnd}
+      />
+      {!hasMoreItems &&
+        <MenuList.Static muted>🎊 You've reached the end!</MenuList.Static>
+      }
+    </MenuList>
+  );
+};
+export const MenuListVirtualInfiniteScroll: Story = {
+  render: args => <MenuListVirtualInfiniteScrollC {...args}/>,
+};
+
+const MenuListVirtualWithLoadMoreC = (props: MenuListArgs) => {
+  const pageSize = 20;
+  const maxItems = 50; // Have a small maximum, so we can test reaching the end of the list
+  
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [limit, setLimit] = React.useState(pageSize);
+  const [items, setItems] = React.useState<Array<TestUser>>(() => generateUsers({ numItems: limit }));
+  
+  const hasMoreItems = items.length < maxItems;
+  
+  const handleLoadMore = React.useCallback(async () => {
+    if (!hasMoreItems) { return; }
+    
+    // Load another page
+    const limitUpdated = Math.min(limit + pageSize, maxItems);
+    setLimit(limitUpdated);
+    setIsLoading(true);
+    
+    await new Promise(resolve => window.setTimeout(resolve, 1200)); // Simulate time delay
+    
+    setIsLoading(false);
+    setItems(generateUsers({ numItems: limitUpdated }));
+  }, [limit, hasMoreItems]);
+  
+  return (
+    <MenuList
+      label="Test MenuList"
+      status={isLoading ? 'loading' : 'ready'}
+    >
+      <MenuList.SegmentVirtual
+        {...props}
+        items={{
+          count: items.length,
+          estimateSize: () => optionSize,
+          renderItem: renderStandardOption(({ index }) => items[index]?.name ?? 'Unknown index'),
+        }}
+      />
+      {!isLoading && hasMoreItems &&
+        <MenuList.Static><Button kind="primary" label="Load more" onPress={handleLoadMore}/></MenuList.Static>
+      }
+      {!isLoading && !hasMoreItems &&
+        <MenuList.Static muted>🎊 You've reached the end!</MenuList.Static>
+      }
+    </MenuList>
+  );
+};
+export const MenuListVirtualWithLoadMore: Story = {
+  render: args => <MenuListVirtualWithLoadMoreC {...args}/>,
 };

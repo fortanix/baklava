@@ -197,6 +197,7 @@
     @scope (&) to (.bk-isolate, .bk) {
       &, .bk-menu-list__segment {
         display: grid;
+        grid-auto-rows: max-content;
         align-items: stretch;
       }
     }
@@ -283,7 +284,8 @@
     }
     
     // Separator between consecutive items/groups
-    :is(&, .bk-menu-list__segment) > :nth-child(n + 2 of :is(.bk-menu-list__item, .bk-menu-list__segment)) {
+    :is(&, .bk-menu-list__segment)
+      > :nth-child(n + 2 of :is(.bk-menu-list__item, .bk-menu-list__segment:not(:empty))) {
       border-block-start: var(--bk-menu-list-border-width) solid bk.$theme-dropdown-menu-menu-border-default;
     }
     
