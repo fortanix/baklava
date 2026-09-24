@@ -26,16 +26,24 @@ export default {
 } satisfies Meta<SolutionSelectorArgs>;
 
 
+const formatSolution = (solutionKey: string) => solutionKey.replace('solution_', 'Solution ');
+
 export const SolutionSelectorStandard: Story = {
   args: {
     solutions: (
       <>
-        {Array.from({ length: 5 }, (_, index) => `Solution ${index + 1}`).map(name =>
-          <SolutionSelector.Option key={`solution_${name}`} itemKey={`solution_${name}`} icon="badge-assessment" label={name}/>
+        {Array.from({ length: 5 }).map((_, index) =>
+          <SolutionSelector.Option
+            // biome-ignore lint/suspicious/noArrayIndexKey: Index is fine for the purpose of this story
+            key={`solution_${index + 1}`}
+            itemKey={`solution_${index + 1}`}
+            icon="badge-assessment"
+            label={`Solution ${index + 1}`}
+          />
         )}
       </>
     ),
-    children: selectedSolution => selectedSolution === null ? 'Solutions' : selectedSolution.label
+    children: selectedSolution => selectedSolution === null ? 'Solutions' : formatSolution(selectedSolution),
   },
 };
 
@@ -45,11 +53,11 @@ const SolutionSelectorControlledC = () => {
   return (
     <SolutionSelector
       selected={selected}
-      onSelect={setSelected}
-      formatItemLabel={solutionKey => solutionKey.replace('solution_', 'Solution ')}
+      onSelectedChange={setSelected}
       solutions={
         Array.from({ length: 30 }, (_, index) => `Solution ${index + 1}`).map((name, index) =>
           <SolutionSelector.Option
+            // biome-ignore lint/suspicious/noArrayIndexKey: Index is fine for the purpose of this story
             key={`solution_${index + 1}`}
             itemKey={`solution_${index + 1}`}
             icon="badge-assessment"
@@ -58,7 +66,7 @@ const SolutionSelectorControlledC = () => {
         )
       }
     >
-      {selectedSolution => selectedSolution === null ? 'Solutions' : selectedSolution.label}
+      {selectedSolution => selectedSolution === null ? 'Solutions' : formatSolution(selectedSolution)}
     </SolutionSelector>
   );
 };
