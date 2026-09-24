@@ -23,6 +23,7 @@ export { IconButton } from '../src/components/actions/IconButton/IconButton.tsx'
 export { ToggleButton } from '../src/components/actions/ToggleButton/ToggleButton.tsx';
 export { SegmentedControl } from '../src/components/actions/SegmentedControl/SegmentedControl.tsx';
 export { CardAction } from '../src/components/actions/CardAction/CardAction.tsx';
+export { MenuList } from '../src/components/actions/MenuList/MenuList.tsx';
 
 // Containers
 export { Panel } from '../src/components/containers/Panel/Panel.tsx';
@@ -69,13 +70,9 @@ export { type DateInputValue, DateInput } from '../src/components/forms/controls
 export { type TimeInputValue, TimeInput } from '../src/components/forms/controls/datetime/TimeInput/TimeInput.tsx';
 export { DateTimeInput } from '../src/components/forms/controls/datetime/DateTimeInput/DateTimeInput.tsx';
 export { ListBox } from '../src/components/forms/controls/ListBox/ListBox.tsx';
-export { ListBoxLazy } from '../src/components/forms/controls/ListBoxLazy/ListBoxLazy.tsx';
 export { ListBoxMulti } from '../src/components/forms/controls/ListBoxMulti/ListBoxMulti.tsx';
-export { ListBoxMultiLazy } from '../src/components/forms/controls/ListBoxMultiLazy/ListBoxMultiLazy.tsx';
 export { SelectComboBox } from '../src/components/forms/controls/SelectComboBox/SelectComboBox.tsx';
-export { SelectComboBoxLazy } from '../src/components/forms/controls/SelectComboBoxLazy/SelectComboBoxLazy.tsx';
 export { SelectComboBoxMulti } from '../src/components/forms/controls/SelectComboBoxMulti/SelectComboBoxMulti.tsx';
-export { SelectComboBoxMultiLazy } from '../src/components/forms/controls/SelectComboBoxMultiLazy/SelectComboBoxMultiLazy.tsx';
 export { Select } from '../src/components/forms/controls/Select/Select.tsx';
 export { SelectMulti } from '../src/components/forms/controls/SelectMulti/SelectMulti.tsx';
 
@@ -117,8 +114,6 @@ export { DialogOverlay } from '../src/components/overlays/DialogOverlay/DialogOv
 export { MenuProvider } from '../src/components/overlays/MenuProvider/MenuProvider.tsx';
 export { MenuProvider as DropdownMenuProvider } from '../src/components/overlays/MenuProvider/MenuProvider.tsx'; // alias
 export { MenuMultiProvider } from '../src/components/overlays/MenuMultiProvider/MenuMultiProvider.tsx';
-export { MenuLazyProvider } from '../src/components/overlays/MenuLazyProvider/MenuLazyProvider.tsx';
-export { MenuMultiLazyProvider } from '../src/components/overlays/MenuMultiLazyProvider/MenuMultiLazyProvider.tsx';
 export { ToastProvider, notify } from '../src/components/overlays/ToastProvider/ToastProvider.tsx';
 export { Tooltip } from '../src/components/overlays/Tooltip/Tooltip.tsx';
 export { TooltipProvider } from '../src/components/overlays/Tooltip/TooltipProvider.tsx';
