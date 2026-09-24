@@ -53,6 +53,18 @@ export const CardHeadingLink = ({ icon, Link = LinkDefault, ...propsRest }: Card
   );
 };
 
+export type CardFooterProps = ComponentProps<'footer'> & {
+  dividerClassName?: undefined | classNames.Argument,
+};
+export const CardFooter = ({ dividerClassName, ...propsRest }: CardFooterProps) => {
+  return (
+    <footer className={cx(cl['bk-card__footer'], propsRest.className)}>
+      <hr className={cx(cl['bk-card__footer__hr'], dividerClassName)}/>
+      {propsRest.children}
+    </footer>
+  );
+};
+
 export type CardProps = ComponentProps<'section'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
@@ -94,5 +106,6 @@ export const Card = Object.assign(
   {
     Heading: CardHeading,
     HeadingLink: CardHeadingLink,
+    Footer: CardFooter,
   },
 );

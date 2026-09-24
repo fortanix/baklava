@@ -132,6 +132,31 @@ export const CardWithHorizontalSeparator: Story = {
   },
 };
 
+export const CardWithFooter: Story = {
+  decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
+  args: {
+    children: (
+      <>
+        <LoremIpsum/>
+        <Card.Footer>this is a footer</Card.Footer>
+      </>
+    ),
+  },
+};
+
+export const CardWithHeadingAndFooter: Story = {
+  decorators: [Story => <LayoutDecorator size="small"><Story/></LayoutDecorator>],
+  args: {
+    children: (
+      <>
+        <Card.Heading>Heading</Card.Heading>
+        <LoremIpsum/>
+        <Card.Footer>Footer</Card.Footer>
+      </>
+    ),
+  },
+};
+
 /** Multiple cards in a grid. */
 export const CardGrid: Story = {
   decorators: [
