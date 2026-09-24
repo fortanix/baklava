@@ -10,7 +10,8 @@ import { generateData } from '../../../tables/util/generateData.ts'; // FIXME: m
 import { InputSearch } from '../Input/InputSearch.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
-import { type ItemKey, type VirtualItemKeys, ListBoxMultiLazy } from './ListBoxMultiLazy.tsx';
+// import { type ItemKey, type VirtualItemKeys, ListBoxMultiLazy } from './ListBoxMultiLazy.tsx';
+import { type ItemKey, type VirtualItemKeys, ListBoxMultiLazy } from '../ListBoxLazy/ListBoxLazy.tsx';
 
 
 const cachedVirtualItemKeys = (itemKeys: ReadonlyArray<ItemKey>): VirtualItemKeys => {

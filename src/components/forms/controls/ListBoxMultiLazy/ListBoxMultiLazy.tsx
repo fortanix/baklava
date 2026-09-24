@@ -81,21 +81,26 @@ const isScrollNearEnd = (virtualizer: Virtualizer<ListBoxMultiRef, Element>): bo
 
 
 const useFocusedItemIndex = () => {
-  const id = useListBoxMultiSelector(state => state.collectionId);
+  const collId = useListBoxMultiSelector(state => state.collectionId);
   const [focusedItemIndex, setFocusedItemIndex] = React.useState<null | number>(null);
   
   const onFocus = React.useCallback((event: React.FocusEvent<Element>) => {
     const target = event.target;
     // The following relies on the following attributes being correctly set on the item:
-    // - `data-bk-coll-parent` is the parent collection ID
+    // - `data-bk-coll-${collId}-item` is present
     // - `data-index` is the item index in the virtual list
-    if (!(target instanceof HTMLElement) || target.dataset.bkCollParent !== id) { return; }
+    if (
+      !(target instanceof HTMLElement)
+      || typeof target.getAttribute(`data-bk-coll-${collId}-item`) !== 'string'
+    ) {
+      return;
+    }
     const index = Number(target.dataset.index);
     
     if (!Number.isNaN(index)) {
       setFocusedItemIndex(index);
     }
-  }, [id]);
+  }, [collId]);
   
   const onBlur = React.useCallback((event: React.FocusEvent<Element>) => {
     // Only clear once focus actually leaves the list entirely,
@@ -221,11 +226,14 @@ const ListBoxMultiVirtualList = (props: ListBoxMultiVirtualListProps) => {
   const renderCustomTrigger = () => {
     if (!loadMoreItemsTrigger) { return null; }
     
-    // FIXME: we should see if we can reuse the ListBoxMulti component
     return (
       <div
+        // FIXME: styling
         className={cx(
           cl['bk-list-box-multi-lazy__item'],
+          ListBoxMultiClassNames['bk-list-box__item'],
+          ListBoxMultiClassNames['bk-list-box__item--static'],
+          { [ListBoxMultiClassNames['bk-list-box__item--loading']]: isLoading },
         )}
       >
         {isLoading

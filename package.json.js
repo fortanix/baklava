@@ -91,6 +91,9 @@ const packageConfig = {
   
   // Dev dependencies (only needed when building, or making changes to the code)
   devDependencies: {
+    // Utilities
+    '@types/lodash.debounce': '^4.0.9',
+    
     // CLI
     'plop': '^4.0.5',
     
@@ -155,6 +158,7 @@ const packageConfig = {
   // Dependencies needed when running the generated build
   dependencies: {
     // Utilities
+    'lodash.debounce': '^4.0.8',
     'date-fns': '^4.1.0',
     'message-tag': '^0.10.0',
     'effect': '^3.21.2',

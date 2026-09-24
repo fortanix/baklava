@@ -508,6 +508,27 @@ export const MenuListVirtualEmptyLoading: Story = {
   },
 };
 
+export const MenuListVirtualWithChunks: Story = {
+  args: {
+    children: (
+      <MenuList.SegmentVirtual
+        items={[
+          {
+            count: 3,
+            renderItem: renderStandardOption(({ index }) => `Chunk 1 – Option ${index + 1}`),
+            estimateSize: () => optionSize,
+          },
+          {
+            count: 3,
+            renderItem: renderStandardOption(({ index }) => `Chunk 2 – Option ${index + 1}`),
+            estimateSize: () => optionSize,
+          },
+        ]}
+      />
+    ),
+  },
+};
+
 /**
  * Item keys must be unique within their chunk. Conflicts between keys (like below) should _not_ lead to a React
  * console warning.
@@ -542,7 +563,6 @@ export const MenuListVirtualWithSiblings: Story = {
         <MenuList.Static muted>Before</MenuList.Static>
         <MenuList.SegmentVirtual
           items={{
-            //count: 20,
             count: 100,
             renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
             estimateSize: () => optionSize,
@@ -551,7 +571,6 @@ export const MenuListVirtualWithSiblings: Story = {
         <MenuList.Static muted>In between</MenuList.Static>
         <MenuList.SegmentVirtual
           items={{
-            //count: 22,
             count: 100,
             renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
             estimateSize: () => optionSize,
@@ -563,7 +582,11 @@ export const MenuListVirtualWithSiblings: Story = {
   },
 };
 
-/** Virtual segments can be nested inside one another. */
+/**
+ * Virtual segments can be nested inside one another. Note: this currently requires you to estimate the size of the
+ * nested `SegmentVirtual` yourself. In the future, we could choose to communicate the internally calculated
+ * `block-size` up to the consumer if needed.
+ */
 export const MenuListVirtualNested: Story = {
   args: {
     children: (
@@ -608,11 +631,9 @@ const MenuListVirtualInfiniteScrollC = (props: MenuListArgs) => {
     // Load another page
     const limitUpdated = Math.min(limit + pageSize, maxItems);
     setLimit(limitUpdated);
-    //setIsLoading(true);
     
-    await new Promise(resolve => window.setTimeout(resolve, 1200)); // Simulate time delay
+    await new Promise(resolve => window.setTimeout(resolve, 400)); // Simulate time delay
     
-    //setIsLoading(false);
     setItems(generateUsers({ numItems: limitUpdated }));
   }, [limit, hasMoreItems]);
   
@@ -625,25 +646,11 @@ const MenuListVirtualInfiniteScrollC = (props: MenuListArgs) => {
       status={hasMoreItems ? 'loading' : 'ready'}
     >
       <MenuList.SegmentVirtual
-        items={[
-          {
-            count: items.length,
-            estimateSize: () => optionSize,
-            renderItem: renderStandardOption(({ index }) => items[index]?.name ?? 'Unknown index'),
-          },
-          // XXX replaced by top-level `status="loading"`
-          //{
-          //  count: hasMoreItems ? 1 : 0, // Better UX to immediately show "loading", even before the "near end" event
-          //  estimateSize: () => optionSize,
-          //  renderItem: renderStandardOption(() => 'Loading...'),
-          //},
-          // XXX replaced with custom `MenuList.Static` element
-          // {
-          //   count: hasMoreItems ? 0 : 1,
-          //   estimateSize: () => optionSize,
-          //   renderItem: renderStandardOption(() => `You've reached the end!`),
-          // },
-        ]}
+        items={{
+          count: items.length,
+          estimateSize: () => optionSize,
+          renderItem: renderStandardOption(({ index }) => items[index]?.name ?? 'Unknown index'),
+        }}
         onNearEnd={handleNearEnd}
       />
       {!hasMoreItems &&

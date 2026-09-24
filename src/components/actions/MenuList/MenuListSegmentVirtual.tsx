@@ -3,6 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import type { RequireOnly, PartialKeys } from '../../../util/types.ts';
+import debounce from 'lodash.debounce';
 import * as React from 'react';
 import { mergeRefs, mergeProps } from '../../../util/reactUtil.ts';
 import { type ComponentProps } from '../../../util/componentUtil.ts';
@@ -309,21 +310,24 @@ type UseScrollNearEndTrackerParams = {
 };
 const useNearEndTracker = ({ virtualizer, onNearEnd }: UseScrollNearEndTrackerParams) => {
   //const isNearEnd = hasScrolledNearEnd(virtualizer);
-  const isNearEnd = virtualizer.isAtEnd(0); // FIXME: up this to something like 100
-  const totalItems = virtualizer.getVirtualItems().length; // FIXME: may need to subtract placeholders (e.g. loading)
+  const isNearEnd = virtualizer.isAtEnd(40); // FIXME: increase the tolerance?
+  const totalItems = virtualizer.getVirtualItems().length; // FIXME: may need to subtract placeholders? (e.g. loading)
   
   // FIXME: during the first render, even if there are items, `totalItems` will be 0 and it will trigger `onNearEnd`.
   // Idea: `useState` to track whether `totalItems` was ever non-zero and only then do this check? However, what if the
   // list is indeed empty, should we still count isNearEnd for actually empty lists?
   
   //console.log('x', isNearEnd, totalItems);
-  const onNearEndEvent = React.useEffectEvent(onNearEnd);
+  const onNearEndDebounced = React.useMemo(() => debounce(onNearEnd, 100), [onNearEnd]);
+  const onNearEndEvent = React.useEffectEvent(onNearEndDebounced);
   // Note: if `totalItems` changes and `isNearEnd` is still true, we should again notify the consumer.
   // biome-ignore lint/correctness/useExhaustiveDependencies(totalItems): See above.
   React.useEffect(() => {
-    if (isNearEnd) {
-      onNearEndEvent();
-    }
+    window.setTimeout(() => {
+      if (virtualizer.isAtEnd(40)) {
+        onNearEndEvent();
+      }
+    }, 100);
   }, [isNearEnd, totalItems]);
 };
 

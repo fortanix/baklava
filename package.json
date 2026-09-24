@@ -59,6 +59,7 @@
     "prepare": "npm run build"
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9",
     "plop": "^4.0.5",
     "browserslist": "^4.28.2",
     "vite": "^8.0.11",
@@ -101,6 +102,7 @@
     "@types/react-table": "^7.7.20"
   },
   "dependencies": {
+    "lodash.debounce": "^4.0.8",
     "date-fns": "^4.1.0",
     "message-tag": "^0.10.0",
     "effect": "^3.21.2",

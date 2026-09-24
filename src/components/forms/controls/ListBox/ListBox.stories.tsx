@@ -10,9 +10,9 @@ import { fruits, generateUsers } from '../../../../util/storybook/StorybookUtils
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
-import { InputSearch } from '../Input/InputSearch.tsx';
 
 import { type ItemKey, ListBox } from './ListBox.tsx';
+import { MenuListVirtual } from '../../../actions/MenuListVirtual/MenuListVirtual.tsx';
 
 
 type ListBoxArgs = React.ComponentProps<typeof ListBox>;
@@ -259,21 +259,11 @@ export const ListBoxTypeAhead: Story = {
           ' whitespace', // Whitespace at start/end should be ignored (matches: "w")
           'A capitalized sentence', // Case insensitivity (matches: "a", or also "A", or also "a<space>")
           'apple', // Type letters in rapid sequence in case of ambiguity (matches: "ap")
+          'apricot',
           '42', // Numbers should work (matches: "4")
           '#hashtag', // Special characters should work (matches: "#")
           'ça', // Diacritics should be ignored (matches: "c")
           'ôté', // (matches: "o")
-          <ListBox.Static key="input-test">
-            {/* Note: this is technically not legal, accessibility-wise. Just for testing purposes. */}
-            <InputSearch placeholder="Input keys should be ignored" automaticResize/>
-          </ListBox.Static>,
-          <ListBox.Static key="listbox-test">
-            {/* Note: this is technically not legal, accessibility-wise. Just for testing purposes. */}
-            <ListBox label="Nested ListBox">
-              <ListBox.Option itemKey="nested-1" label="Key events on nested listbox should be ignored"/>
-              <ListBox.Option itemKey="nested-2" label="Another nested option"/>
-            </ListBox>
-          </ListBox.Static>,
           'ñoñada', // (matches: "n")
           'Über', // Case insensitivity + diacritics (matches: "u", or also "U")
           'ß', // Language-specific collation rules (e.g. "Straße" = "Strasse") (NOTE: currently does not work)
@@ -388,4 +378,20 @@ const ListBoxWithManyOptionsC = (args: ListBoxArgs) => {
 };
 export const ListBoxWithManyOptions: Story = {
   render: args => <ListBoxWithManyOptionsC {...args}/>,
+};
+
+export const ListBoxVirtualized: Story = {
+  args: {
+    empty: false,
+    children: (
+      <MenuListVirtual items={{
+        count: 1000,
+        renderItem: (props, virtualItem) =>
+          <ListBox.Option key={virtualItem.key} itemKey={String(virtualItem.key)} {...props}
+            label={`Option ${virtualItem.index + 1}`}
+          />,
+        estimateSize: () => 37,
+      }}/>
+    ),
+  }
 };

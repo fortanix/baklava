@@ -17,56 +17,35 @@ import { Spinner } from '../../../graphics/Spinner/Spinner.tsx';
 
 import { PlaceholderEmpty, PlaceholderLoading } from '../../../actions/MenuList/MenuList.tsx';
 import { type ItemKey, useListBoxSelector } from '../../../util/collections/ListBoxStore.ts';
+import { CollectionContext } from '../../../util/collections/CollectionStore.ts';
 import {
   type ListBoxRef,
-  type SelectedStateProps,
+  type SelectedStateProps as SingleSelectedStateProps,
   ListBox,
   ListBoxClassNames,
 } from '../ListBox/ListBox.tsx';
+import {
+  type ListBoxMultiRef,
+  type SelectedStateProps as MultiSelectedStateProps,
+  ListBoxMulti,
+  ListBoxMultiClassNames,
+} from '../ListBoxMulti/ListBoxMulti.tsx';
 
 import cl from './ListBoxLazy.module.scss';
 
 
-export type { VirtualItem, ItemKey, ListBoxRef };
+export type { VirtualItem, ItemKey };
 export { cl as ListBoxLazyClassNames };
 
 export type VirtualItemKeys = Pick<ReadonlyArray<ItemKey>, 'length' | 'at' | 'indexOf'>;
 
 type ListItemVirtualProps = {
-  ref?: undefined | React.Ref<HTMLButtonElement>,
-  virtualItem: VirtualItem,
-  itemsCount: number,
-  renderItem: (item: VirtualItem) => React.ReactNode,
-  formatItemLabel: (item: ItemKey) => string,
+  key: React.Key,
+  ref: undefined | React.Ref<HTMLButtonElement>,
+  style: Record<string, unknown>,
+  ['aria-setsize']: number,
+  ['aria-posinset']: number,
 };
-const ListItemVirtual = ({ ref, virtualItem, itemsCount, renderItem, formatItemLabel }: ListItemVirtualProps) => {
-  const styles = React.useMemo(() => ({
-    position: 'absolute' as const,
-    top: 0,
-    left: 0,
-    width: '100%',
-    transform: `translateY(${virtualItem.start}px)`,
-  }), [virtualItem.start]);
-  
-  const content = renderItem(virtualItem);
-  const label = formatItemLabel(String(virtualItem.key));
-  
-  return (
-    <ListBox.Option
-      ref={ref}
-      data-index={virtualItem.index} // Needed for custom `rangeExtractor`
-      itemKey={String(virtualItem.key)}
-      label={label}
-      aria-posinset={virtualItem.index + 1}
-      aria-setsize={itemsCount}
-      className={cx(cl['bk-list-box-lazy__item'])}
-      style={styles}
-    >
-      {typeof content !== 'string' ? content : undefined}
-    </ListBox.Option>
-  );
-};
-
 
 // Calculate if the user has scrolled to near the end of the scroll container
 const isScrollNearEnd = (virtualizer: Virtualizer<ListBoxRef, Element>): boolean => {
@@ -81,21 +60,26 @@ const isScrollNearEnd = (virtualizer: Virtualizer<ListBoxRef, Element>): boolean
 
 
 const useFocusedItemIndex = () => {
-  const id = useListBoxSelector(state => state.collectionId);
+  const collId = useListBoxSelector(state => state.collectionId);
   const [focusedItemIndex, setFocusedItemIndex] = React.useState<null | number>(null);
   
   const onFocus = React.useCallback((event: React.FocusEvent<Element>) => {
     const target = event.target;
     // The following relies on the following attributes being correctly set on the item:
-    // - `data-bk-coll-parent` is the parent collection ID
+    // - `data-bk-coll-${collId}-item` is present
     // - `data-index` is the item index in the virtual list
-    if (!(target instanceof HTMLElement) || target.dataset.bkCollParent !== id) { return; }
+    if (
+      !(target instanceof HTMLElement)
+      || typeof target.getAttribute(`data-bk-coll-${collId}-item`) !== 'string'
+    ) {
+      return;
+    }
     const index = Number(target.dataset.index);
     
     if (!Number.isNaN(index)) {
       setFocusedItemIndex(index);
     }
-  }, [id]);
+  }, [collId]);
   
   const onBlur = React.useCallback((event: React.FocusEvent<Element>) => {
     // Only clear once focus actually leaves the list entirely,
@@ -113,6 +97,7 @@ const useFocusedItemIndex = () => {
 
 
 type ListBoxVirtualListProps = {
+  CollectionContext: CollectionContext,
   status: NonNullable<React.ComponentProps<typeof ListBox>['status']>,
   placeholderEmpty?: undefined | false | React.ReactNode,
   scrollElement: null | React.ComponentRef<typeof ListBox>,
@@ -121,10 +106,9 @@ type ListBoxVirtualListProps = {
   pageSize?: undefined | number,
   hasMoreItems?: undefined | boolean,
   onLimitChange?: undefined | ((limit: number) => void),
-  renderItem: ListItemVirtualProps['renderItem'],
-  formatItemLabel: ListItemVirtualProps['formatItemLabel'],
   loadMoreItemsTriggerType?: undefined | 'scroll' | 'custom',
   loadMoreItemsTrigger?: undefined | React.ReactNode,
+  renderVirtualItem: (virtualItem: VirtualItem, props: ListItemVirtualProps) => React.ReactNode,
 };
 const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
   const {
@@ -136,10 +120,9 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     onLimitChange,
     status,
     placeholderEmpty = 'No items',
-    renderItem,
-    formatItemLabel,
     loadMoreItemsTriggerType = 'scroll',
     loadMoreItemsTrigger,
+    renderVirtualItem,
   } = props;
   const isLoading = status === 'loading';
   
@@ -174,7 +157,8 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
     return virtualItemKey ?? `__INVALID-INDEX_${index}`;
   }, [virtualItemKeys]);
   
-  const isEmpty = useListBoxSelector(state => state.collectionIsEmpty()); // Re-render is considered acceptable here
+  const store = useXXX(); // FIXME
+  const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
   
   const virtualizer = useVirtualizer({
     //debug: true,
@@ -251,15 +235,20 @@ const ListBoxVirtualList = (props: ListBoxVirtualListProps) => {
           //overflowAnchor: 'none',
         }}
       >
-        {virtualItems.map((virtualItem) =>
-          <ListItemVirtual
-            key={virtualItem.key}
-            ref={virtualizer.measureElement}
-            virtualItem={virtualItem}
-            itemsCount={virtualItemKeys.length}
-            renderItem={renderItem}
-            formatItemLabel={formatItemLabel}
-          />
+        {virtualItems.map(virtualItem =>
+          renderVirtualItem(virtualItem, {
+            key: virtualItem.key,
+            ref: virtualizer.measureElement,
+            style: {
+              position: 'absolute' as const,
+              top: 0,
+              left: 0,
+              inlineSize: '100%',
+              transform: `translateY(${virtualItem.start}px)`,
+            },
+            'aria-setsize': virtualItemKeys.length,
+            'aria-posinset': virtualItem.index + 1,
+          })
         )}
       </div>
       
@@ -295,10 +284,10 @@ export type ListBoxLazyProps = Omit<ComponentProps<typeof ListBox>, 'children'> 
   onUpdateLimit?: undefined | ListBoxVirtualListProps['onLimitChange'],
   
   /** Callback to render the given list item. */
-  renderItem: ListBoxVirtualListProps['renderItem'],
+  renderItem: (item: VirtualItem) => React.ReactNode,
   
   /** Callback to render the given list item as a human-readable name. */
-  formatItemLabel: ListBoxVirtualListProps['formatItemLabel'],
+  formatItemLabel: (item: ItemKey) => string,
   
   /** Determines how additional items are loaded: automatically on scroll, or through a custom trigger. */
   loadMoreItemsTriggerType?: undefined | ListBoxVirtualListProps['loadMoreItemsTriggerType'],
@@ -332,7 +321,22 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
   const [scrollElement, setScrollElement] = React.useState<null | React.ComponentRef<typeof ListBox>>(null);
   const listBoxRef = (element: React.ComponentRef<typeof ListBox>) => { setScrollElement(element); };
   
-  const stateProps = { selected, defaultSelected, onSelectedChange } as SelectedStateProps;
+  const stateProps = { selected, defaultSelected, onSelectedChange } as SingleSelectedStateProps;
+  
+  const renderVirtualItem = React.useCallback((virtualItem: VirtualItem, props: ListItemVirtualProps) => {
+    const content = renderItem(virtualItem);
+    return (
+      <ListBox.Option
+        {...props}
+        itemKey={String(virtualItem.key)}
+        data-index={virtualItem.index} // Needed for custom `rangeExtractor`
+        label={formatItemLabel(String(virtualItem.key))}
+        className={cx(cl['bk-list-box-lazy__item'])}
+      >
+        {typeof content !== 'string' ? content : undefined}
+      </ListBox.Option>
+    );
+  }, [formatItemLabel, renderItem]);
   
   return (
     <ListBox
@@ -355,11 +359,116 @@ export const ListBoxLazy = (props: ListBoxLazyProps) => {
         pageSize={pageSize}
         hasMoreItems={hasMoreItems}
         onLimitChange={onLimitChange ?? onUpdateLimit}
-        renderItem={renderItem}
-        formatItemLabel={formatItemLabel}
         loadMoreItemsTriggerType={loadMoreItemsTriggerType}
         loadMoreItemsTrigger={loadMoreItemsTrigger}
+        renderVirtualItem={renderVirtualItem}
       />
     </ListBox>
+  );
+};
+
+
+/**
+ * Multiple-selection variant of `ListBoxLazy`.
+ */
+export type ListBoxMultiLazyProps = Omit<ComponentProps<typeof ListBoxMulti>, 'children'> & {
+  /** The full list of item keys (possibly dynamically computed). */
+  virtualItemKeys: VirtualItemKeys,
+  
+  /** The maximum number of items to load. */
+  limit: ListBoxVirtualListProps['limit'],
+  
+  /** Size of a page (set of additional data to load in). Default: `10`. */
+  pageSize?: undefined | ListBoxVirtualListProps['pageSize'],
+  
+  /** Whether there are more items, to be loaded. Default: `false`. */
+  hasMoreItems?: undefined | ListBoxVirtualListProps['hasMoreItems'],
+  
+  /** Request to update the limit. */
+  onLimitChange?: undefined | ListBoxVirtualListProps['onLimitChange'],
+  /** Alias for `onLimitChange`. @deprecated */
+  onUpdateLimit?: undefined | ListBoxVirtualListProps['onLimitChange'],
+  
+  /** Callback to render the given list item. */
+  renderItem: (item: VirtualItem) => React.ReactNode,
+  
+  /** Callback to render the given list item as a human-readable name. */
+  formatItemLabel: (item: ItemKey) => string,
+  
+  /** Determines how additional items are loaded: automatically on scroll, or through a custom trigger. */
+  loadMoreItemsTriggerType?: undefined | ListBoxVirtualListProps['loadMoreItemsTriggerType'],
+  
+  /** A render function for the custom trigger element, used when loadMoreItemsTriggerType is set to 'custom'. */
+  loadMoreItemsTrigger?: undefined | ListBoxVirtualListProps['loadMoreItemsTrigger'],
+};
+export const ListBoxMultiLazy = (props: ListBoxMultiLazyProps) => {
+  const {
+    unstyled = false,
+    selected,
+    defaultSelected,
+    onSelectedChange,
+    virtualItemKeys,
+    limit,
+    pageSize = 10,
+    hasMoreItems = false,
+    onLimitChange,
+    onUpdateLimit,
+    status = 'ready',
+    placeholderEmpty,
+    renderItem,
+    formatItemLabel,
+    loadMoreItemsTriggerType,
+    loadMoreItemsTrigger,
+    ...propsRest
+  } = props;
+  
+  // Note: we need to store the `scrollElement` in state, rather than passing it as a ref. This is because the `ref`
+  // is a parent element but `useVirtualizer` is used in the child. Without state the inner component won't re-render.
+  const [scrollElement, setScrollElement] = React.useState<null | React.ComponentRef<typeof ListBoxMulti>>(null);
+  const listBoxRef = (element: React.ComponentRef<typeof ListBoxMulti>) => { setScrollElement(element); };
+  
+  const stateProps = { selected, defaultSelected, onSelectedChange } as MultiSelectedStateProps;
+  
+  const renderVirtualItem = React.useCallback((virtualItem: VirtualItem, props: ListItemVirtualProps) => {
+    const content = renderItem(virtualItem);
+    return (
+      <ListBoxMulti.Option
+        {...props}
+        itemKey={String(virtualItem.key)}
+        data-index={virtualItem.index} // Needed for custom `rangeExtractor`
+        label={formatItemLabel(String(virtualItem.key))}
+        className={cx(cl['bk-list-box-lazy__item'])}
+      >
+        {typeof content !== 'string' ? content : undefined}
+      </ListBoxMulti.Option>
+    );
+  }, [formatItemLabel, renderItem]);
+  
+  return (
+    <ListBoxMulti
+      {...propsRest}
+      ref={mergeRefs(listBoxRef, propsRest.ref)}
+      className={cx(
+        { [cl['bk-list-box-lazy']]: !unstyled },
+        propsRest.className,
+      )}
+      {...stateProps}
+      formatItemLabel={formatItemLabel}
+      placeholderEmpty={null}
+    >
+      <ListBoxVirtualList
+        scrollElement={scrollElement}
+        status={status}
+        placeholderEmpty={placeholderEmpty}
+        virtualItemKeys={virtualItemKeys}
+        limit={limit}
+        pageSize={pageSize}
+        hasMoreItems={hasMoreItems}
+        onLimitChange={onLimitChange ?? onUpdateLimit}
+        loadMoreItemsTriggerType={loadMoreItemsTriggerType}
+        loadMoreItemsTrigger={loadMoreItemsTrigger}
+        renderVirtualItem={renderVirtualItem}
+      />
+    </ListBoxMulti>
   );
 };
