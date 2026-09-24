@@ -12,7 +12,7 @@
     flex: 1;
     border-block-end: 1px solid bk.$theme-form-rule-default;
 
-    .bk-search-input__input{
+    .bk-search-input__input {
       border: none;
       inline-size: 100%;
       input {
@@ -40,7 +40,7 @@
   .bk-search-input--active {
     border-block-end: 1px solid bk.$theme-form-rule-focused;
   }
-
+  
   .bk-multi-search__filters {
     display: flex;
     margin-block-start: bk.$spacing-3;
@@ -135,5 +135,15 @@
 
   .bk-multi-search__dropdown-error-msg {
     padding: bk.$spacing-3;
+  }
+}
+
+@layer baklava.overrides {
+  .bk-multi-search__dropdown {
+    .bk-multi-search__dropdown__action {
+      text-transform: inherit;
+      color: inherit;
+      font: inherit;
+    }
   }
 }
