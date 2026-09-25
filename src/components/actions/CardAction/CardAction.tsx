@@ -54,6 +54,12 @@ const CardActionHeading = (props: React.ComponentProps<typeof Card.Heading>) =>
     className={cx(cl['bk-card-action__heading'], props.className)}
   />;
 
+const CardActionFooter = (props: React.ComponentProps<typeof Card.Footer>) =>
+  <Card.Footer
+    {...props}
+    className={cx(cl['bk-card-action__footer'], props.className)}
+  />;
+
 const CardActionContent = (props: React.ComponentProps<'div'>) =>
   <div
     {...props}
@@ -94,6 +100,7 @@ export const CardAction = Object.assign(
     Link: CardActionLink,
     LinkAsButton: CardActionLinkAsButton,
     Heading: CardActionHeading,
+    Footer: CardActionFooter,
     Content: CardActionContent,
   },
 );

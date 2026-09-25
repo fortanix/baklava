@@ -173,6 +173,19 @@ export const CardActionWithHeading: Story = {
   },
 };
 
+export const CardActionWithHeadingAndFooter: Story = {
+  args: {
+    children: (
+      <>
+        <CardAction.Heading icon={<Icon icon="account"/>}>Card heading – Will wrap if too long</CardAction.Heading>
+        <CardAction.Content>Content</CardAction.Content>
+        <CardAction.Button label="Action" onPress={handlePress}/>
+        <CardAction.Footer>Footer</CardAction.Footer>
+      </>
+    ),
+  },
+};
+
 export const CardActionWithSubgrid: Story = {
   args: {
     children: (

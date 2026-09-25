@@ -53,6 +53,11 @@
     }
   }
   
+  .#{$name}__footer {
+    margin-block-start: bk.$spacing-3;
+    margin-block-end: calc(-1 * #{bk.$spacing-4}); // counters padding-bottom wo. the need of a --with-footer aux. class
+  }
+  
   &.#{$name}--flat > .#{$name}__heading {
     margin-block-end: bk.$spacing-1;
   }
