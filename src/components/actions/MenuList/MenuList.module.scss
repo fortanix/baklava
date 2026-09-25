@@ -268,13 +268,6 @@
         @include menu-list-item-interactive;
       }
       
-      &.bk-menu-list__item--action, &.bk-menu-list__item--link {
-        @include bk.font(bk.$font-family-display, bk.$font-weight-semibold);
-        font-size: bk.$font-size-s;
-        text-transform: uppercase;
-        color: #{bk.$theme-button-tertiary-text-default};
-      }
-      
       &.bk-menu-list__item--option {
         .bk-menu-list__item__checkbox {
           pointer-events: none; // Pass-through to the option
@@ -311,8 +304,17 @@
       gap: 1ch;
     }
     
-    // Place footer content at the end of flex ordering, so that it is shown _after_ the empty/loading indicators
-    .bk-menu-list__footer { order: 1; }
+    .bk-menu-list__footer {
+      // Place footer content at the end of flex ordering, so that it is shown _after_ the empty/loading indicators
+      order: 1;
+      
+      .bk-menu-list__item--action, .bk-menu-list__item--link {
+        @include bk.font(bk.$font-family-display, bk.$font-weight-semibold);
+        font-size: bk.$font-size-s;
+        text-transform: uppercase;
+        color: #{bk.$theme-button-tertiary-text-default};
+      }
+    }
     
     :is(.bk-menu-list__item, .bk-menu-list__segment) {
       &.bk-menu-list__sticky--start {

@@ -285,7 +285,6 @@ export const MenuListItemAction = (props: MenuListItemActionProps) => {
   return (
     <Button
       variant="basic"
-      kind="tertiary"
       wrap={false}
       role="menuitem"
       aria-disabled={isDisabled || undefined}

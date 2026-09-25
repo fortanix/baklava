@@ -137,13 +137,3 @@
     padding: bk.$spacing-3;
   }
 }
-
-@layer baklava.overrides {
-  .bk-multi-search__dropdown {
-    .bk-multi-search__dropdown__action {
-      text-transform: inherit;
-      color: inherit;
-      font: inherit;
-    }
-  }
-}
