@@ -9,7 +9,7 @@ import * as React from 'react';
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Input } from '../Input/Input.tsx';
 
-import { type ItemKey, SelectMulti } from './SelectMulti.tsx';
+import { type ItemKey, SelectedState, SelectMulti } from './SelectMulti.tsx';
 
 
 type SelectMultiArgs = React.ComponentProps<typeof SelectMulti>;
@@ -34,6 +34,8 @@ const fruits = {
 };
 type FruitKey = keyof typeof fruits;
 const formatFruitLabel = (itemKey: ItemKey): string => fruits[itemKey as FruitKey] ?? 'UNKNOWN';
+const formatFruitsLabel = (itemKeys: SelectedState): string =>
+  [...itemKeys.values()].map(itemKey => formatFruitLabel(itemKey)).join(', ') || '(none)';
 
 export default {
   component: SelectMulti,
@@ -45,7 +47,7 @@ export default {
   },
   args: {
     label: 'Test select',
-    formatItemLabel: formatFruitLabel,
+    formatItemLabel: formatFruitsLabel,
     options: (
       <>
         {Object.entries(fruits).map(([fruitKey, fruitName]) =>
@@ -92,12 +94,14 @@ export const SelectMultiWithAutoResize: Story = {
     automaticResize: true,
     label: 'Test select',
     defaultSelected: new Set(['long-option']),
-    formatItemLabel: (itemKey: ItemKey) => {
-      if (itemKey === 'long-option') {
-        return 'A very long option label to show automatic resizing';
-      } else {
-        return formatFruitLabel(itemKey);
-      }
+    formatItemLabel: (itemKeys: SelectedState) => {
+      return [...itemKeys.values()].map(itemKey => {
+        if (itemKey === 'long-option') {
+          return 'A very long option label to show automatic resizing';
+        } else {
+          return formatFruitLabel(itemKey);
+        }
+      }).join(', ') || '(none)';
     },
     options: (
       <>
@@ -125,7 +129,7 @@ const SelectMultiControlledC = ({ defaultSelected, ...props }: React.ComponentPr
           <SelectMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         selected={selectedOptions}
-        onSelect={setSelectedOptions}
+        onSelectedChange={setSelectedOptions}
       />
     </>
   );

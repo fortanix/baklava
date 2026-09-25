@@ -10,26 +10,26 @@ import { classNames as cx, type ComponentProps } from '../../../../util/componen
 import { Input as InputDefault } from '../Input/Input.tsx';
 import {
   type ItemKey,
-  type ItemDetails,
-  MenuMultiProvider,
-} from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
+  ListBoxMultiProvider,
+  type SelectedState,
+} from '../../../overlays/ListBoxMultiProvider/ListBoxMultiProvider.tsx';
 
 import cl from './SelectMulti.module.scss';
 
 
-export { cl as SelectMultiClassNames };
+export { cl as SelectClassNames };
 
-export type { ItemKey, ItemDetails };
-export type SelectMultiInputProps = ComponentProps<typeof InputDefault>;
+export type { ItemKey, SelectedState };
+export type SelectInputProps = ComponentProps<typeof InputDefault>;
 
 /*
-A `SelectMulti` is a single-select non-editable combobox.
+A `Select` is a single-select non-editable combobox.
 
 References:
 - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
 */
 
-export type SelectMultiProps = Omit<SelectMultiInputProps, 'onSelect'> & {
+export type SelectMultiProps = Omit<SelectInputProps, 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
@@ -37,27 +37,27 @@ export type SelectMultiProps = Omit<SelectMultiInputProps, 'onSelect'> & {
   label: string,
   
   /** Render the given item key as a string label. */
-  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
+  formatItemLabel: (selectedOptionKeys: SelectedState) => string,
   
   /** The options list to be shown in the dropdown menu. */
-  options: React.ComponentProps<typeof MenuMultiProvider>['items'],
+  options: React.ComponentProps<typeof ListBoxMultiProvider>['items'],
   
   /** A custom `Input` component. */
-  Input?: undefined | React.ComponentType<SelectMultiInputProps> & {
+  Input?: undefined | React.ComponentType<SelectInputProps> & {
     Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
   },
   
   /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
-  defaultSelected?: undefined | Set<ItemKey>,
+  defaultSelected?: undefined | SelectedState,
   
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */
-  selected?: undefined | Set<ItemKey>,
+  selected?: undefined | SelectedState,
   
   /** Event handler to be called when the selected option state changes. */
-  onSelect?: undefined | ((selectedItems: Set<ItemKey>, itemDetails: Map<ItemKey, ItemDetails>) => void),
+  onSelectedChange?: undefined | ((selectedItemKeys: SelectedState) => void),
   
-  /** Additional props to be passed to the `MenuMultiProvider`. */
-  dropdownProps?: undefined | Partial<React.ComponentProps<typeof MenuMultiProvider>>,
+  /** Additional props to be passed to the `ListBoxMultiProvider`. */
+  dropdownProps?: undefined | Partial<React.ComponentProps<typeof ListBoxMultiProvider>>,
 };
 export const SelectMulti = Object.assign(
   (props: SelectMultiProps) => {
@@ -71,7 +71,7 @@ export const SelectMulti = Object.assign(
       // Dropdown props
       defaultSelected,
       selected,
-      onSelect,
+      onSelectedChange,
       dropdownProps = {},
       // Hidden input props
       name,
@@ -82,9 +82,8 @@ export const SelectMulti = Object.assign(
     const InputAction = Input.Action ?? InputDefault.Action;
     
     return (
-      <MenuMultiProvider
+      <ListBoxMultiProvider
         label={label}
-        formatItemLabel={formatItemLabel}
         items={options}
         role="listbox"
         keyboardInteractions="form-control"
@@ -92,18 +91,18 @@ export const SelectMulti = Object.assign(
         offset={0} // Make the dropdown flush with the select element
         defaultSelected={defaultSelected}
         selected={selected}
-        onSelect={onSelect}
+        onSelectedChange={onSelectedChange}
         {...dropdownProps}
       >
         {({ props, open, requestOpen, selectedOptions }) => {
           // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
           const { ref: anchorRef, ...anchorProps } = props({
-            placeholder: 'Select options',
+            placeholder: 'Select an option',
             'aria-disabled': true,
             readOnly: true, // Make the input non-editable, but still focusable
             ...propsRest,
             className: cx(cl['bk-select-multi'], { [cl['bk-select-multi--open']]: open }, propsRest.className),
-            value: [...selectedOptions.values()].map(({ label }) => label).join(', '),
+            value: selectedOptions.size === 0 ? '' : formatItemLabel(selectedOptions),
             onChange: () => {},
           });
           
@@ -123,7 +122,7 @@ export const SelectMulti = Object.assign(
                     // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/combobox_role
                     tabIndex={-1}
                     icon="caret-down"
-                    className={cx(cl['bk-select-multi__arrow'])}
+                    className={cx(cl['bk-select__arrow'])}
                     label={open ? 'Close dropdown' : 'Open dropdown'}
                     onPress={() => {}}
                   />
@@ -131,7 +130,7 @@ export const SelectMulti = Object.assign(
                 {...propsMerged}
                 inputProps={{
                   ...propsMerged.inputProps,
-                  className: cx(cl['bk-select-multi__input'], propsMerged.inputProps?.className),
+                  className: cx(cl['bk-select__input'], propsMerged.inputProps?.className),
                 }}
                 containerProps={{
                   ...propsMerged.containerProps,
@@ -139,7 +138,7 @@ export const SelectMulti = Object.assign(
                   ref: anchorRef as React.Ref<HTMLDivElement>,
                 }}
               />
-              {/* Render a hidden input with the selected option key (rather than the human-readable label). */}
+              {/* Render a hidden input with the selected option keys (rather than the human-readable label). */}
               {typeof name === 'string' &&
                 [...selectedOptions.entries()].map(([selectedOptionKey, selectedOption]) =>
                   <input
@@ -155,14 +154,15 @@ export const SelectMulti = Object.assign(
             </>
           );
         }}
-      </MenuMultiProvider>
+      </ListBoxMultiProvider>
     );
   },
   {
-    Static: MenuMultiProvider.Static,
-    Option: MenuMultiProvider.Option,
-    Header: MenuMultiProvider.Header,
-    Action: MenuMultiProvider.Action,
-    FooterActions: MenuMultiProvider.FooterActions,
+    Option: ListBoxMultiProvider.Option,
+    Static: ListBoxMultiProvider.Static,
+    Segment: ListBoxMultiProvider.Segment,
+    SegmentVirtual: ListBoxMultiProvider.SegmentVirtual,
+    Group: ListBoxMultiProvider.Group,
+    Footer: ListBoxMultiProvider.Footer,
   },
 );

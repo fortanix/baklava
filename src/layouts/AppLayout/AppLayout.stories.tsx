@@ -141,6 +141,8 @@ const content1 = (
             <Select.Option itemKey="option-3" label="Option 3">Option 3</Select.Option>
           </>
         }
+        // @ts-ignore FIXME: need a generic `Select<K>` for the `ItemKey` subtype
+        formatItemLabel={itemKey => itemKey.replace('option-', 'Option ')}
       />
     </Panel>
     
@@ -195,6 +197,8 @@ const title2 = (
       label="Select project"
       placeholder="Select project"
       defaultSelected={projects.p1}
+      // @ts-ignore FIXME: need a generic `Select<K>` for the `ItemKey` subtype
+      formatItemLabel={itemKey => projects[itemKey]}
       options={selectOptions}
       Input={CustomInput}
     />

@@ -82,6 +82,8 @@ const preview = {
               'Menu',
               'MenuProvider',
               'MenuMultiProvider',
+              'ListBoxProvider',
+              'ListBoxMultiProvider',
               'ContextMenuProvider',
             ],
             'lists',

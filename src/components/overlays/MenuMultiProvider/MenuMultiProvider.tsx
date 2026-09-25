@@ -588,7 +588,7 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
   });
   
   const selectedFromInternalSelected = React.useMemo(() => {
-    return new Set(internalSelected.keys()); // 'null' for controlled 'Menu'
+    return new Set(internalSelected.keys()); // 'null' for controlled
   }, [internalSelected]);
   
   const handleSelect = React.useCallback((selectedKeys: Set<ItemKey>) => {
@@ -635,6 +635,7 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
     Action: MenuSelectMulti.Action,
     Link: MenuSelectMulti.Link,
     Segment: MenuSelectMulti.Segment,
+    SegmentVirtual: MenuSelectMulti.SegmentVirtual,
     Group: MenuSelectMulti.Group,
     Footer: MenuSelectMulti.Footer,
   },

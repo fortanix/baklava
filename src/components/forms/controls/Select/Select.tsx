@@ -10,16 +10,16 @@ import { classNames as cx, type ComponentProps } from '../../../../util/componen
 import { Input as InputDefault } from '../Input/Input.tsx';
 import {
   type ItemKey,
-  type ItemDetails,
-  MenuProvider,
-} from '../../../overlays/MenuProvider/MenuProvider.tsx';
+  type SelectedState,
+  ListBoxProvider,
+} from '../../../overlays/ListBoxProvider/ListBoxProvider.tsx';
 
 import cl from './Select.module.scss';
 
 
 export { cl as SelectClassNames };
 
-export type { ItemKey, ItemDetails };
+export type { ItemKey, SelectedState };
 export type SelectInputProps = ComponentProps<typeof InputDefault>;
 
 /*
@@ -37,10 +37,10 @@ export type SelectProps = Omit<SelectInputProps, 'onSelect'> & {
   label: string,
   
   /** Render the given item key as a string label. */
-  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
+  formatItemLabel: (itemKey: ItemKey) => string,
   
   /** The options list to be shown in the dropdown menu. */
-  options: React.ComponentProps<typeof MenuProvider>['items'],
+  options: React.ComponentProps<typeof ListBoxProvider>['items'],
   
   /** A custom `Input` component. */
   Input?: undefined | React.ComponentType<SelectInputProps> & {
@@ -48,16 +48,16 @@ export type SelectProps = Omit<SelectInputProps, 'onSelect'> & {
   },
   
   /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
-  defaultSelected?: undefined | null | ItemKey,
+  defaultSelected?: undefined | SelectedState,
   
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */
-  selected?: undefined | null | ItemKey,
+  selected?: undefined | SelectedState,
   
   /** Event handler to be called when the selected option state changes. */
-  onSelect?: undefined | ((selectedItemKey: null | ItemKey, selectedItemDetails: null | ItemDetails) => void),
+  onSelectedChange?: undefined | ((selectedItemKey: SelectedState) => void),
   
-  /** Additional props to be passed to the `MenuProvider`. */
-  dropdownProps?: undefined | Partial<React.ComponentProps<typeof MenuProvider>>,
+  /** Additional props to be passed to the `ListBoxProvider`. */
+  dropdownProps?: undefined | Partial<React.ComponentProps<typeof ListBoxProvider>>,
 };
 export const Select = Object.assign(
   (props: SelectProps) => {
@@ -71,7 +71,7 @@ export const Select = Object.assign(
       // Dropdown props
       defaultSelected,
       selected,
-      onSelect,
+      onSelectedChange,
       dropdownProps = {},
       // Hidden input props
       name,
@@ -82,9 +82,8 @@ export const Select = Object.assign(
     const InputAction = Input.Action ?? InputDefault.Action;
     
     return (
-      <MenuProvider
+      <ListBoxProvider
         label={label}
-        formatItemLabel={formatItemLabel}
         items={options}
         role="listbox"
         keyboardInteractions="form-control"
@@ -92,7 +91,7 @@ export const Select = Object.assign(
         offset={0} // Make the dropdown flush with the select element
         defaultSelected={defaultSelected}
         selected={selected}
-        onSelect={onSelect}
+        onSelectedChange={onSelectedChange}
         {...dropdownProps}
       >
         {({ props, open, requestOpen, selectedOption }) => {
@@ -103,7 +102,7 @@ export const Select = Object.assign(
             readOnly: true, // Make the input non-editable, but still focusable
             ...propsRest,
             className: cx(cl['bk-select'], { [cl['bk-select--open']]: open }, propsRest.className),
-            value: selectedOption === null ? '' : selectedOption.label,
+            value: selectedOption === null ? '' : formatItemLabel(selectedOption),
             onChange: () => {},
           });
           
@@ -141,19 +140,20 @@ export const Select = Object.assign(
               />
               {/* Render a hidden input with the selected option key (rather than the human-readable label). */}
               {typeof name === 'string' &&
-                <input type="hidden" form={form} name={name} value={selectedOption?.itemKey ?? ''}/>
+                <input type="hidden" form={form} name={name} value={selectedOption ?? ''}/>
               }
             </>
           );
         }}
-      </MenuProvider>
+      </ListBoxProvider>
     );
   },
   {
-    Static: MenuProvider.Static,
-    Option: MenuProvider.Option,
-    Header: MenuProvider.Header,
-    Action: MenuProvider.Action,
-    FooterActions: MenuProvider.FooterActions,
+    Option: ListBoxProvider.Option,
+    Static: ListBoxProvider.Static,
+    Segment: ListBoxProvider.Segment,
+    SegmentVirtual: ListBoxProvider.SegmentVirtual,
+    Group: ListBoxProvider.Group,
+    Footer: ListBoxProvider.Footer,
   },
 );

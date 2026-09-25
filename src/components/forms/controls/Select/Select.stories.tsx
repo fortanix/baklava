@@ -126,7 +126,7 @@ const SelectControlledC = ({ defaultSelected, ...props }: React.ComponentProps<t
         )}
         selected={selectedOption}
         // @ts-ignore FIXME: use generic to pass down `FruitKey` subtype?
-        onSelect={setSelectedOption}
+        onSelectedChange={setSelectedOption}
       />
     </>
   );
@@ -157,6 +157,7 @@ export const SelectInForm: Story = {
   args: {
     form: 'story-form',
     name: 'story_component1',
+    formatItemLabel: itemKey => itemKey.replace('option-', 'Option '),
     options: (
       <>
         {Array.from({ length: 8 }, (_, i) => i + 1).map(index =>

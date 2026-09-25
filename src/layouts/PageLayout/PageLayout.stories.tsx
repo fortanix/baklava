@@ -56,6 +56,8 @@ const title2 = (
       label="Select project"
       placeholder="Select project"
       defaultSelected={projects.p1}
+      // @ts-ignore FIXME: need a generic `Select<K>` for the `ItemKey` subtype
+      formatItemLabel={itemKey => projects[itemKey]}
       options={selectOptions}
       Input={CustomInput}
       automaticResize

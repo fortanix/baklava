@@ -12,7 +12,6 @@ import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
 import { type ItemKey, ListBox } from './ListBox.tsx';
-import { MenuListVirtual } from '../../../actions/MenuListVirtual/MenuListVirtual.tsx';
 
 
 type ListBoxArgs = React.ComponentProps<typeof ListBox>;
@@ -338,7 +337,7 @@ const ListBoxWithRefC = (props: React.ComponentProps<typeof ListBox>) => {
   
   React.useEffect(() => {
     if (ref.current) {
-      ref.current._bkListBoxFocusLast();
+      ref.current._bkFocusLast();
     }
   }, []);
   
@@ -384,7 +383,7 @@ export const ListBoxVirtualized: Story = {
   args: {
     empty: false,
     children: (
-      <MenuListVirtual items={{
+      <ListBox.SegmentVirtual items={{
         count: 1000,
         renderItem: (props, virtualItem) =>
           <ListBox.Option key={virtualItem.key} itemKey={String(virtualItem.key)} {...props}

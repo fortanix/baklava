@@ -30,6 +30,7 @@ export type { ItemKey, SelectedSingleState, SelectedMultiState };
 
 const subcomponentsGeneric = {
   Segment: MenuList.Segment,
+  SegmentVirtual: MenuList.SegmentVirtual,
   Footer: MenuList.Footer,
   Static: MenuList.Static,
 } as const;

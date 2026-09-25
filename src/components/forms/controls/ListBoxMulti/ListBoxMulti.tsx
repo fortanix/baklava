@@ -43,11 +43,11 @@ export type SelectedStateProps = {
 //
 
 export interface ListBoxMultiRef extends HTMLDivElement {
-  _bkListBoxFocusFirst: () => void,
-  _bkListBoxFocusLast: () => void,
+  _bkFocusFirst: () => void,
+  _bkFocusLast: () => void,
   // TODO:
-  //_bkListBoxSelectNone: () => void,
-  //_bkListBoxSelectAll: () => void,
+  //_bkSelectNone: () => void,
+  //_bkSelectAll: () => void,
 };
 
 
@@ -194,8 +194,8 @@ export const ListBoxMulti = Object.assign(
       if (!listBoxElement) { return null; }
       
       return Object.assign(listBoxElement, {
-        _bkListBoxFocusFirst: () => { collectionFocusItemAt('first'); },
-        _bkListBoxFocusLast: () => { collectionFocusItemAt('last'); },
+        _bkFocusFirst: () => { collectionFocusItemAt('first'); },
+        _bkFocusLast: () => { collectionFocusItemAt('last'); },
       });
     }, [collectionFocusItemAt]);
     
@@ -258,6 +258,7 @@ export const ListBoxMulti = Object.assign(
   },
   {
     Segment: MenuList.Segment,
+    SegmentVirtual: MenuList.SegmentVirtual,
     Footer: MenuList.Footer,
     Group: MenuList.Group,
     Static: MenuList.Static,

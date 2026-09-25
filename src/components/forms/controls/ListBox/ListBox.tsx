@@ -43,8 +43,8 @@ export type SelectedStateProps = {
 //
 
 export interface ListBoxRef extends React.ComponentRef<typeof MenuList> {
-  _bkListBoxFocusFirst: () => void,
-  _bkListBoxFocusLast: () => void,
+  _bkFocusFirst: () => void,
+  _bkFocusLast: () => void,
 };
 
 
@@ -175,29 +175,10 @@ export const ListBox = Object.assign(
       if (!listBoxElement) { return null; }
       
       return Object.assign(listBoxElement, {
-        _bkListBoxFocusFirst: () => { collectionFocusItemAt('first'); },
-        _bkListBoxFocusLast: () => { collectionFocusItemAt('last'); },
+        _bkFocusFirst: () => { collectionFocusItemAt('first'); },
+        _bkFocusLast: () => { collectionFocusItemAt('last'); },
       });
     }, [collectionFocusItemAt]);
-    
-    /* formatItemKey
-    React.useEffect(() => {
-      return store.subscribe((state, prevState) => {
-        if (state.selectedItem !== prevState.selectedItem && state.selectedItem !== null) {
-          const itemKey = state.selectedItem;
-          const label: string = formatItemLabel?.(itemKey)
-            ?? state._internalItemsRegistry.get(itemKey)?.itemRef.current?.textContent
-            ?? itemKey;
-          const selectedItem: null | ItemDetails = state.selectedItem === null ? null : {
-            itemKey,
-            label,
-          };
-          
-          onSelect?.(itemKey, selectedItem);
-        }
-      });
-    }, [store, onSelect, formatItemLabel]);
-    */
     
     // Delegate 'Enter' key to the hidden input for form submissions
     const hiddenInputRef = React.useRef<React.ComponentRef<typeof HiddenSelectedState>>(null);
@@ -239,6 +220,7 @@ export const ListBox = Object.assign(
   },
   {
     Segment: MenuList.Segment,
+    SegmentVirtual: MenuList.SegmentVirtual,
     Footer: MenuList.Footer,
     Group: MenuList.Group,
     Static: MenuList.Static,

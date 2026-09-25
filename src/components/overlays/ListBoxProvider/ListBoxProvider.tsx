@@ -12,7 +12,7 @@ import {
 } from '../../util/overlays/floating-ui/useFloatingElement.tsx';
 
 // Components
-import { type ItemKey, type SelectedSingleState, MenuSelect } from '../Menu/Menu.tsx';
+import { type ItemKey, type SelectedState, ListBox } from '../../forms/controls/ListBox/ListBox.tsx';
 import {
   BaseAnchorRenderArgs,
   selectionStateFromItemKey,
@@ -27,23 +27,19 @@ import {
 } from '../MenuMultiProvider/MenuMultiProvider.tsx';
 
 // Styles
-import cl from './MenuProvider.module.scss';
+//import cl from './ListBoxProvider.module.scss';
 
 
-export { cl as MenuProviderClassNames };
-export type { ItemKey };
+//export { cl as ListBoxProviderClassNames };
+export type { ItemKey, SelectedState };
 
-type MenuSelectProps = React.ComponentProps<typeof MenuSelect>;
+type ListBoxProps = React.ComponentProps<typeof ListBox>;
 
-/**
- * MENU PROVIDER
- * Provider for a menu overlay that is triggered by (and positioned relative to) some anchor element.
- * ---------------------------------------------------------------------------------------------------------------------
- */
+
 export type AnchorRenderArgs = BaseAnchorRenderArgs & {
-  selectedOption: SelectedSingleState,
+  selectedOption: SelectedState,
 };
-export type MenuProviderProps = Omit<MenuSelectProps, 'ref' | 'children' | 'label' | 'size'> & {
+export type ListBoxProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'label' | 'size'> & {
   /** A React ref to control the menu provider imperatively. */
   ref?: undefined | React.Ref<null | MenuProviderRef>,
   /** For controlled open state. */
@@ -72,7 +68,7 @@ export type MenuProviderProps = Omit<MenuSelectProps, 'ref' | 'children' | 'labe
   triggerAction?: undefined | UseFloatingElementOptions['triggerAction'],
   
   /** The (inline) size of the menu. */
-  menuSize?: MenuSelectProps['size'],
+  menuSize?: ListBoxProps['size'],
   
   /**
    * The kind of keyboard interactions to include:
@@ -92,7 +88,7 @@ export type MenuProviderProps = Omit<MenuSelectProps, 'ref' | 'children' | 'labe
   /** Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
   enablePreciseTracking?: undefined | UseFloatingElementOptions['enablePreciseTracking'],
 };
-export const MenuProvider = Object.assign((props: MenuProviderProps) => {
+export const ListBoxProvider = Object.assign((props: ListBoxProviderProps) => {
   const {
     label,
     children,
@@ -116,7 +112,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
     ...propsRest
   } = props;
   
-  const menuRef = React.useRef<React.ComponentRef<typeof MenuSelect>>(null);
+  const menuRef = React.useRef<React.ComponentRef<typeof ListBox>>(null);
   const menuId = React.useId();
   const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
   const selectedSet = React.useMemo(() => selectionStateFromItemKey(selected), [selected]);
@@ -181,7 +177,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
   const floatingProps = getFloatingProps({
     popover: 'manual',
     style: floatingStyles,
-    className: cx(cl['bk-menu-provider__list-box']),
+    //className: cx(cl['bk-menu-provider__list-box']),
   });
   
   const mergedProps = mergeProps(
@@ -192,17 +188,17 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
     },
   );
   
-  const mergedListBoxRef = mergeRefs<React.ComponentRef<typeof MenuSelect>>(
+  const mergedListBoxRef = mergeRefs<React.ComponentRef<typeof ListBox>>(
     menuRef,
     refs.setFloating,
-    floatingProps.ref as React.Ref<React.ComponentRef<typeof MenuSelect>>,
+    floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBox>>,
   );
   
   const selectedFromInternalSelected = React.useMemo(() => {
     return internalSelected.keys().next().value ?? null; // 'null' for controlled
   }, [internalSelected]);
   
-  const handleSelect = React.useCallback((itemKey: SelectedSingleState) => {
+  const handleSelect = React.useCallback((itemKey: SelectedState) => {
     onSelectedChange?.(itemKey);
     handleInternalSelect(itemKey === null ? new Set() : new Set([itemKey]));
   }, [onSelectedChange, handleInternalSelect]);
@@ -211,7 +207,7 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
     <>
       {anchor}
       {isMounted && (
-        <MenuSelect
+        <ListBox
           {...mergedProps}
           ref={mergedListBoxRef}
           size={menuSize}
@@ -225,19 +221,16 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
           {typeof items === 'function'
             ? items({ close: () => { setIsOpen(false); } })
             : items}
-        </MenuSelect>
+        </ListBox>
       )}
     </>
   );
 }, {
-    Option: MenuSelect.Option,
-    Static: MenuSelect.Static,
-    Action: MenuSelect.Action,
-    Link: MenuSelect.Link,
-    Segment: MenuSelect.Segment,
-    SegmentVirtual: MenuSelect.SegmentVirtual,
-    Group: MenuSelect.Group,
-    Footer: MenuSelect.Footer,
+    Option: ListBox.Option,
+    Static: ListBox.Static,
+    Segment: ListBox.Segment,
+    SegmentVirtual: ListBox.SegmentVirtual,
+    Group: ListBox.Group,
+    Footer: ListBox.Footer,
   },
 );
-

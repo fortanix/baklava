@@ -16,6 +16,7 @@ import {
   useVirtualizer,
 } from '@tanstack/react-virtual';
 
+import { useCssRemTracker, useCssRlhTracker } from '../../../context/BaklavaProvider.tsx';
 import { type MenuListProps, MenuListSegment } from './MenuList.tsx';
 
 import cl from './MenuListSegmentVirtual.module.scss';
@@ -60,8 +61,10 @@ export type VirtualItemsChunk = {
    * index itself will serve as the key (may lead to less efficient rendering if items are rearranged).
    */
   getItemKey?: (index: number) => VirtualItem['key'],
+  /** The estimated block size of the item with the given `index`. */
+  estimateSize?: undefined | ((index: number) => number),
+  /** Render callback to render the given virtual item descriptor. */
   renderItem: (props: VirtualItemProps, virtualItem: VirtualItem) => React.ReactNode,
-  estimateSize: (index: number) => number,
 };
 
 
@@ -198,6 +201,10 @@ const createChunkLookup = (chunks: Array<VirtualItemsChunk>) => {
 type UseMenuListVirtualizerOptions = PartialKeys<VirtualizerOptions, 'count' | 'estimateSize'>;
 /** Create a `Virtualizer` instance given an array of menu list chunks. */
 const useMenuListVirtualizer = (chunks: Array<VirtualItemsChunk>, options: UseMenuListVirtualizerOptions) => {
+  const remInPx = useCssRemTracker();
+  const rlhInPx = useCssRlhTracker();
+  const itemBlockHeight = Math.round(Math.round((8/14) * remInPx) * 2 + rlhInPx + 1);
+  
   const chunkForIndex = createChunkLookup(chunks);
   
   type AggregatedOptions = RequireOnly<VirtualizerOptions, 'count' | 'estimateSize'> & {
@@ -241,7 +248,14 @@ const useMenuListVirtualizer = (chunks: Array<VirtualItemsChunk>, options: UseMe
         
         const { startIndex, chunk } = result;
         const indexRelative = index - startIndex;
-        return chunk.estimateSize(indexRelative);
+        
+        // Note: we want a default estimate here, since having consumers hardcode this will make it hard to change
+        // in the future.
+        // FIXME: this hardcoded `37px` will break on smaller screen size as our fluid typography kicks in. Idea:
+        // track the current value of `1rem` and then rerender this component when it changes? We can use the DOM
+        // `resize` event to detect changes in the viewport size.
+        const defaultEstimate = itemBlockHeight;
+        return chunk.estimateSize?.(indexRelative) ?? defaultEstimate;
       },
     } satisfies AggregatedOptions,
   );
@@ -317,18 +331,18 @@ const useNearEndTracker = ({ virtualizer, onNearEnd }: UseScrollNearEndTrackerPa
   // Idea: `useState` to track whether `totalItems` was ever non-zero and only then do this check? However, what if the
   // list is indeed empty, should we still count isNearEnd for actually empty lists?
   
-  //console.log('x', isNearEnd, totalItems);
   const onNearEndDebounced = React.useMemo(() => debounce(onNearEnd, 100), [onNearEnd]);
   const onNearEndEvent = React.useEffectEvent(onNearEndDebounced);
   // Note: if `totalItems` changes and `isNearEnd` is still true, we should again notify the consumer.
   // biome-ignore lint/correctness/useExhaustiveDependencies(totalItems): See above.
+  // biome-ignore lint/correctness/useExhaustiveDependencies(isNearEnd): See above.
   React.useEffect(() => {
     window.setTimeout(() => {
       if (virtualizer.isAtEnd(40)) {
         onNearEndEvent();
       }
     }, 100);
-  }, [isNearEnd, totalItems]);
+  }, [isNearEnd, totalItems, virtualizer.isAtEnd]);
 };
 
 const useMenuListScrollContainer = () => {
@@ -428,7 +442,7 @@ export const MenuListSegmentVirtual = (props: MenuListSegmentVirtualProps) => {
               'aria-posinset': virtualItem.indexAbsolute + 1,
             },
             virtualItem,
-          )
+          ),
         ),
       )}
     </MenuListSegment>

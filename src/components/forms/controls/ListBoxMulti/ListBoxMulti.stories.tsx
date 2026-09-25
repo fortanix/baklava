@@ -343,7 +343,7 @@ const ListBoxMultiWithRefC = (props: React.ComponentProps<typeof ListBoxMulti>) 
   
   React.useEffect(() => {
     if (ref.current) {
-      ref.current._bkListBoxFocusLast();
+      ref.current._bkFocusLast();
     }
   }, []);
   
@@ -385,4 +385,20 @@ const ListBoxMultiWithManyOptionsC = (args: ListBoxMultiArgs) => {
 };
 export const ListBoxMultiWithManyOptions: Story = {
   render: args => <ListBoxMultiWithManyOptionsC {...args}/>,
+};
+
+export const ListBoxVirtualized: Story = {
+  args: {
+    empty: false,
+    children: (
+      <ListBoxMulti.SegmentVirtual items={{
+        count: 1000,
+        renderItem: (props, virtualItem) =>
+          <ListBoxMulti.Option key={virtualItem.key} itemKey={String(virtualItem.key)} {...props}
+            label={`Option ${virtualItem.index + 1}`}
+          />,
+        estimateSize: () => 37,
+      }}/>
+    ),
+  }
 };
