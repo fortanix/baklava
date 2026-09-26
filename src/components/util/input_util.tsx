@@ -18,14 +18,15 @@ export const inputSpecificPropKeys = {
   autoFocus: true,
   capture: true,
   checked: true,
+  //colorSpace: true, // Not yet in TypeScript lib
   defaultValue: true,
   disabled: true,
   form: true,
-  formAction: true,
-  formEncType: true,
-  formMethod: true,
-  formNoValidate: true,
-  formTarget: true,
+  formAction: true, // Only relevant for `<input type="submit|image">`
+  formEncType: true, // Only relevant for `<input type="submit|image">`
+  formMethod: true, // Only relevant for `<input type="submit|image">`
+  formNoValidate: true, // Only relevant for `<input type="submit|image">`
+  formTarget: true, // Only relevant for `<input type="submit|image">`
   height: true,
   list: true,
   max: true,
