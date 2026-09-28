@@ -138,7 +138,7 @@ export const CardWithFooter: Story = {
     children: (
       <>
         <LoremIpsum/>
-        <Card.Footer>this is a footer</Card.Footer>
+        <Card.Footer>This is a footer</Card.Footer>
       </>
     ),
   },

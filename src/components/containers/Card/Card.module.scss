@@ -6,6 +6,12 @@
 @use '../../../typography/Heading/Heading.mixins.scss' as heading;
 @use '../../graphics/Spinner/Spinner.module.scss' as spinner;
 
+@mixin hr() {
+  margin-block: bk.$spacing-3;
+  border: none;
+  border-block-start: bk.rem-from-px(1) solid bk.$theme-rule-default;
+}
+
 @mixin bk-card($name: bk-card) {
   --bk-card-background-color: #{bk.$theme-card-background-default};
   --bk-card-border-color: #{bk.$theme-card-border-default};
@@ -54,7 +60,8 @@
   }
   
   .#{$name}__footer {
-    margin-block-start: bk.$spacing-3;
+    @include hr;
+    padding-block-start: bk.$spacing-3;
     margin-block-end: calc(-1 * #{bk.$spacing-4}); // counters padding-bottom wo. the need of a --with-footer aux. class
   }
   
@@ -64,9 +71,7 @@
   
   // Separators
   hr {
-    margin-block: bk.$spacing-3;
-    border: none;
-    border-block-start: bk.rem-from-px(1) solid bk.$theme-rule-default;
+    @include hr;
   }
 }
 

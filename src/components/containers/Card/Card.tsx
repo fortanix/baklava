@@ -53,14 +53,10 @@ export const CardHeadingLink = ({ icon, Link = LinkDefault, ...propsRest }: Card
   );
 };
 
-export type CardFooterProps = ComponentProps<'footer'> & {
-  dividerClassName?: undefined | classNames.Argument,
-};
-export const CardFooter = ({ dividerClassName, ...propsRest }: CardFooterProps) => {
+export const CardFooter = (props: ComponentProps<'footer'>) => {
   return (
-    <footer className={cx(cl['bk-card__footer'], propsRest.className)}>
-      <hr className={cx(cl['bk-card__footer__hr'], dividerClassName)}/>
-      {propsRest.children}
+    <footer className={cx(cl['bk-card__footer'], props.className)}>
+      {props.children}
     </footer>
   );
 };
