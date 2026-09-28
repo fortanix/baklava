@@ -57,7 +57,7 @@ const CardActionHeading = (props: React.ComponentProps<typeof Card.Heading>) =>
 const CardActionFooter = (props: React.ComponentProps<typeof Card.Footer>) =>
   <Card.Footer
     {...props}
-    className={cx(cl['bk-card-action__footer'], props.className)}
+    className={props.className}
   />;
 
 const CardActionContent = (props: React.ComponentProps<'div'>) =>
