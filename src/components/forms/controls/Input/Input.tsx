@@ -145,14 +145,19 @@ export const Input = Object.assign(
     // Form association logic
     const useHiddenFormValue = typeof formValue !== 'undefined';
     const formAssociationProps = { form, name };
-    const renderHiddenFormAssociation = (formValue: string | Array<string>, props: typeof formAssociationProps) => {
-      if (Array.isArray(formValue)) {
+    const renderHiddenFormAssociation = (
+      formValue: null | string | Array<string>,
+      props: typeof formAssociationProps,
+    ) => {
+      if (typeof formValue === 'string') {
+        return <input {...props} type="hidden" value={formValue}/>;
+      } else if (Array.isArray(formValue)) {
         return formValue.map((value, index) =>
           // biome-ignore lint/suspicious/noArrayIndexKey: There is no other unique key available.
           <input key={index} {...props} name={`${props.name}[]`} type="hidden" value={value}/>
         );
       } else {
-        return <input {...props} type="hidden" value={formValue}/>;
+        return null;
       }
     };
     

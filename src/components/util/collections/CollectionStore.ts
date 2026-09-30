@@ -27,6 +27,15 @@ const queryItemElements = <E extends HTMLElement = HTMLElement>(
   return Array.from(elements) as Array<HTMLElement>;
 };
 
+const queryItemKeysOrdered = <E extends HTMLElement = HTMLElement>(
+  collectionId: string,
+  containerEl: E,
+) => {
+  return queryItemElements(collectionId, containerEl)
+    .map(el => el.getAttribute(`data-bk-coll-${collectionId}-item`))
+    .filter((key): key is ItemKey => key !== undefined);
+};
+
 const getCollectionIds = (element: HTMLElement): Array<string> => {
   const prefix = 'data-bk-coll-';
   return element.getAttributeNames()
@@ -98,8 +107,10 @@ export interface CollectionSlice extends CollectionState {
   collectionItemKeys: () => Set<ItemKey>,
   /** Returns whether the registry is currently empty. */
   collectionIsEmpty: () => boolean,
-  /** Returns whether the registry is currently empty. */
+  /** Returns the DOM elements (in order) for this collection. */
   collectionItemElements: () => Array<HTMLElement>,
+  /** Returns the item keys in DOM order. */
+  collectionItemKeysOrdered: () => Array<ItemKey>,
   /** Focus the given item key. */
   collectionFocusItem: (itemKey: ItemKey) => void,
   /** Focus the item at the given position in the DOM. */
@@ -144,6 +155,7 @@ export const createCollectionSlice = <E extends HTMLElement = HTMLElement>(
     collectionItemKeys: () => new Set(registry.keys()),
     collectionIsEmpty: () => registry.size === 0,
     collectionItemElements: () => ref.current ? queryItemElements(collectionId, ref.current) : [],
+    collectionItemKeysOrdered: () => ref.current ? queryItemKeysOrdered(collectionId, ref.current) : [],
     collectionFocusItem: itemKey => {
       const item = registry.get(itemKey) ?? null;
       if (item) {
