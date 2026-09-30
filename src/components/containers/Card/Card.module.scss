@@ -15,14 +15,13 @@
 @mixin bk-card($name: bk-card) {
   --bk-card-background-color: #{bk.$theme-card-background-default};
   --bk-card-border-color: #{bk.$theme-card-border-default};
-  --bk-card-inset: #{bk.$spacing-4};
+  --bk-card-inset: #{bk.$spacing-7};
   
   overflow: hidden;
   
   &:where(:not(.#{$name}--flat)) {
     //min-block-size: bk.$spacing-16;
     padding: var(--bk-card-inset);
-    padding-block-end: bk.$spacing-8;
     
     background: var(--bk-card-background-color);
     border: bk.$size-1 solid var(--bk-card-border-color);
@@ -62,7 +61,6 @@
   .#{$name}__footer {
     @include hr;
     padding-block-start: bk.$spacing-3;
-    margin-block-end: calc(-1 * #{bk.$spacing-4}); // counters padding-bottom wo. the need of a --with-footer aux. class
   }
   
   &.#{$name}--flat > .#{$name}__heading {
