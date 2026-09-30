@@ -123,8 +123,9 @@
       --negative-margin: calc(-1 * var(--bk-panel-inset-compensation));
       margin: var(--negative-margin) var(--negative-margin) 0 var(--negative-margin);
       
-      .bk-tabs__switcher {
+      > .bk-tabs__switcher {
         flex-direction: column;
+        flex-shrink: 0;
         inline-size: bk.rem-from-px(216);
         gap: bk.$spacing-3;
         padding: bk.$spacing-6 0;
@@ -132,8 +133,14 @@
         border-inline-end: 1px solid bk.$theme-side-nav-menu-background-hover;
 
         .bk-tabs__switcher__tab {
+          padding: bk.$spacing-2 bk.$spacing-4;
           font-weight: bk.$font-weight-regular;
           text-transform: capitalize;
+          
+          >.bk-tabs__switcher__tab__title,
+          >.bk-tabs__switcher__tab__hover-placeholder {
+            @include bk.text-one-line;
+          }
 
           >.bk-tabs__switcher__tab__hover-placeholder {
             font-weight: bk.$font-weight-regular;
@@ -164,7 +171,7 @@
         }
       }
 
-      .bk-tabs__tab-content {
+      > .bk-tabs__tab-content {
         flex: 1;
         padding: bk.$spacing-7;
         margin-block-end: var(--negative-margin);

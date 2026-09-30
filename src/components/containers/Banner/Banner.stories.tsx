@@ -84,14 +84,22 @@ export const BannerStandard: Story = {
   },
 };
 
+export const BannerFlat: Story = {
+  args: {
+    flat: true,
+    title: 'Banner flat',
+    children: 'The flat variant has no rounded borders.',
+  },
+};
+
 /**
  * If the `onClose` prop is given, the component will be rendered with a close button. It is up to the consumer
  * to handle the close event and (for example) hide the `Banner`.
  */
 export const BannerWithCloseButton: Story = {
   args: {
-    title: `Banner title`,
-    children: `A banner with a close button to hide the banner.`,
+    title: 'Banner title',
+    children: 'A banner with a close button to hide the banner.',
     showCloseAction: true,
   },
 };

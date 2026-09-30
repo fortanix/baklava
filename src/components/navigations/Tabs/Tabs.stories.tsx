@@ -121,6 +121,66 @@ export const VerticalTabs: StoryWithTrigger = {
   },
 };
 
+export const VerticalTabsWithLongTitles: StoryWithTrigger = {
+  ...BaseStory,
+  decorators: [Story => <Panel><Story /></Panel>],
+  args: {
+    ...BaseStory.args,
+    orientation: 'vertical',
+    options: defaultTabOptions.map((option, index) => {
+      return {
+        ...option,
+        title: `Tab ${index} - long title that should be truncated with ellipsis`,
+      };
+    }),
+  },
+};
+
+export const VerticalParentTabsWithHorizontalSubTabs: StoryWithTrigger = {
+  decorators: [
+    Story => (
+      <Panel>
+        <Story />
+      </Panel>
+    ),
+  ],
+  render: () => (
+    <TabWithTrigger
+      orientation="vertical"
+      defaultActiveTabKey="parent-tab-1"
+      options={[
+        {
+          tabKey: 'parent-tab-1',
+          title: 'Parent Tab 1',
+          render: () => (
+            <TabWithTrigger
+              orientation="horizontal"
+              defaultActiveTabKey="child-tab-1"
+              options={[
+                {
+                  tabKey: 'child-tab-1',
+                  title: 'Child Tab 1',
+                  render: () => <>Child Tab 1 contents</>,
+                },
+                {
+                  tabKey: 'child-tab-2',
+                  title: 'Child Tab 2',
+                  render: () => <>Child Tab 2 contents</>,
+                },
+              ]}
+            />
+          ),
+        },
+        {
+          tabKey: 'parent-tab-2',
+          title: 'Parent Tab 2',
+          render: () => <>Parent Tab 2 contents</>,
+        },
+      ]}
+    />
+  ),
+};
+
 export const Scrollable: StoryWithTrigger = {
   ...BaseStory,
   decorators: [

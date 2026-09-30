@@ -104,9 +104,9 @@ type TabWithTriggerProps = React.PropsWithChildren<Partial<TabsArgs>> & {
 };
 const TabWithTrigger = (props: TabWithTriggerProps) => {
   const { options = defaultTabOptions, defaultActiveTabKey, children, ...tabContext } = props;
-  
+
   const [activeTabKey, setActiveTabKey] = React.useState<undefined | string>(defaultActiveTabKey);
-  
+
   return (
     <Tabs onSwitch={setActiveTabKey} activeKey={activeTabKey} {...tabContext}>
       {options.map(tab => {
@@ -226,4 +226,3 @@ export const PageLayoutVerticalSubTabs: Story = {
     ),
   },
 };
-

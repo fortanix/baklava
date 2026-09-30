@@ -117,10 +117,10 @@ export const Tabs = (props: TabsProps) => {
       )}
     >
       <ul
-        {...scrollerProps}
+        {...orientation === 'horizontal' ? scrollerProps : {}}
         className={cx(
           cl['bk-tabs__switcher'],
-          scrollerProps.className
+          (scrollerProps.className && orientation === 'horizontal') ? scrollerProps.className : {},
         )}
         role="tablist"
       >
@@ -142,7 +142,7 @@ export const Tabs = (props: TabsProps) => {
               className={cx(cl['bk-tabs__switcher__tab'], tabTriggerProps?.className)}
               onClick={() => { onSwitch(tab.props.tabKey); }} // FIXME: add a Button and use that instead
             >
-              <span>{tab.props.title}</span>
+              <span className={cx(cl['bk-tabs__switcher__tab__title'])}>{tab.props.title}</span>
               {/* Hidden duplicated title, used to prevent layout shifts on hover. */}
               <span aria-hidden className={cx(cl['bk-tabs__switcher__tab__hover-placeholder'])}>{tab.props.title}</span>
             </li>

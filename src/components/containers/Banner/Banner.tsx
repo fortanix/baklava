@@ -81,6 +81,9 @@ export type BannerProps = Omit<ComponentProps<'div'>, 'title'> & {
   /** Whether to attempt to display the banner as a single line. */
   compact?: undefined | boolean,
   
+  /** Whether to display square borders. */
+  flat?: undefined | boolean,
+  
   /** Which variant to display, which changes the color and left icon. Defaults to "info". */
   variant?: undefined | BannerVariant,
   
@@ -105,6 +108,7 @@ export const Banner = Object.assign(
       unstyled = false,
       trimmed = false,
       compact = true,
+      flat = false,
       variant = 'info',
       title = '',
       showCloseAction = false,
@@ -140,6 +144,7 @@ export const Banner = Object.assign(
           'bk',
           { [cl['bk-banner']]: !unstyled },
           { [cl['bk-banner--trimmed']]: trimmed },
+          { [cl['bk-banner--flat']]: flat },
           { [cl[`bk-banner--${variant}`]]: variant },
           propsRest.className,
         )}

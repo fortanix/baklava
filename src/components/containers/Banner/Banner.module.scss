@@ -125,6 +125,10 @@
       --bk-banner-color-foreground: #{bk.$theme-banner-success-border-default};
       --bk-banner-color-background: #{bk.$theme-banner-success-background-default};
     }
+    
+    &.bk-banner--flat {
+      border-radius: 0;
+    }
   }
   
   .bk-banner + .bk-banner:not(.bk-banner--trimmed) {

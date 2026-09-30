@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 
 const packageConfig = {
   name: '@fortanix/baklava',
-  version: '1.0.0-beta-20260706-2',
+  version: '1.0.0-beta-20260923',
   license: 'MPL-2.0',
   author: 'Fortanix',
   description: 'Fortanix Baklava design system',
@@ -24,6 +24,15 @@ const packageConfig = {
   ],
   sideEffects: ['*.css'],
   type: 'module',
+  engines: {
+  node: '>=26.4.0',
+  npm: '>=11.17.0',
+},
+  allowScripts: {
+    '@parcel/watcher': true,
+    'esbuild': true,
+    'fsevents': true,
+  },
   exports: {
     '.': {
       'sass': './dist/baklava.css',
@@ -101,13 +110,16 @@ const packageConfig = {
     'browserslist': '^4.28.2',
     'vite': '^8.0.11',
     '@vitejs/plugin-react': '^6.0.1',
-    'vite-plugin-dts': '^4.5.4',
+    'vite-plugin-dts': '^5.1.0',
     'vite-plugin-lib-inject-css': '^2.2.1',
     'vite-plugin-svgr': '^4.5.0',
     'vite-plugin-svg-icons-ng': '^1.9.0',
     
     // Static analysis
-    'typescript': '^5.9.3',
+    // ts6 is still required, see https://github.com/fortanix/baklava/pull/730/changes#r4062796736
+    '@typescript/native': 'npm:typescript@^7.0.2',
+    '@typescript/typescript6': '^6.0.2',
+    'typescript': 'npm:@typescript/typescript6@^6.0.2',
     '@types/node': '^24.*', // Should match the Node major version in .nvmrc
     'stylelint': '^17.11.0',
     'stylelint-config-standard-scss': '^17.0.0',
@@ -130,6 +142,7 @@ const packageConfig = {
     // Storybook
     'storybook': '^10.3.6',
     '@storybook/react-vite': '^10.3.6',
+    '@storybook/react': '10.3.6',
     '@storybook/addon-a11y': '^10.3.6',
     '@storybook/addon-designs': '^11.1.3',
     '@storybook/addon-docs': '^10.3.6',
@@ -198,6 +211,7 @@ const packageConfig = {
       'react': '$react',
       'react-dom': '$react-dom',
     },
+    less: "^4.6.7",
   },
 };
 
