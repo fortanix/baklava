@@ -331,7 +331,7 @@ export const useCollectionTypeAhead = (
     // Cycle the elements such that the focused item (if any) comes first. This is so that the type-ahead search will
     // always continue from the current focused element.
     const focusedNodeIndex = focusedElement ? itemEls.indexOf(focusedElement) : -1;
-    if (focusedNodeIndex) {
+    if (focusedNodeIndex > 0) {
       itemEls = [...itemEls.slice(focusedNodeIndex), ...itemEls.slice(0, focusedNodeIndex)];
     }
     
