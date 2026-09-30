@@ -460,7 +460,7 @@ export const MenuListWithManyItems: Story = {
 
 
 
-const optionSize = 37;
+const optionSize = 37; // FIXME: reuse the dynamic calculation for the default option size within `SegmentVirtual`?
 const renderStandardOption = (renderLabel: (virtualItem: VirtualItem) => string) =>
   (props: VirtualItemProps, virtualItem: VirtualItem) =>
     <MenuList.Option key={virtualItem.key} {...propsRadio} {...props} label={renderLabel(virtualItem)}/>;
@@ -472,7 +472,6 @@ export const MenuListVirtualStandard: Story = {
         items={{
           count: 10_000,
           renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
-          //estimateSize: () => optionSize,
         }}
       />
     ),
@@ -494,7 +493,6 @@ export const MenuListVirtualLoading: Story = {
         items={{
           count: 4,
           renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
-          estimateSize: () => optionSize,
         }}
       />
     ),
@@ -516,12 +514,10 @@ export const MenuListVirtualWithChunks: Story = {
           {
             count: 3,
             renderItem: renderStandardOption(({ index }) => `Chunk 1 – Option ${index + 1}`),
-            estimateSize: () => optionSize,
           },
           {
             count: 3,
             renderItem: renderStandardOption(({ index }) => `Chunk 2 – Option ${index + 1}`),
-            estimateSize: () => optionSize,
           },
         ]}
       />
@@ -541,13 +537,11 @@ export const MenuListVirtualChunkKeysNoConflict: Story = {
           {
             count: 1,
             renderItem: renderStandardOption(() => 'Different chunk, same key'),
-            estimateSize: () => optionSize,
             getItemKey: () => 'same-key',
           },
           {
             count: 1,
             renderItem: renderStandardOption(() => 'Different chunk, same key'),
-            estimateSize: () => optionSize,
             getItemKey: () => 'same-key',
           },
         ]}
@@ -565,7 +559,6 @@ export const MenuListVirtualWithSiblings: Story = {
           items={{
             count: 100,
             renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
-            estimateSize: () => optionSize,
           }}
         />
         <MenuList.Static muted>In between</MenuList.Static>
@@ -573,7 +566,6 @@ export const MenuListVirtualWithSiblings: Story = {
           items={{
             count: 100,
             renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
-            estimateSize: () => optionSize,
           }}
         />
         <MenuList.Static muted>After</MenuList.Static>
@@ -599,7 +591,6 @@ export const MenuListVirtualNested: Story = {
                 items={{
                   count: 3,
                   renderItem: renderStandardOption(({ index }) => `Nested option ${index + 1}`),
-                  estimateSize: () => optionSize,
                 }}
               />,
             estimateSize: () => optionSize * 3,
@@ -607,7 +598,6 @@ export const MenuListVirtualNested: Story = {
           {
             count: 100,
             renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
-            estimateSize: () => optionSize,
           },
         ]}
       />
@@ -648,7 +638,6 @@ const MenuListVirtualInfiniteScrollC = (props: MenuListArgs) => {
       <MenuList.SegmentVirtual
         items={{
           count: items.length,
-          estimateSize: () => optionSize,
           renderItem: renderStandardOption(({ index }) => items[index]?.name ?? 'Unknown index'),
         }}
         onNearEnd={handleNearEnd}
@@ -696,7 +685,6 @@ const MenuListVirtualWithLoadMoreC = (props: MenuListArgs) => {
         {...props}
         items={{
           count: items.length,
-          estimateSize: () => optionSize,
           renderItem: renderStandardOption(({ index }) => items[index]?.name ?? 'Unknown index'),
         }}
       />

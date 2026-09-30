@@ -129,8 +129,8 @@ export const useListBoxMultiItem = <E extends HTMLElement = HTMLElement>({ itemK
   
   // FIXME: better way to add/remove item keys from the store. Should `requestSelected` take a callback?
   // FIXME: "requestSelected" doesn't make sense for multi where things can be unselected as well as selected
-  const selectedItemKeys = useStore(store, store => store.selectedItemKeys);
   const requestSelectedForItem = () => {
+    const selectedItemKeys = store.getState().selectedItemKeys;
     const selectedItemKeysUpdated = selectedItemKeys.has(itemKey)
       ? SetUtil.remove(selectedItemKeys, itemKey)
       : SetUtil.add(selectedItemKeys, itemKey);
