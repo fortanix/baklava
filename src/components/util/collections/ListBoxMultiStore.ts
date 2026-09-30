@@ -6,7 +6,7 @@ import * as React from 'react';
 import { mergeProps, useMemoOnce } from '../../../util/reactUtil.ts';
 import { type StoreApi, createStore, useStore } from 'zustand';
 
-import { ControllableStateDef, parseControllableState } from './ControllableState.ts';
+import { ControllableStateDef, parseControllableState } from '../../../util/hooks/useControllableState.ts';
 
 import {
   type ItemKey,

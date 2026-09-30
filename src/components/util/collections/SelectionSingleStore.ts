@@ -6,7 +6,7 @@ import * as React from 'react';
 import { type StateCreator, type StoreApi } from 'zustand';
 
 import type { ItemKey } from './CollectionStore.ts';
-import { parseControllableState, type ControllableStateDef } from './ControllableState.ts';
+import { parseControllableState, type ControllableStateDef } from '../../../util/hooks/useControllableState.ts';
 
 
 const noop = () => {};

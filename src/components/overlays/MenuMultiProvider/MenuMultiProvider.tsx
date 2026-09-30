@@ -189,19 +189,19 @@ export const useMenuAnchor = <RenderArgs extends BaseAnchorRenderArgs>(props: Us
     // FIXME: make `React.HTMLProps<Element>` generic, since not all component props extend from this type
     const anchorProps = (userProps?: undefined | React.HTMLProps<Element>) => {
       const userPropsRef = userProps?.ref;
-
+      
       if (typeof userPropsRef === 'string') {
         console.error('Failed to render MenuProvider, due to use of legacy string ref');
         return userProps as Record<string, unknown>;
       }
-
+      
       const props = getReferenceProps(userProps);
       const ref = mergeRefs(
         userPropsRef,
         refs.setReference,
         props.ref as React.Ref<Element>,
       );
-
+      
       return {
         ...props,
         ref,

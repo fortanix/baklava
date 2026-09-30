@@ -355,6 +355,36 @@ export const ListBoxMultiWithRef: Story = {
 };
 
 
+/**
+ * The following should not result in any errors/warnings/bugs, and the `UNKNOWN` item key should be maintained in
+ * the `selected` state. There are legitimate situations where a selected item is not one of the currently rendered
+ * items. For example:
+ * - Filtering down the list (the filter would cause the currently selected item to no longer "exist" in the list).
+ * - Virtualization.
+ */
+type ListBoxMultiWithUnknownProps = Omit<React.ComponentProps<typeof ListBoxMulti>, 'selected'>;
+const ListBoxMultiWithUnknownC = (props: ListBoxMultiWithUnknownProps) => {
+  const [selectedItems, setSelectedItems] = React.useState<Set<ItemKey>>(props.defaultSelected ?? new Set());
+  
+  return (
+    <>
+      <p>Selected fruits: {[...selectedItems].map(key => key).join(', ') || '(none)'}</p>
+      <ListBoxMulti {...props} selected={new Set(selectedItems.keys())} onSelectedChange={setSelectedItems}>
+        {fruits.map(fruit =>
+          <ListBoxMulti.Option key={fruit} itemKey={fruit} label={fruit}/>
+        )}
+      </ListBoxMulti>
+      <Button label="Update state" onPress={() => { setSelectedItems(new Set(['Razzberry', 'UNKNOWN'])); }}/>
+    </>
+  );
+};
+export const ListBoxMultiWithUnknown: Story = {
+  render: ({ label }) => (
+    <ListBoxMultiWithUnknownC label={label} defaultSelected={new Set(['Blueberry', 'Cherry', 'UNKNOWN'])}/>
+  ),
+};
+
+
 const ListBoxMultiWithManyOptionsC = (args: ListBoxMultiArgs) => {
   const [count, setCount] = React.useState(100);
   

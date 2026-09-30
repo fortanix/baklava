@@ -128,10 +128,10 @@ const preview = {
                 'TextAreaWithFileUpload',
                 'ListBox',
                 'ListBoxMulti',
-                'SelectComboBox',
-                'SelectComboBoxMulti',
                 'Select',
                 'SelectMulti',
+                'SelectComboBox',
+                'SelectComboBoxMulti',
                 'datetime',
                 [
                   'DatePicker',

@@ -50,8 +50,13 @@ export type InputProps = InputContainerProps & InputSpecificProps & {
   /** The type of the input. Note: submit buttons are not supported here, use `SubmitButton` instead. */
   type?: undefined | Exclude<ComponentProps<'input'>['type'], 'button' | 'submit' | 'image' | 'reset'>,
   
-  /** Form value. If set, will override `value` for the internal form-associated value of this input. */
-  formValue?: undefined | string | Array<string>,
+  /**
+   * Form value. If not `undefined`, will override `value` for the internal form-associated value of this input.
+   * - When `null`, will not render any input (hence `FormData` will return `undefined` for that field name).
+   * - When `string` (even if empty string), will render a single input with field name = `${name}`.
+   * - When `Array` (even if empty array), will render one hidden input per element with field name = `${name}[]`.
+   */
+  formValue?: undefined | null | string | Array<string>,
   
   /** Whether the input should resize automatically to fit the content. Default: `false`. */
   automaticResize?: undefined | boolean,

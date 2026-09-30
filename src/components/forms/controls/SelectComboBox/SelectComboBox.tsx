@@ -3,78 +3,59 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
+import { mergeProps, mergeRefs } from '../../../../util/reactUtil.ts';
+import { useControllableStateTrackerWithEvent } from '../../../../util/hooks/useControllableState.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
-
-// Utils
-import { mergeRefs } from '../../../../util/reactUtil.ts';
 
 // Components
 import { Input as InputDefault } from '../Input/Input.tsx';
 import {
-  AnchorRenderArgs,
   type ItemKey,
-  type ItemDetails,
-  MenuProvider,
-  MenuProviderProps,
-} from '../../../overlays/MenuProvider/MenuProvider.tsx';
-import { useSelectComboBoxState } from '../SelectComboBoxMulti/SelectComboBoxMulti.tsx';
-import { MenuProviderRef, selectionStateFromItemKey } from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
+  type SelectedState,
+  type AnchorRenderArgs,
+  type ListBoxProviderProps,
+  type ListBoxProviderRef,
+  ListBoxProvider,
+} from '../../../overlays/ListBoxProvider/ListBoxProvider.tsx';
+import { selectionStateFromItemKey } from '../../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
+//import { useSelectComboBoxState } from '../SelectComboBoxMulti/SelectComboBoxMulti.tsx';
+const useSelectComboBoxState = () => ({ // FIXME
+  internalSelected: new Set(),
+  handleInternalSelect: () => {},
+});
 
 // Styles
 import cl from './SelectComboBox.module.scss';
 
 
 export { cl as SelectComboBoxClassNames };
-export type { ItemKey, ItemDetails };
+export type { ItemKey };
 type InputProps = ComponentProps<typeof InputDefault>;
 
-
-// SELECT COMBO BOX INPUT
-// ---------------------------------------------------------------------------------------------------------------------
+const noop = () => {};
 
 type SelectComboBoxInputProps = Omit<InputProps, 'onSelect'> & {
   anchorRenderArgs: AnchorRenderArgs,
-  onUpdate?: undefined | MenuProviderProps['onSelect'],
   Input?: undefined | React.ComponentType<InputProps>,
 };
+/** Utility: the input that is used as part of the combobox. */
 const SelectComboBoxInput = (props: SelectComboBoxInputProps) => {
   const {
     ref,
     anchorRenderArgs,
-    onUpdate,
     Input = InputDefault,
-    automaticResize = true,
-    // Hidden input props
+    // Form-association props (to be redirected to hidden input)
     name,
     form,
     ...propsRest
   } = props;
-
-  const {
-    props: anchorRenderProps,
-    open,
-    selectedOption,
-  } = anchorRenderArgs;
   
-  const anchorProps = anchorRenderProps({
-    ref,
-    className: cx(
-      cl['bk-combo-box'],
-      { [cl['bk-combo-box--open']]: open },
-      propsRest.className,
-      propsRest.containerProps?.className,
-    ),
-    onBlur: propsRest.onBlur,
-    onKeyDown: propsRest.onKeyDown,
-  });
-
   return (
     <>
       <Input
         role="combobox"
-        automaticResize={automaticResize}
+        automaticResize
         {...propsRest}
-        {...anchorProps}
         inputProps={{
           placeholder: 'Select options',
           ...propsRest.inputProps,
@@ -82,162 +63,150 @@ const SelectComboBoxInput = (props: SelectComboBoxInputProps) => {
         }}
         containerProps={propsRest.containerProps ?? {}}
       />
-
+      
       {/* Render a hidden input with the selected option key (rather than the human-readable label). */}
       {typeof name === 'string' &&
-        <input
-          type="hidden"
-          form={form}
-          name={name}
-          value={selectedOption?.itemKey ?? ''}
-        />
+        <input type="hidden" form={form} name={name} value={selectedOption ?? ''}/>
       }
     </>
   );
 };
 
-// SELECT COMBO BOX
-// ---------------------------------------------------------------------------------------------------------------------
-
 /**
- * A `SelectComboBox` is a text input control combined with a dropdown menu that adapts
- * to the user input, for example for automatic suggestions.
+ * A `SelectComboBox` is a text input control combined with a dropdown menu that adapts to the user input,
+ * for example for automatic suggestions.
  * 
  * References: 
  * - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
  */
 export type SelectComboBoxProps = Omit<InputProps, 'onSelect'> & {
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
-  
   /** A human-readable name for the combobox. */
   label: string,
   
   /** Render the given item key as a string label. */
-  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
+  formatItemLabel: (itemKey: ItemKey) => string,
   
   /** The options list to be shown in the dropdown menu. */
-  options: React.ComponentProps<typeof MenuProvider>['items'],
+  options: React.ComponentProps<typeof ListBoxProvider>['items'],
+  
+  /** The option to select. If `undefined`, this component will be considered uncontrolled. */
+  selected?: undefined | SelectedState,
+  
+  /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
+  defaultSelected?: undefined | SelectedState,
+  
+  /** Callback for when an option is selected in the dropdown menu. */
+  onSelectedChange?: undefined | React.ComponentProps<typeof ListBoxProvider>['onSelectedChange'],
   
   /** A custom `Input` component. */
   Input?: undefined | React.ComponentType<InputProps> & {
     Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
   },
-    
-  /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
-  defaultSelected?: undefined | null | ItemKey,
   
-  /** The option to select. If `undefined`, this component will be considered uncontrolled. */
-  selected?: undefined | null | ItemKey,
-  
-  /** Callback for when an option is selected in the dropdown menu. */
-  onSelect?: undefined | React.ComponentProps<typeof MenuProvider>['onSelect'],
-
-  /** Additional props to be passed to the `MenuProvider`. */
-  dropdownProps?: undefined | Partial<MenuProviderProps>,
+  /** Additional props to be passed to the `ListBoxProvider`. */
+  dropdownProps?: undefined | Partial<ListBoxProviderProps>,
 };
 export const SelectComboBox = Object.assign(
   (props: SelectComboBoxProps) => {
     const {
       ref,
       unstyled = false,
-      label,
       value,
-      Input = InputDefault,
-      options,
-      selected,
-      onSelect,
+      defaultValue,
       onChange,
-      onBlur,
-      dropdownProps = {},
-      defaultSelected,
+      label,
       formatItemLabel,
+      options,
+      Input = InputDefault,
+      selected,
+      defaultSelected,
+      onSelectedChange,
+      onBlur,
+      containerProps,
+      inputProps,
+      dropdownProps = {},
       ...propsRest
     } = props;
     
     const {
-      formatItemLabel: _, // Ignore
       ref: dropdownPropsRef,
       onBlur: onDropdownBlur,
       ...dropdownPropsRest
     } = dropdownProps;
-
-    const dropdownRef = React.useRef<MenuProviderRef | null>(null);
+    
+    
+    //
+    // State: `value`
+    //
+    
+    type InputValue = string | number | ReadonlyArray<string>;
+    // const { state: valueState, updateState: updateValueState } = useControllableState<InputValue>({
+    //   componentName: 'SelectComboBox',
+    //   propName: 'value',
+    //   state: value,
+    //   defaultState: defaultValue,
+    //   defaultStateFallback: '',
+    //   onStateChange: onChange,
+    // });
+    const valueTracked = useControllableStateTrackerWithEvent<InputValue, React.ChangeEvent<HTMLInputElement>>(
+      { state: value, defaultState: defaultValue, defaultStateFallback: '', onStateChange: onChange },
+      event => event.target.value,
+    );
+    console.log('x', valueTracked);
+    
+    
+    
+    
+    
+    const dropdownRef = React.useRef<null | ListBoxProviderRef>(null);
     const mergedDropdownRef = mergeRefs(dropdownPropsRef, dropdownRef);
-
-    const inputRef = React.useRef<HTMLInputElement | null>(null);
+    
+    const inputRef = React.useRef<null | HTMLInputElement>(null);
     const mergedInputRef = mergeRefs(ref, inputRef);
-
+    
     const [inputValue, setInputValue] = React.useState(() => {
       const initialSelected = selected ?? defaultSelected;
-
-      return initialSelected
-        ? formatItemLabel?.(initialSelected) ?? ''
-        : value ?? '';
+      return initialSelected ? formatItemLabel(initialSelected) : (value ?? '');
     });
-
+    
     const updateInputValue = React.useCallback((updatedValue: string) => {
       if (typeof value === 'undefined') {
         // Update only when input value is uncontrolled
         setInputValue(updatedValue);
       }
     }, [value]);
-
-    React.useEffect(
-      () => {
-        if (selected) {
-          // Update Input value state on selection change when menu
-          // selection is controlled and input value is uncontrolled
-          updateInputValue(formatItemLabel?.(selected) ?? '');
-        }
-      },
-      [selected, formatItemLabel, updateInputValue],
-    );
-
+    
+    React.useEffect(() => {
+      if (selected) {
+        // Update `Input` value state on selection change when menu selection is controlled and input
+        // value is uncontrolled.
+        updateInputValue(formatItemLabel(selected));
+      }
+    }, [selected, formatItemLabel, updateInputValue]);
+    
     const selectedSet = React.useMemo(() => selectionStateFromItemKey(selected), [selected]);
     const defaultSelectedSet = React.useMemo(() => selectionStateFromItemKey(defaultSelected), [defaultSelected]);
-    const {
-      internalSelected,
-      handleInternalSelect,
-    } = useSelectComboBoxState({
+    const { internalSelected, handleInternalSelect } = useSelectComboBoxState({
       selected: typeof selected !== 'undefined' ? selectedSet : defaultSelectedSet,
       formatItemLabel,
     });
-
+    
     const updateInternalSelected = React.useCallback((updatedInternalSelected: Set<ItemKey>) => {
       if (typeof selected === 'undefined') {
         // Update only when menu selection is uncontrolled
         handleInternalSelect(updatedInternalSelected);
       }
     }, [selected, handleInternalSelect]);
-
-    const internalSelectedItemKey: null | ItemKey = internalSelected.keys().next().value ?? null;
-
-    const handleSelect = React.useCallback((_key: null | ItemKey, itemDetails: null | ItemDetails) => {
-      const itemKey = itemDetails?.itemKey ?? null;
-      updateInputValue(itemDetails?.label ?? '');
+    
+    const internalSelectedItemKey: SelectedState = internalSelected.keys().next().value ?? null;
+    
+    const handleSelect = React.useCallback((itemKey: SelectedState) => {
+      const itemLabel = itemKey !== null ? formatItemLabel(itemKey) : '';
+      updateInputValue(itemLabel);
       updateInternalSelected(itemKey ? new Set([itemKey]) : new Set());
-      onSelect?.(itemKey, itemDetails);
-    }, [onSelect, updateInputValue, updateInternalSelected]);
-
-    const handleInputChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = evt.target.value;
-
-      if (typeof selected === 'undefined' && newValue === '') {
-        handleSelect(null, null);
-      }
-
-      updateInputValue(newValue);
-      onChange?.(evt);
-    };
-
-    const handleInputFocusOut = (evt: React.FocusEvent<HTMLInputElement>) => {
-      const floatingEl = dropdownRef.current?.floatingEl;
-      if (floatingEl?.contains(evt.relatedTarget as Node)) { return; }
-      updateInputValue(internalSelected.values().next().value?.label ?? '');
-      onBlur?.(evt);
-    };
-
+      onSelectedChange?.(itemKey);
+    }, [formatItemLabel, onSelectedChange, updateInputValue, updateInternalSelected]);
+    
     const handleDropdownFocusOut = (evt: React.FocusEvent<HTMLDivElement>) => {
       const inputEl = inputRef.current;
       if (inputEl?.contains(evt.relatedTarget as Node)) { return; }
@@ -246,43 +215,111 @@ export const SelectComboBox = Object.assign(
       updateInputValue(internalSelected.values().next().value?.label ?? '');
       onDropdownBlur?.(evt);
     };
-
+    
+    //
+    // Input
+    //
+    
+    const handleInputChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = event.target.value;
+      
+      if (typeof selected === 'undefined' && newValue === '') {
+        handleSelect(null);
+      }
+      
+      updateInputValue(newValue);
+      onChange?.(event);
+    }, [handleSelect]);
+    
+    const handleInputFocusOut = React.useCallback((event: React.FocusEvent<HTMLInputElement>) => {
+      const floatingEl = dropdownRef.current?.floatingEl;
+      if (floatingEl?.contains(event.relatedTarget as Node)) { return; }
+      updateInputValue(internalSelected.values().next().value?.label ?? '');
+      onBlur?.(event);
+    }, [internalSelected, onBlur, updateInputValue]);
+    
+    const renderInput = React.useCallback((anchorRenderArgs: AnchorRenderArgs) => {
+      const { props: anchorRenderProps, open, selectedOption } = anchorRenderArgs;
+      // const anchorProps = anchorRenderProps({
+      //   ref,
+      //   className: cx(
+      //     cl['bk-combo-box'],
+      //     { [cl['bk-combo-box--open']]: open },
+      //     propsRest.className,
+      //     propsRest.containerProps?.className,
+      //   ),
+      //   onBlur: propsRest.onBlur,
+      //   onKeyDown: propsRest.onKeyDown,
+      // });
+      return (
+        <Input
+          {...anchorRenderProps()}
+          //value={typeof value !== 'undefined' ? value : inputValue}
+          //onChange={handleInputChange}
+          defaultValue={defaultValue}
+          onChange={valueTracked.onStateChange}
+          onBlur={handleInputFocusOut}
+          // {...propsRest}
+          // ref={mergedInputRef}
+        />
+      );
+    }, [Input, value, inputValue, handleInputChange, handleInputFocusOut]);
+    
     return (
-      <MenuProvider
+      <ListBoxProvider
         label={label}
         items={options}
-        role="combobox"
         triggerAction="combobox"
         keyboardInteractions="form-control" // FIXME
         placement="bottom-start"
-        offset={1}
+        offset={0} // Make the dropdown flush with the input element
         selected={internalSelectedItemKey}
-        onSelect={handleSelect}
-        onBlur={handleDropdownFocusOut}
-        formatItemLabel={formatItemLabel}
         defaultSelected={defaultSelected}
+        onSelectedChange={handleSelect}
+        //onBlur={handleDropdownFocusOut}
         {...dropdownPropsRest}
         ref={mergedDropdownRef}
       >
-        {anchorRenderArgs => (
-          <SelectComboBoxInput
-            anchorRenderArgs={anchorRenderArgs}
-            Input={Input}
-            value={typeof value !== 'undefined' ? value : inputValue}
-            onChange={handleInputChange}
-            onBlur={handleInputFocusOut}
-            {...propsRest}
-            ref={mergedInputRef}
-          />
-        )} 
-      </MenuProvider>
+        {({ props, open, requestOpen, selectedOption }) => {
+          // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
+          const { ref: anchorRef, ...propsAnchor } = props(mergeProps(
+            {
+              role: 'combobox',
+              automaticResize: true,
+              className: cx(cl['bk-select-combo-box'], { [cl['bk-select-combo-box--open']]: open }),
+              formValue: selectedOption ?? undefined,
+            },
+            propsRest,
+            {
+              //value: selectedOption === null ? '' : formatItemLabel(selectedOption),
+              //onChange: noop,
+            },
+          ));
+          
+          return (
+            <Input
+              {...propsAnchor}
+              inputProps={mergeProps(
+                { className: cx(cl['bk-select-combo-box__input']) },
+                inputProps,
+              )}
+              containerProps={mergeProps(
+                // Anchor the dropdown to the container, not the inner input
+                { ref: anchorRef },
+                containerProps,
+              )}
+            />
+          );
+        }}
+      </ListBoxProvider>
     );
   },
   {
-    Static: MenuProvider.Static,
-    Option: MenuProvider.Option,
-    Header: MenuProvider.Header,
-    Action: MenuProvider.Action,
-    FooterActions: MenuProvider.FooterActions,
+    Option: ListBoxProvider.Option,
+    Static: ListBoxProvider.Static,
+    Segment: ListBoxProvider.Segment,
+    SegmentVirtual: ListBoxProvider.SegmentVirtual,
+    Group: ListBoxProvider.Group,
+    Footer: ListBoxProvider.Footer,
   },
 );

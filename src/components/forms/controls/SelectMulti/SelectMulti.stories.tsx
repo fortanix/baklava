@@ -47,7 +47,7 @@ export default {
   },
   args: {
     label: 'Test select',
-    formatItemLabel: formatFruitsLabel,
+    formatSelected: formatFruitsLabel,
     options: (
       <>
         {Object.entries(fruits).map(([fruitKey, fruitName]) =>
@@ -94,7 +94,7 @@ export const SelectMultiWithAutoResize: Story = {
     automaticResize: true,
     label: 'Test select',
     defaultSelected: new Set(['long-option']),
-    formatItemLabel: (itemKeys: SelectedState) => {
+    formatSelected: (itemKeys: SelectedState) => {
       return [...itemKeys.values()].map(itemKey => {
         if (itemKey === 'long-option') {
           return 'A very long option label to show automatic resizing';
@@ -161,5 +161,24 @@ export const SelectMultiInForm: Story = {
   args: {
     form: 'story-form',
     name: 'story_component1',
+  },
+};
+
+export const SelectMultiVirtualized: Story = {
+  args: {
+    formatSelected: itemKey =>
+      [...itemKey.values()].map(itemKey => itemKey.replace('option-', 'Option ')).join(', '),
+    options: (
+      <>
+        <SelectMulti.Static muted>Virtualized list</SelectMulti.Static>
+        <SelectMulti.SegmentVirtual
+          items={{
+            count: 10_000,
+            renderItem: (props, { key, index }) =>
+              <SelectMulti.Option key={key} itemKey={`option-${index + 1}`} {...props} label={`Option ${index + 1}`}/>
+          }}
+        />
+      </>
+    ),
   },
 };

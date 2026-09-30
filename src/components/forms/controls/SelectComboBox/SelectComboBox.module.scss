@@ -5,13 +5,13 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-combo-box {
-    @include bk.component-base(bk-combo-box);
+  .bk-select-combo-box {
+    @include bk.component-base(bk-select-combo-box);
     
-    .bk-combo-box__input {
+    .bk-select-combo-box__input {
       min-inline-size: 12ch;
     }
     
-    &.bk-combo-box--open { --keep: ; }
+    &.bk-select-combo-box--open { --keep: ; }
   }
 }

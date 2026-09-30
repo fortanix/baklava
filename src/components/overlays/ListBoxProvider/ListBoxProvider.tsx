@@ -5,7 +5,6 @@
 import * as React from 'react';
 
 // Utils
-import { classNames as cx } from '../../../util/componentUtil.ts';
 import { mergeCallbacks, mergeProps, mergeRefs } from '../../../util/reactUtil.ts';
 import {
   type UseFloatingElementOptions,
@@ -31,7 +30,7 @@ import {
 
 
 //export { cl as ListBoxProviderClassNames };
-export type { ItemKey, SelectedState };
+export type { ItemKey, SelectedState, MenuProviderRef as ListBoxProviderRef };
 
 type ListBoxProps = React.ComponentProps<typeof ListBox>;
 
@@ -61,7 +60,7 @@ export type ListBoxProviderProps = Omit<ListBoxProps, 'ref' | 'children' | 'labe
   /** The menu items. */
   items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode),
 
-  /** The accessible role of the menu. */
+  /** The accessible role of the listbox. */
   role?: undefined | UseFloatingElementOptions['role'],
   
   /** The action that should trigger the menu to open. */
@@ -96,7 +95,7 @@ export const ListBoxProvider = Object.assign((props: ListBoxProviderProps) => {
     defaultSelected,
     selected,
     onSelectedChange,
-    role = 'menu',
+    role = 'listbox',
     triggerAction,
     menuSize,
     keyboardInteractions,
@@ -142,7 +141,7 @@ export const ListBoxProvider = Object.assign((props: ListBoxProviderProps) => {
   const { internalSelected, handleInternalSelect } = useMenuSelect({
     previousActiveElementRef,
     setIsOpen,
-    triggerAction: triggerAction,
+    triggerAction,
     selected: selectedSet,
     defaultSelected: defaultSelectedSet,
   })

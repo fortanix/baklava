@@ -472,7 +472,7 @@ export const MenuListVirtualStandard: Story = {
         items={{
           count: 10_000,
           renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
-          estimateSize: () => optionSize,
+          //estimateSize: () => optionSize,
         }}
       />
     ),

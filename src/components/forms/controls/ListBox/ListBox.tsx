@@ -115,9 +115,6 @@ export type ListBoxProps = Omit<React.ComponentProps<typeof MenuList>, PropsOmit
   /** Any additional props to apply to the internal `<input type="hidden"/>`. */
   inputProps?: undefined | HiddenSelectedStateProps,
   
-  /** Render the given item key as a string label. If not given, will use the item element's text value. */
-  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
-  
   /** Legacy alias for `onSelectedChange`, for backwards compatbility. @deprecated */
   onSelect?: undefined | ((selected: SelectedState) => void),
   
@@ -144,7 +141,6 @@ export const ListBox = Object.assign(
       name,
       form,
       inputProps,
-      formatItemLabel,
       onSelect,
       isLoading,
       ...propsRest

@@ -29,7 +29,7 @@ import {
 
 
 //export { cl as ListBoxMultiProviderClassNames };
-export type { ItemKey, SelectedState };
+export type { ItemKey, SelectedState, MenuProviderRef as ListBoxMultiProviderRef };
 
 type ListBoxMultiProps = React.ComponentProps<typeof ListBoxMulti>;
 

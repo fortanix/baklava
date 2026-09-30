@@ -54,7 +54,7 @@ export const ToggleButton = (props: ToggleButtonProps) => {
     propName: 'toggled',
     state: toggled,
     defaultState: defaultToggled,
-    stateFallback: false,
+    defaultStateFallback: false,
     onStateChange: onToggledChange,
   });
   
