@@ -15,13 +15,14 @@
 @mixin bk-card($name: bk-card) {
   --bk-card-background-color: #{bk.$theme-card-background-default};
   --bk-card-border-color: #{bk.$theme-card-border-default};
-  --bk-card-inset: #{bk.$spacing-4 bk.$spacing-7};
+  --bk-card-inset: #{bk.$spacing-4};
   
   overflow: hidden;
   
   &:where(:not(.#{$name}--flat)) {
     //min-block-size: bk.$spacing-16;
     padding: var(--bk-card-inset);
+    padding-inline: bk.$spacing-7;
     
     background: var(--bk-card-background-color);
     border: bk.$size-1 solid var(--bk-card-border-color);
