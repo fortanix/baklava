@@ -20,10 +20,12 @@ type LinkAsButtonProps = LinkProps & {
   label?: undefined | NonNullable<LinkProps['label']>,
   
   // Button props
+  trimmed?: undefined | NonNullable<ButtonProps['trimmed']>,
+  wrap?: undefined | NonNullable<ButtonProps['wrap']>,
   kind?: undefined | NonNullable<ButtonProps['kind']>,
+  variant?: undefined | NonNullable<ButtonProps['variant']>,
   nonactive?: undefined | NonNullable<ButtonProps['nonactive']>,
   disabled?: undefined | NonNullable<ButtonProps['disabled']>,
-  trimmed?: undefined | NonNullable<ButtonProps['trimmed']>,
 };
 
 /**
@@ -33,10 +35,12 @@ export const LinkAsButton = (props: LinkAsButtonProps) => {
   const {
     Link = LinkDefault,
     label,
+    trimmed,
+    wrap,
     kind = 'tertiary',
+    variant = 'normal',
     nonactive,
     disabled,
-    trimmed,
     ...propsRest
   } = props;
   
@@ -50,12 +54,15 @@ export const LinkAsButton = (props: LinkAsButtonProps) => {
       className={cx(
         'bk',
         ButtonClassNames['bk-button'],
+        { [ButtonClassNames['bk-button--trimmed']]: trimmed },
+        { [ButtonClassNames['bk-button--wrap']]: wrap },
         { [ButtonClassNames['bk-button--primary']]: kind === 'primary' },
         { [ButtonClassNames['bk-button--secondary']]: kind === 'secondary' },
         { [ButtonClassNames['bk-button--tertiary']]: kind === 'tertiary' },
-        { [ButtonClassNames['bk-button--nonactive']]: nonactive },
+        { [ButtonClassNames['bk-button--variant-normal']]: variant === 'normal' },
+        { [ButtonClassNames['bk-button--variant-basic']]: variant === 'basic' },
         { [ButtonClassNames['bk-button--disabled']]: disabled },
-        { [ButtonClassNames['bk-button--trimmed']]: trimmed },
+        { [ButtonClassNames['bk-button--nonactive']]: nonactive },
         props.className,
       )}
     />

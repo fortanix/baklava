@@ -80,8 +80,8 @@ const SelectComboBoxWithDefaultC = (props: React.ComponentProps<typeof SelectCom
           <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         selected={selectedKey}
-        onSelect={(_key, selectedOption) => {
-          setSelectedKey(selectedOption?.itemKey ?? null);
+        onSelectedChange={itemKey => {
+          setSelectedKey(itemKey ?? null);
         }}
       />
     </>
@@ -107,8 +107,8 @@ const SelectComboBoxControlledC = (props: React.ComponentProps<typeof SelectComb
           <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         selected={selectedKey}
-        onSelect={(_key, selectedOption) => {
-          setSelectedKey(selectedOption?.itemKey ?? null);
+        onSelectedChange={itemKey => {
+          setSelectedKey(itemKey ?? null);
         }}
       />
       <div><Button label="Update state" onPress={() => { setSelectedKey('item-strawberry'); }}/></div>
@@ -158,10 +158,10 @@ const SelectComboBoxFullyControlledC = (props: React.ComponentProps<typeof Selec
           <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         selected={selectedKey}
-        onSelect={(_key, selectedOption) => {
-          setSelectedKey(selectedOption?.itemKey ?? null);
-          if (selectedOption !== null) {
-            setValue(selectedOption.label);
+        onSelectedChange={itemKey => {
+          setSelectedKey(itemKey ?? null);
+          if (itemKey !== null) {
+            setValue(formatFruitLabel(itemKey));
           }
           setIsDropdownOpen(false);
         }}
@@ -194,8 +194,8 @@ const SelectComboBoxUncontrolledC = (props: React.ComponentProps<typeof SelectCo
         options={Object.entries(fruits).map(([fruitKey, fruitName]) =>
           <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
-        onSelect={(_key, selectedOption) => {
-          setSelectedKey(selectedOption?.itemKey ?? null);
+        onSelectedChange={itemKey => {
+          setSelectedKey(itemKey ?? null);
         }}
       />
     </>
@@ -242,10 +242,10 @@ const SelectComboBoxWithFilterC = (props: React.ComponentProps<typeof SelectComb
           <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         selected={selectedKey}
-        onSelect={(_key, selectedOption) => {
-          setSelectedKey(selectedOption?.itemKey ?? null);
-          if (selectedOption !== null) {
-            setValue(selectedOption.label);
+        onSelectedChange={itemKey => {
+          setSelectedKey(itemKey ?? null);
+          if (itemKey !== null) {
+            setValue(formatFruitLabel(itemKey));
           }
           setIsDropdownOpen(false);
         }}
@@ -349,14 +349,15 @@ const SelectComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof 
         <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
       )}
       selected={selectedKey}
-      onSelect={(selectedOptionKey, selectedOption) => {
-        props.onSelect?.(selectedOptionKey, selectedOption);
+      formatItemLabel={formatFruitLabel}
+      onSelectedChange={selectedOptionKey => {
+        props.onSelectedChange?.(selectedOptionKey);
         
-        if (selectedOption !== null) {
+        if (selectedOptionKey !== null) {
           //To fill in the value in the input:
           //setValue(selectedOption.label);
           
-          pushBlock(selectedOption.label);
+          pushBlock(formatFruitLabel(selectedOptionKey));
           setValue('');
         }
         

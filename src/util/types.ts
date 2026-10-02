@@ -9,13 +9,16 @@ export type SimplifyShallow<T> = { [K in keyof T]: T[K]; } & {};
 /**
  * TypeScript has `NonNullable` built in, but not `NonUndefined`.
  * Note: when TS refines non-undefined, it produces `T & ({} | null)`. Do not define this type as
- * `T extends undefined ? never : T`, because you cannot `T & ({} | null)` cannot be assigned to such a conditional.
+ * `T extends undefined ? never : T`, because `T & ({} | null)` cannot be assigned to such a conditional.
  */
 // https://www.typescriptlang.org/play/?#code/LAKAxg9gdgzgLgAgGZQQXgQHgCoBoB8AFAIYBOA5gFwLYCU6+CA3qAmwgJZIKFwCeABwCmEbmXLo0GAOQBXKABMhSDlCELp9FiHa6EpIXFmkoAblbsAvhbbjzIS-aA
 export type NonUndefined<T> = T & ({} | null);
 
 /** Given a type `T`, the keys `K` should be required, and everything else becomes optional. */
 export type RequireOnly<T, K extends keyof T> = Pick<Required<T>, K> & Partial<T>;
+
+/** Given a type `T`, the keys `K` should be optional. */
+export type PartialKeys<T, K extends keyof T> = Omit<T, K> & Pick<Partial<T>, K>;
 
 /**
  * Convert a union type to an intersection. For example:

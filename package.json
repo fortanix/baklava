@@ -68,6 +68,7 @@
     "prepare": "npm run build"
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9",
     "plop": "^4.0.5",
     "browserslist": "^4.28.2",
     "vite": "^8.0.11",
@@ -113,6 +114,7 @@
     "@types/react-table": "^7.7.20"
   },
   "dependencies": {
+    "lodash.debounce": "^4.0.8",
     "date-fns": "^4.1.0",
     "message-tag": "^0.10.0",
     "effect": "^3.21.2",
@@ -123,7 +125,7 @@
     "react-error-boundary": "^6.1.1",
     "classnames": "^2.5.1",
     "zustand": "^5.0.13",
-    "@tanstack/react-virtual": "^3.13.24",
+    "@tanstack/react-virtual": "^3.14.5",
     "@floating-ui/react": "^0.27.18",
     "react-hook-form": "^7.75.0",
     "react-table": "^7.8.0",

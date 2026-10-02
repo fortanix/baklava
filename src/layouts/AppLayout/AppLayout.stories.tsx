@@ -52,12 +52,8 @@ const header1 = (
     </DummyBkLinkUnstyled>
     <Header slot="actions">
       <UserMenu userName="Anand Kashyap">
-        <UserMenu.Action itemKey="profile" label="Profile"
-          onActivate={() => { notify.info(`Opening user profile.`); }}
-        />
-        <UserMenu.Action itemKey="sign-out" label="Sign out"
-          onActivate={() => { notify.info(`Signing out.`); }}
-        />
+        <UserMenu.Action itemKey="profile" label="Profile" onPress={() => { notify.info(`Opening user profile.`); }}/>
+        <UserMenu.Action itemKey="sign-out" label="Sign out" onPress={() => { notify.info(`Signing out.`); }}/>
       </UserMenu>
       <SysadminSwitcher
         onPress={() => { notify.info(`Navigating to system administration panel.`); }}
@@ -69,21 +65,21 @@ const header1 = (
             {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
               <AccountSelector.Option key={`acc_${name}`} itemKey={`acc_${name}`} icon="account" label={name}/>
             )}
-            <AccountSelector.FooterActions>
+            <AccountSelector.Footer>
               <AccountSelector.Action itemKey="action_add-account" label="Add account"
-                onActivate={() => { notify.info(`Navigating to 'Add Account' page.`);  }}
+                onPress={() => { notify.info(`Navigating to 'Add Account' page.`);  }}
               />
-            </AccountSelector.FooterActions>
+            </AccountSelector.Footer>
           </>
         }
       >
-        {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label}
+        {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.replace('acc_', '')}
       </AccountSelector>
       <SolutionSelector className="select-action"
+        onSelectedChange={solutionKey => { notify.info(`Selected ${solutionKey}`); }}
         solutions={
           ['Identity & Access Management', 'Key Insight', 'Armor'].map(name =>
             <SolutionSelector.Option key={name} itemKey={name} icon="user" label={name}
-              onSelect={() => { notify.info(`Selected ${name}`); }}
             />
           )
         }
@@ -145,6 +141,8 @@ const content1 = (
             <Select.Option itemKey="option-3" label="Option 3">Option 3</Select.Option>
           </>
         }
+        // @ts-ignore FIXME: need a generic `Select<K>` for the `ItemKey` subtype
+        formatSelected={itemKey => itemKey?.replace('option-', 'Option ') ?? ''}
       />
     </Panel>
     
@@ -199,6 +197,8 @@ const title2 = (
       label="Select project"
       placeholder="Select project"
       defaultSelected={projects.p1}
+      // @ts-ignore FIXME: need a generic `Select<K>` for the `ItemKey` subtype
+      formatSelected={itemKey => itemKey === null ? '' : projects[itemKey]}
       options={selectOptions}
       Input={CustomInput}
     />

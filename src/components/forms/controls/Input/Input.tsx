@@ -47,14 +47,19 @@ export type InputProps = InputContainerProps & InputSpecificProps & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
   
-  /** The type of the input. */
-  type?: undefined | Exclude<ComponentProps<'input'>['type'], 'button' | 'submit' | 'reset'>,
+  /** The type of the input. Note: submit buttons are not supported here, use `SubmitButton` instead. */
+  type?: undefined | Exclude<ComponentProps<'input'>['type'], 'button' | 'submit' | 'image' | 'reset'>,
   
-  /** Props to apply to the container element. */
-  containerProps?: React.ComponentProps<'span'>,
+  /**
+   * Form value. If not `undefined`, will override `value` for the internal form-associated value of this input.
+   * - When `null`, will not render any input (hence `FormData` will return `undefined` for that field name).
+   * - When `string` (even if empty string), will render a single input with field name = `${name}`.
+   * - When `Array` (even if empty array), will render one hidden input per element with field name = `${name}[]`.
+   */
+  formValue?: undefined | null | string | Array<string>,
   
-  /** Props to apply to the inner `<input/>` element. */
-  inputProps?: React.ComponentProps<'input'>,
+  /** Whether the input should resize automatically to fit the content. Default: `false`. */
+  automaticResize?: undefined | boolean,
   
   /** A custom `Icon` component. */
   Icon?: undefined | React.ComponentType<InputIconProps>,
@@ -74,12 +79,11 @@ export type InputProps = InputContainerProps & InputSpecificProps & {
   /** Any additional actions to show after the input control. Use `<Input.Action/>` for a preset action element. */
   actions?: undefined | React.ReactNode,
   
-  /**
-   * Whether the textarea should resize automatically, with `field-sizing: content`.
-   * Note that browser support is still somewhat limited:
-   * https://developer.mozilla.org/en-US/docs/Web/CSS/field-sizing
-   */
-  automaticResize?: undefined | boolean,
+  /** Props to apply to the container element. */
+  containerProps?: React.ComponentProps<'span'>,
+  
+  /** Props to apply to the inner `<input/>` element. */
+  inputProps?: React.ComponentProps<'input'>,
 };
 /**
  * A text input control.
@@ -92,15 +96,21 @@ export const Input = Object.assign(
       ref,
       unstyled = false,
       type = 'text',
-      containerProps = {},
-      inputProps = {},
+      
+      // Form-association props
+      name,
+      form,
+      formValue,
+      
+      automaticResize = false,
       Icon = (IconDefault as React.ComponentType<InputIconProps>),
       icon,
       iconLabel,
       iconProps = {},
       prefix,
       actions,
-      automaticResize,
+      containerProps = {},
+      inputProps = {},
       ...propsRest
     } = props;
     
@@ -132,6 +142,25 @@ export const Input = Object.assign(
       throw new Error(`When you specify an 'icon' on 'Input', you must also specify the 'iconLabel'.`);
     }
     
+    // Form association logic
+    const useHiddenFormValue = typeof formValue !== 'undefined';
+    const formAssociationProps = { form, name };
+    const renderHiddenFormAssociation = (
+      formValue: null | string | Array<string>,
+      props: typeof formAssociationProps,
+    ) => {
+      if (typeof formValue === 'string') {
+        return <input {...props} type="hidden" value={formValue}/>;
+      } else if (Array.isArray(formValue)) {
+        return formValue.map((value, index) =>
+          // biome-ignore lint/suspicious/noArrayIndexKey: There is no other unique key available.
+          <input key={index} {...props} name={`${props.name}[]`} type="hidden" value={value}/>
+        );
+      } else {
+        return null;
+      }
+    };
+    
     return (
       // biome-ignore lint/a11y/noStaticElementInteractions: Visual-only convenience.
       <span
@@ -156,11 +185,14 @@ export const Input = Object.assign(
           id={id}
           {...inputProps}
           {...propsExtracted.inputProps}
+          {...useHiddenFormValue ? {} : formAssociationProps}
           ref={mergeRefs(inputRef, inputProps?.ref, ref)}
           type={type}
           className={cx(cl['bk-input__input'], inputProps?.className)}
         />
         {actions}
+        
+        {useHiddenFormValue && renderHiddenFormAssociation(formValue, formAssociationProps)}
       </span>
     );
   },

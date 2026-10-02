@@ -54,7 +54,7 @@ export const ToggleButton = (props: ToggleButtonProps) => {
     propName: 'toggled',
     state: toggled,
     defaultState: defaultToggled,
-    stateFallback: false,
+    defaultStateFallback: false,
     onStateChange: onToggledChange,
   });
   
@@ -78,6 +78,7 @@ export const ToggleButton = (props: ToggleButtonProps) => {
   
   return (
     <Button
+      variant="basic"
       wrap={false}
       aria-pressed={isCheckable ? undefined : toggledState}
       aria-checked={isCheckable ? toggledState : undefined}

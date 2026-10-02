@@ -36,12 +36,12 @@ export const AccountSelectorStandard: Story = {
         {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
           <AccountSelector.Option key={`account_${name}`} itemKey={`account_${name}`} icon="account" label={name}/>
         )}
-        <AccountSelector.FooterActions>
-          <AccountSelector.Action itemKey="action_add-account" label="Add account" onActivate={() => {}}/>
-        </AccountSelector.FooterActions>
+        <AccountSelector.Footer>
+          <AccountSelector.Action itemKey="action_add-account" label="Add account" onPress={() => {}}/>
+        </AccountSelector.Footer>
       </>
     ),
-    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label
+    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.replace('account_', '')
   },
 };
 
@@ -53,12 +53,12 @@ export const AccountSelectorWithOverflow: Story = {
         {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
           <AccountSelector.Option key={`account_${name}`} itemKey={`account_${name}`} icon="account" label={name}/>
         )}
-        <AccountSelector.FooterActions>
-          <AccountSelector.Action itemKey="action_add-account" label="Add account" onActivate={() => {}}/>
-        </AccountSelector.FooterActions>
+        <AccountSelector.Footer>
+          <AccountSelector.Action itemKey="action_add-account" label="Add account" onPress={() => {}}/>
+        </AccountSelector.Footer>
       </>
     ),
-    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label
+    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.replace('account_', '')
   },
 };
 
@@ -68,11 +68,11 @@ const AccountSelectorControlledC = () => {
   return (
     <AccountSelector
       selected={selected}
-      onSelect={setSelected}
-      formatItemLabel={accountKey => accountKey.replace('account_', 'Account ')}
+      onSelectedChange={setSelected}
       accounts={
         Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map((name, index) =>
           <AccountSelector.Option
+            // biome-ignore lint/suspicious/noArrayIndexKey: Index is fine for the purpose of this story
             key={`account_${index + 1}`}
             itemKey={`account_${index + 1}`}
             icon="account"
@@ -81,7 +81,7 @@ const AccountSelectorControlledC = () => {
         )
       }
     >
-      {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label}
+      {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.replace('account_', 'Account ')}
     </AccountSelector>
   );
 };

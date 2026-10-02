@@ -1,0 +1,702 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+import * as React from 'react';
+
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { colorBright, fruits, generateUsers, User as TestUser } from '../../../util/storybook/StorybookUtils.tsx';
+import { loremIpsum } from '../../../util/storybook/LoremIpsum.tsx';
+
+import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
+import { Button } from '../Button/Button.tsx';
+import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
+
+import { type VirtualItem, type VirtualItemProps } from './MenuListSegmentVirtual.tsx';
+import { MenuList } from './MenuList.tsx';
+
+
+const notifyAction = (title: string) => () => { notify.info(`Activated the ${title}`); };
+const propsAction = { onPress: notifyAction('action button') } as const;
+const propsRadio = { selectionMode: 'single', onRequestSelected: notifyAction('option') } as const;
+const propsCheckbox = { selectionMode: 'multiple', onRequestSelected: notifyAction('option') } as const;
+const propsLink = {
+  href: '#',
+  onClick: (event: React.MouseEvent) => { event.preventDefault(); notifyAction('link')(); },
+} as const;
+
+type MenuListArgs = React.ComponentProps<typeof MenuList>;
+type Story = StoryObj<MenuListArgs>;
+
+export default {
+  component: MenuList,
+  parameters: {
+    layout: 'centered',
+  },
+  tags: ['autodocs'],
+  argTypes: {
+  },
+  args: {
+    label: 'Test menu list',
+    children: (
+      <>
+        {fruits.map(fruit =>
+          <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
+        )}
+      </>
+    ),
+  },
+  render: (args) => <MenuList {...args}/>,
+} satisfies Meta<MenuListArgs>;
+
+
+export const MenuListStandard: Story = {};
+
+export const MenuListEmpty: Story = {
+  args: {
+    children: null,
+    empty: true,
+  },
+};
+
+export const MenuListEmptyWithCustomPlaceholder: Story = {
+  args: {
+    children: null,
+    empty: true,
+    placeholderEmpty: <><Icon icon="user"/> No users to select</>,
+  },
+};
+
+export const MenuListLoading: Story = {
+  args: {
+    children: (
+      <>
+        {fruits.slice(0, 2).map(fruit =>
+          <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
+        )}
+      </>
+    ),
+    status: 'loading',
+  },
+};
+
+export const MenuListEmptyLoading: Story = {
+  args: {
+    children: null,
+    empty: true,
+    status: 'loading',
+  },
+};
+
+export const MenuListShrink: Story = { args: { size: 'shrink' } };
+export const MenuListSmall: Story = { args: { size: 'small' } };
+export const MenuListMedium: Story = { args: { size: 'medium' } };
+export const MenuListLarge: Story = { args: { size: 'large' } };
+
+export const MenuListWithOverflow: Story = {
+  args: {
+    children: (
+      <>
+        <MenuList.Option {...propsRadio} label={loremIpsum()}/>
+        {fruits.map(fruit =>
+          <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
+        )}
+      </>
+    ),
+  },
+};
+
+export const MenuListWithSegments: Story = {
+  args: {
+    children: (
+      <>
+        <MenuList.Segment sticky="start">
+          <MenuList.Static>This item is in a sticky segment</MenuList.Static>
+          <MenuList.Static>Scroll the list, and we should stick to the top</MenuList.Static>
+        </MenuList.Segment>
+        {fruits.map(fruit =>
+          <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
+        )}
+        <MenuList.Segment sticky="end">
+          <MenuList.Static>This item is in a sticky segment</MenuList.Static>
+          <MenuList.Static>Scroll the list, and we should stick to the bottom</MenuList.Static>
+        </MenuList.Segment>
+      </>
+    ),
+  },
+};
+
+export const MenuListWithSegmentsDisabled: Story = {
+  args: {
+    children: (
+      <>
+        <MenuList.Option {...propsRadio} label="This option should be enabled"/>
+        <MenuList.Segment disabled>
+          <MenuList.Option {...propsRadio} label="This option should be disabled"/>
+          <MenuList.Segment>
+            <MenuList.Option {...propsRadio} label="This option should also be disabled"/>
+          </MenuList.Segment>
+          <MenuList.Segment disabled={false}>
+            <MenuList.Option {...propsRadio} label="This option should be enabled"/>
+          </MenuList.Segment>
+        </MenuList.Segment>
+      </>
+    ),
+  },
+};
+
+export const MenuListWithGroups: Story = {
+  args: {
+    children: (
+      <>
+        <MenuList.Option {...propsRadio} label="No preference"/>
+        <MenuList.Group label="Flavor 1">
+          {fruits.slice(0, 5).map(fruit =>
+            <MenuList.Option {...propsRadio} key={fruit} selected={fruit === 'Cherry'} label={fruit}/>
+          )}
+        </MenuList.Group>
+        <MenuList.Group label="Flavor 2">
+          {fruits.slice(5, -2).map(fruit =>
+            <MenuList.Option {...propsRadio} key={fruit} selected={fruit === 'Melon'} label={fruit}/>
+          )}
+        </MenuList.Group>
+        <MenuList.Group label="Extra flavors (premium only)" disabled
+          heading={<><Icon inline icon="star-empty"/> Extra flavors (premium only)</>}
+        >
+          {fruits.slice(-2).map(fruit =>
+            <MenuList.Option {...propsCheckbox} key={fruit} label={fruit}/>
+          )}
+        </MenuList.Group>
+      </>
+    ),
+  },
+};
+
+export const MenuListWithGroupEmpty: Story = {
+  args: {
+    children: (
+      <MenuList.Group label="Empty group" empty/>
+    ),
+  },
+};
+
+export const MenuListWithStaticItems: Story = {
+  args: {
+    role: 'none', // No menu items, so needs to have `role="none"`
+    children: (
+      <>
+        <MenuList.Static>Some static content</MenuList.Static>
+        <MenuList.Static>This text should be selectable</MenuList.Static>
+        <MenuList.Static>I can contain arbitrary content like icons: <Icon icon="bell"/></MenuList.Static>
+        <MenuList.Group label="Group">
+          <MenuList.Static>Static items can also be in a group</MenuList.Static>
+        </MenuList.Group>
+      </>
+    ),
+  },
+};
+
+/**
+ * `MenuList.Static` is excluded from the `focusgroup`. When a tab stop is included in a static item, it becomes
+ * a new intermediate tab stop that can be navigated to separately from the `focusgroup`. * In the following example,
+ * notice that sequential (tab) navigation will go from the first options, to the input, to the last options.
+ */
+export const MenuListWithIntermediateTabStop: Story = {
+  args: {
+    size: 'shrink',
+    children: (
+      <>
+        {fruits.slice(0, 4).map(fruit =>
+          <MenuList.Option {...propsRadio} key={fruit} label={fruit} selected={fruit === 'Blueberry'}/>
+        )}
+        <MenuList.Static>
+          <InputSearch placeholder="I am an intermediate tab stop" automaticResize/>
+        </MenuList.Static>
+        {fruits.slice(4, 8).map(fruit =>
+          <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
+        )}
+      </>
+    ),
+  },
+};
+
+export const MenuListWithRadioOptions: Story = {
+  args: {
+    children: (
+      <>
+        {fruits.map(fruit =>
+          <MenuList.Option {...propsRadio} key={fruit} label={fruit} selected={fruit === 'Blueberry'}/>
+        )}
+      </>
+    ),
+  },
+};
+
+export const MenuListWithRadioOptionsDisabled: Story = {
+  args: {
+    children: (
+      <>
+        {fruits.map(fruit =>
+          <MenuList.Option {...propsRadio} key={fruit} label={fruit} selected={fruit === 'Blueberry'}
+            disabled={['Blueberry', 'Mango'].includes(fruit)}
+          />
+        )}
+      </>
+    ),
+  },
+};
+
+export const MenuListWithCheckboxOptions: Story = {
+  args: {
+    children: (
+      <>
+        {fruits.map(fruit =>
+          <MenuList.Option {...propsCheckbox} key={fruit} label={fruit}
+            selected={['Apple', 'Apricot', 'Melon', 'Orange'].includes(fruit)}
+            disabled={['Apricot', 'Blueberry'].includes(fruit)}
+          />
+        )}
+      </>
+    ),
+  },
+};
+
+export const MenuListWithActions: Story = {
+  args: {
+    children: (
+      <>
+        <MenuList.Option {...propsRadio} label="Option 1"/>
+        <MenuList.Option {...propsRadio} label="Option 2"/>
+        <MenuList.Action {...propsAction} icon="edit" label="Action 1"/>
+        <MenuList.Action {...propsAction} disabled icon="delete" label="Action 2 (disabled)"/>
+      </>
+    ),
+  },
+};
+
+export const MenuListWithLinks: Story = {
+  args: {
+    children: (
+      <>
+        <MenuList.Link {...propsLink} href="#">This is a link</MenuList.Link>
+        <MenuList.Link {...propsLink} href="#">This is another link</MenuList.Link>
+        <MenuList.Group label="Group">
+          <MenuList.Link {...propsLink} href="#">This link is in a group</MenuList.Link>
+        </MenuList.Group>
+      </>
+    ),
+  },
+};
+
+/** When viewing the accessibility tree for this menu list, the accessible name should by "My menu list". */
+export const MenuListWithVisibleLabel: Story = {
+  args: {
+    label: null,
+    'aria-labelledby': 'my-label',
+  },
+  decorators: [
+    Story => (
+      <div>
+        <span id="my-label">My menu list</span>
+        <Story/>
+      </div>
+    ),
+  ],
+};
+
+export const MenuListWithIcon: Story = {
+  args: {
+    children: (
+      <>
+        <MenuList.Option {...propsRadio} icon="account" label="Option with an icon"/>
+        <MenuList.Option {...propsRadio} icon="user" label="Another option"/>
+      </>
+    ),
+  },
+};
+
+const iconHighlight: Partial<React.ComponentProps<typeof Icon>> = { decoration: { type: 'background-circle' } };
+export const MenuListWithHighlightedIcon: Story = {
+  args: {
+    children: (
+      <>
+        <MenuList.Option {...propsRadio} icon="account" iconProps={iconHighlight} label="Option with an icon"/>
+        <MenuList.Option {...propsRadio} icon="user" iconProps={iconHighlight} label="Another option"/>
+        <MenuList.Option {...propsRadio} icon="user" label="Without highlight (should line up)"/>
+      </>
+    ),
+  },
+};
+
+const CustomIcon = (props: Partial<React.ComponentProps<typeof Icon>>) =>
+  <Icon icon="account" {...props} style={{ color: colorBright, ...props.style }}/>;
+export const MenuListWithCustomIcon: Story = {
+  args: {
+    children: (
+      <>
+        <MenuList.Option {...propsRadio} icon={p => <CustomIcon {...p}/>} label="Option with a custom icon"/>
+        <MenuList.Option {...propsRadio} icon={p => <CustomIcon {...p} icon="bell"/>} label="Another custom icon"/>
+      </>
+    ),
+  },
+};
+
+/** Disabled items should still be focusable. */
+export const MenuListWithDisabledOption: Story = {
+  args: {
+    children: (
+      <>
+        <MenuList.Option {...propsRadio} label="This option is enabled"/>
+        <MenuList.Option {...propsRadio} label="This option is disabled, but you can still focus me" disabled/>
+        <MenuList.Option {...propsRadio} label="This option is enabled"/>
+      </>
+    ),
+  },
+};
+
+export const MenuListDisabled: Story = {
+  args: {
+    disabled: true,
+    children: (
+      <>
+        <MenuList.Option {...propsRadio} label="All options should be disabled"/>
+        <MenuList.Option {...propsRadio} label="Selecting me should do nothing"/>
+      </>
+    ),
+  },
+};
+
+export const MenuListWithHeaderAndFooter: Story = {
+  args: {
+    style: { '--sticky-items-end': 2 },
+    children: (
+      <>
+        <MenuList.Segment sticky="start">
+          <MenuList.Static><InputSearch style={{ flexGrow: 1 }} placeholder="Search"/></MenuList.Static>
+        </MenuList.Segment>
+        {fruits.map(fruit =>
+          <MenuList.Option {...propsCheckbox} key={fruit} label={fruit}/>
+        )}
+        <MenuList.Footer>
+          <MenuList.Action {...propsAction} label="Footer action 1"/>
+          <MenuList.Action {...propsAction} label="Footer action 2"/>
+        </MenuList.Footer>
+      </>
+    ),
+  },
+};
+
+export const MenuListWithHeaderAndFooterEmpty: Story = {
+  args: {
+    style: { '--sticky-items-end': 2 },
+    placeholderEmpty: <><Icon icon="user"/> No users to select</>,
+    empty: true,
+    children: (
+      <>
+        <MenuList.Segment sticky="start">
+          <MenuList.Static><InputSearch style={{ flexGrow: 1 }} placeholder="Search"/></MenuList.Static>
+        </MenuList.Segment>
+        
+        <MenuList.Footer>
+          <MenuList.Action {...propsAction} label="Footer action 1"/>
+          <MenuList.Action {...propsAction} label="Footer action 2"/>
+        </MenuList.Footer>
+      </>
+    ),
+  },
+};
+
+export const MenuListWritingModeVertical: Story = {
+  args: {
+    style: { writingMode: 'vertical-rl' },
+    size: 'small',
+    children: (
+      <>
+        <MenuList.Option {...propsRadio} label="林檎"/>
+        <MenuList.Option {...propsRadio} label="オレンジ"/>
+        <MenuList.Option {...propsRadio} label="バナナ"/>
+        <MenuList.Option {...propsRadio} label="苺"/>
+        <MenuList.Option {...propsRadio} label="マンゴー"/>
+        <MenuList.Option {...propsRadio} label="みかん"/>
+        <MenuList.Option {...propsRadio} label="もも"/>
+        <MenuList.Option {...propsRadio} label="メロン"/>
+        <MenuList.Option {...propsRadio} label="梨"/>
+      </>
+    ),
+  },
+};
+
+export const MenuListEmbedded: Story = {
+  args: {
+    embedded: true,
+  },
+};
+
+/**
+ * MenuList is built to handle a reasonably large list of items. CSS optimization on items is applied through
+ * `content-visibility`, such that the browser skips painting items that are not currently relevant to the user.
+ */
+export const MenuListWithManyItems: Story = {
+  args: {
+    children: Array.from({ length: 1000 }, (_, i) => i + 1).map(index =>
+      <MenuList.Option key={`option-${index}`} {...propsRadio}>
+        {generateUsers({ numItems: 1, seed: String(index) })[0]?.name ?? ''}
+        
+        {/*
+        Give later items a larger block size (compared to our `contain-intrinsic-block-size`), in order to test the
+        `content-visibility` behavior in the browser. What should happen is: the scroll indicator should make a lot
+        of progress at first but then get slower and slower as the browser starts calculating the actual elements.
+        */}
+        {index >= 80 && <span style={{ blockSize: '5lh' }}></span>}
+        
+        {/* Searchability test (CTRL/CMD+F). Should still work despite `content-visibility`. */}
+        {index === 500 && <span>FIND ME</span>}
+      </MenuList.Option>
+    ),
+  }
+};
+
+
+
+
+const optionSize = 37; // FIXME: reuse the dynamic calculation for the default option size within `SegmentVirtual`?
+const renderStandardOption = (renderLabel: (virtualItem: VirtualItem) => string) =>
+  (props: VirtualItemProps, virtualItem: VirtualItem) =>
+    <MenuList.Option key={virtualItem.key} {...propsRadio} {...props} label={renderLabel(virtualItem)}/>;
+
+export const MenuListVirtualStandard: Story = {
+  args: {
+    children: (
+      <MenuList.SegmentVirtual
+        items={{
+          count: 10_000,
+          renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
+        }}
+      />
+    ),
+  },
+};
+
+export const MenuListVirtualEmpty: Story = {
+  args: {
+    empty: true,
+    children: <MenuList.SegmentVirtual items={[]}/>,
+  },
+};
+
+export const MenuListVirtualLoading: Story = {
+  args: {
+    status: 'loading',
+    children: (
+      <MenuList.SegmentVirtual
+        items={{
+          count: 4,
+          renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
+        }}
+      />
+    ),
+  },
+};
+
+export const MenuListVirtualEmptyLoading: Story = {
+  args: {
+    status: 'loading',
+    children: <MenuList.SegmentVirtual items={[]}/>,
+  },
+};
+
+export const MenuListVirtualWithChunks: Story = {
+  args: {
+    children: (
+      <MenuList.SegmentVirtual
+        items={[
+          {
+            count: 3,
+            renderItem: renderStandardOption(({ index }) => `Chunk 1 – Option ${index + 1}`),
+          },
+          {
+            count: 3,
+            renderItem: renderStandardOption(({ index }) => `Chunk 2 – Option ${index + 1}`),
+          },
+        ]}
+      />
+    ),
+  },
+};
+
+/**
+ * Item keys must be unique within their chunk. Conflicts between keys (like below) should _not_ lead to a React
+ * console warning.
+ */
+export const MenuListVirtualChunkKeysNoConflict: Story = {
+  args: {
+    children: (
+      <MenuList.SegmentVirtual
+        items={[
+          {
+            count: 1,
+            renderItem: renderStandardOption(() => 'Different chunk, same key'),
+            getItemKey: () => 'same-key',
+          },
+          {
+            count: 1,
+            renderItem: renderStandardOption(() => 'Different chunk, same key'),
+            getItemKey: () => 'same-key',
+          },
+        ]}
+      />
+    ),
+  },
+};
+
+export const MenuListVirtualWithSiblings: Story = {
+  args: {
+    children: (
+      <>
+        <MenuList.Static muted>Before</MenuList.Static>
+        <MenuList.SegmentVirtual
+          items={{
+            count: 100,
+            renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
+          }}
+        />
+        <MenuList.Static muted>In between</MenuList.Static>
+        <MenuList.SegmentVirtual
+          items={{
+            count: 100,
+            renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
+          }}
+        />
+        <MenuList.Static muted>After</MenuList.Static>
+      </>
+    ),
+  },
+};
+
+/**
+ * Virtual segments can be nested inside one another. Note: this currently requires you to estimate the size of the
+ * nested `SegmentVirtual` yourself. In the future, we could choose to communicate the internally calculated
+ * `block-size` up to the consumer if needed.
+ */
+export const MenuListVirtualNested: Story = {
+  args: {
+    children: (
+      <MenuList.SegmentVirtual
+        items={[
+          {
+            count: 1,
+            renderItem: (props, virtualItem) =>
+              <MenuList.SegmentVirtual key={virtualItem.key} {...props}
+                items={{
+                  count: 3,
+                  renderItem: renderStandardOption(({ index }) => `Nested option ${index + 1}`),
+                }}
+              />,
+            estimateSize: () => optionSize * 3,
+          },
+          {
+            count: 100,
+            renderItem: renderStandardOption(({ index }) => `Option ${index + 1}`),
+          },
+        ]}
+      />
+    ),
+  },
+};
+
+const MenuListVirtualInfiniteScrollC = (props: MenuListArgs) => {
+  const pageSize = 20;
+  const maxItems = 50; // Have a small maximum, so we can test reaching the end of the list
+  
+  //const [isLoading, setIsLoading] = React.useState(false); // Not needed here?
+  const [limit, setLimit] = React.useState(pageSize);
+  const [items, setItems] = React.useState<Array<TestUser>>(() => generateUsers({ numItems: limit }));
+  
+  const hasMoreItems = items.length < maxItems;
+  
+  const handleNearEnd = React.useCallback(async () => {
+    if (!hasMoreItems) { return; }
+    
+    // Load another page
+    const limitUpdated = Math.min(limit + pageSize, maxItems);
+    setLimit(limitUpdated);
+    
+    await new Promise(resolve => window.setTimeout(resolve, 400)); // Simulate time delay
+    
+    setItems(generateUsers({ numItems: limitUpdated }));
+  }, [limit, hasMoreItems]);
+  
+  return (
+    <MenuList
+      {...props}
+      // Note: for infinite scrolling, it is a better UX to immediately show "loading", even before the "near end"
+      // event triggers (so that the user doesn't scroll down _and then_ a split second later a loading indicator is
+      // rendered below and the user has to scroll down even more to see it).
+      status={hasMoreItems ? 'loading' : 'ready'}
+    >
+      <MenuList.SegmentVirtual
+        items={{
+          count: items.length,
+          renderItem: renderStandardOption(({ index }) => items[index]?.name ?? 'Unknown index'),
+        }}
+        onNearEnd={handleNearEnd}
+      />
+      {!hasMoreItems &&
+        <MenuList.Static muted>🎊 You've reached the end!</MenuList.Static>
+      }
+    </MenuList>
+  );
+};
+export const MenuListVirtualInfiniteScroll: Story = {
+  render: args => <MenuListVirtualInfiniteScrollC {...args}/>,
+};
+
+const MenuListVirtualWithLoadMoreC = (props: MenuListArgs) => {
+  const pageSize = 20;
+  const maxItems = 50; // Have a small maximum, so we can test reaching the end of the list
+  
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [limit, setLimit] = React.useState(pageSize);
+  const [items, setItems] = React.useState<Array<TestUser>>(() => generateUsers({ numItems: limit }));
+  
+  const hasMoreItems = items.length < maxItems;
+  
+  const handleLoadMore = React.useCallback(async () => {
+    if (!hasMoreItems) { return; }
+    
+    // Load another page
+    const limitUpdated = Math.min(limit + pageSize, maxItems);
+    setLimit(limitUpdated);
+    setIsLoading(true);
+    
+    await new Promise(resolve => window.setTimeout(resolve, 1200)); // Simulate time delay
+    
+    setIsLoading(false);
+    setItems(generateUsers({ numItems: limitUpdated }));
+  }, [limit, hasMoreItems]);
+  
+  return (
+    <MenuList
+      label="Test MenuList"
+      status={isLoading ? 'loading' : 'ready'}
+    >
+      <MenuList.SegmentVirtual
+        {...props}
+        items={{
+          count: items.length,
+          renderItem: renderStandardOption(({ index }) => items[index]?.name ?? 'Unknown index'),
+        }}
+      />
+      {!isLoading && hasMoreItems &&
+        <MenuList.Static><Button kind="primary" label="Load more" onPress={handleLoadMore}/></MenuList.Static>
+      }
+      {!isLoading && !hasMoreItems &&
+        <MenuList.Static muted>🎊 You've reached the end!</MenuList.Static>
+      }
+    </MenuList>
+  );
+};
+export const MenuListVirtualWithLoadMore: Story = {
+  render: args => <MenuListVirtualWithLoadMoreC {...args}/>,
+};
