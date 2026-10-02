@@ -6,6 +6,12 @@
 @use '../../../typography/Heading/Heading.mixins.scss' as heading;
 @use '../../graphics/Spinner/Spinner.module.scss' as spinner;
 
+@mixin hr() {
+  margin-block: bk.$spacing-3;
+  border: none;
+  border-block-start: bk.rem-from-px(1) solid bk.$theme-rule-default;
+}
+
 @mixin bk-card($name: bk-card) {
   --bk-card-background-color: #{bk.$theme-card-background-default};
   --bk-card-border-color: #{bk.$theme-card-border-default};
@@ -53,15 +59,20 @@
     }
   }
   
+  .#{$name}__footer {
+    @include hr;
+    padding-block-start: bk.$spacing-3;
+    margin-block-start: bk.$spacing-7;
+    margin-block-end: 0;
+  }
+  
   &.#{$name}--flat > .#{$name}__heading {
     margin-block-end: bk.$spacing-1;
   }
   
   // Separators
   hr {
-    margin-block: bk.$spacing-3;
-    border: none;
-    border-block-start: bk.rem-from-px(1) solid bk.$theme-rule-default;
+    @include hr;
   }
 }
 
