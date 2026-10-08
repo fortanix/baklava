@@ -5,12 +5,12 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-radio-group-as-cards {
-    @include bk.component-base(bk-radio-group-as-cards);
+  .bk-checkbox-group-as-cards {
+    @include bk.component-base(bk-checkbox-group-as-cards);
 
-    --bk-radio-group-as-cards-background-color: #{bk.$theme-segmented-control-background-default};
-    --bk-radio-group-as-cards-border-color: #{bk.$theme-segmented-control-border-unselected};
-    --bk-radio-group-as-cards-text-color: #{bk.$theme-segmented-control-text-unselected};
+    --bk-checkbox-group-as-cards-background-color: #{bk.$theme-segmented-control-background-default};
+    --bk-checkbox-group-as-cards-border-color: #{bk.$theme-segmented-control-border-unselected};
+    --bk-checkbox-group-as-cards-text-color: #{bk.$theme-segmented-control-text-unselected};
 
     //overflow: hidden; // Note: cannot hide overflow, would truncate focus outlines
     inline-size: fit-content; // Do not stretch in a block context
@@ -26,7 +26,7 @@
     // Note: may want to implement https://heydonworks.com/article/the-flexbox-holy-albatross-reincarnated
 
     // Indicator overlay
-    .bk-radio-group-as-cards__indicator {
+    .bk-checkbox-group-as-cards__indicator {
       position: absolute;
       inset-block-start: -0.51rem;
       inset-inline-end: -0.51rem;
@@ -39,7 +39,7 @@
       }
     }
 
-    .bk-radio-group-as-cards__card {
+    .bk-checkbox-group-as-cards__card {
       position: relative;
       flex: 0 0 auto;
       overflow: visible;
@@ -51,34 +51,30 @@
       user-select: none;
       cursor: pointer;
       padding: bk.$spacing-4;
-      background-color: var(--bk-radio-group-as-cards-background-color);
-      color: var(--bk-radio-group-as-cards-text-color);
+      background-color: var(--bk-checkbox-group-as-cards-background-color);
+      color: var(--bk-checkbox-group-as-cards-text-color);
       @include bk.font($family: bk.$font-family-body, $weight: bk.$font-weight-semibold);
 
       // Selected card
       &[aria-checked="true"] {
-        --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
-        --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
-        --bk-radio-group-as-cards-text-color: #{bk.$theme-segmented-control-text-default};
+        --bk-checkbox-group-as-cards-border-color: #{bk.$theme-card-border-selected};
+        --bk-checkbox-group-as-cards-background-color: #{bk.$theme-card-background-selected};
+        --bk-checkbox-group-as-cards-text-color: #{bk.$theme-segmented-control-text-default};
       }
 
-      // NOTE:
-      // The actual focus is on inner span (role="radio"), not on the card.
-      // So :focus-visible on card won't work. We rely on :focus-within instead.
-      // Apply focus styles when any child (span) is focused
+      // The actual focus is on the inner span (role="checkbox"), not on the card.
       @include bk.focus-outset($selector: '&:focus-visible, &:has(:focus-visible), &.pseudo-focus-visible');
-
 
       &:has(:focus-visible, :global(.pseudo-focus-visible)) {
         z-index: 1; // Have the focused toggle render over the other toggles so that the focus is fully shown
-        --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
-        --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
+        --bk-checkbox-group-as-cards-border-color: #{bk.$theme-card-border-selected};
+        --bk-checkbox-group-as-cards-background-color: #{bk.$theme-card-background-selected};
       }
 
       // State: hover (only for non-selected cards)
       &:is(:hover, :global(.pseudo-hover)):not([aria-checked="true"]) {
-        --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
-        --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
+        --bk-checkbox-group-as-cards-border-color: #{bk.$theme-card-border-selected};
+        --bk-checkbox-group-as-cards-background-color: #{bk.$theme-card-background-selected};
       }
 
       // State: active
@@ -91,7 +87,7 @@
       }
     }
 
-    .bk-radio-group-as-cards__card__heading {
+    .bk-checkbox-group-as-cards__card__heading {
       display: flex;
       align-items: center;
       gap: bk.$spacing-2;
@@ -102,13 +98,13 @@
       color: bk.$theme-text-body-default;
       line-height: bk.$line-height-s;
 
-      // stylelint-disable-next-line selector-class-pattern 
+      // stylelint-disable-next-line selector-class-pattern
       > :global(._icon) {
         flex-shrink: 0;
         align-self: center;
       }
 
-      // stylelint-disable-next-line selector-class-pattern 
+      // stylelint-disable-next-line selector-class-pattern
       > :global(._content) {
         flex: 1;
         min-inline-size: 0;
@@ -126,9 +122,9 @@
   }
 
   // Selected wrapper state
-  .bk-radio-group-as-cards__card--selected {
+  .bk-checkbox-group-as-cards__card--selected {
     border-color: bk.$theme-card-border-selected;
-    --bk-radio-group-as-cards-border-color: #{bk.$theme-card-border-selected};
-    --bk-radio-group-as-cards-background-color: #{bk.$theme-card-background-selected};
+    --bk-checkbox-group-as-cards-border-color: #{bk.$theme-card-border-selected};
+    --bk-checkbox-group-as-cards-background-color: #{bk.$theme-card-background-selected};
   }
 }
