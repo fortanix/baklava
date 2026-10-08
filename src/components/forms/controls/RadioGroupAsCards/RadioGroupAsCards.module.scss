@@ -31,8 +31,12 @@
       inset-block-start: -0.51rem;
       inset-inline-end: -0.51rem;
       z-index: 10;
-      @include bk.circle($size: bk.$spacing-6);
-      background-color: bk.$theme-icon-informational;
+      @include bk.circle($size: bk.$spacing-4);
+      background-color: bk.$theme-icon-default-secondary;
+      
+      :global(.icon) {
+        color: bk.$theme-icon-informational;
+      }
     }
 
     .bk-radio-group-as-cards__card {
