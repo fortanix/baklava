@@ -240,4 +240,3 @@ export const MenuProvider = Object.assign((props: MenuProviderProps) => {
     Footer: MenuSelect.Footer,
   },
 );
-

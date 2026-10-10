@@ -122,7 +122,7 @@ export const SelectMulti = Object.assign(
               placeholder: 'Select an option',
               'aria-disabled': true,
               className: cx(cl['bk-select-multi'], { [cl['bk-select-multi--open']]: open }),
-              formValue: selectedOptions ?? [],
+              formValue: selectedOptions instanceof Set ? [...selectedOptions.values()] : [],
               actions: (
                 <InputAction
                   // Note: the toggle button should be focusable but not in tab sequence, according to:
