@@ -5,12 +5,13 @@
 import * as React from 'react';
 
 // Utils
-import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
-import { mergeCallbacks, mergeProps, mergeRefs } from '../../../util/reactUtil.ts';
-import { type UseFloatingElementOptions } from '../../util/overlays/floating-ui/useFloatingElement.tsx';
+import { mergeProps, mergeRefs } from '../../../util/reactUtil.ts';
+import {
+  type UseFloatingElementOptions,
+} from '../../util/overlays/floating-ui/useFloatingElement.tsx';
 
 // Components
-import * as ListBoxMultiLazy from '../../forms/controls/ListBoxMultiLazy/ListBoxMultiLazy.tsx';
+import { type ItemKey, type SelectedState, ListBoxMulti } from '../../forms/controls/ListBoxMulti/ListBoxMulti.tsx';
 import {
   BaseAnchorRenderArgs,
   MenuProviderRef,
@@ -24,53 +25,45 @@ import {
 } from '../MenuMultiProvider/MenuMultiProvider.tsx';
 
 // Styles
-import { MenuProviderClassNames as cl } from '../MenuProvider/MenuProvider.tsx';
+//import cl from './ListBoxMultiProvider.module.scss';
 
 
-export type ItemDetails = ListBoxMultiLazy.ItemDetails;
-export type ItemKey = ListBoxMultiLazy.ItemKey;
-export type VirtualItemKeys = ListBoxMultiLazy.VirtualItemKeys;
-type ListBoxMultiProps = ComponentProps<typeof ListBoxMultiLazy.ListBoxMultiLazy>;
+//export { cl as ListBoxMultiProviderClassNames };
+export type { ItemKey, SelectedState, MenuProviderRef as ListBoxMultiProviderRef };
 
-/**
- * MENU PROVIDER
- * Provider for a menu overlay that is triggered by (and positioned relative to) some anchor element.
- * ---------------------------------------------------------------------------------------------------------------------
- */
+type ListBoxMultiProps = React.ComponentProps<typeof ListBoxMulti>;
+
+
 export type AnchorRenderArgs = BaseAnchorRenderArgs & {
-  selectedOptions: Map<ListBoxMultiLazy.ItemKey, ListBoxMultiLazy.ItemDetails>,
+  selectedOptions: SelectedState,
 };
-export type MenuMultiLazyProviderProps = Omit<ListBoxMultiProps, 'ref' | 'children' | 'label' | 'size'> & {
-  // Imperative control (TEMP)
+export type ListBoxMultiProviderProps = Omit<ListBoxMultiProps, 'ref' | 'children' | 'label' | 'size'> & {
   /** A React ref to control the menu provider imperatively. */
   ref?: undefined | React.Ref<null | MenuProviderRef>,
   /** For controlled open state. */
   open?: undefined | boolean,
   /** When controlled, callback to set state. */
   onOpenChange?: undefined | ((isOpen: boolean) => void),
-  /** (optional) Use an existing DOM node as the positioning anchor. */
+  /** Use an existing DOM node as the positioning anchor. Optional. */
   anchorRef?: undefined | React.RefObject<null | HTMLElement>,
-
+  
   /** An accessible name for this menu provider. Required. */
   label: string,
-
+  
   /**
   * The content to render, which should contain the anchor. This should be a render prop which takes props to
   * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
   */
   children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode,
-
+  
+  /** The menu items. */
+  items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode),
+  
   /** The accessible role of the menu. */
   role?: undefined | UseFloatingElementOptions['role'],
   
   /** The action that should trigger the menu to open. */
   triggerAction?: undefined | UseFloatingElementOptions['triggerAction'],
-
-  /**
-   * Alias for `triggerAction`. Deprecated, use `triggerAction` instead.
-   * @deprecated
-   */
-  action?: undefined | UseFloatingElementOptions['triggerAction'],
   
   /** The (inline) size of the menu. */
   menuSize?: ListBoxMultiProps['size'],
@@ -93,34 +86,36 @@ export type MenuMultiLazyProviderProps = Omit<ListBoxMultiProps, 'ref' | 'childr
   /** Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
   enablePreciseTracking?: undefined | UseFloatingElementOptions['enablePreciseTracking'],
 };
-export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
+export const ListBoxMultiProvider = Object.assign((props: ListBoxMultiProviderProps) => {
   const {
-    label,
-    children,
-    defaultSelected,
-    selected,
-    onSelect,
-    role,
-    triggerAction,
-    action,
-    menuSize,
-    keyboardInteractions,
-    placement,
-    offset,
-    formatItemLabel,
-
     ref,
     open,
     onOpenChange,
     anchorRef,
-
+    
+    label,
+    children,
+    items,
+    defaultSelected,
+    selected,
+    onSelectedChange,
+    role = 'menu',
+    triggerAction,
+    menuSize,
+    
+    // Floating element props
+    keyboardInteractions,
+    placement,
+    offset,
+    enablePreciseTracking,
+    
     ...propsRest
   } = props;
-
-  const listBoxRef = React.useRef<React.ComponentRef<typeof ListBoxMultiLazy.ListBoxMultiLazy>>(null);
-  const listBoxId = React.useId();
-  const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
-   
+  
+  const menuId = React.useId();
+  const menuRef = React.useRef<React.ComponentRef<typeof ListBoxMulti>>(null);
+  const previousActiveElementRef = React.useRef<HTMLElement>(null);
+  
   const {
     isMounted,
     isOpen,
@@ -133,99 +128,109 @@ export const MenuMultiLazyProvider = (props: MenuMultiLazyProviderProps) => {
   } = useFloatingMenu({
     role,
     triggerAction,
-    action,
     keyboardInteractions,
     placement,
     offset,
+    enablePreciseTracking,
     open,
     onOpenChange,
   });
+  
+  // Allow passing a ref to control the state of the menu imperatively
+  useMenuImperativeRef({ ref, floatingRef: refs.floating, isOpen, setIsOpen });
+  
+  // Controlled/uncontrolled state logic
   useMenuOpenControl({ setIsOpen, open });
-  const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, listBoxRef });
-  const { handleToggle } = useMenuToggle({ listBoxRef, action, toggleCauseRef, previousActiveElementRef });
-  const { internalSelected, selectedItemDetailsRef, handleInternalSelect } = useMenuSelect({
+  
+  // Keyboard navigation logic
+  const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, menuRef });
+  
+  const { handleToggle } = useMenuToggle({ menuRef, action: triggerAction, toggleCauseRef, previousActiveElementRef });
+  
+  const { internalSelected, handleInternalSelect } = useMenuSelect({
     previousActiveElementRef,
     setIsOpen,
-    triggerAction: triggerAction ?? action,
-    formatItemLabel,
+    triggerAction,
     selected,
     defaultSelected,
     canCloseMenu: false,
-  })
+  });
+  
   const getRenderArgs = React.useCallback((base: BaseAnchorRenderArgs): AnchorRenderArgs => {
-    return { ...base, selectedOptions: selectedItemDetailsRef.current };
-  }, [selectedItemDetailsRef.current]);
+    return { ...base, selectedOptions: internalSelected };
+  }, [internalSelected]);
   const { anchor } = useMenuAnchor({
     children,
     isOpen,
     setIsOpen,
-    listBoxId,
+    menuId,
     getReferenceProps,
     refs,
     onKeyDown: onAnchorKeyDown,
     getRenderArgs,
   });
-
+  
   // Use external element as the reference, if provided
   React.useLayoutEffect(() => {
     if (anchorRef?.current) {
       refs.setReference(anchorRef.current);
     }
   }, [anchorRef, refs]);
-
-  useMenuImperativeRef({ ref, isOpen, setIsOpen, floatingRef: refs.floating });
-
+  
   const floatingProps = getFloatingProps({
     popover: 'manual',
     style: floatingStyles,
-    className: cx(cl['bk-menu-provider__list-box']),
+    //className: cx(cl['bk-menu-provider__list-box']),
   });
-
-  const mergedProps = mergeProps(
-    floatingProps,
-    propsRest,
-    {
-      onKeyDown: mergeCallbacks([propsRest.onKeyDown, onMenuKeyDown]),
-    },
-  );
-
-  const mergedListBoxRef = mergeRefs<React.ComponentRef<typeof ListBoxMultiLazy.ListBoxMultiLazy>>(
-    listBoxRef,
-    refs.setFloating,
-    floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBoxMultiLazy.ListBoxMultiLazy>>,
-  );
-
+  
   const selectedFromInternalSelected = React.useMemo(() => {
-    return new Set(internalSelected.keys());
+    return new Set(internalSelected.keys()); // 'null' for controlled
   }, [internalSelected]);
-
-  const handleSelect = React.useCallback((
-    _selectedKeys: Set<ListBoxMultiLazy.ItemKey>,
-    itemDetails: Map<ListBoxMultiLazy.ItemKey, ListBoxMultiLazy.ItemDetails>,
-  ) => {
-    const itemKeys = new Set(itemDetails.keys());
-    onSelect?.(itemKeys, itemDetails);
-    handleInternalSelect(itemDetails);
-  }, [onSelect, handleInternalSelect]);
-
+  
+  const handleSelect = React.useCallback((selectedKeys: Set<ItemKey>) => {
+    onSelectedChange?.(selectedKeys);
+    handleInternalSelect(selectedKeys);
+  }, [onSelectedChange, handleInternalSelect]);
+  
   return (
     <>
       {anchor}
       {isMounted && (
-        <ListBoxMultiLazy.ListBoxMultiLazy
-          {...mergedProps}
-          ref={mergedListBoxRef}
+        <ListBoxMulti
+          {...mergeProps(
+            floatingProps,
+            propsRest,
+            {
+              ref: mergeRefs<React.ComponentRef<typeof ListBoxMulti>>(
+                menuRef,
+                refs.setFloating,
+                floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBoxMulti>>,
+              ),
+              onKeyDown: onMenuKeyDown,
+              onToggle: handleToggle,
+            },
+          )}
           size={menuSize}
           label={label}
           selected={selectedFromInternalSelected}
           defaultSelected={defaultSelected}
-          formatItemLabel={formatItemLabel}
-          onSelect={handleSelect}
-          onToggle={handleToggle}
+          onSelectedChange={handleSelect}
           data-placement={floatingPlacement}
-        />
+        >
+          {typeof items === 'function'
+            ? items({ close: () => { setIsOpen(false); } })
+            : items
+          }
+        </ListBoxMulti>
       )}
     </>
   );
-};
-
+}, {
+    Option: ListBoxMulti.Option,
+    Static: ListBoxMulti.Static,
+    Segment: ListBoxMulti.Segment,
+    SegmentVirtual: ListBoxMulti.SegmentVirtual,
+    Group: ListBoxMulti.Group,
+    Footer: ListBoxMulti.Footer,
+  },
+);

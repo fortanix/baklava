@@ -63,6 +63,44 @@ const useCssScopeSupportTracker = () => {
   });
 };
 
+/** Utility hook to track the value of `1rem` in pixels. Useful when JS needs to know a size defined in CSS. */
+export const useCssRemTracker = () => {
+  const getRemPx = React.useCallback(() => parseFloat(getComputedStyle(document.documentElement).fontSize), []);
+  
+  const [remPx, setRemPx] = React.useState(getRemPx);
+  
+  const handleResize = React.useCallback(() => {
+    setRemPx(getRemPx());
+  }, [getRemPx]);
+  
+  React.useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    // In case the viewport is already a different size on mount (e.g. after SSR hydration)
+    handleResize();
+    return () => { window.removeEventListener('resize', handleResize); };
+  }, [handleResize]);
+  
+  return remPx;
+};
+export const useCssRlhTracker = () => {
+  const getRlhPx = React.useCallback(() => parseFloat(getComputedStyle(document.documentElement).lineHeight), []);
+  
+  const [remPx, setRlhPx] = React.useState(getRlhPx);
+  
+  const handleResize = React.useCallback(() => {
+    setRlhPx(getRlhPx());
+  }, [getRlhPx]);
+  
+  React.useEffect(() => {
+    window.addEventListener('resize', handleResize);
+    // In case the viewport is already a different size on mount (e.g. after SSR hydration)
+    handleResize();
+    return () => { window.removeEventListener('resize', handleResize); };
+  }, [handleResize]);
+  
+  return remPx;
+};
+
 export const BaklavaProvider = (props: React.PropsWithChildren) => {
   useDevicePixelRatioTracker();
   useCssScopeSupportTracker();

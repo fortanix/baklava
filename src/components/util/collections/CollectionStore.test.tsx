@@ -15,7 +15,7 @@ import {
   useCollectionContext,
   useCollection,
   useCollectionItem,
-} from './CollectionStore.tsx';
+} from './CollectionStore.ts';
 
 
 //
@@ -106,7 +106,7 @@ describe('createCollectionSlice', () => {
     const snapshot = store.getState().collectionItemKeys();
     store.getState().registerItem('b', document.createElement('span'));
     
-    // The original snapshot must not have changed.
+    // The original snapshot must not have changed
     expect(snapshot).toEqual(new Set(['a']));
   });
   

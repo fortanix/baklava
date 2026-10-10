@@ -8,6 +8,51 @@ import { capitalizeFirstLetter } from '../formatting.ts';
 import { usePrevious } from '../reactUtil.ts';
 
 
+export type Defined = null | {};
+
+export type ControllableState<S extends Defined, E = S> = (
+  | {
+    state?: undefined, // Uncontrolled
+    defaultState?: undefined | S,
+    onStateChange?: undefined | ((event: E) => void),
+  }
+  | {
+    state: S, // Controlled
+    defaultState?: undefined,
+    onStateChange: (event: E) => void,
+  }
+);
+
+export type ControllableStateDef<S extends Defined, E = S> = {
+  state: undefined | S,
+  defaultState: undefined | S,
+  defaultStateFallback: undefined | S,
+  onStateChange: undefined | ((event: E) => void),
+};
+export type ControllableStateDefStrict<S extends Defined, E = S> = ControllableStateDef<S, E> & {
+  defaultStateFallback: S,
+};
+
+export type ParseControllableStateResult<S extends Defined, E = S> = ControllableStateDef<S, E> & {
+  isControlled: boolean,
+  stateInitial: undefined | S,
+};
+export const parseControllableState = <S extends Defined, E = S>(
+  state: ControllableStateDef<S, E>,
+): ParseControllableStateResult<S, E> => {
+  const isControlled = typeof state.state !== 'undefined';
+  const stateInitial = isControlled
+    ? state.state
+    : (typeof state.defaultState !== 'undefined' ? state.defaultState : state.defaultStateFallback);
+  
+  return {
+    ...state,
+    isControlled,
+    stateInitial,
+  };
+};
+
+
 const formatStateProp = (propName: string, propType: 'state' | 'defaultState' | 'onStateChange'): string => {
   switch (propType) {
     case 'state': return propName;
@@ -22,13 +67,10 @@ const isStateDispatchCallable = <S>(stateDispatch: React.SetStateAction<S>): sta
 };
 
 
-type UseControllableStateProps<S> = {
+type UseControllableStateProps<S extends Defined, E = S> = ControllableStateDefStrict<S, E> & {
+  // Debug info
   componentName: string,
   propName: string,
-  state: undefined | S,
-  defaultState: undefined | S,
-  stateFallback: S,
-  onStateChange: undefined | ((state: S) => void),
 };
 /**
  * Utility hook for a component that has some state that can be either controlled or uncontrolled. Similar to how
@@ -45,8 +87,8 @@ type UseControllableStateProps<S> = {
  * Components should never switch from controlled to uncontrolled or vice versa after rendering. If this happens, we
  * print a warning in the console.
  */
-export const useControllableState = <S>(props: UseControllableStateProps<S>) => {
-  const { componentName: comp, propName, state, defaultState, stateFallback, onStateChange } = props;
+export const useControllableState = <S extends Defined>(props: UseControllableStateProps<S>) => {
+  const { componentName: comp, propName, state, defaultState, defaultStateFallback, onStateChange } = props;
   
   // When `state` is explicitly given (not undefined), we consider the state to be controlled
   const isControlled = typeof state !== 'undefined';
@@ -73,7 +115,7 @@ export const useControllableState = <S>(props: UseControllableStateProps<S>) => 
   
   
   // When uncontrolled, we need to keep track of the current state ourselves
-  const stateInit = typeof defaultState !== 'undefined' ? defaultState : stateFallback;
+  const stateInit = typeof defaultState !== 'undefined' ? defaultState : defaultStateFallback;
   const [stateUncontrolled, updateStateUncontrolled] = React.useState<S>(stateInit);
   
   // The actual state to be used by the component (whether controlled or uncontrolled)
@@ -103,5 +145,47 @@ export const useControllableState = <S>(props: UseControllableStateProps<S>) => 
     isControlled,
     state: stateUsed,
     updateState,
+  };
+};
+
+export const useControllableStateTracker = <S extends Defined>(
+  props: ControllableStateDef<S>,
+): { state: undefined | S, onStateChange: (state: S) => void } => {
+  const { state, onStateChange } = props;
+  const { isControlled, stateInitial } = parseControllableState(props);
+  
+  const [stateTracked, updateStateTracked] = React.useState<undefined | S>(stateInitial);
+  
+  const onStateChangeTracked = React.useCallback((state: S) => {
+    updateStateTracked(state);
+    onStateChange?.(state);
+  }, [onStateChange]);
+  
+  return {
+    state: isControlled ? state : stateTracked,
+    onStateChange: onStateChangeTracked,
+  };
+};
+
+export const useControllableStateTrackerWithEvent = <S extends Defined, E = S>(
+  props: ControllableStateDef<S, E>,
+  stateFromEvent: (event: E) => S,
+): { state: undefined | S, onStateChange: (event: E) => void } => {
+  const { state, onStateChange } = props;
+  const { isControlled, stateInitial } = parseControllableState(props);
+  
+  const [stateTracked, updateStateTracked] = React.useState<undefined | S>(stateInitial);
+  const onStateChangeTracked = React.useCallback((event: E) => {
+    if (!isControlled) {
+      const state = stateFromEvent(event);
+      updateStateTracked(state);
+    }
+    
+    onStateChange?.(event);
+  }, [isControlled, onStateChange, stateFromEvent]);
+  
+  return {
+    state: isControlled ? state : stateTracked,
+    onStateChange: onStateChangeTracked,
   };
 };

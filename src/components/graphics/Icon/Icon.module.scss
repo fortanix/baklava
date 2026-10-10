@@ -10,6 +10,7 @@
     @include bk.component-base(bk-icon);
     
     --bk-icon-size: 1.3em; // For example: if 1em ~ 14px, an icon by default would be ~18px
+    --bk-icon-background-padding: 0.9em;
     --bk-icon-accent-color: color-mix(in sRGB, currentColor 30%, transparent);
     
     box-sizing: content-box; // Use content-box so that we can set a padding on an icon without it shrinking the width
@@ -32,13 +33,14 @@
     stroke: currentColor;
     stroke-width: 0;
     
-    &.bk-icon--background-circle {
+    // Note: keep specificity low so that this styling becomes easy to override
+    &:where(.bk-icon--background-circle) {
       // Note: use this instead of `border-radius: 50%`, because that causes a bug in Safari where the icon is cut off
       // at the padding box even if we set `overflow: visible`.
       clip-path: circle();
       
       aspect-ratio: 1;
-      padding: 0.9em;
+      padding: var(--bk-icon-background-padding);
       background: var(--bk-icon-accent-color, currentColor);
       
       align-items: center;

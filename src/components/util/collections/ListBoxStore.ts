@@ -6,7 +6,7 @@ import * as React from 'react';
 import { mergeProps, useMemoOnce } from '../../../util/reactUtil.ts';
 import { type StoreApi, createStore, useStore } from 'zustand';
 
-import { ControllableStateDef, parseControllableState } from './ControllableState.ts';
+import { ControllableStateDef, parseControllableState } from '../../../util/hooks/useControllableState.ts';
 
 import {
   type ItemKey,
@@ -14,39 +14,44 @@ import {
   createCollectionSlice,
   useCollectionWith,
   useCollectionItemWith,
-} from './CollectionStore.tsx';
+  useCollectionTypeAhead,
+} from './CollectionStore.ts';
 import {
   type SelectedState,
   type SelectionSingleSlice,
   createSelectionSingleSlice,
   useSelectionWith,
-} from './SelectionSingleStore.tsx';
+} from './SelectionSingleStore.ts';
 
 
-export type { ItemKey };
+export type { ItemKey, SelectedState };
 
-export type RadioGroupSlice = CollectionSlice & SelectionSingleSlice;
-export type RadioGroupContext = {
-  store: StoreApi<RadioGroupSlice>,
+export type ListBoxSlice = CollectionSlice & SelectionSingleSlice;
+export type ListBoxContext = {
+  store: StoreApi<ListBoxSlice>,
   /** Called when the user requests the given item (or none) to be selected. */
   requestSelected: (itemKey: SelectedState) => void,
 };
-export const RadioGroupContext = React.createContext<null | RadioGroupContext>(null);
-export const useRadioGroupContext = () => {
-  const context = React.use(RadioGroupContext);
-  if (!context) { throw new Error(`Missing 'RadioGroupContext' provider`); }
+export const ListBoxContext = React.createContext<null | ListBoxContext>(null);
+export const useListBoxContext = () => {
+  const context = React.use(ListBoxContext);
+  if (!context) { throw new Error(`Missing 'ListBoxContext' provider`); }
   return context;
 };
+export const useListBoxSelector = <T>(selector: (state: ListBoxSlice) => T) => {
+  const { store } = useListBoxContext();
+  return useStore(store, selector);
+};
 
-export type RadioGroupProps = ControllableStateDef<SelectedState>;
-export const useRadioGroup = (props: RadioGroupProps) => {
-  const radioGroupId = React.useId();
+export type ListBoxProps = ControllableStateDef<SelectedState>;
+export const useListBox = <E extends HTMLElement = HTMLElement>(props: ListBoxProps) => {
+  const ref = React.useRef<E>(null);
+  const listBoxId = React.useId();
   
   const { isControlled, stateInitial, ...selectionState } = parseControllableState(props);
-  const ref = React.useRef<HTMLElement>(null);
   
-  const store = useMemoOnce(() => createStore<RadioGroupSlice>()((...args) => ({
-    ...createCollectionSlice(ref, { collectionId: radioGroupId })(...args),
+  const store = useMemoOnce(() => createStore<ListBoxSlice>()((...args) => ({
+    ...createCollectionSlice(ref, { collectionId: listBoxId })(...args),
     ...createSelectionSingleSlice({ selectedItemKey: stateInitial ?? null })(...args),
   })));
   
@@ -63,42 +68,51 @@ export const useRadioGroup = (props: RadioGroupProps) => {
     }
   }, [isControlled, props.onStateChange]);
   
+  // When the selected item state changes, focus that item element
+  const collectionFocusItem = React.useEffectEvent(useStore(store, state => state.collectionFocusItem));
+  React.useEffect(() => {
+    return store.subscribe((state, prevState) => {
+      if (state.selectedItemKey !== prevState.selectedItemKey && state.selectedItemKey !== null) {
+        const itemKeyTarget = state.selectedItemKey;
+        if (itemKeyTarget) {
+          collectionFocusItem(itemKeyTarget);
+        }
+      }
+    });
+  }, []);
+  
   // Note: this context value should be as stable as possible, the state changing means the entire subtree will get
   // rerendered. The way we've set this up, only a change in `isControlled` will cause this state to change. Changes
   // to `isControlled` after mount should be avoided by consumers (but are technically allowed).
   // This also depends on `onStateChange`, therefore consumers must be really careful to memoize this callback!
-  const context: RadioGroupContext = React.useMemo(() => ({ store, requestSelected }), [requestSelected]);
+  const context: ListBoxContext = React.useMemo(() => ({ store, requestSelected }), [requestSelected]);
   
   // Storing `onStateChange` in a ref, or using `useEffectEvent` could maybe help with the `context` rerendering issue.
   // However, this is explicitly frowned upon by the React team, who recommend just memoizing (or React Compiler).
   // https://github.com/reactjs/rfcs/pull/220#issuecomment-1259938816
   //const onStateChange = React.useEffectEvent(stateDef.onStateChange ?? noop);
   
+  const { props: propsTypeAhead } = useCollectionTypeAhead(ref, store);
+  
   return {
+    collectionId: listBoxId,
     store,
     context,
-    Provider: RadioGroupContext,
+    Provider: ListBoxContext,
     props: mergeProps(
       { ref },
       propsCollection,
       propsSelection,
-      //{ role: 'radiogroup' }, // Leave this up to the consumer
+      propsTypeAhead,
+      //{ role: 'listbox' }, // Leave this up to the consumer
     ),
   };
 };
 
 
-type UseRadioGroupItemParams = { itemKey: ItemKey };
-type UseRadioGroupItemResult<E extends HTMLElement> = {
-  store: StoreApi<RadioGroupSlice>,
-  selected: boolean,
-  requestSelected: () => void,
-  props: ReturnType<typeof useCollectionItemWith<E>>['props'],
-};
-export const useRadioGroupItem = <E extends HTMLElement>(params: UseRadioGroupItemParams): UseRadioGroupItemResult<E> => {
-  const { itemKey } = params;
-  
-  const { store, requestSelected } = useRadioGroupContext();
+type UseListBoxItemParams = { itemKey: ItemKey };
+export const useListBoxItem = <E extends HTMLElement>({ itemKey }: UseListBoxItemParams) => {
+  const { store, requestSelected } = useListBoxContext();
   const selected = useStore(store, store => itemKey === store.selectedItemKey);
   const requestSelectedForItem = () => requestSelected(itemKey);
   

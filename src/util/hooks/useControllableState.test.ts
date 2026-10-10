@@ -78,7 +78,7 @@ describe('useControllableState', () => {
           ...baseProps,
           state: undefined,
           defaultState: 'default-value',
-          stateFallback: 'fallback-value',
+          defaultStateFallback: 'fallback-value',
           onStateChange: undefined,
         })
       );
@@ -87,13 +87,13 @@ describe('useControllableState', () => {
       expect(result.current.state).toBe('default-value');
     });
     
-    it('initializes with stateFallback when defaultState is not provided', () => {
+    it('initializes with defaultStateFallback when defaultState is not provided', () => {
       const { result } = renderHook(() =>
         useControllableState({
           ...baseProps,
           state: undefined,
           defaultState: undefined,
-          stateFallback: 'fallback-value',
+          defaultStateFallback: 'fallback-value',
           onStateChange: undefined,
         })
       );
@@ -107,7 +107,7 @@ describe('useControllableState', () => {
           ...baseProps,
           state: undefined,
           defaultState: 'initial',
-          stateFallback: 'fallback',
+          defaultStateFallback: 'fallback',
           onStateChange: undefined,
         })
       );
@@ -125,7 +125,7 @@ describe('useControllableState', () => {
           ...baseProps,
           state: undefined,
           defaultState: 1,
-          stateFallback: 0,
+          defaultStateFallback: 0,
           onStateChange: undefined,
         })
       );
@@ -144,7 +144,7 @@ describe('useControllableState', () => {
           ...baseProps,
           state: undefined,
           defaultState: 'initial',
-          stateFallback: 'fallback',
+          defaultStateFallback: 'fallback',
           onStateChange,
         })
       );
@@ -165,7 +165,7 @@ describe('useControllableState', () => {
           ...baseProps,
           state: undefined,
           defaultState: 'initial',
-          stateFallback: 'fallback',
+          defaultStateFallback: 'fallback',
           onStateChange: undefined,
         })
       );
@@ -181,7 +181,7 @@ describe('useControllableState', () => {
           ...baseProps,
           state: 'controlled-value',
           defaultState: undefined,
-          stateFallback: 'fallback-value',
+          defaultStateFallback: 'fallback-value',
           onStateChange: vi.fn(),
         })
       );
@@ -198,7 +198,7 @@ describe('useControllableState', () => {
             ...baseProps,
             state,
             defaultState: undefined,
-            stateFallback: 'fallback-value',
+            defaultStateFallback: 'fallback-value',
             onStateChange,
           }),
         { initialProps: { state: 'first' } }
@@ -217,7 +217,7 @@ describe('useControllableState', () => {
           ...baseProps,
           state: 'controlled-value',
           defaultState: undefined,
-          stateFallback: 'fallback-value',
+          defaultStateFallback: 'fallback-value',
           onStateChange,
         })
       );
@@ -239,7 +239,7 @@ describe('useControllableState', () => {
           ...baseProps,
           state: 5,
           defaultState: undefined,
-          stateFallback: 0,
+          defaultStateFallback: 0,
           onStateChange,
         })
       );
@@ -257,7 +257,7 @@ describe('useControllableState', () => {
           ...baseProps,
           state: 'controlled-value',
           defaultState: undefined,
-          stateFallback: 'fallback-value',
+          defaultStateFallback: 'fallback-value',
           onStateChange: undefined,
         })
       );
@@ -273,7 +273,7 @@ describe('useControllableState', () => {
           ...baseProps,
           state: 'controlled-value',
           defaultState: 'should-not-be-here',
-          stateFallback: 'fallback-value',
+          defaultStateFallback: 'fallback-value',
           onStateChange: vi.fn(),
         })
       );
@@ -292,7 +292,7 @@ describe('useControllableState', () => {
             ...baseProps,
             state,
             defaultState: 'default',
-            stateFallback: 'fallback',
+            defaultStateFallback: 'fallback',
             onStateChange: vi.fn(),
           }),
         { initialProps: { state: undefined as (undefined | string) } }
@@ -318,7 +318,7 @@ describe('useControllableState', () => {
             ...baseProps,
             state,
             defaultState: undefined,
-            stateFallback: 'fallback',
+            defaultStateFallback: 'fallback',
             onStateChange: vi.fn(),
           }),
         { initialProps: { state: 'controlled' as (undefined | string) } }
@@ -339,7 +339,7 @@ describe('useControllableState', () => {
           ...baseProps,
           state: 'controlled',
           defaultState: undefined,
-          stateFallback: 'fallback',
+          defaultStateFallback: 'fallback',
           onStateChange: vi.fn(),
         })
       );

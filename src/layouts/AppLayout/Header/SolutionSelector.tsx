@@ -7,11 +7,7 @@ import * as React from 'react';
 
 import { Icon } from '../../../components/graphics/Icon/Icon.tsx';
 import { Button } from '../../../components/actions/Button/Button.tsx';
-import {
-  type ItemKey,
-  type ItemDetails,
-  MenuProvider,
-} from '../../../components/overlays/MenuProvider/MenuProvider.tsx';
+import { type ItemKey, MenuProvider } from '../../../components/overlays/MenuProvider/MenuProvider.tsx';
 
 import cl from './SolutionSelector.module.scss';
 
@@ -29,16 +25,13 @@ export type SolutionSelectorProps = Omit<ComponentProps<typeof Button>, PropsOmi
   solutions: React.ComponentProps<typeof MenuProvider>['items'],
 
   /** The selected solution. To access the selected solution, pass a render prop. */
-  children?: undefined | ((selectedAccount: null | ItemDetails) => React.ReactNode),
+  children?: undefined | ((selectedSolution: null | ItemKey) => React.ReactNode),
   
   /** The selected solution. If given, this will be a controlled component. */
   selected?: undefined | React.ComponentProps<typeof MenuProvider>['selected'],
   
   /** Callback which is called when the selected state changes. */
-  onSelect?: undefined | React.ComponentProps<typeof MenuProvider>['onSelect'],
-  
-  /** Custom formatting of the selected solution. */
-  formatItemLabel?: undefined | React.ComponentProps<typeof MenuProvider>['formatItemLabel'],
+  onSelectedChange?: undefined | React.ComponentProps<typeof MenuProvider>['onSelectedChange'],
   
   /** Additional props to pass to the `MenuProvider`. Optional. */
   menuProviderProps?: undefined | React.ComponentProps<typeof MenuProvider>,
@@ -50,8 +43,7 @@ export const SolutionSelector = Object.assign(
       children,
       solutions,
       selected,
-      onSelect,
-      formatItemLabel,
+      onSelectedChange,
       menuProviderProps = {},
       ...propsRest
     } = props;
@@ -63,8 +55,7 @@ export const SolutionSelector = Object.assign(
         items={solutions}
         offset={12} // Compensate for header padding
         selected={selected}
-        onSelect={onSelect}
-        formatItemLabel={formatItemLabel}
+        onSelectedChange={onSelectedChange}
         {...menuProviderProps}
       >
         {({ props, selectedOption }) =>
@@ -85,9 +76,12 @@ export const SolutionSelector = Object.assign(
     );
   },
   {
-    Header: MenuProvider.Header,
     Option: MenuProvider.Option,
+    Static: MenuProvider.Static,
     Action: MenuProvider.Action,
-    FooterActions: MenuProvider.FooterActions,
+    Link: MenuProvider.Link,
+    Segment: MenuProvider.Segment,
+    Group: MenuProvider.Group,
+    Footer: MenuProvider.Footer,
   },
 );

@@ -18,14 +18,15 @@ export const inputSpecificPropKeys = {
   autoFocus: true,
   capture: true,
   checked: true,
+  //colorSpace: true, // Not yet in TypeScript lib
   defaultValue: true,
   disabled: true,
   form: true,
-  formAction: true,
-  formEncType: true,
-  formMethod: true,
-  formNoValidate: true,
-  formTarget: true,
+  formAction: true, // Only relevant for `<input type="submit|image">`
+  formEncType: true, // Only relevant for `<input type="submit|image">`
+  formMethod: true, // Only relevant for `<input type="submit|image">`
+  formNoValidate: true, // Only relevant for `<input type="submit|image">`
+  formTarget: true, // Only relevant for `<input type="submit|image">`
   height: true,
   list: true,
   max: true,
@@ -61,7 +62,7 @@ export const inputSpecificPropKeys = {
   
   // Focus events
   // Note: do *not* include these as input-specific. The reason is because React uses the `focusin` and `focusout`
-  // events for `onFocus` and `onBlur` respectively. Thus, focus/blur on the input will already be captures by the
+  // events for `onFocus` and `onBlur` respectively. Thus, focus/blur on the input will already be captured by the
   // parent.
   // See: https://github.com/facebook/react/pull/19186
   // onFocus: true,
