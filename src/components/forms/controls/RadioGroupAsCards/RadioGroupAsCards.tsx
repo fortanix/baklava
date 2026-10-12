@@ -86,9 +86,9 @@ const RadioGroupCard = (props: RadioGroupCardProps) => {
     <CardAction
       {...propsRest}
       className={cx(
-        propsRest.className,
         cl['bk-radio-group-as-cards__card'],
         { [cl['bk-radio-group-as-cards__card--selected']]: isSelected },
+        propsRest.className,
       )}
       selected={isSelected}
       onClick={() => { context.selectCard(cardKey); }}

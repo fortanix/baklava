@@ -89,9 +89,9 @@ const CheckboxGroupCard = (props: CheckboxGroupCardProps) => {
     <CardAction
       {...propsRest}
       className={cx(
-        propsRest.className,
         cl['bk-checkbox-group-as-cards__card'],
         { [cl['bk-checkbox-group-as-cards__card--selected']]: isSelected },
+        propsRest.className,
       )}
       selected={isSelected}
       onClick={() => { context.selectCard(cardKey); }}
