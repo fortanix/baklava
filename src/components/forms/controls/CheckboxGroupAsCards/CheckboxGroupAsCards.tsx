@@ -97,7 +97,7 @@ const CheckboxGroupCard = (props: CheckboxGroupCardProps) => {
       onClick={() => { context.selectCard(cardKey); }}
     >
       {isSelected && (
-        <div className={cx(cl['bk-checkbox-group-as-cards__indicator'])}>
+        <div className={cx('bk-theme--dark', cl['bk-checkbox-group-as-cards__indicator'])}>
           <Icon icon="check" />
         </div>
       )}

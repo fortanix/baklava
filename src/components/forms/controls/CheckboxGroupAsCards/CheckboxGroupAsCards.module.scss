@@ -40,10 +40,6 @@
       z-index: 10;
       @include bk.circle($size: bk.$spacing-6);
       background-color: bk.$theme-icon-informational;
-      
-      :global(.icon) {
-        color: bk.$theme-icon-default-secondary;
-      }
     }
 
     .bk-checkbox-group-as-cards__card {

@@ -94,7 +94,7 @@ const RadioGroupCard = (props: RadioGroupCardProps) => {
       onClick={() => { context.selectCard(cardKey); }}
     >
       {isSelected && (
-        <div className={cx(cl['bk-radio-group-as-cards__indicator'])}>
+        <div className={cx('bk-theme--dark', cl['bk-radio-group-as-cards__indicator'])}>
           <Icon icon="check" />
         </div>
       )}
