@@ -98,7 +98,7 @@ const CheckboxGroupCard = (props: CheckboxGroupCardProps) => {
     >
       {isSelected && (
         <div className={cx(cl['bk-checkbox-group-as-cards__indicator'])}>
-          <Icon icon="status-success-filled" />
+          <Icon icon="check" />
         </div>
       )}
       <H5 id={headingId} className={cl['bk-checkbox-group-as-cards__card__heading']}>
