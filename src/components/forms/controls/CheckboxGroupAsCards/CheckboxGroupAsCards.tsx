@@ -109,8 +109,18 @@ const CheckboxGroupCard = (props: CheckboxGroupCardProps) => {
           role="checkbox"
           aria-checked={isSelected}
           aria-labelledby={headingId}
-          tabIndex={0}
-          className={cx('_content', cl['bk-checkbox-group-as-cards__span-content'])}>
+          tabIndex={context.disabled ? -1 : 0}
+          className={cx('_content', cl['bk-checkbox-group-as-cards__span-content'],
+          )}
+          onKeyDown={event => {
+            if (event.key !== ' ' && event.key !== 'Spacebar') {
+              return;
+            }
+
+            event.preventDefault();
+            context.selectCard(cardKey);
+          }}
+        >
           {title}
         </span>
       </H5>
@@ -120,20 +130,23 @@ const CheckboxGroupCard = (props: CheckboxGroupCardProps) => {
 };
 
 export type CheckboxGroupAsCardsProps = ComponentProps<'fieldset'> & {
+  /**The name used for the hidden inputs submitted with the form. */
+  name?: string,
+
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-  
+
   /** The human-readable label for the checkbox group. */
   label?: undefined | React.ReactNode,
-  
+
   /** The default cards to select. Only relevant for uncontrolled usage (`selected` is `undefined`). */
-  defaultSelected?: undefined | Array<CardKey>,
+  defaultSelected?: undefined | Set<CardKey>,
 
   /** The cards to select. If `undefined`, this component will be considered uncontrolled. */
-  selected?: undefined | Array<CardKey>,
+  selected?: undefined | Set<CardKey>,
 
   /** Event handler for checkbox group change events. */
-  onUpdate?: undefined | ((cardKeys: Array<CardKey>) => void),
+  onSelectedChange?: undefined | ((cardKeys: Set<CardKey>) => void),
 
   /** Whether the checkbox group is disabled or not. Default: false. */
   disabled?: undefined | boolean,
@@ -154,29 +167,30 @@ export const CheckboxGroupAsCards = Object.assign(
   (props: CheckboxGroupAsCardsProps) => {
     const {
       children,
+      name,
       label,
       unstyled = false,
-      defaultSelected = [],
+      defaultSelected = new Set<CardKey>(),
       selected,
       disabled = false,
-      onUpdate,
+      onSelectedChange,
       orientation = 'horizontal',
       inputProps = {},
       contentClassName,
       ...propsRest
     } = props;
 
-    if (typeof selected !== 'undefined' && !onUpdate) {
+    if (typeof selected !== 'undefined' && !onSelectedChange) {
       console.warn(`Using CheckboxGroupAsCards as a controlled component, but missing 'onChange' callback.`);
     }
 
     const cardDefsRef = React.useRef<Map<CardKey, CardDef>>(new Map());
-    const [selectedCards, setSelectedCards] = React.useState<Array<CardKey>>(selected ?? defaultSelected);
+    const [selectedCards, setSelectedCards] = React.useState<Set<CardKey>>(() => new Set(selected ?? defaultSelected));
 
     // Sync `selected` prop to internal state.
     React.useEffect(() => {
       if (typeof selected !== 'undefined') {
-        setSelectedCards(selected);
+        setSelectedCards(new Set(selected));
       }
     }, [selected]);
 
@@ -196,15 +210,19 @@ export const CheckboxGroupAsCards = Object.assign(
 
     const selectCard = React.useCallback((cardKey: CardKey) => {
       setSelectedCards(previousSelectedCards => {
-        const isSelected = previousSelectedCards.includes(cardKey);
-        const nextSelectedCards = isSelected
-          ? previousSelectedCards.filter(selectedCard => selectedCard !== cardKey)
-          : [...previousSelectedCards, cardKey];
+        const nextSelectedCards = new Set(previousSelectedCards);
 
-        onUpdate?.(nextSelectedCards);
+        if (nextSelectedCards.has(cardKey)) {
+          nextSelectedCards.delete(cardKey);
+        } else {
+          nextSelectedCards.add(cardKey);
+        }
+
+        onSelectedChange?.(new Set(nextSelectedCards));
+
         return nextSelectedCards;
       });
-    }, [onUpdate]);
+    }, [onSelectedChange]);
 
     // After initial rendering, check whether `defaultSelected` refers to rendered cards.
     useEffectOnce(() => {
@@ -218,40 +236,13 @@ export const CheckboxGroupAsCards = Object.assign(
       }
     });
 
-    const selectedCardsSet = React.useMemo(
-      () => new Set(selectedCards),
-      [selectedCards],
-    );
 
     const context = React.useMemo<CheckboxGroupAsCardsContext>(() => ({
       register,
-      selectedCards: selectedCardsSet,
+      selectedCards,
       selectCard,
       disabled,
-    }), [register, selectedCardsSet, selectCard, disabled]);
-
-    const handleKeyDown = React.useCallback(
-      (event: React.KeyboardEvent) => {
-        if (event.key !== ' ' && event.key !== 'Spacebar') {
-          return;
-        }
-
-        const activeElement = document.activeElement;
-
-        const cardKey = [...cardDefsRef.current.entries()].find(
-          ([, { checkboxRef }]) =>
-            checkboxRef.current === activeElement,
-        )?.[0];
-
-        if (cardKey === undefined) {
-          return;
-        }
-
-        event.preventDefault();
-        context.selectCard(cardKey);
-      },
-      [context],
-    );
+    }), [register, selectedCards, selectCard, disabled]);
 
     return (
       <CheckboxGroupAsCardsContext value={context}>
@@ -267,11 +258,19 @@ export const CheckboxGroupAsCards = Object.assign(
             { [cl['bk-checkbox-group-as-cards--vertical']]: orientation === 'vertical' },
             propsRest.className,
           )}
-          onKeyDown={handleKeyDown}
           contentClassName={cx(cl['bk-checkbox-group-as-cards__content'], contentClassName)}
         >
           {/* Hidden input, so that this component can be connected to a <form> element. */}
-          <input type="hidden" {...inputProps} value={selectedCards.join(',')} onChange={undefined} />
+          {[...selectedCards].map(cardKey => (
+            <input
+              key={cardKey}
+              type="hidden"
+              name={name ? `${name}[]` : undefined}
+              value={cardKey}
+              disabled={disabled}
+              {...inputProps}
+            />
+          ))}
 
           {children}
         </FieldSet>

@@ -29,8 +29,8 @@ export default {
   },
   args: {
     label: 'Choose from options',
-    onUpdate: selected => { console.log('update', selected); },
-    defaultSelected: ['red'],
+    onSelectedChange: selected => { console.log('update', selected); },
+    defaultSelected: new Set(['red']),
     children: (
       <>
         <CheckboxGroupAsCards.Card
@@ -130,7 +130,7 @@ export const CheckboxGroupAsCardsFocused: Story = {
 type CheckboxGroupAsCardsControlledProps = Omit<React.ComponentProps<typeof CheckboxGroupAsCards>, 'selected'>;
 
 const CheckboxGroupAsCardsControlledC = (props: CheckboxGroupAsCardsControlledProps) => {
-  const [selectedCards, setSelectedCards] = React.useState<Array<CardKey>>(props.defaultSelected ?? []);
+  const [selectedCards, setSelectedCards] = React.useState<Set<CardKey>>( () => new Set(props.defaultSelected));
 
   return (
     <>
@@ -138,13 +138,15 @@ const CheckboxGroupAsCardsControlledC = (props: CheckboxGroupAsCardsControlledPr
       {...props} 
       label={`Choose some colors (selected: ${[...selectedCards].join(', ') || 'none'})`}
       selected={selectedCards}
-      onUpdate={setSelectedCards}/>
+      onSelectedChange={setSelectedCards}/>
       <Button
         label="Select Blue"
         onPress={() => {
-          setSelectedCards(previous => (
-            previous.includes('blue') ? previous : [...previous, 'blue']
-          ));
+          setSelectedCards(previous => {
+            const next = new Set(previous);
+            next.add('blue');
+            return next;
+          });
         }}
       />
     </>
@@ -180,7 +182,7 @@ export const CheckboxGroupAsCardsControlledWithDefault: Story = {
   render: args => (
     <CheckboxGroupAsCardsControlledC
       {...args}
-      defaultSelected={['green', 'red']}
+      defaultSelected={new Set(['green', 'red'])}
     />
   ),
   args: {
@@ -229,7 +231,7 @@ export const CheckboxGroupAsCardsInForm: Story = {
       form: 'story-form',
       name: 'controlledCheckboxes[]',
     },
-    defaultSelected: ['red', 'blue'],
+    defaultSelected: new Set(['red', 'blue']),
     children: (
       <>
         <CheckboxGroupAsCards.Card
