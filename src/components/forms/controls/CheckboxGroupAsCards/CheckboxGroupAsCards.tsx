@@ -233,7 +233,7 @@ export const CheckboxGroupAsCards = Object.assign(
       if (activeCardIndex < 0) { return; }
 
       // Space toggles the focused checkbox.
-      if (event.key === ' ' || event.key === 'Spacebar' || event.key === 'Enter') {
+      if (event.key === ' ' || event.key === 'Spacebar') {
         event.preventDefault();
 
         const cardKey = cardKeys.at(activeCardIndex);
@@ -249,13 +249,8 @@ export const CheckboxGroupAsCards = Object.assign(
       // Arrow keys move focus without changing selection.
       const cardTarget = (() => {
         switch (event.key) {
-          case 'ArrowLeft':
-          case 'ArrowUp': {
-            const cardIndex = activeCardIndex === 0 ? cardKeys.length - 1 : activeCardIndex - 1;
-            return cardKeys.at(cardIndex) ?? null;
-          }
-          case 'ArrowRight':
-          case 'ArrowDown': {
+          case 'Tab':
+          {
             const cardIndex = activeCardIndex + 1 >= cardKeys.length ? 0 : activeCardIndex + 1;
             return cardKeys.at(cardIndex) ?? null;
           }
