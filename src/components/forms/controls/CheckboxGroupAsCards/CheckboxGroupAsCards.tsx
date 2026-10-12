@@ -10,6 +10,7 @@ import { isItemProgrammaticallyFocusable } from '../../../util/composition/compo
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { CardAction } from '../../../actions/CardAction/CardAction.tsx';
 import { H5 } from '../../../../typography/Heading/Heading.tsx';
+import { FieldSet } from '../../common/FieldSet/FieldSet.tsx';
 
 import cl from './CheckboxGroupAsCards.module.scss';
 
@@ -108,8 +109,8 @@ const CheckboxGroupCard = (props: CheckboxGroupCardProps) => {
           role="checkbox"
           aria-checked={isSelected}
           aria-labelledby={headingId}
-          tabIndex={isSelected ? 0 : -1}
-          className={cx('_content', cl['bk-checkbox-group-as-cards__content'])}>
+          tabIndex={0}
+          className={cx('_content', cl['bk-checkbox-group-as-cards__span-content'])}>
           {title}
         </span>
       </H5>
@@ -118,10 +119,13 @@ const CheckboxGroupCard = (props: CheckboxGroupCardProps) => {
   );
 };
 
-export type CheckboxGroupAsCardsProps = ComponentProps<'div'> & {
+export type CheckboxGroupAsCardsProps = ComponentProps<'fieldset'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-
+  
+  /** The human-readable label for the checkbox group. */
+  label?: undefined | React.ReactNode,
+  
   /** The default cards to select. Only relevant for uncontrolled usage (`selected` is `undefined`). */
   defaultSelected?: undefined | Array<CardKey>,
 
@@ -134,8 +138,14 @@ export type CheckboxGroupAsCardsProps = ComponentProps<'div'> & {
   /** Whether the checkbox group is disabled or not. Default: false. */
   disabled?: undefined | boolean,
 
+  /** The orientation of the checkboxes, either vertical or horizontal. Default: 'horizontal'. */
+  orientation?: undefined | 'vertical' | 'horizontal',
+
   /** Any additional props to apply to the internal `<input type="hidden"/>`. */
   inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
+
+  /** A class name to apply on the inner checkbox group (rather than the outer fieldset). */
+  contentClassName?: undefined | ComponentProps<typeof FieldSet>['contentClassName'],
 };
 /**
  * A checkbox group is a set of cards where multiple cards can be selected at the same time.
@@ -144,12 +154,15 @@ export const CheckboxGroupAsCards = Object.assign(
   (props: CheckboxGroupAsCardsProps) => {
     const {
       children,
+      label,
       unstyled = false,
       defaultSelected = [],
       selected,
       disabled = false,
       onUpdate,
+      orientation = 'horizontal',
       inputProps = {},
+      contentClassName,
       ...propsRest
     } = props;
 
@@ -217,74 +230,51 @@ export const CheckboxGroupAsCards = Object.assign(
       disabled,
     }), [register, selectedCardsSet, selectCard, disabled]);
 
-    const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
-      // Get the list of card keys in the order they are displayed.
-      const cardKeys: Array<CardKey> = [...cardDefsRef.current.entries()]
-        .filter(([_, { checkboxRef }]) => checkboxRef.current && isItemProgrammaticallyFocusable(checkboxRef.current))
-        .map(([cardKey]) => cardKey);
+    const handleKeyDown = React.useCallback(
+      (event: React.KeyboardEvent) => {
+        if (event.key !== ' ' && event.key !== 'Spacebar') {
+          return;
+        }
 
-      if (cardKeys.length === 0) { return; }
+        const activeElement = document.activeElement;
 
-      const activeElement = document.activeElement;
-      const activeCardIndex = cardKeys.findIndex(cardKey =>
-        cardDefsRef.current.get(cardKey)?.checkboxRef.current === activeElement,
-      );
-
-      if (activeCardIndex < 0) { return; }
-
-      // Space toggles the focused checkbox.
-      if (event.key === ' ' || event.key === 'Spacebar') {
-        event.preventDefault();
-
-        const cardKey = cardKeys.at(activeCardIndex);
+        const cardKey = [...cardDefsRef.current.entries()].find(
+          ([, { checkboxRef }]) =>
+            checkboxRef.current === activeElement,
+        )?.[0];
 
         if (cardKey === undefined) {
           return;
         }
 
-        context.selectCard(cardKey);
-        return;
-      }
-
-      // Arrow keys move focus without changing selection.
-      const cardTarget = (() => {
-        switch (event.key) {
-          case 'Tab':
-          {
-            const cardIndex = activeCardIndex + 1 >= cardKeys.length ? 0 : activeCardIndex + 1;
-            return cardKeys.at(cardIndex) ?? null;
-          }
-          default:
-            return null;
-        }
-      })();
-
-      if (cardTarget !== null) {
         event.preventDefault();
-        cardDefsRef.current.get(cardTarget)?.checkboxRef.current?.focus();
-      }
-    }, [context]);
+        context.selectCard(cardKey);
+      },
+      [context],
+    );
 
     return (
       <CheckboxGroupAsCardsContext value={context}>
-        <div
-          role="group"
-          aria-labelledby="checkbox-group-heading"
-          aria-disabled={disabled}
+        <FieldSet
           {...propsRest}
+          legend={label}
+          disabled={disabled}
           className={cx(
             'bk',
             { [cl['bk-checkbox-group-as-cards']]: !unstyled },
             { [cl['bk-checkbox-group-as-cards--disabled']]: disabled },
+            { [cl['bk-checkbox-group-as-cards--horizontal']]: orientation === 'horizontal' },
+            { [cl['bk-checkbox-group-as-cards--vertical']]: orientation === 'vertical' },
             propsRest.className,
           )}
           onKeyDown={handleKeyDown}
+          contentClassName={cx(cl['bk-checkbox-group-as-cards__content'], contentClassName)}
         >
           {/* Hidden input, so that this component can be connected to a <form> element. */}
           <input type="hidden" {...inputProps} value={selectedCards.join(',')} onChange={undefined} />
 
           {children}
-        </div>
+        </FieldSet>
       </CheckboxGroupAsCardsContext>
     );
   },

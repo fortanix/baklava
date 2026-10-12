@@ -12,14 +12,21 @@
     --bk-checkbox-group-as-cards-border-color: #{bk.$theme-segmented-control-border-unselected};
     --bk-checkbox-group-as-cards-text-color: #{bk.$theme-segmented-control-text-unselected};
 
-    //overflow: hidden; // Note: cannot hide overflow, would truncate focus outlines
-    inline-size: fit-content; // Do not stretch in a block context
-    align-self: center; // Do not stretch along cross axis in flex context
-    flex: none; // Do not shrink/grow in a flex context
-    display: flex;
-    flex-direction: row;
-    gap: bk.rem-from-px(16);
-    flex-wrap: wrap;
+    .bk-checkbox-group-as-cards__content {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start; // In case of wrap, align everything to the start
+      align-items: flex-start;
+      gap: 0.5lh bk.rem-from-px(16);
+    }
+
+    &.bk-checkbox-group-as-cards--horizontal .bk-checkbox-group-as-cards__content {
+      flex-direction: row;
+    }
+
+    &.bk-checkbox-group-as-cards--vertical .bk-checkbox-group-as-cards__content {
+      flex-direction: column;
+    }
 
     // Set this to allow wrapping:
     //flex-wrap: wrap;
@@ -33,7 +40,7 @@
       z-index: 10;
       @include bk.circle($size: bk.$spacing-4);
       background-color: bk.$theme-icon-default-secondary;
-      
+
       :global(.icon) {
         color: bk.$theme-icon-informational;
       }

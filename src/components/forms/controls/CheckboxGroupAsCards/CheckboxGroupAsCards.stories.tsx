@@ -28,7 +28,7 @@ export default {
     },
   },
   args: {
-    'aria-label': 'Choose colors',
+    label: 'Choose from options',
     onUpdate: selected => { console.log('update', selected); },
     defaultSelected: ['red'],
     children: (
@@ -134,8 +134,11 @@ const CheckboxGroupAsCardsControlledC = (props: CheckboxGroupAsCardsControlledPr
 
   return (
     <>
-      <p>Selected cards:{' '} {selectedCards.length > 0 ? selectedCards.join(', ') : <em>none</em>}</p>
-      <CheckboxGroupAsCards {...props} selected={selectedCards}onUpdate={setSelectedCards}/>
+      <CheckboxGroupAsCards 
+      {...props} 
+      label={`Choose some colors (selected: ${[...selectedCards].join(', ') || 'none'})`}
+      selected={selectedCards}
+      onUpdate={setSelectedCards}/>
       <Button
         label="Select Blue"
         onPress={() => {
@@ -211,7 +214,8 @@ export const CheckboxGroupAsCardsInForm: Story = {
           id="story-form"
           onSubmit={event => {
             event.preventDefault();
-            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || 'none'}`);
+            const selectedColors = new FormData(event.currentTarget).getAll('controlledCheckboxes[]');
+            notify.info(`You have chosen: ${[...selectedColors].join(', ') || 'none'}`);
           }}
         />
         <Story />
@@ -223,7 +227,7 @@ export const CheckboxGroupAsCardsInForm: Story = {
   args: {
     inputProps: {
       form: 'story-form',
-      name: 'story_component1',
+      name: 'controlledCheckboxes[]',
     },
     defaultSelected: ['red', 'blue'],
     children: (
