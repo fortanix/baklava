@@ -127,6 +127,56 @@ export const CheckboxGroupAsCardsFocused: Story = {
   },
 };
 
+export const CheckboxGroupAsCardsDisabled: Story = {
+  args: {
+    disabled: true,
+    children: (
+      <>
+        <CheckboxGroupAsCards.Card
+          icon={<Icon icon="account" />}
+          cardKey="red"
+          title="Red"
+        />
+        <CheckboxGroupAsCards.Card
+          icon={<Icon icon="account" />}
+          cardKey="green"
+          title="Green"
+        />
+        <CheckboxGroupAsCards.Card
+          icon={<Icon icon="account" />}
+          cardKey="blue"
+          title="Blue"
+        />
+      </>
+    ),
+  },
+};
+
+export const CheckboxGroupAsCardsIndividualCardDisabled: Story = {
+  args: {
+    children: (
+      <>
+        <CheckboxGroupAsCards.Card
+          icon={<Icon icon="account" />}
+          cardKey="red"
+          title="Red"
+        />
+        <CheckboxGroupAsCards.Card
+          icon={<Icon icon="account" />}
+          cardKey="green"
+          title="Green"
+          disabled
+        />
+        <CheckboxGroupAsCards.Card
+          icon={<Icon icon="account" />}
+          cardKey="blue"
+          title="Blue"
+        />
+      </>
+    ),
+  },
+};
+
 type CheckboxGroupAsCardsControlledProps = Omit<React.ComponentProps<typeof CheckboxGroupAsCards>, 'selected'>;
 
 const CheckboxGroupAsCardsControlledC = (props: CheckboxGroupAsCardsControlledProps) => {

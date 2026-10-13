@@ -67,6 +67,9 @@ type CheckboxGroupCardProps = ComponentProps<typeof CardAction> & {
 
   /** Escape hatch. */
   children?: undefined | React.ReactNode,
+
+  /** Whether this individual card is disabled. Default: false. */
+  disabled?: boolean;
 };
 
 const CheckboxGroupCard = (props: CheckboxGroupCardProps) => {
@@ -75,6 +78,7 @@ const CheckboxGroupCard = (props: CheckboxGroupCardProps) => {
     title,
     icon,
     children,
+    disabled: cardDisabled = false,
     ...propsRest
   } = props;
 
@@ -84,17 +88,29 @@ const CheckboxGroupCard = (props: CheckboxGroupCardProps) => {
   const context = useCheckboxGroupAsCardsContext(cardDef);
 
   const isSelected = context.selectedCards.has(cardKey);
+  const isDisabled = context.disabled || Boolean(cardDisabled);
   const headingId = React.useId();
   return (
     <CardAction
       {...propsRest}
       className={cx(
         cl['bk-checkbox-group-as-cards__card'],
-        { [cl['bk-checkbox-group-as-cards__card--selected']]: isSelected },
+        {
+          [cl['bk-checkbox-group-as-cards__card--selected']]: isSelected,
+          [cl['bk-checkbox-group-as-cards__card--disabled']]: isDisabled,
+        },
         propsRest.className,
       )}
       selected={isSelected}
-      onClick={() => { context.selectCard(cardKey); }}
+      aria-checked={isSelected}
+      aria-disabled={isDisabled}
+      onClick={() => {
+        if (isDisabled) {
+          return;
+        }
+
+        context.selectCard(cardKey);
+      }}
     >
       {isSelected && (
         <div className={cx('bk-theme--dark', cl['bk-checkbox-group-as-cards__indicator'])}>
@@ -108,16 +124,23 @@ const CheckboxGroupCard = (props: CheckboxGroupCardProps) => {
           ref={checkboxRef}
           role="checkbox"
           aria-checked={isSelected}
+          aria-disabled={isDisabled}
           aria-labelledby={headingId}
           tabIndex={context.disabled ? -1 : 0}
           className={cx('_content', cl['bk-checkbox-group-as-cards__span-content'],
           )}
           onKeyDown={event => {
+            if (isDisabled) {
+              return;
+            }
+
             if (event.key !== ' ' && event.key !== 'Spacebar') {
               return;
             }
 
             event.preventDefault();
+            event.stopPropagation();
+
             context.selectCard(cardKey);
           }}
         >
@@ -125,7 +148,7 @@ const CheckboxGroupCard = (props: CheckboxGroupCardProps) => {
         </span>
       </H5>
       {children}
-    </CardAction>
+    </CardAction >
   );
 };
 
@@ -209,6 +232,9 @@ export const CheckboxGroupAsCards = Object.assign(
     }, []);
 
     const selectCard = React.useCallback((cardKey: CardKey) => {
+      if (disabled) {
+        return;
+      }
       setSelectedCards(previousSelectedCards => {
         const nextSelectedCards = new Set(previousSelectedCards);
 
@@ -222,7 +248,7 @@ export const CheckboxGroupAsCards = Object.assign(
 
         return nextSelectedCards;
       });
-    }, [onSelectedChange]);
+    }, [disabled, onSelectedChange]);
 
     // After initial rendering, check whether `defaultSelected` refers to rendered cards.
     useEffectOnce(() => {
@@ -263,12 +289,12 @@ export const CheckboxGroupAsCards = Object.assign(
           {/* Hidden input, so that this component can be connected to a <form> element. */}
           {[...selectedCards].map(cardKey => (
             <input
+              {...inputProps}
               key={cardKey}
               type="hidden"
               name={name ? `${name}[]` : undefined}
               value={cardKey}
               disabled={disabled}
-              {...inputProps}
             />
           ))}
 
