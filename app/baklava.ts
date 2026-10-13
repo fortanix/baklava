@@ -48,9 +48,12 @@ export { CheckboxGroup } from '../src/components/forms/controls/CheckboxGroup/Ch
 export { Switch } from '../src/components/forms/controls/Switch/Switch.tsx';
 export { Radio } from '../src/components/forms/controls/Radio/Radio.tsx';
 export { RadioGroup } from '../src/components/forms/controls/RadioGroup/RadioGroup.tsx';
-export { 
-  RadioGroupAsCards 
+export {
+  RadioGroupAsCards
 } from '../src/components/forms/controls/RadioGroupAsCards/RadioGroupAsCards.tsx';
+export {
+  CheckboxGroupAsCards
+} from '../src/components/forms/controls/CheckboxGroupAsCards/CheckboxGroupAsCards.tsx';
 export { Input } from '../src/components/forms/controls/Input/Input.tsx';
 export { InputSearch } from '../src/components/forms/controls/Input/InputSearch.tsx';
 export { InputSensitive } from '../src/components/forms/controls/Input/InputSensitive.tsx';
