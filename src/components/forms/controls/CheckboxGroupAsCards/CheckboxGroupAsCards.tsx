@@ -69,7 +69,7 @@ type CheckboxGroupCardProps = ComponentProps<typeof CardAction> & {
   children?: undefined | React.ReactNode,
 
   /** Whether this individual card is disabled. Default: false. */
-  disabled?: boolean;
+  disabled?: boolean,
 };
 
 const CheckboxGroupCard = (props: CheckboxGroupCardProps) => {

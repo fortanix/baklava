@@ -124,8 +124,11 @@ export type RadioGroupAsCardsProps = ComponentProps<'div'> & {
 
   /** The card to select. If `undefined`, this component will be considered uncontrolled. */
   selected?: undefined | CardKey,
+  
+   /** Event handler for segmented control card change events. */
+  onSelectedChange?: (cardKey: CardKey) => void,
 
-  /** Event handler for segmented control card change events. */
+  /** Event handler for segmented control card change events. @deprecated Use `onSelectedChange` instead. */
   onUpdate?: undefined | ((cardKey: CardKey) => void),
 
   /** Whether the segmented control is disabled or not. Default: false. */
@@ -145,13 +148,16 @@ export const RadioGroupAsCards = Object.assign(
       defaultSelected,
       selected,
       disabled = false,
+      onSelectedChange,
       onUpdate,
       inputProps = {},
       ...propsRest
     } = props;
 
-    if (typeof selected !== 'undefined' && !onUpdate) {
-      console.warn(`Using RadioGroupAsCards as uncontrolled component, but missing 'onChange' callback.`);
+    const onSelectedChangeCallback = onSelectedChange ?? onUpdate;
+    
+    if (typeof selected !== 'undefined' && !onSelectedChangeCallback) {
+      console.warn(`Using RadioGroupAsCards as a controlled component, but missing 'onSelectedChange' callback.`);
     }
 
     const cardDefsRef = React.useRef<Map<CardKey, CardDef>>(new Map());
@@ -196,7 +202,7 @@ export const RadioGroupAsCards = Object.assign(
       const isInitial = typeof selectedCardPrev === 'undefined';
       
       if (isDefined && !isInitial) {
-        onUpdate?.(selectedCard);
+        onSelectedChangeCallback?.(selectedCard);
       }
     }, [selectedCard]);
     
