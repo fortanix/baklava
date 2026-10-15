@@ -99,6 +99,36 @@ export const IconWithDecoration: Story = {
   },
 };
 
+export const IconEventError: StoryObj<typeof Icon.Event> = {
+  decorators: [
+    Story => <div style={{ fontSize: '5rem' }}><Story/></div>,
+  ],
+  render: args => <Icon.Event {...args}/>,
+  args: {
+    event: 'error',
+  },
+};
+
+export const IconEventInfo: StoryObj<typeof Icon.Event> = {
+  decorators: [
+    Story => <div style={{ fontSize: '5rem' }}><Story/></div>,
+  ],
+  render: args => <Icon.Event {...args}/>,
+  args: {
+    event: 'info',
+  },
+};
+
+export const IconEventSuccess: StoryObj<typeof Icon.Event> = {
+  decorators: [
+    Story => <div style={{ fontSize: '5rem' }}><Story/></div>,
+  ],
+  render: args => <Icon.Event {...args}/>,
+  args: {
+    event: 'success',
+  },
+};
+
 export const IconEventWarning: StoryObj<typeof Icon.Event> = {
   decorators: [
     Story => <div style={{ fontSize: '5rem' }}><Story/></div>,
