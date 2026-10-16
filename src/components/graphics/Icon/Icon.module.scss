@@ -46,6 +46,8 @@
     }
   }
   
+  .bk-icon-event--error { color: bk.$theme-icon-alert; }
+  .bk-icon-event--info { color: bk.$theme-icon-informational; }
+  .bk-icon-event--success { color: bk.$theme-icon-success; }
   .bk-icon-event--warning { color: bk.$theme-icon-warning; }
-  .bk-icon-event--warning-filled { color: bk.$theme-icon-warning; }
 }
