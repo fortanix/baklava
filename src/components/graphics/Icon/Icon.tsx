@@ -63,7 +63,8 @@ const Event = ({ event, ...propsRest }: IconEventProps) => {
       icon = 'status-success-filled'; break;
     case 'warning':
       icon = 'warning-filled'; break;
-    default: throw new Error(`Unexpected icon '${event satisfies never}'`);
+    default:
+      throw new Error(`Unexpected icon '${event satisfies never}'`);
   }
   
   return (
