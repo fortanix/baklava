@@ -8,6 +8,17 @@ import * as React from 'react';
 import { classNames as cx, isClassNameArgument } from './componentUtil.ts';
 
 
+/**
+ * Utility type to get all the props that can be passed to an HTML element of type `E`. It includes the `ref` prop as
+ * well (which is a "normal" prop as of React 19, but in the React types it's still considered a special "detailed"
+ * prop). It excludes the `key` prop since a `key` prop cannot be spread into an element, it must be explicitly set
+ * by an author on the usage site.
+ * 
+ * @example `HtmlElementProps<HTMLDivElement>` All props that can be spread onto a `<div>`
+ */
+export type HtmlElementProps<E extends HTMLElement> = Omit<React.DetailedHTMLProps<React.HTMLAttributes<E>, E>, 'key'>;
+
+
 /* Source: https://github.com/wojtekmaj/merge-refs/tree/main */
 /**
  * A function that merges React refs into one.

@@ -81,8 +81,7 @@ const packageConfig = {
     'lint': 'npm run lint:style; npm run lint:script',
     
     // Test
-    // Note: use `vitest run src/...` to run a single test file
-    'test:unit': 'vitest run --project=unit',
+    'test:unit': 'vitest run --project=unit', // Note: `npm run test:unit -- <path>` limits to the given file path
     'test': 'npm run check:types && npm run test:unit && npm run lint:style && npm run verify verify:source', // TODO: add `lint:script`
     'test-ui': 'vitest --ui',
     'coverage': 'vitest run --coverage',

@@ -2,7 +2,10 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import { CustomCloseWatcher } from '../../../../util/CloseWatcher.ts';
+
 import * as React from 'react';
+import { useControllableState } from '../../../../util/hooks/useControllableState.ts';
 
 import {
   type Side,
@@ -35,33 +38,36 @@ import {
   useInteractions,
   useTransitionStatus,
 } from '@floating-ui/react';
-import { usePopover } from '../popover/usePopover.ts';
-import { CustomCloseWatcher } from '../../../../util/CloseWatcher.ts';
+import {
+  type OpenChangeEvent,
+  type OpenStateProps,
+  type UsePopoverOptions,
+  usePopover,
+} from '../popover/usePopover.ts';
 
 
-export type { Placement };
+export type { OpenChangeEvent, OpenStateProps, Placement };
 
 
-type UsePopoverInteractionOptions = {
-  /** The popover behavior for the floating element. */
-  popoverBehavior: React.HTMLAttributes<unknown>['popover'],
-};
 /**
  * Floating UI interaction hook to sync the `isOpen` state with browser `popover` state.
  */
-const usePopoverInteraction = (context: FloatingContext, options: UsePopoverInteractionOptions): ElementProps => {
+const usePopoverInteraction = <E extends HTMLElement>(
+  context: FloatingContext,
+  options: UsePopoverOptions<E>,
+): ElementProps => {
   const anchorEl = context.elements.reference;
   
-  // FIXME: add `event`/`reason` args here to `onOpenChange`?
-  const activate = React.useCallback(() => { context.onOpenChange(true); }, [context.onOpenChange]);
-  const deactivate = React.useCallback(() => { context.onOpenChange(false); }, [context.onOpenChange]);
+  const onOpenChange = React.useCallback(({ open, forced }: OpenChangeEvent) => {
+    // FIXME: add `event`/`reason` args here?
+    context.onOpenChange(open);
+  }, [context.onOpenChange]);
   
   const popoverController = React.useMemo(() => ({
     source: anchorEl instanceof HTMLElement ? anchorEl : null,
-    active: context.open,
-    activate,
-    deactivate,
-  }), [anchorEl, context.open, activate, deactivate]);
+    open: context.open,
+    onOpenChange,
+  }), [anchorEl, context.open, onOpenChange]);
   const { popoverProps } = usePopover(popoverController, {
     popoverBehavior: options.popoverBehavior,
   });
@@ -69,8 +75,8 @@ const usePopoverInteraction = (context: FloatingContext, options: UsePopoverInte
   /*
   // Must be memoized, since this is used as a memo dep in `useInteractions`
   const referenceProps = React.useMemo<React.HTMLProps<Element>>(() => ({
-    //popoverTarget: popoverId,
-    //style: {},
+    popoverTarget: popoverId,
+    style: {},
   }), []);
   */
   
@@ -92,7 +98,7 @@ type UseFocusInteractiveOptions = {
   enabled?: undefined | boolean,
 };
 /**
- * Floating UI interaction hooks for interactive focus trigger.
+ * Floating UI interaction hook for interactive focus trigger.
  */
 const useFocusInteractive = (context: FloatingContext, options: UseFocusInteractiveOptions = {}): ElementProps => {
   const enabled = options.enabled ?? true;
@@ -205,142 +211,141 @@ type UseComboBoxOptions = {
   /** Whether to enable this interaction. Useful for conditional usage of the hook. */
   enabled?: undefined | boolean,
 };
-
-const useComboBoxInteraction = (
-  context: FloatingContext,
-  options: UseComboBoxOptions = {},
-): ElementProps => {
+/**
+ * Floating UI interaction hook for combobox trigger.
+ */
+const useComboBoxInteraction = (context: FloatingContext, options: UseComboBoxOptions = {}): ElementProps => {
   const { elements, onOpenChange } = context;
-
+  
   const enabled = options.enabled ?? true;
-
+  
   const anchorEl = elements.reference;
   const popoverEl = elements.floating;
-
+  
   React.useEffect(() => {
     if (!context.open) { return; }
     const watcher = new CustomCloseWatcher();
-
+    
     watcher.onclose = event => {
       onOpenChange(false, event, 'escape-key');
     };
-
+    
     return () => {
       watcher.destroy();
     };
   }, [context.open, onOpenChange]);
-
+  
   // Focus should not open floating element
   const handleReferenceFocus = React.useCallback(() => {
     if (!enabled) { return; }
     // no-op
   }, [enabled]);
-
+  
   // Click → open floating element
   const handleReferenceClick = React.useCallback(
     (event: React.MouseEvent) => {
       if (!enabled) { return; }
       onOpenChange(true, event.nativeEvent, 'click');
     },
-    [enabled, onOpenChange]
+    [enabled, onOpenChange],
   );
-
+  
   // Arrow keys → open floating element
   const handleReferenceKeyDown = React.useCallback(
     (event: React.KeyboardEvent) => {
       if (!enabled) { return; }
-
+      
       if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
         event.preventDefault();
         onOpenChange(true, event.nativeEvent, 'list-navigation');
       }
     },
-    [enabled, onOpenChange]
+    [enabled, onOpenChange],
   );
-
+  
   const handleReferenceBlur = React.useCallback(
     (event: React.FocusEvent) => {
       if (!enabled) { return; }
-
+      
       const anchorEl = event.currentTarget;
-
+      
       const isInside =
         event.relatedTarget instanceof Node &&
         ((popoverEl && popoverEl.isConnected && popoverEl.contains(event.relatedTarget)) ||
           anchorEl.contains(event.relatedTarget));
-
+      
       if (!isInside) {
         onOpenChange(false, event.nativeEvent, 'focus-out');
       }
     },
-    [enabled, popoverEl, onOpenChange]
+    [enabled, popoverEl, onOpenChange],
   );
-
+  
   const handleFloatingBlur = React.useCallback(
     (event: React.FocusEvent) => {
       if (!enabled) { return; }
-
+      
       const popoverEl = event.currentTarget;
-
+      
       const isInside =
         event.relatedTarget instanceof Node &&
         ((anchorEl instanceof Node && anchorEl.contains(event.relatedTarget)) ||
           popoverEl.contains(event.relatedTarget));
-
+      
       if (!isInside) {
         window.setTimeout(() => {
           if (!popoverEl.isConnected) { return; }
-
+          
           const isInside =
             document.activeElement instanceof Node &&
             ((anchorEl instanceof Node && anchorEl.contains(document.activeElement)) ||
               popoverEl.contains(document.activeElement));
-
+          
           if (!isInside) {
             onOpenChange(false, event.nativeEvent, 'focus-out');
           }
         }, 0);
       }
     },
-    [enabled, anchorEl, onOpenChange]
+    [enabled, anchorEl, onOpenChange],
   );
-
+  
   // Handle click outside
   React.useEffect(() => {
     if (!enabled) { return; }
-
+    
     const controller = new AbortController();
-
+    
     document.addEventListener(
       'pointerdown',
       (event) => {
         if (!anchorEl || !(anchorEl instanceof Node)) { return; }
-
+        
         const isInside =
           event.target instanceof Node &&
           (anchorEl.contains(event.target) || popoverEl?.contains(event.target));
-
+        
         if (!isInside) {
           window.setTimeout(() => {
             const isInside =
               document.activeElement instanceof Node &&
               (anchorEl.contains(document.activeElement) ||
                 popoverEl?.contains(document.activeElement));
-
+            
             if (!isInside) {
               onOpenChange(false, event, 'outside-press');
             }
           }, 0);
         }
       },
-      { signal: controller.signal }
+      { signal: controller.signal },
     );
-
+    
     return () => {
       controller.abort();
     };
   }, [enabled, anchorEl, popoverEl, onOpenChange]);
-
+  
   // Props
   const referenceProps = React.useMemo<React.HTMLProps<Element>>(
     () => ({
@@ -354,25 +359,25 @@ const useComboBoxInteraction = (
       handleReferenceBlur,
       handleReferenceClick,
       handleReferenceKeyDown,
-    ]
+    ],
   );
-
+  
   const floatingProps = React.useMemo<React.HTMLProps<HTMLElement>>(
     () => ({
       onBlur: handleFloatingBlur,
     }),
-    [handleFloatingBlur]
+    [handleFloatingBlur],
   );
-
+  
   return {
     reference: referenceProps,
     floating: floatingProps,
   };
 };
 
-export type UseFloatingElementOptions = {
+export type UseFloatingElementOptions = OpenStateProps & {
   /** The popover type for the floating element. Default: `'manual'`. */
-  popoverBehavior?: undefined | UsePopoverInteractionOptions['popoverBehavior'],
+  popoverBehavior?: undefined | UsePopoverOptions<HTMLElement>['popoverBehavior'],
   
   /** The ARIA role for this element (e.g. `'tooltip'`, `'listbox'`, `'combobox'`). */
   role?: undefined | UseRoleProps['role'],
@@ -434,7 +439,7 @@ export type UseFloatingElementOptions = {
 export type UseFloatingElementResult = {
   context: FloatingContext,
   isOpen: boolean,
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  //requestOpenChange: Required<UseFloatingOptions>['onOpenChange'],
   isMounted: boolean,
   refs: ExtendedRefs<ReferenceType>,
   placement: Placement,
@@ -453,6 +458,9 @@ export const useFloatingElement = <E extends HTMLElement>(
 ): UseFloatingElementResult => {
   const opts = {
     ...options,
+    open: options.open ?? undefined,
+    openDefault: options.openDefault ?? undefined,
+    onOpenChange: options.onOpenChange ?? undefined,
     popoverBehavior: options.popoverBehavior ?? 'manual',
     role: options.role,
     triggerAction: options.triggerAction ?? 'click',
@@ -472,7 +480,7 @@ export const useFloatingElement = <E extends HTMLElement>(
   
   // Floating UI middleware. Note: the order matters here (each modifies the coordinates in sequence).
   const middleware: UseFloatingOptions['middleware'] = [
-    // Offset the floating element from the reference element.
+    // Offset the floating element from the reference element
     offset(opts.offset),
     // Flip the side in case of overflow
     flip({
@@ -500,9 +508,7 @@ export const useFloatingElement = <E extends HTMLElement>(
     middleware.push(arrow({ element: opts.arrowRef }));
   }
   
-  // Track the open state of the popover
-  const [isOpen, setIsOpen] = React.useState(false);
-  
+  // `open` state management
   const onOpenChange = React.useCallback<Required<UseFloatingOptions>['onOpenChange']>(
     (isOpen, event, _reason) => {
       // For form controls (e.g. listbox), 'Enter' key events on the reference element should be ignored, these should
@@ -513,15 +519,27 @@ export const useFloatingElement = <E extends HTMLElement>(
         return;
       }
       
-      setIsOpen(isOpen);
+      // FIXME: `forced` is `true` when it comes from the DOM `ToggleEvent`, but `false` when it comes from an
+      // interaction hook. We should determine `forced` based on the value of `event`.
+      opts.onOpenChange?.({ open: isOpen, forced: true });
     },
-    [opts.keyboardInteractions],
+    [opts.keyboardInteractions, opts.onOpenChange],
   );
+  const { state: openState, updateState: updateOpenState } = useControllableState<boolean>({
+    componentName: 'useFloatingElement', // FIXME: get the actual component name somehow?
+    propName: 'open',
+    state: opts.open,
+    defaultState: opts.openDefault,
+    defaultStateFallback: false,
+    onStateChange: onOpenChange,
+  });
   
-  const { context, refs, placement, floatingStyles } = useFloating<E>({
+  // FIXME: if `isPositioned`, the floating element should be hidden?
+  
+  const { context, refs, placement, floatingStyles, isPositioned } = useFloating<E>({
     // Controlled state
-    open: isOpen,
-    onOpenChange,
+    open: openState,
+    onOpenChange: updateOpenState,
     
     // Options
     placement: opts.placement,
@@ -627,8 +645,8 @@ export const useFloatingElement = <E extends HTMLElement>(
   
   return {
     context,
-    isOpen,
-    setIsOpen,
+    isOpen: context.open,
+    //requestOpenChange: onOpenChange, // Just use controlled state instead?
     isMounted,
     refs,
     placement,

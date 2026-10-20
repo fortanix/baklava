@@ -19,10 +19,10 @@ type FloatingElementControlledProps = {
   popoverContent?: undefined | React.ReactNode,
   options: UseFloatingElementOptions,
 };
+/** A basic example component that makes use of `useFloatingElement` for story purposes. */
 const FloatingElementControlled = (props: FloatingElementControlledProps) => {
   const {
-    isOpen,
-    setIsOpen,
+    //context: { isPositioned },
     isMounted,
     refs,
     placement,
@@ -42,38 +42,34 @@ const FloatingElementControlled = (props: FloatingElementControlledProps) => {
   floatingProps.style = { ...floatingStyles, ...(floatingProps.style ?? {}) };
   
   return (
-    <>
+    <div>
       <style>{`
         @scope {
+          /* Floating element styling */
           [popover] {
             padding: 1em;
             background: light-dark(#ddd, #555);
             text-align: center;
-            border-radius: 3px;
+            border-radius: 0.2em;
             
+            /* Content styling */
             p:not(:first-child) {
-              margin-top: 0.6lh;
+              margin-block-start: 0.6lh;
             }
             
             /* Entry/exit animations */
             @media (prefers-reduced-motion: no-preference) {
               --transition-props: opacity;
               transition: none 100ms ease-in allow-discrete;
-              transition-property: display, overlay, var(--transition-props);
-              &:not(:popover-open) { opacity: 0; }
+              transition-property: var(--transition-props);
               
-              /*
-              Safari (at least v26.0) supports 'transition-property: display allow-discrete', but it does not support
-              the 'overlay' property. This means that our exit animations are broken in this browser, because during the
-              exit animation the popover will no longer be in the top layer ("overlay"). Note: we cannot feature detect
-              support for discrete 'display', so we will instead feature detect support for 'overlay'.
-              See: https://codepen.io/maikelkrause/pen/qEZybQX
-              */
-              @supports not (overlay: auto) {
-                transition-property: var(--transition-props); /* Exclude 'display' and 'overlay' */
+              &:not(:popover-open) { opacity: 0; } /* Exit state */
+              @starting-style { opacity: 0; } /* Entry state */
+              
+              /* In browsers that support 'overlay' transitions, enable exit animations */
+              @supports (overlay: auto) {
+                transition-property: display, overlay, var(--transition-props);
               }
-              
-              @starting-style { opacity: 0; }
             }
           }
         }
@@ -83,7 +79,7 @@ const FloatingElementControlled = (props: FloatingElementControlledProps) => {
       {isMounted &&
         <div {...floatingProps}>{props.popoverContent ?? 'This is a popover'}</div>
       }
-    </>
+    </div>
   );
 };
 
@@ -241,9 +237,7 @@ export const FloatingElementWithSVGAnchor: Story = {
   args: {
     renderAnchor: props => <Icon {...props} icon="bell"/>,
     popoverContent: (
-      <>
-        <p><Button kind="primary" label="This button will not be next in the tab order"/></p>
-      </>
+      <p><Button kind="primary" label="This button might not be next in the tab order"/></p>
     ),
     options: { triggerAction: 'click' },
   },
@@ -254,17 +248,19 @@ export const FloatingElementWithPopoverAuto: Story = {
   args: { renderAnchor: buttonAnchor('Click me'), options: { popoverBehavior: 'auto' } },
 };
 
+export const FloatingElementOpenDefault: Story = {
+  args: { options: { openDefault: true }, popoverContent: 'I am open by default' },
+};
+
 type FloatingElementWithManualTriggerProps = {
   renderAnchor: (props: Record<string, unknown>) => React.ReactNode,
   popoverContent?: undefined | React.ReactNode,
   options: UseFloatingElementOptions,
 };
-
 const FloatingElementWithManualTriggerC = (props: FloatingElementWithManualTriggerProps) => {
+  const [open, setIsOpen] = React.useState(true);
   const {
     context,
-    isOpen,
-    setIsOpen,
     isMounted,
     refs,
     placement,
@@ -272,7 +268,11 @@ const FloatingElementWithManualTriggerC = (props: FloatingElementWithManualTrigg
     getReferenceProps,
     getFloatingProps,
     getItemProps,
-  } = useFloatingElement(props.options);
+  } = useFloatingElement({
+    ...props.options,
+    open,
+    onOpenChange: ({ open }) => setIsOpen(open),
+  });
   
   // Merge everything into one props object for reference/floating
   const referenceProps = getReferenceProps();
@@ -282,10 +282,10 @@ const FloatingElementWithManualTriggerC = (props: FloatingElementWithManualTrigg
   // @ts-ignore
   floatingProps.ref = mergeRefs(floatingProps.ref, refs.setFloating);
   floatingProps.style = { ...floatingStyles, ...(floatingProps.style ?? {}) };
-
+  
   const onTogglePopover = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.stopPropagation();
-    setIsOpen(!isOpen);
+    setIsOpen(open => !open);
   };
   
   return (
@@ -327,7 +327,7 @@ const FloatingElementWithManualTriggerC = (props: FloatingElementWithManualTrigg
           text-align: center;
         }
       `}</style> 
-
+      
       {props.renderAnchor(referenceProps)}
       {isMounted &&
         <div {...floatingProps}>{props.popoverContent ?? 'This is a popover'}</div>
