@@ -25,9 +25,9 @@ const packageConfig = {
   sideEffects: ['*.css'],
   type: 'module',
   engines: {
-  node: '>=26.4.0',
-  npm: '>=11.17.0',
-},
+    node: '>=26.12.1',
+    npm: '>=11.17.0',
+  },
   allowScripts: {
     '@parcel/watcher': true,
     'esbuild': true,
