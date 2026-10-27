@@ -6,7 +6,7 @@ import * as React from 'react';
 import { mergeProps, useMemoOnce } from '../../../util/reactUtil.ts';
 import { type StoreApi, createStore, useStore } from 'zustand';
 
-import { ControllableStateDef, parseControllableState } from '../../../util/hooks/useControllableState.ts';
+import { type ControllableStateProps, parseControllableStateProps } from '../../../util/hooks/useControllableState.ts';
 
 import {
   type ItemKey,
@@ -52,12 +52,15 @@ export const useListBoxMultiSelector = <T>(selector: (state: ListBoxMultiSlice) 
   return useStore(store, selector);
 };
 
-export type ListBoxMultiProps = ControllableStateDef<SelectedState>;
+export type ListBoxMultiProps = ControllableStateProps<SelectedState>;
 export const useListBoxMulti = <E extends HTMLElement = HTMLElement>(props: ListBoxMultiProps) => {
   const ref = React.useRef<E>(null);
   const listBoxId = React.useId();
   
-  const { isControlled, stateInitial, ...selectionState } = parseControllableState(props);
+  const { isControlled, stateInitial, stateDef: selectionState } = parseControllableStateProps(props, {
+    debugName: 'useListBoxMulti',
+    propName: 'selected',
+  });
   
   const store = useMemoOnce(() => createStore<ListBoxMultiSlice>()((...args) => ({
     ...createCollectionSlice(ref, { collectionId: listBoxId })(...args),

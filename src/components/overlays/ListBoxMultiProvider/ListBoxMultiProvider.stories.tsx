@@ -139,12 +139,13 @@ export const ListBoxMultiProviderWithHoverTrigger: Story = {
 };
 
 const ListBoxMultiProviderControlledC = (props: React.ComponentProps<typeof ListBoxMultiProvider>) => {
-  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(props.defaultSelected ?? new Set());
+  const { defaultSelected, ...propsRest } = props;
+  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(defaultSelected ?? new Set());
   return (
     <>
       <p>Selected: {[...selectedOptions].map(itemKey => formatFruitLabel(itemKey)).join(', ') || '(none)'}</p>
       <ListBoxMultiProvider
-        {...props}
+        {...propsRest}
         selected={selectedOptions}
         onSelectedChange={setSelectedOptions}
       />

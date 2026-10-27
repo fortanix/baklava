@@ -134,8 +134,8 @@ export const ListBoxProviderWithHoverTrigger: Story = {
   },
 };
 
-const ListBoxProviderControlledC = (props: React.ComponentProps<typeof ListBoxProvider>) => {
-  const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>(props.defaultSelected ?? null);
+const ListBoxProviderControlledC = ({ defaultSelected, ...props }: React.ComponentProps<typeof ListBoxProvider>) => {
+  const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>(defaultSelected ?? null);
   
   return (
     <>

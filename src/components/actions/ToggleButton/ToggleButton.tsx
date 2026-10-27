@@ -4,7 +4,7 @@
 
 import { mergeCallbacks } from '../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
-import { useControllableState } from '../../../util/hooks/useControllableState.ts';
+import { useControllableStateFromProps } from '../../../util/hooks/useControllableState.ts';
 
 import { Button } from '../Button/Button.tsx';
 
@@ -49,20 +49,21 @@ export const ToggleButton = (props: ToggleButtonProps) => {
     ...propsRest
   } = props;
   
-  const { state: toggledState, updateState: updateToggledState } = useControllableState<boolean>({
-    componentName: 'ToggleButton',
-    propName: 'toggled',
+  const { state: toggledState, requestStateChange: requestToggledChange } = useControllableStateFromProps<boolean>({
     state: toggled,
     defaultState: defaultToggled,
-    defaultStateFallback: false,
     onStateChange: onToggledChange,
+  }, {
+    debugName: 'ToggleButton',
+    propName: 'toggled',
+    defaultStateFallback: false,
+    stateFromEvent: state => state,
   });
   
   const isInteractive = !disabled && !nonactive;
   const handlePress = () => {
-    if (isInteractive) {
-      updateToggledState(toggled => !toggled);
-    }
+    if (!isInteractive) { return; }
+    requestToggledChange(toggled => !toggled);
   };
   
   // By default we consider this to be a toggle button, i.e. `role="button"` with `aria-pressed`. But if the consumer

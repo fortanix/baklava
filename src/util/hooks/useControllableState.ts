@@ -10,6 +10,19 @@ import { usePrevious } from '../reactUtil.ts';
 
 export type Defined = null | {};
 
+/**
+ * Model of React state which can be either uncontrolled (state managed internally by the component) or controlled
+ * (state is driven by the consumer). This models the common React pattern seen for example in native form controls:
+ * 
+ *     <input value={} defaultValue={} onChange={}/>
+ * 
+ * React considers the state to be uncontrolled when `value` is `undefined`, and controlled otherwise. When
+ * uncontrolled, a `defaultValue` may be passed that specifies the desired initial state. When controlled, a
+ * `onStateChange` must be passed to handle state updates (if uncontrolled, it's an optional notifification mechanism).
+ * State should be either controlled or uncontrolled throughout the lifetime of a component, not switch between.
+ * 
+ * The naming of the fields is meant to follow DOM conventions (as far as the DOM has a convention for this).
+ */
 export type ControllableState<S extends Defined, E = S> = (
   | {
     state?: undefined, // Uncontrolled
@@ -23,169 +36,223 @@ export type ControllableState<S extends Defined, E = S> = (
   }
 );
 
-export type ControllableStateDef<S extends Defined, E = S> = {
-  state: undefined | S,
-  defaultState: undefined | S,
-  defaultStateFallback: undefined | S,
-  onStateChange: undefined | ((event: E) => void),
-};
-export type ControllableStateDefStrict<S extends Defined, E = S> = ControllableStateDef<S, E> & {
-  defaultStateFallback: S,
-};
 
-export type ParseControllableStateResult<S extends Defined, E = S> = ControllableStateDef<S, E> & {
-  isControlled: boolean,
-  stateInitial: undefined | S,
-};
-export const parseControllableState = <S extends Defined, E = S>(
-  state: ControllableStateDef<S, E>,
-): ParseControllableStateResult<S, E> => {
-  const isControlled = typeof state.state !== 'undefined';
-  const stateInitial = isControlled
-    ? state.state
-    : (typeof state.defaultState !== 'undefined' ? state.defaultState : state.defaultStateFallback);
-  
-  return {
-    ...state,
-    isControlled,
-    stateInitial,
-  };
-};
-
+//
+// Utilities
+//
 
 const formatStateProp = (propName: string, propType: 'state' | 'defaultState' | 'onStateChange'): string => {
   switch (propType) {
     case 'state': return propName;
-    case 'defaultState': return `${propName}Default`;
-    case 'onStateChange': return `onUpdate${capitalizeFirstLetter(propName)}`;
+    case 'defaultState': return `default${capitalizeFirstLetter(propName)}`;
+    case 'onStateChange': return `on${capitalizeFirstLetter(propName)}Change`;
     default: throw new Error(`Unexpected prop type '${propType satisfies never}'`);
   }
 };
 
-const isStateDispatchCallable = <S>(stateDispatch: React.SetStateAction<S>): stateDispatch is ((prevState: S) => S) => {
-  return typeof stateDispatch === 'function';
+/*
+// For some reason the following does not always work (tested in TS v6). It works outside of function context, but
+// inside of a function the narrowing doesn't happen and `stateDef` remains `ControllableState<S, E>`. As a workaround,
+// we introduce a type guard `isControlledState`.
+const stateDef = null as any as ControllableState<string, { state: string }>;
+if (typeof stateDef.state !== 'undefined') { stateDef; }
+*/
+
+// Narrowed variants of `ControllableState`
+type Uncontrolled<S extends Defined, E> = ControllableState<S, E> & { state: undefined };
+type Controlled<S extends Defined, E> = ControllableState<S, E> & { state: S };
+//type Test1 = Uncontrolled<string, { state: string }>; // Should equal the uncontrolled branch
+//type Test2 = Controlled<string, { state: string }>; // Should equal the controlled branch
+
+const isControlledState = <S extends Defined, E>(stateDef: ControllableState<S, E>): stateDef is Controlled<S, E> => {
+  return typeof stateDef.state !== 'undefined';
 };
 
 
-type UseControllableStateProps<S extends Defined, E = S> = ControllableStateDefStrict<S, E> & {
-  // Debug info
-  componentName: string,
+//
+// useControllableState
+//
+
+export type StateChangeRequest<S extends Defined, E> = E | ((prevState: S) => E);
+const isStateChangeRequestCallable = <S extends Defined, E>(
+  req: StateChangeRequest<S, E>,
+): req is ((prevState: S) => E) => {
+  // Note: this type guard is needed because technically the event type `E` could be a function, and it's difficult to
+  // contrain the generic `E` to be "not a function type". So for now we simply use a type guard to narrow.
+  return typeof req === 'function';
+};
+
+export type UseControllableStateOptions<S extends Defined, E> = {
+  /** The component or hook name, for use in debug logs. */
+  debugName?: undefined | string,
+  /** A name to identify this particular piece of state. */
   propName: string,
+  /** A fallback value to use for `defaultState` if not given. */
+  defaultStateFallback: S,
+  /** A function that can take an event and extract the state value from it. */
+  stateFromEvent: (event: E) => S,
+};
+export type UseControllableStateResult<S extends Defined, E> = {
+  /**
+   * Whether the state is controlled or uncontrolled. Note: this cannot be derived from result `state` because that
+   * gives the _tracked_ state value.
+   */
+  isControlled: boolean,
+  /** The state value that was determined by tracking. */
+  state: S,
+  /** Imperative state update function (e.g. for uncontrolled components to call through a `ref`). */
+  requestStateChange: (stateChangeRequest: StateChangeRequest<S, E>) => void,
 };
 /**
  * Utility hook for a component that has some state that can be either controlled or uncontrolled. Similar to how
  * built-in React DOM components like `<input/>` work (with `value` as the state). We expect three props:
  * - `state`: If given (not undefined), we consider the state to be controlled with this prop as the current value.
  * - `defaultState`: If uncontrolled, this gives the initial value for the state.
- * - `stateFallback`: If uncontrolled, and no `defaultState` is given, this gives the fallback value.
  * - `onStateChange`: Callback that is called (in either controlled or uncontrolled case) when the state changes.
- * 
- * Note: the above prop naming convention was chosen so as to minimize conflicts with existing DOM props. For instance,
- * for `value` DOM has: `value`, `defaultValue`, and `onChange`. There are events like `onFooChange` (e.g.
- * `onDurationChange`) and `onFooUpdate` (e.g. `onTimeUpdate`), but not `onUpdateFoo`. Defaults are always `defaultFoo`.
  * 
  * Components should never switch from controlled to uncontrolled or vice versa after rendering. If this happens, we
  * print a warning in the console.
  */
-export const useControllableState = <S extends Defined>(props: UseControllableStateProps<S>) => {
-  const { componentName: comp, propName, state, defaultState, defaultStateFallback, onStateChange } = props;
+export const useControllableState = <S extends Defined, E = S>(
+  stateDef: ControllableState<S, E>,
+  options: UseControllableStateOptions<S, E>,
+): UseControllableStateResult<S, E> => {
+  const { debugName, propName, defaultStateFallback, stateFromEvent } = options;
+  const logPrefix = `[${debugName ? `${debugName}.` : ''}${propName}]`;
   
-  // When `state` is explicitly given (not undefined), we consider the state to be controlled
-  const isControlled = typeof state !== 'undefined';
+  // Note: using an `isControlledState` type guard as workaround here for a TS bug, see explanation above
+  const isControlled = isControlledState(stateDef);
   
-  
-  // Track when the component changes from controlled to uncontrolled or vice versa
-  const wasControlled: undefined | boolean = usePrevious(isControlled);
-  const handleControlledChange = React.useEffectEvent((isControlled: boolean) => {
+  // Detect when the component changes from controlled to uncontrolled or vice versa
+  const wasControlled = usePrevious(isControlled);
+  // biome-ignore lint/correctness/useExhaustiveDependencies(logPrefix): Should only run on `isControlled` change.
+  // biome-ignore lint/correctness/useExhaustiveDependencies(wasControlled): Should only run on `isControlled` change.
+  React.useEffect(() => {
     if (typeof wasControlled !== 'undefined' && isControlled !== wasControlled) {
       const change = isControlled ? `uncontrolled to controlled` : `controlled to uncontrolled`;
-      console.warn(`[${comp}] Component switched from ${change} upon rerendering`);
+      console.warn(`${logPrefix} Component switched from ${change} state upon rerendering`);
     }
-  });
-  React.useEffect(() => { handleControlledChange(isControlled); }, [isControlled]);
-  
-  
-  // Validate preconditions
-  if (isControlled && typeof onStateChange === 'undefined') {
-    console.warn(`[${comp}] 'Missing ${formatStateProp(propName, 'onStateChange')}' in controlled component`);
-  }
-  if (isControlled && typeof defaultState !== 'undefined') {
-    console.warn(`[${comp}] '${formatStateProp(propName, 'defaultState')}' passed to controlled component`);
-  }
+  }, [isControlled]);
   
   
   // When uncontrolled, we need to keep track of the current state ourselves
-  const stateInit = typeof defaultState !== 'undefined' ? defaultState : defaultStateFallback;
-  const [stateUncontrolled, updateStateUncontrolled] = React.useState<S>(stateInit);
+  const [stateUncontrolled, setStateUncontrolled] = React.useState<S>(() =>
+    typeof stateDef.defaultState !== 'undefined' ? stateDef.defaultState : defaultStateFallback,
+  );
   
   // The actual state to be used by the component (whether controlled or uncontrolled)
-  const stateUsed: S = isControlled ? state : stateUncontrolled;
+  const stateUsed: S = isControlled ? stateDef.state : stateUncontrolled;
   
-  // When uncontrolled, notify the consumer whenever the state changes
-  const onStateChangeEvent = React.useEffectEvent((stateDispatch: React.SetStateAction<S>) => {
-    const stateUpdated = isStateDispatchCallable(stateDispatch) ? stateDispatch(stateUsed) : stateDispatch;
-    onStateChange?.(stateUpdated);
-  });
-  React.useEffect(() => {
-    onStateChangeEvent(stateUncontrolled);
-  }, [stateUncontrolled]);
-  
-  // Allow the component to trigger an update to the state (e.g. in response to user action)
-  const updateState = React.useCallback((stateDispatch: React.SetStateAction<S>) => {
-    if (isControlled) {
-      onStateChangeEvent(stateDispatch);
-    } else {
-      // Note: don't call `onStateChangeEvent` directly, update the internal state first and then let it sync through
-      // the `useEffect` above.
-      updateStateUncontrolled(stateDispatch);
+  // An imperative request to change the state (e.g. in response to user action)
+  const requestStateChange = React.useCallback((stateRequest: StateChangeRequest<S, E>) => {
+    if (isControlled) { // When controlled, we just pass the request on to `onStateChange`
+      /*
+      CAUTION: normally, with an updater callback, you would expect the values to be queued as follows:
+      
+        - `requestStateChange(count => count + 1)`
+        - `requestStateChange(count => count + 1)`
+        - Total effect would normally be `count + 2`
+      
+      However this does not work for controlled state, because the state update (if any) won't be visible to us until
+      the next render cycle. Instead, you will just get the current `state` multiple times in the same render cycle.
+      
+      Idea #1: we could maybe internally keep track of the resulting state through `stateFromEvent()`, store that in a
+      ref and then pass that on to the next call (and then reset to passed `state` on next render cycle). However, that
+      risks a desync because the consumer is not guaranteed to respect the `onStateChange` event.
+      
+      Idea #2: change the type of the `onStateChange` prop so it must take a `React.SetStateAction`. This would resolve
+      it, though at the cost of consumers now having to handle an updater and not just a value.
+      
+      Idea #3: model it through declarative events instead. For example instead of a `toggled => !toggled` updater
+      function, you could instead have an event `{ action: 'invert' }`. Arguably, this is not much better than idea #2
+      because then the consumer must still handle this event and convert it to a `setState` updater function.
+      
+      if (isStateChangeRequestCallable(stateRequest)) {
+        console.warn(`${logPrefix} 'requestStateChange' was called with an updater callback despite controlled state`);
+      }
+      */
+      
+      const event: E = isStateChangeRequestCallable(stateRequest) ? stateRequest(stateDef.state) : stateRequest;
+      stateDef.onStateChange?.(event);
+    } else { // When uncontrolled, update the internal state
+      setStateUncontrolled(prevState => {
+        const event: E = isStateChangeRequestCallable(stateRequest)
+          ? stateRequest(prevState)
+          : stateRequest;
+        
+        // Notify the consumer
+        stateDef.onStateChange?.(event);
+        
+        return stateFromEvent(event);
+      });
     }
-  }, [isControlled]);
+  }, [stateFromEvent, isControlled, stateDef.state, stateDef.onStateChange]);
   
   return {
     isControlled,
     state: stateUsed,
-    updateState,
+    requestStateChange,
   };
 };
 
-export const useControllableStateTracker = <S extends Defined>(
-  props: ControllableStateDef<S>,
-): { state: undefined | S, onStateChange: (state: S) => void } => {
-  const { state, onStateChange } = props;
-  const { isControlled, stateInitial } = parseControllableState(props);
+
+//
+// Non-strictly typed `ControllableStateProps` + utilities
+//
+
+/**
+ * Similar to `ControllableState`, but weakly-typed (the union is flattened). This is useful for component props, where
+ * a strictly-typed union is not always practical.
+ */
+export type ControllableStateProps<S extends Defined, E = S> = {
+  state?: undefined | S,
+  defaultState?: undefined | S,
+  onStateChange?: undefined | ((event: E) => void),
+};
+
+export type ParseControllableStateResult<S extends Defined, E> = {
+  stateDef: ControllableState<S, E>,
+  isControlled: boolean,
+  stateInitial: undefined | S,
+};
+export const parseControllableStateProps = <S extends Defined, E>(
+  stateProps: ControllableStateProps<S, E>,
+  options: Pick<UseControllableStateOptions<S, E>, 'debugName' | 'propName'>,
+): ParseControllableStateResult<S, E> => {
+  const { debugName, propName } = options;
+  const logPrefix = `[${debugName ? `${debugName}.` : ''}${propName}]`;
   
-  const [stateTracked, updateStateTracked] = React.useState<undefined | S>(stateInitial);
+  const isControlled = typeof stateProps.state !== 'undefined';
   
-  const onStateChangeTracked = React.useCallback((state: S) => {
-    updateStateTracked(state);
-    onStateChange?.(state);
-  }, [onStateChange]);
+  // Validate preconditions
+  if (isControlled && typeof stateProps.onStateChange === 'undefined') {
+    console.warn(`${logPrefix} 'Missing ${formatStateProp(propName, 'onStateChange')}' in controlled component`);
+  }
+  if (isControlled && typeof stateProps.defaultState !== 'undefined') {
+    console.warn(`${logPrefix} '${formatStateProp(propName, 'defaultState')}' passed to controlled component`);
+  }
+  
+  const stateInitial: undefined | S = isControlled
+    ? stateProps.state
+    : (typeof stateProps.defaultState !== 'undefined' ? stateProps.defaultState : undefined);
+  
+  // The type cast below should be safe through the above runtime checks. Note: given that we only warn and not throw,
+  // `useControllableState` must still be able to gracefully handle failed preconditions.
+  const stateDef = stateProps as ControllableState<S, E>;
   
   return {
-    state: isControlled ? state : stateTracked,
-    onStateChange: onStateChangeTracked,
+    stateDef,
+    isControlled,
+    stateInitial,
   };
 };
 
-export const useControllableStateTrackerWithEvent = <S extends Defined, E = S>(
-  props: ControllableStateDef<S, E>,
-  stateFromEvent: (event: E) => S,
-): { state: undefined | S, onStateChange: (event: E) => void } => {
-  const { state, onStateChange } = props;
-  const { isControlled, stateInitial } = parseControllableState(props);
-  
-  const [stateTracked, updateStateTracked] = React.useState<undefined | S>(stateInitial);
-  const onStateChangeTracked = React.useCallback((event: E) => {
-    if (!isControlled) {
-      const state = stateFromEvent(event);
-      updateStateTracked(state);
-    }
-    
-    onStateChange?.(event);
-  }, [isControlled, onStateChange, stateFromEvent]);
-  
-  return {
-    state: isControlled ? state : stateTracked,
-    onStateChange: onStateChangeTracked,
-  };
+/** Variant of `useControllableState` that takes in a weakly-typed props type. */
+export const useControllableStateFromProps = <S extends Defined, E = S>(
+  stateProps: ControllableStateProps<S, E>,
+  options: UseControllableStateOptions<S, E>,
+): UseControllableStateResult<S, E> => {
+  const parseOptions = { debugName: options.debugName, propName: options.propName };
+  const { stateDef } = parseControllableStateProps(stateProps, parseOptions);
+  return useControllableState(stateDef, options);
 };

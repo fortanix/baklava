@@ -4,9 +4,8 @@
 
 import * as React from 'react';
 import { mergeProps, useMemoOnce } from '../../../util/reactUtil.ts';
+import { type ControllableStateProps, parseControllableStateProps } from '../../../util/hooks/useControllableState.ts';
 import { type StoreApi, createStore, useStore } from 'zustand';
-
-import { ControllableStateDef, parseControllableState } from '../../../util/hooks/useControllableState.ts';
 
 import {
   type ItemKey,
@@ -38,12 +37,15 @@ export const useRadioGroupContext = () => {
   return context;
 };
 
-export type RadioGroupProps = ControllableStateDef<SelectedState>;
+export type RadioGroupProps = ControllableStateProps<SelectedState>;
 export const useRadioGroup = <E extends HTMLElement = HTMLElement>(props: RadioGroupProps) => {
   const ref = React.useRef<E>(null);
   const radioGroupId = React.useId();
   
-  const { isControlled, stateInitial, ...selectionState } = parseControllableState(props);
+  const { isControlled, stateInitial, stateDef: selectionState } = parseControllableStateProps(props, {
+    debugName: 'useRadioGroup',
+    propName: 'selected',
+  });
   
   const store = useMemoOnce(() => createStore<RadioGroupSlice>()((...args) => ({
     ...createCollectionSlice(ref, { collectionId: radioGroupId })(...args),

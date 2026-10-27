@@ -293,8 +293,8 @@ export const ListBoxMultiTypeAhead: Story = {
 };
 
 type ListBoxMultiControlledProps = Omit<React.ComponentProps<typeof ListBoxMulti>, 'selected'>;
-const ListBoxMultiControlledC = (props: ListBoxMultiControlledProps) => {
-  const [selectedItems, setSelectedItems] = React.useState<Set<ItemKey>>(props.defaultSelected ?? new Set());
+const ListBoxMultiControlledC = ({ defaultSelected, ...props }: ListBoxMultiControlledProps) => {
+  const [selectedItems, setSelectedItems] = React.useState<Set<ItemKey>>(defaultSelected ?? new Set());
   
   return (
     <>
@@ -363,8 +363,8 @@ export const ListBoxMultiWithRef: Story = {
  * - Virtualization.
  */
 type ListBoxMultiWithUnknownProps = Omit<React.ComponentProps<typeof ListBoxMulti>, 'selected'>;
-const ListBoxMultiWithUnknownC = (props: ListBoxMultiWithUnknownProps) => {
-  const [selectedItems, setSelectedItems] = React.useState<Set<ItemKey>>(props.defaultSelected ?? new Set());
+const ListBoxMultiWithUnknownC = ({ defaultSelected, ...props }: ListBoxMultiWithUnknownProps) => {
+  const [selectedItems, setSelectedItems] = React.useState<Set<ItemKey>>(defaultSelected ?? new Set());
   
   return (
     <>

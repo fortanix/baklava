@@ -281,8 +281,8 @@ export const ListBoxTypeAhead: Story = {
 };
 
 type ListBoxControlledProps = Omit<React.ComponentProps<typeof ListBox>, 'selected'>;
-const ListBoxControlledC = (props: ListBoxControlledProps) => {
-  const [selectedFruit, setSelectedFruit] = React.useState<null | ItemKey>(props.defaultSelected ?? null);
+const ListBoxControlledC = ({ defaultSelected, ...props }: ListBoxControlledProps) => {
+  const [selectedFruit, setSelectedFruit] = React.useState<null | ItemKey>(defaultSelected ?? null);
   
   return (
     <>
@@ -356,8 +356,8 @@ export const ListBoxWithRef: Story = {
  * - Virtualization.
  */
 type ListBoxWithUnknownProps = Omit<React.ComponentProps<typeof ListBox>, 'selected'>;
-const ListBoxWithUnknownC = (props: ListBoxWithUnknownProps) => {
-  const [selectedItem, setSelectedItem] = React.useState<null | ItemKey>(props.defaultSelected ?? null);
+const ListBoxWithUnknownC = ({ defaultSelected, ...props }: ListBoxWithUnknownProps) => {
+  const [selectedItem, setSelectedItem] = React.useState<null | ItemKey>(defaultSelected ?? null);
   
   return (
     <>

@@ -6,10 +6,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import * as React from 'react';
 
+import { notify } from '../ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 
-import { type ItemKey, MenuMultiProvider } from './MenuMultiProvider.tsx';
+import { type ItemKey, type MenuMultiProviderRef, MenuMultiProvider } from './MenuMultiProvider.tsx';
 
 
 type MenuMultiProviderArgs = React.ComponentProps<typeof MenuMultiProvider>;
@@ -142,12 +143,13 @@ export const MenuMultiProviderWithHoverTrigger: Story = {
 };
 
 const MenuMultiProviderControlledC = (props: React.ComponentProps<typeof MenuMultiProvider>) => {
-  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(props.defaultSelected ?? new Set());
+  const { defaultSelected, ...propsRest } = props;
+  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(defaultSelected ?? new Set());
   return (
     <>
       <p>Selected: {[...selectedOptions].map(itemKey => formatFruitLabel(itemKey)).join(', ') || '(none)'}</p>
       <MenuMultiProvider
-        {...props}
+        {...propsRest}
         selected={selectedOptions}
         onSelectedChange={setSelectedOptions}
       />
@@ -173,4 +175,36 @@ export const MenuMultiProviderControlledWithDefault: Story = {
       ])}
     />
   ),
+};
+
+
+const MenuMultiProviderWithRefC = (props: React.ComponentProps<typeof MenuMultiProvider>) => {
+  const ref = React.useRef<MenuMultiProviderRef>(null);
+  
+  const logState = async () => {
+    // Add a timeout so we have time to open the menu first after clicking the button
+    await new Promise(resolve => window.setTimeout(resolve, 1000));
+    
+    const state = ref.current;
+    if (!state) { notify.info(`No ref`); return; }
+    notify.info(`Open = ${state.open}, Selected = ${[...state.selected].join(', ') || '(none)'}`);
+  };
+  const openMenu = () => {
+    ref.current?.requestOpenChange(true);
+  };
+  const updateSelected = () => {
+    ref.current?.requestSelectedChange(new Set(['item-blueberry']));
+  };
+  
+  return (
+    <>
+      <p><Button label="Log state" onPress={logState}/></p>
+      <MenuMultiProvider {...props} ref={ref}/>
+      <p><Button label="Open menu" onPress={openMenu}/></p>
+      <p><Button label="Select Blueberry" onPress={updateSelected}/></p>
+    </>
+  );
+};
+export const MenuMultiProviderWithRef: Story = {
+  render: args => <MenuMultiProviderWithRefC {...args}/>,
 };

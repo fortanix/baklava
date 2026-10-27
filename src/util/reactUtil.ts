@@ -144,11 +144,16 @@ export const useMemoOnce = <T>(initialize: () => T) => {
 };
 
 
-export const usePrevious = <T>(value: T) => {
+export const usePreviousRef = <T>(value: T): React.RefObject<undefined | T> => {
   const ref: React.RefObject<undefined | T> = React.useRef(undefined);
   React.useEffect(() => {
     ref.current = value;
   });
+  return ref;
+};
+export const usePrevious = <T>(value: T): undefined | T => {
+  const ref = usePreviousRef(value);
+  // Note: downside of this compared to using `usePreviousRef` is that you may need to include the value as hook dep
   return ref.current;
 };
 

@@ -3,10 +3,10 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
+import type { ControllableStateProps } from '../../../util/hooks/useControllableState.ts';
 import { type StateCreator, type StoreApi } from 'zustand';
 
 import type { ItemKey } from './CollectionStore.ts';
-import { parseControllableState, type ControllableStateDef } from '../../../util/hooks/useControllableState.ts';
 
 
 const noop = () => {};
@@ -33,10 +33,9 @@ export const createSelectionMultiSlice = (
   selectItems: itemKeys => { set({ selectedItemKeys: itemKeys }); },
 });
 
-type SelectedStateDef = ControllableStateDef<SelectedState>;
+type SelectedStateDef = ControllableStateProps<SelectedState>;
 export const useSelectionWith = (store: StoreApi<SelectionMultiSlice>, stateDef: SelectedStateDef) => {
-  const { isControlled } = parseControllableState(stateDef);
-  
+  const isControlled = typeof stateDef.state !== 'undefined';
   const onStateChange = React.useEffectEvent(stateDef.onStateChange ?? noop);
   
   // Uncontrolled case: call `onStateChange` when state changes

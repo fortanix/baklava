@@ -131,8 +131,8 @@ export const MenuProviderWithHoverTrigger: Story = {
   },
 };
 
-const MenuProviderControlledC = (props: React.ComponentProps<typeof MenuProvider>) => {
-  const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>(props.defaultSelected ?? null);
+const MenuProviderControlledC = ({ defaultSelected, ...props }: React.ComponentProps<typeof MenuProvider>) => {
+  const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>(defaultSelected ?? null);
   
   return (
     <>
