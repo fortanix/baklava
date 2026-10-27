@@ -99,6 +99,15 @@
         }
       }
       
+      // TODO: Must the consumer be responsible to add this as a class to the image?
+      // Revisit this when the following PR is merged:
+      // https://github.com/fortanix/baklava/pull/686
+      &.bk-list-box__item--custom-icon >:first-child {
+        object-fit: cover;
+        inline-size: 1.3em; // same size of <Icon>
+        block-size: 1.3em;
+      }
+      
       // Add a separator between each item
       &:not(:nth-child(1 of .bk-list-box__item)) {
         border-block-start: bk.$size-1 solid bk.$theme-dropdown-menu-menu-border-default;

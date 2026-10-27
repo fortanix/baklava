@@ -44,7 +44,7 @@ export interface ListBoxRef extends HTMLDivElement {
   _bkListBoxFocusLast: () => void,
 };
 
-type ListBoxIcon = React.ComponentType<Pick<React.ComponentProps<typeof BkIcon>, 'icon' | 'className' | 'decoration'>>;
+export type ListBoxIcon = React.ComponentType<Pick<React.ComponentProps<typeof BkIcon>, 'icon' | 'className' | 'decoration'>>;
 
 
 //
@@ -127,6 +127,9 @@ export const Option = (props: OptionProps) => {
       className={cx(
         { [cl['bk-list-box__item']]: !unstyled },
         { [cl['bk-list-box__item--disabled']]: isNonactive },
+        // TODO: Revisit this custom icon condition once this PR is merged:
+        // https://github.com/fortanix/baklava/pull/686
+        { [cl['bk-list-box__item--custom-icon']]: Icon !== BkIcon },
         cl['bk-list-box__item--option'],
         propsRest.className,
       )}
@@ -137,6 +140,9 @@ export const Option = (props: OptionProps) => {
     >
       {icon &&
         <Icon
+          // TODO: `icon` should not be needed when a custom `Icon` is used.
+          // Revisit this custom icon condition once this PR is merged:
+          // https://github.com/fortanix/baklava/pull/686
           icon={icon}
           decoration={iconDecoration !== 'highlight' ? undefined : { type: 'background-circle' }}
           className={cx(

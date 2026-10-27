@@ -19,7 +19,13 @@ import cl from './AccountSelector.module.scss';
 export { cl as AccountSelectorClassNames };
 
 
-export type { ItemKey };
+export type { ItemDetails, ItemKey };
+
+const DefaultIcon = () => (
+  <Icon icon="account" className={cx(cl['bk-account-selector__icon'])}
+    decoration={{ type: 'background-circle' }}
+  />
+);
 
 type PropsOmit = 'label' | 'children' | 'selected' | 'onSelect' | 'wrap';
 export type AccountSelectorProps = Omit<ComponentProps<typeof Button>, PropsOmit> & {
@@ -34,6 +40,9 @@ export type AccountSelectorProps = Omit<ComponentProps<typeof Button>, PropsOmit
   
   /** The selected account. If given, this will be a controlled component. */
   selected?: undefined | React.ComponentProps<typeof MenuProvider>['selected'],
+  
+  /** The selected account image. */
+  selectedIcon?: undefined | React.ReactElement,
   
   /** Callback which is called when the selected state changes. */
   onSelect?: undefined | React.ComponentProps<typeof MenuProvider>['onSelect'],
@@ -51,6 +60,7 @@ export const AccountSelector = Object.assign(
       children,
       accounts,
       selected,
+      selectedIcon,
       onSelect,
       formatItemLabel,
       menuProviderProps = {},
@@ -76,9 +86,10 @@ export const AccountSelector = Object.assign(
               className: cx('bk', { [cl['bk-account-selector']]: !unstyled }, propsRest.className),
             })}
           >
-            <Icon icon="account" className={cx(cl['bk-account-selector__icon'])}
-              decoration={{ type: 'background-circle' }}
-            />
+            {selectedIcon ?
+              <span className={cx(cl['bk-account-selector__custom-icon'])}>{selectedIcon}</span> :
+              <DefaultIcon/>
+            }
             <span className={cx(cl['bk-account-selector__label'])}>{children(selectedOption ?? null)}</span>
             <Icon icon="caret-down" className={cx(cl['bk-account-selector__caret'])}/>
           </Button>

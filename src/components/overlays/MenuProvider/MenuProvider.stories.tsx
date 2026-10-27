@@ -154,3 +154,24 @@ export const MenuProviderControlled: Story = {
 export const MenuProviderControlledWithDefault: Story = {
   render: args => <MenuProviderControlledC {...args} defaultSelected="item-blueberry"/>,
 };
+
+export const MenuWithCustomIcons: Story = {
+  args: {
+    items: (
+      <>
+        {Object.entries(fruits).map(([fruitKey, fruitName], index) =>
+          <MenuProvider.Option
+            key={fruitKey}
+            itemKey={fruitKey}
+            label={fruitName}
+            // TODO: `icon` should not be needed when a custom `Icon` is used.
+            // Revisit this custom icon condition once this PR is merged:
+            // https://github.com/fortanix/baklava/pull/686
+            Icon={() => <img src={`https://picsum.photos/id/${index + 1}/200/300`}/>}
+            icon="account"
+          />
+        )}
+      </>
+    ),
+  }
+};
