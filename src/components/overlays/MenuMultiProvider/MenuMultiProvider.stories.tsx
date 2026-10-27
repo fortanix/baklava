@@ -49,9 +49,9 @@ export default {
     children: ({ props, selectedOptions }) => {
       const selectedLabels = Array.from(selectedOptions).map(key => formatFruitLabel(key)).join(', ');
       return (
-        <Button kind="primary" {...props()}>
-          {selectedOptions.size > 0 ? `Selected: ${selectedLabels}` : 'Open dropdown'}
-        </Button>
+        <Button kind="primary" {...props()}
+          label={selectedOptions.size > 0 ? `Selected: ${selectedLabels}` : 'Open dropdown'}
+        />
       );
     },
     items: (
@@ -190,7 +190,7 @@ const MenuMultiProviderWithRefC = (props: React.ComponentProps<typeof MenuMultiP
     notify.info(`Open = ${state.open}, Selected = ${[...state.selected].join(', ') || '(none)'}`);
   };
   const openMenu = () => {
-    ref.current?.requestOpenChange(true);
+    ref.current?.requestOpenChange({ open: true, forced: false });
   };
   const updateSelected = () => {
     ref.current?.requestSelectedChange(new Set(['item-blueberry']));

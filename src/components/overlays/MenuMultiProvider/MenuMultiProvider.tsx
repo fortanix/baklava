@@ -27,7 +27,7 @@ type MenuSelectMultiProps = React.ComponentProps<typeof MenuSelectMulti>;
 
 export type MenuMultiProviderRef = {
   open: boolean,
-  requestOpenChange: (open: boolean) => void,
+  requestOpenChange: (event: OpenChangeEvent) => void,
   selected: SelectedMultiState,
   requestSelectedChange: (selected: SelectedMultiState) => void,
   //anchorEl: null | HTMLElement,
@@ -41,29 +41,7 @@ type UseMenuKeyboardNavigationOptions = {
   menuRef: React.RefObject<null | React.ComponentRef<typeof MenuSelectMulti>>,
 };
 export const useMenuKeyboardNavigation = (props: UseMenuKeyboardNavigationOptions) => {
-  const { setIsOpen, menuRef } = props;
-  const toggleCauseRef = React.useRef<null | 'ArrowUp' | 'ArrowDown'>(null);
-  
-  const onAnchorKeyDown = React.useCallback((event: React.KeyboardEvent) => {
-    if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
-    
-    toggleCauseRef.current = event.key;  // Store how the menu was opened for later use in `handleToggle`
-    event.preventDefault(); // Prevent scrolling
-    setIsOpen(true);
-    
-    // NOTE: need to wait until the list has actually opened
-    // FIXME: need a more reliable way to do this (ref callback?)
-    window.setTimeout(() => {
-      const el = menuRef.current;
-      if (!el) return;
-      
-      if (event.key === 'ArrowDown') {
-        el._bkFocusFirst();
-      } else if (event.key === 'ArrowUp') {
-        el._bkFocusLast();
-      }
-    }, 100);
-  }, [setIsOpen, menuRef.current]);
+  const { setIsOpen } = props;
   
   const onMenuKeyDown = React.useCallback((event: React.KeyboardEvent) => {
     // On "enter", select the currently focused item and close the menu
@@ -75,8 +53,9 @@ export const useMenuKeyboardNavigation = (props: UseMenuKeyboardNavigationOption
     //if (event.key === 'Escape') { setIsOpen(false); }
   }, [setIsOpen]);
   
-  return { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown };
+  return { onMenuKeyDown };
 };
+
 
 /**
  * MENU ANCHOR RENDERING
@@ -197,61 +176,6 @@ export const selectionStateFromItemKey = (itemKey: undefined | null | ItemKey): 
     : new Set([]);
 };
 
-/**
- * MENU LISTBOX TOGGLE
- * ---------------------------------------------------------------------------------------------------------------------
- */
-type UseMenuToggleOptions = {
-  menuRef: React.RefObject<null | React.ComponentRef<typeof MenuSelectMulti>>,
-  previousActiveElementRef: React.RefObject<null | HTMLElement>,
-  action?: undefined | UseFloatingMenuOptions['triggerAction'],
-  toggleCauseRef?: undefined | React.RefObject<null | 'ArrowUp' | 'ArrowDown'>,
-};
-export const useMenuToggle = (options: UseMenuToggleOptions) => {
-  const {
-    menuRef,
-    previousActiveElementRef,
-    action,
-    toggleCauseRef,
-  } = options;
-
-  const handleToggle = React.useCallback((event: React.ToggleEvent) => {
-    const menuElement = menuRef.current;
-    if (!menuElement) return;
-
-    if (event.oldState === 'closed' && event.newState === 'open') {
-      if (document.activeElement instanceof HTMLElement) {
-        previousActiveElementRef.current = document.activeElement;
-      }
-
-      // For click actions, move focus to the list box upon toggling
-      if (action !== 'click') return;
-
-      if (toggleCauseRef?.current === 'ArrowDown') {
-        menuElement._bkFocusFirst();
-      } else if (toggleCauseRef?.current === 'ArrowUp') {
-        menuElement._bkFocusLast();
-      } else {
-        menuElement.focus();
-      }
-
-      if (toggleCauseRef) {
-        toggleCauseRef.current = null;
-      }
-    }
-
-    if (event.oldState === 'open' && event.newState === 'closed') {
-      const previousActiveElement = previousActiveElementRef.current;
-
-      if (previousActiveElement && menuElement.matches(':focus-within')) {
-        previousActiveElement.focus({ focusVisible: false });
-      }
-    }
-  }, [action, menuRef, toggleCauseRef, previousActiveElementRef]);
-
-  return { handleToggle };
-}
-
 
 /**
  * MENU PROVIDER
@@ -359,7 +283,16 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
   );
   
   const trackOpenChange = React.useCallback((event: OpenChangeEvent) => {
-    console.log('open', event);
+    // Timeout to wait for the menu to open
+    setTimeout(() => {
+      if (!event.open) { return; }
+      
+      if (event.reason === 'list-navigation-first') {
+        menuRef.current?._bkFocusFirst();
+      } else if (event.reason === 'list-navigation-last') {
+        menuRef.current?._bkFocusLast();
+      }
+    }, 100);
   }, []);
   
   const {
@@ -396,13 +329,10 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
   
   
   // Keyboard navigation logic
-  // const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen: requestOpenChange, menuRef });
-  const toggleCauseRef = { current: null };
-  const onAnchorKeyDown = () => {};
-  const onMenuKeyDown = () => {};
-  
-  const previousActiveElementRef = React.useRef<HTMLElement>(null);
-  const { handleToggle } = useMenuToggle({ menuRef, action: triggerAction, toggleCauseRef, previousActiveElementRef });
+  const setIsOpen = React.useCallback((open: boolean) => { // FIXME
+    requestOpenChange({ open, forced: false, reason: undefined });
+  }, [requestOpenChange]);
+  const { onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, menuRef });
   
   
   //
@@ -414,10 +344,11 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
     selectedOptions: selectedState,
   }), [selectedState]);
   
+  const onAnchorKeyDown = () => {}; // FIXME
   const { anchor } = useMenuAnchor({
     children,
     isOpen: openState,
-    setIsOpen: requestOpenChange,
+    setIsOpen,
     menuId,
     getReferenceProps,
     refs,
@@ -460,7 +391,6 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
                 floatingProps.ref as React.Ref<React.ComponentRef<typeof MenuSelectMulti>>,
               ),
               onKeyDown: onMenuKeyDown,
-              onToggle: handleToggle,
             },
           )}
           size={menuSize}
@@ -471,7 +401,7 @@ export const MenuMultiProvider = Object.assign((props: MenuMultiProviderProps) =
           data-placement={floatingPlacement}
         >
           {typeof items === 'function'
-            ? items({ close: () => { requestOpenChange(false); } })
+            ? items({ close: () => { setIsOpen(false); } })
             : items
           }
         </MenuSelectMulti>

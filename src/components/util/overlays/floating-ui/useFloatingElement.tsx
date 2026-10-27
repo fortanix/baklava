@@ -48,8 +48,9 @@ import {
 
 export type { Placement };
 
+type FloatingUiOpenChangeReason = Parameters<Required<UseFloatingOptions>['onOpenChange']>[2];
 export type OpenChangeEvent = BaseOpenChangeEvent & {
-  reason?: undefined | 'list-navigation-first' | 'list-navigation-last',
+  reason?: undefined | FloatingUiOpenChangeReason | 'list-navigation-first' | 'list-navigation-last',
 };
 export type OpenStateProps = Omit<BaseOpenStateProps, 'onOpenChange'> & {
   onOpenChange?: undefined | ((event: OpenChangeEvent) => void),
@@ -240,7 +241,7 @@ const useComboBoxInteraction = (context: FloatingContext, options: UseComboBoxOp
     const watcher = new CustomCloseWatcher();
     watcher.onclose = event => {
       // Perform focus restoration back to the anchor (note: in `popover=auto/hint` the browser does this automatically)
-      if (popoverBehavior !== 'manual' && anchorEl instanceof HTMLElement && popoverEl instanceof HTMLElement) {
+      if (popoverBehavior === 'manual' && anchorEl instanceof HTMLElement && popoverEl instanceof HTMLElement) {
         const isFocusInside = document.activeElement instanceof Node
           && (
             (anchorEl instanceof Node && anchorEl.contains(document.activeElement))
@@ -260,14 +261,14 @@ const useComboBoxInteraction = (context: FloatingContext, options: UseComboBoxOp
     };
   }, [enabled, popoverBehavior, context.open, onOpenChange, anchorEl, popoverEl]);
   
-  // Click → open floating element
+  // Click → toggle floating element
   const handleReferenceClick = React.useCallback((event: React.MouseEvent) => {
     if (!enabled) { return; }
     
     // FIXME: when the reference is an editable input, maybe we shouldn't do this and instead open only when focused
     // and the user requests opening through keyboard (arrow keys).
-    onOpenChange(true, event.nativeEvent, 'click');
-  }, [enabled, onOpenChange]);
+    onOpenChange(!context.open, event.nativeEvent, 'click');
+  }, [enabled, context.open, onOpenChange]);
   
   // Arrow keys → open floating element
   const handleReferenceKeyDown = React.useCallback((event: React.KeyboardEvent) => {
@@ -448,7 +449,7 @@ export type UseFloatingElementOptions = OpenStateProps & {
 export type UseFloatingElementResult = {
   context: FloatingContext,
   isOpen: boolean,
-  requestOpenChange: (open: boolean) => void,
+  requestOpenChange: (event: OpenChangeEvent) => void,
   isMounted: boolean,
   refs: ExtendedRefs<ReferenceType>,
   placement: Placement,
@@ -518,6 +519,11 @@ export const useFloatingElement = <E extends HTMLElement>(
   }
   
   // `open` state management
+  type FloatingUiOpenChangeEvent = {
+    isOpen: boolean,
+    event: Event,
+    floatingUiReason: FloatingUiOpenChangeReason,
+  };
   const onOpenChange = React.useCallback<Required<UseFloatingOptions>['onOpenChange']>(
     (isOpen, event, floatingUiReason) => {
       // For form controls (e.g. listbox), 'Enter' key events on the reference element should be ignored, these should
@@ -536,8 +542,8 @@ export const useFloatingElement = <E extends HTMLElement>(
             return 'list-navigation-last';
           }
         }
+        return floatingUiReason;
       })();
-      console.log('xx', floatingUiReason); // FIXME: this is broken right now due to `useControllableState`
       
       // FIXME: `forced` is `true` when it comes from the DOM `ToggleEvent`, but `false` when it comes from an
       // interaction hook. We should determine `forced` based on the value of `event`.
@@ -545,26 +551,59 @@ export const useFloatingElement = <E extends HTMLElement>(
     },
     [opts.keyboardInteractions, opts.onOpenChange],
   );
-  const { state: openState, requestStateChange: requestOpenChange } = useControllableStateFromProps<boolean>(
+  const {
+    state: openState,
+    requestStateChange: requestOpenChange,
+  } = useControllableStateFromProps<boolean, OpenChangeEvent>(
     {
       state: opts.open,
       defaultState: opts.defaultOpen,
-      onStateChange: onOpenChange,
+      onStateChange: opts.onOpenChange,
     },
     {
       debugName: 'useFloatingElement',
       propName: 'open',
       defaultStateFallback: false,
-      stateFromEvent: state => state,
+      stateFromEvent: event => event.open,
     },
   );
   
   // FIXME: if `isPositioned` is `false`, should the floating element be hidden to prevent position flicker?
   
+  const onOpenChangeFloatingUi = React.useCallback<Required<UseFloatingOptions>['onOpenChange']>(
+    (isOpen, event, floatingUiReason) => {
+      // For form controls (e.g. listbox), 'Enter' key events on the reference element should be ignored, these should
+      // instead trigger the default form submit behavior. This holds both when currently open or not open.
+      const shouldIgnoreEnter = opts.keyboardInteractions === 'form-control';
+      const isEnterKeyEvent = event instanceof KeyboardEvent && event.key === 'Enter';
+      if (shouldIgnoreEnter && isEnterKeyEvent) {
+        return;
+      }
+      
+      const reason = ((): OpenChangeEvent['reason'] => {
+        if (floatingUiReason === 'list-navigation' && event instanceof KeyboardEvent) {
+          if (event.key === 'ArrowDown') {
+            return 'list-navigation-first';
+          } else if (event.key === 'ArrowUp') {
+            return 'list-navigation-last';
+          }
+        }
+      })();
+      
+      requestOpenChange({
+        open: isOpen,
+        // FIXME: `forced` is `true` when it comes from the DOM `ToggleEvent`, but `false` when it comes from an
+        // interaction hook. We should determine `forced` based on the value of `event`.
+        forced: true,
+        reason,
+      });
+    },
+    [opts.keyboardInteractions, requestOpenChange],
+  );
   const { context, refs, placement, floatingStyles, isPositioned } = useFloating<E>({
     // Controlled state
     open: openState,
-    onOpenChange: requestOpenChange,
+    onOpenChange: onOpenChangeFloatingUi,
     
     // Options
     placement: opts.placement,
@@ -674,7 +713,7 @@ export const useFloatingElement = <E extends HTMLElement>(
   return {
     context,
     isOpen: context.open,
-    requestOpenChange: requestOpenChange,
+    requestOpenChange,
     isMounted,
     refs,
     placement,
