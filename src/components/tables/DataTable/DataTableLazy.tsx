@@ -295,6 +295,8 @@ export const DataTableLazy = <D extends object>({
               </Button>
             </PlaceholderEmptyAction>
           }
+          id="data-table"
+          role="alert"
         />
       }
       {...propsRest}

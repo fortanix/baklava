@@ -443,6 +443,7 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
         <table
           {...table.getTableProps()}
           className={cx(cl['bk-data-table__table'], props.className)}
+          aria-describedby="data-table"
         >
           {customColGroup}
           

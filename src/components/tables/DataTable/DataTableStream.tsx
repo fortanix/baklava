@@ -531,6 +531,8 @@ export const DataTableStream = <D extends object>({
               </Button>
             </PlaceholderEmptyAction>
           }
+          id="data-table"
+          role="alert"
         />
       }
       placeholderEndOfTable={
