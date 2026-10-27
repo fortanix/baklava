@@ -97,12 +97,12 @@ describe('usePopover', () => {
   
   describe('popoverProps', () => {
     it('defaults `popover` behavior to "auto"', () => {
-      render(<TestPopover controller={{ openDefault: false }} />);
+      render(<TestPopover controller={{ defaultOpen: false }} />);
       expect(getPopover().getAttribute('popover')).toBe('auto');
     });
     
     it('respects a custom `popoverBehavior`', () => {
-      render(<TestPopover controller={{ openDefault: false }} options={{ popoverBehavior: 'manual' }} />);
+      render(<TestPopover controller={{ defaultOpen: false }} options={{ popoverBehavior: 'manual' }} />);
       expect(getPopover().getAttribute('popover')).toBe('manual');
     });
     
@@ -133,18 +133,18 @@ describe('usePopover', () => {
       expect(isOpen()).toBe(false);
     });
     
-    it('opens on mount when `openDefault` is `true`', () => {
-      render(<TestPopover controller={{ openDefault: true }} />);
+    it('opens on mount when `defaultOpen` is `true`', () => {
+      render(<TestPopover controller={{ defaultOpen: true }} />);
       expect(togglePopoverSpy).toHaveBeenCalledTimes(1);
       expect(togglePopoverSpy).toHaveBeenCalledWith({ force: true });
       expect(isOpen()).toBe(true);
     });
     
-    it('only applies `openDefault` once', () => {
-      const { rerender } = render(<TestPopover controller={{ openDefault: true }} />);
+    it('only applies `defaultOpen` once', () => {
+      const { rerender } = render(<TestPopover controller={{ defaultOpen: true }} />);
       expect(togglePopoverSpy).toHaveBeenCalledTimes(1);
       
-      rerender(<TestPopover controller={{ openDefault: false }} />);
+      rerender(<TestPopover controller={{ defaultOpen: false }} />);
       expect(togglePopoverSpy).toHaveBeenCalledTimes(1);
       expect(isOpen()).toBe(true);
     });
@@ -152,12 +152,12 @@ describe('usePopover', () => {
     it('does not re-open after the user dismissed it', () => {
       const sourceA = createSource();
       const sourceB = createSource();
-      const { rerender } = render(<TestPopover controller={{ openDefault: true, source: sourceA }} />);
+      const { rerender } = render(<TestPopover controller={{ defaultOpen: true, source: sourceA }} />);
       expect(isOpen()).toBe(true);
       
       // Simulate a light dismiss, then force the ref callback to run again by changing one of its dependencies
       openPopovers.delete(getPopover());
-      rerender(<TestPopover controller={{ openDefault: true, source: sourceB }} />);
+      rerender(<TestPopover controller={{ defaultOpen: true, source: sourceB }} />);
       
       expect(togglePopoverSpy).toHaveBeenCalledTimes(1);
       expect(isOpen()).toBe(false);
@@ -318,7 +318,7 @@ describe('usePopover', () => {
     
     it('does not warn for uncontrolled usage', () => {
       const consoleWarn = vi.spyOn(console, 'warn').mockImplementation(() => {});
-      render(<TestPopover controller={{ openDefault: true }} />);
+      render(<TestPopover controller={{ defaultOpen: true }} />);
       expect(consoleWarn).not.toHaveBeenCalled();
     });
   });
@@ -346,7 +346,7 @@ describe('usePopover', () => {
     
     it('also reports toggle events for uncontrolled popovers', () => {
       const onOpenChange = vi.fn<(event: OpenChangeEvent) => void>();
-      render(<TestPopover controller={{ openDefault: true, onOpenChange }} />);
+      render(<TestPopover controller={{ defaultOpen: true, onOpenChange }} />);
       
       fireToggle(getPopover(), 'closed');
       
@@ -364,7 +364,7 @@ describe('usePopover', () => {
     });
     
     it('does not throw when there is no `onOpenChange` handler', () => {
-      render(<TestPopover controller={{ openDefault: true }} />);
+      render(<TestPopover controller={{ defaultOpen: true }} />);
       expect(() => fireToggle(getPopover(), 'closed')).not.toThrow();
     });
     

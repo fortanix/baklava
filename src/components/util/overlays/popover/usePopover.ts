@@ -20,7 +20,7 @@ export type OpenStateProps = {
   /** Whether the popover should currently be `open`. If `undefined`, the state is considered uncontrolled. */
   open?: undefined | boolean,
   /** If uncontrolled, what the default `open` state should be. Default: `false`. */
-  openDefault?: undefined | boolean,
+  defaultOpen?: undefined | boolean,
   /** Callback that is called when the `open` state changes. */
   onOpenChange?: undefined | ((event: OpenChangeEvent) => void),
 };
@@ -137,11 +137,11 @@ export const usePopover = <E extends HTMLElement = HTMLElement>(
       updatePopoverElement({
         popoverEl: ref,
         sourceEl: controller.source ?? null,
-        shouldBeOpen: controller.openDefault ?? false,
+        shouldBeOpen: controller.defaultOpen ?? false,
       });
       hasInitialized.current = true;
     }
-  }, [controller.source, controller.open, controller.openDefault]);
+  }, [controller.source, controller.open, controller.defaultOpen]);
   
   // Track toggle events (i.e. user events that change the popover state, e.g. light dismiss for `popover="auto"`)
   const handlePopoverToggle = React.useCallback<React.ToggleEventHandler<E>>(event => {
