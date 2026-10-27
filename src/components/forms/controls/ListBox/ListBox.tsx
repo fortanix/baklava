@@ -32,8 +32,11 @@ export { cl as ListBoxClassNames };
 export { type ItemKey, type SelectedState, useListBoxItem, useListBoxSelector };
 
 export type SelectedStateProps = {
+  /** The currently selected option. If `undefined`, this component will be considered uncontrolled. */
   selected?: undefined | SelectedState,
+  /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
   defaultSelected?: undefined | SelectedState,
+  /** Event handler to be called when the selected option state changes. */
   onSelectedChange?: undefined | ((selected: SelectedState) => void),
 };
 

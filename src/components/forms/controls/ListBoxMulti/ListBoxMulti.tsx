@@ -32,8 +32,11 @@ export { cl as ListBoxMultiClassNames };
 export { type ItemKey, type SelectedState, useListBoxMultiItem, useListBoxMultiSelector };
 
 export type SelectedStateProps = {
+  /** The currently selected options. If `undefined`, this component will be considered uncontrolled. */
   selected?: undefined | SelectedState,
+  /** The default options to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
   defaultSelected?: undefined | SelectedState,
+  /** Event handler to be called when the selected options state changes. */
   onSelectedChange?: undefined | ((selected: SelectedState) => void),
 };
 
@@ -185,7 +188,7 @@ export const ListBoxMulti = Object.assign(
     });
     const collEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
     const isEmpty = typeof empty === 'boolean' ? empty : collEmpty;
-        
+    
     const listBoxRef = React.useRef<React.ComponentRef<typeof MenuList>>(null);
     const collectionFocusItemAt = useStore(store, state => state.collectionFocusItemAt);
     // Note: needs the explicit generics since `Ref<T>` has some special handling of `null` that messes with inference
