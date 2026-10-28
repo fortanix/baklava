@@ -3,6 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
+import { mergeProps } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../../util/componentUtil.ts';
 import type * as ReactTable from 'react-table';
 
@@ -161,7 +162,6 @@ export type DataTableProps<D extends object> = Omit<ComponentProps<'table'>, 'pl
   endOfTablePlaceholder?: React.ReactNode,
   expandableRow?: ExpandableRowProps<D>,
   highlightedRowId?: string | undefined,
-  ariaDescribedBy?: string | undefined,
   children?: React.ReactNode,
 };
 
@@ -346,7 +346,6 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
     expandableRow,
     children,
     highlightedRowId,
-    ariaDescribedBy,
     ...propsRest
   } = props;
   const [expandedRowIdsInternal, setExpandedRowIdsInternal] = React.useState<Array<string>>([]);
@@ -443,9 +442,11 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
         )}
       >
         <table
-          {...table.getTableProps()}
-          className={cx(cl['bk-data-table__table'], props.className)}
-          {...ariaDescribedBy ? { 'aria-describedby': ariaDescribedBy } : {}}
+          {...mergeProps(
+            table.getTableProps(),
+            { className: cx(cl['bk-data-table__table']) },
+            propsRest,
+          )}
         >
           {customColGroup}
           
@@ -613,7 +614,6 @@ export type DataTableAsyncProps<D extends object> = DataTableProps<D> & {
   placeholderEmpty?: React.ReactNode,
   placeholderError?: React.ReactNode,
   placeholderEndOfTable?: React.ReactNode,
-  ariaDescribedBy?: string,
   children?: React.ReactNode,
 };
 export const DataTableAsync = <D extends object>(props: DataTableAsyncProps<D>) => {
@@ -625,7 +625,6 @@ export const DataTableAsync = <D extends object>(props: DataTableAsyncProps<D>) 
     placeholderEmpty = <DataTablePlaceholderEmpty />,
     placeholderError = <DataTablePlaceholderError />,
     placeholderEndOfTable,
-    ariaDescribedBy,
     children,
     ...propsRest
   } = props;
@@ -660,7 +659,6 @@ export const DataTableAsync = <D extends object>(props: DataTableAsyncProps<D>) 
         className={props.classNameTable}
         placeholder={renderPlaceholder()}
         endOfTablePlaceholder={placeholderEndOfTable}
-        ariaDescribedBy={ariaDescribedBy}
       />
     </div>
   );

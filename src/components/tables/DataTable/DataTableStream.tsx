@@ -542,7 +542,7 @@ export const DataTableStream = <D extends object>({
           ? placeholderEndOfTable
           : undefined
       }
-      ariaDescribedBy={ariaDescribedBy}
+      aria-describedby={ariaDescribedBy}
       {...propsRest}
     >
       {showLoadingIndicator && <Spinner size="large" className={cx(cl['table-spinner'])}/>}

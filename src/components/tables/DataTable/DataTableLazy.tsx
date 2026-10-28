@@ -301,7 +301,7 @@ export const DataTableLazy = <D extends object>({
           role="alert"
         />
       }
-      ariaDescribedBy={ariaDescribedBy}
+      aria-describedby={ariaDescribedBy}
       {...propsRest}
     >
       {showLoadingIndicator && <Spinner size="large" className={cx(cl['table-spinner'])}/>}
