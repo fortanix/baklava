@@ -276,6 +276,9 @@ export const DataTableLazy = <D extends object>({
   const footerDefault = isEmpty ? null : <Pagination/>;
   const footerWithFallback = typeof footer === 'undefined' ? footerDefault : footer;
   
+  const isFailed = status.error !== null;
+  const errorId = `${React.useId()}__data-table-error`;
+  
   return (
     <DataTableAsync
       className={cx(
@@ -295,8 +298,11 @@ export const DataTableLazy = <D extends object>({
               </Button>
             </PlaceholderEmptyAction>
           }
+          id={errorId}
+          role="alert"
         />
       }
+      {...isFailed ? { 'aria-describedby': errorId } : {}}
       {...propsRest}
     >
       {showLoadingIndicator && <Spinner size="large" className={cx(cl['table-spinner'])}/>}
