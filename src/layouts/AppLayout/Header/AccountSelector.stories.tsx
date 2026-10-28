@@ -89,7 +89,14 @@ export const AccountSelectorControlled: Story = {
   render: args => <AccountSelectorControlledC {...args}/>,
 };
 
-const AccountSelectorControllerCustomImageC = () => {
+const CustomImage = (id: string) => () => (
+  <img
+    src={`https://picsum.photos/id/${id}/200/300`}
+    // consumer should be responsible of providing a sensible styling
+    style={{objectFit: 'cover', inlineSize: '1.3em', blockSize: '1.3em'}}
+  />
+);
+const AccountSelectorControlledCustomImageC = () => {
   const [selected, setSelected] = React.useState<null | ItemKey>('account_2');
   
   return (
@@ -107,7 +114,7 @@ const AccountSelectorControllerCustomImageC = () => {
             // TODO: `icon` should not be needed when a custom `Icon` is used.
             // Revisit this custom icon condition once this PR is merged:
             // https://github.com/fortanix/baklava/pull/686.
-            Icon={() => <img src={`https://picsum.photos/id/${name.replace('Account ', '')}/200/300`}/>}
+            Icon={CustomImage(name.replace('Account ', ''))}
             icon="account"
           />
         )
@@ -118,5 +125,5 @@ const AccountSelectorControllerCustomImageC = () => {
   );
 };
 export const AccountSelectorControlledCustomImage: Story = {
-  render: args => <AccountSelectorControllerCustomImageC {...args}/>,
+  render: args => <AccountSelectorControlledCustomImageC {...args}/>,
 };

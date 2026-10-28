@@ -155,6 +155,13 @@ export const MenuProviderControlledWithDefault: Story = {
   render: args => <MenuProviderControlledC {...args} defaultSelected="item-blueberry"/>,
 };
 
+const CustomImage = (id: number) => () => (
+  <img
+    src={`https://picsum.photos/id/${id}/200/300`}
+    // consumer should be responsible of providing a sensible styling
+    style={{objectFit: 'cover', inlineSize: '1.3em', blockSize: '1.3em'}}
+  />
+);
 export const MenuWithCustomIcons: Story = {
   args: {
     items: (
@@ -167,7 +174,7 @@ export const MenuWithCustomIcons: Story = {
             // TODO: `icon` should not be needed when a custom `Icon` is used.
             // Revisit this custom icon condition once this PR is merged:
             // https://github.com/fortanix/baklava/pull/686
-            Icon={() => <img src={`https://picsum.photos/id/${index + 1}/200/300`}/>}
+            Icon={CustomImage(index)}
             icon="account"
           />
         )}

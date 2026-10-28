@@ -166,19 +166,22 @@ export const ListBoxWithCustomIcon: Story = {
   },
 };
 
-const CustomImage1 = (props: React.ComponentProps<typeof Icon>) =>
-  <img src={`https://picsum.photos/id/1/200/300`}/>;
-const CustomImage2 = (props: React.ComponentProps<typeof Icon>) =>
-  <img src={`https://picsum.photos/id/2/200/300`}/>;
+const CustomImage = (id: number) => () => (
+  <img
+    src={`https://picsum.photos/id/${id}/200/300`}
+    // consumer should be responsible of providing a sensible styling
+    style={{objectFit: 'cover', inlineSize: '1.3em', blockSize: '1.3em'}}
+  />
+);
 export const ListBoxWithCustomImage: Story = {
   args: {
     children: (
       <>
-          {/* TODO: `icon` should not be needed when a custom `Icon` is used.
-          Revisit this custom icon condition once this PR is merged:
-          https://github.com/fortanix/baklava/pull/686 */}
-        <ListBox.Option Icon={CustomImage1} itemKey="option-1" icon="account" label="Option with an icon"/>
-        <ListBox.Option Icon={CustomImage2} itemKey="option-2" icon="account" label="Another option"/>
+        {/* TODO: `icon` should not be needed when a custom `Icon` is used.
+        Revisit this custom icon condition once this PR is merged:
+        https://github.com/fortanix/baklava/pull/686 */}
+        <ListBox.Option Icon={CustomImage(1)} itemKey="option-1" icon="account" label="Option with an icon"/>
+        <ListBox.Option Icon={CustomImage(2)} itemKey="option-2" icon="account" label="Another option"/>
       </>
     ),
   },

@@ -127,9 +127,6 @@ export const Option = (props: OptionProps) => {
       className={cx(
         { [cl['bk-list-box__item']]: !unstyled },
         { [cl['bk-list-box__item--disabled']]: isNonactive },
-        // TODO: Revisit this custom icon condition once this PR is merged:
-        // https://github.com/fortanix/baklava/pull/686
-        { [cl['bk-list-box__item--custom-icon']]: Icon !== BkIcon },
         cl['bk-list-box__item--option'],
         propsRest.className,
       )}
