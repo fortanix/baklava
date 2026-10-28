@@ -512,6 +512,8 @@ export const DataTableStream = <D extends object>({
     );
   const footerWithFallback = typeof footer === 'undefined' ? footerDefault : footer;
 
+  const ariaDescribedBy = `${React.useId()}__data-table`;
+
   return (
     <DataTableAsync
       className={cx(
@@ -531,7 +533,7 @@ export const DataTableStream = <D extends object>({
               </Button>
             </PlaceholderEmptyAction>
           }
-          id="data-table"
+          id={ariaDescribedBy}
           role="alert"
         />
       }
@@ -540,6 +542,7 @@ export const DataTableStream = <D extends object>({
           ? placeholderEndOfTable
           : undefined
       }
+      ariaDescribedBy={ariaDescribedBy}
       {...propsRest}
     >
       {showLoadingIndicator && <Spinner size="large" className={cx(cl['table-spinner'])}/>}

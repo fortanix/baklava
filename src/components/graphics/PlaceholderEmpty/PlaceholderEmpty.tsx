@@ -51,7 +51,6 @@ export const PlaceholderEmpty = (props: PlaceholderEmptyProps) => {
     children,
     ...propsRest
   } = props;
-  
   return (
     <div
       {...propsRest}
