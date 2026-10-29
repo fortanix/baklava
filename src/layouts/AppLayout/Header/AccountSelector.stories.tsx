@@ -41,7 +41,7 @@ export const AccountSelectorStandard: Story = {
         </AccountSelector.FooterActions>
       </>
     ),
-    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label
+    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label,
   },
 };
 
@@ -58,7 +58,7 @@ export const AccountSelectorWithOverflow: Story = {
         </AccountSelector.FooterActions>
       </>
     ),
-    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label
+    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label,
   },
 };
 
@@ -87,4 +87,43 @@ const AccountSelectorControlledC = () => {
 };
 export const AccountSelectorControlled: Story = {
   render: args => <AccountSelectorControlledC {...args}/>,
+};
+
+const CustomImage = (id: string) => () => (
+  <img
+    src={`https://picsum.photos/id/${id}/200/300`}
+    // consumer should be responsible of providing a sensible styling
+    style={{objectFit: 'cover', inlineSize: '1.3em', blockSize: '1.3em'}}
+  />
+);
+const AccountSelectorControlledCustomImageC = () => {
+  const [selected, setSelected] = React.useState<null | ItemKey>('account_2');
+  
+  return (
+    <AccountSelector
+      selected={selected}
+      onSelect={setSelected}
+      formatItemLabel={accountKey => accountKey.replace('account_', 'Account ')}
+      selectedIcon={<img src={`https://picsum.photos/id/${(selected || '').replace('account_', '')}/200/300`}/>}
+      accounts={
+        Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map((name, index) =>
+          <AccountSelector.Option
+            key={`account_${index + 1}`}
+            itemKey={`account_${index + 1}`}
+            label={name}
+            // TODO: `icon` should not be needed when a custom `Icon` is used.
+            // Revisit this custom icon condition once this PR is merged:
+            // https://github.com/fortanix/baklava/pull/686.
+            Icon={CustomImage(name.replace('Account ', ''))}
+            icon="account"
+          />
+        )
+      }
+    >
+      {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label}
+    </AccountSelector>
+  );
+};
+export const AccountSelectorControlledCustomImage: Story = {
+  render: args => <AccountSelectorControlledCustomImageC {...args}/>,
 };

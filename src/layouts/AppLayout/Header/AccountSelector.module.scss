@@ -32,6 +32,15 @@
       padding: 0.7em;
     }
     
+    .bk-account-selector__custom-icon {
+      inline-size: bk.$spacing-9;
+      block-size: bk.$spacing-9;
+      
+      // TODO: Double check with UX team if we should make it manually a circle or if we leave it as a square
+      border-radius: bk.$border-radius-circle;
+      overflow: hidden;
+    }
+    
     .bk-account-selector__label {
       @include bk.text-one-line;
     }
