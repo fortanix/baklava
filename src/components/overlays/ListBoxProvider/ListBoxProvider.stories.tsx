@@ -105,34 +105,9 @@ export const ListBoxProviderWithPlacement: Story = {
   },
 };
 
-export const ListBoxProviderWithAction: Story = {
-  args: {
-    items: ({ close }) => (
-      <>
-        <ListBoxProvider.Option itemKey="option-1" label="Option 1"/>
-        <ListBoxProvider.Option itemKey="option-2" label="Option 2"/>
-      </>
-    ),
-  },
-};
-
-export const ListBoxProviderWithClickTrigger: Story = {
-  args: {
-    triggerAction: 'click',
-  },
-};
-
-export const ListBoxProviderWithFocusTrigger: Story = {
-  args: {
-    triggerAction: 'focus',
-  },
-};
-
-export const ListBoxProviderWithHoverTrigger: Story = {
-  args: {
-    triggerAction: 'hover',
-  },
-};
+export const ListBoxProviderWithClickTrigger: Story = { args: { triggerAction: 'click' } };
+export const ListBoxProviderWithFocusTrigger: Story = { args: { triggerAction: 'focus' } };
+export const ListBoxProviderWithHoverTrigger: Story = { args: { triggerAction: 'hover' } };
 
 const ListBoxProviderControlledC = ({ defaultSelected, ...props }: React.ComponentProps<typeof ListBoxProvider>) => {
   const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>(defaultSelected ?? null);

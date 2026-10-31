@@ -3,110 +3,115 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-
-// Utils
-import { mergeProps, mergeRefs } from '../../../util/reactUtil.ts';
-import {
-  type UseFloatingElementOptions,
-} from '../../util/overlays/floating-ui/useFloatingElement.tsx';
+import { classNames as cx } from '../../../util/componentUtil.ts';
+import { mergeCallbacks, mergeRefs, mergeProps } from '../../../util/reactUtil.ts';
+import { useControllableStateFromProps } from '../../../util/hooks/useControllableState.ts';
 
 // Components
 import { type ItemKey, type SelectedState, ListBoxMulti } from '../../forms/controls/ListBoxMulti/ListBoxMulti.tsx';
 import {
-  type MenuProviderRef,
+  type OpenStateProps,
+  type OpenChangeEvent,
+  type UseFloatingMenuOptions,
+  useFloatingMenu,
   type BaseAnchorRenderArgs,
-  //useFloatingMenu,
   useMenuAnchor,
-  //useMenuImperativeRef,
-  useMenuKeyboardNavigation,
-  //useMenuOpenControl,
-  //useMenuSelect,
-  useMenuToggle,
-} from '../MenuMultiProvider/MenuMultiProvider.tsx';
+} from '../../util/overlays/menu/menuUtil.tsx';
 
 // Styles
-//import cl from './ListBoxMultiProvider.module.scss';
+import cl from './ListBoxMultiProvider.module.scss';
 
 
-//export { cl as ListBoxMultiProviderClassNames };
-export type { ItemKey, SelectedState, MenuProviderRef as ListBoxMultiProviderRef };
+export type { ItemKey, SelectedState };
 
-type ListBoxMultiProps = React.ComponentProps<typeof ListBoxMulti>;
-
+export type ListBoxMultiProviderRef = {
+  open: boolean,
+  requestOpenChange: (event: OpenChangeEvent) => void,
+  selected: SelectedState,
+  requestSelectedChange: (selected: SelectedState) => void,
+  // FIXME: include these?
+  //anchorEl: null | HTMLElement,
+  //floatingEl: null | HTMLElement,
+};
 
 export type AnchorRenderArgs = BaseAnchorRenderArgs & {
   selectedOptions: SelectedState,
 };
-export type ListBoxMultiProviderProps = Omit<ListBoxMultiProps, 'ref' | 'children' | 'label' | 'size'> & {
-  /** A React ref to control the menu provider imperatively. */
-  ref?: undefined | React.Ref<null | MenuProviderRef>,
-  /** For controlled open state. */
-  open?: undefined | boolean,
-  /** When controlled, callback to set state. */
-  onOpenChange?: undefined | ((isOpen: boolean) => void),
-  /** Use an existing DOM node as the positioning anchor. Optional. */
-  anchorRef?: undefined | React.RefObject<null | HTMLElement>,
-  
-  /** An accessible name for this menu provider. Required. */
-  label: string,
-  
-  /**
-  * The content to render, which should contain the anchor. This should be a render prop which takes props to
-  * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
-  */
-  children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode,
-  
-  /** The menu items. */
-  items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode),
-  
-  /** The accessible role of the menu. */
-  role?: undefined | UseFloatingElementOptions['role'],
-  
-  /** The action that should trigger the menu to open. */
-  triggerAction?: undefined | UseFloatingElementOptions['triggerAction'],
-  
-  /** The (inline) size of the menu. */
-  menuSize?: ListBoxMultiProps['size'],
-  
-  /**
-   * The kind of keyboard interactions to include:
-   * - 'none': No keyboard interactions set.
-   * - 'form-control': Appropriate keyboard interactions for a form control (e.g. Enter should trigger submit).
-   * - 'default': Acts as a menu button [1] (e.g. Enter will activate the popover).
-   *   [1] https://www.w3.org/WAI/ARIA/apg/patterns/menu-button
-   */
-  keyboardInteractions?: undefined | UseFloatingElementOptions['keyboardInteractions'],
-  
-  /** Override the default placement */
-  placement?: undefined | UseFloatingElementOptions['placement'],
-  
-  /** Offset size for the menu relative to the anchor. */
-  offset?: undefined | UseFloatingElementOptions['offset'],
-  
-  /** Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
-  enablePreciseTracking?: undefined | UseFloatingElementOptions['enablePreciseTracking'],
-};
+export type ListBoxMultiProviderProps =
+  Omit<React.ComponentProps<typeof ListBoxMulti>, 'ref' | 'children' | 'label' | 'size'>
+  & OpenStateProps
+  & {
+    /** A React ref to control the menu provider imperatively. */
+    ref?: undefined | React.Ref<null | ListBoxMultiProviderRef>,
+    
+    /** Use an existing DOM node as the positioning anchor. Optional. */
+    anchorRef?: undefined | React.RefObject<null | HTMLElement>,
+    
+    /** An accessible name for this menu provider. Required. */
+    label: string,
+    
+    /**
+    * The content to render, which should contain the anchor. This should be a render prop which takes props to
+    * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
+    */
+    children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode,
+    
+    /** The menu items. */
+    items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode),
+    
+    /** The accessible role of the menu. */
+    role?: undefined | UseFloatingMenuOptions['role'],
+    
+    /** The action that should trigger the menu to open. */
+    triggerAction?: undefined | UseFloatingMenuOptions['triggerAction'],
+    
+    /** The (inline) size of the menu. */
+    menuSize?: React.ComponentProps<typeof ListBoxMulti>['size'],
+    
+    /**
+     * The kind of keyboard interactions to include:
+     * - 'none': No keyboard interactions set.
+     * - 'form-control': Appropriate keyboard interactions for a form control (e.g. Enter should trigger submit).
+     * - 'default': Acts as a menu button [1] (e.g. Enter will activate the popover).
+     *   [1] https://www.w3.org/WAI/ARIA/apg/patterns/menu-button
+     */
+    keyboardInteractions?: undefined | UseFloatingMenuOptions['keyboardInteractions'],
+    
+    /** Override the default placement */
+    placement?: undefined | UseFloatingMenuOptions['placement'],
+    
+    /** Offset size for the menu relative to the anchor. */
+    offset?: undefined | UseFloatingMenuOptions['offset'],
+    
+    /** The popover behavior for the menu popover. Default: `"manual"`. */
+    popoverBehavior?: undefined | UseFloatingMenuOptions['popoverBehavior'],
+    
+    /** Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
+    enablePreciseTracking?: undefined | UseFloatingMenuOptions['enablePreciseTracking'],
+  };
 export const ListBoxMultiProvider = Object.assign((props: ListBoxMultiProviderProps) => {
   const {
-    ref,
-    open,
-    onOpenChange,
-    anchorRef,
-    
-    label,
-    children,
-    items,
     defaultSelected,
     selected,
     onSelectedChange,
-    role = 'menu',
-    triggerAction,
+    open,
+    defaultOpen,
+    onOpenChange,
+    
+    ref,
+    anchorRef,
+    label,
+    children,
+    items,
     menuSize,
     
     // Floating element props
+    role = 'listbox',
+    triggerAction,
     keyboardInteractions,
     placement,
     offset,
+    popoverBehavior,
     enablePreciseTracking,
     
     ...propsRest
@@ -114,12 +119,25 @@ export const ListBoxMultiProvider = Object.assign((props: ListBoxMultiProviderPr
   
   const menuId = React.useId();
   const menuRef = React.useRef<React.ComponentRef<typeof ListBoxMulti>>(null);
-  const previousActiveElementRef = React.useRef<HTMLElement>(null);
+  
+  const trackOpenChange = React.useCallback((event: OpenChangeEvent) => {
+    // Timeout to wait for the menu to render (and `menuRef` to be populated)
+    window.setTimeout(() => {
+      if (!event.open) { return; }
+      
+      // If the menu opened due to a `list-navigation` event, auto-focus the relevant item
+      if (event.reason === 'list-navigation-first') {
+        menuRef.current?._bkFocusFirst();
+      } else if (event.reason === 'list-navigation-last') {
+        menuRef.current?._bkFocusLast();
+      }
+    }, 0);
+  }, []);
   
   const {
     isMounted,
-    isOpen,
-    setIsOpen,
+    isOpen: openState,
+    requestOpenChange,
     refs,
     getReferenceProps,
     getFloatingProps,
@@ -127,46 +145,62 @@ export const ListBoxMultiProvider = Object.assign((props: ListBoxMultiProviderPr
     placement: floatingPlacement,
   } = useFloatingMenu({
     role,
+    popoverBehavior,
     triggerAction,
     keyboardInteractions,
     placement,
     offset,
     enablePreciseTracking,
     open,
-    onOpenChange,
+    onOpenChange: mergeCallbacks([onOpenChange, trackOpenChange]),
   });
+  
+  // Track `selected` state
+  const {
+    state: selectedState,
+    requestStateChange: requestSelectedChange,
+  } = useControllableStateFromProps<SelectedState>(
+    {
+      state: selected,
+      defaultState: defaultSelected,
+      onStateChange: onSelectedChange,
+    },
+    {
+      debugName: 'ListBoxMultiProvider',
+      propName: 'selected',
+      stateFromEvent: state => state,
+      defaultStateFallback: new Set(),
+    },
+  );
   
   // Allow passing a ref to control the state of the menu imperatively
-  useMenuImperativeRef({ ref, floatingRef: refs.floating, isOpen, setIsOpen });
+  React.useImperativeHandle(ref, () => ({
+    open: openState,
+    requestOpenChange,
+    selected: selectedState,
+    requestSelectedChange,
+    // FIXME: also expose the element references?
+    //get anchorEl() { return anchorRef.current; },
+    //get floatingEl() { return floatingRef.current; },
+  }), [openState, requestOpenChange, selectedState, requestSelectedChange]);
   
-  // Controlled/uncontrolled state logic
-  useMenuOpenControl({ setIsOpen, open });
   
-  // Keyboard navigation logic
-  const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, menuRef });
+  //
+  // Rendering
+  //
   
-  const { handleToggle } = useMenuToggle({ menuRef, action: triggerAction, toggleCauseRef, previousActiveElementRef });
+  const getRenderArgs = React.useCallback((base: BaseAnchorRenderArgs): AnchorRenderArgs => ({
+    ...base,
+    selectedOptions: selectedState,
+  }), [selectedState]);
   
-  const { internalSelected, handleInternalSelect } = useMenuSelect({
-    previousActiveElementRef,
-    setIsOpen,
-    triggerAction,
-    selected,
-    defaultSelected,
-    canCloseMenu: false,
-  });
-  
-  const getRenderArgs = React.useCallback((base: BaseAnchorRenderArgs): AnchorRenderArgs => {
-    return { ...base, selectedOptions: internalSelected };
-  }, [internalSelected]);
   const { anchor } = useMenuAnchor({
     children,
-    isOpen,
-    setIsOpen,
+    isOpen: openState,
+    requestOpenChange,
     menuId,
     getReferenceProps,
     refs,
-    onKeyDown: onAnchorKeyDown,
     getRenderArgs,
   });
   
@@ -178,19 +212,9 @@ export const ListBoxMultiProvider = Object.assign((props: ListBoxMultiProviderPr
   }, [anchorRef, refs]);
   
   const floatingProps = getFloatingProps({
-    popover: 'manual',
     style: floatingStyles,
-    //className: cx(cl['bk-menu-provider__list-box']),
+    className: cx(cl['bk-list-box-multi-provider__popover']),
   });
-  
-  const selectedFromInternalSelected = React.useMemo(() => {
-    return new Set(internalSelected.keys()); // 'null' for controlled
-  }, [internalSelected]);
-  
-  const handleSelect = React.useCallback((selectedKeys: Set<ItemKey>) => {
-    onSelectedChange?.(selectedKeys);
-    handleInternalSelect(selectedKeys);
-  }, [onSelectedChange, handleInternalSelect]);
   
   return (
     <>
@@ -200,25 +224,17 @@ export const ListBoxMultiProvider = Object.assign((props: ListBoxMultiProviderPr
           {...mergeProps(
             floatingProps,
             propsRest,
-            {
-              ref: mergeRefs<React.ComponentRef<typeof ListBoxMulti>>(
-                menuRef,
-                refs.setFloating,
-                floatingProps.ref as React.Ref<React.ComponentRef<typeof ListBoxMulti>>,
-              ),
-              onKeyDown: onMenuKeyDown,
-              onToggle: handleToggle,
-            },
+            { ref: mergeRefs<React.ComponentRef<typeof ListBoxMulti>>(menuRef, refs.setFloating) },
           )}
           size={menuSize}
           label={label}
-          selected={selectedFromInternalSelected}
+          selected={selectedState}
           defaultSelected={defaultSelected}
-          onSelectedChange={handleSelect}
+          onSelectedChange={requestSelectedChange}
           data-placement={floatingPlacement}
         >
           {typeof items === 'function'
-            ? items({ close: () => { setIsOpen(false); } })
+            ? items({ close: () => { requestOpenChange({ open: false }); } })
             : items
           }
         </ListBoxMulti>

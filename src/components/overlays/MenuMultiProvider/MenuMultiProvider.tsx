@@ -24,8 +24,6 @@ import cl from './MenuMultiProvider.module.scss';
 
 export type { ItemKey };
 
-type MenuSelectMultiProps = React.ComponentProps<typeof MenuSelectMulti>;
-
 export type MenuMultiProviderRef = {
   open: boolean,
   requestOpenChange: (event: OpenChangeEvent) => void,
@@ -40,7 +38,7 @@ export type AnchorRenderArgs = BaseAnchorRenderArgs & {
   selectedOptions: SelectedMultiState,
 };
 export type MenuMultiProviderProps =
-  Omit<MenuSelectMultiProps, 'ref' | 'children' | 'label' | 'size'>
+  Omit<React.ComponentProps<typeof MenuSelectMulti>, 'ref' | 'children' | 'label' | 'size'>
   & OpenStateProps
   & {
     /** A React ref to control the menu provider imperatively. */
@@ -68,7 +66,7 @@ export type MenuMultiProviderProps =
     triggerAction?: undefined | UseFloatingMenuOptions['triggerAction'],
     
     /** The (inline) size of the menu. */
-    menuSize?: MenuSelectMultiProps['size'],
+    menuSize?: React.ComponentProps<typeof MenuSelectMulti>['size'],
     
     /**
      * The kind of keyboard interactions to include:
@@ -173,7 +171,7 @@ export const MenuMultiProvider = Object.assign(
       },
       {
         debugName: 'MenuMultiProvider',
-        propName: 'filter',
+        propName: 'selected',
         defaultStateFallback: new Set(),
         stateFromEvent: state => state,
       },

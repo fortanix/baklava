@@ -109,34 +109,9 @@ export const ListBoxMultiProviderWithPlacement: Story = {
   },
 };
 
-export const ListBoxMultiProviderWithAction: Story = {
-  args: {
-    items: ({ close }) => (
-      <>
-        <ListBoxMultiProvider.Option itemKey="option-1" label="Option 1"/>
-        <ListBoxMultiProvider.Option itemKey="option-2" label="Option 2"/>
-      </>
-    ),
-  },
-};
-
-export const ListBoxMultiProviderWithClickTrigger: Story = {
-  args: {
-    triggerAction: 'click',
-  },
-};
-
-export const ListBoxMultiProviderWithFocusTrigger: Story = {
-  args: {
-    triggerAction: 'focus',
-  },
-};
-
-export const ListBoxMultiProviderWithHoverTrigger: Story = {
-  args: {
-    triggerAction: 'hover',
-  },
-};
+export const ListBoxMultiProviderWithClickTrigger: Story = { args: { triggerAction: 'click' } };
+export const ListBoxMultiProviderWithFocusTrigger: Story = { args: { triggerAction: 'focus' } };
+export const ListBoxMultiProviderWithHoverTrigger: Story = { args: { triggerAction: 'hover' } };
 
 const ListBoxMultiProviderControlledC = (props: React.ComponentProps<typeof ListBoxMultiProvider>) => {
   const { defaultSelected, ...propsRest } = props;

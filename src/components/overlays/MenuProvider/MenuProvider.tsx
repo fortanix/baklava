@@ -22,9 +22,7 @@ import {
 import cl from './MenuProvider.module.scss';
 
 
-export type { ItemKey };
-
-type MenuSelectProps = React.ComponentProps<typeof MenuSelect>;
+export type { ItemKey, SelectedSingleState as SelectedState };
 
 export type MenuProviderRef = {
   open: boolean,
@@ -40,7 +38,7 @@ export type AnchorRenderArgs = BaseAnchorRenderArgs & {
   selectedOption: SelectedSingleState,
 };
 export type MenuProviderProps =
-  Omit<MenuSelectProps, 'ref' | 'children' | 'label' | 'size'>
+  Omit<React.ComponentProps<typeof MenuSelect>, 'ref' | 'children' | 'label' | 'size'>
   & OpenStateProps
   & {
     /** A React ref to control the menu provider imperatively. */
@@ -68,7 +66,7 @@ export type MenuProviderProps =
     triggerAction?: undefined | UseFloatingMenuOptions['triggerAction'],
     
     /** The (inline) size of the menu. */
-    menuSize?: MenuSelectProps['size'],
+    menuSize?: React.ComponentProps<typeof MenuSelect>['size'],
     
     /**
      * The kind of keyboard interactions to include:
@@ -179,7 +177,7 @@ export const MenuProvider = Object.assign(
       },
       {
         debugName: 'MenuProvider',
-        propName: 'filter',
+        propName: 'selected',
         defaultStateFallback: null,
         stateFromEvent: state => state,
       },
