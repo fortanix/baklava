@@ -43,7 +43,9 @@ export const useListBoxSelector = <T>(selector: (state: ListBoxSlice) => T) => {
   return useStore(store, selector);
 };
 
-export type ListBoxProps = ControllableStateProps<SelectedState>;
+export type ListBoxProps = ControllableStateProps<SelectedState> & {
+  defaultStateFallback: SelectedState,
+};
 export const useListBox = <E extends HTMLElement = HTMLElement>(props: ListBoxProps) => {
   const ref = React.useRef<E>(null);
   const listBoxId = React.useId();
@@ -55,7 +57,7 @@ export const useListBox = <E extends HTMLElement = HTMLElement>(props: ListBoxPr
   
   const store = useMemoOnce(() => createStore<ListBoxSlice>()((...args) => ({
     ...createCollectionSlice(ref, { collectionId: listBoxId })(...args),
-    ...createSelectionSingleSlice({ selectedItemKey: stateInitial ?? null })(...args),
+    ...createSelectionSingleSlice({ selectedItemKey: stateInitial ?? props.defaultStateFallback })(...args),
   })));
   
   const { props: propsCollection } = useCollectionWith(store);

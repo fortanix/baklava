@@ -165,7 +165,9 @@ export const useControllableState = <S extends Defined, E = S>(
       
       Idea #3: model it through declarative events instead. For example instead of a `toggled => !toggled` updater
       function, you could instead have an event `{ action: 'invert' }`. Arguably, this is not much better than idea #2
-      because then the consumer must still handle this event and convert it to a `setState` updater function.
+      because then the consumer must still handle this event and convert it to a `setState` updater function. But it
+      may be necessary since React's setState updaters must be pure, which gives us very limited access to this internal
+      "queue".
       
       if (isStateChangeRequestCallable(stateRequest)) {
         console.warn(`${logPrefix} 'requestStateChange' was called with an updater callback despite controlled state`);
@@ -180,13 +182,18 @@ export const useControllableState = <S extends Defined, E = S>(
           ? stateRequest(prevState)
           : stateRequest;
         
-        // Notify the consumer
-        stateDef.onStateChange?.(event);
-        
         return stateFromEvent(event);
       });
+      
+      // FIXME: `stateUncontrolled` here is tied to the render cycle, if there are multiple events in the same render
+      // cycle then `stateUncontrolled` might be "stale". We cannot make use of the `setStateUncontrolled` updater
+      // because that must be a pure function (we cannot call an event listener, which will likely set state itself).
+      const event = isStateChangeRequestCallable(stateRequest)
+        ? stateRequest(stateUncontrolled)
+        : stateRequest;
+      stateDef.onStateChange?.(event);
     }
-  }, [stateFromEvent, isControlled, stateDef.state, stateDef.onStateChange]);
+  }, [stateFromEvent, isControlled, stateUncontrolled, stateDef.state, stateDef.onStateChange]);
   
   return {
     isControlled,

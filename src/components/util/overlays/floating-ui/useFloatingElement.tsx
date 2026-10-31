@@ -66,9 +66,11 @@ const usePopoverInteraction = <E extends HTMLElement>(
 ): ElementProps => {
   const anchorEl = context.elements.reference;
   
-  const onOpenChange = React.useCallback(({ open, forced, reason }: OpenChangeEvent) => {
-    // FIXME: add `event`/`reason` args here?
-    context.onOpenChange(open);
+  // Pipe the `OpenChange` event through `floating-ui`
+  const onOpenChange = React.useCallback(({ open, forced }: BaseOpenChangeEvent) => {
+    // We need to communicate `forced` somehow. Use the `reason` argument for this purpose.
+    // biome-ignore lint/suspicious/noExplicitAny: See above.
+    context.onOpenChange(open, undefined, '_bk-popover-forced' as any);
   }, [context.onOpenChange]);
   
   const popoverController = React.useMemo(() => ({
@@ -109,16 +111,17 @@ type UseFocusInteractiveOptions = {
  * Floating UI interaction hook for interactive focus trigger.
  */
 const useFocusInteractive = (context: FloatingContext, options: UseFocusInteractiveOptions = {}): ElementProps => {
+  const { elements, onOpenChange } = context;
   const enabled = options.enabled ?? true;
   
-  const anchorEl = context.elements.reference;
-  const popoverEl = context.elements.floating;
+  const anchorEl = elements.reference;
+  const popoverEl = elements.floating;
   
   const handleReferenceFocus = React.useCallback((event: React.FocusEvent) => {
     if (!enabled) { return; }
     
-    context.onOpenChange(true, event.nativeEvent, 'focus');
-  }, [enabled, context.onOpenChange]);
+    onOpenChange(true, event.nativeEvent, 'focus');
+  }, [enabled, onOpenChange]);
   
   const handleReferenceBlur = React.useCallback((event: React.FocusEvent) => {
     if (!enabled) { return; }
@@ -131,9 +134,21 @@ const useFocusInteractive = (context: FloatingContext, options: UseFocusInteract
     );
     
     if (!isInside) {
-      context.onOpenChange(false, event.nativeEvent, 'focus-out');
+      onOpenChange(false, event.nativeEvent, 'focus-out');
     }
-  }, [enabled, popoverEl, context.onOpenChange]);
+  }, [enabled, popoverEl, onOpenChange]);
+  
+  const handleReferenceKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+    if (!enabled) { return; }
+    
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault(); // Prevent scrolling
+      onOpenChange(true, event.nativeEvent, 'list-navigation');
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+      onOpenChange(!context.open, event.nativeEvent, 'reference-press');
+    }
+  }, [context.open, enabled, onOpenChange]);
   
   const handleFloatingBlur = React.useCallback((event: React.FocusEvent) => {
     if (!enabled) { return; }
@@ -159,15 +174,15 @@ const useFocusInteractive = (context: FloatingContext, options: UseFocusInteract
             || popoverEl.contains(document.activeElement)
           );
         if (!isInside) {
-          context.onOpenChange(false, event.nativeEvent, 'focus-out');
+          onOpenChange(false, event.nativeEvent, 'focus-out');
         }
       }, 0);
     }
-  }, [enabled, anchorEl, context.onOpenChange]);
+  }, [enabled, anchorEl, onOpenChange]);
   
   // Handle click outside
   React.useEffect(() => {
-    if (!enabled) { return; }
+    if (!enabled || !context.open) { return; }
     
     const controller = new AbortController();
     
@@ -189,22 +204,21 @@ const useFocusInteractive = (context: FloatingContext, options: UseFocusInteract
               anchorEl.contains(document.activeElement) || popoverEl?.contains(document.activeElement)
             );
           if (!isInside) {
-            context.onOpenChange(false, event, 'outside-press');
+            onOpenChange(false, event, 'outside-press');
           }
         }, 0);
       }
     }, { signal: controller.signal });
     
     return () => { controller.abort(); };
-  }, [enabled, anchorEl, popoverEl, context.onOpenChange]);
+  }, [enabled, context.open, anchorEl, popoverEl, onOpenChange]);
   
-  // Must be memoized, since this is used as a memo dep in `useInteractions`
+  // The following must be memoized, since these are used as memo deps in `useInteractions`
   const referenceProps = React.useMemo<React.HTMLProps<Element>>(() => ({
     onFocus: handleReferenceFocus,
     onBlur: handleReferenceBlur,
-  }), [handleReferenceFocus, handleReferenceBlur]);
-  
-  // Must be memoized, since this is used as a memo dep in `useInteractions`
+    onKeyDown: handleReferenceKeyDown,
+  }), [handleReferenceFocus, handleReferenceBlur, handleReferenceKeyDown]);
   const floatingProps = React.useMemo<React.HTMLProps<HTMLElement>>(() => ({
     onBlur: handleFloatingBlur,
   }), [handleFloatingBlur]);
@@ -234,7 +248,7 @@ const useComboBoxInteraction = (context: FloatingContext, options: UseComboBoxOp
   
   // Close on `Escape`
   // FIXME: this is currently very global, any Escape on the document will cause all open popovers to close immediately.
-  // `CustomCloseWatcher` doesn't currently implement the stacking mechanism from a real `CloseWatcher`.
+  // `CustomCloseWatcher` doesn't currently implement the stacking mechanism of native `CloseWatcher`.
   React.useEffect(() => {
     if (!enabled || !context.open) { return; }
     
@@ -267,7 +281,10 @@ const useComboBoxInteraction = (context: FloatingContext, options: UseComboBoxOp
     
     // FIXME: when the reference is an editable input, maybe we shouldn't do this and instead open only when focused
     // and the user requests opening through keyboard (arrow keys).
-    onOpenChange(!context.open, event.nativeEvent, 'click');
+    
+    if (event.detail > 0) {
+      onOpenChange(!context.open, event.nativeEvent, 'click');
+    }
   }, [enabled, context.open, onOpenChange]);
   
   // Arrow keys → open floating element
@@ -278,7 +295,10 @@ const useComboBoxInteraction = (context: FloatingContext, options: UseComboBoxOp
       event.preventDefault(); // Prevent scrolling
       onOpenChange(true, event.nativeEvent, 'list-navigation');
     }
-  }, [enabled, onOpenChange]);
+    if (event.key === 'Enter' || event.key === ' ') {
+      onOpenChange(!context.open, event.nativeEvent, 'reference-press');
+    }
+  }, [context.open, enabled, onOpenChange]);
   
   const handleReferenceBlur = React.useCallback((event: React.FocusEvent) => {
     if (!enabled) { return; }
@@ -323,12 +343,11 @@ const useComboBoxInteraction = (context: FloatingContext, options: UseComboBoxOp
   
   // Handle click outside
   React.useEffect(() => {
-    if (!enabled) { return; }
+    if (!enabled || !context.open) { return; }
     
     const controller = new AbortController();
     
-    document.addEventListener(
-      'pointerdown',
+    document.addEventListener('pointerdown',
       (event) => {
         if (!anchorEl || !(anchorEl instanceof Node)) { return; }
         
@@ -355,29 +374,18 @@ const useComboBoxInteraction = (context: FloatingContext, options: UseComboBoxOp
     return () => {
       controller.abort();
     };
-  }, [enabled, anchorEl, popoverEl, onOpenChange]);
+  }, [enabled, context.open, anchorEl, popoverEl, onOpenChange]);
   
-  // Props
-  const referenceProps = React.useMemo<React.HTMLProps<Element>>(
-    () => ({
-      //onFocus: handleReferenceFocus, // Focus should not open floating element
-      onClick: handleReferenceClick,
-      onKeyDown: handleReferenceKeyDown,
-      onBlur: handleReferenceBlur,
-    }),
-    [
-      handleReferenceBlur,
-      handleReferenceClick,
-      handleReferenceKeyDown,
-    ],
-  );
-  
-  const floatingProps = React.useMemo<React.HTMLProps<HTMLElement>>(
-    () => ({
-      onBlur: handleFloatingBlur,
-    }),
-    [handleFloatingBlur],
-  );
+  // The following must be memoized, since these are used as memo deps in `useInteractions`
+  const referenceProps = React.useMemo<React.HTMLProps<Element>>(() => ({
+    //onFocus: handleReferenceFocus, // Focus should not open floating element
+    onClick: handleReferenceClick,
+    onKeyDown: handleReferenceKeyDown,
+    onBlur: handleReferenceBlur,
+  }), [handleReferenceBlur, handleReferenceClick, handleReferenceKeyDown]);
+  const floatingProps = React.useMemo<React.HTMLProps<HTMLElement>>(() => ({
+    onBlur: handleFloatingBlur,
+  }), [handleFloatingBlur]);
   
   return {
     reference: referenceProps,
@@ -518,39 +526,6 @@ export const useFloatingElement = <E extends HTMLElement>(
     middleware.push(arrow({ element: opts.arrowRef }));
   }
   
-  // `open` state management
-  type FloatingUiOpenChangeEvent = {
-    isOpen: boolean,
-    event: Event,
-    floatingUiReason: FloatingUiOpenChangeReason,
-  };
-  const onOpenChange = React.useCallback<Required<UseFloatingOptions>['onOpenChange']>(
-    (isOpen, event, floatingUiReason) => {
-      // For form controls (e.g. listbox), 'Enter' key events on the reference element should be ignored, these should
-      // instead trigger the default form submit behavior. This holds both when currently open or not open.
-      const shouldIgnoreEnter = opts.keyboardInteractions === 'form-control';
-      const isEnterKeyEvent = event instanceof KeyboardEvent && event.key === 'Enter';
-      if (shouldIgnoreEnter && isEnterKeyEvent) {
-        return;
-      }
-      
-      const reason = ((): OpenChangeEvent['reason'] => {
-        if (floatingUiReason === 'list-navigation' && event instanceof KeyboardEvent) {
-          if (event.key === 'ArrowDown') {
-            return 'list-navigation-first';
-          } else if (event.key === 'ArrowUp') {
-            return 'list-navigation-last';
-          }
-        }
-        return floatingUiReason;
-      })();
-      
-      // FIXME: `forced` is `true` when it comes from the DOM `ToggleEvent`, but `false` when it comes from an
-      // interaction hook. We should determine `forced` based on the value of `event`.
-      opts.onOpenChange?.({ open: isOpen, forced: true, reason });
-    },
-    [opts.keyboardInteractions, opts.onOpenChange],
-  );
   const {
     state: openState,
     requestStateChange: requestOpenChange,
@@ -568,19 +543,25 @@ export const useFloatingElement = <E extends HTMLElement>(
     },
   );
   
-  // FIXME: if `isPositioned` is `false`, should the floating element be hidden to prevent position flicker?
-  
   const onOpenChangeFloatingUi = React.useCallback<Required<UseFloatingOptions>['onOpenChange']>(
     (isOpen, event, floatingUiReason) => {
-      // For form controls (e.g. listbox), 'Enter' key events on the reference element should be ignored, these should
+      // For form controls (e.g. `Select`), 'Enter' key events on the reference element should be ignored, these should
       // instead trigger the default form submit behavior. This holds both when currently open or not open.
       const shouldIgnoreEnter = opts.keyboardInteractions === 'form-control';
       const isEnterKeyEvent = event instanceof KeyboardEvent && event.key === 'Enter';
-      if (shouldIgnoreEnter && isEnterKeyEvent) {
+      if (shouldIgnoreEnter && isEnterKeyEvent && floatingUiReason === 'reference-press') {
         return;
       }
       
+      // @ts-ignore
+      const forced = floatingUiReason === '_bk-popover-forced';
+      
       const reason = ((): OpenChangeEvent['reason'] => {
+        // @ts-ignore
+        if (floatingUiReason === '_bk-popover-forced') {
+          return undefined;
+        }
+        
         if (floatingUiReason === 'list-navigation' && event instanceof KeyboardEvent) {
           if (event.key === 'ArrowDown') {
             return 'list-navigation-first';
@@ -588,18 +569,15 @@ export const useFloatingElement = <E extends HTMLElement>(
             return 'list-navigation-last';
           }
         }
+        return floatingUiReason;
       })();
       
-      requestOpenChange({
-        open: isOpen,
-        // FIXME: `forced` is `true` when it comes from the DOM `ToggleEvent`, but `false` when it comes from an
-        // interaction hook. We should determine `forced` based on the value of `event`.
-        forced: true,
-        reason,
-      });
+      requestOpenChange({ open: isOpen, forced, reason });
     },
     [opts.keyboardInteractions, requestOpenChange],
   );
+  
+  // FIXME: if `isPositioned` is `false`, should the floating element be hidden to prevent position flicker?
   const { context, refs, placement, floatingStyles, isPositioned } = useFloating<E>({
     // Controlled state
     open: openState,

@@ -13,15 +13,15 @@ import {
 // Components
 import { type ItemKey, type SelectedState, ListBox } from '../../forms/controls/ListBox/ListBox.tsx';
 import {
-  BaseAnchorRenderArgs,
+  type BaseAnchorRenderArgs,
+  type MenuProviderRef,
   selectionStateFromItemKey,
-  MenuProviderRef,
-  useFloatingMenu,
+  //useFloatingMenu,
   useMenuAnchor,
-  useMenuImperativeRef,
+  //useMenuImperativeRef,
   useMenuKeyboardNavigation,
-  useMenuOpenControl,
-  useMenuSelect,
+  //useMenuOpenControl,
+  //useMenuSelect,
   useMenuToggle,
 } from '../MenuMultiProvider/MenuMultiProvider.tsx';
 

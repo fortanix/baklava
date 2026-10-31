@@ -6,10 +6,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import * as React from 'react';
 
+import { notify } from '../ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 
-import { type ItemKey, MenuProvider } from './MenuProvider.tsx';
+import { type ItemKey, type MenuProviderRef, MenuProvider } from './MenuProvider.tsx';
 
 
 type MenuProviderArgs = React.ComponentProps<typeof MenuProvider>;
@@ -151,4 +152,36 @@ export const MenuProviderControlled: Story = {
 };
 export const MenuProviderControlledWithDefault: Story = {
   render: args => <MenuProviderControlledC {...args} defaultSelected="item-blueberry"/>,
+};
+
+
+const MenuProviderWithRefC = (props: React.ComponentProps<typeof MenuProvider>) => {
+  const ref = React.useRef<MenuProviderRef>(null);
+  
+  const logState = async () => {
+    // Add a timeout so we have time to open the menu first after clicking the button
+    await new Promise(resolve => window.setTimeout(resolve, 1000));
+    
+    const state = ref.current;
+    if (!state) { notify.info(`No ref`); return; }
+    notify.info(`Open = ${state.open}, Selected = ${state.selected ?? '(none)'}`);
+  };
+  const openMenu = () => {
+    ref.current?.requestOpenChange({ open: true, forced: false });
+  };
+  const updateSelected = () => {
+    ref.current?.requestSelectedChange('item-blueberry');
+  };
+  
+  return (
+    <>
+      <p><Button label="Log state" onPress={logState}/></p>
+      <MenuProvider {...props} ref={ref}/>
+      <p><Button label="Open menu" onPress={openMenu}/></p>
+      <p><Button label="Select Blueberry" onPress={updateSelected}/></p>
+    </>
+  );
+};
+export const MenuProviderWithRef: Story = {
+  render: args => <MenuProviderWithRefC {...args}/>,
 };

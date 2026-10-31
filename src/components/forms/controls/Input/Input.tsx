@@ -149,6 +149,8 @@ export const Input = Object.assign(
       formValue: null | string | Array<string>,
       props: typeof formAssociationProps,
     ) => {
+      if (typeof props.name !== 'string') { return null; }
+      
       if (typeof formValue === 'string') {
         return <input {...props} type="hidden" value={formValue}/>;
       } else if (Array.isArray(formValue)) {

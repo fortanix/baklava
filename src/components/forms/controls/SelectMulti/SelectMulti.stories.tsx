@@ -34,8 +34,8 @@ const fruits = {
 };
 type FruitKey = keyof typeof fruits;
 const formatFruitLabel = (itemKey: ItemKey): string => fruits[itemKey as FruitKey] ?? 'UNKNOWN';
-const formatFruitsLabel = (itemKeys: SelectedState): string =>
-  [...itemKeys.values()].map(itemKey => formatFruitLabel(itemKey)).join(', ') || '(none)';
+const formatFruitsLabel = (itemKeys: SelectedState) =>
+  [...itemKeys.values()].map(itemKey => formatFruitLabel(itemKey)).join(', ') || null;
 
 export default {
   component: SelectMulti,
@@ -47,6 +47,7 @@ export default {
   },
   args: {
     label: 'Test select',
+    placeholder: 'Select some fruits',
     formatSelected: formatFruitsLabel,
     options: (
       <>
@@ -149,7 +150,9 @@ export const SelectMultiInForm: Story = {
           id="story-form"
           onSubmit={event => {
             event.preventDefault();
-            notify.info(`You have chosen: ${new FormData(event.currentTarget).getAll('story_component1[]').join(', ') || 'none'}`);
+            const selectedFruit = new FormData(event.currentTarget).getAll('story_component1[]')
+              .map(key => formatFruitLabel(key.toString()));
+            notify.info(`You have chosen: ${selectedFruit.join(', ') || '(none)'}`);
           }}
         >
           <Story/>

@@ -34,8 +34,8 @@ const fruits = {
   strawberry: 'Strawberry',
 };
 type FruitKey = keyof typeof fruits;
-const formatFruitLabel = (itemKey: SelectedState): string => {
-  if (itemKey === null) { return ''; }
+const formatFruitLabel = (itemKey: SelectedState): null | string => {
+  if (itemKey === null) { return null; } // Fall back to placeholder
   return fruits[itemKey as FruitKey] ?? 'UNKNOWN';
 };
 
@@ -49,6 +49,7 @@ export default {
   },
   args: {
     label: 'Test select',
+    placeholder: 'Select a fruit',
     formatSelected: formatFruitLabel,
     options: (
       <>
@@ -151,7 +152,7 @@ export const SelectInForm: Story = {
           id="story-form"
           onSubmit={event => {
             event.preventDefault();
-            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || 'none'}`);
+            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || '(none)'}`);
           }}
         />
         <Story/>
@@ -162,7 +163,7 @@ export const SelectInForm: Story = {
   args: {
     form: 'story-form',
     name: 'story_component1',
-    formatSelected: itemKey => itemKey?.replace('option-', 'Option ') ?? '(none)',
+    formatSelected: itemKey => itemKey?.replace('option-', 'Option ') ?? null,
     options: (
       <>
         {Array.from({ length: 8 }, (_, i) => i + 1).map(index =>
@@ -175,7 +176,7 @@ export const SelectInForm: Story = {
 
 export const SelectVirtualized: Story = {
   args: {
-    formatSelected: itemKey => itemKey?.replace('option-', 'Option ') ?? '(none)',
+    formatSelected: itemKey => itemKey?.replace('option-', 'Option ') ?? null,
     options: (
       <>
         <Select.Static muted>Virtualized list</Select.Static>

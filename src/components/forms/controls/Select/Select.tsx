@@ -31,8 +31,8 @@ export type SelectProps = Omit<SelectInputProps, 'value' | 'defaultValue' | 'onC
   /** A human-readable name for the select. */
   label: string,
   
-  /** Render the given item key as a string label. */
-  formatSelected: (selectedOption: SelectedState) => string,
+  /** Render the currently selected option as a string label. If `null`, uses the placeholder instead. */
+  formatSelected: (selectedOptions: SelectedState) => null | string,
   
   /** @deprecated Use `formatSelected` instead. */
   formatItemLabel?: undefined | ((selectedOption: ItemKey) => string),
@@ -41,13 +41,13 @@ export type SelectProps = Omit<SelectInputProps, 'value' | 'defaultValue' | 'onC
   options: React.ComponentProps<typeof ListBoxProvider>['items'],
   
   /** The option to select. If `undefined`, this component will be considered uncontrolled. */
-  selected?: undefined | SelectedState,
+  selected?: React.ComponentProps<typeof ListBoxProvider>['selected'],
   
   /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
-  defaultSelected?: undefined | SelectedState,
+  defaultSelected?: React.ComponentProps<typeof ListBoxProvider>['defaultSelected'],
   
   /** Event handler to be called when the selected option state changes. */
-  onSelectedChange?: undefined | ((selectedItemKey: SelectedState) => void),
+  onSelectedChange?: React.ComponentProps<typeof ListBoxProvider>['onSelectedChange'],
   
   /** Additional props to be passed to the `ListBoxProvider`. */
   dropdownProps?: undefined | Partial<React.ComponentProps<typeof ListBoxProvider>>,
@@ -88,9 +88,10 @@ export const Select = Object.assign(
     
     const InputAction = Input.Action ?? InputDefault.Action;
     
+    // Note: make sure this is always a `string` not `undefined` (since that implies an uncontrolled input)
     const valueFromSelected = React.useCallback((selectedOption: SelectedState): string => {
       if (typeof formatSelected === 'function') {
-        return formatSelected(selectedOption);
+        return formatSelected(selectedOption) ?? '';
       } else if (typeof formatItemLabel === 'function') {
         // Note: the old `formatItemLabel` doesn't take `null` as an option, we hardcode the empty string for this.
         return selectedOption !== null ? formatItemLabel(selectedOption) : '';
@@ -108,10 +109,10 @@ export const Select = Object.assign(
         keyboardInteractions="form-control"
         placement="bottom-start"
         offset={0} // Make the dropdown flush with the input element
+        {...dropdownProps}
         selected={selected}
         defaultSelected={defaultSelected}
         onSelectedChange={onSelectedChange}
-        {...dropdownProps}
       >
         {({ props, open, requestOpen, selectedOption }) => {
           // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
@@ -125,13 +126,13 @@ export const Select = Object.assign(
               formValue: selectedOption ?? undefined,
               actions: (
                 <InputAction
-                  // Note: the toggle button should be focusable but not in tab sequence, according to:
+                  // Note: the toggle button should be focusable, but not in tab sequence, according to:
                   // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/combobox_role
                   tabIndex={-1}
                   icon="caret-down"
                   className={cx(cl['bk-select__arrow'])}
                   label={open ? 'Close dropdown' : 'Open dropdown'}
-                  onPress={noop}
+                  onPress={noop} // Do nothing, but let it bubble to the parent to handle open/close
                 />
               ),
             },

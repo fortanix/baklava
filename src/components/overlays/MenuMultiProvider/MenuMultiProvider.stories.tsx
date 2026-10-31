@@ -112,6 +112,13 @@ export const MenuMultiProviderWithPlacement: Story = {
 
 export const MenuMultiProviderWithAction: Story = {
   args: {
+    children: ({ props, selectedOptions }) => {
+      return (
+        <Button kind="primary" {...props()}>
+          {selectedOptions.size > 0 ? `Selected: ${selectedOptions.size} options` : 'Open dropdown'}
+        </Button>
+      );
+    },
     items: ({ close }) => (
       <>
         <MenuMultiProvider.Option itemKey="option-1" label="Option 1"/>
@@ -124,23 +131,10 @@ export const MenuMultiProviderWithAction: Story = {
   },
 };
 
-export const MenuMultiProviderWithClickTrigger: Story = {
-  args: {
-    triggerAction: 'click',
-  },
-};
-
-export const MenuMultiProviderWithFocusTrigger: Story = {
-  args: {
-    triggerAction: 'focus',
-  },
-};
-
-export const MenuMultiProviderWithHoverTrigger: Story = {
-  args: {
-    triggerAction: 'hover',
-  },
-};
+export const MenuMultiProviderWithClickTrigger: Story = { args: { triggerAction: 'click' } };
+export const MenuMultiProviderWithFocusTrigger: Story = { args: { triggerAction: 'focus' } };
+export const MenuMultiProviderWithHoverTrigger: Story = { args: { triggerAction: 'hover' } };
+export const MenuMultiProviderWithFocusInteractiveTrigger: Story = { args: { triggerAction: 'focus-interactive' } };
 
 const MenuMultiProviderControlledC = (props: React.ComponentProps<typeof MenuMultiProvider>) => {
   const { defaultSelected, ...propsRest } = props;

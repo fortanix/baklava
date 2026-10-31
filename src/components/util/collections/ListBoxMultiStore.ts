@@ -52,7 +52,9 @@ export const useListBoxMultiSelector = <T>(selector: (state: ListBoxMultiSlice) 
   return useStore(store, selector);
 };
 
-export type ListBoxMultiProps = ControllableStateProps<SelectedState>;
+export type ListBoxMultiProps = ControllableStateProps<SelectedState> & {
+  defaultStateFallback: SelectedState,
+};
 export const useListBoxMulti = <E extends HTMLElement = HTMLElement>(props: ListBoxMultiProps) => {
   const ref = React.useRef<E>(null);
   const listBoxId = React.useId();
@@ -64,7 +66,7 @@ export const useListBoxMulti = <E extends HTMLElement = HTMLElement>(props: List
   
   const store = useMemoOnce(() => createStore<ListBoxMultiSlice>()((...args) => ({
     ...createCollectionSlice(ref, { collectionId: listBoxId })(...args),
-    ...createSelectionMultiSlice({ selectedItemKeys: stateInitial ?? new Set() })(...args),
+    ...createSelectionMultiSlice({ selectedItemKeys: stateInitial ?? props.defaultStateFallback })(...args),
   })));
   
   const { props: propsCollection } = useCollectionWith(store);

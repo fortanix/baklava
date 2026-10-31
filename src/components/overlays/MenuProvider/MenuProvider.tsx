@@ -3,233 +3,257 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-
-// Utils
 import { classNames as cx } from '../../../util/componentUtil.ts';
-import { mergeCallbacks, mergeProps, mergeRefs } from '../../../util/reactUtil.ts';
-import {
-  type UseFloatingElementOptions,
-} from '../../util/overlays/floating-ui/useFloatingElement.tsx';
+import { mergeCallbacks, mergeRefs, mergeProps } from '../../../util/reactUtil.ts';
+import { useControllableStateFromProps } from '../../../util/hooks/useControllableState.ts';
 
 // Components
 import { type ItemKey, type SelectedSingleState, MenuSelect } from '../Menu/Menu.tsx';
 import {
-  BaseAnchorRenderArgs,
-  selectionStateFromItemKey,
-  MenuProviderRef,
+  type OpenStateProps,
+  type OpenChangeEvent,
+  type UseFloatingMenuOptions,
   useFloatingMenu,
+  type BaseAnchorRenderArgs,
   useMenuAnchor,
-  useMenuImperativeRef,
-  useMenuKeyboardNavigation,
-  useMenuOpenControl,
-  useMenuSelect,
-  useMenuToggle,
-} from '../MenuMultiProvider/MenuMultiProvider.tsx';
+} from '../../util/overlays/menu/menuUtil.tsx';
 
 // Styles
 import cl from './MenuProvider.module.scss';
 
 
-export { cl as MenuProviderClassNames };
 export type { ItemKey };
 
 type MenuSelectProps = React.ComponentProps<typeof MenuSelect>;
 
-/**
- * MENU PROVIDER
- * Provider for a menu overlay that is triggered by (and positioned relative to) some anchor element.
- * ---------------------------------------------------------------------------------------------------------------------
- */
+export type MenuProviderRef = {
+  open: boolean,
+  requestOpenChange: (event: OpenChangeEvent) => void,
+  selected: SelectedSingleState,
+  requestSelectedChange: (selected: SelectedSingleState) => void,
+  // FIXME: include these?
+  //anchorEl: null | HTMLElement,
+  //floatingEl: null | HTMLElement,
+};
+
 export type AnchorRenderArgs = BaseAnchorRenderArgs & {
   selectedOption: SelectedSingleState,
 };
-export type MenuProviderProps = Omit<MenuSelectProps, 'ref' | 'children' | 'label' | 'size'> & {
-  /** A React ref to control the menu provider imperatively. */
-  ref?: undefined | React.Ref<null | MenuProviderRef>,
-  /** For controlled open state. */
-  open?: undefined | boolean,
-  /** When controlled, callback to set state. */
-  onOpenChange?: undefined | ((isOpen: boolean) => void),
-  /** (optional) Use an existing DOM node as the positioning anchor. */
-  anchorRef?: undefined | React.RefObject<null | HTMLElement>,
-  
-  /** An accessible name for this menu provider. Required. */
-  label: string,
-  
-  /**
-  * The content to render, which should contain the anchor. This should be a render prop which takes props to
-  * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
-  */
-  children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode,
-
-  /** The menu items. */
-  items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode),
-
-  /** The accessible role of the menu. */
-  role?: undefined | UseFloatingElementOptions['role'],
-  
-  /** The action that should trigger the menu to open. */
-  triggerAction?: undefined | UseFloatingElementOptions['triggerAction'],
-  
-  /** The (inline) size of the menu. */
-  menuSize?: MenuSelectProps['size'],
-  
-  /**
-   * The kind of keyboard interactions to include:
-   * - 'none': No keyboard interactions set.
-   * - 'form-control': Appropriate keyboard interactions for a form control (e.g. Enter should trigger submit).
-   * - 'default': Acts as a menu button [1] (e.g. Enter will activate the popover).
-   *   [1] https://www.w3.org/WAI/ARIA/apg/patterns/menu-button
-   */
-  keyboardInteractions?: undefined | UseFloatingElementOptions['keyboardInteractions'],
-  
-  /** Override the default placement */
-  placement?: undefined | UseFloatingElementOptions['placement'],
-  
-  /** Offset size for the menu relative to the anchor. */
-  offset?: undefined | UseFloatingElementOptions['offset'],
-  
-  /** Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
-  enablePreciseTracking?: undefined | UseFloatingElementOptions['enablePreciseTracking'],
-};
-export const MenuProvider = Object.assign((props: MenuProviderProps) => {
-  const {
-    label,
-    children,
-    items,
-    defaultSelected,
-    selected,
-    onSelectedChange,
-    role = 'menu',
-    triggerAction,
-    menuSize,
-    keyboardInteractions,
-    placement,
-    offset,
-    enablePreciseTracking,
+export type MenuProviderProps =
+  Omit<MenuSelectProps, 'ref' | 'children' | 'label' | 'size'>
+  & OpenStateProps
+  & {
+    /** A React ref to control the menu provider imperatively. */
+    ref?: undefined | React.Ref<null | MenuProviderRef>,
     
-    ref,
-    open,
-    onOpenChange,
-    anchorRef,
+    /** Use an existing DOM node as the positioning anchor. Optional. */
+    anchorRef?: undefined | React.RefObject<null | HTMLElement>,
     
-    ...propsRest
-  } = props;
-  
-  const menuRef = React.useRef<React.ComponentRef<typeof MenuSelect>>(null);
-  const menuId = React.useId();
-  const previousActiveElementRef = React.useRef<null | HTMLElement>(null);
-  const selectedSet = React.useMemo(() => selectionStateFromItemKey(selected), [selected]);
-  const defaultSelectedSet = React.useMemo(() => selectionStateFromItemKey(defaultSelected), [defaultSelected]); 
-  const {
-    isMounted,
-    isOpen,
-    setIsOpen,
-    refs,
-    getReferenceProps,
-    getFloatingProps,
-    floatingStyles,
-    placement: floatingPlacement,
-  } = useFloatingMenu({
-    role,
-    triggerAction,
-    keyboardInteractions,
-    placement,
-    offset,
-    enablePreciseTracking,
-    open,
-    onOpenChange,
-  });
-  useMenuOpenControl({ setIsOpen, open });
-  const { toggleCauseRef, onAnchorKeyDown, onMenuKeyDown } = useMenuKeyboardNavigation({ setIsOpen, menuRef });
-  const { handleToggle } = useMenuToggle({ menuRef, toggleCauseRef, previousActiveElementRef });
-  const { internalSelected, handleInternalSelect } = useMenuSelect({
-    previousActiveElementRef,
-    setIsOpen,
-    triggerAction: triggerAction,
-    selected: selectedSet,
-    defaultSelected: defaultSelectedSet,
-  })
-  const getRenderArgs = React.useCallback((base: BaseAnchorRenderArgs): AnchorRenderArgs => {
-    const itemKey = internalSelected.keys().next().value;
+    /** An accessible name for this menu provider. Required. */
+    label: string,
     
-    return {
+    /**
+    * The content to render, which should contain the anchor. This should be a render prop which takes props to
+    * apply on the anchor element. Alternatively, a single element can be provided to which the props are applied.
+    */
+    children?: undefined | ((args: AnchorRenderArgs) => React.ReactNode) | React.ReactNode,
+    
+    /** The menu items. */
+    items: React.ReactNode | ((args: { close: () => void }) => React.ReactNode),
+    
+    /** The accessible role of the menu. */
+    role?: undefined | UseFloatingMenuOptions['role'],
+    
+    /** The action that should trigger the menu to open. */
+    triggerAction?: undefined | UseFloatingMenuOptions['triggerAction'],
+    
+    /** The (inline) size of the menu. */
+    menuSize?: MenuSelectProps['size'],
+    
+    /**
+     * The kind of keyboard interactions to include:
+     * - 'none': No keyboard interactions set.
+     * - 'form-control': Appropriate keyboard interactions for a form control (e.g. Enter should trigger submit).
+     * - 'default': Acts as a menu button [1] (e.g. Enter will activate the popover).
+     *   [1] https://www.w3.org/WAI/ARIA/apg/patterns/menu-button
+     */
+    keyboardInteractions?: undefined | UseFloatingMenuOptions['keyboardInteractions'],
+    
+    /** Override the default placement */
+    placement?: undefined | UseFloatingMenuOptions['placement'],
+    
+    /** Offset size for the menu relative to the anchor. */
+    offset?: undefined | UseFloatingMenuOptions['offset'],
+    
+    /** The popover behavior for the menu popover. Default: `"manual"`. */
+    popoverBehavior?: undefined | UseFloatingMenuOptions['popoverBehavior'],
+    
+    /** Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
+    enablePreciseTracking?: undefined | UseFloatingMenuOptions['enablePreciseTracking'],
+  };
+/**
+ * Provider
+ */
+export const MenuProvider = Object.assign(
+  (props: MenuProviderProps) => {
+    const {
+      defaultSelected,
+      selected,
+      onSelectedChange,
+      open,
+      defaultOpen,
+      onOpenChange,
+      
+      ref,
+      anchorRef,
+      label,
+      children,
+      items,
+      menuSize,
+      
+      // Floating element props
+      role = 'menu',
+      triggerAction,
+      keyboardInteractions,
+      placement,
+      offset,
+      popoverBehavior,
+      enablePreciseTracking,
+      
+      ...propsRest
+    } = props;
+    
+    const menuId = React.useId();
+    const menuRef = React.useRef<React.ComponentRef<typeof MenuSelect>>(null);
+    
+    const trackOpenChange = React.useCallback((event: OpenChangeEvent) => {
+      // Timeout to wait for the menu to render (and `menuRef` to be populated)
+      window.setTimeout(() => {
+        if (!event.open) { return; }
+        
+        // If the menu opened due to a `list-navigation` event, auto-focus the relevant item
+        if (event.reason === 'list-navigation-first') {
+          menuRef.current?._bkFocusFirst();
+        } else if (event.reason === 'list-navigation-last') {
+          menuRef.current?._bkFocusLast();
+        }
+      }, 0);
+    }, []);
+    
+    const {
+      isMounted,
+      isOpen: openState,
+      requestOpenChange,
+      refs,
+      getReferenceProps,
+      getFloatingProps,
+      floatingStyles,
+      placement: floatingPlacement,
+    } = useFloatingMenu({
+      role,
+      popoverBehavior,
+      triggerAction,
+      keyboardInteractions,
+      placement,
+      offset,
+      enablePreciseTracking,
+      open,
+      onOpenChange: mergeCallbacks([onOpenChange, trackOpenChange]),
+    });
+    
+    const trackSelectedChange = React.useCallback((_selected: SelectedSingleState) => {
+      if (openState) {
+        requestOpenChange({ open: false });
+      }
+    }, [openState, requestOpenChange]);
+    
+    // Track `selected` state
+    const {
+      state: selectedState,
+      requestStateChange: requestSelectedChange,
+    } = useControllableStateFromProps<SelectedSingleState>(
+      {
+        state: selected,
+        defaultState: defaultSelected,
+        onStateChange: mergeCallbacks([onSelectedChange, trackSelectedChange]),
+      },
+      {
+        debugName: 'MenuProvider',
+        propName: 'filter',
+        defaultStateFallback: null,
+        stateFromEvent: state => state,
+      },
+    );
+    
+    // Allow passing a ref to control the state of the menu imperatively
+    React.useImperativeHandle(ref, () => ({
+      open: openState,
+      requestOpenChange,
+      selected: selectedState,
+      requestSelectedChange,
+      // FIXME: also expose the element references?
+      //get anchorEl() { return anchorRef.current; },
+      //get floatingEl() { return floatingRef.current; },
+    }), [openState, requestOpenChange, selectedState, requestSelectedChange]);
+    
+    
+    //
+    // Rendering
+    //
+    
+    const getRenderArgs = React.useCallback((base: BaseAnchorRenderArgs): AnchorRenderArgs => ({
       ...base,
-      selectedOption: itemKey ?? null,
-    };
-  }, [internalSelected]);
-  const { anchor } = useMenuAnchor({
-    children,
-    isOpen,
-    setIsOpen,
-    menuId,
-    getReferenceProps,
-    refs,
-    onKeyDown: onAnchorKeyDown,
-    getRenderArgs,
-  });
-  
-  // Use external element as the reference, if provided
-  React.useLayoutEffect(() => {
-    if (anchorRef?.current) {
-      refs.setReference(anchorRef.current);
-    }
-  }, [anchorRef, refs]);
-  
-  useMenuImperativeRef({ ref, isOpen, setIsOpen, floatingRef: refs.floating });
-  
-  const floatingProps = getFloatingProps({
-    popover: 'manual',
-    style: floatingStyles,
-    className: cx(cl['bk-menu-provider__list-box']),
-  });
-  
-  const mergedProps = mergeProps(
-    floatingProps,
-    propsRest,
-    {
-      onKeyDown: mergeCallbacks([propsRest.onKeyDown, onMenuKeyDown]),
-    },
-  );
-  
-  const mergedListBoxRef = mergeRefs<React.ComponentRef<typeof MenuSelect>>(
-    menuRef,
-    refs.setFloating,
-    floatingProps.ref as React.Ref<React.ComponentRef<typeof MenuSelect>>,
-  );
-  
-  const selectedFromInternalSelected = React.useMemo(() => {
-    return internalSelected.keys().next().value ?? null; // 'null' for controlled
-  }, [internalSelected]);
-  
-  const handleSelect = React.useCallback((itemKey: SelectedSingleState) => {
-    onSelectedChange?.(itemKey);
-    handleInternalSelect(itemKey === null ? new Set() : new Set([itemKey]));
-  }, [onSelectedChange, handleInternalSelect]);
-  
-  return (
-    <>
-      {anchor}
-      {isMounted && (
-        <MenuSelect
-          {...mergedProps}
-          ref={mergedListBoxRef}
-          size={menuSize}
-          label={label}
-          selected={selectedFromInternalSelected}
-          defaultSelected={defaultSelected}
-          onSelectedChange={handleSelect}
-          onToggle={handleToggle}
-          data-placement={floatingPlacement}
-        >
-          {typeof items === 'function'
-            ? items({ close: () => { setIsOpen(false); } })
-            : items}
-        </MenuSelect>
-      )}
-    </>
-  );
-}, {
+      selectedOption: selectedState,
+    }), [selectedState]);
+    
+    const { anchor } = useMenuAnchor({
+      children,
+      isOpen: openState,
+      requestOpenChange,
+      menuId,
+      getReferenceProps,
+      refs,
+      getRenderArgs,
+    });
+    
+    // Use external element as the reference, if provided
+    React.useLayoutEffect(() => {
+      if (anchorRef?.current) {
+        refs.setReference(anchorRef.current);
+      }
+    }, [anchorRef, refs]);
+    
+    const floatingProps = getFloatingProps({
+      style: floatingStyles,
+      className: cx(cl['bk-menu-provider__popover']),
+    });
+    
+    return (
+      <>
+        {anchor}
+        {isMounted && (
+          <MenuSelect
+            {...mergeProps(
+              floatingProps,
+              propsRest,
+              { ref: mergeRefs<React.ComponentRef<typeof MenuSelect>>(menuRef, refs.setFloating) },
+            )}
+            size={menuSize}
+            label={label}
+            selected={selectedState}
+            defaultSelected={defaultSelected}
+            onSelectedChange={requestSelectedChange}
+            data-placement={floatingPlacement}
+          >
+            {typeof items === 'function'
+              ? items({ close: () => { requestOpenChange({ open: false }); } })
+              : items
+            }
+          </MenuSelect>
+        )}
+      </>
+    );
+  }, {
     Option: MenuSelect.Option,
     Static: MenuSelect.Static,
     Action: MenuSelect.Action,

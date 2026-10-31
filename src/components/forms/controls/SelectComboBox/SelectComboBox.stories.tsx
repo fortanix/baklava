@@ -9,28 +9,31 @@ import * as React from 'react';
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { InputSearch } from '../Input/InputSearch.tsx';
 
-import { type ItemKey, SelectComboBox } from './SelectComboBox.tsx';
+import { type ItemKey, type SelectedState, SelectComboBox } from './SelectComboBox.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
 // Sample options
 const fruits = {
-  'item-apple': 'Apple',
-  'item-apricot': 'Apricot',
-  'item-blueberry': 'Blueberry',
-  'item-cherry': 'Cherry',
-  'item-durian': 'Durian',
-  'item-jackfruit': 'Jackfruit',
-  'item-melon': 'Melon',
-  'item-mango': 'Mango',
-  'item-mangosteen': 'Mangosteen',
-  'item-orange': 'Orange',
-  'item-peach': 'Peach',
-  'item-pineapple': 'Pineapple',
-  'item-razzberry': 'Razzberry',
-  'item-strawberry': 'Strawberry',
+  apple: 'Apple',
+  apricot: 'Apricot',
+  blueberry: 'Blueberry',
+  cherry: 'Cherry',
+  durian: 'Durian',
+  jackfruit: 'Jackfruit',
+  melon: 'Melon',
+  mango: 'Mango',
+  mangosteen: 'Mangosteen',
+  orange: 'Orange',
+  peach: 'Peach',
+  pineapple: 'Pineapple',
+  razzberry: 'Razzberry',
+  strawberry: 'Strawberry',
 };
 type FruitKey = keyof typeof fruits;
-const formatFruitLabel = (itemKey: ItemKey): string => fruits[itemKey as FruitKey] ?? 'UNKNOWN';
+const formatFruitLabel = (itemKey: SelectedState): null | string => {
+  if (itemKey === null) { return null; } // Fall back to placeholder
+  return fruits[itemKey as FruitKey] ?? 'UNKNOWN';
+};
 
 
 type SelectComboBoxArgs = React.ComponentProps<typeof SelectComboBox>;
@@ -45,14 +48,11 @@ export default {
   argTypes: {
   },
   args: {
-    label: 'Test combobox',
-    formatItemLabel: formatFruitLabel,
-    options: (
-      <>
-        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
-        )}
-      </>
+    label: 'Test SelectComboBox',
+    placeholder: 'Select a fruit',
+    formatSelected: formatFruitLabel,
+    options: Object.entries(fruits).map(([fruitKey, fruitName]) =>
+      <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
     ),
   },
   render: (args) => <SelectComboBox {...args}/>,

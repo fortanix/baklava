@@ -82,6 +82,9 @@ export const TooltipProvider = (props: TooltipProviderProps) => {
   } = useFloatingElement({
     role: 'tooltip',
     triggerAction,
+    // Note: ideally this would be `hint`, but it's not supported across all browsers yet
+    //popoverBehavior: 'hint',
+    popoverBehavior: 'manual',
     keyboardInteractions: 'default',
     placement,
     offset: 14,

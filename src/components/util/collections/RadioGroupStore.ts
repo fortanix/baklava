@@ -37,7 +37,9 @@ export const useRadioGroupContext = () => {
   return context;
 };
 
-export type RadioGroupProps = ControllableStateProps<SelectedState>;
+export type RadioGroupProps = ControllableStateProps<SelectedState> & {
+  defaultStateFallback: SelectedState,
+};
 export const useRadioGroup = <E extends HTMLElement = HTMLElement>(props: RadioGroupProps) => {
   const ref = React.useRef<E>(null);
   const radioGroupId = React.useId();
@@ -49,7 +51,7 @@ export const useRadioGroup = <E extends HTMLElement = HTMLElement>(props: RadioG
   
   const store = useMemoOnce(() => createStore<RadioGroupSlice>()((...args) => ({
     ...createCollectionSlice(ref, { collectionId: radioGroupId })(...args),
-    ...createSelectionSingleSlice({ selectedItemKey: stateInitial ?? null })(...args),
+    ...createSelectionSingleSlice({ selectedItemKey: stateInitial ?? props.defaultStateFallback })(...args),
   })));
   
   const { props: propsCollection } = useCollectionWith(store);

@@ -125,8 +125,8 @@ export const SegmentedControl = Object.assign(
     const { Provider: RadioGroupProvider, context: radioGroupContext, props: radioGroupProps } = useRadioGroup({
       state: selected,
       defaultState: defaultSelected,
-      defaultStateFallback: null,
       onStateChange: onSelectedChange ?? onUpdate,
+      defaultStateFallback: null,
     });
     
     const focusGroupProps = useFocusGroup({ focusGroup: 'radiogroup nowrap' });

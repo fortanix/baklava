@@ -31,8 +31,8 @@ export type SelectMultiProps = Omit<SelectInputProps, 'value' | 'defaultValue' |
   /** A human-readable name for the select. */
   label: string,
   
-  /** Render the given item key as a string label. */
-  formatSelected: (selectedOption: SelectedState) => string,
+  /** Render the currently selected options as a string label. If `null`, uses the placeholder instead. */
+  formatSelected: (selectedOptions: SelectedState) => null | string,
   
   /** @deprecated Use `formatSelected` instead. */
   formatItemLabel?: undefined | ((selectedOption: ItemKey) => string),
@@ -88,9 +88,10 @@ export const SelectMulti = Object.assign(
     
     const InputAction = Input.Action ?? InputDefault.Action;
     
+    // Note: make sure this is always a `string` not `undefined` (since that implies an uncontrolled input)
     const valueFromSelected = React.useCallback((selectedOptions: SelectedState): string => {
       if (typeof formatSelected === 'function') {
-        return formatSelected(selectedOptions);
+        return formatSelected(selectedOptions) ?? '';
       } else if (typeof formatItemLabel === 'function') {
         // Note: the old `formatItemLabel` takes a single item, so we need to hardcode the `,` separator here
         return [...selectedOptions.values()].map(selectedOption => formatItemLabel(selectedOption)).join(', ');
@@ -108,10 +109,10 @@ export const SelectMulti = Object.assign(
         keyboardInteractions="form-control"
         placement="bottom-start"
         offset={0} // Make the dropdown flush with the input element
+        {...dropdownProps}
         selected={selected}
         defaultSelected={defaultSelected}
         onSelectedChange={onSelectedChange}
-        {...dropdownProps}
       >
         {({ props, open, requestOpen, selectedOptions }) => {
           // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
@@ -125,13 +126,13 @@ export const SelectMulti = Object.assign(
               formValue: selectedOptions instanceof Set ? [...selectedOptions.values()] : [],
               actions: (
                 <InputAction
-                  // Note: the toggle button should be focusable but not in tab sequence, according to:
+                  // Note: the toggle button should be focusable, but not in tab sequence, according to:
                   // https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/combobox_role
                   tabIndex={-1}
                   icon="caret-down"
                   className={cx(cl['bk-select-multi__arrow'])}
                   label={open ? 'Close dropdown' : 'Open dropdown'}
-                  onPress={noop}
+                  onPress={noop} // Do nothing, but let it bubble to the parent to handle open/close
                 />
               ),
             },
@@ -139,7 +140,7 @@ export const SelectMulti = Object.assign(
             {
               value: valueFromSelected(selectedOptions),
               onChange: noop,
-              // FIXME: ideally this would be a button, not a readonly input. We could introduce a `ButtonAsInput`?
+              // FIXME: ideally this would be a button, not a `readonly` input. We could introduce a `ButtonAsInput`?
               readOnly: true, // Make the input non-editable (but still focusable, unlike `disabled`)
             },
           ));

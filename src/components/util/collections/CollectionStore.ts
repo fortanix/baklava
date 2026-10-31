@@ -331,13 +331,16 @@ export const useCollectionTypeAhead = (
     // Cycle the elements such that the focused item (if any) comes first. This is so that the type-ahead search will
     // always continue from the current focused element.
     const focusedNodeIndex = focusedElement ? itemEls.indexOf(focusedElement) : -1;
-    if (focusedNodeIndex > 0) {
+    if (focusedNodeIndex >= 0) {
       itemEls = [...itemEls.slice(focusedNodeIndex), ...itemEls.slice(0, focusedNodeIndex)];
     }
     
     for (const itemEl of itemEls) {
       if (!(itemEl instanceof HTMLElement)) { continue; }
-      if (itemEl === document.activeElement) { continue; }
+      
+      // If this is the start of a query and the user is already on a focused element, skip that element so that the
+      // user has a way to go the next match after (rather than getting stuck on the one they already found).
+      if (itemEl === document.activeElement && query.length === 1) { continue; }
       
       const elementText = itemEl.innerText ?? '';
       const elementTextNormalized = removeCombiningCharacters(elementText).replaceAll(/\s+/g, '');

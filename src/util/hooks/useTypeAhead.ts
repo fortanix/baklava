@@ -5,19 +5,21 @@
 import * as React from 'react';
 
 
+type Sequence = Array<string>;
+
 /**
  * Track keyboard events for type-ahead searching. When the user types printable characters in quick succession, they
  * get added to a sequence. After `maxDuration`, the sequence is cleared.
  */
 export const useTypeAhead = (maxDuration = 1000/*ms*/) => {
-  const [sequence, setSequence] = React.useState<Array<string>>([]);
+  const [sequence, setSequence] = React.useState<Sequence>([]);
   const lastKeyPressTime = React.useRef<number>(-Infinity);
   
   const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
     const shouldReset = event.timeStamp - lastKeyPressTime.current > maxDuration;
     lastKeyPressTime.current = event.timeStamp;
     
-    setSequence((prevSequence) => {
+    setSequence((prevSequence): Sequence => {
       const currentSequence = shouldReset ? [] : prevSequence;
       
       // Ignore isolated space inputs, since we likely instead want this to trigger an action (e.g. clicking a button

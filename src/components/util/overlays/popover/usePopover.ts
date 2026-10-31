@@ -10,11 +10,12 @@ export type OpenChangeEvent = {
   /** The new `open` state. */
   open: boolean,
   /**
-   * Whether this state change should be considered forced or not. If forced, the consumer *must* respect this change
-   * event, otherwise the DOM state and the React state may become out of sync, or the synchronization might not be
-   * able to guarantee that there won't be a brief DOM change before we are able to re-apply the state.
+   * Whether this state change should be considered forced or not. If forced, a consumer using controlled state *must*
+   * respect this change event, otherwise the DOM state and the React state may become out of sync, or the
+   * synchronization might not be able to guarantee that there won't be a brief DOM change before we are able to
+   * re-apply the state. Default: `false`.
    */
-  forced: boolean,
+  forced?: boolean,
 };
 export type OpenStateProps = {
   /** Whether the popover should currently be `open`. If `undefined`, the state is considered uncontrolled. */

@@ -140,7 +140,7 @@ describe('useCollectionWith', () => {
     };
     
     render(<Fixture/>);
-    expect(screen.getByTestId('root')).toHaveAttribute('data-bk-coll-id', 'coll-42');
+    expect(screen.getByTestId('root')).toHaveAttribute('data-bk-coll-coll-42', '');
   });
   
   it('calls onItemsChange when items are registered', () => {
@@ -184,7 +184,8 @@ describe('useCollectionWith', () => {
 
 describe('useCollectionItemWith', () => {
   it('attaches item data attributes to the element', () => {
-    const store = makeStore(makeRef(null), 'coll-x');
+    const collectionId = 'coll-x';
+    const store = makeStore(makeRef(null), collectionId);
     
     const Fixture = () => {
       const { props } = useCollectionItemWith<HTMLDivElement>(store, { itemKey: 'item-a' });
@@ -193,8 +194,7 @@ describe('useCollectionItemWith', () => {
     
     render(<Fixture/>);
     const el = screen.getByTestId('item');
-    expect(el).toHaveAttribute('data-bk-coll-parent', 'coll-x');
-    expect(el).toHaveAttribute('data-bk-coll-item', 'item-a');
+    expect(el).toHaveAttribute(`data-bk-coll-${collectionId}-item`, 'item-a');
   });
   
   it('registers the element in the store on mount', () => {
@@ -232,16 +232,17 @@ describe('useCollectionItemWith', () => {
 describe('useCollection / useCollectionItem integration', () => {
   it('Provider supplies context consumed by useCollectionItem', () => {
     let capturedStore = null as null | ReturnType<typeof makeStore>;
+    let capturedId = null as null | string;
     
     const Child = () => {
-      const { store } = useCollectionItem<HTMLLIElement>({ itemKey: 'child-1' });
+      const { store, props } = useCollectionItem<HTMLLIElement>({ itemKey: 'child-1' });
       capturedStore = store;
-      const { props } = useCollectionItem<HTMLLIElement>({ itemKey: 'child-1' });
       return <li data-label="child" {...props}/>;
     };
     
     const Parent = () => {
-      const { Provider, context, props } = useCollection<HTMLUListElement>();
+      const { collectionId, Provider, context, props } = useCollection<HTMLUListElement>();
+      capturedId = collectionId;
       return (
         <Provider value={context}>
           <ul data-label="parent" {...props}>
@@ -253,16 +254,19 @@ describe('useCollection / useCollectionItem integration', () => {
     
     render(<Parent/>);
     
-    expect(screen.getByTestId('child')).toHaveAttribute('data-bk-coll-item', 'child-1');
+    expect(screen.getByTestId('child')).toHaveAttribute(`data-bk-coll-${capturedId}-item`, 'child-1');
     expect(capturedStore).not.toBeNull();
     
     if (capturedStore === null) { throw new Error(`Should not happen`); }
     expect(capturedStore.getState().collectionItemKeys()).toContain('child-1');
   });
   
-  it('useCollection props carry a data-bk-coll-id attribute', () => {
+  it('useCollection props carry a data-bk-coll-<coll-id> attribute', () => {
+    let capturedId = null as null | string;
+    
     const Parent = () => {
-      const { Provider, context, props } = useCollection<HTMLDivElement>();
+      const { collectionId, Provider, context, props } = useCollection<HTMLDivElement>();
+      capturedId = collectionId;
       return (
         <Provider value={context}>
           <div data-label="parent" {...props}/>
@@ -271,7 +275,7 @@ describe('useCollection / useCollectionItem integration', () => {
     };
     
     render(<Parent/>);
-    expect(screen.getByTestId('parent')).toHaveAttribute('data-bk-coll-id');
+    expect(screen.getByTestId('parent')).toHaveAttribute(`data-bk-coll-${capturedId}`, '');
   });
   
   it('onItemsChange fires with correct keys after children mount', () => {

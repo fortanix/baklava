@@ -167,8 +167,8 @@ export const MenuGroupSelect = Object.assign(
     const { store, ...listBoxStore } = useListBox<React.ComponentRef<typeof MenuList>>({
       state: selected,
       defaultState: defaultSelected,
-      defaultStateFallback: null,
       onStateChange: onSelectedChange,
+      defaultStateFallback: null,
     });
     const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
     
