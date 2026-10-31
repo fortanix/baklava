@@ -24,8 +24,7 @@ import { Tag } from '../../text/Tag/Tag.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { Input } from '../../forms/controls/Input/Input.tsx';
 import { CheckboxGroup } from '../../forms/controls/CheckboxGroup/CheckboxGroup.tsx';
-import { MenuProvider } from '../../overlays/MenuProvider/MenuProvider.tsx';
-import { type MenuProviderRef } from '../../overlays/MenuMultiProvider/MenuMultiProvider.tsx';
+import { type MenuProviderRef, MenuProvider } from '../../overlays/MenuProvider/MenuProvider.tsx';
 import { DateTimeInput } from '../../forms/controls/datetime/DateTimeInput/DateTimeInput.tsx';
 
 import * as FQ from './filterQuery.ts';
@@ -395,8 +394,8 @@ export const Suggestions = (props: SuggestionProps) => {
 
   const dropdownRef = React.useRef<MenuProviderRef>(null);
 
-  const handleOpenChange = (open: boolean) => {
-    if (!open) onOutsideClick?.();
+  const handleOpenChange = ({ open }: { open: boolean }) => {
+    if (!open) { onOutsideClick?.(); }
   };
 
   return (
