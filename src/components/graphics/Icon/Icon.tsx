@@ -45,15 +45,27 @@ export type IconProps = React.PropsWithChildren<ComponentProps<'svg'> & {
 }>;
 
 type IconEventProps = Omit<IconProps, 'icon'> & {
-  event: 'warning', // TODO: add other event types such as: success, error
+  event: 'error' | 'info' | 'success' | 'warning',
 };
 /**
  * A variant of `Icon` for common "event" types like warning/success. Comes with predefined colors based on the event
  * type (e.g. green for success, orange for warning).
  */
 const Event = ({ event, ...propsRest }: IconEventProps) => {
-  // FIXME: currently `warning` is hardcoded to refer to `warning-filled`
-  const icon = event === 'warning' ? 'warning-filled' : event;
+  let icon: IconName;
+  
+  switch (event) {
+    case 'error':
+      icon = 'status-failed-filled'; break;
+    case 'info':
+      icon = 'info-filled'; break;
+    case 'success':
+      icon = 'status-success-filled'; break;
+    case 'warning':
+      icon = 'warning-filled'; break;
+    default:
+      throw new Error(`Unexpected icon '${event satisfies never}'`);
+  }
   
   return (
     <Icon {...propsRest} className={cx(cl[`bk-icon-event--${event}`], propsRest.className)} icon={icon}/>

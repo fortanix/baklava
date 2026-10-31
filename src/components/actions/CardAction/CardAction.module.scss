@@ -19,6 +19,7 @@
     position: relative;
     
     padding-inline: bk.$spacing-7;
+    padding-block-end: bk.$spacing-4;
     
     // If there is only the action, make the padding symmetric (to center the action)
     &:has(> .bk-card-action__action:only-child) {

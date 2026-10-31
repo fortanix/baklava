@@ -8,7 +8,7 @@ import * as fs from 'node:fs';
 
 const packageConfig = {
   name: '@fortanix/baklava',
-  version: '1.0.0-beta-20260923',
+  version: '1.0.0-beta-20261029',
   license: 'MPL-2.0',
   author: 'Fortanix',
   description: 'Fortanix Baklava design system',
@@ -25,9 +25,9 @@ const packageConfig = {
   sideEffects: ['*.css'],
   type: 'module',
   engines: {
-  node: '>=26.4.0',
-  npm: '>=11.17.0',
-},
+    node: '>=26.12.1',
+    npm: '>=11.17.0',
+  },
   allowScripts: {
     '@parcel/watcher': true,
     'esbuild': true,

@@ -3,6 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
+import { mergeProps } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ClassNameArgument, type ComponentProps } from '../../../../util/componentUtil.ts';
 import type * as ReactTable from 'react-table';
 
@@ -441,8 +442,11 @@ export const DataTable = <D extends object>(props: DataTableProps<D>) => {
         )}
       >
         <table
-          {...table.getTableProps()}
-          className={cx(cl['bk-data-table__table'], props.className)}
+          {...mergeProps(
+            table.getTableProps(),
+            { className: cx(cl['bk-data-table__table']) },
+            propsRest,
+          )}
         >
           {customColGroup}
           

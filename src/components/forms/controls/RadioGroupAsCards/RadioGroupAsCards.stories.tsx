@@ -29,7 +29,7 @@ export default {
   },
   args: {
     'aria-label': 'Choose a color',
-    onUpdate: selected => { console.log('update', selected); },
+    onSelectedChange: selected => { console.log('update', selected); },
     defaultSelected: 'red',
     children: (
       <>
@@ -113,7 +113,7 @@ const RadioGroupAsCardsControlledC = (props: RadioGroupAsCardsControlledProps) =
   return (
     <>
       <p>Selected color: {selectedButton ?? <em>none</em>}</p>
-      <RadioGroupAsCards {...props} selected={selectedButton} onUpdate={setSelectedButton} />
+      <RadioGroupAsCards {...props} selected={selectedButton} onSelectedChange={setSelectedButton} />
       <Button label="Update state" onPress={() => { setSelectedButton('blue'); }} />
     </>
   );

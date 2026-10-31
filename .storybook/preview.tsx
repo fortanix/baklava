@@ -112,6 +112,7 @@ const preview = {
                   'CheckboxTri',
                 ],
                 'CheckboxGroup',
+                'CheckboxGroupAsCards',
                 'Switch',
                 'Radio',
                 'RadioGroup',

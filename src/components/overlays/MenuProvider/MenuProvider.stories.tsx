@@ -9,6 +9,7 @@ import * as React from 'react';
 import { notify } from '../ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
 
 import { type ItemKey, type MenuProviderRef, MenuProvider } from './MenuProvider.tsx';
 
@@ -184,4 +185,34 @@ const MenuProviderWithRefC = (props: React.ComponentProps<typeof MenuProvider>) 
 };
 export const MenuProviderWithRef: Story = {
   render: args => <MenuProviderWithRefC {...args}/>,
+};
+
+const CustomImage = ({ id }: React.ComponentProps<typeof Icon>) => (
+  <img
+    alt=""
+    src={`https://picsum.photos/id/${id}/200/300`}
+    // Consumer should be responsible of providing a sensible styling
+    style={{ objectFit: 'cover', inlineSize: '1.3em', blockSize: '1.3em' }}
+  />
+);
+export const MenuWithCustomIcons: Story = {
+  args: {
+    items: (
+      <>
+        {Object.entries(fruits).map(([fruitKey, fruitName], index) =>
+          <MenuProvider.Option
+            key={fruitKey}
+            itemKey={fruitKey}
+            label={fruitName}
+            // TODO: `icon` should not be needed when a custom `Icon` is used.
+            // Revisit this custom icon condition once this PR is merged:
+            // https://github.com/fortanix/baklava/pull/686
+            Icon={CustomImage}
+            iconProps={{ id: String(index) }}
+            icon="account"
+          />
+        )}
+      </>
+    ),
+  }
 };

@@ -78,15 +78,15 @@ const RadioGroupCard = (props: RadioGroupCardProps) => {
     <CardAction
       {...propsRest}
       className={cx(
-        propsRest.className,
         cl['bk-radio-group-as-cards__card'],
         { [cl['bk-radio-group-as-cards__card--selected']]: isSelected },
+        propsRest.className,
       )}
       selected={isSelected}
       onClick={() => { context.selectCard(cardKey); }}
     >
       {isSelected && (
-        <div className={cx(cl['bk-radio-group-as-cards__indicator'])}>
+        <div className={cx('bk-theme--dark', cl['bk-radio-group-as-cards__indicator'])}>
           <Icon icon="check" />
         </div>
       )}
@@ -110,19 +110,22 @@ const RadioGroupCard = (props: RadioGroupCardProps) => {
 export type RadioGroupAsCardsProps = ComponentProps<'div'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
-
+  
   /** The default card to select. Only relevant for uncontrolled usage (`selected` is `undefined`). */
   defaultSelected?: undefined | CardKey,
-
+  
   /** The card to select. If `undefined`, this component will be considered uncontrolled. */
   selected?: undefined | CardKey,
-
-  /** Event handler for radio group card change events. */
+    
+  /** Event handler for segmented control card change events. */
+  onSelectedChange?: (cardKey: CardKey) => void,
+  
+  /** Event handler for radio group card card change events. @deprecated Use `onSelectedChange` instead. */
   onUpdate?: undefined | ((cardKey: CardKey) => void),
-
+  
   /** Whether the radio group is disabled or not. Default: false. */
   disabled?: undefined | boolean,
-
+  
   /** Any additional props to apply to the internal `<input type="hidden"/>`. */
   inputProps?: undefined | Omit<React.ComponentProps<'input'>, 'value' | 'onChange'>,
 };
@@ -137,25 +140,28 @@ export const RadioGroupAsCards = Object.assign(
       defaultSelected,
       selected,
       disabled = false,
+      onSelectedChange,
       onUpdate,
       inputProps = {},
       ...propsRest
     } = props;
-
-    if (typeof selected !== 'undefined' && !onUpdate) {
-      console.warn(`Using RadioGroupAsCards as uncontrolled component, but missing 'onChange' callback.`);
+    
+    const onSelectedChangeCallback = onSelectedChange ?? onUpdate;
+    
+    if (typeof selected !== 'undefined' && !onSelectedChangeCallback) {
+      console.warn(`Using RadioGroupAsCards as a controlled component, but missing 'onSelectedChange' callback.`);
     }
-
+    
     const cardDefsRef = React.useRef<Map<CardKey, CardDef>>(new Map());
     const [selectedCard, setSelectedCard] = React.useState<undefined | CardKey>(selected ?? defaultSelected);
-
+    
     // Sync `selected` prop to internal state
     React.useEffect(() => {
       if (typeof selected !== 'undefined') {
         setSelectedCard(selected);
       }
     }, [selected]);
-
+    
     //TODO: this register callback won't work if two already-rendered items are swapped.
     const register = React.useCallback((cardDef: CardDef) => {
       const cardDefs = cardDefsRef.current;
@@ -169,7 +175,7 @@ export const RadioGroupAsCards = Object.assign(
         cardDefsRef.current.delete(cardDef.cardKey);
       };
     }, []);
-
+    
     const selectCard = React.useCallback((cardKey: CardKey) => {
       setSelectedCard(selectedCard => {
         if (cardKey !== selectedCard) {
@@ -188,14 +194,14 @@ export const RadioGroupAsCards = Object.assign(
       const isInitial = typeof selectedCardPrev === 'undefined';
       
       if (isDefined && !isInitial) {
-        onUpdate?.(selectedCard);
+        onSelectedChangeCallback?.(selectedCard);
       }
     }, [selectedCard]);
     
     // After initial rendering, check whether `defaultSelected` refers to one of the rendered cards
     useEffectOnce(() => {
       if (typeof defaultSelected === 'undefined') { return; }
-
+      
       const cardDef: undefined | CardDef = cardDefsRef.current.get(defaultSelected);
       if (typeof cardDef === 'undefined' || cardDef.radioRef.current === null) {
         console.error(`Unable to find a card matching the specified defaultSelected: ${defaultSelected}`);
@@ -203,29 +209,29 @@ export const RadioGroupAsCards = Object.assign(
         console.error(`Default card is not focusable: ${defaultSelected}`);
       }
     });
-
+    
     const context = React.useMemo<RadioGroupAsCardsContext>(() => ({
       register,
       selectedCard,
       selectCard,
       disabled,
     }), [register, selectedCard, selectCard, disabled]);
-
+    
     const handleKeyDown = React.useCallback((event: React.KeyboardEvent) => {
       const selectedCard = context.selectedCard;
       if (typeof selectedCard === 'undefined') { return; }
-
+      
       // Get the list of card keys, ideally in the order that they are displayed to the user.
       // Filter only the cards that are (programmatically) focusable.
       const cardKeys: Array<CardKey> = [...cardDefsRef.current.entries()]
         .filter(([_, { radioRef }]) => radioRef.current && isItemProgrammaticallyFocusable(radioRef.current))
         .map(([cardKey]) => cardKey);
-
+      
       const cardIndex: number = cardKeys.indexOf(selectedCard);
       if (cardIndex < 0) {
         console.error(`Could not resolve selected card: '${selectedCard}'`);
       }
-
+      
       // Determine the target card to focus based on the keyboard event (if any)
       const cardTarget = ((): null | CardKey => {
         switch (event.key) {
@@ -254,13 +260,13 @@ export const RadioGroupAsCards = Object.assign(
           default: return null;
         }
       })();
-
+      
       if (cardTarget !== null && cardTarget !== context.selectedCard) {
         event.preventDefault();
         context.selectCard(cardTarget);
       }
     }, [context]);
-
+    
     return (
       <RadioGroupAsCardsContext value={context}>
         <div
