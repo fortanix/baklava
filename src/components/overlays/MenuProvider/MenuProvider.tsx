@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { classNames as cx } from '../../../util/componentUtil.ts';
-import { mergeCallbacks, mergeRefs, mergeProps } from '../../../util/reactUtil.ts';
+import { mergeCallbacks, mergeRefs, mergeProps, usePrevious } from '../../../util/reactUtil.ts';
 import { useControllableStateFromProps } from '../../../util/hooks/useControllableState.ts';
 
 // Components
@@ -188,6 +188,18 @@ export const MenuProvider = Object.assign(
         stateFromEvent: state => state,
       },
     );
+    
+    // Close when the user selects an option
+    // FIXME: this might be ambiguous? We're not 100% sure here if this came through a user request or sth programmatic
+    const prevSelectedState = usePrevious(selectedState);
+    React.useEffect(() => {
+      if ((typeof prevSelectedState === 'undefined' || selectedState !== prevSelectedState) && openState === true) {
+        // Have a small timeout so the user gets visual feedback for their selection (e.g. CSS animation)
+        window.setTimeout(() => {
+          requestOpenChange({ open: false });
+        }, 150);
+      }
+    }, [prevSelectedState, selectedState, openState, requestOpenChange]);
     
     // Allow passing a ref to control the state of the menu imperatively
     React.useImperativeHandle(ref, () => ({

@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { classNames as cx } from '../../../util/componentUtil.ts';
-import { mergeCallbacks, mergeRefs, mergeProps } from '../../../util/reactUtil.ts';
+import { mergeCallbacks, mergeRefs, mergeProps, usePrevious } from '../../../util/reactUtil.ts';
 import { useControllableStateFromProps } from '../../../util/hooks/useControllableState.ts';
 
 // Components
@@ -92,156 +92,170 @@ export type ListBoxProviderProps =
 /**
  * Wrapper around a trigger that provides an anchored popover listbox with single selection.
  */
-export const ListBoxProvider = Object.assign((props: ListBoxProviderProps) => {
-  const {
-    defaultSelected,
-    selected,
-    onSelectedChange,
-    open,
-    defaultOpen,
-    onOpenChange,
-    
-    ref,
-    anchorRef,
-    label,
-    children,
-    items,
-    menuSize,
-    
-    // Floating element props
-    role = 'listbox',
-    triggerAction,
-    keyboardInteractions,
-    placement,
-    offset,
-    popoverBehavior,
-    enablePreciseTracking,
-    
-    ...propsRest
-  } = props;
-  
-  const menuId = React.useId();
-  const menuRef = React.useRef<React.ComponentRef<typeof ListBox>>(null);
-  
-  const trackOpenChange = React.useCallback((event: OpenChangeEvent) => {
-    // Timeout to wait for the menu to render (and `menuRef` to be populated)
-    window.setTimeout(() => {
-      if (!event.open) { return; }
+export const ListBoxProvider = Object.assign(
+  (props: ListBoxProviderProps) => {
+    const {
+      defaultSelected,
+      selected,
+      onSelectedChange,
+      open,
+      defaultOpen,
+      onOpenChange,
       
-      // If the menu opened due to a `list-navigation` event, auto-focus the relevant item
-      if (event.reason === 'list-navigation-first') {
-        menuRef.current?._bkFocusFirst();
-      } else if (event.reason === 'list-navigation-last') {
-        menuRef.current?._bkFocusLast();
+      ref,
+      anchorRef,
+      label,
+      children,
+      items,
+      menuSize,
+      
+      // Floating element props
+      role = 'listbox',
+      triggerAction,
+      keyboardInteractions,
+      placement,
+      offset,
+      popoverBehavior,
+      enablePreciseTracking,
+      
+      ...propsRest
+    } = props;
+    
+    const menuId = React.useId();
+    const menuRef = React.useRef<React.ComponentRef<typeof ListBox>>(null);
+    
+    const trackOpenChange = React.useCallback((event: OpenChangeEvent) => {
+      // Timeout to wait for the menu to render (and `menuRef` to be populated)
+      window.setTimeout(() => {
+        if (!event.open) { return; }
+        
+        // If the menu opened due to a `list-navigation` event, auto-focus the relevant item
+        if (event.reason === 'list-navigation-first') {
+          menuRef.current?._bkFocusFirst();
+        } else if (event.reason === 'list-navigation-last') {
+          menuRef.current?._bkFocusLast();
+        }
+      }, 0);
+    }, []);
+    
+    const {
+      isMounted,
+      isOpen: openState,
+      requestOpenChange,
+      refs,
+      getReferenceProps,
+      getFloatingProps,
+      floatingStyles,
+      placement: floatingPlacement,
+    } = useFloatingMenu({
+      role,
+      popoverBehavior,
+      triggerAction,
+      keyboardInteractions,
+      placement,
+      offset,
+      enablePreciseTracking,
+      open,
+      onOpenChange: mergeCallbacks([onOpenChange, trackOpenChange]),
+    });
+    // Use external element as the reference, if provided
+    React.useLayoutEffect(() => {
+      if (anchorRef?.current) {
+        refs.setReference(anchorRef.current);
       }
-    }, 0);
-  }, []);
-  
-  const {
-    isMounted,
-    isOpen: openState,
-    requestOpenChange,
-    refs,
-    getReferenceProps,
-    getFloatingProps,
-    floatingStyles,
-    placement: floatingPlacement,
-  } = useFloatingMenu({
-    role,
-    popoverBehavior,
-    triggerAction,
-    keyboardInteractions,
-    placement,
-    offset,
-    enablePreciseTracking,
-    open,
-    onOpenChange: mergeCallbacks([onOpenChange, trackOpenChange]),
-  });
-  // Use external element as the reference, if provided
-  React.useLayoutEffect(() => {
-    if (anchorRef?.current) {
-      refs.setReference(anchorRef.current);
-    }
-  }, [anchorRef, refs]);
-  
-  // Track `selected` state
-  const {
-    state: selectedState,
-    requestStateChange: requestSelectedChange,
-  } = useControllableStateFromProps<SelectedState>(
-    {
-      state: selected,
-      defaultState: defaultSelected,
-      onStateChange: onSelectedChange,
-    },
-    {
-      debugName: 'ListBoxProvider',
-      propName: 'selected',
-      stateFromEvent: state => state,
-      defaultStateFallback: null,
-    },
-  );
-  
-  // Allow passing a ref to control the state of the menu imperatively
-  React.useImperativeHandle(ref, () => ({
-    open: openState,
-    requestOpenChange,
-    selected: selectedState,
-    requestSelectedChange,
-    // FIXME: also expose the element references?
-    //get anchorEl() { return anchorRef.current; },
-    //get floatingEl() { return floatingRef.current; },
-  }), [openState, requestOpenChange, selectedState, requestSelectedChange]);
-  
-  
-  // Render popover
-  const floatingProps = getFloatingProps({
-    style: floatingStyles,
-    className: cx(cl['bk-list-box-provider__popover']),
-  });
-  const popover = isMounted && (
-    <ListBox
-      {...mergeProps(
-        floatingProps,
-        propsRest,
-        { ref: mergeRefs<React.ComponentRef<typeof ListBox>>(menuRef, refs.setFloating) },
-      )}
-      size={menuSize}
-      label={label}
-      selected={selectedState}
-      //defaultSelected={defaultSelected} // Do not pass: `selectedState` is always controlled
-      onSelectedChange={requestSelectedChange}
-      data-placement={floatingPlacement}
-    >
-      {typeof items === 'function'
-        ? items({ close: () => { requestOpenChange({ open: false }); } })
-        : items
+    }, [anchorRef, refs]);
+    
+    // Track `selected` state
+    const {
+      state: selectedState,
+      requestStateChange: requestSelectedChange,
+    } = useControllableStateFromProps<SelectedState>(
+      {
+        state: selected,
+        defaultState: defaultSelected,
+        onStateChange: onSelectedChange,
+      },
+      {
+        debugName: 'ListBoxProvider',
+        propName: 'selected',
+        stateFromEvent: state => state,
+        defaultStateFallback: null,
+      },
+    );
+    
+    // Close when the user selects an option
+    // FIXME: this might be ambiguous? We're not 100% sure here if this came through a user request or sth programmatic
+    const prevSelectedState = usePrevious(selectedState);
+    React.useEffect(() => {
+      if ((typeof prevSelectedState === 'undefined' || selectedState !== prevSelectedState) && openState === true) {
+        // Have a small timeout so the user gets visual feedback for their selection (e.g. CSS animation)
+        window.setTimeout(() => {
+          requestOpenChange({ open: false });
+        }, 150);
       }
-    </ListBox>
-  );
-  
-  // Render anchor
-  const getRenderArgs = React.useCallback((base: BaseAnchorRenderArgs): AnchorRenderArgs => ({
-    ...base,
-    selectedOption: selectedState,
-  }), [selectedState]);
-  const { anchor } = useMenuAnchor({
-    children,
-    isOpen: openState,
-    requestOpenChange,
-    menuId,
-    getReferenceProps,
-    refs,
-    getRenderArgs,
-  });
-  
-  return (
-    <>
-      {anchor}
-      {popover}
-    </>
-  );
-}, {
+    }, [prevSelectedState, selectedState, openState, requestOpenChange]);
+    
+    // Allow passing a ref to control the state of the menu imperatively
+    React.useImperativeHandle(ref, () => ({
+      open: openState,
+      requestOpenChange,
+      selected: selectedState,
+      requestSelectedChange,
+      // FIXME: also expose the element references?
+      //get anchorEl() { return anchorRef.current; },
+      //get floatingEl() { return floatingRef.current; },
+    }), [openState, requestOpenChange, selectedState, requestSelectedChange]);
+    
+    
+    // Render popover
+    const floatingProps = getFloatingProps({
+      style: floatingStyles,
+      className: cx(cl['bk-list-box-provider__popover']),
+    });
+    const popover = isMounted && (
+      <ListBox
+        {...mergeProps(
+          floatingProps,
+          propsRest,
+          { ref: mergeRefs<React.ComponentRef<typeof ListBox>>(menuRef, refs.setFloating) },
+        )}
+        size={menuSize}
+        label={label}
+        selected={selectedState}
+        //defaultSelected={defaultSelected} // Do not pass: `selectedState` is always controlled
+        onSelectedChange={requestSelectedChange}
+        data-placement={floatingPlacement}
+      >
+        {typeof items === 'function'
+          ? items({ close: () => { requestOpenChange({ open: false }); } })
+          : items
+        }
+      </ListBox>
+    );
+    
+    // Render anchor
+    const getRenderArgs = React.useCallback((base: BaseAnchorRenderArgs): AnchorRenderArgs => ({
+      ...base,
+      selectedOption: selectedState,
+    }), [selectedState]);
+    const { anchor } = useMenuAnchor({
+      children,
+      isOpen: openState,
+      requestOpenChange,
+      menuId,
+      getReferenceProps,
+      refs,
+      getRenderArgs,
+    });
+    
+    return (
+      <>
+        {anchor}
+        {popover}
+      </>
+    );
+  },
+  {
     Option: ListBox.Option,
     Static: ListBox.Static,
     Segment: ListBox.Segment,
