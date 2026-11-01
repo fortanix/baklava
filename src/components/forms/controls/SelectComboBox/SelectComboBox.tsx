@@ -11,6 +11,7 @@ import { Input as InputDefault } from '../Input/Input.tsx';
 import {
   type ItemKey,
   type SelectedState,
+  type ListBoxProviderRef,
   ListBoxProvider,
 } from '../../../overlays/ListBoxProvider/ListBoxProvider.tsx';
 
@@ -65,8 +66,8 @@ export type SelectComboBoxProps = Omit<SelectInputProps, 'value' | 'defaultValue
   },
 };
 /**
- * A `SelectComboBox` is a combobox with an input as anchor (displaying the currently selected item), and a
- * single-select listbox as popover from which the user can select an item.
+ * A combobox with an input as anchor (displaying the currently selected item), and a single-select listbox as popover
+ * from which the user can select an option.
  * 
  * References:
  * - [1] https://www.w3.org/WAI/ARIA/apg/patterns/combobox
@@ -97,6 +98,8 @@ export const SelectComboBox = Object.assign(
     
     const InputAction = Input.Action ?? InputDefault.Action;
     
+    const listBoxProviderRef = React.useRef<ListBoxProviderRef>(null);
+    
     const { state: filterState, requestStateChange: updateFilterState } = useControllableStateFromProps<string>(
       {
         state: filter,
@@ -125,15 +128,15 @@ export const SelectComboBox = Object.assign(
       }
     }, [formatSelected]);
     
+    // FIXME: this doesn't cover the case where focus is in the popover and we close it (e.g. click outside)
     const handleInputBlur = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-      // FIXME: `selected` here should come from `ListBoxProvider` (use a `ref`?)
-      const sel = typeof selected !== 'undefined' ? selected : (defaultSelected ?? null);
-      console.log('x', sel);
-      updateFilterState(sel === null ? valueFromSelected(sel) : '');
-    }, [valueFromSelected, updateFilterState, defaultSelected, selected]);
+      const selected = listBoxProviderRef.current?.selected ?? null;
+      //updateFilterState(selected !== null ? valueFromSelected(selected) : '');
+    }, [valueFromSelected, updateFilterState]);
     
     return (
       <ListBoxProvider
+        ref={listBoxProviderRef}
         label={label}
         items={options}
         triggerAction="combobox"
@@ -153,7 +156,7 @@ export const SelectComboBox = Object.assign(
               automaticResize: true,
               placeholder: 'Select an option',
               'aria-disabled': true,
-              className: cx(cl['bk-select-combo-box'], { [cl['bk-select-combo-box--open']]: open }),
+              className: cx(cl['bk-select-combo-box']),
               formValue: selectedOption ?? undefined,
               actions: (
                 <InputAction
@@ -169,7 +172,7 @@ export const SelectComboBox = Object.assign(
             },
             propsRest,
             {
-              value: filter,
+              value: filterState,
               onChange: handleInputChange,
               onBlur: handleInputBlur,
             },
@@ -178,15 +181,16 @@ export const SelectComboBox = Object.assign(
           return (
             <Input
               {...propsAnchor}
+              ref={anchorRef} // TEMP
               inputProps={mergeProps(
                 { className: cx(cl['bk-select-combo-box__input']) },
                 inputProps,
               )}
-              containerProps={mergeProps(
-                // Anchor the dropdown to the container, not the inner input
-                { ref: anchorRef },
-                containerProps,
-              )}
+              // containerProps={mergeProps(
+              //   // Anchor the dropdown to the container, not the inner input
+              //   { ref: anchorRef },
+              //   containerProps,
+              // )}
             />
           );
         }}

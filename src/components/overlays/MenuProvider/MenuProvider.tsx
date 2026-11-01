@@ -90,7 +90,7 @@ export type MenuProviderProps =
     enablePreciseTracking?: undefined | UseFloatingMenuOptions['enablePreciseTracking'],
   };
 /**
- * Provider
+ * Wrapper around a menu trigger that provides an anchored popover menu with single selection.
  */
 export const MenuProvider = Object.assign(
   (props: MenuProviderProps) => {
@@ -158,6 +158,12 @@ export const MenuProvider = Object.assign(
       open,
       onOpenChange: mergeCallbacks([onOpenChange, trackOpenChange]),
     });
+    // Use external element as the reference, if provided
+    React.useLayoutEffect(() => {
+      if (anchorRef?.current) {
+        refs.setReference(anchorRef.current);
+      }
+    }, [anchorRef, refs]);
     
     const trackSelectedChange = React.useCallback((_selected: SelectedSingleState) => {
       if (openState) {
@@ -195,15 +201,37 @@ export const MenuProvider = Object.assign(
     }), [openState, requestOpenChange, selectedState, requestSelectedChange]);
     
     
-    //
-    // Rendering
-    //
+    // Render popover
+    const floatingProps = getFloatingProps({
+      style: floatingStyles,
+      className: cx(cl['bk-menu-provider__popover']),
+    });
+    const popover = isMounted && (
+      <MenuSelect
+        {...mergeProps(
+          floatingProps,
+          propsRest,
+          { ref: mergeRefs<React.ComponentRef<typeof MenuSelect>>(menuRef, refs.setFloating) },
+        )}
+        size={menuSize}
+        label={label}
+        selected={selectedState}
+        //defaultSelected={defaultSelected} // Do not pass: `selectedState` is always controlled
+        onSelectedChange={requestSelectedChange}
+        data-placement={floatingPlacement}
+      >
+        {typeof items === 'function'
+          ? items({ close: () => { requestOpenChange({ open: false }); } })
+          : items
+        }
+      </MenuSelect>
+    );
     
+    // Render anchor
     const getRenderArgs = React.useCallback((base: BaseAnchorRenderArgs): AnchorRenderArgs => ({
       ...base,
       selectedOption: selectedState,
     }), [selectedState]);
-    
     const { anchor } = useMenuAnchor({
       children,
       isOpen: openState,
@@ -214,41 +242,10 @@ export const MenuProvider = Object.assign(
       getRenderArgs,
     });
     
-    // Use external element as the reference, if provided
-    React.useLayoutEffect(() => {
-      if (anchorRef?.current) {
-        refs.setReference(anchorRef.current);
-      }
-    }, [anchorRef, refs]);
-    
-    const floatingProps = getFloatingProps({
-      style: floatingStyles,
-      className: cx(cl['bk-menu-provider__popover']),
-    });
-    
     return (
       <>
         {anchor}
-        {isMounted && (
-          <MenuSelect
-            {...mergeProps(
-              floatingProps,
-              propsRest,
-              { ref: mergeRefs<React.ComponentRef<typeof MenuSelect>>(menuRef, refs.setFloating) },
-            )}
-            size={menuSize}
-            label={label}
-            selected={selectedState}
-            defaultSelected={defaultSelected}
-            onSelectedChange={requestSelectedChange}
-            data-placement={floatingPlacement}
-          >
-            {typeof items === 'function'
-              ? items({ close: () => { requestOpenChange({ open: false }); } })
-              : items
-            }
-          </MenuSelect>
-        )}
+        {popover}
       </>
     );
   }, {

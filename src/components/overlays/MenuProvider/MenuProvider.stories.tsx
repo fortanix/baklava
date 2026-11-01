@@ -8,6 +8,7 @@ import * as React from 'react';
 
 import { notify } from '../ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
+import { Input } from '../../forms/controls/Input/Input.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
 
@@ -66,6 +67,14 @@ export default {
 
 export const MenuProviderStandard: Story = {};
 
+/** When using up/down arrow keys, focus should not change in the empty case (since there is focusable element). */
+export const MenuProviderEmpty: Story = {
+  args: {
+    defaultSelected: null,
+    items: null,
+  },
+};
+
 export const MenuProviderWithDefault: Story = {
   args: {
     defaultSelected: 'item-blueberry',
@@ -73,6 +82,17 @@ export const MenuProviderWithDefault: Story = {
 };
 
 export const MenuProviderWithInput: Story = {
+  args: {
+    children: ({ props, selectedOption }) => (
+      <Input {...props()}
+        value={selectedOption !== null ? `Selected: ${formatFruitLabel(selectedOption)}` : 'Open dropdown'}
+        onChange={() => {}}
+      />
+    ),
+  },
+};
+
+export const MenuProviderWithInputMenuItem: Story = {
   args: {
     items: (
       <>
@@ -84,7 +104,7 @@ export const MenuProviderWithInput: Story = {
         <MenuProvider.Option itemKey="option-2" label="Option 2"/>
       </>
     ),
-  }
+  },
 };
 
 export const MenuProviderWithPlacement: Story = {

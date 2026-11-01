@@ -239,6 +239,7 @@ export const ListBoxMulti = Object.assign(
           role="listbox"
           aria-multiselectable="true"
           unstyled={unstyled}
+          placeholderEmpty="No options available"
           {...mergeProps(
             { ref: listBoxRef },
             listBoxStore.props,

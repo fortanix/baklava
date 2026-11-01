@@ -69,6 +69,14 @@ export default {
 
 export const MenuMultiProviderStandard: Story = {};
 
+/** When using up/down arrow keys, focus should not change in the empty case (since there is focusable element). */
+export const MenuMultiProviderEmpty: Story = {
+  args: {
+    defaultSelected: new Set(),
+    items: null,
+  },
+};
+
 export const MenuMultiProviderWithDefault: Story = {
   args: {
     defaultSelected: new Set(['item-blueberry', 'item-cherry', 'item-mango']),

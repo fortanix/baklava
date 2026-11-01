@@ -89,6 +89,9 @@ export type ListBoxMultiProviderProps =
     /** Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
     enablePreciseTracking?: undefined | UseFloatingMenuOptions['enablePreciseTracking'],
   };
+/**
+ * Wrapper around a trigger that provides an anchored popover listbox with multiple selection.
+ */
 export const ListBoxMultiProvider = Object.assign((props: ListBoxMultiProviderProps) => {
   const {
     defaultSelected,
@@ -154,6 +157,12 @@ export const ListBoxMultiProvider = Object.assign((props: ListBoxMultiProviderPr
     open,
     onOpenChange: mergeCallbacks([onOpenChange, trackOpenChange]),
   });
+  // Use external element as the reference, if provided
+  React.useLayoutEffect(() => {
+    if (anchorRef?.current) {
+      refs.setReference(anchorRef.current);
+    }
+  }, [anchorRef, refs]);
   
   // Track `selected` state
   const {
@@ -185,15 +194,37 @@ export const ListBoxMultiProvider = Object.assign((props: ListBoxMultiProviderPr
   }), [openState, requestOpenChange, selectedState, requestSelectedChange]);
   
   
-  //
-  // Rendering
-  //
+  // Render popover
+  const floatingProps = getFloatingProps({
+    style: floatingStyles,
+    className: cx(cl['bk-list-box-multi-provider__popover']),
+  });
+  const popover = isMounted && (
+    <ListBoxMulti
+      {...mergeProps(
+        floatingProps,
+        propsRest,
+        { ref: mergeRefs<React.ComponentRef<typeof ListBoxMulti>>(menuRef, refs.setFloating) },
+      )}
+      size={menuSize}
+      label={label}
+      selected={selectedState}
+      //defaultSelected={defaultSelected} // Do not pass: `selectedState` is always controlled
+      onSelectedChange={requestSelectedChange}
+      data-placement={floatingPlacement}
+    >
+      {typeof items === 'function'
+        ? items({ close: () => { requestOpenChange({ open: false }); } })
+        : items
+      }
+    </ListBoxMulti>
+  );
   
+  // Render anchor
   const getRenderArgs = React.useCallback((base: BaseAnchorRenderArgs): AnchorRenderArgs => ({
     ...base,
     selectedOptions: selectedState,
   }), [selectedState]);
-  
   const { anchor } = useMenuAnchor({
     children,
     isOpen: openState,
@@ -204,41 +235,10 @@ export const ListBoxMultiProvider = Object.assign((props: ListBoxMultiProviderPr
     getRenderArgs,
   });
   
-  // Use external element as the reference, if provided
-  React.useLayoutEffect(() => {
-    if (anchorRef?.current) {
-      refs.setReference(anchorRef.current);
-    }
-  }, [anchorRef, refs]);
-  
-  const floatingProps = getFloatingProps({
-    style: floatingStyles,
-    className: cx(cl['bk-list-box-multi-provider__popover']),
-  });
-  
   return (
     <>
       {anchor}
-      {isMounted && (
-        <ListBoxMulti
-          {...mergeProps(
-            floatingProps,
-            propsRest,
-            { ref: mergeRefs<React.ComponentRef<typeof ListBoxMulti>>(menuRef, refs.setFloating) },
-          )}
-          size={menuSize}
-          label={label}
-          selected={selectedState}
-          defaultSelected={defaultSelected}
-          onSelectedChange={requestSelectedChange}
-          data-placement={floatingPlacement}
-        >
-          {typeof items === 'function'
-            ? items({ close: () => { requestOpenChange({ open: false }); } })
-            : items
-          }
-        </ListBoxMulti>
-      )}
+      {popover}
     </>
   );
 }, {

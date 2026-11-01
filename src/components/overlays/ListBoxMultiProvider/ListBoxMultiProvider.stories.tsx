@@ -7,6 +7,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import * as React from 'react';
 
 import { Button } from '../../actions/Button/Button.tsx';
+import { Input } from '../../forms/controls/Input/Input.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 
 import { type ItemKey, ListBoxMultiProvider } from './ListBoxMultiProvider.tsx';
@@ -68,13 +69,32 @@ export default {
 
 export const ListBoxMultiProviderStandard: Story = {};
 
+/** When using up/down arrow keys, focus should not change in the empty case (since there is focusable element). */
+export const ListBoxProviderEmpty: Story = {
+  args: {
+    defaultSelected: new Set(),
+    items: null,
+  },
+};
+
 export const ListBoxMultiProviderWithDefault: Story = {
   args: {
     defaultSelected: new Set(['item-blueberry', 'item-cherry', 'item-mango']),
   },
 };
 
-export const ListBoxMultiProviderWithInput: Story = {
+export const ListBoxProviderWithInput: Story = {
+  args: {
+    children: ({ props, selectedOptions }) => (
+      <Input {...props()}
+        value={selectedOptions.size > 0 ? `Selected: ${selectedOptions.size} options` : 'Open dropdown'}
+        onChange={() => {}}
+      />
+    ),
+  },
+};
+
+export const ListBoxMultiProviderWithInputItem: Story = {
   args: {
     children: ({ props, selectedOptions }) => {
       return (

@@ -7,6 +7,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import * as React from 'react';
 
 import { Button } from '../../actions/Button/Button.tsx';
+import { Input } from '../../forms/controls/Input/Input.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 
 import { type ItemKey, ListBoxProvider } from './ListBoxProvider.tsx';
@@ -64,18 +65,37 @@ export default {
 
 export const ListBoxProviderStandard: Story = {};
 
+/** When using up/down arrow keys, focus should not change in the empty case (since there is focusable element). */
+export const ListBoxProviderEmpty: Story = {
+  args: {
+    defaultSelected: null,
+    items: null,
+  },
+};
+
 export const ListBoxProviderWithDefault: Story = {
   args: {
     defaultSelected: 'item-blueberry',
   },
 };
 
-const formatListBoxProviderWithInput = (itemKey: string) => itemKey.replace('option-', 'Option ');
 export const ListBoxProviderWithInput: Story = {
   args: {
     children: ({ props, selectedOption }) => (
+      <Input {...props()}
+        value={selectedOption !== null ? `Selected: ${formatFruitLabel(selectedOption)}` : 'Open dropdown'}
+        onChange={() => {}}
+      />
+    ),
+  },
+};
+
+const formatListBoxProviderWithInputItem = (itemKey: string) => itemKey.replace('option-', 'Option ');
+export const ListBoxProviderWithInputItem: Story = {
+  args: {
+    children: ({ props, selectedOption }) => (
       <Button kind="primary" {...props()}>
-        {selectedOption !== null ? `Selected: ${formatListBoxProviderWithInput(selectedOption)}` : 'Open dropdown'}
+        {selectedOption !== null ? `Selected: ${formatListBoxProviderWithInputItem(selectedOption)}` : 'Open dropdown'}
       </Button>
     ),
     items: (

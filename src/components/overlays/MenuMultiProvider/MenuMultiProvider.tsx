@@ -90,7 +90,7 @@ export type MenuMultiProviderProps =
     enablePreciseTracking?: undefined | UseFloatingMenuOptions['enablePreciseTracking'],
   };
 /**
- * Provider
+ * Wrapper around a menu trigger that provides an anchored popover menu with multiple selection.
  */
 export const MenuMultiProvider = Object.assign(
   (props: MenuMultiProviderProps) => {
@@ -158,6 +158,12 @@ export const MenuMultiProvider = Object.assign(
       open,
       onOpenChange: mergeCallbacks([onOpenChange, trackOpenChange]),
     });
+    // Use external element as the reference, if provided
+    React.useLayoutEffect(() => {
+      if (anchorRef?.current) {
+        refs.setReference(anchorRef.current);
+      }
+    }, [anchorRef, refs]);
     
     // Track `selected` state
     const {
@@ -189,15 +195,37 @@ export const MenuMultiProvider = Object.assign(
     }), [openState, requestOpenChange, selectedState, requestSelectedChange]);
     
     
-    //
-    // Rendering
-    //
+    // Render popover
+    const floatingProps = getFloatingProps({
+      style: floatingStyles,
+      className: cx(cl['bk-menu-multi-provider__popover']),
+    });
+    const popover = isMounted && (
+      <MenuSelectMulti
+        {...mergeProps(
+          floatingProps,
+          propsRest,
+          { ref: mergeRefs<React.ComponentRef<typeof MenuSelectMulti>>(menuRef, refs.setFloating) },
+        )}
+        size={menuSize}
+        label={label}
+        selected={selectedState}
+        //defaultSelected={defaultSelected} // Do not pass: `selectedState` is always controlled
+        onSelectedChange={requestSelectedChange}
+        data-placement={floatingPlacement}
+      >
+        {typeof items === 'function'
+          ? items({ close: () => { requestOpenChange({ open: false }); } })
+          : items
+        }
+      </MenuSelectMulti>
+    );
     
+    // Render anchor
     const getRenderArgs = React.useCallback((base: BaseAnchorRenderArgs): AnchorRenderArgs => ({
       ...base,
       selectedOptions: selectedState,
     }), [selectedState]);
-    
     const { anchor } = useMenuAnchor({
       children,
       isOpen: openState,
@@ -208,41 +236,10 @@ export const MenuMultiProvider = Object.assign(
       getRenderArgs,
     });
     
-    // Use external element as the reference, if provided
-    React.useLayoutEffect(() => {
-      if (anchorRef?.current) {
-        refs.setReference(anchorRef.current);
-      }
-    }, [anchorRef, refs]);
-    
-    const floatingProps = getFloatingProps({
-      style: floatingStyles,
-      className: cx(cl['bk-menu-multi-provider__popover']),
-    });
-    
     return (
       <>
         {anchor}
-        {isMounted && (
-          <MenuSelectMulti
-            {...mergeProps(
-              floatingProps,
-              propsRest,
-              { ref: mergeRefs<React.ComponentRef<typeof MenuSelectMulti>>(menuRef, refs.setFloating) },
-            )}
-            size={menuSize}
-            label={label}
-            selected={selectedState}
-            defaultSelected={defaultSelected}
-            onSelectedChange={requestSelectedChange}
-            data-placement={floatingPlacement}
-          >
-            {typeof items === 'function'
-              ? items({ close: () => { requestOpenChange({ open: false }); } })
-              : items
-            }
-          </MenuSelectMulti>
-        )}
+        {popover}
       </>
     );
   }, {

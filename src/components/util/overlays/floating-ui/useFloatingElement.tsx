@@ -562,7 +562,8 @@ export const useFloatingElement = <E extends HTMLElement>(
           return undefined;
         }
         
-        if (floatingUiReason === 'list-navigation' && event instanceof KeyboardEvent) {
+        // Note: when Alt is held, the popover should still open but without the focus change
+        if (floatingUiReason === 'list-navigation' && event instanceof KeyboardEvent && !event.altKey) {
           if (event.key === 'ArrowDown') {
             return 'list-navigation-first';
           } else if (event.key === 'ArrowUp') {
