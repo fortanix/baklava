@@ -88,6 +88,9 @@ export type ListBoxMultiProviderProps =
     
     /** Enable more precise tracking of the anchor, at the cost of performance. Default: `false`. */
     enablePreciseTracking?: undefined | UseFloatingMenuOptions['enablePreciseTracking'],
+    
+    /** Event callback that will be called when focus leaves both the anchor and popover. */
+    onContainerFocusOut?: React.FocusEventHandler<Element>,
   };
 /**
  * Wrapper around a trigger that provides an anchored popover listbox with multiple selection.
@@ -117,6 +120,9 @@ export const ListBoxMultiProvider = Object.assign(
       offset,
       popoverBehavior,
       enablePreciseTracking,
+      
+      // Container props
+      onContainerFocusOut, // FIXME
       
       ...propsRest
     } = props;

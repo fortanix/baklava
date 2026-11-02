@@ -57,6 +57,10 @@ export type OpenStateProps = Omit<BaseOpenStateProps, 'onOpenChange'> & {
 };
 
 
+/* Reference: https://github.com/floating-ui/floating-ui/blob/master/website/pages/docs/custom-hooks.mdx */
+
+const noop = () => {};
+
 /**
  * Floating UI interaction hook to sync the `isOpen` state with browser `popover` state.
  */
@@ -103,26 +107,49 @@ const usePopoverInteraction = <E extends HTMLElement>(
 };
 
 
-type UseFocusInteractiveOptions = {
+type FocusChangeEvent = { focused: boolean, nativeEvent: FocusEvent };
+type UseFocusTrackerOptions = {
   /** Whether to enable this interaction. Useful for conditional usage of the hook. */
   enabled?: undefined | boolean,
+  
+  /** Event listener callback to be called when focus state changes. */
+  onFocusChange?: undefined | ((event: FocusChangeEvent) => void),
 };
 /**
- * Floating UI interaction hook for interactive focus trigger.
+ * Tracks whether focus is currently inside or outside of the anchor+popover pair of elements.
  */
-const useFocusInteractive = (context: FloatingContext, options: UseFocusInteractiveOptions = {}): ElementProps => {
-  const { elements, onOpenChange } = context;
+const useFocusTracker = (context: FloatingContext, options: UseFocusTrackerOptions = {}): ElementProps => {
   const enabled = options.enabled ?? true;
   
-  const anchorEl = elements.reference;
-  const popoverEl = elements.floating;
+  const anchorEl = context.elements.reference;
+  const popoverEl = context.elements.floating;
   
-  const handleReferenceFocus = React.useCallback((event: React.FocusEvent) => {
+  const onFocusChangeEvent = React.useEffectEvent(options.onFocusChange ?? noop);
+  React.useEffect(() => {
     if (!enabled) { return; }
     
-    onOpenChange(true, event.nativeEvent, 'focus');
-  }, [enabled, onOpenChange]);
+    const handleFocusChange = (event: FocusChangeEvent) => {
+      onFocusChangeEvent(event);
+    };
+    context.events.on('_bk-focus-change', handleFocusChange);
+    return () => {
+      context.events.off('_bk-focus-change', handleFocusChange);
+    };
+  }, [enabled, context.events]);
   
+  // biome-ignore lint/correctness/useExhaustiveDependencies(context.dataRef.current): Mutable ref
+  // biome-ignore lint/correctness/useExhaustiveDependencies(context.dataRef.current._bkFocused): Mutable ref
+  const handleReferenceFocus = React.useCallback(({ nativeEvent }: React.FocusEvent) => {
+    if (!enabled) { return; }
+    
+    if (!context.dataRef.current._bkFocused) {
+      context.dataRef.current._bkFocused = true;
+      context.events.emit('_bk-focus-change', { focused: true, nativeEvent });
+    }
+  }, [enabled, context.events.emit]);
+  
+  // biome-ignore lint/correctness/useExhaustiveDependencies(context.dataRef.current): Mutable ref
+  // biome-ignore lint/correctness/useExhaustiveDependencies(context.dataRef.current._bkFocused): Mutable ref
   const handleReferenceBlur = React.useCallback((event: React.FocusEvent) => {
     if (!enabled) { return; }
     
@@ -134,22 +161,26 @@ const useFocusInteractive = (context: FloatingContext, options: UseFocusInteract
     );
     
     if (!isInside) {
-      onOpenChange(false, event.nativeEvent, 'focus-out');
+      if (context.dataRef.current._bkFocused) {
+        context.dataRef.current._bkFocused = false;
+        context.events.emit('_bk-focus-change', { focused: false, nativeEvent: event.nativeEvent });
+      }
     }
-  }, [enabled, popoverEl, onOpenChange]);
+  }, [enabled, popoverEl, context.events.emit]);
   
-  const handleReferenceKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies(context.dataRef.current): Mutable ref
+  // biome-ignore lint/correctness/useExhaustiveDependencies(context.dataRef.current._bkFocused): Mutable ref
+  const handleFloatingFocus = React.useCallback(({ nativeEvent }: React.FocusEvent) => {
     if (!enabled) { return; }
     
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      event.preventDefault(); // Prevent scrolling
-      onOpenChange(true, event.nativeEvent, 'list-navigation');
+    if (!context.dataRef.current._bkFocused) {
+      context.dataRef.current._bkFocused = true;
+      context.events.emit('_bk-focus-change', { focused: true, nativeEvent });
     }
-    if (event.key === 'Enter' || event.key === ' ') {
-      onOpenChange(!context.open, event.nativeEvent, 'reference-press');
-    }
-  }, [context.open, enabled, onOpenChange]);
+  }, [enabled, context.events.emit]);
   
+  // biome-ignore lint/correctness/useExhaustiveDependencies(context.dataRef.current): Mutable ref
+  // biome-ignore lint/correctness/useExhaustiveDependencies(context.dataRef.current._bkFocused): Mutable ref
   const handleFloatingBlur = React.useCallback((event: React.FocusEvent) => {
     if (!enabled) { return; }
     
@@ -174,11 +205,61 @@ const useFocusInteractive = (context: FloatingContext, options: UseFocusInteract
             || popoverEl.contains(document.activeElement)
           );
         if (!isInside) {
-          onOpenChange(false, event.nativeEvent, 'focus-out');
+          if (context.dataRef.current._bkFocused) {
+            context.dataRef.current._bkFocused = false;
+            context.events.emit('_bk-focus-change', { focused: false, nativeEvent: event.nativeEvent });
+          }
         }
       }, 0);
     }
-  }, [enabled, anchorEl, onOpenChange]);
+  }, [enabled, anchorEl, context.events.emit]);
+  
+  // The following must be memoized, since these are used as memo deps in `useInteractions`
+  const referenceProps = React.useMemo<React.HTMLProps<Element>>(() => ({
+    onFocus: handleReferenceFocus,
+    onBlur: handleReferenceBlur,
+  }), [handleReferenceFocus, handleReferenceBlur]);
+  const floatingProps = React.useMemo<React.HTMLProps<HTMLElement>>(() => ({
+    onFocus: handleFloatingFocus,
+    onBlur: handleFloatingBlur,
+  }), [handleFloatingFocus, handleFloatingBlur]);
+  
+  return {
+    reference: referenceProps,
+    floating: floatingProps,
+  };
+};
+
+
+type UseFocusInteractiveOptions = {
+  /** Whether to enable this interaction. Useful for conditional usage of the hook. */
+  enabled?: undefined | boolean,
+};
+/**
+ * Floating UI interaction hook for interactive focus trigger.
+ */
+const useFocusInteractive = (context: FloatingContext, options: UseFocusInteractiveOptions = {}): ElementProps => {
+  const { elements, onOpenChange } = context;
+  const enabled = options.enabled ?? true;
+  
+  const anchorEl = elements.reference;
+  const popoverEl = elements.floating;
+  
+  React.useEffect(() => {
+    if (!enabled) { return; }
+    
+    const handleFocusChange = (event: FocusChangeEvent) => {
+      if (context.open && !event.focused) {
+        onOpenChange(false, event.nativeEvent, 'focus-out');
+      } else if (!context.open && event.focused) {
+        onOpenChange(true, event.nativeEvent, 'focus');
+      }
+    };
+    context.events.on('_bk-focus-change', handleFocusChange);
+    return () => {
+      context.events.off('_bk-focus-change', handleFocusChange);
+    };
+  }, [enabled, context.events, context.open, onOpenChange]);
   
   // Handle click outside
   React.useEffect(() => {
@@ -213,19 +294,25 @@ const useFocusInteractive = (context: FloatingContext, options: UseFocusInteract
     return () => { controller.abort(); };
   }, [enabled, context.open, anchorEl, popoverEl, onOpenChange]);
   
+  const handleReferenceKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+    if (!enabled) { return; }
+    
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault(); // Prevent scrolling
+      onOpenChange(true, event.nativeEvent, 'list-navigation');
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+      onOpenChange(!context.open, event.nativeEvent, 'reference-press');
+    }
+  }, [context.open, enabled, onOpenChange]);
+  
   // The following must be memoized, since these are used as memo deps in `useInteractions`
   const referenceProps = React.useMemo<React.HTMLProps<Element>>(() => ({
-    onFocus: handleReferenceFocus,
-    onBlur: handleReferenceBlur,
     onKeyDown: handleReferenceKeyDown,
-  }), [handleReferenceFocus, handleReferenceBlur, handleReferenceKeyDown]);
-  const floatingProps = React.useMemo<React.HTMLProps<HTMLElement>>(() => ({
-    onBlur: handleFloatingBlur,
-  }), [handleFloatingBlur]);
+  }), [handleReferenceKeyDown]);
   
   return {
     reference: referenceProps,
-    floating: floatingProps,
   };
 };
 
@@ -233,6 +320,7 @@ type UseComboBoxOptions = {
   /** Whether to enable this interaction. Useful for conditional usage of the hook. */
   enabled?: undefined | boolean,
   
+  /** The popover behavior option as configured on `useFloatingElement`. */
   popoverBehavior?: UsePopoverOptions<HTMLElement>['popoverBehavior'],
 };
 /**
@@ -245,6 +333,20 @@ const useComboBoxInteraction = (context: FloatingContext, options: UseComboBoxOp
   
   const anchorEl = elements.reference;
   const popoverEl = elements.floating;
+  
+  React.useEffect(() => {
+    if (!enabled) { return; }
+    
+    const handleFocusChange = (event: FocusChangeEvent) => {
+      if (context.open && !event.focused) {
+        onOpenChange(false, event.nativeEvent, 'focus-out');
+      }
+    };
+    context.events.on('_bk-focus-change', handleFocusChange);
+    return () => {
+      context.events.off('_bk-focus-change', handleFocusChange);
+    };
+  }, [enabled, context.events, context.open, onOpenChange]);
   
   // Close on `Escape`
   // FIXME: this is currently very global, any Escape on the document will cause all open popovers to close immediately.
@@ -274,72 +376,6 @@ const useComboBoxInteraction = (context: FloatingContext, options: UseComboBoxOp
       watcher.destroy();
     };
   }, [enabled, popoverBehavior, context.open, onOpenChange, anchorEl, popoverEl]);
-  
-  // Click → toggle floating element
-  const handleReferenceClick = React.useCallback((event: React.MouseEvent) => {
-    if (!enabled) { return; }
-    
-    // FIXME: when the reference is an editable input, maybe we shouldn't do this and instead open only when focused
-    // and the user requests opening through keyboard (arrow keys).
-    
-    if (event.detail > 0) {
-      onOpenChange(!context.open, event.nativeEvent, 'click');
-    }
-  }, [enabled, context.open, onOpenChange]);
-  
-  // Arrow keys → open floating element
-  const handleReferenceKeyDown = React.useCallback((event: React.KeyboardEvent) => {
-    if (!enabled) { return; }
-    
-    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-      event.preventDefault(); // Prevent scrolling
-      onOpenChange(true, event.nativeEvent, 'list-navigation');
-    }
-    if (event.key === 'Enter' || event.key === ' ') {
-      onOpenChange(!context.open, event.nativeEvent, 'reference-press');
-    }
-  }, [context.open, enabled, onOpenChange]);
-  
-  const handleReferenceBlur = React.useCallback((event: React.FocusEvent) => {
-    if (!enabled) { return; }
-    
-    const anchorEl = event.currentTarget;
-    
-    const isInside =
-      event.relatedTarget instanceof Node &&
-      ((popoverEl && popoverEl.isConnected && popoverEl.contains(event.relatedTarget)) ||
-        anchorEl.contains(event.relatedTarget));
-    
-    if (!isInside) {
-      onOpenChange(false, event.nativeEvent, 'focus-out');
-    }
-  }, [enabled, popoverEl, onOpenChange]);
-  
-  const handleFloatingBlur = React.useCallback((event: React.FocusEvent) => {
-    if (!enabled) { return; }
-    
-    const popoverEl = event.currentTarget;
-    
-    const isInside =
-      event.relatedTarget instanceof Node &&
-      ((anchorEl instanceof Node && anchorEl.contains(event.relatedTarget)) ||
-        popoverEl.contains(event.relatedTarget));
-    
-    if (!isInside) {
-      window.setTimeout(() => {
-        if (!popoverEl.isConnected) { return; }
-        
-        const isInside =
-          document.activeElement instanceof Node &&
-          ((anchorEl instanceof Node && anchorEl.contains(document.activeElement)) ||
-            popoverEl.contains(document.activeElement));
-        
-        if (!isInside && context.open) {  
-          onOpenChange(false, event.nativeEvent, 'focus-out');
-        }
-      }, 0);
-    }
-  }, [enabled, context.open, anchorEl, onOpenChange]);
   
   // Handle click outside
   React.useEffect(() => {
@@ -376,24 +412,47 @@ const useComboBoxInteraction = (context: FloatingContext, options: UseComboBoxOp
     };
   }, [enabled, context.open, anchorEl, popoverEl, onOpenChange]);
   
+  // Click → toggle floating element
+  const handleReferenceClick = React.useCallback((event: React.MouseEvent) => {
+    if (!enabled) { return; }
+    
+    // FIXME: when the reference is an editable input, maybe we shouldn't do this and instead open only when focused
+    // and the user requests opening through keyboard (arrow keys).
+    
+    // Note: only handle pointer device clicks (`event.detail > 0`), `Enter` and `Space` keys are handled separately
+    if (event.detail > 0) {
+      onOpenChange(!context.open, event.nativeEvent, 'click');
+    }
+  }, [enabled, context.open, onOpenChange]);
+  
+  // Arrow keys → open floating element
+  const handleReferenceKeyDown = React.useCallback((event: React.KeyboardEvent) => {
+    if (!enabled) { return; }
+    
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault(); // Prevent scrolling
+      onOpenChange(true, event.nativeEvent, 'list-navigation');
+    }
+    if (event.key === 'Enter' || event.key === ' ') {
+      onOpenChange(!context.open, event.nativeEvent, 'reference-press');
+    }
+  }, [context.open, enabled, onOpenChange]);
+  
   // The following must be memoized, since these are used as memo deps in `useInteractions`
   const referenceProps = React.useMemo<React.HTMLProps<Element>>(() => ({
-    //onFocus: handleReferenceFocus, // Focus should not open floating element
     onClick: handleReferenceClick,
     onKeyDown: handleReferenceKeyDown,
-    onBlur: handleReferenceBlur,
-  }), [handleReferenceBlur, handleReferenceClick, handleReferenceKeyDown]);
-  const floatingProps = React.useMemo<React.HTMLProps<HTMLElement>>(() => ({
-    onBlur: handleFloatingBlur,
-  }), [handleFloatingBlur]);
+  }), [handleReferenceClick, handleReferenceKeyDown]);
   
   return {
     reference: referenceProps,
-    floating: floatingProps,
   };
 };
 
 export type UseFloatingElementOptions = OpenStateProps & {
+  /** Callback to be called when the focus state (for anchor+popover pair) changes. Optional. */
+  onFocusChange?: undefined | ((event: FocusChangeEvent) => void),
+  
   /** The popover type for the floating element. Default: `'manual'`. */
   popoverBehavior?: undefined | UsePopoverOptions<HTMLElement>['popoverBehavior'],
   
@@ -479,6 +538,7 @@ export const useFloatingElement = <E extends HTMLElement>(
     open: options.open ?? undefined,
     defaultOpen: options.defaultOpen ?? undefined,
     onOpenChange: options.onOpenChange ?? undefined,
+    onFocusChange: options.onFocusChange ?? undefined,
     popoverBehavior: options.popoverBehavior ?? 'manual',
     role: options.role,
     triggerAction: options.triggerAction ?? 'click',
@@ -616,6 +676,7 @@ export const useFloatingElement = <E extends HTMLElement>(
   const interactions: Array<ElementProps> = [
     role,
     usePopoverInteraction(context, { popoverBehavior: opts.popoverBehavior }),
+    useFocusTracker(context, { onFocusChange: opts.onFocusChange }),
   ];
   
   // Trigger action: click
@@ -678,7 +739,7 @@ export const useFloatingElement = <E extends HTMLElement>(
     ...opts.floatingUiInteractions(context),
     
     // Support React 19 style `ref` prop out of the box rather than requiring them to be separate
-    // XXX this doesn't work because the `ref` prop doesn't get merged properly in `useInteraction`
+    // XXX this doesn't work because the `ref` prop doesn't get merged properly in `useInteractions`
     // {
     //   reference: { ref: el => { refs.setReference(el); } },
     //   floating: { ref: el => { refs.setFloating(el); } },
