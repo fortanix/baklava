@@ -37,8 +37,8 @@ const getDefaultOptionRole = (role: MenuListRole, selectionMode?: undefined | Me
   switch (role) {
     case 'none':
     case 'presentation':
-      throw new Error(`Found invalid 'option' element in presentational MenuList`);
-    //case 'group': 
+      return 'none'; // Note: needed for `EmptyPlaceholder`
+    //case 'group':
     case 'menu':
     case 'menubar': {
       switch (selectionMode) {

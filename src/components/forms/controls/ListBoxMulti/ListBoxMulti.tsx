@@ -96,7 +96,6 @@ const HiddenSelectedState = ({ ref, name, form, ...inputProps }: HiddenSelectedS
     // "no selected" and "selected an item with key = empty string".
     return (
       <input
-        ref={ref}
         name={undefined}
         form={form}
         type="hidden"
@@ -111,7 +110,7 @@ const HiddenSelectedState = ({ ref, name, form, ...inputProps }: HiddenSelectedS
   return Array.from(selectedItemKeys).map(itemKey =>
     <input
       key={itemKey}
-      ref={ref}
+      //ref={ref} // Note: since we have multiple inputs, `ref` is not supported
       name={`${name}[]`}
       form={form}
       type="hidden"
