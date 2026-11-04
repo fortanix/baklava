@@ -3,7 +3,7 @@
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import * as React from 'react';
-import { mergeProps } from '../../../../util/reactUtil.ts';
+import { mergeRefs, mergeProps, mergeCallbacks, usePrevious } from '../../../../util/reactUtil.ts';
 import { classNames as cx, type ComponentProps } from '../../../../util/componentUtil.ts';
 import { useControllableStateFromProps } from '../../../../util/hooks/useControllableState.ts';
 
@@ -26,9 +26,15 @@ export type SelectInputProps = ComponentProps<typeof InputDefault>;
 const noop = () => {};
 
 
-export type SelectComboBoxProps = Omit<SelectInputProps, 'value' | 'defaultValue' | 'onChange' | 'onSelect'> & {
+// Note: in the future we might expand on this ref to include things like the current filter value or input DOM ref
+export type SelectComboBoxRef = ListBoxProviderRef;
+
+export type SelectComboBoxProps = Omit<SelectInputProps, 'ref' | 'value' | 'defaultValue' | 'onChange' | 'onSelect'> & {
   /** Whether this component should be unstyled. */
   unstyled?: undefined | boolean,
+  
+  /** A React ref to control the combobox imperatively. */
+  ref?: undefined | React.Ref<null | SelectComboBoxRef>,
   
   /** A human-readable name for the select. */
   label: string,
@@ -41,9 +47,6 @@ export type SelectComboBoxProps = Omit<SelectInputProps, 'value' | 'defaultValue
   
   /** The current filter value. If `undefined`, this component will be considered uncontrolled. */
   filter?: undefined | string,
-  
-  /** The default filter value. Only relevant for uncontrolled usage (i.e. `filter` is `undefined`). */
-  defaultFilter?: undefined | string,
   
   /** Event handler to be called when the filter value changes. */
   onFilterChange?: undefined | ((filter: string) => void),
@@ -64,6 +67,9 @@ export type SelectComboBoxProps = Omit<SelectInputProps, 'value' | 'defaultValue
   Input?: undefined | React.ComponentType<SelectInputProps> & {
     Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
   },
+  
+  /** Whether to allow the user to clear the selection state to `null` by clearing the text input. Default: `true`. */
+  allowClear?: undefined | boolean,
 };
 /**
  * A combobox with an input as anchor (displaying the currently selected item), and a single-select listbox as popover
@@ -76,6 +82,7 @@ export const SelectComboBox = Object.assign(
   (props: SelectComboBoxProps) => {
     const {
       unstyled = false,
+      ref,
       label,
       formatSelected,
       options,
@@ -83,13 +90,14 @@ export const SelectComboBox = Object.assign(
       containerProps,
       inputProps,
       filter,
-      defaultFilter,
+      //defaultFilter, // Not useful (since we update the filter on focus anyway)
       onFilterChange,
       // Dropdown props
       defaultSelected,
       selected,
       onSelectedChange,
       dropdownProps = {},
+      allowClear = true,
       
       // @ts-expect-error Exclude all the emitted props from `propsRest`
       value, defaultValue, onChange, onSelect,
@@ -100,6 +108,18 @@ export const SelectComboBox = Object.assign(
     
     const listBoxProviderRef = React.useRef<ListBoxProviderRef>(null);
     
+    // Note: make sure this is always a `string` not `undefined` (since that implies an uncontrolled input)
+    const valueFromSelected = React.useCallback((selectedOption: SelectedState): string => {
+      if (typeof formatSelected === 'function') {
+        return formatSelected(selectedOption) ?? '';
+      } else {
+        // Fallback: show the option key directly
+        return selectedOption ?? '';
+      }
+    }, [formatSelected]);
+    
+    const selectedInitial = typeof selected !== 'undefined' ? selected : (defaultSelected ?? null);
+    const defaultFilter = valueFromSelected(selectedInitial);
     const { state: filterState, requestStateChange: updateFilterState } = useControllableStateFromProps<string>(
       {
         state: filter,
@@ -114,43 +134,74 @@ export const SelectComboBox = Object.assign(
       },
     );
     
+    const handleSelectedChange = React.useCallback((selected: SelectedState) => {
+      updateFilterState(selected !== null ? valueFromSelected(selected) : '');
+    }, [valueFromSelected, updateFilterState]);
+    
+    // Note: if the consumer has controlled `selected` state, and that controlled state changes, then our
+    // `handleSelectedChange` won't (and shouldn't) get called, we have to keep track of these changes ourselves.
+    const selectedPrev = usePrevious(selected);
+    React.useEffect(() => {
+      if (typeof selected === 'undefined') { return; }
+      
+      if (typeof selectedPrev === 'undefined' || selected !== selectedPrev) {
+        handleSelectedChange(selected);
+      }
+    }, [selected, selectedPrev, handleSelectedChange]);
+    
     const handleInputChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
       updateFilterState(event.target.value);
+      
+      const listBoxProvider = listBoxProviderRef.current;
+      if (listBoxProvider && !listBoxProvider.open) {
+        // Re-open menu when typing
+        listBoxProvider.requestOpenChange({ open: true });
+      }
     }, [updateFilterState]);
     
-    // Note: make sure this is always a `string` not `undefined` (since that implies an uncontrolled input)
-    const valueFromSelected = React.useCallback((selectedOption: SelectedState): string => {
-      if (typeof formatSelected === 'function') {
-        return formatSelected(selectedOption) ?? '';
-      } else {
-        // Fallback: show the option key directly
-        return selectedOption ?? '';
+    const handleInputBlur = React.useCallback((event: React.FocusEvent<HTMLInputElement>) => {
+      const listBoxProvider = listBoxProviderRef.current;
+      if (listBoxProvider && allowClear && event.target.value === '' && listBoxProvider.selected !== null) {
+        listBoxProvider.requestSelectedChange(null);
       }
-    }, [formatSelected]);
+      
+      // FIXME: allow the user to type in an option directly (without going through the menu)?
+      // Would require something like a `selectedFromValue` function.
+      //const selectedMatch: undefined | SelectedState = selectedFromValue(event.target.value);
+      //if (typeof selectedMatch !== 'undefined') { ... }
+    }, [allowClear]);
     
-    // FIXME: this doesn't cover the case where focus is in the popover and we close it (e.g. click outside)
-    const handleInputBlur = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-      const selected = listBoxProviderRef.current?.selected ?? null;
-      //updateFilterState(selected !== null ? valueFromSelected(selected) : '');
+    const handleContainerFocusChange = React.useCallback(({ focused }: { focused: boolean }) => {
+      const listBoxProvider = listBoxProviderRef.current;
+      if (!listBoxProvider) { return; }
+      
+      if (focused) {
+        listBoxProvider.requestOpenChange({ open: true });
+      } else {
+        // Reset the text input to match the currently selected option
+        updateFilterState(listBoxProvider.selected !== null ? valueFromSelected(listBoxProvider.selected) : '');
+      }
     }, [valueFromSelected, updateFilterState]);
     
     return (
       <ListBoxProvider
-        ref={listBoxProviderRef}
+        ref={mergeRefs(ref, listBoxProviderRef)}
         label={label}
         items={options}
         triggerAction="combobox"
+        popoverBehavior="auto"
         keyboardInteractions="form-control"
         placement="bottom-start"
-        offset={0} // Make the dropdown flush with the input element
+        offset={1} // Make the dropdown flush with the input element
         {...dropdownProps}
         selected={selected}
         defaultSelected={defaultSelected}
-        onSelectedChange={onSelectedChange}
+        onSelectedChange={mergeCallbacks([handleSelectedChange, onSelectedChange])}
+        onContainerFocusChange={mergeCallbacks([handleContainerFocusChange, dropdownProps.onContainerFocusChange])}
       >
         {({ props, open, requestOpen, selectedOption }) => {
           // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
-          const { ref: anchorRef, ...propsAnchor } = props(mergeProps(
+          const propsAnchor = props(mergeProps(
             {
               role: 'combobox',
               automaticResize: true,
@@ -181,16 +232,18 @@ export const SelectComboBox = Object.assign(
           return (
             <Input
               {...propsAnchor}
-              ref={anchorRef} // TEMP
               inputProps={mergeProps(
                 { className: cx(cl['bk-select-combo-box__input']) },
                 inputProps,
               )}
-              // containerProps={mergeProps(
-              //   // Anchor the dropdown to the container, not the inner input
-              //   { ref: anchorRef },
-              //   containerProps,
-              // )}
+              // Note: the following doesn't work well, since this results in the `togglePopover({ source })` element
+              // being the container `<div>`, which is not valid. It results in issues, for instance automatic tab
+              // ordering will no longer work.
+              //containerProps={mergeProps(
+              //  // Anchor the dropdown to the container, not the inner input
+              //  { ref: anchorRef },
+              //  containerProps,
+              //)}
             />
           );
         }}

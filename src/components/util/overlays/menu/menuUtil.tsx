@@ -3,6 +3,7 @@ import * as React from 'react';
 import { mergeCallbacks, mergeRefs } from '../../../../util/reactUtil.ts';
 
 import {
+  type FocusChangeEvent,
   type OpenChangeEvent,
   type OpenStateProps,
   type UseFloatingElementOptions,
@@ -11,7 +12,7 @@ import {
 } from '../floating-ui/useFloatingElement.tsx';
 
 
-export type { OpenChangeEvent, OpenStateProps };
+export type { FocusChangeEvent, OpenChangeEvent, OpenStateProps };
 
 export type UseFloatingMenuOptions = UseFloatingElementOptions;
 export type UseFloatingMenuResult = UseFloatingElementResult;

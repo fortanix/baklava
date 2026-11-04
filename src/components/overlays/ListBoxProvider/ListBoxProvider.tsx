@@ -10,6 +10,7 @@ import { useControllableStateFromProps } from '../../../util/hooks/useControllab
 // Components
 import { type ItemKey, type SelectedState, ListBox } from '../../forms/controls/ListBox/ListBox.tsx';
 import {
+  type FocusChangeEvent,
   type OpenStateProps,
   type OpenChangeEvent,
   type UseFloatingMenuOptions,
@@ -90,7 +91,7 @@ export type ListBoxProviderProps =
     enablePreciseTracking?: undefined | UseFloatingMenuOptions['enablePreciseTracking'],
     
     /** Event callback that will be called when focus leaves both the anchor and popover. */
-    onContainerFocusOut?: React.FocusEventHandler<Element>,
+    onContainerFocusChange?: undefined | ((event: FocusChangeEvent) => void),
   };
 /**
  * Wrapper around a trigger that provides an anchored popover listbox with single selection.
@@ -122,7 +123,7 @@ export const ListBoxProvider = Object.assign(
       enablePreciseTracking,
       
       // Container
-      onContainerFocusOut,
+      onContainerFocusChange,
       
       ...propsRest
     } = props;
@@ -144,11 +145,6 @@ export const ListBoxProvider = Object.assign(
       }, 0);
     }, []);
     
-    const handleFocusChange = React.useCallback((event: { focused: boolean }) => {
-      if (!event.focused) {
-        onContainerFocusOut?.();
-      }
-    }, [onContainerFocusOut]);
     const {
       isMounted,
       isOpen: openState,
@@ -168,7 +164,7 @@ export const ListBoxProvider = Object.assign(
       enablePreciseTracking,
       open,
       onOpenChange: mergeCallbacks([onOpenChange, trackOpenChange]),
-      onFocusChange: handleFocusChange,
+      onFocusChange: onContainerFocusChange,
     });
     // Use external element as the reference, if provided
     React.useLayoutEffect(() => {

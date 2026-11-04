@@ -107,7 +107,7 @@ const usePopoverInteraction = <E extends HTMLElement>(
 };
 
 
-type FocusChangeEvent = { focused: boolean, nativeEvent: FocusEvent };
+export type FocusChangeEvent = { focused: boolean, nativeEvent: FocusEvent };
 type UseFocusTrackerOptions = {
   /** Whether to enable this interaction. Useful for conditional usage of the hook. */
   enabled?: undefined | boolean,
