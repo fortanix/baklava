@@ -119,7 +119,7 @@ export const SelectComboBox = Object.assign(
     }, [formatSelected]);
     
     const selectedInitial = typeof selected !== 'undefined' ? selected : (defaultSelected ?? null);
-    const defaultFilter = valueFromSelected(selectedInitial);
+    const defaultFilter = typeof selected === 'undefined' ? valueFromSelected(selectedInitial) : undefined;
     const { state: filterState, requestStateChange: updateFilterState } = useControllableStateFromProps<string>(
       {
         state: filter,

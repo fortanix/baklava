@@ -8,9 +8,9 @@ import * as React from 'react';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Input } from '../Input/Input.tsx';
+import { Button } from '../../../actions/Button/Button.tsx';
 
 import { type SelectedState, Select } from './Select.tsx';
-import { Button } from '../../../actions/Button/Button.tsx';
 
 
 type SelectArgs = React.ComponentProps<typeof Select>;

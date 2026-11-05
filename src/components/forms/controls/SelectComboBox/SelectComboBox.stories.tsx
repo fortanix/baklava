@@ -2,9 +2,9 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import type { Meta, StoryObj } from '@storybook/react-vite';
-
 import * as React from 'react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { generateUsers } from '../../../../util/storybook/StorybookUtils.tsx';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { InputSearch } from '../Input/InputSearch.tsx';
@@ -132,24 +132,61 @@ const SelectComboBoxWithFilterC = (props: React.ComponentProps<typeof SelectComb
     .filter(([_key, fruit]) => fruit.toLowerCase().includes(filter.toLowerCase()));
   
   return (
-    <>
-      <div>Filter: {filter || '(none)'}</div>
-      <div>Selected: {selected ?? '(none)'}</div>
-      <SelectComboBox
-        {...props}
-        filter={filter}
-        onFilterChange={setFilter}
-        selected={selected}
-        onSelectedChange={setSelected}
-        options={fruitsFiltered.map(([fruitKey, fruitName]) =>
-          <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
-        )}
-      />
-    </>
+    <SelectComboBox
+      {...props}
+      filter={filter}
+      onFilterChange={setFilter}
+      selected={selected}
+      onSelectedChange={setSelected}
+      options={fruitsFiltered.map(([fruitKey, fruitName]) =>
+        <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+      )}
+    />
   );
 };
 export const SelectComboBoxWithFilter: Story = {
   render: args => <SelectComboBoxWithFilterC {...args}/>,
+};
+
+const SelectComboBoxWithFilterVirtualizedC = (props: React.ComponentProps<typeof SelectComboBox>) => {
+  const [filter, setFilter] = React.useState<string>('y');
+  const [selected, setSelected] = React.useState<SelectedState>(null);
+  
+  const users = Object.fromEntries(
+    generateUsers({ numItems: 100 })
+      .filter(user => user.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()))
+      .map(user => [user.id, user])
+  );
+  
+  return (
+    <SelectComboBox
+      {...props}
+      filter={filter}
+      //onFilterChange={setFilter}
+      onFilterChange={filter => { console.log('filter', filter); return 'a'; }}
+      selected={selected}
+      onSelectedChange={setSelected}
+      formatSelected={selectedKey => selectedKey === null ? '(None)' : users[selectedKey]?.name ?? 'xx'}
+      options={
+        <SelectComboBox.SegmentVirtual
+          items={{
+            count: Object.keys(users).length,
+            getItemKey: index => Object.keys(users)[index] ?? 0,
+            renderItem: (props, { key, index }) => {
+              if (typeof key !== 'string') { return null; } // Should not happen
+              const user = users[key];
+              if (!user) { return null; } // Should not happen
+              
+              return <SelectComboBox.Option key={key} itemKey={user.id} {...props} label={user.name}/>;
+            },
+          }}
+        />
+      }
+    />
+  );
+};
+export const SelectComboBoxWithFilterVirtualized: Story = {
+  render: args => <SelectComboBoxWithFilterVirtualizedC {...args}/>,
 };
 
 const SelectComboBoxInFormC = (props: React.ComponentProps<typeof SelectComboBox>) => {
