@@ -149,33 +149,38 @@ export const SelectComboBoxWithFilter: Story = {
 };
 
 const SelectComboBoxWithFilterVirtualizedC = (props: React.ComponentProps<typeof SelectComboBox>) => {
-  const [filter, setFilter] = React.useState<string>('y');
+  const [filter, setFilter] = React.useState<string>('');
   const [selected, setSelected] = React.useState<SelectedState>(null);
   
   const users = Object.fromEntries(
     generateUsers({ numItems: 100 })
-      .filter(user => user.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()))
-      .map(user => [user.id, user])
+    .map(user => [user.id, user])
+  );
+  const usersFiltered = Object.fromEntries(Object.entries(users)
+    .filter(([_key, user]) => user.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()))
   );
   
   return (
     <SelectComboBox
       {...props}
       filter={filter}
-      //onFilterChange={setFilter}
-      onFilterChange={filter => { console.log('filter', filter); return 'a'; }}
+      onFilterChange={setFilter}
       selected={selected}
       onSelectedChange={setSelected}
-      formatSelected={selectedKey => selectedKey === null ? '(None)' : users[selectedKey]?.name ?? 'xx'}
+      formatSelected={selectedKey => selectedKey === null ? '(None)' : (users[selectedKey]?.name ?? '(Unknown)')}
       options={
         <SelectComboBox.SegmentVirtual
           items={{
-            count: Object.keys(users).length,
-            getItemKey: index => Object.keys(users)[index] ?? 0,
+            count: Object.keys(usersFiltered).length,
+            getItemKey: index => {
+              const key = Object.keys(usersFiltered)[index];
+              if (typeof key === 'undefined') { throw new Error(`Unable to find key`); }
+              return key;
+            },
             renderItem: (props, { key, index }) => {
-              if (typeof key !== 'string') { return null; } // Should not happen
+              if (typeof key !== 'string') { throw new Error(`Invalid key`); } // Should not happen
               const user = users[key];
-              if (!user) { return null; } // Should not happen
+              if (!user) { throw new Error(`Unmatched key`); } // Should not happen
               
               return <SelectComboBox.Option key={key} itemKey={user.id} {...props} label={user.name}/>;
             },
@@ -220,7 +225,7 @@ export const SelectComboBoxInForm: Story = {
 
 /*
 const InputSearchAutocomplete = (props: React.ComponentProps<typeof InputSearch>) => {
-  const [value, setValue] = React.useState('');
+  const [value, setFilter] = React.useState('');
   const [blocks, setBlocks] = React.useState<Array<string>>([]);
   const pushBlock = (block: string) => { setBlocks(blocks => [...blocks, block]); };
   const popBlock = () => { setBlocks(blocks => blocks.slice(0, -1)); };
@@ -228,7 +233,7 @@ const InputSearchAutocomplete = (props: React.ComponentProps<typeof InputSearch>
   return (
     <InputSearch
       value={value}
-      onChange={event => { setValue(event.target.value); }}
+      onChange={event => { setFilter(event.target.value); }}
       prefix={blocks.join(' ')}
       {...props}
       onKeyDown={event => {
@@ -236,7 +241,7 @@ const InputSearchAutocomplete = (props: React.ComponentProps<typeof InputSearch>
         
         if (event.key === 'Enter' && value.trim() !== '') {
           pushBlock(value);
-          setValue('');
+          setFilter('');
         } else if (event.key === 'Backspace' && value === '') {
           popBlock();
         }
@@ -246,51 +251,55 @@ const InputSearchAutocomplete = (props: React.ComponentProps<typeof InputSearch>
 };
 */
 const SelectComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof SelectComboBox>>) => {
-  const [value, setValue] = React.useState('');
+  const ref = React.useRef<React.ComponentRef<typeof SelectComboBox>>(null);
+  const [filter, setFilter] = React.useState('');
   const [selected, setSelected] = React.useState<SelectedState>(null);
   const [blocks, setBlocks] = React.useState<Array<string>>([]);
+  
   const pushBlock = (block: string) => { if (!blocks.includes(block)) setBlocks(blocks => [...blocks, block]); };
   const popBlock = () => { setBlocks(blocks => blocks.slice(0, -1)); };
   
   const fruitsFiltered = Object.entries(fruits)
-    .filter(([_key, fruit]) => fruit.toLowerCase().includes((value ?? '').toLowerCase()));
-  
+    .filter(([_key, fruit]) => fruit.toLowerCase().startsWith((filter ?? '').toLowerCase()));
   
   return (
     <SelectComboBox
-      label="Test SelectComboBox"
+      ref={ref}
       Input={InputSearch}
+      label="Test SelectComboBox"
+      aria-autocomplete="list"
       placeholder="Choose your favorite fruits"
-      value={value}
-      onChange={event => { setValue(event.target.value); }}
-      prefix={blocks.join(', ')}
       {...props}
+      filter={filter}
+      onFilterChange={setFilter}
+      prefix={blocks.join(', ')}
       options={fruitsFiltered.map(([fruitKey, fruitName]) =>
         <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
       )}
       selected={selected}
-      formatItemLabel={formatFruitLabel}
+      formatSelected={formatFruitLabel}
       onSelectedChange={selectedOptionKey => {
         props.onSelectedChange?.(selectedOptionKey);
         
         if (selectedOptionKey !== null) {
-          //To fill in the value in the input:
-          //setValue(selectedOption.label);
-          
-          pushBlock(formatFruitLabel(selectedOptionKey));
-          setValue('');
+          pushBlock(formatFruitLabel(selectedOptionKey) ?? 'Unknown');
+          setFilter('');
         }
         
         // Unset the selected state after a successful selection is made
-        window.setTimeout(() => { setSelected(null); }, 300);
+        window.setTimeout(() => {
+          setSelected(null);
+          ref.current?.requestOpenChange({ open: false });
+        }, 300);
       }}
       onKeyDown={event => {
         props.onKeyDown?.(event);
-          
-        if (event.key === 'Enter' && value.trim() !== '') {
-          pushBlock(value);
-          setValue('');
-        } else if (event.key === 'Backspace' && value === '') {
+        
+        if (event.key === 'Enter' && filter.trim() !== '') {
+          pushBlock(filter);
+          setFilter('');
+          ref.current?.requestOpenChange({ open: false });
+        } else if (event.key === 'Backspace' && filter === '') {
           popBlock();
         }
       }}
@@ -300,7 +309,4 @@ const SelectComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof 
 /** Note: when you use the `ComboBox` for autocomplete, you must also set `aria-autocomplete="true"`.  */
 export const SelectComboBoxAutocomplete: Story = {
   render: args => <SelectComboBoxAutocompleteC {...args}/>,
-  args: {
-    'aria-autocomplete': 'list',
-  },
 };

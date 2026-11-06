@@ -82,7 +82,6 @@ const useFocusedItemIndex = () => {
     // Note: this assumes (1) that the item element itself is the focusable element, and (2) that there aren't
     // focusable elements _within_ the item.
     if (event.target === event.currentTarget) {
-      //console.log('focus', index, event);
       setFocusedItemIndex(index);
     }
     return;
@@ -131,15 +130,21 @@ const rangeExtractorWithFocused = (
     // For an example, see: https://tanstack.com/virtual/latest/docs/framework/react/examples/sticky?panel=code
     const indicesDefault: Array<number> = defaultRangeExtractor(range);
     
+    // Clamp the focused index to full within the range (e.g. in case the range changes but the focused index didn't)
+    // FIXME: it would be better to track the focused *key* instead and map that to the corresponding index somehow
+    const focusedIdx = typeof focusedItemIndex === 'number'
+      ? Math.min(focusedItemIndex, (indicesDefault.at(-1) ?? Infinity))
+      : null;
+    
     // Note: the array must be deduplicated (otherwise we get the same item rendered multiple times), and it must
     // also be sorted (otherwise focus scroll into view becomes buggy).
     const indicesWithFocused = Array
       .from(new Set([
         0, // First item
-        ...(typeof focusedItemIndex === 'number' ? [
-          Math.max(0, focusedItemIndex - 1), // Previous item (for arrow navigation backwards)
-          focusedItemIndex, // Currently focused item
-          Math.min(virtualItemKeysCount - 1, focusedItemIndex + 1), // Next item (for arrow navigation forwards)
+        ...(typeof focusedIdx === 'number' ? [
+          Math.max(0, focusedIdx - 1), // Previous item (for arrow navigation backwards)
+          focusedIdx, // Currently focused item
+          Math.min(virtualItemKeysCount - 1, focusedIdx + 1), // Next item (for arrow navigation forwards)
         ] : []),
         virtualItemKeysCount - 1, // Last item
         ...indicesAlwaysRendered,
