@@ -53,7 +53,7 @@ const SolutionSelectorControlledC = () => {
   return (
     <SolutionSelector
       selected={selected}
-      onSelectedChange={setSelected}
+      onSelectedChange={({ selected }) => { setSelected(selected); }}
       solutions={
         Array.from({ length: 30 }, (_, index) => `Solution ${index + 1}`).map((name, index) =>
           <SolutionSelector.Option

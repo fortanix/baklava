@@ -41,15 +41,24 @@ interface MenuRef extends React.ComponentRef<typeof MenuList> {
   _bkFocusLast: () => void,
 };
 
-type MenuSelectStateProps = {
+export type SelectedSingleChangeEvent = {
+  selected: SelectedSingleState,
+  reason?: undefined | 'programmatic' | 'user-request',
+};
+export type SelectedMultiChangeEvent = {
+  selected: SelectedMultiState,
+  reason?: undefined | 'programmatic' | 'user-request',
+};
+
+export type MenuSelectStateProps = {
   selected?: undefined | SelectedSingleState,
   defaultSelected?: undefined | SelectedSingleState,
-  onSelectedChange?: undefined | ((selected: SelectedSingleState) => void),
+  onSelectedChange?: undefined | ((event: SelectedSingleChangeEvent) => void),
 };
-type MenuSelectMultiStateProps = {
+export type MenuSelectMultiStateProps = {
   selected?: undefined | SelectedMultiState,
   defaultSelected?: undefined | SelectedMultiState,
-  onSelectedChange?: undefined | ((selected: SelectedMultiState) => void),
+  onSelectedChange?: undefined | ((event: SelectedMultiChangeEvent) => void),
 };
 
 
@@ -164,10 +173,13 @@ export const MenuGroupSelect = Object.assign(
     
     const { props: itemProps } = useCollectionItem({ itemKey });
     
+    const onSelectedStateChange = React.useCallback((selected: SelectedSingleState) => {
+      onSelectedChange?.({ selected });
+    }, [onSelectedChange]);
     const { store, ...listBoxStore } = useListBox<React.ComponentRef<typeof MenuList>>({
       state: selected,
       defaultState: defaultSelected,
-      onStateChange: onSelectedChange,
+      onStateChange: onSelectedStateChange,
       defaultStateFallback: null,
     });
     const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
@@ -240,11 +252,14 @@ export const MenuGroupSelectMulti = Object.assign(
     
     const { props: itemProps } = useCollectionItem({ itemKey });
     
+    const onSelectedStateChange = React.useCallback((selected: SelectedMultiState) => {
+      onSelectedChange?.({ selected });
+    }, [onSelectedChange]);
     const { store, ...listBoxStore } = useListBoxMulti<React.ComponentRef<typeof MenuList>>({
       state: selected,
       defaultState: defaultSelected,
       defaultStateFallback: new Set(),
-      onStateChange: onSelectedChange,
+      onStateChange: onSelectedStateChange,
     });
     const isEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
     
@@ -349,11 +364,14 @@ export const MenuSelect = Object.assign(
       ...propsRest
     } = props;
     
+    const onSelectedStateChange = React.useCallback((selected: SelectedSingleState) => {
+      onSelectedChange?.({ selected });
+    }, [onSelectedChange]);
     const { store, ...listBoxStore } = useListBox<React.ComponentRef<typeof Menu>>({
       state: selected,
       defaultState: defaultSelected,
       defaultStateFallback: null,
-      onStateChange: onSelectedChange,
+      onStateChange: onSelectedStateChange,
     });
     
     return (
@@ -389,11 +407,14 @@ export const MenuSelectMulti = Object.assign(
       ...propsRest
     } = props;
     
+    const onSelectedStateChange = React.useCallback((selected: SelectedMultiState) => {
+      onSelectedChange?.({ selected });
+    }, [onSelectedChange]);
     const { store, ...listBoxStore } = useListBoxMulti<React.ComponentRef<typeof Menu>>({
       state: selected,
       defaultState: defaultSelected,
       defaultStateFallback: new Set(),
-      onStateChange: onSelectedChange,
+      onStateChange: onSelectedStateChange,
     });
     
     return (

@@ -8,7 +8,13 @@ import { mergeCallbacks, mergeRefs, mergeProps } from '../../../util/reactUtil.t
 import { useControllableStateFromProps } from '../../../util/hooks/useControllableState.ts';
 
 // Components
-import { type ItemKey, type SelectedMultiState, MenuSelectMulti } from '../Menu/Menu.tsx';
+import {
+  type ItemKey,
+  type SelectedMultiState as SelectedState,
+  type SelectedMultiChangeEvent as SelectedChangeEvent,
+  type MenuSelectStateProps as SelectedStateProps,
+  MenuSelectMulti,
+} from '../Menu/Menu.tsx';
 import {
   type OpenStateProps,
   type OpenChangeEvent,
@@ -22,20 +28,20 @@ import {
 import cl from './MenuMultiProvider.module.scss';
 
 
-export type { ItemKey };
+export type { ItemKey, SelectedState, SelectedStateProps, SelectedChangeEvent };
 
 export type MenuMultiProviderRef = {
   open: boolean,
   requestOpenChange: (event: OpenChangeEvent) => void,
-  selected: SelectedMultiState,
-  requestSelectedChange: (selected: SelectedMultiState) => void,
+  selected: SelectedState,
+  requestSelectedChange: (event: SelectedChangeEvent) => void,
   // FIXME: include these?
   //anchorEl: null | HTMLElement,
   //floatingEl: null | HTMLElement,
 };
 
 export type AnchorRenderArgs = BaseAnchorRenderArgs & {
-  selectedOptions: SelectedMultiState,
+  selectedOptions: SelectedState,
 };
 export type MenuMultiProviderProps =
   Omit<React.ComponentProps<typeof MenuSelectMulti>, 'ref' | 'children' | 'label' | 'size'>
@@ -169,7 +175,7 @@ export const MenuMultiProvider = Object.assign(
     const {
       state: selectedState,
       requestStateChange: requestSelectedChange,
-    } = useControllableStateFromProps<SelectedMultiState>(
+    } = useControllableStateFromProps<SelectedState, SelectedChangeEvent>(
       {
         state: selected,
         defaultState: defaultSelected,
@@ -179,9 +185,13 @@ export const MenuMultiProvider = Object.assign(
         debugName: 'MenuMultiProvider',
         propName: 'selected',
         defaultStateFallback: new Set(),
-        stateFromEvent: state => state,
+        stateFromEvent: event => event.selected,
       },
     );
+    // Version of `requestSelectedChange` specifically for user-requested change events (e.g. clicking an option)
+    const requestUserSelectedChange = React.useCallback((event: SelectedChangeEvent) => {
+      requestSelectedChange({ ...event, reason: 'user-request' });
+    }, [requestSelectedChange]);
     
     // Allow passing a ref to control the state of the menu imperatively
     React.useImperativeHandle(ref, () => ({
@@ -211,7 +221,7 @@ export const MenuMultiProvider = Object.assign(
         label={label}
         selected={selectedState}
         //defaultSelected={defaultSelected} // Do not pass: `selectedState` is always controlled
-        onSelectedChange={requestSelectedChange}
+        onSelectedChange={requestUserSelectedChange}
         data-placement={floatingPlacement}
       >
         {typeof items === 'function'

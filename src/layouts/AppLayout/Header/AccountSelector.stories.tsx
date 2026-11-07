@@ -70,7 +70,7 @@ const AccountSelectorControlledC = () => {
   return (
     <AccountSelector
       selected={selected}
-      onSelectedChange={setSelected}
+      onSelectedChange={({ selected }) => { setSelected(selected); }}
       accounts={
         Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map((name, index) =>
           <AccountSelector.Option
@@ -105,7 +105,7 @@ const AccountSelectorControlledCustomImageC = () => {
   return (
     <AccountSelector
       selected={selected}
-      onSelectedChange={setSelected}
+      onSelectedChange={({ selected }) => { setSelected(selected); }}
       selectedIcon={<img alt="" src={`https://picsum.photos/id/${(selected || '').replace('account_', '')}/200/300`}/>}
       accounts={
         Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map((name, index) =>

@@ -4,11 +4,17 @@
 
 import * as React from 'react';
 import { classNames as cx } from '../../../util/componentUtil.ts';
-import { mergeCallbacks, mergeRefs, mergeProps, usePrevious } from '../../../util/reactUtil.ts';
+import { mergeCallbacks, mergeRefs, mergeProps } from '../../../util/reactUtil.ts';
 import { useControllableStateFromProps } from '../../../util/hooks/useControllableState.ts';
 
 // Components
-import { type ItemKey, type SelectedSingleState, MenuSelect } from '../Menu/Menu.tsx';
+import {
+  type ItemKey,
+  type SelectedSingleState as SelectedState,
+  type SelectedSingleChangeEvent as SelectedChangeEvent,
+  type MenuSelectStateProps as SelectedStateProps,
+  MenuSelect,
+} from '../Menu/Menu.tsx';
 import {
   type OpenStateProps,
   type OpenChangeEvent,
@@ -22,20 +28,20 @@ import {
 import cl from './MenuProvider.module.scss';
 
 
-export type { ItemKey, SelectedSingleState as SelectedState };
+export type { ItemKey, SelectedState, SelectedStateProps, SelectedChangeEvent };
 
 export type MenuProviderRef = {
   open: boolean,
   requestOpenChange: (event: OpenChangeEvent) => void,
-  selected: SelectedSingleState,
-  requestSelectedChange: (selected: SelectedSingleState) => void,
+  selected: SelectedState,
+  requestSelectedChange: (event: SelectedChangeEvent) => void,
   // FIXME: include these?
   //anchorEl: null | HTMLElement,
   //floatingEl: null | HTMLElement,
 };
 
 export type AnchorRenderArgs = BaseAnchorRenderArgs & {
-  selectedOption: SelectedSingleState,
+  selectedOption: SelectedState,
 };
 export type MenuProviderProps =
   Omit<React.ComponentProps<typeof MenuSelect>, 'ref' | 'children' | 'label' | 'size'>
@@ -165,8 +171,9 @@ export const MenuProvider = Object.assign(
       }
     }, [anchorRef, refs]);
     
-    const trackSelectedChange = React.useCallback((_selected: SelectedSingleState) => {
-      if (openState) {
+    const trackSelectedChange = React.useCallback((event: SelectedChangeEvent) => {
+      // Note: only do this for user-requested change events, not programmatic ones
+      if (openState && event.reason === 'user-request') {
         // Have a small timeout so the user gets visual feedback for their selection (e.g. CSS animation)
         window.setTimeout(() => {
           requestOpenChange({ open: false });
@@ -178,7 +185,7 @@ export const MenuProvider = Object.assign(
     const {
       state: selectedState,
       requestStateChange: requestSelectedChange,
-    } = useControllableStateFromProps<SelectedSingleState>(
+    } = useControllableStateFromProps<SelectedState, SelectedChangeEvent>(
       {
         state: selected,
         defaultState: defaultSelected,
@@ -188,9 +195,13 @@ export const MenuProvider = Object.assign(
         debugName: 'MenuProvider',
         propName: 'selected',
         defaultStateFallback: null,
-        stateFromEvent: state => state,
+        stateFromEvent: event => event.selected,
       },
     );
+    // Version of `requestSelectedChange` specifically for user-requested change events (e.g. clicking an option)
+    const requestUserSelectedChange = React.useCallback((event: SelectedChangeEvent) => {
+      requestSelectedChange({ ...event, reason: 'user-request' });
+    }, [requestSelectedChange]);
     
     /*
     // Close when the user selects an option
@@ -234,7 +245,7 @@ export const MenuProvider = Object.assign(
         label={label}
         selected={selectedState}
         //defaultSelected={defaultSelected} // Do not pass: `selectedState` is always controlled
-        onSelectedChange={requestSelectedChange}
+        onSelectedChange={requestUserSelectedChange}
         data-placement={floatingPlacement}
       >
         {typeof items === 'function'

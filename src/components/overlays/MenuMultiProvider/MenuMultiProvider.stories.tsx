@@ -152,7 +152,7 @@ const MenuMultiProviderControlledC = (props: React.ComponentProps<typeof MenuMul
       <MenuMultiProvider
         {...propsRest}
         selected={selectedOptions}
-        onSelectedChange={setSelectedOptions}
+        onSelectedChange={({ selected }) => { setSelectedOptions(selected); }}
       />
       <div>
         <Button label="Update state"
@@ -194,7 +194,7 @@ const MenuMultiProviderWithRefC = (props: React.ComponentProps<typeof MenuMultiP
     ref.current?.requestOpenChange({ open: true, forced: false });
   };
   const updateSelected = () => {
-    ref.current?.requestSelectedChange(new Set(['item-blueberry']));
+    ref.current?.requestSelectedChange({ selected: new Set(['item-blueberry']), reason: 'programmatic' });
   };
   
   return (

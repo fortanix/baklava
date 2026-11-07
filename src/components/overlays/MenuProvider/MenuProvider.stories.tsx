@@ -164,7 +164,7 @@ const MenuProviderControlledC = (props: React.ComponentProps<typeof MenuProvider
       <MenuProvider
         {...propsRest}
         selected={selectedOption}
-        onSelectedChange={setSelectedOption}
+        onSelectedChange={({ selected }) => { setSelectedOption(selected); }}
         open={open}
         onOpenChange={({ open }) => { setOpen(open); }}
       />
@@ -196,7 +196,7 @@ const MenuProviderWithRefC = (props: React.ComponentProps<typeof MenuProvider>) 
     ref.current?.requestOpenChange({ open: true, forced: false });
   };
   const updateSelected = () => {
-    ref.current?.requestSelectedChange('item-blueberry');
+    ref.current?.requestSelectedChange({ selected: 'item-blueberry', reason: 'programmatic' });
   };
   
   return (

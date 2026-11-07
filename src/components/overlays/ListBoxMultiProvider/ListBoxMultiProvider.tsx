@@ -196,6 +196,10 @@ export const ListBoxMultiProvider = Object.assign(
         defaultStateFallback: new Set(),
       },
     );
+    // Version of `requestSelectedChange` specifically for user-requested change events (e.g. clicking an option)
+    const requestUserSelectedChange = React.useCallback((event: SelectedChangeEvent) => {
+      requestSelectedChange({ ...event, reason: 'user-request' });
+    }, [requestSelectedChange]);
     
     // Allow passing a ref to control the state of the menu imperatively
     React.useImperativeHandle(ref, () => ({
@@ -225,7 +229,7 @@ export const ListBoxMultiProvider = Object.assign(
         label={label}
         selected={selectedState}
         //defaultSelected={defaultSelected} // Do not pass: `selectedState` is always controlled
-        onSelectedChange={requestSelectedChange}
+        onSelectedChange={requestUserSelectedChange}
         data-placement={floatingPlacement}
       >
         {typeof items === 'function'
