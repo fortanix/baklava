@@ -167,7 +167,10 @@ export const MenuProvider = Object.assign(
     
     const trackSelectedChange = React.useCallback((_selected: SelectedSingleState) => {
       if (openState) {
-        requestOpenChange({ open: false });
+        // Have a small timeout so the user gets visual feedback for their selection (e.g. CSS animation)
+        window.setTimeout(() => {
+          requestOpenChange({ open: false });
+        }, 150);
       }
     }, [openState, requestOpenChange]);
     
@@ -189,6 +192,7 @@ export const MenuProvider = Object.assign(
       },
     );
     
+    /*
     // Close when the user selects an option
     // FIXME: this might be ambiguous? We're not 100% sure here if this came through a user request or sth programmatic
     const prevSelectedState = usePrevious(selectedState);
@@ -200,6 +204,7 @@ export const MenuProvider = Object.assign(
         }, 150);
       }
     }, [prevSelectedState, selectedState, openState, requestOpenChange]);
+    */
     
     // Allow passing a ref to control the state of the menu imperatively
     React.useImperativeHandle(ref, () => ({

@@ -11,7 +11,7 @@ import { Input } from '../../forms/controls/Input/Input.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
 
-import { type ItemKey, type MenuProviderRef, MenuProvider } from './MenuProvider.tsx';
+import { type ItemKey, type SelectedState, type MenuProviderRef, MenuProvider } from './MenuProvider.tsx';
 
 
 type MenuProviderArgs = React.ComponentProps<typeof MenuProvider>;
@@ -152,18 +152,24 @@ export const MenuProviderWithHoverTrigger: Story = {
   },
 };
 
-const MenuProviderControlledC = ({ defaultSelected, ...props }: React.ComponentProps<typeof MenuProvider>) => {
-  const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>(defaultSelected ?? null);
+const MenuProviderControlledC = (props: React.ComponentProps<typeof MenuProvider>) => {
+  const { defaultSelected, defaultOpen, ...propsRest } = props;
+  const [open, setOpen] = React.useState<boolean>(defaultOpen ?? false);
+  const [selectedOption, setSelectedOption] = React.useState<SelectedState>(defaultSelected ?? null);
   
   return (
     <>
+      <p>Open: {open ? 'yes' : 'no'}</p>
       <p>Selected: {selectedOption === null ? '(none)' : formatFruitLabel(selectedOption)}</p>
       <MenuProvider
-        {...props}
+        {...propsRest}
         selected={selectedOption}
         onSelectedChange={setSelectedOption}
+        open={open}
+        onOpenChange={({ open }) => { setOpen(open); }}
       />
-      <div><Button label="Update state" onPress={() => { setSelectedOption('item-strawberry'); }}/></div>
+      <div><Button label="Update selected" onPress={() => { setSelectedOption('item-strawberry'); }}/></div>
+      <div><Button label="Update open" onPress={() => { setOpen(open => !open); }}/></div>
     </>
   );
 };

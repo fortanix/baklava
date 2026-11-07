@@ -412,7 +412,7 @@ const useComboBoxInteraction = (context: FloatingContext, options: UseComboBoxOp
     };
   }, [enabled, context.open, anchorEl, popoverEl, onOpenChange]);
   
-  // Click → toggle floating element
+  // On click, toggle the floating element
   const handleReferenceClick = React.useCallback((event: React.MouseEvent) => {
     if (!enabled) { return; }
     
@@ -425,7 +425,7 @@ const useComboBoxInteraction = (context: FloatingContext, options: UseComboBoxOp
     }
   }, [enabled, context.open, onOpenChange]);
   
-  // Arrow keys → open floating element
+  // On up/down arrow key, open the floating element
   const handleReferenceKeyDown = React.useCallback((event: React.KeyboardEvent) => {
     if (!enabled) { return; }
     

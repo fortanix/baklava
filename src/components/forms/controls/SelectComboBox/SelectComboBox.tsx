@@ -162,6 +162,12 @@ export const SelectComboBox = Object.assign(
     const handleInputBlur = React.useCallback((event: React.FocusEvent<HTMLInputElement>) => {
       const listBoxProvider = listBoxProviderRef.current;
       if (listBoxProvider && allowClear && event.target.value === '' && listBoxProvider.selected !== null) {
+        // FIXME: this causes a bug in the following scenario:
+        // - Select an option (e.g. Apple)
+        // - Focus the input and clear it
+        // - Focus back to the menu (causing an input blur)
+        // - Notice: the menu closes suddenly because `ListBoxProvider` thinks the user selected a different option
+        // - Solution: communicate in the `SelectedChangeEvent` that this is a programmatic change and not a user one?
         listBoxProvider.requestSelectedChange(null);
       }
       
@@ -176,7 +182,10 @@ export const SelectComboBox = Object.assign(
       if (!listBoxProvider) { return; }
       
       if (focused) {
-        listBoxProvider.requestOpenChange({ open: true });
+        // Note: don't do this. Just focusing the input shouldn't automatically open the menu, only after the user gives
+        // us an intent (arrow keys, input change). Clicking the input _should_ open the menu (also, if we were to do
+        // the line below than this will conflict with that click event).
+        //listBoxProvider.requestOpenChange({ open: true });
       } else {
         // Reset the text input to match the currently selected option
         updateFilterState(listBoxProvider.selected !== null ? valueFromSelected(listBoxProvider.selected) : '');
@@ -189,7 +198,7 @@ export const SelectComboBox = Object.assign(
         label={label}
         items={options}
         triggerAction="combobox"
-        popoverBehavior="auto"
+        popoverBehavior="auto" // FIXME: should just make this the new default in `ListBoxProvider`?
         keyboardInteractions="form-control"
         placement="bottom-start"
         offset={1} // Make the dropdown flush with the input element
