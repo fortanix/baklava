@@ -108,6 +108,7 @@ export const SelectComboBox = Object.assign(
     const InputAction = Input.Action ?? InputDefault.Action;
     
     const listBoxProviderRef = React.useRef<ListBoxProviderRef>(null);
+    const inputRef = React.useRef<React.ComponentRef<typeof InputDefault>>(null);
     
     // Note: make sure this is always a `string` not `undefined` (since that implies an uncontrolled input)
     const valueFromSelected = React.useCallback((selectedOption: SelectedState): string => {
@@ -160,24 +161,6 @@ export const SelectComboBox = Object.assign(
       }
     }, [updateFilterState]);
     
-    const handleInputBlur = React.useCallback((event: React.FocusEvent<HTMLInputElement>) => {
-      const listBoxProvider = listBoxProviderRef.current;
-      if (listBoxProvider && allowClear && event.target.value === '' && listBoxProvider.selected !== null) {
-        // Note: make sure to include a programmatic `reason` to avoid the following situation:
-        // - Select an option (e.g. Apple)
-        // - Focus the input and clear it
-        // - Focus back to the menu (causing an input blur)
-        // - Notice: the menu closes suddenly because `ListBoxProvider` thinks the user selected a different option
-        // - Solution: communicate in the `SelectedChangeEvent` that this is a programmatic change and not a user one
-        listBoxProvider.requestSelectedChange({ selected: null, reason: 'programmatic' });
-      }
-      
-      // FIXME: allow the user to type in an option directly (without going through the menu)?
-      // Would require something like a `selectedFromValue` function.
-      //const selectedMatch: undefined | SelectedState = selectedFromValue(event.target.value);
-      //if (typeof selectedMatch !== 'undefined') { ... }
-    }, [allowClear]);
-    
     const handleContainerFocusChange = React.useCallback(({ focused }: { focused: boolean }) => {
       const listBoxProvider = listBoxProviderRef.current;
       if (!listBoxProvider) { return; }
@@ -190,8 +173,23 @@ export const SelectComboBox = Object.assign(
       } else {
         // Reset the text input to match the currently selected option
         updateFilterState(listBoxProvider.selected !== null ? valueFromSelected(listBoxProvider.selected) : '');
+        
+        if (allowClear && inputRef.current?.value === '' && listBoxProvider.selected !== null) {
+          // Note: make sure to include a programmatic `reason` to avoid the following situation:
+          // - Select an option (e.g. Apple)
+          // - Focus the input and clear it
+          // - Focus back to the menu (causing an input blur)
+          // - Notice: the menu closes suddenly because `ListBoxProvider` thinks the user selected a different option
+          // - Solution: communicate in the `SelectedChangeEvent` that this is a programmatic change and not a user one
+          listBoxProvider.requestSelectedChange({ selected: null, reason: 'programmatic' });
+        }
+        
+        // FIXME: allow the user to type in an option directly (without going through the menu)?
+        // Would require something like a `selectedFromValue` function.
+        //const selectedMatch: undefined | SelectedState = selectedFromValue(event.target.value);
+        //if (typeof selectedMatch !== 'undefined') { ... }
       }
-    }, [valueFromSelected, updateFilterState]);
+    }, [valueFromSelected, updateFilterState, allowClear]);
     
     return (
       <ListBoxProvider
@@ -209,7 +207,7 @@ export const SelectComboBox = Object.assign(
         onSelectedChange={mergeCallbacks([handleSelectedChange, onSelectedChange])}
         onContainerFocusChange={mergeCallbacks([handleContainerFocusChange, dropdownProps.onContainerFocusChange])}
       >
-        {({ props, open, requestOpen, selectedOption }) => {
+        {({ props, open, selectedOption }) => {
           // @ts-ignore FIXME: `prefix` prop doesn't conform to `HTMLElement` type
           const propsAnchor = props(mergeProps(
             {
@@ -233,9 +231,9 @@ export const SelectComboBox = Object.assign(
             },
             propsRest,
             {
+              ref: inputRef,
               value: filterState,
               onChange: handleInputChange,
-              onBlur: handleInputBlur,
             },
           ));
           
