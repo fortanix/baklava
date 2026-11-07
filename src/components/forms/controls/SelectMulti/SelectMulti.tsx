@@ -100,7 +100,6 @@ export const SelectMulti = Object.assign(
       <ListBoxMultiProvider
         label={label}
         items={options}
-        triggerAction="click"
         keyboardInteractions="form-control"
         placement="bottom-start"
         offset={0} // Make the dropdown flush with the input element
