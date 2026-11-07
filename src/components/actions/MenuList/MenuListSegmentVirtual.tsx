@@ -120,20 +120,23 @@ const useFocusedItemIndex = () => {
 };
 
 // Range extractor for `useVirtualizer` that always includes the focused item, if there is one. This is so that we
-// do not "lose" the focused item when it gets scrolled out of view (for accessibility).
+// do not "lose" the focused item when it gets scrolled out of view (for keyboard accessibility).
 const rangeExtractorWithFocused = (
-  virtualItemKeysCount: number,
+  /** The total number of items in the list (regardless of scroll range). */
+  virtualItemsCount: number,
+  /** A set of indices that should always be rendered, even if outside of scroll range (e.g. sticky items). */
   indicesAlwaysRendered: Set<number>,
+  /** The index of the currently focused item, if any. */
   focusedItemIndex: null | number,
 ) => {
   return (range: Range) => {
     // For an example, see: https://tanstack.com/virtual/latest/docs/framework/react/examples/sticky?panel=code
     const indicesDefault: Array<number> = defaultRangeExtractor(range);
     
-    // Clamp the focused index to full within the range (e.g. in case the range changes but the focused index didn't)
+    // Clamp the focused index so as not exceed the max (e.g. in case the count changes but the focused index didn't)
     // FIXME: it would be better to track the focused *key* instead and map that to the corresponding index somehow
     const focusedIdx = typeof focusedItemIndex === 'number'
-      ? Math.min(focusedItemIndex, (indicesDefault.at(-1) ?? Infinity))
+      ? Math.min(focusedItemIndex, virtualItemsCount - 1)
       : null;
     
     // Note: the array must be deduplicated (otherwise we get the same item rendered multiple times), and it must
@@ -144,11 +147,11 @@ const rangeExtractorWithFocused = (
         ...(typeof focusedIdx === 'number' ? [
           Math.max(0, focusedIdx - 1), // Previous item (for arrow navigation backwards)
           focusedIdx, // Currently focused item
-          Math.min(virtualItemKeysCount - 1, focusedIdx + 1), // Next item (for arrow navigation forwards)
+          Math.min(virtualItemsCount - 1, focusedIdx + 1), // Next item (for arrow navigation forwards)
         ] : []),
-        virtualItemKeysCount - 1, // Last item
-        ...indicesAlwaysRendered,
         ...indicesDefault,
+        ...indicesAlwaysRendered,
+        virtualItemsCount - 1, // Last item
       ]))
       .sort((index1, index2) => index1 - index2);
     

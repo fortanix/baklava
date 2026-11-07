@@ -256,10 +256,11 @@ const SelectComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof 
   const [selected, setSelected] = React.useState<SelectedState>(null);
   const [blocks, setBlocks] = React.useState<Array<string>>([]);
   
-  const pushBlock = (block: string) => { if (!blocks.includes(block)) setBlocks(blocks => [...blocks, block]); };
+  const pushBlock = (block: string) => { setBlocks(blocks => [...blocks, block]); };
   const popBlock = () => { setBlocks(blocks => blocks.slice(0, -1)); };
   
   const fruitsFiltered = Object.entries(fruits)
+    .filter(([_key, fruit]) => !blocks.includes(fruit))
     .filter(([_key, fruit]) => fruit.toLowerCase().startsWith((filter ?? '').toLowerCase()));
   
   return (
@@ -276,6 +277,10 @@ const SelectComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof 
       options={fruitsFiltered.map(([fruitKey, fruitName]) =>
         <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
       )}
+      dropdownProps={{
+        placeholderEmpty: filter === '' ? 'No fruits available' : 'No matching fruits found',
+        ...props.dropdownProps,
+      }}
       selected={selected}
       formatSelected={formatFruitLabel}
       onSelectedChange={selectedOptionKey => {
@@ -287,10 +292,10 @@ const SelectComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof 
         }
         
         // Unset the selected state after a successful selection is made
-        window.setTimeout(() => {
-          setSelected(null);
-          ref.current?.requestOpenChange({ open: false });
-        }, 300);
+        // window.setTimeout(() => {
+        //   setSelected(null);
+        //   ref.current?.requestOpenChange({ open: false });
+        // }, 300);
       }}
       onKeyDown={event => {
         props.onKeyDown?.(event);

@@ -10,6 +10,7 @@ import { useControllableStateFromProps } from '../../../util/hooks/useControllab
 // Components
 import { type ItemKey, type SelectedState, ListBoxMulti } from '../../forms/controls/ListBoxMulti/ListBoxMulti.tsx';
 import {
+  type FocusChangeEvent,
   type OpenStateProps,
   type OpenChangeEvent,
   type UseFloatingMenuOptions,
@@ -90,7 +91,7 @@ export type ListBoxMultiProviderProps =
     enablePreciseTracking?: undefined | UseFloatingMenuOptions['enablePreciseTracking'],
     
     /** Event callback that will be called when focus leaves both the anchor and popover. */
-    onContainerFocusOut?: React.FocusEventHandler<Element>,
+    onContainerFocusChange?: undefined | ((event: FocusChangeEvent) => void),
   };
 /**
  * Wrapper around a trigger that provides an anchored popover listbox with multiple selection.
@@ -122,7 +123,7 @@ export const ListBoxMultiProvider = Object.assign(
       enablePreciseTracking,
       
       // Container props
-      onContainerFocusOut, // FIXME
+      onContainerFocusChange,
       
       ...propsRest
     } = props;
@@ -163,6 +164,7 @@ export const ListBoxMultiProvider = Object.assign(
       enablePreciseTracking,
       open,
       onOpenChange: mergeCallbacks([onOpenChange, trackOpenChange]),
+      onFocusChange: onContainerFocusChange,
     });
     // Use external element as the reference, if provided
     React.useLayoutEffect(() => {

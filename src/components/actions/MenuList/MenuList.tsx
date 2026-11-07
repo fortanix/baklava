@@ -201,7 +201,11 @@ export const MenuListGroup = (props: MenuListGroupProps) => {
             headingProps.className,
           )}
         >
-          <span className={cx(cl['bk-menu-list__item__label'])}>{headingContent}</span>
+          <span className={cx(cl['bk-menu-list__item__content'])}>
+            <span className={cx(cl['bk-menu-list__item__label'])}>
+              {headingContent}
+            </span>
+          </span>
         </H6>
       }
       
@@ -432,14 +436,14 @@ export const MenuListItemOption = (props: MenuListItemOptionProps) => {
       disabled={false} // Never use `disabled`, only use `nonactive`, so that we still allow focus
       nonactive={isDisabled}
     >
-      <span className={cx(cl['bk-menu-list__item__label'])}>
+      <span className={cx(cl['bk-menu-list__item__content'])}>
         {selectionMode === 'multiple' &&
           <Checkbox role="presentation" tabIndex={-1} checked={selected} disabled={isDisabled}
-          className={cx(cl['bk-menu-list__item__checkbox'])}
+            className={cx(cl['bk-menu-list__item__checkbox'])}
           />
         }
         {renderIcon()}
-        {propsRest.children ?? propsRest.label}
+        <span className={cx(cl['bk-menu-list__item__label'])}>{propsRest.children ?? propsRest.label}</span>
       </span>
     </Button>
   );

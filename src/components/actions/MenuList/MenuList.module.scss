@@ -235,10 +235,18 @@
       
       background: bk.$theme-dropdown-menu-menu-background-default;
       
-      .bk-menu-list__item__label {
+      @include bk.text-one-line();
+      
+      .bk-menu-list__item__content {
         display: flex;
         align-items: center;
         gap: 1ch;
+        
+        @include bk.text-one-line();
+        
+        .bk-menu-list__item__label {
+          @include bk.text-one-line();
+        }
         
         .bk-menu-list__item__icon {
           // FIXME: the accent color in dark mode is very low-contrast, barely visible

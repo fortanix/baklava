@@ -94,14 +94,22 @@ export const MenuListSmall: Story = { args: { size: 'small' } };
 export const MenuListMedium: Story = { args: { size: 'medium' } };
 export const MenuListLarge: Story = { args: { size: 'large' } };
 
+/**
+ * Options with labels that overflow should be properly handled with a `text-ellipsis`.
+ */
 export const MenuListWithOverflow: Story = {
   args: {
     children: (
       <>
         <MenuList.Option {...propsRadio} label={loremIpsum()}/>
-        {fruits.map(fruit =>
-          <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
-        )}
+        <MenuList.Option {...propsCheckbox} icon="account" label={loremIpsum()}/> {/* With checkbox + icon */}
+        <MenuList.Group label={loremIpsum()}
+          heading={loremIpsum()}
+        >
+          {fruits.map(fruit =>
+            <MenuList.Option {...propsRadio} key={fruit} label={fruit}/>
+          )}
+        </MenuList.Group>
       </>
     ),
   },
