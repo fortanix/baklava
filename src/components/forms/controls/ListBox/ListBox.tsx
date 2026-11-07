@@ -31,13 +31,15 @@ References:
 export { cl as ListBoxClassNames };
 export { type ItemKey, type SelectedState, useListBoxItem, useListBoxSelector };
 
+export type SelectedChangeEvent = { selected: SelectedState, reason?: undefined | 'programmatic' | 'user-request' };
+
 export type SelectedStateProps = {
   /** The currently selected option. If `undefined`, this component will be considered uncontrolled. */
   selected?: undefined | SelectedState,
   /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
   defaultSelected?: undefined | SelectedState,
   /** Event handler to be called when the selected option state changes. */
-  onSelectedChange?: undefined | ((selected: SelectedState) => void),
+  onSelectedChange?: undefined | ((event: SelectedChangeEvent) => void),
 };
 
 
@@ -157,11 +159,18 @@ export const ListBox = Object.assign(
       - Separate logic out to a separate component (like we did for `HiddenSelectedState`).
       - Use `listBox.store.subscribe` for side effects.
     */
+    const onSelectedStateChange = React.useCallback((selected: SelectedState) => {
+      if (typeof onSelectedChange === 'function') {
+        onSelectedChange({ selected });
+      } else if (typeof onSelect === 'function') {
+        onSelect(selected);
+      }
+    }, [onSelectedChange, onSelect]);
     const { store, ...listBoxStore } = useListBox<React.ComponentRef<typeof MenuList>>({
       state: selected,
       defaultState: defaultSelected,
       defaultStateFallback: null,
-      onStateChange: onSelectedChange ?? onSelect,
+      onStateChange: onSelectedStateChange,
     });
     const collEmpty = useStore(store, state => state.collectionIsEmpty()); // Re-render is considered acceptable here
     const isEmpty = typeof empty === 'boolean' ? empty : collEmpty;

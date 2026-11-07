@@ -8,7 +8,12 @@ import { mergeCallbacks, mergeRefs, mergeProps } from '../../../util/reactUtil.t
 import { useControllableStateFromProps } from '../../../util/hooks/useControllableState.ts';
 
 // Components
-import { type ItemKey, type SelectedState, ListBox } from '../../forms/controls/ListBox/ListBox.tsx';
+import {
+  type ItemKey,
+  type SelectedState,
+  type SelectedChangeEvent,
+  ListBox,
+} from '../../forms/controls/ListBox/ListBox.tsx';
 import {
   type FocusChangeEvent,
   type OpenStateProps,
@@ -23,13 +28,13 @@ import {
 import cl from './ListBoxProvider.module.scss';
 
 
-export type { ItemKey, SelectedState };
+export type { ItemKey, SelectedState, SelectedChangeEvent };
 
 export type ListBoxProviderRef = {
   open: boolean,
   requestOpenChange: (event: OpenChangeEvent) => void,
   selected: SelectedState,
-  requestSelectedChange: (selected: SelectedState) => void,
+  requestSelectedChange: (event: SelectedChangeEvent) => void,
   // FIXME: include these?
   //anchorEl: null | HTMLElement,
   //floatingEl: null | HTMLElement,
@@ -173,8 +178,9 @@ export const ListBoxProvider = Object.assign(
       }
     }, [anchorRef, refs]);
     
-    const trackSelectedChange = React.useCallback((_selected: SelectedState) => {
-      if (openState) {
+    const trackSelectedChange = React.useCallback((event: SelectedChangeEvent) => {
+      // Note: only do this for user-requested change events, not programmatic ones
+      if (openState && event.reason === 'user-request') {
         // Have a small timeout so the user gets visual feedback for their selection (e.g. CSS animation)
         window.setTimeout(() => {
           requestOpenChange({ open: false });
@@ -186,7 +192,7 @@ export const ListBoxProvider = Object.assign(
     const {
       state: selectedState,
       requestStateChange: requestSelectedChange,
-    } = useControllableStateFromProps<SelectedState>(
+    } = useControllableStateFromProps<SelectedState, SelectedChangeEvent>(
       {
         state: selected,
         defaultState: defaultSelected,
@@ -195,10 +201,14 @@ export const ListBoxProvider = Object.assign(
       {
         debugName: 'ListBoxProvider',
         propName: 'selected',
-        stateFromEvent: state => state,
+        stateFromEvent: event => event.selected,
         defaultStateFallback: null,
       },
     );
+    // Version of `requestSelectedChange` specifically for user-requested change events (e.g. clicking an option)
+    const requestUserSelectedChange = React.useCallback((event: SelectedChangeEvent) => {
+      requestSelectedChange({ ...event, reason: 'user-request' });
+    }, [requestSelectedChange]);
     
     /*
     // Close when the user selects an option
@@ -242,7 +252,7 @@ export const ListBoxProvider = Object.assign(
         label={label}
         selected={selectedState}
         //defaultSelected={defaultSelected} // Do not pass: `selectedState` is always controlled
-        onSelectedChange={requestSelectedChange}
+        onSelectedChange={requestUserSelectedChange}
         data-placement={floatingPlacement}
       >
         {typeof items === 'function'

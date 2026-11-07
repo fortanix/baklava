@@ -76,7 +76,7 @@ const SelectComboBoxControlledC = ({ defaultSelected, ...props }: React.Componen
       <SelectComboBox
         {...props}
         selected={selected}
-        onSelectedChange={setSelected}
+        onSelectedChange={({ selected }) => { setSelected(selected); }}
       />
       <p><Button label="Update state" onPress={() => { setSelected('item-strawberry'); }}/></p>
     </>
@@ -108,7 +108,7 @@ const SelectComboBoxFullyControlledC = (props: React.ComponentProps<typeof Selec
         filter={filter}
         onFilterChange={setFilter}
         selected={selected}
-        onSelectedChange={setSelected}
+        onSelectedChange={({ selected }) => { setSelected(selected); }}
         dropdownProps={{
           open,
           onOpenChange: ({ open }) => { setOpen(open); },
@@ -137,7 +137,7 @@ const SelectComboBoxWithFilterC = (props: React.ComponentProps<typeof SelectComb
       filter={filter}
       onFilterChange={setFilter}
       selected={selected}
-      onSelectedChange={setSelected}
+      onSelectedChange={({ selected }) => { setSelected(selected); }}
       options={fruitsFiltered.map(([fruitKey, fruitName]) =>
         <SelectComboBox.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
       )}
@@ -166,7 +166,7 @@ const SelectComboBoxWithFilterVirtualizedC = (props: React.ComponentProps<typeof
       filter={filter}
       onFilterChange={setFilter}
       selected={selected}
-      onSelectedChange={setSelected}
+      onSelectedChange={({ selected }) => { setSelected(selected); }}
       formatSelected={selectedKey => selectedKey === null ? '(None)' : (users[selectedKey]?.name ?? '(Unknown)')}
       options={
         <SelectComboBox.SegmentVirtual
@@ -283,11 +283,11 @@ const SelectComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof 
       }}
       selected={selected}
       formatSelected={formatFruitLabel}
-      onSelectedChange={selectedOptionKey => {
-        props.onSelectedChange?.(selectedOptionKey);
+      onSelectedChange={event => {
+        props.onSelectedChange?.(event);
         
-        if (selectedOptionKey !== null) {
-          pushBlock(formatFruitLabel(selectedOptionKey) ?? 'Unknown');
+        if (event.selected !== null) {
+          pushBlock(formatFruitLabel(event.selected) ?? 'Unknown');
           setFilter('');
         }
         

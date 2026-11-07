@@ -11,7 +11,7 @@ import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../../graphics/Icon/Icon.tsx';
 import { Button } from '../../../actions/Button/Button.tsx';
 
-import { type ItemKey, ListBox } from './ListBox.tsx';
+import { type SelectedState, ListBox } from './ListBox.tsx';
 
 
 type ListBoxArgs = React.ComponentProps<typeof ListBox>;
@@ -282,12 +282,14 @@ export const ListBoxTypeAhead: Story = {
 
 type ListBoxControlledProps = Omit<React.ComponentProps<typeof ListBox>, 'selected'>;
 const ListBoxControlledC = ({ defaultSelected, ...props }: ListBoxControlledProps) => {
-  const [selectedFruit, setSelectedFruit] = React.useState<null | ItemKey>(defaultSelected ?? null);
+  const [selectedFruit, setSelectedFruit] = React.useState<SelectedState>(defaultSelected ?? null);
   
   return (
     <>
       <p>Selected fruit: {selectedFruit ?? <em>none</em>}</p>
-      <ListBox {...props} selected={selectedFruit} onSelectedChange={setSelectedFruit}/>
+      <ListBox {...props} selected={selectedFruit}
+        onSelectedChange={({ selected }) => { setSelectedFruit(selected); }}
+      />
       <Button label="Update state" onPress={() => { setSelectedFruit('Strawberry'); }}/>
     </>
   );
@@ -357,12 +359,14 @@ export const ListBoxWithRef: Story = {
  */
 type ListBoxWithUnknownProps = Omit<React.ComponentProps<typeof ListBox>, 'selected'>;
 const ListBoxWithUnknownC = ({ defaultSelected, ...props }: ListBoxWithUnknownProps) => {
-  const [selectedItem, setSelectedItem] = React.useState<null | ItemKey>(defaultSelected ?? null);
+  const [selectedItem, setSelectedItem] = React.useState<SelectedState>(defaultSelected ?? null);
   
   return (
     <>
       <p>Selected fruit: {selectedItem ?? '(none)'}</p>
-      <ListBox {...props} selected={selectedItem} onSelectedChange={setSelectedItem}>
+      <ListBox {...props} selected={selectedItem}
+        onSelectedChange={({ selected }) => { setSelectedItem(selected); }}
+      >
         {fruits.map(fruit =>
           <ListBox.Option key={fruit} itemKey={fruit} label={fruit}/>
         )}

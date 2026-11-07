@@ -138,7 +138,7 @@ const ListBoxProviderControlledC = ({ defaultSelected, ...props }: React.Compone
       <ListBoxProvider
         {...props}
         selected={selectedOption}
-        onSelectedChange={setSelectedOption}
+        onSelectedChange={({ selected }) => { setSelectedOption(selected); }}
       />
       <div><Button label="Update state" onPress={() => { setSelectedOption('item-strawberry'); }}/></div>
     </>

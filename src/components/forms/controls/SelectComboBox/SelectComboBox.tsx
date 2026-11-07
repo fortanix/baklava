@@ -11,6 +11,7 @@ import { Input as InputDefault } from '../Input/Input.tsx';
 import {
   type ItemKey,
   type SelectedState,
+  type SelectedChangeEvent,
   type ListBoxProviderRef,
   ListBoxProvider,
 } from '../../../overlays/ListBoxProvider/ListBoxProvider.tsx';
@@ -134,8 +135,8 @@ export const SelectComboBox = Object.assign(
       },
     );
     
-    const handleSelectedChange = React.useCallback((selected: SelectedState) => {
-      updateFilterState(selected !== null ? valueFromSelected(selected) : '');
+    const handleSelectedChange = React.useCallback((event: SelectedChangeEvent) => {
+      updateFilterState(event.selected !== null ? valueFromSelected(event.selected) : '');
     }, [valueFromSelected, updateFilterState]);
     
     // Note: if the consumer has controlled `selected` state, and that controlled state changes, then our
@@ -145,7 +146,7 @@ export const SelectComboBox = Object.assign(
       if (typeof selected === 'undefined') { return; }
       
       if (typeof selectedPrev === 'undefined' || selected !== selectedPrev) {
-        handleSelectedChange(selected);
+        handleSelectedChange({ selected });
       }
     }, [selected, selectedPrev, handleSelectedChange]);
     
@@ -162,13 +163,13 @@ export const SelectComboBox = Object.assign(
     const handleInputBlur = React.useCallback((event: React.FocusEvent<HTMLInputElement>) => {
       const listBoxProvider = listBoxProviderRef.current;
       if (listBoxProvider && allowClear && event.target.value === '' && listBoxProvider.selected !== null) {
-        // FIXME: this causes a bug in the following scenario:
+        // Note: make sure to include a programmatic `reason` to avoid the following situation:
         // - Select an option (e.g. Apple)
         // - Focus the input and clear it
         // - Focus back to the menu (causing an input blur)
         // - Notice: the menu closes suddenly because `ListBoxProvider` thinks the user selected a different option
-        // - Solution: communicate in the `SelectedChangeEvent` that this is a programmatic change and not a user one?
-        listBoxProvider.requestSelectedChange(null);
+        // - Solution: communicate in the `SelectedChangeEvent` that this is a programmatic change and not a user one
+        listBoxProvider.requestSelectedChange({ selected: null, reason: 'programmatic' });
       }
       
       // FIXME: allow the user to type in an option directly (without going through the menu)?
