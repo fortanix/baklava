@@ -6,9 +6,8 @@ import * as React from 'react';
 import { classNames as cx, type ComponentProps } from '../../../util/componentUtil.ts';
 import { mergeProps } from '../../../util/reactUtil.ts';
 import { useFocusGroup } from '../../../util/hooks/useFocusGroup.ts';
-import { useStore } from 'zustand';
 
-import { type ItemKey, useRadioGroup, useRadioGroupItem } from '../../util/collections/RadioGroupStore.tsx';
+import { type ItemKey, useRadioGroup, useRadioGroupItem } from '../../util/collections/RadioGroupStore.ts';
 import { ToggleButton } from '../ToggleButton/ToggleButton.tsx';
 
 import cl from './SegmentedControl.module.scss';
@@ -126,8 +125,8 @@ export const SegmentedControl = Object.assign(
     const { Provider: RadioGroupProvider, context: radioGroupContext, props: radioGroupProps } = useRadioGroup({
       state: selected,
       defaultState: defaultSelected,
-      defaultStateFallback: null,
       onStateChange: onSelectedChange ?? onUpdate,
+      defaultStateFallback: null,
     });
     
     const focusGroupProps = useFocusGroup({ focusGroup: 'radiogroup nowrap' });

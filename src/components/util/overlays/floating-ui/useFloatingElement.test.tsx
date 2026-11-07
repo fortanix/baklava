@@ -11,18 +11,21 @@ import * as FloatingUIReact from '@floating-ui/react';
 
 // Mock floating-ui/react
 vi.mock('@floating-ui/react', () => ({
-  useFloating: vi.fn(() => ({
+  // Note: the mock reflects the controlled `open` state and `onOpenChange` callback that the hook passes in, similar to
+  // the real `useFloating`. A hardcoded `open: false` would make it impossible to observe state changes.
+  useFloating: vi.fn((options?: { open?: boolean, onOpenChange?: unknown, placement?: string }) => ({
     context: {
-      open: false,
-      placement: 'top',
-      elements: { floating: null },
+      open: options?.open ?? false,
+      onOpenChange: options?.onOpenChange ?? vi.fn(),
+      placement: options?.placement ?? 'top',
+      elements: { reference: null, floating: null },
       middlewareData: { arrow: null },
     },
     refs: {
       setReference: vi.fn(),
       setFloating: vi.fn(),
     },
-    placement: 'top',
+    placement: options?.placement ?? 'top',
     floatingStyles: {},
   })),
   useRole: vi.fn(() => ({})),
@@ -64,7 +67,7 @@ describe('useFloatingElement', () => {
         getReferenceProps: expect.any(Function),
         getFloatingProps: expect.any(Function),
         getItemProps: expect.any(Function),
-        setIsOpen: expect.any(Function),
+        requestOpenChange: expect.any(Function),
         context: expect.any(Object),
       });
     });
@@ -107,16 +110,33 @@ describe('useFloatingElement', () => {
       expect(result.current.isOpen).toBe(false);
 
       act(() => {
-        result.current.setIsOpen(true);
+        result.current.requestOpenChange({ open: true });
       });
 
       expect(result.current.isOpen).toBe(true);
 
       act(() => {
-        result.current.setIsOpen(false);
+        result.current.requestOpenChange({ open: false });
       });
 
       expect(result.current.isOpen).toBe(false);
+    });
+
+    test('should respect the `defaultOpen` option', () => {
+      const { result } = renderHook(() => useFloatingElement({ defaultOpen: true }));
+
+      expect(result.current.isOpen).toBe(true);
+    });
+
+    test('should call `onOpenChange` when the open state changes', () => {
+      const onOpenChange = vi.fn();
+      const { result } = renderHook(() => useFloatingElement({ onOpenChange }));
+
+      act(() => {
+        result.current.requestOpenChange({ open: true });
+      });
+
+      expect(onOpenChange).toHaveBeenCalledWith(expect.objectContaining({ open: true }));
     });
   });
 
@@ -174,19 +194,25 @@ describe('useFloatingElement', () => {
   });
 
   describe('keyboard interactions', () => {
+    // Get the most recent `onOpenChange` callback that the hook passed to `useFloating`
+    const getLatestOnOpenChange = () => {
+      return vi.mocked(FloatingUIReact.useFloating).mock.lastCall?.[0]?.onOpenChange;
+    };
+
     test('should handle Enter key for form-control keyboard interactions', () => {
       const { result } = renderHook(() => useFloatingElement({
         keyboardInteractions: 'form-control',
       }));
 
-      const mockOnOpenChange = vi.mocked(FloatingUIReact.useFloating).mock.calls[0]?.[0]?.onOpenChange;
+      const onOpenChange = getLatestOnOpenChange();
 
       const enterKeyEvent = new KeyboardEvent('keydown', { key: 'Enter' });
-      
+
       act(() => {
-        mockOnOpenChange?.(true, enterKeyEvent, 'reference-press');
+        onOpenChange?.(true, enterKeyEvent, 'reference-press');
       });
 
+      // Enter should be ignored for form controls (so that it triggers the default form submit behavior instead)
       expect(result.current.isOpen).toBe(false);
     });
 
@@ -195,12 +221,12 @@ describe('useFloatingElement', () => {
         keyboardInteractions: 'default',
       }));
 
-      const mockOnOpenChange = vi.mocked(FloatingUIReact.useFloating).mock.calls[0]?.[0]?.onOpenChange;
+      const onOpenChange = getLatestOnOpenChange();
 
       const enterKeyEvent = new KeyboardEvent('keydown', { key: 'Enter' });
-      
+
       act(() => {
-        mockOnOpenChange?.(true, enterKeyEvent, 'reference-press');
+        onOpenChange?.(true, enterKeyEvent, 'reference-press');
       });
 
       expect(result.current.isOpen).toBe(true);

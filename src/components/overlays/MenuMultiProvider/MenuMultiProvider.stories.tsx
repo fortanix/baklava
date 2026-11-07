@@ -2,14 +2,14 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import * as React from 'react';
-
+import { notify } from '../ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
 
-import { type ItemKey, MenuMultiProvider } from './MenuMultiProvider.tsx';
+import { type ItemKey, type MenuMultiProviderRef, MenuMultiProvider } from './MenuMultiProvider.tsx';
 
 
 type MenuMultiProviderArgs = React.ComponentProps<typeof MenuMultiProvider>;
@@ -45,29 +45,36 @@ export default {
   },
   args: {
     label: 'Test menu provider',
-    formatItemLabel: formatFruitLabel,
     children: ({ props, selectedOptions }) => {
-      const selectedLabels = [...selectedOptions.values()].map(({ label }) => label).join(', ');
+      const selectedLabels = Array.from(selectedOptions).map(key => formatFruitLabel(key)).join(', ');
       return (
-        <Button kind="primary" {...props()}>
-          {selectedOptions.size > 0 ? `Selected: ${selectedLabels}` : 'Open dropdown'}
-        </Button>
+        <Button kind="primary" {...props()}
+          label={selectedOptions.size > 0 ? `Selected: ${selectedLabels}` : 'Open dropdown'}
+        />
       );
     },
     items: (
       <>
-        {Object.entries(fruits).map(([fruitKey, fruitName]) =>
-          <MenuMultiProvider.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        {Object.keys(fruits).map(fruitKey =>
+          <MenuMultiProvider.Option key={fruitKey} itemKey={fruitKey} label={formatFruitLabel(fruitKey)}/>
         )}
       </>
     ),
-    onSelect: selectedOption => { console.log('Selected:', selectedOption); },
+    onSelectedChange: selectedOption => { console.log('Selected:', selectedOption); },
   },
   render: (args) => <MenuMultiProvider {...args}/>,
 } satisfies Meta<MenuMultiProviderArgs>;
 
 
 export const MenuMultiProviderStandard: Story = {};
+
+/** When using up/down arrow keys, focus should not change in the empty case (since there is focusable element). */
+export const MenuMultiProviderEmpty: Story = {
+  args: {
+    defaultSelected: new Set(),
+    items: null,
+  },
+};
 
 export const MenuMultiProviderWithDefault: Story = {
   args: {
@@ -77,11 +84,18 @@ export const MenuMultiProviderWithDefault: Story = {
 
 export const MenuMultiProviderWithInput: Story = {
   args: {
+    children: ({ props, selectedOptions }) => {
+      return (
+        <Button kind="primary" {...props()}>
+          {selectedOptions.size > 0 ? `Selected: ${selectedOptions.size} options` : 'Open dropdown'}
+        </Button>
+      );
+    },
     items: (
       <>
-        <MenuMultiProvider.Header unstyled itemKey="header-1" label="Input">
+        <MenuMultiProvider.Segment sticky="start">
           <InputSearch/>
-        </MenuMultiProvider.Header>
+        </MenuMultiProvider.Segment>
         <MenuMultiProvider.Option itemKey="option-1" label="Option 1"/>
         <MenuMultiProvider.Option itemKey="option-2" label="Option 2"/>
       </>
@@ -105,11 +119,18 @@ export const MenuMultiProviderWithPlacement: Story = {
 
 export const MenuMultiProviderWithAction: Story = {
   args: {
+    children: ({ props, selectedOptions }) => {
+      return (
+        <Button kind="primary" {...props()}>
+          {selectedOptions.size > 0 ? `Selected: ${selectedOptions.size} options` : 'Open dropdown'}
+        </Button>
+      );
+    },
     items: ({ close }) => (
       <>
         <MenuMultiProvider.Option itemKey="option-1" label="Option 1"/>
         <MenuMultiProvider.Option itemKey="option-2" label="Option 2"/>
-        <MenuMultiProvider.Action itemKey="action-close" onActivate={close} label="Close" icon="logout">
+        <MenuMultiProvider.Action itemKey="action-close" onPress={close} label="Close" icon="logout">
           Close
         </MenuMultiProvider.Action>
       </>
@@ -117,33 +138,21 @@ export const MenuMultiProviderWithAction: Story = {
   },
 };
 
-export const MenuMultiProviderWithClickTrigger: Story = {
-  args: {
-    triggerAction: 'click',
-  },
-};
-
-export const MenuMultiProviderWithFocusTrigger: Story = {
-  args: {
-    triggerAction: 'focus',
-  },
-};
-
-export const MenuMultiProviderWithHoverTrigger: Story = {
-  args: {
-    triggerAction: 'hover',
-  },
-};
+export const MenuMultiProviderWithClickTrigger: Story = { args: { triggerAction: 'click' } };
+export const MenuMultiProviderWithFocusTrigger: Story = { args: { triggerAction: 'focus' } };
+export const MenuMultiProviderWithHoverTrigger: Story = { args: { triggerAction: 'hover' } };
+export const MenuMultiProviderWithFocusInteractiveTrigger: Story = { args: { triggerAction: 'focus-interactive' } };
 
 const MenuMultiProviderControlledC = (props: React.ComponentProps<typeof MenuMultiProvider>) => {
-  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(props.defaultSelected ?? new Set());
+  const { defaultSelected, ...propsRest } = props;
+  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(defaultSelected ?? new Set());
   return (
     <>
       <p>Selected: {[...selectedOptions].map(itemKey => formatFruitLabel(itemKey)).join(', ') || '(none)'}</p>
       <MenuMultiProvider
-        {...props}
+        {...propsRest}
         selected={selectedOptions}
-        onSelect={setSelectedOptions}
+        onSelectedChange={setSelectedOptions}
       />
       <div>
         <Button label="Update state"
@@ -167,4 +176,36 @@ export const MenuMultiProviderControlledWithDefault: Story = {
       ])}
     />
   ),
+};
+
+
+const MenuMultiProviderWithRefC = (props: React.ComponentProps<typeof MenuMultiProvider>) => {
+  const ref = React.useRef<MenuMultiProviderRef>(null);
+  
+  const logState = async () => {
+    // Add a timeout so we have time to open the menu first after clicking the button
+    await new Promise(resolve => window.setTimeout(resolve, 1000));
+    
+    const state = ref.current;
+    if (!state) { notify.info(`No ref`); return; }
+    notify.info(`Open = ${state.open}, Selected = ${[...state.selected].join(', ') || '(none)'}`);
+  };
+  const openMenu = () => {
+    ref.current?.requestOpenChange({ open: true, forced: false });
+  };
+  const updateSelected = () => {
+    ref.current?.requestSelectedChange(new Set(['item-blueberry']));
+  };
+  
+  return (
+    <>
+      <p><Button label="Log state" onPress={logState}/></p>
+      <MenuMultiProvider {...props} ref={ref}/>
+      <p><Button label="Open menu" onPress={openMenu}/></p>
+      <p><Button label="Select Blueberry" onPress={updateSelected}/></p>
+    </>
+  );
+};
+export const MenuMultiProviderWithRef: Story = {
+  render: args => <MenuMultiProviderWithRefC {...args}/>,
 };

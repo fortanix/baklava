@@ -7,17 +7,18 @@ import { userEvent, within } from 'storybook/test';
 
 import { delay } from '../../../util/time.ts';
 import * as React from 'react';
+import { classNames as cx } from '../../../util/componentUtil.ts';
 import { ErrorBoundary, getErrorMessage } from 'react-error-boundary';
 
 import { notify } from '../../overlays/ToastProvider/ToastProvider.tsx';
 import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Banner } from '../../containers/Banner/Banner.tsx';
 
-import { Button } from './Button.tsx';
+import { type ButtonIconProps, Button } from './Button.tsx';
 
 
 type ButtonArgs = React.ComponentProps<typeof Button>;
-type Story = StoryObj<typeof Button>;
+type Story<IconProps extends ButtonIconProps = ButtonIconProps> = StoryObj<typeof Button<IconProps>>;
 
 export default {
   component: Button,
@@ -157,6 +158,18 @@ export const ButtonWithIcon: Story = {
   args: {
     label: 'I have an icon',
     icon: 'check',
+  },
+};
+
+type CustomIconProps = ButtonIconProps & { emoji?: string };
+const CustomIcon = ({ emoji, className }: CustomIconProps) => <span className={cx(className)}>{emoji}</span>;
+export const ButtonWithCustomIcon: Story<ButtonIconProps & { emoji?: string }> = {
+  ...PrimaryStory,
+  args: {
+    label: 'I have an icon',
+    icon: 'check',
+    Icon: CustomIcon,
+    iconProps: { emoji: '🍕' },
   },
 };
 

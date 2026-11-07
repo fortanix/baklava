@@ -81,8 +81,7 @@ const packageConfig = {
     'lint': 'npm run lint:style; npm run lint:script',
     
     // Test
-    // Note: use `vitest run src/...` to run a single test file
-    'test:unit': 'vitest run --project=unit',
+    'test:unit': 'vitest run --project=unit', // Note: `npm run test:unit -- <path>` limits to the given file path
     'test': 'npm run check:types && npm run test:unit && npm run lint:style && npm run verify verify:source', // TODO: add `lint:script`
     'test-ui': 'vitest --ui',
     'coverage': 'vitest run --coverage',
@@ -100,6 +99,9 @@ const packageConfig = {
   
   // Dev dependencies (only needed when building, or making changes to the code)
   devDependencies: {
+    // Utilities
+    '@types/lodash.debounce': '^4.0.9',
+    
     // CLI
     'plop': '^4.0.5',
     
@@ -168,6 +170,7 @@ const packageConfig = {
   // Dependencies needed when running the generated build
   dependencies: {
     // Utilities
+    'lodash.debounce': '^4.0.8',
     'date-fns': '^4.1.0',
     'message-tag': '^0.10.0',
     'effect': '^3.21.2',
@@ -185,7 +188,7 @@ const packageConfig = {
     'zustand': '^5.0.13',
     
     // React UI libraries
-    '@tanstack/react-virtual': '^3.13.24',
+    '@tanstack/react-virtual': '^3.14.5',
     '@floating-ui/react': '^0.27.18', // https://github.com/floating-ui/floating-ui/blob/master/packages/react/CHANGELOG.md
     'react-hook-form': '^7.75.0',
     'react-table': '^7.8.0',

@@ -25,9 +25,6 @@ export default {
   args: {
     placeholder: 'Example',
   },
-  decorators: [
-    Story => <form onSubmit={event => { event.preventDefault(); }}><Story/></form>,
-  ],
   render: (args) => <Input {...args}/>,
 } satisfies Meta<InputArgs>;
 
@@ -85,7 +82,7 @@ export const InputWithCustomFontSize: Story = {
   },
 };
 
-const CustomIcon: React.ComponentProps<typeof Input>['Icon'] = props => "🍕";
+const CustomIcon: React.ComponentProps<typeof Input>['Icon'] = props => '🍕';
 export const InputWithCustomIcon: Story = {
   args: {
     Icon: CustomIcon,
@@ -163,4 +160,77 @@ export const InputWithAutomaticResizing: Story = {
 /** The `id` prop should be applied to the inner `<input>`. */
 export const InputWithId: Story = {
   args: { id: 'test-id' },
+};
+
+const InputInFormC = (props: InputArgs) => {
+  const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    notify.info(`You have submitted: ${new FormData(event.currentTarget).get('story-input') ?? '(none)'}`);
+  };
+  return (
+    <form onSubmit={handleSubmit}>
+      <p><Input {...props} name="story-input" defaultValue="Some value"/></p>
+      <p><button type="submit">Submit</button></p>
+    </form>
+  );
+};
+export const InputInForm: Story = {
+  render: args => <InputInFormC {...args}/>,
+};
+
+
+const InputInFormWithIdC = (props: InputArgs) => {
+  const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    notify.info(`You have submitted: ${new FormData(event.currentTarget).get('story-input') ?? '(none)'}`);
+  };
+  return (
+    <>
+      <form id="story-form" onSubmit={handleSubmit}/>
+      <p><Input {...props} form="story-form" name="story-input" defaultValue="Some value"/></p>
+      <p><button form="story-form" type="submit">Submit</button></p>
+    </>
+  );
+};
+export const InputInFormWithId: Story = {
+  render: args => <InputInFormWithIdC {...args}/>,
+};
+
+const InputInFormWithCustomValueC = (props: InputArgs) => {
+  const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    notify.info(`You have submitted: ${new FormData(event.currentTarget).get('story-input') ?? '(none)'}`);
+  };
+  return (
+    <>
+      <form id="story-form" onSubmit={handleSubmit}/>
+      <p><Input {...props} form="story-form" name="story-input" defaultValue="Some value" formValue="custom"/></p>
+      <p><button form="story-form" type="submit">Submit</button></p>
+    </>
+  );
+};
+export const InputInFormWithCustomValue: Story = {
+  render: args => <InputInFormWithCustomValueC {...args}/>,
+};
+
+const InputInFormWithCustomValueArrayC = (props: InputArgs) => {
+  const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const values = new FormData(event.currentTarget).getAll('story-input[]');
+    notify.info(`You have submitted: ${values.join(', ') || '(none)'}`);
+  };
+  return (
+    <>
+      <form id="story-form" onSubmit={handleSubmit}/>
+      <p>
+        <Input {...props} form="story-form" name="story-input" defaultValue="Some value"
+          formValue={['custom1', 'custom2']}
+        />
+      </p>
+      <p><button form="story-form" type="submit">Submit</button></p>
+    </>
+  );
+};
+export const InputInFormWithCustomValueArray: Story = {
+  render: args => <InputInFormWithCustomValueArrayC {...args}/>,
 };

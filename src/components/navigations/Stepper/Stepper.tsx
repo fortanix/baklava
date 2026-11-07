@@ -10,7 +10,8 @@ import { Icon } from '../../graphics/Icon/Icon.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
 
 import { useScroller } from '../../../layouts/util/Scroller.tsx';
-import { useCollection, useCollectionItem } from '../../util/collections/CollectionStore.tsx';
+import { useCollection, useCollectionItem } from '../../util/collections/CollectionStore.ts';
+
 import cl from './Stepper.module.scss';
 
 

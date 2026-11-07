@@ -8,6 +8,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { loremIpsumSentence } from '../../../util/storybook/LoremIpsum.tsx';
 import { LayoutDecorator } from '../../../util/storybook/LayoutDecorator.tsx';
 
+import { Icon } from '../../../components/graphics/Icon/Icon.tsx';
+
 import { type ItemKey, AccountSelector } from './AccountSelector.tsx';
 
 
@@ -36,12 +38,12 @@ export const AccountSelectorStandard: Story = {
         {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
           <AccountSelector.Option key={`account_${name}`} itemKey={`account_${name}`} icon="account" label={name}/>
         )}
-        <AccountSelector.FooterActions>
-          <AccountSelector.Action itemKey="action_add-account" label="Add account" onActivate={() => {}}/>
-        </AccountSelector.FooterActions>
+        <AccountSelector.Footer>
+          <AccountSelector.Action itemKey="action_add-account" label="Add account" onPress={() => {}}/>
+        </AccountSelector.Footer>
       </>
     ),
-    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label,
+    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.replace('account_', ''),
   },
 };
 
@@ -53,12 +55,12 @@ export const AccountSelectorWithOverflow: Story = {
         {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
           <AccountSelector.Option key={`account_${name}`} itemKey={`account_${name}`} icon="account" label={name}/>
         )}
-        <AccountSelector.FooterActions>
-          <AccountSelector.Action itemKey="action_add-account" label="Add account" onActivate={() => {}}/>
-        </AccountSelector.FooterActions>
+        <AccountSelector.Footer>
+          <AccountSelector.Action itemKey="action_add-account" label="Add account" onPress={() => {}}/>
+        </AccountSelector.Footer>
       </>
     ),
-    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label,
+    children: selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.replace('account_', ''),
   },
 };
 
@@ -68,11 +70,11 @@ const AccountSelectorControlledC = () => {
   return (
     <AccountSelector
       selected={selected}
-      onSelect={setSelected}
-      formatItemLabel={accountKey => accountKey.replace('account_', 'Account ')}
+      onSelectedChange={setSelected}
       accounts={
         Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map((name, index) =>
           <AccountSelector.Option
+            // biome-ignore lint/suspicious/noArrayIndexKey: Index is fine for the purpose of this story
             key={`account_${index + 1}`}
             itemKey={`account_${index + 1}`}
             icon="account"
@@ -81,7 +83,7 @@ const AccountSelectorControlledC = () => {
         )
       }
     >
-      {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label}
+      {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.replace('account_', 'Account ')}
     </AccountSelector>
   );
 };
@@ -89,11 +91,12 @@ export const AccountSelectorControlled: Story = {
   render: args => <AccountSelectorControlledC {...args}/>,
 };
 
-const CustomImage = (id: string) => () => (
+const CustomImage = ({ id }: React.ComponentProps<typeof Icon>) => (
   <img
+    alt=""
     src={`https://picsum.photos/id/${id}/200/300`}
-    // consumer should be responsible of providing a sensible styling
-    style={{objectFit: 'cover', inlineSize: '1.3em', blockSize: '1.3em'}}
+    // Consumer should be responsible of providing a sensible styling
+    style={{ objectFit: 'cover', inlineSize: '1.3em', blockSize: '1.3em' }}
   />
 );
 const AccountSelectorControlledCustomImageC = () => {
@@ -102,25 +105,26 @@ const AccountSelectorControlledCustomImageC = () => {
   return (
     <AccountSelector
       selected={selected}
-      onSelect={setSelected}
-      formatItemLabel={accountKey => accountKey.replace('account_', 'Account ')}
-      selectedIcon={<img src={`https://picsum.photos/id/${(selected || '').replace('account_', '')}/200/300`}/>}
+      onSelectedChange={setSelected}
+      selectedIcon={<img alt="" src={`https://picsum.photos/id/${(selected || '').replace('account_', '')}/200/300`}/>}
       accounts={
         Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map((name, index) =>
           <AccountSelector.Option
+            // biome-ignore lint/suspicious/noArrayIndexKey: Dummy data
             key={`account_${index + 1}`}
             itemKey={`account_${index + 1}`}
             label={name}
             // TODO: `icon` should not be needed when a custom `Icon` is used.
             // Revisit this custom icon condition once this PR is merged:
             // https://github.com/fortanix/baklava/pull/686.
-            Icon={CustomImage(name.replace('Account ', ''))}
+            Icon={CustomImage}
+            iconProps={{ id: name.replace('Account ', '') }}
             icon="account"
           />
         )
       }
     >
-      {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label}
+      {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.replace('account_', 'Account ')}
     </AccountSelector>
   );
 };

@@ -2,14 +2,16 @@
 |* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
 |* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import * as React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import * as React from 'react';
-
+import { notify } from '../ToastProvider/ToastProvider.tsx';
 import { Button } from '../../actions/Button/Button.tsx';
+import { Input } from '../../forms/controls/Input/Input.tsx';
 import { InputSearch } from '../../forms/controls/Input/InputSearch.tsx';
+import { Icon } from '../../graphics/Icon/Icon.tsx';
 
-import { type ItemKey, MenuProvider } from './MenuProvider.tsx';
+import { type ItemKey, type MenuProviderRef, MenuProvider } from './MenuProvider.tsx';
 
 
 type MenuProviderArgs = React.ComponentProps<typeof MenuProvider>;
@@ -45,10 +47,9 @@ export default {
   },
   args: {
     label: 'Test menu provider',
-    formatItemLabel: formatFruitLabel,
     children: ({ props, selectedOption }) => (
       <Button kind="primary" {...props()}>
-        {typeof selectedOption !== 'undefined' ? `Selected: ${selectedOption?.label ?? 'none'}` : 'Open dropdown'}
+        {selectedOption !== null ? `Selected: ${formatFruitLabel(selectedOption)}` : 'Open dropdown'}
       </Button>
     ),
     items: (
@@ -58,12 +59,20 @@ export default {
         )}
       </>
     ),
-    onSelect: selectedOption => { console.log('Selected:', selectedOption); },
+    onSelectedChange: selectedOption => { console.log('Selected:', selectedOption); },
   },
   render: (args) => <MenuProvider {...args}/>,
 } satisfies Meta<MenuProviderArgs>;
 
 export const MenuProviderStandard: Story = {};
+
+/** When using up/down arrow keys, focus should not change in the empty case (since there is focusable element). */
+export const MenuProviderEmpty: Story = {
+  args: {
+    defaultSelected: null,
+    items: null,
+  },
+};
 
 export const MenuProviderWithDefault: Story = {
   args: {
@@ -73,17 +82,28 @@ export const MenuProviderWithDefault: Story = {
 
 export const MenuProviderWithInput: Story = {
   args: {
+    children: ({ props, selectedOption }) => (
+      <Input {...props()}
+        value={selectedOption !== null ? `Selected: ${formatFruitLabel(selectedOption)}` : 'Open dropdown'}
+        onChange={() => {}}
+      />
+    ),
+  },
+};
+
+export const MenuProviderWithInputMenuItem: Story = {
+  args: {
     items: (
       <>
-        <MenuProvider.Header unstyled itemKey="header-1" label="Input">
+        <MenuProvider.Segment sticky="start">
           <InputSearch/>
-        </MenuProvider.Header>
+        </MenuProvider.Segment>
         <MenuProvider.Static><input type="file"/></MenuProvider.Static>
         <MenuProvider.Option itemKey="option-1" label="Option 1"/>
         <MenuProvider.Option itemKey="option-2" label="Option 2"/>
       </>
     ),
-  }
+  },
 };
 
 export const MenuProviderWithPlacement: Story = {
@@ -92,7 +112,7 @@ export const MenuProviderWithPlacement: Story = {
     children: ({ props, selectedOption }) => (
       <Button kind="primary" {...props()}>
         {typeof selectedOption !== 'undefined'
-          ? `Selected: ${selectedOption?.label ?? 'none'}`
+          ? `Selected: ${selectedOption ?? 'none'}`
           : 'Open dropdown placed to the right'
         }
       </Button>
@@ -106,7 +126,7 @@ export const MenuProviderWithAction: Story = {
       <>
         <MenuProvider.Option itemKey="option-1" label="Option 1"/>
         <MenuProvider.Option itemKey="option-2" label="Option 2"/>
-        <MenuProvider.Action itemKey="action-close" onActivate={close} label="Close">
+        <MenuProvider.Action itemKey="action-close" onPress={close} label="Close">
           Close
         </MenuProvider.Action>
       </>
@@ -132,17 +152,16 @@ export const MenuProviderWithHoverTrigger: Story = {
   },
 };
 
-const MenuProviderControlledC = (props: React.ComponentProps<typeof MenuProvider>) => {
-  const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>(props.defaultSelected ?? null);
+const MenuProviderControlledC = ({ defaultSelected, ...props }: React.ComponentProps<typeof MenuProvider>) => {
+  const [selectedOption, setSelectedOption] = React.useState<null | ItemKey>(defaultSelected ?? null);
   
   return (
     <>
       <p>Selected: {selectedOption === null ? '(none)' : formatFruitLabel(selectedOption)}</p>
       <MenuProvider
         {...props}
-        formatItemLabel={formatFruitLabel}
         selected={selectedOption}
-        onSelect={setSelectedOption}
+        onSelectedChange={setSelectedOption}
       />
       <div><Button label="Update state" onPress={() => { setSelectedOption('item-strawberry'); }}/></div>
     </>
@@ -155,11 +174,44 @@ export const MenuProviderControlledWithDefault: Story = {
   render: args => <MenuProviderControlledC {...args} defaultSelected="item-blueberry"/>,
 };
 
-const CustomImage = (id: number) => () => (
+
+const MenuProviderWithRefC = (props: React.ComponentProps<typeof MenuProvider>) => {
+  const ref = React.useRef<MenuProviderRef>(null);
+  
+  const logState = async () => {
+    // Add a timeout so we have time to open the menu first after clicking the button
+    await new Promise(resolve => window.setTimeout(resolve, 1000));
+    
+    const state = ref.current;
+    if (!state) { notify.info(`No ref`); return; }
+    notify.info(`Open = ${state.open}, Selected = ${state.selected ?? '(none)'}`);
+  };
+  const openMenu = () => {
+    ref.current?.requestOpenChange({ open: true, forced: false });
+  };
+  const updateSelected = () => {
+    ref.current?.requestSelectedChange('item-blueberry');
+  };
+  
+  return (
+    <>
+      <p><Button label="Log state" onPress={logState}/></p>
+      <MenuProvider {...props} ref={ref}/>
+      <p><Button label="Open menu" onPress={openMenu}/></p>
+      <p><Button label="Select Blueberry" onPress={updateSelected}/></p>
+    </>
+  );
+};
+export const MenuProviderWithRef: Story = {
+  render: args => <MenuProviderWithRefC {...args}/>,
+};
+
+const CustomImage = ({ id }: React.ComponentProps<typeof Icon>) => (
   <img
+    alt=""
     src={`https://picsum.photos/id/${id}/200/300`}
-    // consumer should be responsible of providing a sensible styling
-    style={{objectFit: 'cover', inlineSize: '1.3em', blockSize: '1.3em'}}
+    // Consumer should be responsible of providing a sensible styling
+    style={{ objectFit: 'cover', inlineSize: '1.3em', blockSize: '1.3em' }}
   />
 );
 export const MenuWithCustomIcons: Story = {
@@ -174,7 +226,8 @@ export const MenuWithCustomIcons: Story = {
             // TODO: `icon` should not be needed when a custom `Icon` is used.
             // Revisit this custom icon condition once this PR is merged:
             // https://github.com/fortanix/baklava/pull/686
-            Icon={CustomImage(index)}
+            Icon={CustomImage}
+            iconProps={{ id: String(index) }}
             icon="account"
           />
         )}
