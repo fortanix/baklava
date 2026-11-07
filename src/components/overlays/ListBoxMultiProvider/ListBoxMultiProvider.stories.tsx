@@ -61,7 +61,7 @@ export default {
         )}
       </>
     ),
-    onSelectedChange: selectedOption => { console.log('Selected:', selectedOption); },
+    onSelectedChange: ({ selected }) => { console.log('Selected:', selected); },
   },
   render: (args) => <ListBoxMultiProvider {...args}/>,
 } satisfies Meta<ListBoxMultiProviderArgs>;
@@ -142,7 +142,7 @@ const ListBoxMultiProviderControlledC = (props: React.ComponentProps<typeof List
       <ListBoxMultiProvider
         {...propsRest}
         selected={selectedOptions}
-        onSelectedChange={setSelectedOptions}
+        onSelectedChange={({ selected }) => { setSelectedOptions(selected); }}
       />
       <div>
         <Button label="Update state"

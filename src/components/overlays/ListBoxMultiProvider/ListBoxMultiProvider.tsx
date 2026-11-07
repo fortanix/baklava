@@ -8,7 +8,13 @@ import { mergeCallbacks, mergeRefs, mergeProps } from '../../../util/reactUtil.t
 import { useControllableStateFromProps } from '../../../util/hooks/useControllableState.ts';
 
 // Components
-import { type ItemKey, type SelectedState, ListBoxMulti } from '../../forms/controls/ListBoxMulti/ListBoxMulti.tsx';
+import {
+  type ItemKey,
+  type SelectedState,
+  type SelectedChangeEvent,
+  type SelectedStateProps,
+  ListBoxMulti,
+} from '../../forms/controls/ListBoxMulti/ListBoxMulti.tsx';
 import {
   type FocusChangeEvent,
   type OpenStateProps,
@@ -23,13 +29,13 @@ import {
 import cl from './ListBoxMultiProvider.module.scss';
 
 
-export type { ItemKey, SelectedState };
+export type { ItemKey, SelectedState, SelectedStateProps };
 
 export type ListBoxMultiProviderRef = {
   open: boolean,
   requestOpenChange: (event: OpenChangeEvent) => void,
   selected: SelectedState,
-  requestSelectedChange: (selected: SelectedState) => void,
+  requestSelectedChange: (event: SelectedChangeEvent) => void,
   // FIXME: include these?
   //anchorEl: null | HTMLElement,
   //floatingEl: null | HTMLElement,
@@ -177,7 +183,7 @@ export const ListBoxMultiProvider = Object.assign(
     const {
       state: selectedState,
       requestStateChange: requestSelectedChange,
-    } = useControllableStateFromProps<SelectedState>(
+    } = useControllableStateFromProps<SelectedState, SelectedChangeEvent>(
       {
         state: selected,
         defaultState: defaultSelected,
@@ -186,7 +192,7 @@ export const ListBoxMultiProvider = Object.assign(
       {
         debugName: 'ListBoxMultiProvider',
         propName: 'selected',
-        stateFromEvent: state => state,
+        stateFromEvent: event => event.selected,
         defaultStateFallback: new Set(),
       },
     );

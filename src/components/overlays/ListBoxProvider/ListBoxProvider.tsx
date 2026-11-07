@@ -12,6 +12,7 @@ import {
   type ItemKey,
   type SelectedState,
   type SelectedChangeEvent,
+  type SelectedStateProps,
   ListBox,
 } from '../../forms/controls/ListBox/ListBox.tsx';
 import {
@@ -28,7 +29,7 @@ import {
 import cl from './ListBoxProvider.module.scss';
 
 
-export type { ItemKey, SelectedState, SelectedChangeEvent };
+export type { ItemKey, SelectedState, SelectedChangeEvent, SelectedStateProps };
 
 export type ListBoxProviderRef = {
   open: boolean,

@@ -131,7 +131,7 @@ const SelectControlledC = ({ defaultSelected, ...props }: React.ComponentProps<t
         )}
         selected={selectedOption}
         // @ts-ignore FIXME: use generic to pass down `FruitKey` subtype?
-        onSelectedChange={setSelectedOption}
+        onSelectedChange={({ selected }) => { setSelectedOption(selected); }}
       />
       <p><Button label="Update state" onPress={() => { setSelectedOption('mango'); }}/></p>
     </>

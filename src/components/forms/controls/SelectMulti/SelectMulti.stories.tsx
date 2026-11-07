@@ -118,7 +118,7 @@ export const SelectMultiWithAutoResize: Story = {
 };
 
 const SelectMultiControlledC = ({ defaultSelected, ...props }: React.ComponentProps<typeof SelectMulti>) => {
-  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(defaultSelected ?? new Set());
+  const [selectedOptions, setSelectedOptions] = React.useState<SelectedState>(defaultSelected ?? new Set());
   
   return (
     <>
@@ -130,7 +130,7 @@ const SelectMultiControlledC = ({ defaultSelected, ...props }: React.ComponentPr
           <SelectMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         selected={selectedOptions}
-        onSelectedChange={setSelectedOptions}
+        onSelectedChange={({ selected }) => { setSelectedOptions(selected); }}
       />
     </>
   );

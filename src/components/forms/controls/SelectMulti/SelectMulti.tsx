@@ -10,6 +10,7 @@ import { Input as InputDefault } from '../Input/Input.tsx';
 import {
   type ItemKey,
   type SelectedState,
+  type SelectedStateProps,
   ListBoxMultiProvider,
 } from '../../../overlays/ListBoxMultiProvider/ListBoxMultiProvider.tsx';
 
@@ -24,39 +25,33 @@ export type SelectInputProps = ComponentProps<typeof InputDefault>;
 const noop = () => {};
 
 
-export type SelectMultiProps = Omit<SelectInputProps, 'value' | 'defaultValue' | 'onChange' | 'onSelect'> & {
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
-  
-  /** A human-readable name for the select. */
-  label: string,
-  
-  /** Render the currently selected options as a string label. If `null`, uses the placeholder instead. */
-  formatSelected: (selectedOptions: SelectedState) => null | string,
-  
-  /** @deprecated Use `formatSelected` instead. */
-  formatItemLabel?: undefined | ((selectedOption: ItemKey) => string),
-  
-  /** The options list to be shown in the dropdown menu. */
-  options: React.ComponentProps<typeof ListBoxMultiProvider>['items'],
-  
-  /** The option to select. If `undefined`, this component will be considered uncontrolled. */
-  selected?: undefined | SelectedState,
-  
-  /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
-  defaultSelected?: undefined | SelectedState,
-  
-  /** Event handler to be called when the selected option state changes. */
-  onSelectedChange?: undefined | ((selectedItemKeys: SelectedState) => void),
-  
-  /** Additional props to be passed to the `ListBoxMultiProvider`. */
-  dropdownProps?: undefined | Partial<React.ComponentProps<typeof ListBoxMultiProvider>>,
-  
-  /** A custom `Input` component. */
-  Input?: undefined | React.ComponentType<SelectInputProps> & {
-    Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
-  },
-};
+export type SelectMultiProps =
+  Omit<SelectInputProps, 'value' | 'defaultValue' | 'onChange' | 'onSelect'>
+  & SelectedStateProps
+  & {
+    /** Whether this component should be unstyled. */
+    unstyled?: undefined | boolean,
+    
+    /** A human-readable name for the select. */
+    label: string,
+    
+    /** Render the currently selected options as a string label. If `null`, uses the placeholder instead. */
+    formatSelected: (selectedOptions: SelectedState) => null | string,
+    
+    /** @deprecated Use `formatSelected` instead. */
+    formatItemLabel?: undefined | ((selectedOption: ItemKey) => string),
+    
+    /** The options list to be shown in the dropdown menu. */
+    options: React.ComponentProps<typeof ListBoxMultiProvider>['items'],
+    
+    /** Additional props to be passed to the `ListBoxMultiProvider`. */
+    dropdownProps?: undefined | Partial<React.ComponentProps<typeof ListBoxMultiProvider>>,
+    
+    /** A custom `Input` component. */
+    Input?: undefined | React.ComponentType<SelectInputProps> & {
+      Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
+    },
+  };
 /**
  * `SelectMulti` is a combobox with a button as anchor (displaying the currently selected items), and a multiple-select
  * listbox as popover from which the user can select an item.

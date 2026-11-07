@@ -299,7 +299,9 @@ const ListBoxMultiControlledC = ({ defaultSelected, ...props }: ListBoxMultiCont
   return (
     <>
       <p>Selected fruits: {[...selectedItems].map(key => key).join(', ') || '(none)'}</p>
-      <ListBoxMulti {...props} selected={new Set(selectedItems.keys())} onSelectedChange={setSelectedItems}/>
+      <ListBoxMulti {...props} selected={new Set(selectedItems.keys())}
+        onSelectedChange={({ selected }) => { setSelectedItems(selected); }}
+      />
       <Button label="Update state" onPress={() => { setSelectedItems(new Set(['Razzberry', 'Strawberry'])); }}/>
     </>
   );
@@ -369,7 +371,9 @@ const ListBoxMultiWithUnknownC = ({ defaultSelected, ...props }: ListBoxMultiWit
   return (
     <>
       <p>Selected fruits: {[...selectedItems].map(key => key).join(', ') || '(none)'}</p>
-      <ListBoxMulti {...props} selected={new Set(selectedItems.keys())} onSelectedChange={setSelectedItems}>
+      <ListBoxMulti {...props} selected={new Set(selectedItems.keys())}
+        onSelectedChange={({ selected }) => { setSelectedItems(selected); }}
+      >
         {fruits.map(fruit =>
           <ListBoxMulti.Option key={fruit} itemKey={fruit} label={fruit}/>
         )}
