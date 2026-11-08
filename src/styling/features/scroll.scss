@@ -4,15 +4,30 @@
 
 @use '../variables.scss' as vars;
 
-@mixin shadow($dir: start) {
-  $shadow-color-light: color-mix(in oklch, vars.$color-neutral-900, transparent 85%);
-  $shadow-color-dark: vars.$color-neutral-900;
+@function box-shadow($dir: start) {
+  $shadow-color-light: color-mix(in oklch, vars.$color-blackberry-1000, transparent 95%);
+  $shadow-color-dark: color-mix(in oklch, vars.$color-blackberry-1000, transparent 40%);
+  $shadow-color: var(--bk-scroll-shadow-color, light-dark($shadow-color-light, $shadow-color-dark));
+  
+  // Note: be careful that the blur radius doesn't exceed the offset, otherwise the shadow will leak out on the
+  // other side of the box.
+  $shadow-blur: 0.4em;
+  $shadow-offset: 0.4em;
   
   @if $dir == start {
-    // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
-    box-shadow: 0 1px 4px light-dark($shadow-color-light, $shadow-color-dark) !important;;
-  } @else if $dir == 'end' {
-    // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
-    box-shadow: 0 -1px 4px light-dark($shadow-color-light, $shadow-color-dark) !important;;
+    @return 0 $shadow-offset $shadow-blur $shadow-color;
+  } @else if $dir == end {
+    @return 0 calc(-1 * $shadow-offset) $shadow-blur $shadow-color;
   }
+}
+
+@mixin shadow($dir: start) {
+  // stylelint-disable-next-line declaration-no-important -- Override accessibility layer
+  box-shadow: box-shadow($dir) !important;
+  
+  // The following risks overriding `transition` (since transitions are not additive). Rely on the consumer to set this
+  // instead.
+  //@media (prefers-reduced-motion: no-preference) {
+  //  transition: box-shadow 150ms ease-in;
+  //}
 }

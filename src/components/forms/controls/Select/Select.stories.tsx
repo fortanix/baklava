@@ -8,8 +8,9 @@ import * as React from 'react';
 
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Input } from '../Input/Input.tsx';
+import { Button } from '../../../actions/Button/Button.tsx';
 
-import { type ItemKey, Select } from './Select.tsx';
+import { type SelectedState, Select } from './Select.tsx';
 
 
 type SelectArgs = React.ComponentProps<typeof Select>;
@@ -33,7 +34,10 @@ const fruits = {
   strawberry: 'Strawberry',
 };
 type FruitKey = keyof typeof fruits;
-const formatFruitLabel = (itemKey: ItemKey): string => fruits[itemKey as FruitKey] ?? 'UNKNOWN';
+const formatFruitLabel = (itemKey: SelectedState): null | string => {
+  if (itemKey === null) { return null; } // Fall back to placeholder
+  return fruits[itemKey as FruitKey] ?? 'UNKNOWN';
+};
 
 export default {
   component: Select,
@@ -45,7 +49,8 @@ export default {
   },
   args: {
     label: 'Test select',
-    formatItemLabel: formatFruitLabel,
+    placeholder: 'Select a fruit',
+    formatSelected: formatFruitLabel,
     options: (
       <>
         {Object.entries(fruits).map(([fruitKey, fruitName]) =>
@@ -87,22 +92,22 @@ export const SelectInScrollContainer: Story = {
   ],
 };
 
-export const SelectWithAutoResize: Story = {
+export const SelectFixedLength: Story = {
   args: {
-    automaticResize: true,
+    automaticResize: false,
     label: 'Test select',
-    defaultSelected: 'long-option',
-    formatItemLabel: (itemKey: ItemKey) => {
-      if (itemKey === 'long-option') {
-        return 'A very long option label to show automatic resizing';
+    defaultSelected: 'fixed-length',
+    formatSelected: (itemKey: SelectedState) => {
+      if (itemKey === 'fixed-length') {
+        return 'Fixed length';
       } else {
         return formatFruitLabel(itemKey);
       }
     },
     options: (
       <>
-        <Select.Option key="long-option" itemKey="long-option"
-          label="A very long option label to show automatic resizing"
+        <Select.Option key="fixed-length" itemKey="fixed-length"
+          label="Fixed length"
         />
         {Object.entries(fruits).map(([fruitKey, fruitName]) =>
           <Select.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
@@ -126,8 +131,9 @@ const SelectControlledC = ({ defaultSelected, ...props }: React.ComponentProps<t
         )}
         selected={selectedOption}
         // @ts-ignore FIXME: use generic to pass down `FruitKey` subtype?
-        onSelect={setSelectedOption}
+        onSelectedChange={({ selected }) => { setSelectedOption(selected); }}
       />
+      <p><Button label="Update state" onPress={() => { setSelectedOption('mango'); }}/></p>
     </>
   );
 };
@@ -146,7 +152,7 @@ export const SelectInForm: Story = {
           id="story-form"
           onSubmit={event => {
             event.preventDefault();
-            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || 'none'}`);
+            notify.info(`You have chosen: ${new FormData(event.currentTarget).get('story_component1') || '(none)'}`);
           }}
         />
         <Story/>
@@ -157,11 +163,30 @@ export const SelectInForm: Story = {
   args: {
     form: 'story-form',
     name: 'story_component1',
+    formatSelected: itemKey => itemKey?.replace('option-', 'Option ') ?? null,
     options: (
       <>
         {Array.from({ length: 8 }, (_, i) => i + 1).map(index =>
           <Select.Option key={`option-${index}`} itemKey={`option-${index}`} label={`Option ${index}`}/>
         )}
+      </>
+    ),
+  },
+};
+
+export const SelectVirtualized: Story = {
+  args: {
+    formatSelected: itemKey => itemKey?.replace('option-', 'Option ') ?? null,
+    options: (
+      <>
+        <Select.Static muted>Virtualized list</Select.Static>
+        <Select.SegmentVirtual
+          items={{
+            count: 10_000,
+            renderItem: (props, { key, index }) =>
+              <Select.Option key={key} itemKey={`option-${index + 1}`} {...props} label={`Option ${index + 1}`}/>
+          }}
+        />
       </>
     ),
   },
