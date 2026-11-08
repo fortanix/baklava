@@ -223,33 +223,6 @@ export const SelectComboBoxInForm: Story = {
   },
 };
 
-/*
-const InputSearchAutocomplete = (props: React.ComponentProps<typeof InputSearch>) => {
-  const [value, setFilter] = React.useState('');
-  const [blocks, setBlocks] = React.useState<Array<string>>([]);
-  const pushBlock = (block: string) => { setBlocks(blocks => [...blocks, block]); };
-  const popBlock = () => { setBlocks(blocks => blocks.slice(0, -1)); };
-  
-  return (
-    <InputSearch
-      value={value}
-      onChange={event => { setFilter(event.target.value); }}
-      prefix={blocks.join(' ')}
-      {...props}
-      onKeyDown={event => {
-        //props.onKeyDown?.(event);
-        
-        if (event.key === 'Enter' && value.trim() !== '') {
-          pushBlock(value);
-          setFilter('');
-        } else if (event.key === 'Backspace' && value === '') {
-          popBlock();
-        }
-      }}
-    />
-  );
-};
-*/
 const SelectComboBoxAutocompleteC = (props: Partial<React.ComponentProps<typeof SelectComboBox>>) => {
   const ref = React.useRef<React.ComponentRef<typeof SelectComboBox>>(null);
   const [filter, setFilter] = React.useState('');

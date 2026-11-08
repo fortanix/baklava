@@ -12,6 +12,7 @@ import {
   type ItemKey,
   type SelectedState,
   type SelectedChangeEvent,
+  type SelectedStateProps,
   type ListBoxProviderRef,
   ListBoxProvider,
 } from '../../../overlays/ListBoxProvider/ListBoxProvider.tsx';
@@ -30,48 +31,47 @@ const noop = () => {};
 // Note: in the future we might expand on this ref to include things like the current filter value or input DOM ref
 export type SelectComboBoxRef = ListBoxProviderRef;
 
-export type SelectComboBoxProps = Omit<SelectInputProps, 'ref' | 'value' | 'defaultValue' | 'onChange' | 'onSelect'> & {
-  /** Whether this component should be unstyled. */
-  unstyled?: undefined | boolean,
-  
-  /** A React ref to control the combobox imperatively. */
-  ref?: undefined | React.Ref<null | SelectComboBoxRef>,
-  
-  /** A human-readable name for the select. */
-  label: string,
-  
-  /** Render the currently selected option as a string label. If `null`, uses the placeholder instead. */
-  formatSelected: (selectedOptions: SelectedState) => null | string,
-  
-  /** The options list to be shown in the dropdown menu. */
-  options: React.ComponentProps<typeof ListBoxProvider>['items'],
-  
+type FilterStateProps = {
   /** The current filter value. If `undefined`, this component will be considered uncontrolled. */
   filter?: undefined | string,
   
   /** Event handler to be called when the filter value changes. */
   onFilterChange?: undefined | ((filter: string) => void),
   
-  /** The option to select. If `undefined`, this component will be considered uncontrolled. */
-  selected?: React.ComponentProps<typeof ListBoxProvider>['selected'],
-  
-  /** The default option to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
-  defaultSelected?: React.ComponentProps<typeof ListBoxProvider>['defaultSelected'],
-  
-  /** Event handler to be called when the selected option state changes. */
-  onSelectedChange?: React.ComponentProps<typeof ListBoxProvider>['onSelectedChange'],
-  
-  /** Additional props to be passed to the `ListBoxProvider`. */
-  dropdownProps?: undefined | Partial<React.ComponentProps<typeof ListBoxProvider>>,
-  
-  /** A custom `Input` component. */
-  Input?: undefined | React.ComponentType<SelectInputProps> & {
-    Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
-  },
-  
-  /** Whether to allow the user to clear the selection state to `null` by clearing the text input. Default: `true`. */
-  allowClear?: undefined | boolean,
+  // Note: no `defaultFilter` here, since it's never useful (given that we update the filter on focus anyway)
 };
+
+export type SelectComboBoxProps =
+  Omit<SelectInputProps, 'ref' | 'value' | 'defaultValue' | 'onChange' | 'onSelect'>
+  & FilterStateProps
+  & SelectedStateProps
+  & {
+    /** Whether this component should be unstyled. */
+    unstyled?: undefined | boolean,
+    
+    /** A React ref to control the combobox imperatively. */
+    ref?: undefined | React.Ref<null | SelectComboBoxRef>,
+    
+    /** A human-readable name for the select. */
+    label: string,
+    
+    /** Render the currently selected option as a string label. If `null`, uses the placeholder instead. */
+    formatSelected: (selected: SelectedState) => null | string,
+    
+    /** The options list to be shown in the dropdown menu. */
+    options: React.ComponentProps<typeof ListBoxProvider>['items'],
+    
+    /** Additional props to be passed to the `ListBoxProvider`. */
+    dropdownProps?: undefined | Partial<React.ComponentProps<typeof ListBoxProvider>>,
+    
+    /** A custom `Input` component. */
+    Input?: undefined | React.ComponentType<SelectInputProps> & {
+      Action?: undefined | React.ComponentType<ComponentProps<typeof InputDefault.Action>>,
+    },
+    
+    /** Whether to allow the user to clear the selection state to `null` by clearing the text input. Default: `true`. */
+    allowClear?: undefined | boolean,
+  };
 /**
  * A combobox with an input as anchor (displaying the currently selected item), and a single-select listbox as popover
  * from which the user can select an option.

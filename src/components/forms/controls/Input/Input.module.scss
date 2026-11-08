@@ -15,6 +15,10 @@
     border-block-end-width: bk.rem-from-px(1);
     
     display: flex;
+    
+    //flex-wrap: wrap; // Optional: can be enabled by the consumer in case of long `prefix` chains that should wrap
+    row-gap: 0.1lh;
+    
     align-items: center;
     column-gap: bk.$spacing-1;
     padding-block-start: 0.2rem; // Expand the target area to min 24px for accessibility compliance
@@ -23,16 +27,24 @@
     // for inputs, then it can be overridden for that given input element specifically.
     text-align: start;
     
-    > .bk-input__input {
+    .bk-input__input-with-actions {
       flex-grow: 1;
-      min-inline-size: 0;
       
-      line-height: bk.$line-height-m;
+      display: flex;
+      align-items: center;
+      column-gap: bk.$spacing-1;
       
-      @include bk.focus-hidden; // Apply focus outline on the container instead
-      
-      &::placeholder {
-        color: color-mix(in oklch, currentColor 60%, transparent);
+      .bk-input__input {
+        flex-grow: 1;
+        min-inline-size: 0;
+        
+        line-height: bk.$line-height-m;
+        
+        @include bk.focus-hidden; // Apply focus outline on the container instead
+        
+        &::placeholder {
+          color: color-mix(in oklch, currentColor 60%, transparent);
+        }
       }
     }
     
@@ -44,18 +56,18 @@
     // Style the container as an invalid input when the nested input is invalid and not currently focused.
     // Note: allow global `.invalid` to explicitly control invalid state in addition to `:user-invalid`
     &:not(:focus-within) {
-      &:global(.invalid), &:has(> .bk-input__input:user-invalid) {
+      &:global(.invalid), &:has(.bk-input__input:user-invalid) {
         --bk-input-accent-color: #{bk.$theme-form-rule-error};
       }
     }
     
-    &:has(> .bk-input__input:disabled) {
+    &:has(.bk-input__input:disabled) {
       --bk-input-accent-color: #{bk.$theme-form-text-disabled};
       color: #{bk.$theme-form-text-disabled};
     }
     
     &.bk-input--automatic-resize {
-      > .bk-input__input {
+      .bk-input__input {
         field-sizing: content;
       }
     }

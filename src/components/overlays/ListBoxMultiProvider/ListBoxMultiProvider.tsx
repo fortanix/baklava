@@ -29,7 +29,7 @@ import {
 import cl from './ListBoxMultiProvider.module.scss';
 
 
-export type { ItemKey, SelectedState, SelectedStateProps };
+export type { ItemKey, SelectedState, SelectedChangeEvent, SelectedStateProps };
 
 export type ListBoxMultiProviderRef = {
   open: boolean,

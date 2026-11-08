@@ -176,23 +176,27 @@ export const Input = Object.assign(
           className,
         )}
         onMouseDown={mergeCallbacks(
-          [handleContainerClick, containerProps.onMouseDown, propsExtracted.containerProps.onMouseDown]
+          [handleContainerClick, containerProps.onMouseDown, propsExtracted.containerProps.onMouseDown],
         )}
       >
         {(icon || Icon !== IconDefault) &&
           <Icon icon={icon} aria-label={iconLabel} {...iconProps} className={cx('input-icon', iconProps.className)}/>
         }
         {prefix}
-        <input
-          id={id}
-          {...inputProps}
-          {...propsExtracted.inputProps}
-          {...useHiddenFormValue ? {} : formAssociationProps}
-          ref={mergeRefs(inputRef, inputProps?.ref, ref)}
-          type={type}
-          className={cx(cl['bk-input__input'], inputProps?.className)}
-        />
-        {actions}
+        
+        {/* Wrap the input and actions in a separate `<span>` so we can keep them together in case of `flex-wrap`. */}
+        <span className={cx(cl['bk-input__input-with-actions'], inputProps?.className)}>
+          <input
+            id={id}
+            {...inputProps}
+            {...propsExtracted.inputProps}
+            {...useHiddenFormValue ? {} : formAssociationProps}
+            ref={mergeRefs(inputRef, inputProps?.ref, ref)}
+            type={type}
+            className={cx(cl['bk-input__input'], inputProps?.className)}
+          />
+          {actions}
+        </span>
         
         {useHiddenFormValue && renderHiddenFormAssociation(formValue, formAssociationProps)}
       </span>

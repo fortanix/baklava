@@ -92,7 +92,11 @@ export const useListBoxMulti = <E extends HTMLElement = HTMLElement>(props: List
         const itemKeyTarget = itemKeyAdded ?? itemKeyRemoved ?? null;
         
         if (itemKeyTarget) {
-          collectionFocusItem(itemKeyTarget);
+          // FIXME: this causes issues when the selection change is programmatic. For example in `SelectComboBoxMulti`:
+          // hit `Escape` from the input to remove the last item, we don't want the focus to be hijacked here.
+          // Solution: this needs to be integrated into the `onSelectedChange` handling instead, and then focus should
+          // depend on whether the reason was user-requested or programmatic.
+          //collectionFocusItem(itemKeyTarget);
         }
       }
     });
