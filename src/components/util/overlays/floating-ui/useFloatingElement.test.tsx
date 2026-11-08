@@ -20,6 +20,11 @@ vi.mock('@floating-ui/react', () => ({
       placement: options?.placement ?? 'top',
       elements: { reference: null, floating: null },
       middlewareData: { arrow: null },
+      events: {
+        emit: vi.fn(),
+        on: vi.fn(),
+        off: vi.fn(),
+      },
     },
     refs: {
       setReference: vi.fn(),
