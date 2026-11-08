@@ -109,7 +109,7 @@ const packageConfig = {
     'browserslist': '^4.28.2',
     'vite': '^8.0.11',
     '@vitejs/plugin-react': '^6.0.1',
-    'vite-plugin-dts': '^5.1.0',
+    'vite-plugin-dts': '^5.1.0', // TS7 support tracker: https://github.com/microsoft/rushstack/issues/6033
     'vite-plugin-lib-inject-css': '^2.2.1',
     'vite-plugin-svgr': '^4.5.0',
     'vite-plugin-svg-icons-ng': '^1.9.0',

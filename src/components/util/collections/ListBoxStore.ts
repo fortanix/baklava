@@ -13,6 +13,7 @@ import {
   type CollectionSlice,
   createCollectionSlice,
   useCollectionWith,
+  type UseCollectionItemWithResult,
   useCollectionItemWith,
   useCollectionTypeAhead,
 } from './CollectionStore.ts';
@@ -116,7 +117,16 @@ export const useListBox = <E extends HTMLElement = HTMLElement>(props: ListBoxPr
 
 
 type UseListBoxItemParams = { itemKey: ItemKey };
-export const useListBoxItem = <E extends HTMLElement>({ itemKey }: UseListBoxItemParams) => {
+// Needs to be exported to resolve vite-plugin-dts `UNDEFINED_VOID_ONLY` issue in declaration generation
+export type UseListBoxItemResult<E extends HTMLElement> = {
+  store: StoreApi<ListBoxSlice>,
+  selected: boolean,
+  requestSelected: () => void,
+  props: UseCollectionItemWithResult<E>['props'],
+};
+export const useListBoxItem = <E extends HTMLElement = HTMLElement>(
+  { itemKey }: UseListBoxItemParams,
+): UseListBoxItemResult<E> => {
   const { store, requestSelected } = useListBoxContext();
   const selected = useStore(store, store => itemKey === store.selectedItemKey);
   const requestSelectedForItem = () => requestSelected(itemKey);

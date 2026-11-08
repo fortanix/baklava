@@ -36,7 +36,7 @@ const subcomponentsGeneric = {
 } as const;
 
 
-interface MenuRef extends React.ComponentRef<typeof MenuList> {
+export interface MenuRef extends React.ComponentRef<typeof MenuList> {
   _bkFocusFirst: () => void,
   _bkFocusLast: () => void,
 };

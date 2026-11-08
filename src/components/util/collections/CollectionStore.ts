@@ -220,7 +220,8 @@ export const useCollectionWith = (
 };
 
 type UseCollectionItemWithParams = { itemKey: ItemKey };
-type UseCollectionItemWithResult<E extends HTMLElement> = {
+// Needs to be exported to resolve vite-plugin-dts `UNDEFINED_VOID_ONLY` issue in declaration generation
+export type UseCollectionItemWithResult<E extends HTMLElement> = {
   props: {
     ref: React.RefCallback<E>,
   },

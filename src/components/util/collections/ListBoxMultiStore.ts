@@ -13,6 +13,7 @@ import {
   type CollectionSlice,
   createCollectionSlice,
   useCollectionWith,
+  type UseCollectionItemWithResult,
   useCollectionItemWith,
   useCollectionTypeAhead,
 } from './CollectionStore.ts';
@@ -132,7 +133,16 @@ export const useListBoxMulti = <E extends HTMLElement = HTMLElement>(props: List
 
 
 type UseListBoxMultiItemParams = { itemKey: ItemKey };
-export const useListBoxMultiItem = <E extends HTMLElement = HTMLElement>({ itemKey }: UseListBoxMultiItemParams) => {
+// Needs to be exported to resolve vite-plugin-dts `UNDEFINED_VOID_ONLY` issue in declaration generation
+export type useListBoxMultiItemResult<E extends HTMLElement> = {
+  store: StoreApi<ListBoxMultiSlice>,
+  selected: boolean,
+  requestSelected: () => void,
+  props: UseCollectionItemWithResult<E>['props'],
+};
+export const useListBoxMultiItem = <E extends HTMLElement = HTMLElement>(
+  { itemKey }: UseListBoxMultiItemParams,
+): useListBoxMultiItemResult<E> => {
   const { store, requestSelected } = useListBoxMultiContext();
   const selected = useStore(store, store => store.selectedItemKeys?.has(itemKey) ?? false);
   

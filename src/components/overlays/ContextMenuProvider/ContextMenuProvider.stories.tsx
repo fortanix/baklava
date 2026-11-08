@@ -7,10 +7,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ContextMenuProvider } from './ContextMenuProvider.tsx';
 import { notify } from '../ToastProvider/ToastProvider.tsx';
 
+
 type ContextMenuProviderArgs = React.ComponentProps<typeof ContextMenuProvider>;
 type Story = StoryObj<ContextMenuProviderArgs>;
 
-// sample options
+// Sample options
 const options = {
   'item-edit': 'Edit',
   'item-delete': 'Delete',
