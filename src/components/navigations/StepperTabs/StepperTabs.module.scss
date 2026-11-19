@@ -1,0 +1,24 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+@layer baklava.components {
+  .bk-stepper-tabs {
+    @include bk.component-base(bk-stepper-tabs);
+    
+    overflow: hidden;
+    cursor: default;
+    
+    background: bk.$theme-panel-background-default;
+    display: grid;
+    grid-template-columns: calc(bk.$spacing-18 + bk.$spacing-13 + bk.$spacing-2) minmax(0, 1fr);
+
+    @media (prefers-reduced-motion: no-preference) {
+      --transition-duration: 150ms;
+      transition:
+        opacity var(--transition-duration) ease-out;
+    }
+  }
+}

@@ -1,0 +1,65 @@
+/* Copyright (c) Fortanix, Inc.
+|* This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of
+|* the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+@use '../../../styling/defs.scss' as bk;
+
+//TODO - replace with proper color tokens
+
+@layer baklava.components {
+  .bk-tab-trigger {
+    @include bk.component-base(bk-tab-trigger);
+    
+    // --bk-tab-trigger-background-color: light-dark(#{bk.$color-neutral-700}, #{bk.$color-neutral-50});
+    // --bk-tab-trigger-text-color: light-dark(#{bk.$color-neutral-50}, #{bk.$color-neutral-700});
+    // 
+    
+    overflow: hidden;
+    cursor: default;
+    
+    max-width: calc(bk.$spacing-18 + bk.$spacing-13 + bk.$spacing-2);
+    
+    padding: bk.$spacing-7;
+    background: bk.$theme-segmented-control-background-default;
+    
+    &.bk-tab-trigger--selected {
+      background: bk.$theme-panel-background-secondary;
+    }
+    
+    @include bk.text-layout;
+    color: bk.$theme-tab-text-default;
+    @include bk.font(bk.$font-family-body);
+    font-size: bk.$font-size-m;
+    
+    .bk-tab-trigger__layout {
+      .bk-tab-trigger__layout-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: bk.$spacing-1;
+      }
+      
+      .bk-tab-trigger__layout-description {
+        width: 95%;
+        @include bk.font(
+          bk.$font-family-body,
+          bk.$font-weight-regular,
+          bk.$font-size-m
+        );
+        color: bk.$theme-tooltip-text-secondary;
+        margin-top: bk.$spacing-2;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        overflow: hidden;
+      }
+    }
+    
+    @media (prefers-reduced-motion: no-preference) {
+      --transition-duration: 150ms;
+      transition:
+        opacity var(--transition-duration) ease-out;
+    }
+  }
+}
