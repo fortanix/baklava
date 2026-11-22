@@ -9,7 +9,7 @@ import * as React from 'react';
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Input } from '../Input/Input.tsx';
 
-import { type ItemKey, SelectMulti } from './SelectMulti.tsx';
+import { type ItemKey, type ItemDetails, SelectMulti } from './SelectMulti.tsx';
 
 
 type SelectMultiArgs = React.ComponentProps<typeof SelectMulti>;
@@ -158,4 +158,54 @@ export const SelectMultiInForm: Story = {
     form: 'story-form',
     name: 'story_component1',
   },
+};
+
+// Sample with None for Validation
+const fruitsWithNone = {
+  none: 'None',
+  ...fruits,
+};
+type FruitWithNoneKey = keyof typeof fruitsWithNone;
+const formatFruitLabelWithNone = (itemKey: ItemKey): string => fruitsWithNone[itemKey as FruitWithNoneKey] ?? 'UNKNOWN';
+
+type OnSelect = (selectedItems: Set<ItemKey>, itemDetails: Map<ItemKey, ItemDetails>) => void;
+
+const SelectMultiControlledWithValidationC = ({ defaultSelected, ...props }: React.ComponentProps<typeof SelectMulti>) => {
+  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(defaultSelected ?? new Set());
+  
+  const onSelect: OnSelect = selectedItems => {
+    // Set has no native way of getting the last, therefore we will work with it as Array
+    const setAsArray = Array.from(selectedItems);
+    const lastOption = setAsArray[setAsArray.length - 1];
+    
+    // can't do directly `selectedItems.has('none')` because it will always return true regardless of it is the last selected
+    // i.e. user selects "none" and then later selects "apple"
+    if (lastOption === 'none') {
+      setSelectedOptions(new Set(['none']));
+    } else {
+      setSelectedOptions(new Set(setAsArray.filter(f => f !== 'none')));
+    }
+  }
+  
+  return (
+    <>
+      <div>Selected: {[...selectedOptions].map(key => formatFruitLabelWithNone(key as FruitWithNoneKey)).join(', ')}</div>
+      <SelectMulti
+        {...props}
+        placeholder="Choose some fruits"
+        options={Object.entries(fruitsWithNone).map(([fruitKey, fruitName]) =>
+          <SelectMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
+        )}
+        selected={selectedOptions}
+        onSelect={onSelect}
+      />
+    </>
+  );
+};
+
+export const SelectMultiWithValidation: Story = {
+  args: {
+    formatItemLabel: formatFruitLabelWithNone,
+  },
+  render: args => <SelectMultiControlledWithValidationC {...args}/>,
 };
