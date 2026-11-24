@@ -31,15 +31,18 @@ References:
 export { cl as ListBoxMultiClassNames };
 export { type ItemKey, type SelectedState, useListBoxMultiItem, useListBoxMultiSelector };
 
-export type SelectedChangeEvent = { selected: SelectedState, reason?: undefined | 'programmatic' | 'user-request' };
+export type SelectedChangeEvent<K extends ItemKey> = {
+  selected: SelectedState<K>,
+  reason?: undefined | 'programmatic' | 'user-request',
+};
 
-export type SelectedStateProps = {
+export type SelectedStateProps<K extends ItemKey> = {
   /** The currently selected options. If `undefined`, this component will be considered uncontrolled. */
-  selected?: undefined | SelectedState,
+  selected?: undefined | SelectedState<K>,
   /** The default options to select. Only relevant for uncontrolled usage (i.e. `selected` is `undefined`). */
-  defaultSelected?: undefined | SelectedState,
+  defaultSelected?: undefined | SelectedState<K>,
   /** Event handler to be called when the selected options state changes. */
-  onSelectedChange?: undefined | ((event: SelectedChangeEvent) => void),
+  onSelectedChange?: undefined | ((event: SelectedChangeEvent<K>) => void),
 };
 
 
@@ -60,14 +63,16 @@ export interface ListBoxMultiRef extends HTMLDivElement {
 // Option item
 //
 
-type ListBoxMultiOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionMode'> & {
-  /** A unique identifier for this option. */
-  itemKey: ItemKey,
-};
+type ListBoxMultiOptionProps<K extends ItemKey> =
+  Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionMode'> & {
+    /** A unique identifier for this option. */
+    itemKey: K,
+  };
 /**
  * A list box option (can be selected by the user).
  */
-export const ListBoxMultiOption = ({ itemKey, ...propsRest }: ListBoxMultiOptionProps) => {
+export const ListBoxMultiOption = <K extends ItemKey = ItemKey>(props: ListBoxMultiOptionProps<K>) => {
+  const { itemKey, ...propsRest } = props;
   const { selected, requestSelected, props: itemProps } = useListBoxMultiItem({ itemKey });
   return (
     <MenuList.Option
@@ -89,8 +94,8 @@ export const ListBoxMultiOption = ({ itemKey, ...propsRest }: ListBoxMultiOption
 
 type HiddenSelectedStateProps = Omit<React.ComponentProps<'input'>, 'value' | 'defaultValue' | 'onChange'>;
 /** Hidden input, so that this component can be connected to a <form> element. */
-const HiddenSelectedState = ({ ref, name, form, ...inputProps }: HiddenSelectedStateProps) => {
-  const selectedItemKeys = useListBoxMultiSelector(s => s.selectedItemKeys);
+const HiddenSelectedState = <K extends ItemKey>({ ref, name, form, ...inputProps }: HiddenSelectedStateProps) => {
+  const selectedItemKeys = useListBoxMultiSelector<K>(s => s.selectedItemKeys);
   
   if (selectedItemKeys.size === 0) {
     // When there is no selected item, we will still render the input (so that we can get the `input.form`
@@ -126,28 +131,30 @@ const HiddenSelectedState = ({ ref, name, form, ...inputProps }: HiddenSelectedS
 
 
 type PropsOmit = 'ref' | keyof SelectedStateProps;
-export type ListBoxMultiProps = Omit<React.ComponentProps<typeof MenuList>, PropsOmit> & SelectedStateProps & {
-  /** A React ref to pass to the list box element. */
-  ref?: undefined | React.Ref<ListBoxMultiRef>,
-  
-  /** The machine readable name of the list box control, used as part of `<form>` submission. */
-  name?: undefined | string,
-  
-  /** The ID of the `<form>` element to associate this list box with. Optional. */
-  form?: undefined | string,
-  
-  /** Any additional props to apply to the internal `<input type="hidden"/>`. */
-  inputProps?: undefined | HiddenSelectedStateProps,
-  
-  /** Render the given item key as a string label. If not given, will use the item element's text value. */
-  formatItemLabel?: undefined | ((itemKey: ItemKey) => undefined | string),
-  
-  /** Legacy alias for `onSelectedChange`, for backwards compatbility. @deprecated */
-  onSelect?: undefined | ((selected: SelectedState) => void),
-  
-  /** Legacy alias for `status="loading"`, for backwards compatbility. @deprecated */
-  isLoading?: undefined | boolean,
-};
+export type ListBoxMultiProps<K extends ItemKey = ItemKey> =
+  Omit<React.ComponentProps<typeof MenuList>, PropsOmit>
+  & SelectedStateProps & {
+    /** A React ref to pass to the list box element. */
+    ref?: undefined | React.Ref<ListBoxMultiRef>,
+    
+    /** The machine readable name of the list box control, used as part of `<form>` submission. */
+    name?: undefined | string,
+    
+    /** The ID of the `<form>` element to associate this list box with. Optional. */
+    form?: undefined | string,
+    
+    /** Any additional props to apply to the internal `<input type="hidden"/>`. */
+    inputProps?: undefined | HiddenSelectedStateProps,
+    
+    /** Render the given item key as a string label. If not given, will use the item element's text value. */
+    formatItemLabel?: undefined | ((itemKey: K) => undefined | string),
+    
+    /** Legacy alias for `onSelectedChange`, for backwards compatbility. @deprecated */
+    onSelect?: undefined | ((selected: SelectedState) => void),
+    
+    /** Legacy alias for `status="loading"`, for backwards compatbility. @deprecated */
+    isLoading?: undefined | boolean,
+  };
 /**
  * A multiple-select list box. Presents a (linear) list of options, out of which the user can select zero or more. Can
  * be associated with a form through the `name` prop. Each option that is selected will appear in the form data under

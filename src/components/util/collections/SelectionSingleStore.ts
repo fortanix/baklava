@@ -11,30 +11,33 @@ import type { ItemKey } from './CollectionStore.ts';
 
 const noop = () => {};
 
-export type SelectedState = null | ItemKey;
+export type SelectedState<K extends ItemKey> = null | K;
 
 
 //
 // Store slice
 //
 
-export type SelectionSingleState = {
-  selectedItemKey: SelectedState,
+export type SelectionSingleState<K extends ItemKey> = {
+  selectedItemKey: SelectedState<K>,
 };
-export type SelectionSingleSlice = SelectionSingleState & {
-  selectItem: (itemKey: SelectedState) => void,
+export type SelectionSingleSlice<K extends ItemKey> = SelectionSingleState<K> & {
+  selectItem: (itemKey: SelectedState<K>) => void,
 };
 
-export type CreateSelectionSingleSliceParams = Pick<SelectionSingleState, 'selectedItemKey'>;
-export const createSelectionSingleSlice = (
-  { selectedItemKey }: CreateSelectionSingleSliceParams,
-): StateCreator<SelectionSingleSlice, [], [], SelectionSingleSlice> => set => ({
+export type CreateSelectionSingleSliceParams<K extends ItemKey> = Pick<SelectionSingleState<K>, 'selectedItemKey'>;
+export const createSelectionSingleSlice = <K extends ItemKey>(
+  { selectedItemKey }: CreateSelectionSingleSliceParams<K>,
+): StateCreator<SelectionSingleSlice<K>, [], [], SelectionSingleSlice<K>> => set => ({
   selectedItemKey,
   selectItem: itemKey => { set({ selectedItemKey: itemKey }); },
 });
 
-type SelectedStateDef = ControllableStateProps<SelectedState>;
-export const useSelectionWith = (store: StoreApi<SelectionSingleSlice>, stateDef: SelectedStateDef) => {
+type SelectedStateDef<K extends ItemKey> = ControllableStateProps<SelectedState<K>>;
+export const useSelectionWith = <K extends ItemKey>(
+  store: StoreApi<SelectionSingleSlice<K>>,
+  stateDef: SelectedStateDef<K>,
+) => {
   const isControlled = typeof stateDef.state !== 'undefined';
   const onStateChange = React.useEffectEvent(stateDef.onStateChange ?? noop);
   

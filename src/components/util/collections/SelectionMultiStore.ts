@@ -11,30 +11,33 @@ import type { ItemKey } from './CollectionStore.ts';
 
 const noop = () => {};
 
-export type SelectedState = Set<ItemKey>;
+export type SelectedState<K extends ItemKey> = Set<K>;
 
 
 //
 // Store slice
 //
 
-export type SelectionMultiState = {
-  selectedItemKeys: SelectedState,
+export type SelectionMultiState<K extends ItemKey> = {
+  selectedItemKeys: SelectedState<K>,
 };
-export type SelectionMultiSlice = SelectionMultiState & {
-  selectItems: (itemKeys: SelectedState) => void,
+export type SelectionMultiSlice<K extends ItemKey> = SelectionMultiState<K> & {
+  selectItems: (itemKeys: SelectedState<K>) => void,
 };
 
-export type CreateSelectionMultiSliceParams = Pick<SelectionMultiState, 'selectedItemKeys'>;
-export const createSelectionMultiSlice = (
-  { selectedItemKeys }: CreateSelectionMultiSliceParams,
-): StateCreator<SelectionMultiSlice, [], [], SelectionMultiSlice> => set => ({
+export type CreateSelectionMultiSliceParams<K extends ItemKey> = Pick<SelectionMultiState<K>, 'selectedItemKeys'>;
+export const createSelectionMultiSlice = <K extends ItemKey>(
+  { selectedItemKeys }: CreateSelectionMultiSliceParams<K>,
+): StateCreator<SelectionMultiSlice<K>, [], [], SelectionMultiSlice<K>> => set => ({
   selectedItemKeys,
   selectItems: itemKeys => { set({ selectedItemKeys: itemKeys }); },
 });
 
-type SelectedStateDef = ControllableStateProps<SelectedState>;
-export const useSelectionWith = (store: StoreApi<SelectionMultiSlice>, stateDef: SelectedStateDef) => {
+type SelectedStateDef<K extends ItemKey> = ControllableStateProps<SelectedState<K>>;
+export const useSelectionWith = <K extends ItemKey>(
+  store: StoreApi<SelectionMultiSlice<K>>,
+  stateDef: SelectedStateDef<K>,
+) => {
   const isControlled = typeof stateDef.state !== 'undefined';
   const onStateChange = React.useEffectEvent(stateDef.onStateChange ?? noop);
   
