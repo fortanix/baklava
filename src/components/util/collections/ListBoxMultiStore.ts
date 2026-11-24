@@ -36,19 +36,19 @@ const SetUtil = {
   },
 };
 
-export type ListBoxMultiSlice = CollectionSlice & SelectionMultiSlice;
-export type ListBoxMultiContext = {
-  store: StoreApi<ListBoxMultiSlice>,
+export type ListBoxMultiSlice<K extends ItemKey> = CollectionSlice & SelectionMultiSlice<K>;
+export type ListBoxMultiContext<K extends ItemKey> = {
+  store: StoreApi<ListBoxMultiSlice<K>>,
   /** Called when the user requests the given items (or none) to be selected. */
-  requestSelected: (itemKeys: SelectedState) => void,
+  requestSelected: (itemKeys: SelectedState<K>) => void,
 };
-export const ListBoxMultiContext = React.createContext<null | ListBoxMultiContext>(null);
-export const useListBoxMultiContext = () => {
+export const ListBoxMultiContext = React.createContext<null | ListBoxMultiContext<ItemKey>>(null);
+export const useListBoxMultiContext = <K extends ItemKey>() => {
   const context = React.use(ListBoxMultiContext);
   if (!context) { throw new Error(`Missing 'ListBoxMultiContext' provider`); }
   return context;
 };
-export const useListBoxMultiSelector = <T>(selector: (state: ListBoxMultiSlice) => T) => {
+export const useListBoxMultiSelector = <K extends ItemKey, T>(selector: (state: ListBoxMultiSlice<K>) => T) => {
   const { store } = useListBoxMultiContext();
   return useStore(store, selector);
 };

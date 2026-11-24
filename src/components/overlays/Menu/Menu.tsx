@@ -41,24 +41,24 @@ export interface MenuRef extends React.ComponentRef<typeof MenuList> {
   _bkFocusLast: () => void,
 };
 
-export type SelectedSingleChangeEvent = {
-  selected: SelectedSingleState,
+export type SelectedSingleChangeEvent<K extends ItemKey> = {
+  selected: SelectedSingleState<K>,
   reason?: undefined | 'programmatic' | 'user-request',
 };
-export type SelectedMultiChangeEvent = {
-  selected: SelectedMultiState,
+export type SelectedMultiChangeEvent<K extends ItemKey> = {
+  selected: SelectedMultiState<K>,
   reason?: undefined | 'programmatic' | 'user-request',
 };
 
-export type MenuSelectStateProps = {
-  selected?: undefined | SelectedSingleState,
-  defaultSelected?: undefined | SelectedSingleState,
-  onSelectedChange?: undefined | ((event: SelectedSingleChangeEvent) => void),
+export type MenuSelectStateProps<K extends ItemKey> = {
+  selected?: undefined | SelectedSingleState<K>,
+  defaultSelected?: undefined | SelectedSingleState<K>,
+  onSelectedChange?: undefined | ((event: SelectedSingleChangeEvent<K>) => void),
 };
-export type MenuSelectMultiStateProps = {
-  selected?: undefined | SelectedMultiState,
-  defaultSelected?: undefined | SelectedMultiState,
-  onSelectedChange?: undefined | ((event: SelectedMultiChangeEvent) => void),
+export type MenuSelectMultiStateProps<K extends ItemKey> = {
+  selected?: undefined | SelectedMultiState<K>,
+  defaultSelected?: undefined | SelectedMultiState<K>,
+  onSelectedChange?: undefined | ((event: SelectedMultiChangeEvent<K>) => void),
 };
 
 
@@ -66,12 +66,12 @@ export type MenuSelectMultiStateProps = {
 // Menu actions
 //
 
-type MenuActionProps = React.ComponentProps<typeof MenuList.Action> & {
+type MenuActionProps<K extends ItemKey> = React.ComponentProps<typeof MenuList.Action> & {
   /** A unique identifier for this action. */
-  itemKey: ItemKey,
+  itemKey: K,
 };
 /** A menu item that triggers some arbitrary action. */
-export const MenuAction = ({ itemKey, ...propsRest }: MenuActionProps) => {
+export const MenuAction = <K extends ItemKey = ItemKey>({ itemKey, ...propsRest }: MenuActionProps<K>) => {
   const { props: itemProps } = useCollectionItem({ itemKey });
   return (
     <MenuList.Action
@@ -80,12 +80,12 @@ export const MenuAction = ({ itemKey, ...propsRest }: MenuActionProps) => {
   );
 };
 
-type MenuLinkProps = React.ComponentProps<typeof MenuList.Link> & {
+type MenuLinkProps<K extends ItemKey> = React.ComponentProps<typeof MenuList.Link> & {
   /** A unique identifier for this link. */
-  itemKey: ItemKey,
+  itemKey: K,
 };
 /** A menu item that triggers a navigation. */
-export const MenuLink = ({ itemKey, ...propsRest }: MenuLinkProps) => {
+export const MenuLink = <K extends ItemKey = ItemKey>({ itemKey, ...propsRest }: MenuLinkProps<K>) => {
   const { props: itemProps } = useCollectionItem({ itemKey });
   return (
     <MenuList.Link
@@ -99,11 +99,11 @@ export const MenuLink = ({ itemKey, ...propsRest }: MenuLinkProps) => {
 // MenuGroup
 //
 
-export type MenuGroupProps = React.ComponentProps<typeof MenuList.Group> & {
+type MenuGroupProps<K extends ItemKey> = React.ComponentProps<typeof MenuList.Group> & {
   /** A unique identifier for this group. */
-  itemKey: ItemKey,
+  itemKey: K,
 };
-export const MenuGroup = ({ itemKey, ...propsRest }: MenuGroupProps) => {
+export const MenuGroup = <K extends ItemKey = ItemKey>({ itemKey, ...propsRest }: MenuGroupProps<K>) => {
   const { props: itemProps } = useCollectionItem({ itemKey });
   
   // Groups create their own nested collections
@@ -135,11 +135,11 @@ export const MenuGroup = ({ itemKey, ...propsRest }: MenuGroupProps) => {
 // MenuGroupSelect
 //
 
-type MenuSelectOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionMode'> & {
+type MenuSelectOptionProps<K extends ItemKey> = Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionMode'> & {
   /** A unique identifier for this option. */
-  itemKey: ItemKey,
+  itemKey: K,
 };
-const MenuSelectOption = ({ itemKey, ...propsRest }: MenuSelectOptionProps) => {
+const MenuSelectOption = <K extends ItemKey = ItemKey>({ itemKey, ...propsRest }: MenuSelectOptionProps<K>) => {
   const { props: collectionProps } = useCollectionItem({ itemKey });
   const { selected, requestSelected, props: itemProps } = useListBoxItem({ itemKey });
   return (
@@ -156,13 +156,14 @@ const MenuSelectOption = ({ itemKey, ...propsRest }: MenuSelectOptionProps) => {
   );
 };
 
-type MenuGroupSelectPropsBase = Omit<React.ComponentProps<typeof MenuList.Group>, keyof MenuSelectStateProps>;
-type MenuGroupSelectProps = MenuGroupSelectPropsBase & MenuSelectStateProps & {
+type MenuGroupSelectPropsBase<K extends ItemKey> =
+  Omit<React.ComponentProps<typeof MenuList.Group>, keyof MenuSelectStateProps<K>>;
+type MenuGroupSelectProps<K extends ItemKey> = MenuGroupSelectPropsBase<K> & MenuSelectStateProps<K> & {
   /** A unique identifier for this option. */
-  itemKey: ItemKey,
+  itemKey: K,
 };
 export const MenuGroupSelect = Object.assign(
-  (props: MenuGroupSelectProps) => {
+  <K extends ItemKey = ItemKey>(props: MenuGroupSelectProps<K>) => {
     const {
       itemKey,
       selected,
@@ -173,7 +174,7 @@ export const MenuGroupSelect = Object.assign(
     
     const { props: itemProps } = useCollectionItem({ itemKey });
     
-    const onSelectedStateChange = React.useCallback((selected: SelectedSingleState) => {
+    const onSelectedStateChange = React.useCallback((selected: SelectedSingleState<K>) => {
       onSelectedChange?.({ selected });
     }, [onSelectedChange]);
     const { store, ...listBoxStore } = useListBox<React.ComponentRef<typeof MenuList>>({
@@ -213,34 +214,42 @@ export const MenuGroupSelect = Object.assign(
 // MenuGroupSelectMulti
 //
 
-type MenuSelectMultiOptionProps = Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionMode'> & {
-  /** A unique identifier for this option. */
-  itemKey: ItemKey,
-};
-const MenuSelectMultiOption = React.memo(({ itemKey, ...propsRest }: MenuSelectMultiOptionProps) => {
-  const { props: collectionProps } = useCollectionItem({ itemKey });
-  const { selected, requestSelected, props: itemProps } = useListBoxMultiItem({ itemKey });
-  return (
-    <MenuList.Option
-      {...mergeProps(
-        collectionProps,
-        itemProps,
-        { selected, onRequestSelected: requestSelected },
-        propsRest,
-        { className: cl['bk-menu__item'] },
-      )}
-      selectionMode="multiple"
-    />
-  );
-});
+type MenuSelectMultiOptionProps<K extends ItemKey> =
+  Omit<React.ComponentProps<typeof MenuList.Option>, 'selectionMode'>
+  & {
+    /** A unique identifier for this option. */
+    itemKey: K,
+  };
+const MenuSelectMultiOption = React.memo(
+  <K extends ItemKey = ItemKey>({ itemKey, ...propsRest }: MenuSelectMultiOptionProps<K>) => {
+    const { props: collectionProps } = useCollectionItem({ itemKey });
+    const { selected, requestSelected, props: itemProps } = useListBoxMultiItem({ itemKey });
+    return (
+      <MenuList.Option
+        {...mergeProps(
+          collectionProps,
+          itemProps,
+          { selected, onRequestSelected: requestSelected },
+          propsRest,
+          { className: cl['bk-menu__item'] },
+        )}
+        selectionMode="multiple"
+      />
+    );
+  },
+);
 
-type MenuGroupSelectMultiPropsBase = Omit<React.ComponentProps<typeof MenuList>, keyof MenuSelectMultiStateProps>;
-export type MenuGroupSelectMultiProps = MenuGroupSelectMultiPropsBase & MenuSelectMultiStateProps & {
-  /** A unique identifier for this group. */
-  itemKey: ItemKey,
-};
+type MenuGroupSelectMultiPropsBase<K extends ItemKey> =
+  Omit<React.ComponentProps<typeof MenuList>, keyof MenuSelectMultiStateProps<K>>;
+export type MenuGroupSelectMultiProps<K extends ItemKey> =
+  MenuGroupSelectMultiPropsBase<K>
+  & MenuSelectMultiStateProps<K>
+  & {
+    /** A unique identifier for this group. */
+    itemKey: K,
+  };
 export const MenuGroupSelectMulti = Object.assign(
-  (props: MenuGroupSelectMultiProps) => {
+  <K extends ItemKey = ItemKey>(props: MenuGroupSelectMultiProps<K>) => {
     const {
       ref,
       itemKey,
@@ -252,7 +261,7 @@ export const MenuGroupSelectMulti = Object.assign(
     
     const { props: itemProps } = useCollectionItem({ itemKey });
     
-    const onSelectedStateChange = React.useCallback((selected: SelectedMultiState) => {
+    const onSelectedStateChange = React.useCallback((selected: SelectedMultiState<K>) => {
       onSelectedChange?.({ selected });
     }, [onSelectedChange]);
     const { store, ...listBoxStore } = useListBoxMulti<React.ComponentRef<typeof MenuList>>({
@@ -353,10 +362,10 @@ export const Menu = Object.assign(
 // Specialized single/multi-select menu components (top-level)
 //
 
-type MenuSelectPropsBase = Omit<React.ComponentProps<typeof Menu>, keyof MenuSelectStateProps>;
-type MenuSelectProps = MenuSelectPropsBase & MenuSelectStateProps;
+type MenuSelectPropsBase<K extends ItemKey> = Omit<React.ComponentProps<typeof Menu>, keyof MenuSelectStateProps<K>>;
+type MenuSelectProps<K extends ItemKey> = MenuSelectPropsBase<K> & MenuSelectStateProps<K>;
 export const MenuSelect = Object.assign(
-  (props: MenuSelectProps) => {
+  <K extends ItemKey = ItemKey>(props: MenuSelectProps<K>) => {
     const {
       selected,
       defaultSelected,
@@ -364,7 +373,7 @@ export const MenuSelect = Object.assign(
       ...propsRest
     } = props;
     
-    const onSelectedStateChange = React.useCallback((selected: SelectedSingleState) => {
+    const onSelectedStateChange = React.useCallback((selected: SelectedSingleState<K>) => {
       onSelectedChange?.({ selected });
     }, [onSelectedChange]);
     const { store, ...listBoxStore } = useListBox<React.ComponentRef<typeof Menu>>({
@@ -396,10 +405,12 @@ export const MenuSelect = Object.assign(
   },
 );
 
-type MenuSelectMultiPropsBase = Omit<React.ComponentProps<typeof Menu>, keyof MenuSelectMultiStateProps>;
-type MenuSelectMultiProps = MenuSelectMultiPropsBase & MenuSelectMultiStateProps;
+type MenuSelectMultiPropsBase<K extends ItemKey> =
+  Omit<React.ComponentProps<typeof Menu>, keyof MenuSelectMultiStateProps<K>>;
+type MenuSelectMultiProps<K extends ItemKey> =
+  MenuSelectMultiPropsBase<K> & MenuSelectMultiStateProps<K>;
 export const MenuSelectMulti = Object.assign(
-  (props: MenuSelectMultiProps) => {
+  <K extends ItemKey = ItemKey>(props: MenuSelectMultiProps<K>) => {
     const {
       selected,
       defaultSelected,
@@ -407,7 +418,7 @@ export const MenuSelectMulti = Object.assign(
       ...propsRest
     } = props;
     
-    const onSelectedStateChange = React.useCallback((selected: SelectedMultiState) => {
+    const onSelectedStateChange = React.useCallback((selected: SelectedMultiState<K>) => {
       onSelectedChange?.({ selected });
     }, [onSelectedChange]);
     const { store, ...listBoxStore } = useListBoxMulti<React.ComponentRef<typeof Menu>>({
