@@ -53,6 +53,7 @@ export const IconButton = (props: IconButtonProps) => {
     <Button
       unstyled
       aria-label={label}
+      nonactive={nonactive}
       {...propsRest}
       className={cx(
         'bk',
