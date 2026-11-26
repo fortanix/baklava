@@ -5,23 +5,52 @@
 @use '../../../../styling/defs.scss' as bk;
 
 @layer baklava.components {
-  .bk-combo-box {
-    @include bk.component-base(bk-combo-box-multi);
+  .bk-select-combo-box-multi-selected-list {
+    @include bk.component-base(bk-select-combo-box-multi-selected);
     
-    .bk-combo-box__input {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 0.1lh;
+    column-gap: bk.$spacing-1;
+    align-items: center;
+    
+    .bk-select-combo-box-multi-selected-list__tag { --keep: ; }
+    
+    .bk-select-combo-box-multi-selected-list__actions {
+      display: flex;
+      flex-wrap: wrap;
+      row-gap: 0.1lh;
+      column-gap: bk.$spacing-1;
+      align-items: center;
+      
+      margin-inline-start: auto;
+    }
+  }
+  
+  .bk-select-combo-box-multi {
+    @include bk.component-base(bk-select-combo-box-multi);
+    
+    .bk-select-combo-box-multi__input {
       min-inline-size: 12ch;
     }
     
-    &.bk-combo-box--open { --keep: ; }
+    flex-wrap: wrap;
+    
+    .bk-select-combo-box-multi-selected-list {
+      // Allow the individual selected tags to be become flex items in the parent input wrapper
+      display: contents;
+    }
+    
+    &.bk-select-combo-box-multi--open { --keep: ; }
   }
   
-  .bk-combo-box__tags {
+  .bk-select-combo-box-multi__tags {
     display: flex;
     gap: bk.$spacing-2;
     flex-wrap: wrap; /* allows expansion to next line */
     margin-block-start: bk.$spacing-2;
 
-    .bk-combo-box__btn-clear-all {
+    .bk-select-combo-box-multi__btn-clear-all {
       margin-inline-start: auto;
     }
   }

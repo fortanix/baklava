@@ -149,7 +149,7 @@ export const DateInput = Object.assign(
       getReferenceProps,
       getFloatingProps,
     } = useFloatingElement({
-      triggerAction: 'focus-interactive',
+      triggerAction: 'focus-interactive', // FIXME: should be `combobox`? So user can open/close the picker
       placement: 'bottom',
       offset: 4,
       role: 'combobox',

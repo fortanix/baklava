@@ -9,7 +9,7 @@ import * as React from 'react';
 import { notify } from '../../../overlays/ToastProvider/ToastProvider.tsx';
 import { Input } from '../Input/Input.tsx';
 
-import { type ItemKey, SelectMulti } from './SelectMulti.tsx';
+import { type ItemKey, SelectedState, SelectMulti } from './SelectMulti.tsx';
 
 
 type SelectMultiArgs = React.ComponentProps<typeof SelectMulti>;
@@ -34,6 +34,8 @@ const fruits = {
 };
 type FruitKey = keyof typeof fruits;
 const formatFruitLabel = (itemKey: ItemKey): string => fruits[itemKey as FruitKey] ?? 'UNKNOWN';
+const formatFruitsLabel = (itemKeys: SelectedState) =>
+  [...itemKeys.values()].map(itemKey => formatFruitLabel(itemKey)).join(', ') || null;
 
 export default {
   component: SelectMulti,
@@ -45,7 +47,8 @@ export default {
   },
   args: {
     label: 'Test select',
-    formatItemLabel: formatFruitLabel,
+    placeholder: 'Select some fruits',
+    formatSelected: formatFruitsLabel,
     options: (
       <>
         {Object.entries(fruits).map(([fruitKey, fruitName]) =>
@@ -92,12 +95,14 @@ export const SelectMultiWithAutoResize: Story = {
     automaticResize: true,
     label: 'Test select',
     defaultSelected: new Set(['long-option']),
-    formatItemLabel: (itemKey: ItemKey) => {
-      if (itemKey === 'long-option') {
-        return 'A very long option label to show automatic resizing';
-      } else {
-        return formatFruitLabel(itemKey);
-      }
+    formatSelected: (itemKeys: SelectedState) => {
+      return [...itemKeys.values()].map(itemKey => {
+        if (itemKey === 'long-option') {
+          return 'A very long option label to show automatic resizing';
+        } else {
+          return formatFruitLabel(itemKey);
+        }
+      }).join(', ') || '(none)';
     },
     options: (
       <>
@@ -113,7 +118,7 @@ export const SelectMultiWithAutoResize: Story = {
 };
 
 const SelectMultiControlledC = ({ defaultSelected, ...props }: React.ComponentProps<typeof SelectMulti>) => {
-  const [selectedOptions, setSelectedOptions] = React.useState<Set<ItemKey>>(defaultSelected ?? new Set());
+  const [selectedOptions, setSelectedOptions] = React.useState<SelectedState>(defaultSelected ?? new Set());
   
   return (
     <>
@@ -125,7 +130,7 @@ const SelectMultiControlledC = ({ defaultSelected, ...props }: React.ComponentPr
           <SelectMulti.Option key={fruitKey} itemKey={fruitKey} label={fruitName}/>
         )}
         selected={selectedOptions}
-        onSelect={setSelectedOptions}
+        onSelectedChange={({ selected }) => { setSelectedOptions(selected); }}
       />
     </>
   );
@@ -145,7 +150,9 @@ export const SelectMultiInForm: Story = {
           id="story-form"
           onSubmit={event => {
             event.preventDefault();
-            notify.info(`You have chosen: ${new FormData(event.currentTarget).getAll('story_component1[]').join(', ') || 'none'}`);
+            const selectedFruit = new FormData(event.currentTarget).getAll('story_component1[]')
+              .map(key => formatFruitLabel(key.toString()));
+            notify.info(`You have chosen: ${selectedFruit.join(', ') || '(none)'}`);
           }}
         >
           <Story/>
@@ -157,5 +164,24 @@ export const SelectMultiInForm: Story = {
   args: {
     form: 'story-form',
     name: 'story_component1',
+  },
+};
+
+export const SelectMultiVirtualized: Story = {
+  args: {
+    formatSelected: itemKey =>
+      [...itemKey.values()].map(itemKey => itemKey.replace('option-', 'Option ')).join(', '),
+    options: (
+      <>
+        <SelectMulti.Static muted>Virtualized list</SelectMulti.Static>
+        <SelectMulti.SegmentVirtual
+          items={{
+            count: 10_000,
+            renderItem: (props, { key, index }) =>
+              <SelectMulti.Option key={key} itemKey={`option-${index + 1}`} {...props} label={`Option ${index + 1}`}/>
+          }}
+        />
+      </>
+    ),
   },
 };

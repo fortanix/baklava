@@ -48,6 +48,8 @@
     --bk-dialog-overlay-exit-dur: 120ms;
     --bk-dialog-overlay-fade-scale: 1;
     
+    overscroll-behavior: contain;
+    
     // Basic positioning
     position: fixed;
     inset: 0;

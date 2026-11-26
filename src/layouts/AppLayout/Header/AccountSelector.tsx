@@ -7,11 +7,7 @@ import * as React from 'react';
 
 import { Icon } from '../../../components/graphics/Icon/Icon.tsx';
 import { Button } from '../../../components/actions/Button/Button.tsx';
-import {
-  type ItemKey,
-  type ItemDetails,
-  MenuProvider,
-} from '../../../components/overlays/MenuProvider/MenuProvider.tsx';
+import { type ItemKey, MenuProvider } from '../../../components/overlays/MenuProvider/MenuProvider.tsx';
 
 import cl from './AccountSelector.module.scss';
 
@@ -19,13 +15,10 @@ import cl from './AccountSelector.module.scss';
 export { cl as AccountSelectorClassNames };
 
 
-export type { ItemDetails, ItemKey };
+export type { ItemKey };
 
-const DefaultIcon = () => (
-  <Icon icon="account" className={cx(cl['bk-account-selector__icon'])}
-    decoration={{ type: 'background-circle' }}
-  />
-);
+const DefaultIcon = () =>
+  <Icon icon="account" className={cx(cl['bk-account-selector__icon'])} decoration={{ type: 'background-circle' }}/>;
 
 type PropsOmit = 'label' | 'children' | 'selected' | 'onSelect' | 'wrap';
 export type AccountSelectorProps = Omit<ComponentProps<typeof Button>, PropsOmit> & {
@@ -36,7 +29,7 @@ export type AccountSelectorProps = Omit<ComponentProps<typeof Button>, PropsOmit
   accounts: React.ComponentProps<typeof MenuProvider>['items'],
   
   /** The selected account. To access the selected account, pass a render prop. */
-  children: (selectedAccount: null | ItemDetails) => React.ReactNode,
+  children: (selectedAccount: null | ItemKey) => React.ReactNode,
   
   /** The selected account. If given, this will be a controlled component. */
   selected?: undefined | React.ComponentProps<typeof MenuProvider>['selected'],
@@ -45,10 +38,7 @@ export type AccountSelectorProps = Omit<ComponentProps<typeof Button>, PropsOmit
   selectedIcon?: undefined | React.ReactElement,
   
   /** Callback which is called when the selected state changes. */
-  onSelect?: undefined | React.ComponentProps<typeof MenuProvider>['onSelect'],
-  
-  /** Custom formatting of the selected account. */
-  formatItemLabel?: undefined | React.ComponentProps<typeof MenuProvider>['formatItemLabel'],
+  onSelectedChange?: undefined | React.ComponentProps<typeof MenuProvider>['onSelectedChange'],
   
   /** Additional props to pass to the `MenuProvider`. Optional. */
   menuProviderProps?: undefined | React.ComponentProps<typeof MenuProvider>,
@@ -60,9 +50,8 @@ export const AccountSelector = Object.assign(
       children,
       accounts,
       selected,
+      onSelectedChange,
       selectedIcon,
-      onSelect,
-      formatItemLabel,
       menuProviderProps = {},
       ...propsRest
     } = props;
@@ -75,8 +64,7 @@ export const AccountSelector = Object.assign(
         items={accounts}
         offset={12} // Compensate for header padding
         selected={selected}
-        onSelect={onSelect}
-        formatItemLabel={formatItemLabel}
+        onSelectedChange={onSelectedChange}
         {...menuProviderProps}
       >
         {({ props, selectedOption }) =>
@@ -98,9 +86,12 @@ export const AccountSelector = Object.assign(
     );
   },
   {
-    Header: MenuProvider.Header,
     Option: MenuProvider.Option,
+    Static: MenuProvider.Static,
     Action: MenuProvider.Action,
-    FooterActions: MenuProvider.FooterActions,
+    Link: MenuProvider.Link,
+    Segment: MenuProvider.Segment,
+    Group: MenuProvider.Group,
+    Footer: MenuProvider.Footer,
   },
 );

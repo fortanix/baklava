@@ -5,7 +5,7 @@
 import * as React from 'react';
 
 import { useDelayedUnmount } from '../../../../util/hooks/useDelayedUnmount.ts';
-import { type UsePopoverResult, usePopover } from './usePopover.ts';
+import { type PopoverController, type UsePopoverResult, usePopover } from './usePopover.ts';
 import { usePopoverTracker } from '../TopLayerManager.tsx';
 
 
@@ -33,17 +33,17 @@ export type PopoverProviderProps<E extends HTMLElement> = {
   /** Whether the popover is active. Use this if you want the popover to be a controlled component. */
   active?: undefined | boolean,
   
+  /** If uncontrolled, specifies whether the popover should be active by default. Default: `false`. */
+  activeDefault?: undefined | boolean,
+  
   /** If the popover is a controlled component, this callback will be called when the active state should change. */
   onActiveChange?: undefined | React.Dispatch<React.SetStateAction<boolean>>,
-  
-  /** If uncontrolled, specifies whether the popover should be active by default. Default: false. */
-  activeDefault?: undefined | boolean,
   
   /** How long to keep the popover in the DOM for exit animation purposes. Default: 3 seconds. */
   unmountDelay?: undefined | number,
 };
 /**
- * Provider around a trigger (e.g. button) to display a popover overlay on trigger activation.
+ * Provider around a trigger (e.g. button) to display a popover overlay upon trigger activation.
  */
 export const PopoverProvider = Object.assign(
   <E extends HTMLElement>(props: PopoverProviderProps<E>) => {
@@ -55,25 +55,36 @@ export const PopoverProvider = Object.assign(
       unmountDelay = 3000, // ms
     } = props;
     
+    // FIXME: we probably don't need this, we can leave the uncontrolled/controlled usage to the consumer rather than
+    // forcing this component to always have controlled state.
     const [activeUncontrolled, setActiveUncontrolled] = React.useState(activeDefault);
+    
     const active = typeof props.active !== 'undefined' ? props.active : activeUncontrolled;
     const setActive = typeof props.onActiveChange !== 'undefined' ? props.onActiveChange : setActiveUncontrolled;
     const [shouldMount, setActiveWithDelay] = useDelayedUnmount(active, setActive, unmountDelay);
     
     const popoverRef = React.useMemo<PopoverRef>(() => ({
       //source, // TODO: need a reference to the trigger element
-      active: active,
+      active,
       activate: () => { setActiveWithDelay(true); },
       deactivate: () => { setActiveWithDelay(false); },
     }), [active, setActiveWithDelay]);
     
     React.useImperativeHandle(ref, () => popoverRef, [popoverRef]);
     
-    const popoverParams = Object.assign(usePopover<E>(popoverRef), {
+    const popoverController = React.useMemo<PopoverController>(() => ({
+      //source, // TODO
+      open: active,
+      onOpenChange: ({ open }) => { setActiveWithDelay(open); },
+      deactivate: () => { setActiveWithDelay(false); },
+    }), [active, setActiveWithDelay]);
+    const popoverParams = Object.assign(usePopover<E>(popoverController), {
       close: popoverRef.deactivate,
     });
     
     // Track this as part of our top layer elements tracker
+    // FIXME: should we move this inside of `usePopover` instead? Currently direct consumers of `usePopover` won't
+    // get included in tracking.
     usePopoverTracker(active);
     
     return (

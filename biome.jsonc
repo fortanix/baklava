@@ -56,6 +56,11 @@
                 "name": "useMemoOnce",
                 "stableResult": true
               },
+              // `usePreviousRef` is guaranteed to return a stable result (same value throughout the component lifecycle)
+              {
+                "name": "usePreviousRef",
+                "stableResult": true
+              }
             ]
           }
         },

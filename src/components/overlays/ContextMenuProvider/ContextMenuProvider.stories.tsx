@@ -4,18 +4,18 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { ContextMenuProvider, type ItemKey } from './ContextMenuProvider.tsx';
+import { ContextMenuProvider } from './ContextMenuProvider.tsx';
+import { notify } from '../ToastProvider/ToastProvider.tsx';
+
 
 type ContextMenuProviderArgs = React.ComponentProps<typeof ContextMenuProvider>;
 type Story = StoryObj<ContextMenuProviderArgs>;
 
-// sample options
+// Sample options
 const options = {
   'item-edit': 'Edit',
   'item-delete': 'Delete',
 };
-type OptionsKey = keyof typeof options;
-const formatOptionLabel = (itemKey: ItemKey): string => options[itemKey as OptionsKey] ?? 'UNKNOWN';
 
 export default {
   component: ContextMenuProvider,
@@ -27,7 +27,6 @@ export default {
   },
   args: {
     label: 'Test menu provider',
-    formatItemLabel: formatOptionLabel,
     items: (
       <>
         {Object.entries(options).map(([optionKey, optionName]) =>
@@ -35,12 +34,11 @@ export default {
             key={optionKey}
             itemKey={optionKey}
             label={optionName}
-            onActivate={() => console.log(optionKey)}
+            onPress={() => { notify.info(`Pressed ${optionKey}`); }}
           />
         )}
       </>
     ),
-    onSelect: selectedOption => { console.log('Selected:', selectedOption); },
   },
   render: (args) => <ContextMenuProvider {...args}/>,
 } satisfies Meta<ContextMenuProviderArgs>;

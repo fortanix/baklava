@@ -335,13 +335,13 @@ export const DialogModalWithDropdown: Story = {
               {Array.from({ length: 30 }, (_, index) => `Account ${index + 1}`).map(name =>
                 <AccountSelector.Option key={`acc_${name}`} itemKey={`acc_${name}`} icon="account" label={name}/>
               )}
-              <AccountSelector.FooterActions>
-                <AccountSelector.Action itemKey="action_add-account" label="Add account" onActivate={() => {}}/>
-              </AccountSelector.FooterActions>
+              <AccountSelector.Footer>
+                <AccountSelector.Action itemKey="action_add-account" label="Add account" onPress={() => {}}/>
+              </AccountSelector.Footer>
             </>
           }
         >
-          {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.label.replace(/^acc_/, '')}
+          {selectedAccount => selectedAccount === null ? 'Accounts' : selectedAccount.replace(/^acc_/, '')}
         </AccountSelector>
       </>
     ),
