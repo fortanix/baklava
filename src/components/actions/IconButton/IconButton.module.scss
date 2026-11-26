@@ -17,6 +17,10 @@
       vertical-align: -15%; // In inline flow, position the icon on the baseline, shifted downwards a little bit
     }
     
+    &:disabled, &.bk-icon-button--nonactive {
+      cursor: not-allowed;
+    }
+    
     &:not(:disabled):active {
       scale: 0.95;
     }

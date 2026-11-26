@@ -33,6 +33,18 @@ export default {
 
 export const IconButtonStandard: Story = {};
 
+export const IconButtonDisabled: Story = {
+  args: {
+    disabled: true,
+  },
+};
+
+export const IconButtonNonActive: Story = {
+  args: {
+    nonactive: true,
+  },
+};
+
 export const IconButtonInline: Story = {
   decorators: [
     Story => (
