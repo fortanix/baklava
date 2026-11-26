@@ -45,6 +45,7 @@ export const IconButton = (props: IconButtonProps) => {
     icon,
     iconProps = {},
     inline = true,
+    nonactive = false,
     ...propsRest
   } = props;
   
@@ -52,12 +53,14 @@ export const IconButton = (props: IconButtonProps) => {
     <Button
       unstyled
       aria-label={label}
+      nonactive={nonactive}
       {...propsRest}
       className={cx(
         'bk',
         { 'bk-inherit': inline },
         { [cl['bk-icon-button']]: !unstyled },
         { [cl['bk-icon-button--inline']]: inline },
+        { [cl['bk-icon-button--nonactive']]: nonactive },
         className,
       )}
     >
